@@ -41,6 +41,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
@@ -160,7 +161,13 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickAddToWishList(product: Product) {
-        context?.let { viewModel.addToWishList(product.productId, session.userId, this, this, it) }
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                viewModel.addToWishListV2(product.productId, session.userId,  this)
+            } else {
+                viewModel.addToWishList(product.productId, session.userId, this)
+            }
+        }
     }
 
     override fun onClickCardProduct(product: Product, position: Int) {

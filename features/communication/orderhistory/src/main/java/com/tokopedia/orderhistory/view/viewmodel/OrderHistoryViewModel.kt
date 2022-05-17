@@ -1,15 +1,12 @@
 package com.tokopedia.orderhistory.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.data.OrderHistoryParam
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
@@ -21,7 +18,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -52,18 +48,20 @@ class OrderHistoryViewModel @Inject constructor(
         )
     }
 
-    fun addToWishList(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener, wishListActionListener: WishListActionListener, context: Context) {
-        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-            addWishlistV2UseCase.setParams(productId, userId)
-            addWishlistV2UseCase.execute(
-                onSuccess = { result ->
-                    if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId) },
-                onError = {
-                    wishlistV2ActionListener.onErrorAddWishList(it, productId)
-                })
-        } else {
-            addWishListUseCase.createObservable(productId, userId, wishListActionListener)
-        }
+    fun addToWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
+        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    fun addToWishListV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        addWishlistV2UseCase.setParams(productId, userId)
+        addWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) {
+                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } },
+            onError = {
+                wishlistV2ActionListener.onErrorAddWishList(it, productId)
+            })
     }
 
     private fun onSuccessGetHistoryProduct(orderHistory: ChatHistoryProductResponse) {
