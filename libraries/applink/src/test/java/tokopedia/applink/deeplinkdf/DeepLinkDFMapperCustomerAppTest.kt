@@ -747,6 +747,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check profile revamp appLink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/profile-info"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check add phone appLink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/add-phone"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)

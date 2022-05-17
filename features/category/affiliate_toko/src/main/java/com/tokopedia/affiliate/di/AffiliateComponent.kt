@@ -7,13 +7,18 @@ import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
-import com.tokopedia.affiliate.ui.fragment.*
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateTransactionDetailFragment
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
 import dagger.Component
 
@@ -55,5 +60,7 @@ interface AffiliateComponent {
     fun injectPromotionHistoryFragment(viewModel: AffiliatePromotionHistoryFragment)
 
     fun injectWithdrawalInfoFragment(affiliateTransactionDetailFragment: AffiliateTransactionDetailFragment)
+
+    fun injectDateFilterBottomSheet(affiliateDateFilterBottomSheet: AffiliateBottomDatePicker)
 
 }

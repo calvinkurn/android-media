@@ -15,6 +15,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
@@ -38,25 +39,6 @@ import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalFeed
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalOvo
-import com.tokopedia.applink.internal.ApplinkConstInternalOvo.STATUS
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
@@ -491,12 +473,7 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.IMAGE_PICKER_V2) { _, _, deeplink, _ -> DeeplinkMapperImagePicker.getImagePickerV2Deeplink(deeplink) },
             DLP(DLPLogic { _, uri, _ -> DeeplinkMapperFintech.isHomeCreditRegister(uri) },
                 targetDeeplink = { _, uri, _, _ -> DeeplinkMapperFintech.getRegisteredNavigationForHomeCreditRegister(uri) }),
-            DLP.host(ApplinkConst.HOST_OVOUPGRADE) { _, _, _, _ -> ApplinkConstInternalOvo.OVO_UPGRADE },
-            DLP.matchPattern(ApplinkConst.OVOUPGRADE_STATUS, targetDeeplink = { _, _, _, idList ->
-                UriUtil.buildUriAppendParam(
-                    ApplinkConstInternalOvo.OVO_UPGRADE_STATUS,
-                    mapOf(STATUS to idList?.getOrNull(0), ApplinkConstInternalOvo.MESSAGE to idList?.getOrNull(1)))
-            }),
+
             DLP.host(ApplinkConst.HOST_PLAY_NOTIF_VIDEO) { _, _, _, _ -> ApplinkConstInternalGlobal.YOUTUBE_VIDEO },
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
@@ -504,6 +481,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SETTING_PROFILE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
+            DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
         )
 
     fun getTokopediaSchemeList():List<DLP>{
