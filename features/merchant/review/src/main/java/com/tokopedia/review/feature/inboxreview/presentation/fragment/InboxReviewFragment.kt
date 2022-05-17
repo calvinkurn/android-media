@@ -512,7 +512,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun onErrorGetInboxReviewData(throwable: Throwable) {
-        feedbackInboxList?.clear()
         swipeToRefresh?.isRefreshing = false
         if (feedbackInboxList?.isEmpty() == true) {
             inboxReviewAdapter.clearAllElements()
@@ -529,9 +528,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = {
-                loadInitialData()
-            }).show()
+            Toaster.build(
+                it,
+                message,
+                duration = Toaster.LENGTH_INDEFINITE,
+                actionText = action,
+                type = Toaster.TYPE_ERROR,
+                clickListener = {
+                    loadInitialData()
+                }).show()
         }
     }
 

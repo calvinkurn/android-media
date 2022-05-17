@@ -684,11 +684,12 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             Toaster.build(
                 it,
                 message,
+                duration = Toaster.LENGTH_INDEFINITE,
                 actionText = action,
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-                })
+                }).show()
         }
     }
 
