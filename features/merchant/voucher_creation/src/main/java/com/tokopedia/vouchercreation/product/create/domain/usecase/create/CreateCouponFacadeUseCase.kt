@@ -57,6 +57,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val topProducts = topProductsDeferred.await()
 
         val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+        val warehouseId = topProducts.data.firstOrNull()?.warehouses?.firstOrNull()?.id.orEmpty()
 
         val generateImageDeferred = scope.async {
             generateImage(
@@ -109,7 +110,8 @@ class CreateCouponFacadeUseCase @Inject constructor(
                 coupon.token,
                 imageUrl,
                 squareImageUrl,
-                portraitImageUrl
+                portraitImageUrl,
+                warehouseId
             )
         }
 
@@ -122,8 +124,9 @@ class CreateCouponFacadeUseCase @Inject constructor(
         couponProducts: List<CouponProduct>,
         token: String,
         imageUrl: String,
-        imageSquare:String,
-        imagePortrait:String
+        imageSquare: String,
+        imagePortrait: String,
+        warehouseId: String
     ): Int {
         val params = createCouponProductUseCase.createRequestParam(
             couponInformation,
@@ -132,7 +135,8 @@ class CreateCouponFacadeUseCase @Inject constructor(
             token,
             imageUrl,
             imageSquare,
-            imagePortrait
+            imagePortrait,
+            warehouseId
         )
         createCouponProductUseCase.params = params
         return createCouponProductUseCase.executeOnBackground()

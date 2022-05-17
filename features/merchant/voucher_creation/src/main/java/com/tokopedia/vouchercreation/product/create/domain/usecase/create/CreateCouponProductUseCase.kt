@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
@@ -44,7 +45,8 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
         token: String,
         imageUrl: String,
         imageSquare: String,
-        imagePortrait: String
+        imagePortrait: String,
+        warehouseId: String
     ): RequestParams {
         val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
         val startDate =
@@ -90,7 +92,8 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             minimumTierLevel = 0,
             isLockToProduct = 1,
             productIds = couponProducts.joinToString(separator = ",") { it.id },
-            productIdsCsvUrl = ""
+            productIdsCsvUrl = "",
+            warehouseId = warehouseId.toLongOrZero()
         )
 
 
