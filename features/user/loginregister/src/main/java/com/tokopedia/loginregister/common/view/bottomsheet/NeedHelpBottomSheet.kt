@@ -93,7 +93,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     }
 
     private fun goToInactivePhoneNumber(){
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INACTIVE_PHONE_NUMBER)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER)
         startActivity(intent)
     }
 
