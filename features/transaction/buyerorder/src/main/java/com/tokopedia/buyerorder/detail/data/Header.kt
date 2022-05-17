@@ -6,33 +6,33 @@ import com.google.gson.annotations.SerializedName
 data class Header (
     @SerializedName("content-type")
     @Expose
-    var contentType: String = "",
+    val contentType: String = "",
 
     @SerializedName("itemLabel")
     @Expose
-    var itemLabel: String = "",
+    val itemLabel: String = "",
 
     @SerializedName("item_label")
     @Expose
-    var item_label: String = "",
+    val item_label: String = "",
 
     @SerializedName("poweredBy")
     @Expose
-    var poweredBy: String = "",
+    val poweredBy: String = "",
 
     @SerializedName("powered_by")
     @Expose
-    var powered_by: String = "",
+    val powered_by: String = "",
 
     @SerializedName("statusLabel")
     @Expose
-    var statusLabel: String = "",
+    val statusLabel: String = "",
 
     @SerializedName("status_label")
     @Expose
-    var status_label: String = "",
+    val status_label: String = "",
 
     @SerializedName("voucherCodes")
     @Expose
-    var voucherCodes: String = ""
+    val voucherCodes: String = ""
 )

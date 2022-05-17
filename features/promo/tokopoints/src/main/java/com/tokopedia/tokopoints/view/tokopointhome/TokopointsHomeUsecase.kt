@@ -48,7 +48,7 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = APIVERSION_TOPSECTION
         return GraphqlRequest(TPRewardTopSection.GQL_QUERY,
-            RewardResponse::class.java, false)
+            RewardResponse::class.java, variables, false)
     }
 
     suspend fun getRewardIntroData() = withContext(Dispatchers.IO) {
@@ -82,7 +82,7 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
     }
 
     companion object {
-        const val APIVERSION_SECTION = "2.0.0"
+        const val APIVERSION_SECTION = "3.0.0"
         const val APIVERSION_TOPSECTION = "2.0.0"
     }
 }

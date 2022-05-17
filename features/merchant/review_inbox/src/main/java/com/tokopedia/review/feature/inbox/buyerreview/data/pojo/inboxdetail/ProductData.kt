@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductData(
     @SerializedName("product_id")
     @Expose
-    val productId: Long = 0,
+    val productId: String = "",
 
     @SerializedName("product_name")
     @Expose
@@ -22,7 +22,7 @@ data class ProductData(
 
     @SerializedName("shop_id")
     @Expose
-    val shopId: Long = 0,
+    val shopId: String = "",
 
     @SerializedName("product_status")
     @Expose

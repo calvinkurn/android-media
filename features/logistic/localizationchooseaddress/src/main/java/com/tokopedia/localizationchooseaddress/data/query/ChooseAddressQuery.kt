@@ -96,6 +96,7 @@ object ChooseAddressQuery {
                 service_type
               }
               service_type
+              tokonow_last_update
             }
             kero_addr_error {
               code

@@ -1210,7 +1210,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
-            DataVisorWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
         }
