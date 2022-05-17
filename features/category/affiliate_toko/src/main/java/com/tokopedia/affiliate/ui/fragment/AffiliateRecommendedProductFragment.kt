@@ -15,7 +15,6 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -24,7 +23,6 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
-import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
@@ -35,7 +33,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_recommended_product_fragment_layout.*
 import java.util.*

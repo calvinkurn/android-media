@@ -169,7 +169,9 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             onGetValidateUserData(validateUserdata)
         })
         affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,context)
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                announcementData,
+                activity)
         })
     }
 

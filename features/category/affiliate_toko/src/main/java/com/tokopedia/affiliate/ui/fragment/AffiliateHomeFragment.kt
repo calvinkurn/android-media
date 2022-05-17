@@ -303,7 +303,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,context)
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,activity)
         })
 
     }

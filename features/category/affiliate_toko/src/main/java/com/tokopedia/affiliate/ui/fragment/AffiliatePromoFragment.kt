@@ -249,7 +249,8 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             onGetValidateUserData(validateUserdata)
         })
         affiliatePromoViewModel.getAffiliateAnnouncement().observe(this,{
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(it,context)
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(it,
+                activity)
         })
     }
 
