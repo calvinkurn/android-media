@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -9,12 +8,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoPinPointState
-import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addOutOfCoverageState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.getVisitableId
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapDynamicIcons
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
@@ -30,10 +30,9 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiMode
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.PurchaseUiEvent
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,6 +42,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -52,10 +52,13 @@ class TokoFoodHomeViewModel @Inject constructor(
         get() = _updatePinPointState
     val errorMessage:LiveData<String>
         get() = _errorMessage
+    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
+        get() = _chooseAddress
 
     private val _homeLayoutList = MutableLiveData<Result<TokoFoodHomeListUiModel>>()
     private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
+    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodHomeItemUiModel>()
 
@@ -68,6 +71,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         }){
             _errorMessage.value = it.message
         }
+    }
+
+    fun getChooseAddress(source: String){
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+            _chooseAddress.postValue(Success(it))
+        },{
+            _chooseAddress.postValue(Fail(it))
+        }, source)
     }
 
     fun getLoadingState() {

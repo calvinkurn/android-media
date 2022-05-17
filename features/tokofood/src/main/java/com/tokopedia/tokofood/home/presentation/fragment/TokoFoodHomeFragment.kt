@@ -30,7 +30,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
@@ -63,6 +65,7 @@ import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -70,8 +73,6 @@ import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class TokoFoodHomeFragment : BaseDaggerFragment(),
         IBaseMultiFragment,
         TokoFoodHomeView,
@@ -264,6 +265,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getNoAddressState()
     }
 
+    private fun getChooseAddress() {
+        viewModel.getChooseAddress(SOURCE)
+    }
+
     private fun setupUi() {
         view?.apply {
             navToolbar = binding?.navToolbar
@@ -335,12 +340,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
 
         observe(viewModel.updatePinPointState) { isSuccess ->
-            if (isSuccess) loadLayout()
+            if (isSuccess) {
+                getChooseAddress()
+            }
         }
 
         observe(viewModel.errorMessage) { message ->
             view?.let {
                 Toaster.build(it, message, Toaster.LENGTH_LONG).show()
+            }
+        }
+
+        observe(viewModel.chooseAddress) {
+            when(it) {
+                is Success -> {
+                    setupChooseAddress(it.data)
+                }
             }
         }
     }
@@ -486,5 +501,30 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
+        data.let { chooseAddressData ->
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                context = requireContext(),
+                addressId = chooseAddressData.data.addressId.toString(),
+                cityId = chooseAddressData.data.cityId.toString(),
+                districtId = chooseAddressData.data.districtId.toString(),
+                lat = chooseAddressData.data.latitude,
+                long = chooseAddressData.data.longitude,
+                label = String.format(
+                    "%s %s",
+                    chooseAddressData.data.addressName,
+                    chooseAddressData.data.receiverName
+                ),
+                postalCode = chooseAddressData.data.postalCode,
+                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                shopId = chooseAddressData.tokonow.shopId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
+                serviceType = chooseAddressData.tokonow.serviceType
+            )
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+        loadLayout()
     }
 }
