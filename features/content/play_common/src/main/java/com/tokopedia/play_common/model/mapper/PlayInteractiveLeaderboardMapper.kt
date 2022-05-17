@@ -36,7 +36,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             choices = mapChoices(it.choices, it.userChoice),
             leaderBoardType = getLeaderboardType(it),
             emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
-            reward = it.reward
+            reward = it.reward,
+            id = it.interactiveId
         )
     }
 
@@ -87,7 +88,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             title = it.title,
             winners = mapInteractiveWinner(it.title, it.winner, topChatResponseRaw, isChatAllowed),
             otherParticipantText = it.otherParticipantCountText,
-            otherParticipant = it.otherParticipantCount.toLong()
+            otherParticipant = it.otherParticipantCount.toLong(),
+            id = "" //temp for old leaderboard, removed if bro doesnt use it anymore
         )
     }
 

@@ -44,6 +44,10 @@ class PlayInteractiveLeaderboardViewComponent(
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
+
+        override fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel) {
+            listener.onLeaderBoardImpressed(this@PlayInteractiveLeaderboardViewComponent, leaderboard)
+        }
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -146,5 +150,6 @@ class PlayInteractiveLeaderboardViewComponent(
         }
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
         fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent)
+        fun onLeaderBoardImpressed(view: PlayInteractiveLeaderboardViewComponent, leaderboard: PlayLeaderboardUiModel)
     }
 }

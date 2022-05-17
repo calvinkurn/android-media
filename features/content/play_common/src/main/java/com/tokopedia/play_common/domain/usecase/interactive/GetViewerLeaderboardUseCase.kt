@@ -35,6 +35,7 @@ class GetViewerLeaderboardUseCase @Inject constructor(
               }){
                 slots{
                   __typename
+                  interactiveID
                   ... on PlayInteractiveViewerLeaderboardGiveaway{
                     title
                     winners{
