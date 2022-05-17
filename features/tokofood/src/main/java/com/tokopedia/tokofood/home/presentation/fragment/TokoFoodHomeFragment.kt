@@ -334,11 +334,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        observe(viewModel.pinPointState) { isSuccess ->
+        observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) loadLayout()
-            else {
-                //todo show error
-            }
         }
 
         observe(viewModel.errorMessage) { message ->

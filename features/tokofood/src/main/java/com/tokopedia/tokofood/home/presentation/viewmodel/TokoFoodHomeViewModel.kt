@@ -48,13 +48,13 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     val homeLayoutList: LiveData<Result<TokoFoodHomeListUiModel>>
         get() = _homeLayoutList
-    val pinPointState: LiveData<Boolean>
-        get() = _pinPointState
+    val updatePinPointState: LiveData<Boolean>
+        get() = _updatePinPointState
     val errorMessage:LiveData<String>
         get() = _errorMessage
 
     private val _homeLayoutList = MutableLiveData<Result<TokoFoodHomeListUiModel>>()
-    private val _pinPointState = MutableLiveData<Boolean>()
+    private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodHomeItemUiModel>()
@@ -64,7 +64,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             val isSuccess = withContext(dispatchers.io) {
                 keroEditAddressUseCase.execute(addressId, latitude, longitude)
             }
-            _pinPointState.value = isSuccess
+            _updatePinPointState.value = isSuccess
         }){
             _errorMessage.value = it.message
         }

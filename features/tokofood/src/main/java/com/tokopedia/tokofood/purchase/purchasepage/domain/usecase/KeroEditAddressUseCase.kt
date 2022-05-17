@@ -27,7 +27,8 @@ class KeroEditAddressUseCase @Inject constructor(
         if (isDebug) {
             val addressParam = keroGetAddressUseCase.execute(addressId).copy(
                 latitude = latitude,
-                longitude = longitude
+                longitude = longitude,
+                secondAddress = "$latitude,$longitude"
             )
             setRequestParams(KeroEditAddressQuery.createRequestParams(addressParam))
             return executeOnBackground().keroEditAddress.data.isEditSuccess()
