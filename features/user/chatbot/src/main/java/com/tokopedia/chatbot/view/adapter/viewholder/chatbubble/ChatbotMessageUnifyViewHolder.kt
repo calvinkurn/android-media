@@ -12,7 +12,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,8 +35,8 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
-        ChatbotMessageViewHolderBinder2.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
-        ChatbotMessageViewHolderBinder2.bindHour(message.replyTime, customChatLayout)
+        ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
+        ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
         bindReplyBubbleListener()
         //TODO check for msg link

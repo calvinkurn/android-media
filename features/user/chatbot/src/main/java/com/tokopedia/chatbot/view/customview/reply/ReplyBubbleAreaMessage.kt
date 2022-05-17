@@ -108,7 +108,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             replyIcon?.hide()
     }
 
-    private fun bindParentReplyData(parentReply: ParentReply, replyId: String?, message : String, from : String) {
+    private fun bindParentReplyData(parentReply: ParentReply, message : String, from : String) {
         referTo(parentReply)
         setTitle(from)
         setReplyMsg(message)
@@ -125,7 +125,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referredMsg = parentReply
     }
 
-    //Requirement from BE, Changing this value will break the code
+    //Requirement from BE, Changing this value will break the UI
     private fun setTitle(sender: String?) {
         sender ?: return
         if (sender == ChatbotConstant.TANYA)
@@ -192,15 +192,15 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             source = "chat",
             replyId = referredMsg.replyId
         )
-        bindParentReplyData(parentReply, null,referredMsg.message,referredMsg.from)
+        bindParentReplyData(parentReply, referredMsg.message,referredMsg.from)
         updateCloseButtonState(enableCloseButton)
         show()
     }
 
     companion object {
         val LAYOUT = R.layout.text_reply_bubble
-        val LEFT_ORIENTATION = 0
-        val RIGHT_ORIENTATION = 1
+        const val LEFT_ORIENTATION = 0
+        const val RIGHT_ORIENTATION = 1
     }
 
 }

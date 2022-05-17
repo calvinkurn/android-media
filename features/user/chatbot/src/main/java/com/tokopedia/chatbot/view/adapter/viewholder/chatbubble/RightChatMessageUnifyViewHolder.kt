@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -45,7 +45,7 @@ class RightChatMessageUnifyViewHolder(
 
     override fun bind(message: MessageUiModel) {
         super.bind(message)
-        ChatbotMessageViewHolderBinder2.bindChatReadStatus(message, customChatLayout)
+        ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground()
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
