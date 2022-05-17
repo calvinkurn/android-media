@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.mapper
 
 import com.tokopedia.createpost.producttag.model.*
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import javax.inject.Inject
 
 /**
@@ -151,5 +152,9 @@ class ProductTagUiModelMapper @Inject constructor() {
                     value = it.value,
                 )
             }
+    }
+
+    fun mapSortFilter(response: GetSortFilterResponse): DynamicFilterModel {
+        return response.wrapper
     }
 }

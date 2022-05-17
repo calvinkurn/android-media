@@ -478,9 +478,13 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleOpenSortFilterBottomSheet() {
-        /** TODO: load gql here */
-        viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(""))
+        viewModelScope.launchCatchError(block = {
+            val param = _globalSearchProduct.value.param
+            val result = repo.getSortFilter(param)
+
+            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(param, result))
+        }) {
+            /** TODO: handle this */
         }
     }
 

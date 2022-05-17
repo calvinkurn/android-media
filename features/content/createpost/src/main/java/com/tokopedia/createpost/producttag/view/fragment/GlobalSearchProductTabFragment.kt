@@ -106,8 +106,8 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                     is ProductTagUiEvent.OpenSortFilterBottomSheet -> {
                         sortFilterBottomSheet.show(
                             childFragmentManager,
-                            null,
-                            null,
+                            event.param.value as Map<String, String>,
+                            event.data,
                             object : SortFilterBottomSheet.Callback {
                                 override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
 

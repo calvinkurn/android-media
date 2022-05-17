@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.domain.repository
 
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
@@ -35,4 +36,8 @@ interface ProductTagRepository {
         query: String,
         extraParams: String,
     ) : List<QuickFilterUiModel>
+
+    suspend fun getSortFilter(
+        param: SearchParamUiModel,
+    ) : DynamicFilterModel
 }

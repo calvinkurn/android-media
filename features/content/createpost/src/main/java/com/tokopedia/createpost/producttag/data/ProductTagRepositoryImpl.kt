@@ -6,6 +6,7 @@ import com.tokopedia.createpost.producttag.domain.usecase.*
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class ProductTagRepositoryImpl @Inject constructor(
     private val feedAceSearchProductUseCase: FeedAceSearchProductUseCase,
     private val feedAceSearchShopUseCase: FeedAceSearchShopUseCase,
     private val feedQuickFilterUseCase: FeedQuickFilterUseCase,
+    private val getSortFilterUseCase: GetSortFilterUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -105,6 +107,18 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapQuickFilter(response)
+        }
+    }
+
+    override suspend fun getSortFilter(param: SearchParamUiModel): DynamicFilterModel {
+        return withContext(dispatchers.io) {
+            val response = getSortFilterUseCase.apply {
+                setRequestParams(GetSortFilterUseCase.createParams(
+                    param = param,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapSortFilter(response)
         }
     }
 }
