@@ -8,12 +8,15 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.search.shouldNotContain
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
@@ -53,12 +56,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Setup choose address`(chooseAddressModel: LocalCacheModel) {
-        `Given choose address is enabled`()
         `Given chosen address data`(chooseAddressModel)
-    }
-
-    private fun `Given choose address is enabled`() {
-        every { chooseAddressView.isChooseAddressWidgetEnabled } returns true
     }
 
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
@@ -132,11 +130,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         `When load data`()
 
         `Then verify top of visitable list is choose address widget`()
-        `Then verify visitable list does not contain search product count`()
-    }
-
-    private fun `Then verify visitable list does not contain search product count`() {
-        visitableList.any { it is SearchProductCountDataView } shouldBe false
     }
 
     @Test

@@ -17,7 +17,6 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_autoads_create_auto_ad_layout.*
 
 private const val CLICK_IKLANKAN_BUTTON = "click-iklankan auto"
 private const val MORE_INFO = " Info Selengkapnya"
@@ -26,11 +25,17 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
 
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    private var createAutoBg: ImageUnify? = null
+    private var infoText: Typography? = null
+
     override fun getLayoutId(): Int {
         return R.layout.topads_autoads_create_auto_ad_layout
     }
 
-    override fun setUpView(view: View) {}
+    override fun setUpView(view: View) {
+        createAutoBg = view.findViewById(R.id.create_auto_bg)
+        infoText = view.findViewById(R.id.info_text)
+    }
 
     override fun initInjector() {
         getComponent(AutoAdsComponent::class.java).inject(this)
@@ -42,13 +47,13 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
     }
 
     override fun showLoading() {
-        loading.visibility = View.VISIBLE
-        btn_submit.isEnabled = false
+        progressBar.visibility = View.VISIBLE
+        btnSubmit.isEnabled = false
     }
 
     override fun hideLoading() {
-        loading.visibility = View.GONE
-        btn_submit.isEnabled = true
+        progressBar.visibility = View.GONE
+        btnSubmit.isEnabled = true
     }
 
     override fun showButtonLayout() {
@@ -57,29 +62,40 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        create_auto_bg.setImageDrawable(context?.getResDrawable(R.drawable.card_auto_ads_create))
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.tip_title)
+        createAutoBg?.setImageDrawable(context?.getResDrawable(R.drawable.card_auto_ads_create))
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText?.text = getString(R.string.tip_title)
 
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
-        }
+                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
 
         tipBtn.addItem(tooltipView)
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_G500), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        context?.let {
+            spannableText.setSpan(ContextCompat.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 RouteManager.route(context, getString(R.string.more_info))
 
             }
         }
-        spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        info_text.movementMethod = LinkMovementMethod.getInstance()
-        info_text.append(spannableText)
+        spannableText.setSpan(clickableSpan,
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        infoText?.movementMethod = LinkMovementMethod.getInstance()
+        infoText?.append(spannableText)
     }
 
     override fun getScreenName(): String? {
@@ -87,9 +103,7 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
     }
 
     companion object {
-
         fun newInstance(): CreateAutoAdsFragment {
-
             val args = Bundle()
             val fragment = CreateAutoAdsFragment()
             fragment.arguments = args
@@ -105,11 +119,15 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
         if (v?.id == R.id.tip_btn) {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc1,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc2,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc3,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showHeader = true
             tipsListSheet?.showKnob = false
             tipsListSheet?.isDragable = false

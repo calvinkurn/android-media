@@ -286,9 +286,14 @@ class CameraControllerComponent(
         adapter.notifyItemChanged(index)
     }
 
-    private fun getActiveCameraMode()
-        = (lstCameraMode.layoutManager as LinearLayoutManager)
-        .findLastCompletelyVisibleItemPosition()
+    private fun getActiveCameraMode(): Int {
+        return if (param.isOnlyVideoFile()) {
+            VIDEO_MODE
+        } else {
+            (lstCameraMode.layoutManager as LinearLayoutManager)
+                .findLastCompletelyVisibleItemPosition()
+        }
+    }
 
     interface Listener {
         fun onCameraModeChanged(mode: Int)
