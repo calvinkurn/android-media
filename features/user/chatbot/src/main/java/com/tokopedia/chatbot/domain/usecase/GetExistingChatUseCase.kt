@@ -90,6 +90,7 @@ class GetExistingChatUseCase @Inject constructor(
             val params = generateTopParam(messageId)
             val response = getChat(topQuery, params)
             updateMinReplyTime(response)
+            updateMaxReplyTime(response)
             response
         }
     }

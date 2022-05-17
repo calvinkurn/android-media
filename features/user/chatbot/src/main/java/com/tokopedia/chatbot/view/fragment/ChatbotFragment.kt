@@ -1414,7 +1414,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun loadDataOnClick(){
      //   getViewState()?.clearChatOnLoadChatHistory()
         showLoading()
-        presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
+        presenter.getTopChat(messageId, onSuccessGetTopChatData(fromOnClick = true), onErrorGetTopChat())
     }
 
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
@@ -1491,14 +1491,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideLoading()
     }
 
-    private fun onSuccessGetTopChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
+    private fun onSuccessGetTopChatData(fromOnClick : Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
         return { chatroom , chatReplies ->
             val list = chatroom.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-         //   if (page == FIRST_PAGE) isFirstPage = false
-            //TODO fix this
+
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
     //            if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
@@ -1509,6 +1508,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
              //   checkShowLoading(chatroom.canLoadMore)
                 //TODO where to place
+                if (fromOnClick)
+                    updateHasNextAfterState(chatReplies)
                 updateHasNextState(chatReplies)
                 //Don't need this i think
             //    enableLoadMore()
@@ -1531,10 +1532,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 filteredList?.let { renderList ->
                     renderBottomList(renderList)
                 }
-                checkShowLoading(chatroom.canLoadMore)
+              //  checkShowLoading(chatroom.canLoadMore)
                 //TODO where to place
                 updateHasNextAfterState(chatReplies)
-                enableLoadMore()
+         //       enableLoadMore()
             }
         }
     }
@@ -1584,7 +1585,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun resetData(){
         rvScrollListener?.reset()
-        //RESET ADAPTER
         presenter.clearGetChatUseCase()
         (adapter as ChatbotAdapter).reset()
         showTopLoading()
