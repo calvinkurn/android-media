@@ -14,10 +14,9 @@ object QueryReviewProduct {
             "query productrevWaitForFeedback(\$limit: Int!, \$page: Int!) {\n" +
             "  productrevWaitForFeedback(limit: \$limit, page: \$page) {\n" +
             "    list {\n" +
-            "      reputationID\n" +
-            "      inboxReviewID\n" +
+            "      reputationIDStr\n" +
             "      product {\n" +
-            "        productID\n" +
+            "        productIDStr\n" +
             "        productName\n" +
             "        productImageURL\n" +
             "      }\n" +

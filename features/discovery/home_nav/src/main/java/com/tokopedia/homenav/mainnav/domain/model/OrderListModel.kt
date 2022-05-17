@@ -32,5 +32,5 @@ data class NavReviewOrder(
         val productId: String = "",
         val productName: String = "",
         val imageUrl: String = "",
-        val appLink: String = ""
+        val reputationId: String = ""
 )

@@ -19,8 +19,6 @@ class GetReviewProductUseCase (
         private val graphqlUseCase: GraphqlUseCase<ReviewProduct>
 ): UseCase<List<NavReviewOrder>>(){
 
-    private var params : Map<String, Any> = mapOf()
-
     init {
         graphqlUseCase.setGraphqlQuery(ProductRevWaitForFeedbackQuery())
         graphqlUseCase.setRequestParams(generateParam())
@@ -36,10 +34,10 @@ class GetReviewProductUseCase (
             responseData.data.list.map {
                 navReviewList.add(
                     NavReviewOrder(
-                        productId = it.product.productID.toString(),
-                        appLink = "",
+                        productId = it.product.productIDStr,
                         productName = it.product.productName,
-                        imageUrl = it.product.productImageURL
+                        imageUrl = it.product.productImageURL,
+                        reputationId = it.reputationIDStr
                     )
                 )
             }
