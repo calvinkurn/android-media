@@ -485,6 +485,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
             DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
+            DLP.exact(ApplinkConst.INPUT_OLD_PHONE_NUMBER, ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER)
         )
 
     fun getTokopediaSchemeList():List<DLP>{
