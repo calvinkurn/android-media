@@ -5,8 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.unifycomponents.ChipsUnify
+import kotlin.math.roundToInt
 
 class TokomemberChipGroup @JvmOverloads constructor(
     context: Context,
@@ -37,7 +39,7 @@ class TokomemberChipGroup @JvmOverloads constructor(
     fun addChip(text: String){
         val chip = context?.let { ChipsUnify(it) }
         val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        param.setMargins(8, 0, 0, 0)
+        param.setMargins(dpToPx(8).roundToInt(), 0, 0, 0)
         chip?.chip_text?.text = text
         chip?.layoutParams = param
         chip?.setOnClickListener {

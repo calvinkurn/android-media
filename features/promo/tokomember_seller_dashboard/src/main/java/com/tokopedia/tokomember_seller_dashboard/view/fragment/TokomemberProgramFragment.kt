@@ -199,7 +199,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
             ProgramActionType.CREATE -> {
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.PREVIEW, bundle)
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, bundle)
             }
             ProgramActionType.EXTEND ->{
                 tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
