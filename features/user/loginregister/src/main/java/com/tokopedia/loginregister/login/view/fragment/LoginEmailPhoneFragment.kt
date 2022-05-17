@@ -75,6 +75,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -113,10 +114,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -191,6 +189,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var bannerLogin: ImageUnify? = null
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
+
+    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -671,7 +671,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
             forgotPassword?.setOnClickListener {
                 analytics.trackClickForgotPassword()
-                goToForgotPassword()
+//                goToForgotPassword()
+                showNeedHelpBottomSheet()
             }
         }
 
@@ -791,6 +792,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
+    }
+
+    private fun showNeedHelpBottomSheet(){
+        if (needHelpBottomSheetUnify == null)
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
+
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     override fun goToTokopediaCareWebview() {
@@ -1820,10 +1828,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_PATH = "help"
 
         private const val PASSWORD_MIN_LENGTH = 4
 
