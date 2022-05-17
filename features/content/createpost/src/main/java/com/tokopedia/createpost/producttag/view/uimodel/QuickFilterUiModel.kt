@@ -11,9 +11,8 @@ data class QuickFilterUiModel(
     val icon: String,
     val key: String,
     val value: String,
-    val isSelected: Boolean,
 ) {
-    fun toSortFilterItem(listener: () -> Unit): SortFilterItem {
+    fun toSortFilterItem(isSelected: Boolean, listener: () -> Unit): SortFilterItem {
         return SortFilterItem(
             title = name,
             listener = listener,

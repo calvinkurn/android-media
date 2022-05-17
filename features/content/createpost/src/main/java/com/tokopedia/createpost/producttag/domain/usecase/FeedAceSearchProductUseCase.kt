@@ -27,9 +27,6 @@ class FeedAceSearchProductUseCase @Inject constructor(
 
     companion object {
         private const val PARAMS = "params"
-        private const val PARAM_DEVICE = "device"
-        private const val PARAM_FROM = "from"
-        private const val PARAM_SOURCE = "source"
 
         const val QUERY_NAME = "FeedAceSearchProductUseCaseQuery"
         const val QUERY = """
@@ -89,18 +86,8 @@ class FeedAceSearchProductUseCase @Inject constructor(
 
         fun createParams(
             param: SearchParamUiModel,
-        ): Map<String, Any> {
-            val hashMap = param.value
-            hashMap[PARAM_DEVICE] = "android"
-            hashMap[PARAM_FROM] = "feed_content"
-            hashMap[PARAM_SOURCE] = "universe"
-
-            return mapOf(
-                PARAMS to hashMap.toString()
-                        .replace("{", "")
-                        .replace("}", "")
-                        .replace(", ", "&")
-            )
-        }
+        ): Map<String, Any> = mapOf(
+            PARAMS to param.toCompleteParam()
+        )
     }
 }

@@ -7,7 +7,6 @@ package com.tokopedia.createpost.producttag.view.uimodel
 data class GlobalSearchProductUiModel(
     val products: List<ProductUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
-    val selectedQuickFilters: List<QuickFilterUiModel>,
     val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
@@ -19,7 +18,6 @@ data class GlobalSearchProductUiModel(
         val Empty = GlobalSearchProductUiModel(
             products = emptyList(),
             quickFilters = emptyList(),
-            selectedQuickFilters = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
             param = SearchParamUiModel.Empty,

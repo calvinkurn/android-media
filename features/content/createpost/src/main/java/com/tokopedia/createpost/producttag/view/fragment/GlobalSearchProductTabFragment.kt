@@ -92,7 +92,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchProduct(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
-                renderQuickFilter(it.prevValue?.globalSearchProduct?.quickFilters, it.value.globalSearchProduct.quickFilters)
+                renderQuickFilter(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
             }
         }
     }
@@ -156,14 +156,16 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         }
     }
 
-    private fun renderQuickFilter(prev: List<QuickFilterUiModel>?, curr: List<QuickFilterUiModel>) {
-        if(prev == curr) return
+    private fun renderQuickFilter(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
+        if(prev?.quickFilters == curr.quickFilters && prev.param == curr.param) return
 
         binding.sortFilter.apply {
             sortFilterItems.removeAllViews()
             addItem(
-                curr.map {
-                    it.toSortFilterItem { viewModel.submitAction(ProductTagAction.SelectQuickFilter(it)) }
+                curr.quickFilters.map {
+                    it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
+                        viewModel.submitAction(ProductTagAction.SelectQuickFilter(it))
+                    }
                 } as ArrayList<SortFilterItem>
             )
             textView?.text = getString(R.string.cc_product_tag_filter_label)

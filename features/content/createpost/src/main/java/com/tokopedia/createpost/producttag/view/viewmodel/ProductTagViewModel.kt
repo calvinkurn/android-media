@@ -411,7 +411,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val quickFilters = repo.getQuickFilter(
                 query = globalSearchProduct.param.query,
-                extraParams = "" /** TODO: empty for not */
+                extraParams = globalSearchProduct.param.toCompleteParam(),
             )
 
             val newParam = globalSearchProduct.param.copy().apply {
@@ -459,17 +459,21 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectQuickFilter(quickFilter: QuickFilterUiModel) {
-        _globalSearchProduct.setValue {
-            copy(
-                selectedQuickFilters = selectedQuickFilters.toMutableList().apply {
-                    val isExists = firstOrNull { it == quickFilter } != null
-                    if(isExists) remove(quickFilter)
-                    else add(quickFilter)
-                }
-            )
+        val currState = _globalSearchProduct.value
+
+        val newParam = currState.param.copy().apply {
+            resetPagination()
+
+            if(isParamFound(quickFilter.key, quickFilter.value))
+                removeParam(quickFilter.key)
+            else addParam(quickFilter.key, quickFilter.value)
         }
 
-        /** TODO: it should refresh the page */
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleLoadGlobalSearchShop() {

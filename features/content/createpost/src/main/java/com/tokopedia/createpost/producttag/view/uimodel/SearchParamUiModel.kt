@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+
 /**
  * Created By : Jonathan Darwin on May 17, 2022
  */
@@ -39,8 +40,44 @@ data class SearchParamUiModel(
             value[KEY_USER_ID] = newValue
         }
 
+    fun addParam(key: String, value: Any) {
+        this.value[key] = value
+    }
+
+    fun removeParam(key: String) {
+        value.remove(key)
+    }
+
+    fun isParamFound(key: String, value: Any): Boolean {
+        if(this.value.containsKey(key)) {
+            return value == this.value[key]
+        }
+
+        return false
+    }
+
+    fun resetPagination() {
+        rows = LIMIT_PER_PAGE
+        start = 0
+    }
+
+    fun toCompleteParam(): String {
+        value[KEY_DEVICE] = "android"
+        value[KEY_FROM] = "feed_content"
+        value[KEY_SOURCE] = "universe"
+
+        return value.toString()
+            .replace("{", "")
+            .replace("}", "")
+            .replace(", ", "&")
+    }
+
 
     companion object {
+        private const val KEY_DEVICE = "device"
+        private const val KEY_FROM = "from"
+        private const val KEY_SOURCE = "source"
+
         private const val KEY_QUERY = "q"
         private const val KEY_START = "start"
         private const val KEY_ROWS = "rows"
@@ -52,8 +89,7 @@ data class SearchParamUiModel(
 
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel().apply {
-                rows = LIMIT_PER_PAGE
-                start = 0
+                resetPagination()
                 query = ""
             }
     }

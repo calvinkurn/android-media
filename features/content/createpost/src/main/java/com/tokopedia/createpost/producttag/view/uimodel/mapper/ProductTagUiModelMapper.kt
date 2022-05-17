@@ -149,7 +149,6 @@ class ProductTagUiModelMapper @Inject constructor() {
                     icon = it.icon,
                     key = it.key,
                     value = it.value,
-                    isSelected = false,
                 )
             }
     }
