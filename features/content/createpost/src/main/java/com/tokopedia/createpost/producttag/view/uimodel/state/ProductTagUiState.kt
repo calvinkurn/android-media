@@ -50,7 +50,7 @@ data class GlobalSearchProductUiState(
     val quickFilters: List<QuickFilterUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
     val suggestion: String,
     val ticker: TickerUiModel,
 )

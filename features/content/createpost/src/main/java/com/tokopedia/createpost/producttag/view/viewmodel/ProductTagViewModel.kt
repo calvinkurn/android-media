@@ -123,7 +123,7 @@ class ProductTagViewModel @AssistedInject constructor(
             quickFilters = it.quickFilters,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
             suggestion = it.suggestion,
             ticker = it.ticker,
         )
@@ -244,7 +244,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleClickSearchBar() {
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.query))
+            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
         }
     }
 
@@ -252,8 +252,11 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
+                    val newParam = SearchParamUiModel().apply {
+                        this.query = query
+                    }
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(query = query)
+                        GlobalSearchProductUiModel.Empty.copy(param = newParam)
                     }
                     _globalSearchShop.setValue {
                         GlobalSearchShopUiModel.Empty.copy(query = query)
@@ -268,6 +271,7 @@ class ProductTagViewModel @AssistedInject constructor(
                         )
                     }
                 }
+                else -> {}
             }
         }) { }
     }
@@ -402,14 +406,14 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             val quickFilters = repo.getQuickFilter(
-                query = globalSearchProduct.query,
+                query = globalSearchProduct.param.query,
                 extraParams = "" /** TODO: empty for not */
             )
 
             val result = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = globalSearchProduct.nextCursor,
-                query = globalSearchProduct.query,
+                query = globalSearchProduct.param.query,
                 shopId = "",
                 userId = userSession.userId,
                 sort = 9 /** TODO: gonna change this later */
@@ -571,7 +575,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
-        return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.query.isEmpty()
+        return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
 
     companion object {

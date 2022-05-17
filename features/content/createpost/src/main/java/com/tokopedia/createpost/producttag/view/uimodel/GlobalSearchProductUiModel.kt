@@ -10,7 +10,7 @@ data class GlobalSearchProductUiModel(
     val selectedQuickFilters: List<QuickFilterUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
     val suggestion: String,
     val ticker: TickerUiModel,
 ) {
@@ -22,7 +22,7 @@ data class GlobalSearchProductUiModel(
             selectedQuickFilters = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
-            query = "",
+            param = SearchParamUiModel(),
             suggestion = "",
             ticker = TickerUiModel()
         )

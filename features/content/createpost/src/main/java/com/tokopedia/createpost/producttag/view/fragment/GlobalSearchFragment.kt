@@ -84,7 +84,7 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collect {
-                renderSearchBar(it.value.globalSearchProduct.query)
+                renderSearchBar(it.value.globalSearchProduct.param.query)
             }
         }
 
