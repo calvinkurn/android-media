@@ -9,6 +9,8 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
+import com.tokopedia.encryption.security.AeadEncryptor;
+import com.tokopedia.encryption.security.AeadEncryptorImpl;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform;
@@ -19,12 +21,17 @@ import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.util.HashMap;
 
+import kotlin.text.Charsets;
+
 public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
 
+    private AeadEncryptor aead;
+
     public MigratedUserSession(Context context) {
 	this.context = context.getApplicationContext();
+	aead = new AeadEncryptorImpl(context);
     }
 
     private Boolean isEnableDataStore() {
@@ -163,8 +170,40 @@ public class MigratedUserSession {
 	prefName = newKeys.first;
 	keyName = newKeys.second;
 	UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
-	value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV);// encrypt string here
+	value = encryptString(value, keyName);
 	internalSetString(prefName, keyName, value);
+    }
+
+    private String encryptString(String message, String keyName) {
+	try {
+	    /*
+		 Check PII data from SET, if keyName is PII data encrypt with aead (tink)
+		 else use existing encryption
+	    */
+	    if(Constants.PII_DATA_SET.contains(keyName)) {
+		return aead.encrypt(message.getBytes(Charsets.UTF_8), null);
+	    } else {
+		return EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
+	    }
+	} catch (Exception e) {
+	    return null;
+	}
+    }
+
+    private String decryptString(String message, String keyName) {
+	try {
+	    /*
+		 Check PII data from SET, if keyName is PII data decrypt with aead (tink)
+		 else use existing decryption
+	    */
+	    if(Constants.PII_DATA_SET.contains(keyName)) {
+		return aead.decrypt(message, null);
+	    } else {
+		return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
+	    }
+	} catch (Exception e) {
+	    return null;
+	}
     }
 
     private void internalSetString(String prefName, String keyName, String value) {
@@ -200,7 +239,7 @@ public class MigratedUserSession {
 
 	    if (oldValue != null && !oldValue.equals(defValue)) {
 		internalCleanKey(prefName, keyName);
-		internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
+		internalSetString(newPrefName, newKeyName, encryptString(oldValue, keyName));
 		UserSessionMap.map.put(key, oldValue);
 		return oldValue;
 	    }
@@ -212,7 +251,7 @@ public class MigratedUserSession {
 		if (value.equals(defValue)) {// if value same with def value\
 		    return value;
 		} else {
-		    value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
+		    value = decryptString(value, keyName);
 		    if(value.isEmpty()) {
 			return defValue;
 		    } else {
