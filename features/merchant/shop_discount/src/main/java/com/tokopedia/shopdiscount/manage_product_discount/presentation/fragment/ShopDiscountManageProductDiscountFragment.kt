@@ -179,16 +179,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     }
 
     private fun setDiscountPeriodBasedOnBenefit(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
-        val startDate = viewModel.defaultStartDate
-        val endDate = if (slashPriceBenefitData.isUseVps) {
-            viewModel.getVpsPackageDefaultEndDate(slashPriceBenefitData)
-        } else {
-            viewModel.getMembershipDefaultEndDate()
-        }
-        viewModel.updateProductDiscountPeriodData(
-            startDate,
-            endDate
-        )
+        viewModel.getDiscountPeriodDataBasedOnBenefit(slashPriceBenefitData)
     }
 
     private fun setDiscountPeriodBasedOnExistingData(
@@ -272,6 +263,15 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         observeUpdatedDiscountPercentageData()
         observeUpdatedDiscountPriceData()
         observeInputValidation()
+        observeDiscountPeriodDataBasedOnBenefitLiveData()
+    }
+
+    private fun observeDiscountPeriodDataBasedOnBenefitLiveData() {
+        viewModel.discountPeriodDataBasedOnBenefitLiveData.observe(viewLifecycleOwner, {
+            it?.let {
+                viewModel.updateProductDiscountPeriodData(it.first,it.second)
+            }
+        })
     }
 
     private fun observeInputValidation() {
