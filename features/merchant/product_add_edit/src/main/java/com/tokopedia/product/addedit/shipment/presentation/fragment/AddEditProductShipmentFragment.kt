@@ -262,6 +262,10 @@ class AddEditProductShipmentFragment:
                     shipperServicesIdsInt.forEach { ids ->
                         shipperServicesIds?.add(ids.toLong())
                     }
+                    shipperServicesIds?.let {
+                        shipmentConventionalAdapter.setProductActiveState(it)
+                        shipmentOnDemandAdapter.setProductActiveState(it)
+                    }
                 }
             }
         }
