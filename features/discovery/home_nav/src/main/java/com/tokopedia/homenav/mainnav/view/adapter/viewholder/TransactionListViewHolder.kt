@@ -47,16 +47,18 @@ class TransactionListViewHolder(itemView: View,
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
             visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
+            if (visitableList.isEmpty()) {
+                visitableList.add(OrderEmptyModel())
+            } else {
+                visitableList.add(OtherTransactionRevampModel())
+            }
         }
         else {
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
-        }
-        if (element.othersTransactionCount.isMoreThanZero()) {
-            visitableList.add(OtherTransactionModel(element.othersTransactionCount))
-        }
-        if (visitableList.isEmpty()) {
-            visitableList.add(OrderEmptyModel())
+            if (element.othersTransactionCount.isMoreThanZero()) {
+                visitableList.add(OtherTransactionModel(element.othersTransactionCount))
+            }
         }
         adapter.setVisitables(visitableList)
     }
