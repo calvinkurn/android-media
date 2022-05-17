@@ -37,7 +37,7 @@ class InteractiveFollowView : ConstraintLayout {
         }
         binding.headerView.isEditable = false
 
-        binding.btnFollow.addOnImpressionListener(trackingField) {
+        binding.btnFollow.rootView.addOnImpressionListener(trackingField) {
             mListener?.onFollowImpressed(this)
         }
     }
