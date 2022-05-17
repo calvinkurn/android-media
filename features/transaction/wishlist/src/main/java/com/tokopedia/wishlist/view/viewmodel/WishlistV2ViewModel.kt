@@ -69,8 +69,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _countDeletionWishlistV2 = MutableLiveData<Result<CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2>>()
-    val countDeletionWishlistV2: LiveData<Result<CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2>>
+    private val _countDeletionWishlistV2 = MutableLiveData<Result<CountDeletionWishlistV2Response>>()
+    val countDeletionWishlistV2: LiveData<Result<CountDeletionWishlistV2Response>>
         get() = _countDeletionWishlistV2
 
     fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean) {
@@ -169,7 +169,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     countRemovableItems = wishlistV2Response.countRemovableItems)
                 listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
                 isTickerShow = true
-                recommPosition += 1
+                recommPosition = 5
             }
 
             // only for wishlist which has 1 page response

@@ -179,6 +179,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val PADDING_RV = 10
         private const val OPTION_ID_SORT_OLDEST = "6"
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
+        private const val OK = "OK"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -706,19 +707,21 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     is Success -> {
                         handler.post(object: Runnable{
                             override fun run() {
-                                totalRemoved += result.data.totalItems
+                                if (result.data.status == OK) {
+                                    totalRemoved += result.data.data.totalItems
 
-                                if (totalRemoved == result.data.successfullyRemovedItems) {
-                                    finishDeletionWidget()
-                                } else {
-                                    handler.postDelayed(this, 1000)
-                                    wishlistViewModel.getCountDeletionWishlistV2()
-                                    if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
-                                        wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
-                                        wishlistV2Adapter.updateDeletionWidget(result.data)
-                                        wishlistV2Adapter.notifyItemChanged(0)
+                                    if (totalRemoved == result.data.data.successfullyRemovedItems) {
+                                        finishDeletionWidget()
                                     } else {
-                                        wishlistV2Adapter.addDeletionProgressWidget(result.data)
+                                        handler.postDelayed(this, 1000)
+                                        wishlistViewModel.getCountDeletionWishlistV2()
+                                        if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
+                                            wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
+                                            wishlistV2Adapter.updateDeletionWidget(result.data.data)
+                                            wishlistV2Adapter.notifyItemChanged(0)
+                                        } else {
+                                            wishlistV2Adapter.addDeletionProgressWidget(result.data.data)
+                                        }
                                     }
                                 }
                             }

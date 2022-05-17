@@ -7,7 +7,7 @@ import com.tokopedia.wishlist.databinding.WishlistV2CountDeletionItemBinding
 
 class WishlistV2DeletionProgressWidgetItemViewHolder(private val binding: WishlistV2CountDeletionItemBinding): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData) {
-        if (item.dataObject is CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2) {
+        if (item.dataObject is CountDeletionWishlistV2Response.Data) {
             binding.run {
                 wishlistV2CountDeletionMessage.text = item.dataObject.message
                 wishlistV2CountDeletionProgressbar.setValue(item.dataObject.successfullyRemovedItems, true)

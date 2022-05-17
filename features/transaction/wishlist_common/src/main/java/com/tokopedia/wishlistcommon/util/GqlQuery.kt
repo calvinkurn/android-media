@@ -140,11 +140,15 @@ package com.tokopedia.wishlistcommon.util
             }"""
 
     const val GQL_COUNT_DELETION_WISHLIST_V2 = """
-         mutation WishlistCountDeletion() {
-              wishlist_count_deletion() {
-                total_items
-                successfully_removed_items
-                message
-                ticker_color 
+         query DeleteWishlistProgress() {
+              delete_wishlist_progress() {
+                error_message
+                status
+                data {
+                  total_items
+                  successfully_removed_items
+                  message
+                  ticker_color
+                }
               }
             }"""

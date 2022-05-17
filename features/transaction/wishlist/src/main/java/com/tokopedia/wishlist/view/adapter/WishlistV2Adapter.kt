@@ -343,13 +343,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         isTickerCloseClicked = false
     }
 
-    fun addDeletionProgressWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2) {
+    fun addDeletionProgressWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data) {
         listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
         hasDeletionProgressWidgetShow = true
         notifyDataSetChanged()
     }
 
-    fun updateDeletionWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2) {
+    fun updateDeletionWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data) {
         listTypeData[0] = WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET)
     }
 
