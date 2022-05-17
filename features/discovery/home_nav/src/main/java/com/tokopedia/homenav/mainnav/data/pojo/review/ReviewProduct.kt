@@ -7,5 +7,5 @@ import com.google.gson.annotations.Expose
 data class ReviewProduct(
     @SerializedName("productrevWaitForFeedback")
     @Expose
-    val productRevWaitForFeedback: ProductRevWaitForFeedback
+    val productRevWaitForFeedback: ProductRevWaitForFeedback = ProductRevWaitForFeedback()
 )

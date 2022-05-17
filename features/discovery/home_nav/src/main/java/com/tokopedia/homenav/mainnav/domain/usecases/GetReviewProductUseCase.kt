@@ -48,11 +48,13 @@ class GetReviewProductUseCase (
     }
 
     companion object{
-        private const val LANG = "lang"
-        private const val DEFAULT_VALUE_LANG = "ID"
+        private const val LIMIT = "limit"
+        private const val MAX_LIMIT = 5
+        private const val PAGE = "page"
+        private const val PAGE_REVIEW = 1
     }
 
     private fun generateParam(): Map<String, Any?> {
-        return mapOf(LANG to DEFAULT_VALUE_LANG)
+        return mapOf(LIMIT to MAX_LIMIT, PAGE to PAGE_REVIEW)
     }
 }

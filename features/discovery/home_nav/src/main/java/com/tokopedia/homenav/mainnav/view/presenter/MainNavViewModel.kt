@@ -64,6 +64,7 @@ class MainNavViewModel @Inject constructor(
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
+        private val getReviewProductUseCase: Lazy<GetReviewProductUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>,
@@ -470,7 +471,7 @@ class MainNavViewModel @Inject constructor(
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
-            val reviewList = listOf<NavReviewOrder>()
+            val reviewList = getReviewProductUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW

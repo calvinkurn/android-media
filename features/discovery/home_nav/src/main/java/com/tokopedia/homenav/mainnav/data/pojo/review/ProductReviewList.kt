@@ -7,11 +7,11 @@ import com.google.gson.annotations.Expose
 data class ProductReviewList(
     @SerializedName("inboxReviewID")
     @Expose
-    val inboxReviewID: Long,
+    val inboxReviewID: Long = 0L,
     @SerializedName("product")
     @Expose
-    val product: Product,
+    val product: Product = Product(),
     @SerializedName("reputationID")
     @Expose
-    val reputationID: Int
+    val reputationID: Int = 0
 )
