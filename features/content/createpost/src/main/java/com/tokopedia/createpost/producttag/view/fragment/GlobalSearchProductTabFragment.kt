@@ -157,9 +157,10 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     private fun renderQuickFilter(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
-        if(prev?.quickFilters == curr.quickFilters && prev.param == curr.param) return
+        if(prev?.quickFilters == curr.quickFilters) return
 
         binding.sortFilter.apply {
+            resetAllFilters()
             sortFilterItems.removeAllViews()
             addItem(
                 curr.quickFilters.map {
