@@ -539,7 +539,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
                 if (isEdit) {
-                    EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
+                    EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
                     setResultAddressFormNegative()
                 } else {
                     if (isPositiveFlow) {

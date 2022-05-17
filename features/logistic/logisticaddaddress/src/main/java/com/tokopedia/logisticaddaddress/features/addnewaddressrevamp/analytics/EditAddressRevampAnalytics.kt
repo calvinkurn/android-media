@@ -358,12 +358,12 @@ object EditAddressRevampAnalytics : BaseTrackerConst() {
             .build())
     }
 
-    fun onClickPilihLokasiIni(userId: String, success: Boolean) {
+    fun onClickPilihLokasiIni(userId: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
             .appendEvent(EVENT_CLICK)
             .appendEventCategory(CATEGORY_EDIT_PINPOINT_PAGE)
             .appendEventAction(ACTION_CLICK_PILIH_LOKASI_INI)
-            .appendEventLabel(if (success) LABEL_SUCCESS else LABEL_NOT_SUCCESS)
+            .appendEventLabel("")
             .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)
