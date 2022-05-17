@@ -64,6 +64,7 @@ class PlayInteractiveMapper @Inject constructor() {
             },
             listOfChoices = data.choices.mapIndexed { index: Int, item: QuizResponse.Choice ->
                 QuizChoicesUiModel(
+                    index,
                     item.id,
                     item.text,
                     if(item.id == data.userChoice)

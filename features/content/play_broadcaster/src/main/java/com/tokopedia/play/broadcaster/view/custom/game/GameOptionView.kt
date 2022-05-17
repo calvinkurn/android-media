@@ -91,11 +91,13 @@ class GameOptionView : ConstraintLayout {
             setupQuizForm(
                 listOf(
                     QuizChoicesUiModel(
+                        index = 1,
                         text = "Rp.100.000",
                         type = PlayQuizOptionState.Default('A'),
                         id = "1"
                     ),
                     QuizChoicesUiModel(
+                        index = 2,
                         text = "Rp.150.000",
                         type = PlayQuizOptionState.Default('B'),
                         id = "2"

@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderBoardItemDecoration
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
@@ -36,12 +37,17 @@ class PlayInteractiveLeaderboardViewComponent(
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
     private val llPlaceholder: LinearLayout = findViewById(R.id.ll_leaderboard_placeholder)
+    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val ivSheetClose: ImageView = findViewById(R.id.iv_sheet_close)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
+        }
+        override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
+            listener.onChoiceItemClicked(item)
         }
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
@@ -51,11 +57,9 @@ class PlayInteractiveLeaderboardViewComponent(
     }
 
     init {
-        findViewById<TextView>(R.id.tv_sheet_title)
-            .setText(R.string.play_interactive_leaderboard_title)
+        tvSheetTitle.setText(R.string.play_interactive_leaderboard_title)
 
-        findViewById<ImageView>(R.id.iv_sheet_close)
-            .setOnClickListener {
+        ivSheetClose.setOnClickListener {
                 listener.onCloseButtonClicked(this)
             }
 
@@ -103,6 +107,10 @@ class PlayInteractiveLeaderboardViewComponent(
         show()
     }
 
+    fun setTitle(title:String){
+        tvSheetTitle.text = title
+    }
+
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -142,5 +150,6 @@ class PlayInteractiveLeaderboardViewComponent(
         ) {
         }
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
+        fun onChoiceItemClicked(item: QuizChoicesUiModel) {}
     }
 }

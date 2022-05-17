@@ -5,11 +5,13 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -114,4 +116,9 @@ interface PlayBroadcastMapper {
     ): QuizDetailDataUiModel
 
     fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel
+
+    fun mapChoiceDetail(
+        response: GetInteractiveQuizChoiceDetailResponse,
+        choiceIndex: Int
+    ): QuizChoiceDetailUiModel
 }

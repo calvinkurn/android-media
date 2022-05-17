@@ -5,6 +5,10 @@
     android:background="@android:color/transparent">
 
     <include
+        layout="@layout/view_play_bro_quiz_option_details"
+        />
+
+    <include
         layout="@layout/view_play_interactive_leaderboard"
         />
 

@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -31,4 +32,10 @@ interface PlayBroadcastInteractiveRepository {
     )
 
     suspend fun getInteractiveQuizDetail(interactiveId: String): QuizDetailDataUiModel
+
+    suspend fun getInteractiveQuizChoiceDetail(
+        choiceIndex: Int,
+        choiceId: String,
+        cursor: String,
+    ): QuizChoiceDetailUiModel
 }
