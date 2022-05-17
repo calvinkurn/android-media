@@ -60,7 +60,6 @@ import com.tokopedia.applink.ApplinkConst.TELEPHONY_MASKING
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
 import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
-import com.tokopedia.applink.ApplinkConst.TokoFood
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -664,8 +663,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokofood
             add(DFP({
-                it.startsWith(TokoFood.POST_PURCHASE) ||
-                        it.startsWith(ApplinkConstInternalTokoFood.POST_PURCHASE)
+                it.startsWith(ApplinkConstInternalTokoFood.POST_PURCHASE)
             }, DF_BASE, R.string.title_tokofood))
 
             // Review Reminder
