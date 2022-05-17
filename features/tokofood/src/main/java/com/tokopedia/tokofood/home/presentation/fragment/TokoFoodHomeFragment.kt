@@ -264,10 +264,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getNoAddressState()
     }
 
-    private fun showOutOfCoverage(){
-        viewModel.getOutOfCoverageState()
-    }
-
     private fun setupUi() {
         view?.apply {
             navToolbar = binding?.navToolbar

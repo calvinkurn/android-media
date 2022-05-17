@@ -100,16 +100,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.value = Success(data)
     }
 
-    fun getOutOfCoverageState() {
-        homeLayoutItemList.clear()
-        homeLayoutItemList.addOutOfCoverageState()
-        val data = TokoFoodHomeListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodHomeLayoutState.HIDE
-        )
-        _homeLayoutList.value = Success(data)
-    }
-
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
 
