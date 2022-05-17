@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
@@ -149,7 +150,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             isVariant = isVariant,
             isMultiLoc = isMultiLoc,
             errorType = errorType,
-            slashPriceStatus = slashPriceStatus
+            selectedSlashPriceStatus = slashPriceStatus
         )
     }
 
@@ -429,7 +430,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         bulkApplyDiscountResult: DiscountSettings,
         mode: String,
-        slashPriceStatus: Int
+        selectedSlashPriceStatus: Int
     ) {
         launchCatchError(dispatcherProvider.io, {
             listProductData.forEach { productParentData ->
@@ -446,10 +447,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                     listProductToBeUpdated,
                     bulkApplyDiscountResult,
                     minOriginalPrice,
-                    slashPriceStatus,
                     isVariant
                 )
-                updateProductStatusAndMappedData(productParentData, mode, slashPriceStatus)
+                updateProductStatusAndMappedData(productParentData, mode, selectedSlashPriceStatus)
             }
             _updatedProductListData.postValue(listProductData)
         }) {}
@@ -459,7 +459,6 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         listProductToBeUpdated: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         bulkApplyDiscountResult: DiscountSettings,
         minOriginalPrice: Int,
-        slashPriceStatus: Int,
         isVariant: Boolean
     ) {
         val discountedPrice: Int
@@ -477,7 +476,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             }
         }
         listProductToBeUpdated.forEach { productToBeUpdated ->
-            when (slashPriceStatus) {
+            when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                     productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }
@@ -577,7 +576,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         currentProductListData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         newProdData: ShopDiscountSetupProductUiModel.SetupProductData,
         mode: String,
-        slashPriceStatus: Int
+        selectedSlashPriceStatus: Int
     ) {
         val matchedIndex = currentProductListData.indexOfFirst {
             it.productId == newProdData.productId
@@ -588,7 +587,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             updateProductStatusAndMappedData(
                 it,
                 mode,
-                slashPriceStatus
+                selectedSlashPriceStatus
             )
             _updatedProductListData.postValue(newList.toList())
         }
