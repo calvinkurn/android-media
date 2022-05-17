@@ -77,6 +77,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -470,10 +472,15 @@ class SellerReviewDetailFragment :
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
             binding?.globalErrorReviewDetail?.apply {
-                setType(GlobalError.SERVER_ERROR)
+                if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                    setType(GlobalError.NO_CONNECTION)
+                } else {
+                    setType(GlobalError.SERVER_ERROR)
+                }
                 setActionClickListener {
                     loadInitialData()
                 }
+                errorDescription.text = throwable.getErrorMessage(context)
                 show()
             }
             reviewSellerDetailAdapter.removeReviewNotFound()
