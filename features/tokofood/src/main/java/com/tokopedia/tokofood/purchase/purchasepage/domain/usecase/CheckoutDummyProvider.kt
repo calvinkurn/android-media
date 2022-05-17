@@ -262,7 +262,11 @@ object CheckoutDummyProvider {
                         )
                     )
                 ),
-                tickerErrorMessage = "Alamatmu ada di luar area pengiriman restoran ini. Ubah alamatmu atau cek restoran lain, yuk!",
+                errorTickers = CheckoutTokoFoodTicker(
+                    top = CheckoutTokoFoodTickerInfo(
+                        message = "Alamatmu ada di luar area pengiriman restoran ini. Ubah alamatmu atau cek restoran lain, yuk!"
+                    )
+                ),
                 unavailableSectionHeader = "Tidak bisa diproses (3)",
                 unavailableSection = CheckoutTokoFoodAvailabilitySection(
                     title = "Toko tutup",

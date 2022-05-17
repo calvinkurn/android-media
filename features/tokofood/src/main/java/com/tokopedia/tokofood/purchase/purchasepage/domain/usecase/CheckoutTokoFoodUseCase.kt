@@ -78,7 +78,18 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   page
                 }
               }
-              ticker_error_message
+              error_tickers {
+                top {
+                  id
+                  message
+                  page
+                }
+                bottom {
+                  id
+                  message
+                  page
+                }
+              }
               errors_unblocking
               user_address {
                 address_id
@@ -248,7 +259,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
-            emit(getDummyResponse())
+            emit(CheckoutDummyProvider.getAddressNotAvailableResponse())
         } else {
             val additionalAttributes = CartAdditionalAttributesTokoFood(
                 chosenAddressRequestHelper.getChosenAddress(),

@@ -22,7 +22,7 @@ data class CheckoutTokoFoodResponse(
     /**
      * Get whether the components in the checkout page can be interactable
      */
-    fun isEnabled(): Boolean = isSuccess() && data.tickerErrorMessage.isEmpty()
+    fun isEnabled(): Boolean = isSuccess() && data.errorTickers.top.message.isEmpty()
 
 }
 
@@ -39,9 +39,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("tickers")
     @Expose
     val tickers: CheckoutTokoFoodTicker = CheckoutTokoFoodTicker(),
-    @SerializedName("ticker_error_message")
+    @SerializedName("error_tickers")
     @Expose
-    val tickerErrorMessage: String = "",
+    val errorTickers: CheckoutTokoFoodTicker = CheckoutTokoFoodTicker(),
     @SerializedName("errors_unblocking")
     @Expose
     val errorsUnblocking: String = "",
