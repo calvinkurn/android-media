@@ -21,12 +21,7 @@ interface ProductTagRepository {
     ) : LastPurchasedProductUiModel
 
     suspend fun searchAceProducts(
-        rows: Int,
-        start: Int,
-        query: String,
-        shopId: String,
-        userId: String,
-        sort: Int,
+        param: SearchParamUiModel,
     ) : PagedGlobalSearchProductResponse
 
     suspend fun searchAceShops(

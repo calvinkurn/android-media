@@ -113,7 +113,7 @@ class ProductTagViewModel @AssistedInject constructor(
             products = it.products,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
         )
     }
 
@@ -144,7 +144,7 @@ class ProductTagViewModel @AssistedInject constructor(
             products = it.products,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
         )
     }
 
@@ -252,7 +252,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
-                    val newParam = SearchParamUiModel().apply {
+                    val newParam = SearchParamUiModel.Empty.apply {
                         this.query = query
                     }
                     _globalSearchProduct.setValue {
@@ -267,7 +267,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     _shopProduct.setValue {
                         ShopProductUiModel.Empty.copy(
                             shop = shop,
-                            query = query,
+                            param = param.copy().apply { this.query = query },
                         )
                     }
                 }
@@ -360,19 +360,21 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val result = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = myShopProduct.nextCursor,
-                query = myShopProduct.query,
-                shopId = userSession.shopId,
-                userId = "",
-                sort = 9 /** TODO: gonna change this later */
-            )
+            val newParam = myShopProduct.param.copy().apply {
+                shopId = userSession.shopId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            /** Update Param */
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _myShopProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
-                    nextCursor = result.pagedData.nextCursor.toInt(),
+                    nextCursor = nextCursor,
+                    param = newParam,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
                     )
@@ -389,7 +391,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleSearchMyShopProduct(query: String) {
         _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
-                query = query,
+                param = param.copy().apply {
+                    this.query = query
+                }
             )
         }
         handleLoadMyShopProduct()
@@ -410,20 +414,22 @@ class ProductTagViewModel @AssistedInject constructor(
                 extraParams = "" /** TODO: empty for not */
             )
 
-            val result = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = globalSearchProduct.nextCursor,
-                query = globalSearchProduct.param.query,
-                shopId = "",
-                userId = userSession.userId,
-                sort = 9 /** TODO: gonna change this later */
-            )
+            val newParam = globalSearchProduct.param.copy().apply {
+                userId = userSession.userId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            /** Update Param */
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _globalSearchProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
                     quickFilters = quickFilters,
-                    nextCursor = result.pagedData.nextCursor.toInt(),
+                    nextCursor = nextCursor,
+                    param = newParam,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
                     ),
@@ -518,19 +524,20 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val result = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = shopProduct.nextCursor,
-                query = shopProduct.query,
-                shopId = shopProduct.shop.shopId,
-                userId = "",
-                sort = 9 /** TODO: gonna change this later */
-            )
+            val newParam = shopProduct.param.copy().apply {
+                shopId = shopProduct.shop.shopId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _shopProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
-                    nextCursor = result.pagedData.nextCursor.toInt(),
+                    nextCursor = nextCursor,
+                    param = newParam,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
                     )
@@ -548,7 +555,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleSearchShopProduct(query: String) {
         _shopProduct.setValue { ShopProductUiModel.Empty.copy(
                 shop = shop,
-                query = query,
+                param = param.copy().apply { this.query = query }
             )
         }
         handleLoadShopProduct()

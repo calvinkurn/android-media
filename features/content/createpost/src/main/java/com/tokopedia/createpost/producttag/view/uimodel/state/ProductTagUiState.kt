@@ -38,10 +38,10 @@ data class MyShopProductUiState(
     val products: List<ProductUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
     fun hasFilter(): Boolean {
-        return query.isNotEmpty()
+        return param.query.isNotEmpty()
     }
 }
 
@@ -67,9 +67,9 @@ data class ShopProductUiState(
     val products: List<ProductUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
     fun hasFilter(): Boolean {
-        return query.isNotEmpty()
+        return param.query.isNotEmpty()
     }
 }

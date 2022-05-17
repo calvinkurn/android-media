@@ -7,7 +7,7 @@ data class MyShopProductUiModel(
     val products: List<ProductUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
 
     companion object {
@@ -15,7 +15,7 @@ data class MyShopProductUiModel(
             products = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
-            query = "",
+            param = SearchParamUiModel.Empty
         )
     }
 }

@@ -22,7 +22,7 @@ data class GlobalSearchProductUiModel(
             selectedQuickFilters = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
-            param = SearchParamUiModel(),
+            param = SearchParamUiModel.Empty,
             suggestion = "",
             ticker = TickerUiModel()
         )
