@@ -16,8 +16,6 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
@@ -212,8 +210,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
 
     fun applyBulkUpdate(
         listVariantItemUiModel: List<ShopDiscountManageProductVariantItemUiModel>,
-        bulkApplyDiscountResult: DiscountSettings,
-        slashPriceStatus: Int
+        bulkApplyDiscountResult: DiscountSettings
     ) {
         launchCatchError(dispatcherProvider.io, {
             listVariantItemUiModel.filter { it.isEnabled }.forEach { variantProductData ->
@@ -221,8 +218,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
                 updateProductData(
                     variantProductData,
                     bulkApplyDiscountResult,
-                    minOriginalPrice,
-                    slashPriceStatus
+                    minOriginalPrice
                 )
             }
             _bulkApplyListVariantItemUiModel.postValue(listVariantItemUiModel)
@@ -232,8 +228,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     private fun updateProductData(
         productData: ShopDiscountManageProductVariantItemUiModel,
         bulkApplyDiscountResult: DiscountSettings,
-        minOriginalPrice: Int,
-        slashPriceStatus: Int
+        minOriginalPrice: Int
     ) {
         productData.apply {
             val discountedPrice: Int
@@ -251,7 +246,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
                         (100 - discountedPercentage) * this.variantMinOriginalPrice / 100
                 }
             }
-            when (slashPriceStatus) {
+            when (this.slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                     this.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }
