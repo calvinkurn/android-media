@@ -3831,7 +3831,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, v)
                     }
                 }
-                updateFabIcon(productId, true)
+                if(result.success) updateFabIcon(productId, true)
             }
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -3885,7 +3885,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                         }
                     }
-                    updateFabIcon(productId, false)
+                    if (result.success) updateFabIcon(productId, false)
                 }
 
             })
