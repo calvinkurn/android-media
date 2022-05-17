@@ -458,6 +458,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
             setActionListener(this@WishlistV2Fragment)
+            wishlistItemTypeLayout = wishlistPref?.getTypeLayout().toString()
         }
         addEndlessScrollListener()
     }

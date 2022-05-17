@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.wishlist.data.model.WishlistV2TickerCleanerData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TickerItemBinding
@@ -16,7 +17,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
 class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: WishlistV2TypeLayoutData, hasClosed: Boolean) {
+    fun bind(item: WishlistV2TypeLayoutData, hasClosed: Boolean, wishlistItemTypeLayout: String) {
         if (hasClosed) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
@@ -29,6 +30,11 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                 wishlistv2TickerMaxQty.apply {
                     if (item.dataObject is WishlistV2TickerCleanerData) {
                         val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                            if (wishlistItemTypeLayout == WishlistV2Consts.TYPE_LIST) {
+                                setMargins(10.toPx(), 0, 10.toPx(), 0)
+                            } else {
+                                setMargins(0, 0, 0, 0)
+                            }
                             height = ViewGroup.LayoutParams.WRAP_CONTENT
                             width = ViewGroup.LayoutParams.WRAP_CONTENT
                             isFullSpan = true

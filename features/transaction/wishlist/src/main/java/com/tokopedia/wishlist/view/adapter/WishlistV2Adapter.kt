@@ -38,6 +38,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var isRefreshing = false
     var hasDeletionProgressWidgetShow = false
     private var isAutoSelected = false
+    var wishlistItemTypeLayout = ""
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -216,7 +217,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     (holder as WishlistV2RecommendationTitleViewHolder).bind(element, isShowCheckbox)
                 }
                 TYPE_TOPADS -> {
-                    (holder as WishlistV2TdnViewHolder).bind(element, holder.adapterPosition, isShowCheckbox)
+                    val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
+                    params.isFullSpan = true
+                    holder.itemView.layoutParams = params
+                    (holder as WishlistV2TdnViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, wishlistItemTypeLayout)
                 }
                 TYPE_RECOMMENDATION_CAROUSEL -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
@@ -234,13 +238,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked)
+                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked, wishlistItemTypeLayout)
                 }
                 TYPE_DELETION_PROGRESS_WIDGET -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element)
+                    (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element, wishlistItemTypeLayout)
                 }
             }
         }
@@ -364,6 +368,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun changeTypeLayout(prefLayout: String?) {
         // 0 = LIST, 1 = GRID
+        if (prefLayout != null) {
+            wishlistItemTypeLayout = prefLayout
+        }
         if (listTypeData.isNotEmpty()) {
             listTypeData.forEach {
                 if (it.dataObject is ProductCardModel) {

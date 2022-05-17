@@ -12,6 +12,8 @@ import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.wishlist.util.WishlistV2Consts
 
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
@@ -21,7 +23,12 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
         private const val RADIUS_TOPADS = 24
     }
 
-    fun bind(item: WishlistV2TypeLayoutData, adapterPosition: Int, isShowCheckbox: Boolean) {
+    fun bind(
+        item: WishlistV2TypeLayoutData,
+        adapterPosition: Int,
+        isShowCheckbox: Boolean,
+        wishlistItemTypeLayout: String
+    ) {
         if (isShowCheckbox) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
@@ -33,6 +40,11 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
             if (item.dataObject is TopAdsImageViewModel) {
                 binding.root.visible()
                 val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    if (wishlistItemTypeLayout == WishlistV2Consts.TYPE_LIST) {
+                        setMargins(10.toPx(), 0, 10.toPx(), 0)
+                    } else {
+                        setMargins(0, 0, 0, 0)
+                    }
                     height = ViewGroup.LayoutParams.WRAP_CONTENT
                     width = ViewGroup.LayoutParams.WRAP_CONTENT
                     isFullSpan = true
