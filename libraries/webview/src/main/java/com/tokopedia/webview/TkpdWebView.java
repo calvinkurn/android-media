@@ -3,18 +3,16 @@ package com.tokopedia.webview;
 import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.webkit.WebSettingsCompat;
-import androidx.webkit.WebViewFeature;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -31,6 +29,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DarkModeUtil;
+import com.tokopedia.webview.ext.HtmlWebHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -78,17 +77,14 @@ public class TkpdWebView extends WebView {
         void onHasScrolled();
     }
 
-    public void loadData(String data, String mimeType, String encoding, Boolean enableDarkMode) {
-        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-        if (enableDarkMode &&
-                WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
-                nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-            WebSettingsCompat.setForceDark(getSettings(), WebSettingsCompat.FORCE_DARK_ON);
-        } else {
-            WebSettingsCompat.setForceDark(getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
-        }
-        loadData(data, mimeType, encoding);
+    /**
+     * This method already provide html wrapper such as header,body, etc
+     * Dark Mode Support
+     * @param data
+     */
+    public void loadPartialWebView(String data) {
+        String generatedHtml = HtmlWebHelperKt.constructContentToHtml(getContext(), data);
+        loadData(Base64.encodeToString(generatedHtml.getBytes(), Base64.DEFAULT), "text/html", "base64");
     }
 
     private void init(Context context) {
