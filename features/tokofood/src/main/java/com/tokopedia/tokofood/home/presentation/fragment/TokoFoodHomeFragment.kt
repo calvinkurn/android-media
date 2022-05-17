@@ -28,6 +28,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -69,7 +70,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodHomeView,
         TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
         TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
-        TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener
+        TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
+        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 {
 
     @Inject
@@ -206,7 +208,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onChooseAddressWidgetRemoved() {
-
+        chooseAddressWidgetRemoved()
     }
 
     override fun onClickSetPinPoin() {
@@ -222,8 +224,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickSetAddressInCoverage() {
-
+        showChooseAddressBottomSheet()
     }
+
+    override fun onAddressDataChanged() {
+        refreshLayoutPage()
+    }
+
+    override fun getLocalizingAddressHostSourceBottomSheet(): String {
+        return SOURCE
+    }
+
+    override fun onDismissChooseAddressBottomSheet() {}
+
+    override fun onLocalizingAddressLoginSuccessBottomSheet() {}
+
+    override fun onLocalizingAddressServerDown() {}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -347,6 +363,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 is Success -> {
                     setupChooseAddress(it.data)
                 }
+
+                is Fail -> {
+                    showToaster(it.throwable.message)
+                }
             }
         }
 
@@ -444,6 +464,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
         tokoFoodUSPBottomSheet.setUSP(uspResponse, getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title))
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
+    }
+
+    private fun showChooseAddressBottomSheet() {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(this)
+        chooseAddressBottomSheet.show(childFragmentManager, "")
     }
 
     private fun checkAddressDataAndServiceArea(){
@@ -573,5 +599,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 Toaster.build(it, message, Toaster.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun chooseAddressWidgetRemoved() {
+
     }
 }
