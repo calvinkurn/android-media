@@ -360,6 +360,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
         })
+
+        observeRemovedAddress()
+
+    }
+
+    private fun observeRemovedAddress(){
+        viewModel.resultRemovedAddress.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is ManageAddressState.Success ->
+                    Toaster.build(requireView(),getString(R.string.toaster_remove_address_success) , Toaster.TYPE_NORMAL).show()
+                else -> {
+                    //no-op
+                }
+            }
+        })
     }
 
     private fun initScrollListener() {
@@ -416,7 +431,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initSearchView() {
-        binding?.searchInputView?.run { 
+        binding?.searchInputView?.run {
             searchBarTextField.setOnClickListener {
                 searchBarTextField.isCursorVisible = true
                 openSoftKeyboard()
@@ -435,7 +450,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch("", null)
             }
 
-            searchBarPlaceholder = "Cari Alamat"   
+            searchBarPlaceholder = "Cari Alamat"
         }
     }
 
@@ -600,7 +615,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             addressList.gone()
             emptyStateManageAddress.root.gone()
             globalError.visible()
-            emptySearch.gone()   
+            emptySearch.gone()
         }
     }
 
