@@ -105,6 +105,7 @@ class GetReviewUseCase @Inject constructor(
                 }
                 invoiceRefNum
                 invoiceTime
+                orderId
               }
             }
         """
