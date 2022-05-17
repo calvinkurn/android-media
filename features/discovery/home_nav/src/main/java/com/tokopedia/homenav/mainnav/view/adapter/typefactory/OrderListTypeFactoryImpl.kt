@@ -3,8 +3,23 @@ package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.*
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderEmptyViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentRevampViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderReviewViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTransactionViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTransactionRevampViewHolder
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderNavVisitable
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 
 class OrderListTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapterTypeFactory(), OrderListTypeFactory {
