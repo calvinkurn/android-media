@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
+import android.util.Log
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
@@ -157,6 +158,9 @@ class TopChatRoomAdapter constructor(
             getLocalIdMsgPosition(localId)
         } else {
             visitables.indexOfFirst {
+                if (it is BaseChatUiModel){
+                    Log.d("FATAL", "getBubblePosition: " + it.replyTime + " Params : " + replyTime)
+                }
                 it is BaseChatUiModel && it.replyTime == replyTime
             }
         }

@@ -129,7 +129,7 @@ import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
 
 /**
- * @author by nisie oƒn 23/11/18.
+ * @author by nisie on 23/11/18.
  */
 private const val ACTION_CSAT_SMILEY_BUTTON_CLICKED = "click csat smiley button"
 private const val ACTION_QUICK_REPLY_BUTTON_CLICKED = "click quick reply button"
@@ -721,7 +721,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
 
             updateViewData(chatroomViewModel)
-            renderList(list, chatroomViewModel.canLoadMore)
+            //TODO have changed it
+            renderList(list)
             getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
         //    checkShowLoading(it.canLoadMore)
             updateHasNextState(chatReplies)
@@ -1048,7 +1049,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
 
         replyBubbleOnBoarding.dismiss()
-        resetScrollListenerReset()
         visibilityReplyBubble(false)
         clearChatText()
     }
@@ -1362,7 +1362,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 
     override fun showReplyOption(messageUiModel: MessageUiModel) {
-        if (replyBubbleEnabled) {
+      //  if (replyBubbleEnabled)
+        //TODO change this change this , BE issue
+        if (true) {
 
             val bottomSheetPage = BottomSheetUnify()
             val viewBottomSheetPage =
@@ -1402,11 +1404,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             Log.d("FATAL", "goToBubble: $bubblePosition")
          //   (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
           //  resetItemList()
-            resetScrollListenerReset()
+            resetData()
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
-         //   loadInitialData()
+            loadDataOnClick()
         }
 
+    }
+
+    private fun loadDataOnClick(){
+     //   getViewState()?.clearChatOnLoadChatHistory()
+        showLoading()
+        presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
     }
 
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
@@ -1574,8 +1582,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun resetScrollListenerReset(){
+    private fun resetData(){
         rvScrollListener?.reset()
+        //RESET ADAPTER
+        presenter.clearGetChatUseCase()
+        (adapter as ChatbotAdapter).reset()
+        showTopLoading()
+    }
+
+    private fun getChatData(){
+        if (messageId.isNotEmpty()){
+            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
+        }
     }
 
 }

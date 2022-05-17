@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.DiffUtil
@@ -20,6 +21,15 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 
 class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
+
+    /**
+     * String - the replyId or localId
+     * BaseChatViewModel - the bubble/reply
+     */
+    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
+    private var offset = 0
+
+
 
     override fun enableShowTime(): Boolean = false
 
@@ -43,6 +53,8 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     fun getBubblePosition(replyTime: String): Int {
         return visitables.indexOfFirst {
+            if (it is BaseChatUiModel)
+            Log.d("FATAL", "getBubblePosition: " + it.replyTime + " Params : " + replyTime)
             it is BaseChatUiModel && it.replyTime == replyTime
         }
     }
@@ -68,7 +80,34 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
+    override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
+        addTopData(visitables)
+    }
+
+
+    private fun addTopData(listChat: List<Visitable<Any>>?) {
+        if (listChat == null || listChat.isEmpty()) return
+        mapListChat(listChat)
+        val oldList = ArrayList(this.visitables)
+        val newList = this.visitables.apply {
+            addAll(listChat)
+        }
+        val diffUtil = ChatDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+
+    private fun getOffsetSafely(): Int {
+        return if (visitables.size < offset) {
+            visitables.size
+        } else {
+            offset
+        }
+    }
+
     fun addBottomData(listChat: List<Visitable<*>>) {
+        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(0, listChat)
@@ -77,4 +116,19 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
     }
+
+    private fun mapListChat(listChat: List<Visitable<*>>) {
+        listChat.filterIsInstance(BaseChatUiModel::class.java)
+            .forEach {
+                val id = it.localId
+                if (id.isEmpty()) return@forEach
+                replyMap[id] = it
+            }
+    }
+
+    fun reset() {
+        visitables.clear()
+        notifyDataSetChanged()
+    }
+
 }

@@ -116,7 +116,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun bindClick(parentReply: ParentReply) {
         setOnClickListener {
-            listener?.goToBubble(parentReply)
+            if(!parentReply.isExpired)
+                listener?.goToBubble(parentReply)
         }
     }
 
