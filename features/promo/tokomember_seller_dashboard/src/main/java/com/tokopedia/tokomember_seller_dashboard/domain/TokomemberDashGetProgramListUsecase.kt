@@ -32,12 +32,6 @@ class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository:
     }
 
     private fun getRequestParams(shopId: Int, cardId: Int, status: Int, page: Int, pageSize: Int): Map<String, Any> {
-//        val shopMap = mapOf(ID to shopId)
-//        val cardMap = mapOf(ID to cardId)
-//        val statusMap = mapOf(STATUS to status)
-//        val pageInfoMap = mapOf(PAGE to page, PAGE_SIZE to pageSize)
-//        val paramMap = mapOf(SHOP to shopMap, CARD to cardMap, STATUS to statusMap)
-//        val inputMap = mapOf(PARAM to paramMap, PAGE_INFO to pageInfoMap)
         val req = MembershipGetListRequest(
             Param(Shop(shopId), Program(status), ListCard(cardId)),
             PageInfo(pageSize, page)
