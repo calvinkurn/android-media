@@ -165,7 +165,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             }
             view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
-            webviewTnc?.loadPartialWebView(it.tnc, "text/html", "UTF-8")
+            webviewTnc?.loadPartialWebView(it.tnc)
             enableOrDisableViews(it)
         }
     }
