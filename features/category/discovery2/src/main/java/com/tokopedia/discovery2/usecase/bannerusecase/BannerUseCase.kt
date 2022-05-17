@@ -13,7 +13,7 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, applicationContext: Context): Boolean {
         val component = getComponent(componentId, pageEndPoint)
-        if (component?.noOfPagesLoaded == 1) return false
+        if (component?.noOfPagesLoaded == CONST_ONE) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val bannerData = repository.getBanner(
@@ -22,7 +22,7 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
                     getQueryParameterMap(applicationContext),
                     pageEndPoint, it.name)
             val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
-            it.noOfPagesLoaded = 1
+            it.noOfPagesLoaded = CONST_ONE
             it.verticalProductFailState = false
             component.properties = bannerData?.properties
             if (bannerListData.isEmpty()) return true
@@ -43,23 +43,23 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         val component = getComponent(componentId, pageEndPoint)
         when (component?.name) {
             ComponentNames.DoubleBanner.componentName -> {
-                if (listSize == 1) {
+                if (listSize == CONST_ONE) {
                     return listOf(COMP_PAIR)
                 }
             }
             ComponentNames.TripleBanner.componentName -> {
-                if (listSize == 1) {
+                if (listSize == CONST_ONE) {
                     return listOf(COMP_PAIR, COMP_PAIR)
-                } else if (listSize == 2) {
+                } else if (listSize == CONST_TWO) {
                     return listOf(COMP_PAIR)
                 }
             }
             ComponentNames.QuadrupleBanner.componentName -> {
-                if (listSize == 1) {
+                if (listSize == CONST_ONE) {
                     return listOf(COMP_PAIR, COMP_PAIR, COMP_PAIR)
-                } else if (listSize == 2) {
+                } else if (listSize == CONST_TWO) {
                     return listOf(COMP_PAIR, COMP_PAIR)
-                } else if (listSize == 3) {
+                } else if (listSize == CONST_THREE) {
                     return listOf(COMP_PAIR)
                 }
             }
@@ -80,6 +80,9 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
     companion object {
         const val DUMMY = "dummy"
         const val WEIGHT = 1.0f
+        const val CONST_ONE = 1
+        const val CONST_TWO = 2
+        const val CONST_THREE = 3
         val COMP_PAIR = Pair(DUMMY, WEIGHT)
     }
 
