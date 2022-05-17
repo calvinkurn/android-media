@@ -26,7 +26,6 @@ data class RescheduleTimeOptionModel(
 
 
 data class RescheduleDayOptionModel(
-    val formattedDay: String = "",
     val day: String = "",
     val timeOptions: List<RescheduleTimeOptionModel> = emptyList()
 )

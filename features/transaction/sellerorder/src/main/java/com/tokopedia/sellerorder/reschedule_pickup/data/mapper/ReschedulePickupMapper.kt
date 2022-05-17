@@ -10,7 +10,6 @@ import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleTimeOpti
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveRescheduleModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveReschedulePickupParam
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveReschedulePickupResponse
-import com.tokopedia.utils.date.DateUtil
 
 object ReschedulePickupMapper {
     fun mapToGetReschedulePickupParam(orderIds: List<String>): GetReschedulePickupParam {
@@ -46,7 +45,6 @@ object ReschedulePickupMapper {
     private fun mapDayOptionToModel(days: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption>): List<RescheduleDayOptionModel> {
         return days.map {
             RescheduleDayOptionModel(
-                formattedDay = DateUtil.formatDate("dd-MM-YYYY", "EEEE, dd MMM yyyy", it.day),
                 day = it.day,
                 timeOptions = mapTimeOptionToModel(it.chooseTime)
             )

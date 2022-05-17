@@ -300,7 +300,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                         wrapper,
                         getString(R.string.error_message_reason_below_min_char)
                     )
-                } else if (s.length > OTHER_REASON_MAX_CHAR) {
+                } else if (s.length >= OTHER_REASON_MAX_CHAR) {
                     setWrapperError(
                         wrapper,
                         getString(R.string.error_message_reason_over_max_char)
@@ -364,7 +364,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     override fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
         binding?.run {
             day = dayChosen
-            etDay.editText.setText(dayChosen.formattedDay)
+            etDay.editText.setText(dayChosen.day)
             etTime.editText.isEnabled = true
             if (etTime.editText.text.toString().isNotEmpty()) {
                 etTime.editText.setText("")
