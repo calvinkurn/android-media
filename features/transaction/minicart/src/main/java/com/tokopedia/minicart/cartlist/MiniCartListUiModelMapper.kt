@@ -476,7 +476,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundle(
                                 isError = miniCartItem.isError,
                                 bundleId = visitable.bundleId,
-//                                bundleGroupId = visitable.bundleGroupId,
+                                bundleGroupId = visitable.bundleGroupId,
                                 bundleTitle = visitable.bundleName,
                                 bundlePrice = visitable.bundlePrice,
                                 bundleSlashPriceLabel = visitable.slashPriceLabel,

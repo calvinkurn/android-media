@@ -690,21 +690,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 }
             }
         }
-//        val cartItems = getMiniCartItems()
-//        loop@ for (cartItem in cartItems) {
-//            if (!isBundling && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
-//                cartItem.quantity = newQty
-//                break@loop
-//            }
-//            if (isBundling && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
-//                cartItem.bundleQuantity = newQty
-//                val products = cartItem.products
-//                products.forEach {
-//                    it.value.quantity = newQty * cartItem.bundleMultiplier
-//                }
-//                break@loop
-//            }
-//        }
     }
 
     fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
@@ -729,17 +714,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 }
             }
         }
-//        val cartItems = getMiniCartItems()
-//        loop@ for (cartItem in cartItems) {
-//            if (!isBundlingItem && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
-//                cartItem.notes = newNotes
-//                break@loop
-//            }
-//            if (isBundlingItem && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
-//                cartItem.products[MiniCartItemKey(productId)]?.notes = newNotes
-//                break@loop
-//            }
-//        }
     }
 
     fun toggleUnavailableItemsAccordion() {
