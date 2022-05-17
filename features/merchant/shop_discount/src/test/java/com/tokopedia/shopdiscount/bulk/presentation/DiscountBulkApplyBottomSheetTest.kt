@@ -225,6 +225,7 @@ class DiscountBulkApplyBottomSheetTest {
         viewModel.onOneYearPeriodSelected(now)
 
         //Then
+        assertEquals(false, viewModel.getCurrentSelection().isUsingCustomPeriod)
         assertEquals(startDate.time, viewModel.getSelectedStartDate())
         assertEquals(endDate.time, viewModel.getSelectedEndDate())
 
@@ -246,6 +247,7 @@ class DiscountBulkApplyBottomSheetTest {
         viewModel.onSixMonthPeriodSelected(now)
 
         //Then
+        assertEquals(false, viewModel.getCurrentSelection().isUsingCustomPeriod)
         assertEquals(startDate.time, viewModel.getSelectedStartDate())
         assertEquals(endDate.time, viewModel.getSelectedEndDate())
 
@@ -267,6 +269,7 @@ class DiscountBulkApplyBottomSheetTest {
         viewModel.onOneMonthPeriodSelected(now)
 
         //Then
+        assertEquals(false, viewModel.getCurrentSelection().isUsingCustomPeriod)
         assertEquals(startDate.time, viewModel.getSelectedStartDate())
         assertEquals(endDate.time, viewModel.getSelectedEndDate())
 
@@ -288,6 +291,7 @@ class DiscountBulkApplyBottomSheetTest {
         viewModel.onCustomSelectionPeriodSelected(now)
 
         //Then
+        assertEquals(true, viewModel.getCurrentSelection().isUsingCustomPeriod)
         assertEquals(startDate.time, viewModel.getSelectedStartDate())
         assertEquals(endDate.time, viewModel.getSelectedEndDate())
 
@@ -312,7 +316,8 @@ class DiscountBulkApplyBottomSheetTest {
             endDate,
             discountType,
             discountAmount,
-            maxPurchaseQuantity
+            maxPurchaseQuantity,
+            isUsingCustomPeriod = false
         )
 
 
