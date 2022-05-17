@@ -18,6 +18,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
@@ -47,6 +48,7 @@ import javax.inject.Inject
 @FlowPreview
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val keroGetAddressUseCase: KeroGetAddressUseCase,
     private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
@@ -143,7 +145,24 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         data = it
                     )
                 } else {
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                    val cacheAddressId = _isAddressHasPinpoint.value.first
+                    if (cacheAddressId.isEmpty()) {
+                        // Check pinpoint remotely if cache address id is empty
+                        val remoteAddressId = it.data.userAddress.addressId
+                        keroGetAddressUseCase.execute(remoteAddressId)?.secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
+                            if (hasPinpointRemotely == true) {
+                                _uiEvent.value = PurchaseUiEvent(
+                                    state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
+                                    data = it
+                                )
+                            } else {
+                                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                            }
+                        }
+                    } else {
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+
+                    }
                 }
             }
         }, onError = {
