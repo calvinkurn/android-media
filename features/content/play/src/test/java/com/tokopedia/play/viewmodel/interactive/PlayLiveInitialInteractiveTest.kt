@@ -2,11 +2,7 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.model.PlayInteractiveModelBuilder
-import com.tokopedia.play.model.PlaySocketResponseBuilder
-import com.tokopedia.play.model.PlayVideoModelBuilder
+import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
@@ -15,6 +11,7 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.millisFromNow
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -25,6 +22,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 /**
  * Created by jegul on 15/07/21
@@ -59,6 +57,8 @@ class PlayLiveInitialInteractiveTest {
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
     private val socket: PlayWebSocket = mockk(relaxed = true)
+
+    private val modelBuilder = UiModelBuilder.get()
 
     init {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
@@ -198,4 +198,46 @@ class PlayLiveInitialInteractiveTest {
             }
         }
     }
+
+    @Test
+    fun `given has active quiz from socket, when retrieved, state should be ongoing`() {
+        val socketFlow = MutableStateFlow<WebSocketAction>(
+            WebSocketAction.NewMessage(
+                socketResponseBuilder.buildQuiz()
+            )
+        )
+        every { socket.listenAsFlow() } returns socketFlow
+
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        val title = "Quiz"
+        val endTime = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 3)
+        }
+        val model = InteractiveUiModel.Quiz(
+            status = InteractiveUiModel.Quiz.Status.Ongoing(endTime),
+            title = title,
+            id = "1",
+            waitingDuration = 1500L,
+            reward = "Sepeda",
+            listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
+        )
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = socket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ) {
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        }.thenVerify {
+            withState {
+                interactive.interactive.assertEqualTo(model)
+            }
+        }
+    }
+    //awal user choice kosong (socket)
+    //ada reward ~ winner ~ loser
+    //gk ada reward
 }
