@@ -176,7 +176,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             WidgetBannerPMRegistration,
             headerWidget,
             WidgetDividerUiModel,
-            WidgetPotentialUiModel(headerWidget.shopInfo.isNewSeller),
+            WidgetPotentialUiModel,
             getPmGradeBenefitWidget()
         )
         widgets.addAll(mainWidgets)

@@ -43,7 +43,6 @@
     <string name="pm_registration_header_pm_pro_new_seller">Yuk, jadi Seller terbaik dulu sebelum gabung PM PRO!</string>
     <string name="pm_registration_terms">Syarat keanggotaan</string>
     <string name="pm_registration_potential_description">Dari data 2021, dengan jadi Power Merchant, tokomu berpotensi:</string>
-    <string name="pm_registration_potential_description_new_seller"><![CDATA[Tingkatkan penjualan dengan biaya layanan <b>%1$s</b> setelah 14 Juni.]]></string>
     <string name="pm_tnc_agreement_text">Saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku.</string>
     <string name="pm_grade_benefit_widget_description">Paket keuntungan dapat mengalami kenaikan setiap bulan dan penurunan setiap kuartal.</string>
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
