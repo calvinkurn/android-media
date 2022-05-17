@@ -67,16 +67,16 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
     private fun formStateObserver() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
-            binding?.tfu2OldPhoneNumber?.setMessage(
+            binding?.textInputOldPhoneNumber?.setMessage(
                 if (!it.isDataValid && it.numberError != PhoneFormState.DEFAULT_NUMBER_ERROR) {
                     val message = getString(it.numberError)
-                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, binding?.tfu2OldPhoneNumber?.getEditableValue().toString())
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, binding?.textInputOldPhoneNumber?.getEditableValue().toString())
                     message
                 }
                 else " "
             )
 
-            binding?.tfu2OldPhoneNumber?.isInputError = !it.isDataValid
+            binding?.textInputOldPhoneNumber?.isInputError = !it.isDataValid
         }
     }
 
@@ -88,14 +88,14 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
     }
 
     private fun formAction() {
-        binding?.tfu2OldPhoneNumber?.editText?.setOnEditorActionListener { _, actionId, _ ->
+        binding?.textInputOldPhoneNumber?.editText?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitData()
                 true
             } else false
         }
 
-        binding?.tfu2OldPhoneNumber?.editText?.setOnKeyListener { _, keyCode, event ->
+        binding?.textInputOldPhoneNumber?.editText?.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 submitData()
                 true
@@ -129,7 +129,7 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
     }
 
     private fun onError(message: String) {
-        binding?.tfu2OldPhoneNumber?.apply {
+        binding?.textInputOldPhoneNumber?.apply {
             setMessage(message)
             isInputError = true
         }
@@ -149,7 +149,7 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private fun submitData() {
         hideKeyboard()
-        viewModel.submitNumber(binding?.tfu2OldPhoneNumber?.getEditableValue().toString())
+        viewModel.submitNumber(binding?.textInputOldPhoneNumber?.getEditableValue().toString())
     }
 
     private fun getErrorMsgWithLogging(
