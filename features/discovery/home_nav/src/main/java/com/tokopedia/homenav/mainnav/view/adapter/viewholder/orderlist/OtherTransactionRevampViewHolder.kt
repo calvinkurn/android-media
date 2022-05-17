@@ -34,7 +34,6 @@ class OtherTransactionRevampViewHolder (itemView: View, val mainNavListener: Mai
     override fun bind(otherTransactionRevampModel: OtherTransactionRevampModel) {
         setForegroundClickViewAllCard()
         binding?.cardViewAllFavshop?.setCta(itemView.resources.getString(R.string.transaction_view_all))
-        binding?.cardViewAllFavshop?.titleView?.gone()
         binding?.cardViewAllFavshop?.cardView?.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),

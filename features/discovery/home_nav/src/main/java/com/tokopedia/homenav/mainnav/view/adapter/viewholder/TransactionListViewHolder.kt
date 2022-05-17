@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
@@ -24,6 +25,16 @@ class TransactionListViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
+    }
+
+    private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
+        if (element.isMePageUsingRollenceVariant) {
+            val productCardHeight = 80f.toDpInt()
+
+            val carouselLayoutParams = this.layoutParams
+            carouselLayoutParams?.height = productCardHeight
+            this.layoutParams = carouselLayoutParams
+        }
     }
 
     override fun bind(element: TransactionListItemDataModel) {
@@ -50,6 +61,7 @@ class TransactionListViewHolder(itemView: View,
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
             } else {
+                binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
                 visitableList.add(OtherTransactionRevampModel())
             }
         }
