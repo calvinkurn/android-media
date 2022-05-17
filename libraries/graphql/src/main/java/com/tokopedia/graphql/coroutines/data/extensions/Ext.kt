@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 @Suppress("UNCHECKED_CAST")
-@Deprecated("please use GqlQueryInterface", replaceWith = ReplaceWith(""))
 suspend inline fun <P, reified R> GraphqlRepository.request(
     query: String,
     params: P
@@ -51,7 +50,6 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
     return response.getSuccessData()
 }
 
-@Deprecated("please use GqlQueryInterface", replaceWith = ReplaceWith(""))
 inline fun <P, reified R> GraphqlRepository.requestAsFlow(
     query: String,
     params: P
