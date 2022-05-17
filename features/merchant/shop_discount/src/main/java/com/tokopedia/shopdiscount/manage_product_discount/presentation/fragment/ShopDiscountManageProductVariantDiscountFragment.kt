@@ -36,15 +36,11 @@ import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.S
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.viewholder.ShopDiscountManageProductVariantItemViewHolder
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductVariantDiscountViewModel
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
-import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -102,10 +98,8 @@ class ShopDiscountManageProductVariantDiscountFragment
     private var textStockAndLocation: Typography? = null
     private var imageIconProduct: ImageUnify? = null
     private var labelBulkApply: ShopDiscountLabelBulkApply? = null
+    private var divider: DividerUnify? = null
     private var layoutGlobalError: GlobalError? = null
-    private var textFieldDiscountPrice: TextFieldUnify2? = null
-    private var textFieldDiscountPercentage: TextFieldUnify2? = null
-    private var textFieldDiscountPriceWatcher: NumberThousandSeparatorTextWatcher? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -199,9 +193,6 @@ class ShopDiscountManageProductVariantDiscountFragment
     private fun observeLiveData() {
         observeSellerBenefitLiveData()
         observeUpdatedDiscountPeriodData()
-        observeUpdatedDiscountPercentageData()
-        observeUpdatedDiscountPriceData()
-        observeInputValidation()
         observeOnToggleVariantStateUpdated()
         observeIsEnableSubmitButton()
         observeIsEnableBulkApplyVariant()
@@ -244,55 +235,6 @@ class ShopDiscountManageProductVariantDiscountFragment
         })
     }
 
-    private fun observeInputValidation() {
-        viewModel.inputValidation.observe(viewLifecycleOwner, { errorValidation ->
-            buttonApply?.isEnabled = errorValidation == NONE
-            when (errorValidation) {
-                ERROR_PRICE_MAX -> {
-                    textFieldDiscountPrice?.textInputLayout?.error =
-                        "Maks. ${viewModel.getMaxDiscountPrice().getCurrencyFormatted()}"
-                    textFieldDiscountPercentage?.textInputLayout?.error = " "
-                }
-                ERROR_PRICE_MIN -> {
-                    textFieldDiscountPrice?.textInputLayout?.error =
-                        "Min ${viewModel.getMinDiscountPrice().getCurrencyFormatted()}"
-                    textFieldDiscountPercentage?.textInputLayout?.error = " "
-                }
-                NONE -> {
-                    textFieldDiscountPrice?.textInputLayout?.error = null
-                    textFieldDiscountPercentage?.textInputLayout?.error = null
-                }
-            }
-        })
-    }
-
-    private fun observeUpdatedDiscountPercentageData() {
-        viewModel.updatedDiscountPercentageData.observe(viewLifecycleOwner, { variantProductDate ->
-            variantProductDate?.let {
-                updateVariantDiscountPercentData(it)
-            }
-//            textFieldDiscountPercentage?.textInputLayout?.editText?.apply {
-//                removeTextChangedListener(textFieldDiscountPercentageWatcher)
-//                setText(it.toString())
-//                addTextChangedListener(textFieldDiscountPercentageWatcher)
-//            }
-        })
-    }
-
-    private fun updateVariantDiscountPercentData(variantProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        adapter.updateVariantDiscountPercentData(variantProductData)
-    }
-
-    private fun observeUpdatedDiscountPriceData() {
-        viewModel.updatedDiscountPriceData.observe(viewLifecycleOwner, {
-            textFieldDiscountPrice?.textInputLayout?.editText?.apply {
-                removeTextChangedListener(textFieldDiscountPriceWatcher)
-                setText(it.toString())
-                addTextChangedListener(textFieldDiscountPriceWatcher)
-            }
-        })
-    }
-
     private fun observeUpdatedDiscountPeriodData() {
         viewModel.updatedDiscountPeriodData.observe(viewLifecycleOwner, { variantProductData ->
             variantProductData?.let {
@@ -310,6 +252,7 @@ class ShopDiscountManageProductVariantDiscountFragment
             hideLoading()
             when (it) {
                 is Success -> {
+                    checkShouldShowLabelBulkApply(viewModel.getProductData())
                     showProductDataContent()
                     setProductHeaderSection()
                     setVariantSection(it.data)
@@ -320,6 +263,12 @@ class ShopDiscountManageProductVariantDiscountFragment
                 }
             }
         })
+    }
+
+    private fun checkShouldShowLabelBulkApply(productData: ShopDiscountSetupProductUiModel.SetupProductData) {
+        val isShowLabelBulkApply = productData.listProductVariant.size > Int.ONE
+        labelBulkApply?.shouldShowWithAction(isShowLabelBulkApply) {}
+        divider?.shouldShowWithAction(isShowLabelBulkApply) {}
     }
 
     private fun setVariantSection(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
@@ -402,7 +351,8 @@ class ShopDiscountManageProductVariantDiscountFragment
             isEnabled = isLabelEnabled
             setTitle(title)
             setOnClickListener {
-                openBottomSheetBulkApply()
+                if(isEnabled)
+                    openBottomSheetBulkApply()
             }
         }
     }
@@ -578,6 +528,7 @@ class ShopDiscountManageProductVariantDiscountFragment
                     imageIconProduct = headerContainerBinding.iconProduct
                 }
                 labelBulkApply = headerLayoutBinding.labelBulkApply
+                divider = headerLayoutBinding.divider
             }
             rvContent = it.rvManageProductVariantDiscount
             loadingSpinner = it.loadingSpinner

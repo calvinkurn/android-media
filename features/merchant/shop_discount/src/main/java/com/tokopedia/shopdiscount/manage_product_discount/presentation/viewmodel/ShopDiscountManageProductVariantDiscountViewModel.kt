@@ -48,19 +48,6 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     private val _updatedDiscountPeriodData =
         MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
 
-    val updatedDiscountPercentageData: LiveData<ShopDiscountSetupProductUiModel.SetupProductData>
-        get() = _updatedDiscountPercentageData
-    private val _updatedDiscountPercentageData =
-        MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
-
-    val updatedDiscountPriceData: LiveData<Int>
-        get() = _updatedDiscountPriceData
-    private val _updatedDiscountPriceData = MutableLiveData<Int>()
-
-    val inputValidation: LiveData<Int>
-        get() = _inputValidation
-    private val _inputValidation = MutableLiveData<Int>()
-
     val isEnableSubmitButton: LiveData<Boolean>
         get() = _isEnableSubmitButton
     private val _isEnableSubmitButton = MutableLiveData<Boolean>()
@@ -134,16 +121,6 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         val endDateCalendar = defaultStartDate.toCalendar()
         endDateCalendar.add(Calendar.YEAR, ONE_YEAR)
         return endDateCalendar.time
-    }
-
-    fun getMinDiscountPrice(): Int {
-        val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.01).toInt()
-    }
-
-    fun getMaxDiscountPrice(): Int {
-        val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.99).toInt()
     }
 
     fun getProductData(): ShopDiscountSetupProductUiModel.SetupProductData {

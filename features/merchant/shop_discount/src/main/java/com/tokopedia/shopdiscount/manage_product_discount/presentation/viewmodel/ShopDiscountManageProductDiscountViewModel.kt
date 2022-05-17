@@ -174,7 +174,11 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
 
     fun getMinDiscountPrice(): Int {
         val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.01).toInt()
+        val minDiscountPrice = (originalPrice.toDouble() * 0.01).toInt()
+        return if(minDiscountPrice < 100)
+            100
+        else
+            minDiscountPrice
     }
 
     fun getMaxDiscountPrice(): Int {

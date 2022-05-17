@@ -280,12 +280,18 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             when (errorValidation) {
                 ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Maks. ${viewModel.getMaxDiscountPrice().getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_max_price_format),
+                            viewModel.getMaxDiscountPrice().getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 ERROR_PRICE_MIN -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Min ${viewModel.getMinDiscountPrice().getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_min_price_format),
+                            viewModel.getMinDiscountPrice().getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 NONE -> {

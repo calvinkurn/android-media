@@ -300,12 +300,18 @@ class ShopDiscountManageProductVariantItemViewHolder(
             when (errorValidation) {
                 ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Maks. ${getMaxDiscountPrice(uiModel).getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_max_price_format),
+                            getMaxDiscountPrice(uiModel).getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MIN -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Min ${getMinDiscountPrice(uiModel).getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_min_price_format),
+                            getMinDiscountPrice(uiModel).getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 ShopDiscountManageProductDiscountErrorValidation.NONE -> {
@@ -326,7 +332,11 @@ class ShopDiscountManageProductVariantItemViewHolder(
 
     private fun getMinDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {
         val originalPrice = uiModel.variantMinOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.01).toInt()
+        val minDiscountPrice = (originalPrice.toDouble() * 0.01).toInt()
+        return if(minDiscountPrice < 100)
+            100
+        else
+            minDiscountPrice
     }
 
     private fun getMaxDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {
