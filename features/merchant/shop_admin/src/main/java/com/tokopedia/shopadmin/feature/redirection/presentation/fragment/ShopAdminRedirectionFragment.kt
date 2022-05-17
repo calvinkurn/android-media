@@ -78,7 +78,8 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun redirectCreateShopIfFail() {
-        val errorMessage = getString(com.tokopedia.shopadmin.R.string.error_message_shop_admin_redirection)
+        val errorMessage =
+            getString(com.tokopedia.shopadmin.R.string.error_message_shop_admin_redirection)
         val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
         intent.putExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN, errorMessage)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -95,7 +96,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun redirectShopAdminInSA(adminTypeUiModel: AdminTypeUiModel) {
         val appLink =
-            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN) {
+            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()) {
                 if (adminTypeUiModel.isShopAdmin) {
                     if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
                         ApplinkConstInternalSellerapp.SELLER_HOME
@@ -117,6 +118,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun redirectShopAdminMA(adminTypeUiModel: AdminTypeUiModel) {
         val appLink = if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
+            adminTypeUiModel.shopID.isNotEmpty() &&
             adminTypeUiModel.status != AdminStatus.ACTIVE
         ) {
             ApplinkConstInternalMarketplace.ADMIN_INVITATION
