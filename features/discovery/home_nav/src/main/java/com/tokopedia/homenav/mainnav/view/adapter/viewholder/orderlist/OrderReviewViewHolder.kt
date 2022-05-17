@@ -32,6 +32,11 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         private const val UTM_SOURCE_GLOBAL_NAV = "global_nav"
         private const val SOURCE = "source"
         private const val RATING = "rating"
+        private const val RATE_STARS_1 = "1"
+        private const val RATE_STARS_2 = "2"
+        private const val RATE_STARS_3 = "3"
+        private const val RATE_STARS_4 = "4"
+        private const val RATE_STARS_5 = "5"
     }
 
     override fun bind(element: OrderReviewModel, payloads: MutableList<Any>) {
@@ -73,11 +78,26 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         }
 
         binding?.orderReviewContainer?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element))
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
+        }
+        binding?.layoutReviewStars?.star1?.setOnClickListener {
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_1))
+        }
+        binding?.layoutReviewStars?.star2?.setOnClickListener {
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_2))
+        }
+        binding?.layoutReviewStars?.star3?.setOnClickListener {
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_3))
+        }
+        binding?.layoutReviewStars?.star4?.setOnClickListener {
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_4))
+        }
+        binding?.layoutReviewStars?.star5?.setOnClickListener {
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
         }
     }
 
-    private fun generateUriShowBottomSheetReview(element: OrderReviewModel) : String {
+    private fun generateUriShowBottomSheetReview(element: OrderReviewModel, rateStars: String) : String {
         return Uri.parse(
             UriUtil.buildUri(
                 ApplinkConstInternalMarketplace.CREATE_REVIEW,
@@ -86,7 +106,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
             )
         )
             .buildUpon()
-            .appendQueryParameter(RATING, "3")
+            .appendQueryParameter(RATING, rateStars)
             .appendQueryParameter(
                 SOURCE,
                 UTM_SOURCE_GLOBAL_NAV

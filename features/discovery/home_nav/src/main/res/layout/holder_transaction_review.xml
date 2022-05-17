@@ -55,6 +55,7 @@
             tools:text="Produk 1" />
 
         <include
+            android:id="@+id/layout_review_stars"
             layout="@layout/layout_review_stars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
