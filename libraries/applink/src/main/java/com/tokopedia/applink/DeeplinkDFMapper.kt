@@ -663,7 +663,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokofood
             add(DFP({
-                it.startsWith(ApplinkConstInternalTokoFood.POST_PURCHASE)
+                it.startsWith(ApplinkConstInternalTokoFood.INTERNAL_TOKO_FOOD)
             }, DF_BASE, R.string.title_tokofood))
 
             // Review Reminder
