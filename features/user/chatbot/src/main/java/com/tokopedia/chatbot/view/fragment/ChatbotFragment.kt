@@ -688,8 +688,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
-            //TODO change this
-     //       loadData(FIRST_PAGE)
+            //TODO test this
             presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
@@ -721,10 +720,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
 
             updateViewData(chatroomViewModel)
-            //TODO have changed it
             renderList(list)
             getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
-        //    checkShowLoading(it.canLoadMore)
             updateHasNextState(chatReplies)
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
@@ -733,25 +730,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onSuccessGetPreviousChat(page: Int): (ChatroomViewModel) -> Unit {
-        return {
-            val list = it.listChat.filter {
-                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty()))
-            }
-            if (page == FIRST_PAGE) isFirstPage = false
-            //TODO fix this
-            if (list.isNotEmpty()){
-                val filteredList= getViewState()?.clearDuplicate(list)
-                if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
-                filteredList?.let { renderList ->
-                    renderList(renderList, it.canLoadMore)
-                }
-                checkShowLoading(it.canLoadMore)
-                enableLoadMore()
-            }
-        }
-    }
 
     fun checkShowLoading(canLoadMore: Boolean) {
         if (canLoadMore) super.showLoading()
@@ -772,7 +750,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-     //   presenter.loadPrevious(messageId, page+1, onError(), onSuccessGetPreviousChat(page), onGetChatRatingListMessageError)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -1156,16 +1133,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return true
     }
 
-//    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-//        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
-//            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                isFirstPage = false
-//                showLoading()
-//                loadData(page + FIRST_PAGE)
-//            }
-//        }
-//    }
-
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return LinearLayoutManager(
             activity, LinearLayoutManager.VERTICAL, true
@@ -1360,12 +1327,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return senderNameForReply
     }
 
-
     override fun showReplyOption(messageUiModel: MessageUiModel) {
       //  if (replyBubbleEnabled)
         //TODO change this change this , BE issue
         if (true) {
-
             val bottomSheetPage = BottomSheetUnify()
             val viewBottomSheetPage =
                 View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
@@ -1377,17 +1342,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     rvPages.adapter = adapter
 
                 }
-
-            //TODO fix this
             bottomSheetPage.apply {
-                setTitle("Pengaturan pesan")
+                setTitle(getString(R.string.chatbot_reply_bubble_bottomsheet_title))
                 showCloseIcon = true
                 setChild(viewBottomSheetPage)
                 showKnob = false
             }
 
             fragmentManager?.let {
-                bottomSheetPage.show(it, "retry reply bubble bottom sheet")
+                bottomSheetPage.show(it, getString(R.string.chatbot_reply_bubble_bottomsheet_retry))
             }
         }
     }
@@ -1399,20 +1362,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (bubblePosition != RecyclerView.NO_POSITION) {
             smoothScroll?.targetPosition = bubblePosition
             (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
-
         } else {
-            Log.d("FATAL", "goToBubble: $bubblePosition")
-         //   (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
-          //  resetItemList()
             resetData()
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
             loadDataOnClick()
         }
-
     }
 
     private fun loadDataOnClick(){
-     //   getViewState()?.clearChatOnLoadChatHistory()
         showLoading()
         presenter.getTopChat(messageId, onSuccessGetTopChatData(fromOnClick = true), onErrorGetTopChat())
     }
@@ -1500,24 +1457,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
-    //            if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
                     renderList(renderList)
                 }
-
-             //   checkShowLoading(chatroom.canLoadMore)
-                //TODO where to place
                 if (fromOnClick)
                     updateHasNextAfterState(chatReplies)
                 updateHasNextState(chatReplies)
-                //Don't need this i think
-            //    enableLoadMore()
             }
         }
     }
 
-    //TODO handle the logic
     private fun onSuccessGetBottomChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
         return { chatroom , chatReplies ->
             val list = chatroom.listChat.filter {
@@ -1527,15 +1477,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             //TODO fix this
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
-                //     if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
                 rvScrollListener?.finishBottomLoadingState()
                 filteredList?.let { renderList ->
                     renderBottomList(renderList)
                 }
-              //  checkShowLoading(chatroom.canLoadMore)
-                //TODO where to place
                 updateHasNextAfterState(chatReplies)
-         //       enableLoadMore()
             }
         }
     }
@@ -1590,11 +1536,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         showTopLoading()
     }
 
-    private fun getChatData(){
-        if (messageId.isNotEmpty()){
-            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
-        }
-    }
 
 }
 

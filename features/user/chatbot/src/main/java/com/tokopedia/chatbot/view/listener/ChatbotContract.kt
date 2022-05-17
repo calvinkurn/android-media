@@ -71,8 +71,6 @@ interface ChatbotContract {
         fun replyBubbleStateHandler(state: Boolean)
 
         fun visibilityReplyBubble(state: Boolean)
-//
-//        fun onSuccessGetChatDataForReplyTime(chatData: GetExistingChatPojo)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

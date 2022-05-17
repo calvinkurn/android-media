@@ -22,15 +22,6 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
 
-    /**
-     * String - the replyId or localId
-     * BaseChatViewModel - the bubble/reply
-     */
-    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
-    private var offset = 0
-
-
-
     override fun enableShowTime(): Boolean = false
 
     override fun getItemViewType(position: Int): Int {
@@ -84,10 +75,8 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         addTopData(visitables)
     }
 
-
     private fun addTopData(listChat: List<Visitable<Any>>?) {
         if (listChat == null || listChat.isEmpty()) return
-        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(listChat)
@@ -97,17 +86,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         diffResult.dispatchUpdatesTo(this)
     }
 
-
-    private fun getOffsetSafely(): Int {
-        return if (visitables.size < offset) {
-            visitables.size
-        } else {
-            offset
-        }
-    }
-
     fun addBottomData(listChat: List<Visitable<*>>) {
-        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(0, listChat)
@@ -115,15 +94,6 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         val diffUtil = ChatDiffUtil(oldList, newList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
-    }
-
-    private fun mapListChat(listChat: List<Visitable<*>>) {
-        listChat.filterIsInstance(BaseChatUiModel::class.java)
-            .forEach {
-                val id = it.localId
-                if (id.isEmpty()) return@forEach
-                replyMap[id] = it
-            }
     }
 
     fun reset() {

@@ -822,20 +822,6 @@ class ChatbotPresenter @Inject constructor(
         getExistingChatUseCase.updateMinReplyTime(createTime)
     }
 
-//    override fun getDataForGivenReplyTime(messageId: String) {
-//        launchCatchError(
-//            block = {
-//                val response = getExistingChatUseCase.getChatWhenReplyBubbleClicked(messageId)
-//                val chatData =
-//                    response.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
-//                view.onSuccessGetChatDataForReplyTime(chatData)
-//            },
-//            onError = {
-//
-//            }
-//        )
-//    }
-
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
                                  onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
