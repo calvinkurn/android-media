@@ -101,16 +101,11 @@ object PayLaterHelper {
     }
 
     private fun setUrlToOcc(detail: Detail) =
-        detail.cta.android_url?.let {
-            UriUtil.buildUri(
-                ( it + parameterAppLink),
+        UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
                 detail.gatewayDetail?.paymentGatewayCode ?: "",
                 detail.tenure.toString(),
                 "fintech"
             )
-        }?:run {
-            ""
-        }
 
 
     // currently will be closed from backend
