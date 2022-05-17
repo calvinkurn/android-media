@@ -14,7 +14,14 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderS
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderListAdapter
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -29,7 +36,7 @@ class TransactionListViewHolder(itemView: View,
 
     private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
         if (element.isMePageUsingRollenceVariant) {
-            val productCardHeight = 80f.toDpInt()
+            val productCardHeight = 84f.toDpInt()
 
             val carouselLayoutParams = this.layoutParams
             carouselLayoutParams?.height = productCardHeight
