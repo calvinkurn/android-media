@@ -79,8 +79,7 @@
                     app:elevation="@dimen/spacing_lvl2"
                     app:layout_anchor="@+id/toolbar_container"
                     app:layout_collapseMode="pin"
-                    app:subtitleTextAppearance="@style/TitleTextAppearance.White"
-                    app:titleTextAppearance="@style/SubTitleTextAppearance" />
+                    app:subtitleTextAppearance="@style/TitleTextAppearance.White" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

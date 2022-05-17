@@ -1,6 +1,9 @@
 package com.tokopedia.webview;
 
+import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
+
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
@@ -10,16 +13,17 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.authentication.AuthKey;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -31,8 +35,6 @@ import com.tokopedia.utils.view.DarkModeUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-
-import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
 
 /**
  * Created by nisie on 11/30/16.
@@ -74,6 +76,19 @@ public class TkpdWebView extends WebView {
         void onEndReached();
 
         void onHasScrolled();
+    }
+
+    public void loadData(String data, String mimeType, String encoding, Boolean enableDarkMode) {
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        if (enableDarkMode &&
+                WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK) &&
+                nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+            WebSettingsCompat.setForceDark(getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+        } else {
+            WebSettingsCompat.setForceDark(getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+        }
+        loadData(data, mimeType, encoding);
     }
 
     private void init(Context context) {
