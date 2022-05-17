@@ -1833,7 +1833,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_PATH = "help"
 
         private const val PASSWORD_MIN_LENGTH = 4
 

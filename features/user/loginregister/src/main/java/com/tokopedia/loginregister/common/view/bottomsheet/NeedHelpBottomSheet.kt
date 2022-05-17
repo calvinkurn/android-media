@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -104,6 +105,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        private const val TOKOPEDIA_CARE_PATH = LoginEmailPhoneFragment.TOKOPEDIA_CARE_PATH
     }
 }
