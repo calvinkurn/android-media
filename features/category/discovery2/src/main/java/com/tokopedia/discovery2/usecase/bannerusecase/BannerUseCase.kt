@@ -1,14 +1,17 @@
 package com.tokopedia.discovery2.usecase.bannerusecase
 
+import android.content.Context
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.banner.BannerRepository
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class BannerUseCase @Inject constructor(private val repository: BannerRepository) {
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, applicationContext: Context): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
@@ -16,7 +19,7 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
             val bannerData = repository.getBanner(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
-                    mutableMapOf(),
+                    getQueryParameterMap(applicationContext),
                     pageEndPoint, it.name)
             val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
             it.noOfPagesLoaded = 1
@@ -63,6 +66,15 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
             else -> return null
         }
         return null
+    }
+
+    private fun getQueryParameterMap(applicationContext: Context): MutableMap<String, Any> {
+
+        val queryParameterMap = mutableMapOf<String, Any>()
+
+        queryParameterMap[Utils.DARK_MODE] = applicationContext.isDarkMode()
+
+        return queryParameterMap
     }
 
     companion object {
