@@ -9,7 +9,7 @@ import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-@GqlQuery("GetBalanceAndPoint", GetBalanceAndPointUseCase.query)
+@GqlQuery("GetBalanceAndPointQuery", GetBalanceAndPointUseCase.query)
 open class GetBalanceAndPointUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
@@ -21,7 +21,7 @@ open class GetBalanceAndPointUseCase @Inject constructor(
 
     override suspend fun execute(params: String): BalanceAndPointDataModel {
         val mapParams = getParams(params)
-        return repository.request(GetBalanceAndPoint(), mapParams)
+        return repository.request(GetBalanceAndPointQuery(), mapParams)
     }
 
     private fun getParams(
