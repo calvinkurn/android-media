@@ -5,17 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        app:tickerType="announcement"
-        app:closeButtonVisibility="gone"
-        android:visibility="gone"
-        android:id="@+id/affiliate_announcement_ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/affiliate_no_product_bought_iv"
         android:layout_width="match_parent"
@@ -26,7 +15,7 @@
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
         app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -59,7 +48,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone"
         >
 

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
@@ -25,20 +24,18 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_recommended_product_fragment_layout.*
 import java.util.*
@@ -185,13 +182,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun setObservers() {
-        affiliatePromoSharedViewModel.getValidateUserType().observe(this,{
+        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner,{
             onGetValidateUserType(it)
         })
-        affiliateRecommendedProductViewModel.getAffiliateAnnouncement().observe(this,{
-            (parentFragment as? AffiliatePromoFragment)?.onGetAnnouncementData(it,view?.findViewById(R.id.affiliate_announcement_ticker))
-        })
-        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(this, { visibility ->
+        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(viewLifecycleOwner, { visibility ->
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer(true)
@@ -201,7 +195,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
         })
 
-        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(viewLifecycleOwner ,{ dataList ->
             adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
@@ -221,12 +215,12 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
         })
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { pageInfo ->
+        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(viewLifecycleOwner, { pageInfo ->
             currentPageNumber = pageInfo.currentPage ?: 0
             recommendationHasNextPage = pageInfo.hasNext ?: false
         })
 
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(this, {
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner, {
             swipe_refresh_layout.hide()
             showErrorGroup()
             showEmptyState()
@@ -235,14 +229,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     private fun onGetValidateUserType(type: String?) {
         when(type){
-            ON_REGISTERED -> afterViewCreated()
-            ON_REVIEWED -> {
-                afterViewCreated()
-                affiliateRecommendedProductViewModel.getAnnouncementInformation()
-            }
-            SYSTEM_DOWN ->{
-                affiliateRecommendedProductViewModel.getAnnouncementInformation()
-            }
+            ON_REGISTERED,ON_REVIEWED -> afterViewCreated()
         }
     }
 

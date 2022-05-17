@@ -12,6 +12,12 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditio
 import com.tokopedia.affiliate_toko.R
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
+import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import java.lang.Exception
 
 
@@ -33,4 +39,55 @@ fun View.hideKeyboard(context : Context?){
     } catch (e: Exception) {
         e.printStackTrace()
     }
+}
+fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, context : Context?) {
+    when(announcementData.getAffiliateAnnouncementV2?.data?.type){
+        AffiliateBaseFragment.WARNING ->{
+            setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData,this,
+                Ticker.TYPE_WARNING,context)
+        }
+        AffiliateBaseFragment.ERROR ->{
+            setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData, this,
+                Ticker.TYPE_ERROR,
+                context)
+        }
+        AffiliateBaseFragment.ANNOUNCEMENT ->{
+            setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData, this,
+                Ticker.TYPE_ANNOUNCEMENT,
+                context)
+        }
+        else -> {
+            setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData, this,
+                Ticker.TYPE_INFORMATION,
+                context)
+        }
+    }
+}
+private fun setupTickerView(
+    tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?,
+    view: Ticker?,
+    type: Int,
+    context: Context?, ) {
+    tickerData?.size?.let {
+        if(it>0) setTickerView(tickerData,view,type,context)
+        else view?.hide()
+    } ?: view?.hide()
+
+}
+
+private fun setTickerView(
+    tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?,
+    view: Ticker?,
+    type: Int,
+    context: Context?
+) {
+    val data = arrayListOf<TickerData>()
+    tickerData?.forEach {ticker ->
+        val title = ticker?.announcementTitle ?: ""
+        val desc = ticker?.announcementDescription ?: ""
+
+        val htmlDesc = desc + "<a href=\"${ticker?.ctaLink}\">${ticker?.ctaText}</a>"
+        data.add(TickerData(title,htmlDesc,type,isFromHtml = true))
+    } ?: view?.hide()
+    view?.addPagerView(TickerPagerAdapter(context, data),data)
 }

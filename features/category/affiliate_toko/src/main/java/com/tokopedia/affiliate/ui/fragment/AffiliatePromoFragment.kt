@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
@@ -247,6 +248,9 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         })
+        affiliatePromoViewModel.getAffiliateAnnouncement().observe(this,{
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(it,context)
+        })
     }
 
     private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
@@ -377,19 +381,18 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     override fun onSystemDown() {
         disableSearchButton()
         affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
+        affiliatePromoViewModel.getAnnouncementInformation()
     }
 
     override fun onReviewed() {
         affiliatePromoViewModel.setSoftBan(true)
         affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
-    }
-
-    override fun onUserNotEligible() {
-
+        affiliatePromoViewModel.getAnnouncementInformation()
     }
 
     override fun onUserRegistered() {
         affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
+        affiliatePromoViewModel.getAnnouncementInformation()
     }
 }
 

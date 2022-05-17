@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,6 +54,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
@@ -303,7 +303,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            onGetAnnouncementData(announcementData,view?.findViewById(R.id.affiliate_announcement_ticker))
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,context)
         })
 
     }
@@ -409,10 +409,6 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
         isUserBlackListed = true
         affiliateHomeViewModel.getAnnouncementInformation()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
-    }
-
-    override fun onUserNotEligible() {
-
     }
 
     override fun onUserRegistered() {

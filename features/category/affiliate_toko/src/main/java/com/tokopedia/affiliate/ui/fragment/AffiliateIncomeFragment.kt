@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -36,7 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
@@ -48,7 +46,7 @@ import com.tokopedia.affiliate.TRANSACTION_TYPE_WITHDRAWAL
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_PROD
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_STAGING
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
@@ -57,7 +55,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUrlLoader
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -172,7 +169,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             onGetValidateUserData(validateUserdata)
         })
         affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            onGetAnnouncementData(announcementData,view?.findViewById(R.id.affiliate_announcement_ticker))
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,context)
         })
     }
 
@@ -446,10 +443,6 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
 
     private fun initTarikSaldo(isReviewed: Boolean) {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = isReviewed  && enableTarikSaldo
-    }
-
-    override fun onUserNotEligible() {
-
     }
 
     override fun onUserRegistered() {
