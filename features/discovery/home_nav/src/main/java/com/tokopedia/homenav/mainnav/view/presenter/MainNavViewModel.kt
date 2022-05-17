@@ -440,7 +440,7 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshTransactionListData() {
         val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateOngoingTransactionModel
+            it.value is ErrorStateOngoingTransactionModel || it.value is TransactionListItemDataModel
         }
         transactionPlaceHolder?.let {
             updateWidget(InitialShimmerTransactionRevampDataModel(), transactionPlaceHolder.index)

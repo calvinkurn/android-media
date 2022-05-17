@@ -317,7 +317,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun showReviewProduct(uriReviewProduct: String) {
-        val intent = RouteManager.getIntent(requireContext(), uriReviewProduct)
+        val intent = RouteManager.getIntent(context, uriReviewProduct)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
