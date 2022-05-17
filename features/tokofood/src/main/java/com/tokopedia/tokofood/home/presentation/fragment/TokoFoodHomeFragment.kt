@@ -2,16 +2,11 @@ package com.tokopedia.tokofood.home.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -24,26 +19,24 @@ import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.util.ViewHelper
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
@@ -64,14 +57,10 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -113,9 +102,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val REQUEST_CODE_CHANGE_ADDRESS = 111
         private const val REQUEST_CODE_SET_PINPOINT = 112
+        private const val REQUEST_CODE_ADD_ADDRESS = 113
+        private const val NEW_ADDRESS_PARCELABLE = "EXTRA_ADDRESS_NEW"
 
         private const val TOTO_LATITUDE = "-6.2216771"
         private const val TOTO_LONGITUDE = "106.8184023"
+        private const val EMPTY_LOCATION = "0.0"
 
         const val SOURCE = "tokofood"
 
@@ -226,7 +218,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickSetAddress() {
-
+        checkUserEligibilityForAnaRevamp()
     }
 
     override fun onClickSetAddressInCoverage() {
@@ -236,7 +228,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_CHANGE_ADDRESS -> {}
+            REQUEST_CODE_ADD_ADDRESS -> onResultFromAddAddress(resultCode, data)
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
         }
     }
@@ -259,16 +251,20 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getLoadingState()
     }
 
-    private fun showNoPinPoin(){
+    private fun showNoPinPoin() {
         viewModel.getNoPinPoinState()
     }
 
-    private fun showNoAddress(){
+    private fun showNoAddress() {
         viewModel.getNoAddressState()
     }
 
     private fun getChooseAddress() {
         viewModel.getChooseAddress(SOURCE)
+    }
+
+    private fun checkUserEligibilityForAnaRevamp() {
+        viewModel.checkUserEligibilityForAnaRevamp()
     }
 
     private fun setupUi() {
@@ -343,15 +339,37 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
 
         observe(viewModel.errorMessage) { message ->
-            view?.let {
-                Toaster.build(it, message, Toaster.LENGTH_LONG).show()
-            }
+            showToaster(message)
         }
 
         observe(viewModel.chooseAddress) {
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
+                }
+            }
+        }
+
+        observe(viewModel.eligibleForAnaRevamp) {
+            when(it) {
+                is Success -> {
+                    if (it.data.eligible) {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+                    } else {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+                    }
+                }
+
+                is Fail -> {
+                    showToaster(it.throwable.message)
                 }
             }
         }
@@ -470,7 +488,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun hasNoPinPoin(): Boolean {
         return userSession.isLoggedIn && !localCacheModel?.address_id.isNullOrEmpty()
-                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty())
+                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty() ||
+                localCacheModel?.lat.equals(EMPTY_LOCATION) || localCacheModel?.long.equals(EMPTY_LOCATION))
     }
 
     private fun navigateToSetPinpoint() {
@@ -500,6 +519,17 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onResultFromAddAddress(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>(NEW_ADDRESS_PARCELABLE)
+                addressDataModel?.let {
+                    setupChooseAddress(it)
+                }
+            }
+        }
+    }
+
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
@@ -523,5 +553,25 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
         checkIfChooseAddressWidgetDataUpdated()
         loadLayout()
+    }
+
+    private fun setupChooseAddress(addressDataModel: SaveAddressDataModel) {
+        context?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
+                addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
+                addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
+                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+        loadLayout()
+    }
+
+    private fun showToaster(message: String?) {
+        view?.let {
+            if (!message.isNullOrEmpty()) {
+                Toaster.build(it, message, Toaster.LENGTH_LONG).show()
+            }
+        }
     }
 }

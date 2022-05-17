@@ -10,6 +10,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
@@ -43,6 +46,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -54,11 +58,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         get() = _errorMessage
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
+    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
+        get() = _eligibleForAnaRevamp
 
     private val _homeLayoutList = MutableLiveData<Result<TokoFoodHomeListUiModel>>()
     private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodHomeItemUiModel>()
 
@@ -71,6 +78,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         }){
             _errorMessage.value = it.message
         }
+    }
+
+    fun checkUserEligibilityForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+            },
+            {
+                _eligibleForAnaRevamp.value = Fail(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
     }
 
     fun getChooseAddress(source: String){
