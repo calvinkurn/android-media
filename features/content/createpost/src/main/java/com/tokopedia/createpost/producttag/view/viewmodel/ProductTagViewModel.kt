@@ -16,6 +16,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -79,6 +80,8 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
     private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
     private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
+
+    private val _sortFilter = MutableStateFlow(SortFilterUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -480,11 +483,21 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleOpenSortFilterBottomSheet() {
         viewModelScope.launchCatchError(block = {
             val param = _globalSearchProduct.value.param
-            val result = repo.getSortFilter(param)
 
-            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(param, result))
+            if(_sortFilter.value.state !is PagedState.Success) {
+                _sortFilter.setValue { copy(state = PagedState.Loading) }
+
+                val result = repo.getSortFilter(param)
+
+                _sortFilter.setValue {
+                    copy(data = result, state = PagedState.Success(false))
+                }
+            }
+
+            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(param, _sortFilter.value.data))
         }) {
-            /** TODO: handle this */
+            /** TODO: emit event */
+            _sortFilter.setValue { copy(state = PagedState.Error(it)) }
         }
     }
 

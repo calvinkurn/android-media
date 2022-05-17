@@ -93,7 +93,8 @@ class GetSortFilterUseCase @Inject constructor(
             param: SearchParamUiModel,
         ): Map<String, Any> {
             return mapOf<String, Any>(
-                KEY_PARAMS to param.toCompleteParam(),
+                /** TODO: gonna change this later */
+                KEY_PARAMS to "st=product&user_warehouseId=0&srp_component_id=01.02.02.01&user_lat=-6.267449&user_long=106.996696&source=search_product&q=maybelline&user_districtId=2200&user_addressId=4649185&ob=23&user_postCode=17114&user_cityId=167&device=android",
             )
         }
     }
