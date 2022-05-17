@@ -465,7 +465,7 @@ class ProductTagViewModel @AssistedInject constructor(
             resetPagination()
 
             if(isParamFound(quickFilter.key, quickFilter.value))
-                removeParam(quickFilter.key)
+                removeParam(quickFilter.key, quickFilter.value)
             else addParam(quickFilter.key, quickFilter.value)
         }
 

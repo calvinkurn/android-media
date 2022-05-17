@@ -41,15 +41,32 @@ data class SearchParamUiModel(
         }
 
     fun addParam(key: String, value: Any) {
-        this.value[key] = value
+        val newValue = if(this.value.containsKey(key))
+            (this.value[key] as String) + DEFAULT_SEPARATOR + value
+         else value
+
+        this.value[key] = newValue
     }
 
-    fun removeParam(key: String) {
-        value.remove(key)
+    fun removeParam(key: String, value: String) {
+        if(this.value.containsKey(key)) {
+            if(this.value[key] is String) {
+                val split = this.value[key].toString().split(DEFAULT_SEPARATOR).toMutableList()
+                split.remove(value)
+
+                this.value[key] = split.joinToString(separator = DEFAULT_SEPARATOR)
+            }
+            else this.value.remove(key)
+        }
     }
 
     fun isParamFound(key: String, value: Any): Boolean {
         if(this.value.containsKey(key)) {
+            if(this.value[key] is String) {
+                val split = this.value[key].toString().split(DEFAULT_SEPARATOR)
+                return split.firstOrNull { it == value } != null
+            }
+
             return value == this.value[key]
         }
 
@@ -86,6 +103,8 @@ data class SearchParamUiModel(
         private const val KEY_OB = "ob"
 
         private const val LIMIT_PER_PAGE = 20
+
+        private const val DEFAULT_SEPARATOR = "#"
 
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel().apply {
