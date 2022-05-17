@@ -67,6 +67,8 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -709,8 +711,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     override fun onPodClicked(imageId: String, orderId: Long, description: String) {
         //TODO Irpan
 //        Toaster.build(requireView(), urlPod).show()
+        Log.d("onPodClicked_ir","testt")
         navigateToPodActivity(imageId, orderId, description)
-
 
     }
 
@@ -753,39 +755,15 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     //POD: navigate to pod activity
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
 
-        val POD_EXTRA_IMAGE_ID = "extra_image_id"
-        val POD_EXTRA_DESCRIPTION = "extra_description"
-
-        val REQUEST_POD = 22222
-
-//        val uri = UriUtil.buildUri(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY, orderId.toString())
-//        val route = RouteManager.getIntent(context, uri)
-//        (startActivityForResult(route.apply {
-//            putExtra(POD_EXTRA_IMAGE_ID, imageId)
-//            putExtra(POD_EXTRA_DESCRIPTION, description)
-//        }, REQUEST_POD))
-
-        val uri = UriUtil.buildUri(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY, orderId.toString())
-
-
 
         val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
-            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_IMAGE_ID, imageId)
-            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_DESCRIPTION, description)
+            .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
+            .appendQueryParameter(PodConstant.QUERY_DESCRIPTION, description)
             .build()
             .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
-        startActivityForResult(intent, REQUEST_POD)
+        startActivityForResult(intent, PodConstant.REQUEST_POD)
 
-//        var intent: Intent? = null
-//
-//        intent = RouteManager.getIntent(context, uri)
-//
-//        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
-//
-//
-//
-//        startActivityForResult(intent, 2)
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

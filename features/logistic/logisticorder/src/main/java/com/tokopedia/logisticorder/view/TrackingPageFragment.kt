@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
@@ -508,19 +509,19 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
 
         val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
-            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_IMAGE_ID, imageId)
-            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_DESCRIPTION, description)
+            .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
+            .appendQueryParameter(PodConstant.QUERY_DESCRIPTION, description)
             .build()
             .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
-        startActivityForResult(intent, ProofOfDeliveryActivity.REQUEST_POD)
+        startActivityForResult(intent, PodConstant.REQUEST_POD)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            ProofOfDeliveryActivity.REQUEST_POD -> {
-                if (requestCode == ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE) {
+            PodConstant.REQUEST_POD -> {
+                if (requestCode == PodConstant.RESULT_FAIL_LOAD_IMAGE) {
                     handleFailedLoadImagePod()
                 }
             }

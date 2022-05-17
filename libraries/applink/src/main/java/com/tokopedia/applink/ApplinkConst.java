@@ -713,9 +713,4 @@ public interface ApplinkConst {
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }
-
-    interface ProofOfDelivery {
-        String QUERY_DESCRIPTION = "query_description";
-        String QUERY_IMAGE_ID = "query_image_id";
-    }
 }

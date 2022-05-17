@@ -10,6 +10,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.FragmentProofOfDeliveryBinding
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
@@ -24,6 +25,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
+/**
+ * Created by irpan on 28/04/22.
+ */
 class ProofOfDeliveryFragment : BaseDaggerFragment() {
 
     companion object {
@@ -85,14 +89,12 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         return initBinding(inflater, container)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onBackButtonListener()
         initImage()
         initTextDescription()
     }
-
 
     private fun onBackButtonListener() {
         binding?.buttonBack?.setOnClickListener {
@@ -137,7 +139,7 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
     }
 
     private fun finishWithToastError() {
-        requireActivity().setResult(ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE)
+        requireActivity().setResult(PodConstant.RESULT_FAIL_LOAD_IMAGE)
         requireActivity().finish()
     }
 
