@@ -35,10 +35,8 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPr
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
-import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -91,7 +89,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackground()
-        initializeToolbar(view)
+        initializeToolbar()
         initializeRecyclerViewScrollListener()
         observeList()
         observeFragmentUiModel()
@@ -159,10 +157,10 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         (activity as BaseTokofoodActivity).onBackPressed()
     }
 
-    private fun initializeToolbar(view: View) {
-        activity?.let {
+    private fun initializeToolbar() {
+        activity?.let { ctx ->
             viewBinding?.toolbarPurchasePromo?.removeAllViews()
-            val tokoFoodPurchaseToolbar = TokoFoodPromoToolbar(it).apply {
+            val tokoFoodPurchaseToolbar = TokoFoodPromoToolbar(ctx).apply {
                 listener = this@TokoFoodPromoFragment
             }
 
@@ -216,6 +214,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
+            toolbar?.setTitle(it.pageTitle)
             renderTotalAmount(it)
         })
     }
@@ -228,6 +227,11 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                         ?: ResponseErrorException())
                 UiEvent.EVENT_RENDER_GLOBAL_ERROR_KYC -> renderKycError()
                 UiEvent.EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE -> renderIneligiblePromoError()
+                UiEvent.EVENT_SHOW_TOASTER -> {
+                    (it.data as? String)?.let { toasterMessage ->
+                        showToaster(toasterMessage)
+                    }
+                }
             }
         })
     }
@@ -242,11 +246,12 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {
         viewBinding?.let {
+
             it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
-            it.totalAmountPurchasePromo.setCtaText("Pakai Promo (${fragmentUiModel.promoCount})")
-            it.totalAmountPurchasePromo.setLabelTitle("Kamu bisa hemat")
-            val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.promoAmount, false).removeDecimalSuffix()
-            it.totalAmountPurchasePromo.setAmount(totalAmountString)
+            it.totalAmountPurchasePromo.setCtaText(
+                context?.getString(R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
+            it.totalAmountPurchasePromo.setLabelTitle(fragmentUiModel.promoTitle)
+            it.totalAmountPurchasePromo.setAmount(fragmentUiModel.promoAmountStr)
             it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
                 (activity as BaseTokofoodActivity).onBackPressed()
             }
@@ -304,6 +309,17 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         }
     }
 
+    private fun showToaster(toasterMessage: String) {
+        view?.let {
+            Toaster.build(
+                view = it,
+                text = toasterMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -314,9 +330,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onClickUnavailablePromoItem() {
-        view?.let {
-            Toaster.build(it, "Kupon yang terpasang otomatis tidak bisa diubah.").show()
-        }
+        viewModel.showChangeRestrictionMessage()
     }
 
 }

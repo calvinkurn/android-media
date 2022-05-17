@@ -6,10 +6,10 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.BaseTok
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
 fun View.renderAlpha(element: BaseTokoFoodPurchaseUiModel) {
-    alpha = if (element.isDisabled) {
-        0.5f
-    } else {
+    alpha = if (element.isEnabled) {
         1.0f
+    } else {
+        0.5f
     }
 }
 

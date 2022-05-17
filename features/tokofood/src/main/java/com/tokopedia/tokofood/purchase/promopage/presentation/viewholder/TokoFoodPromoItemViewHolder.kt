@@ -32,12 +32,19 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
     private fun renderPromoData(viewBinding: ItemTokofoodPromoCardBinding,
                                 element: TokoFoodPromoItemUiModel) {
         with(viewBinding) {
-            if (element.isUnavailable) {
+            if (element.isAvailable) {
+                textPromoHighlightIdentifierTokofood.text = element.highlightWording
+                textPromoHighlightIdentifierTokofood.show()
+                promoHighlightIdentifierTokofood.show()
+                containerErrorInfoTokofood.gone()
+                imageSelectPromoTokofood.show()
+                itemView.setOnClickListener {  }
+            } else {
                 promoHighlightIdentifierTokofood.gone()
                 textPromoHighlightIdentifierTokofood.gone()
-                if (element.unavailableInformation.isNotBlank()) {
+                if (element.additionalInformation.isNotBlank()) {
                     containerErrorInfoTokofood.show()
-                    textErrorInfoTokofood.text = element.unavailableInformation
+                    textErrorInfoTokofood.text = element.additionalInformation
                 } else {
                     containerErrorInfoTokofood.gone()
                 }
@@ -45,44 +52,37 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
                 itemView.setOnClickListener {
                     listener.onClickUnavailablePromoItem()
                 }
-            } else {
-                textPromoHighlightIdentifierTokofood.text = element.highlightWording
-                textPromoHighlightIdentifierTokofood.show()
-                promoHighlightIdentifierTokofood.show()
-                containerErrorInfoTokofood.gone()
-                imageSelectPromoTokofood.show()
-                itemView.setOnClickListener {  }
             }
 
-            textPromoItemTitleTokofood.text = element.title
+            promoBenefitDetail.text = element.title
             textTimeValidityTokofood.text = element.timeValidityWording
         }
     }
 
     private fun renderPromoState(viewBinding: ItemTokofoodPromoCardBinding,
                                  element: TokoFoodPromoItemUiModel) {
-        if (element.isUnavailable) {
-            renderPromoDisabled(viewBinding)
-        } else {
+        if (element.isAvailable) {
             renderPromoEnabled(viewBinding)
+        } else {
+            renderPromoDisabled(viewBinding)
         }
     }
 
     private fun renderPromoEnabled(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
-            textPromoItemTitleTokofood.setTextColor(colorTextEnabledDefault)
+            promoBenefitDetail.setTextColor(colorTextEnabledDefault)
             textTimeValidityTokofood.setTextColor(colorTextEnabledLowEmphasis)
-            cardPromoItemTokofood.cardType = CardUnify.TYPE_BORDER_ACTIVE
-            cardPromoItemTokofood.setCardBackgroundColor(colorBackgroundSelected)
+            promoCell.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            promoCell.setCardBackgroundColor(colorBackgroundSelected)
         }
     }
 
     private fun renderPromoDisabled(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
-            textPromoItemTitleTokofood.setTextColor(colorTextDisabled)
+            promoBenefitDetail.setTextColor(colorTextDisabled)
             textTimeValidityTokofood.setTextColor(colorTextDisabled)
-            cardPromoItemTokofood.cardType = CardUnify.TYPE_BORDER
-            cardPromoItemTokofood.setCardBackgroundColor(colorBackgroundDisabled)
+            promoCell.cardType = CardUnify.TYPE_BORDER
+            promoCell.setCardBackgroundColor(colorBackgroundDisabled)
         }
     }
 

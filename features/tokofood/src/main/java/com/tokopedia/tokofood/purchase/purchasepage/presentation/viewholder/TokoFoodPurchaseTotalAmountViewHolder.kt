@@ -18,19 +18,36 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
 
     override fun bind(element: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            if (element.isDisabled) {
-                totalAmountPurchase.amountCtaView.isEnabled = false
-                totalAmountPurchase.setCtaText("Pilih Pembayaran")
-                totalAmountPurchase.setLabelTitle("Total Tagihan")
-                totalAmountPurchase.setAmount("-")
-            } else {
-                totalAmountPurchase.amountCtaView.isEnabled = true
-                totalAmountPurchase.setCtaText("Pilih Pembayaran")
-                totalAmountPurchase.setLabelTitle("Total Tagihan")
-                val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
-                totalAmountPurchase.setAmount(totalAmountString)
-                totalAmountPurchase.amountCtaView.setOnClickListener {
-                    listener.onButtonCheckoutClicked()
+            when {
+                element.isLoading -> {
+                    totalAmountPurchase.isTotalAmountLoading.let { isLoading ->
+                        if (!isLoading) {
+                            totalAmountPurchase.isTotalAmountLoading = true
+                        }
+                    }
+                }
+                element.isEnabled -> {
+                    totalAmountPurchase.amountCtaView.isLoading = element.isButtonLoading
+                    if (totalAmountPurchase.isTotalAmountLoading) {
+                        totalAmountPurchase.isTotalAmountLoading = false
+                    }
+                    totalAmountPurchase.amountCtaView.isEnabled = true
+                    totalAmountPurchase.setCtaText(getString(R.string.text_purchase_choose_payment))
+                    totalAmountPurchase.setLabelTitle(getString(R.string.text_purchase_payment_total))
+                    val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
+                    totalAmountPurchase.setAmount(totalAmountString)
+                    totalAmountPurchase.amountCtaView.setOnClickListener {
+                        totalAmountPurchase.amountCtaView.isLoading = true
+                        element.isButtonLoading = true
+                        listener.onButtonCheckoutClicked()
+                        totalAmountPurchase.amountCtaView.setOnClickListener(null)
+                    }
+                }
+                else -> {
+                    totalAmountPurchase.amountCtaView.isEnabled = false
+                    totalAmountPurchase.setCtaText(getString(R.string.text_purchase_choose_payment))
+                    totalAmountPurchase.setLabelTitle(getString(R.string.text_purchase_payment_total))
+                    totalAmountPurchase.setAmount(getString(R.string.text_purchase_dash))
                 }
             }
         }

@@ -8,7 +8,8 @@ import kotlinx.parcelize.Parcelize
 data class MiniCartUiModel(
         var cartData: MutableMap<String, CartProduct> = mutableMapOf(),
         var shopName: String = "",
-        var totalPrice: Long = 0L,
+        var totalPrice: Double = 0.0,
+        var totalPriceFmt: String = "",
         var totalProduct: Int = 0,
         var totalProductQuantity: Int = 0
 ): Parcelable

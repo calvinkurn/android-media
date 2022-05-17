@@ -39,11 +39,19 @@ class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
             oldItem is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel && newItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> oldItem == newItem
+            oldItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel && newItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
+                oldItem == newItem && oldItem.isLoading == newItem.isLoading
+            }
+            oldItem is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel -> {
+                oldItem == newItem && oldItem.isLoading == newItem.isLoading
+            }
+            oldItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
+                oldItem == newItem && oldItem.isLoading == newItem.isLoading
+            }
             oldItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> oldItem == newItem
+            oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
+                oldItem == newItem && oldItem.isLoading == newItem.isLoading && oldItem.isButtonLoading == newItem.isButtonLoading
+            }
             else -> false
         }
     }
