@@ -217,6 +217,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.CloseTicker -> handleCloseTicker()
             is ProductTagAction.SelectQuickFilter -> handleSelectQuickFilter(action.quickFilter)
             ProductTagAction.OpenSortFilterBottomSheet -> handleOpenSortFilterBottomSheet()
+            is ProductTagAction.ApplySortFilter -> handleApplySortFilter(action.selectedSortFilter)
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -482,7 +483,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenSortFilterBottomSheet() {
         viewModelScope.launchCatchError(block = {
-            val param = _globalSearchProduct.value.param
+            val param = _globalSearchProduct.value.param.copy().apply {
+                source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
+            }
 
             if(_sortFilter.value.state !is PagedState.Success) {
                 _sortFilter.setValue { copy(state = PagedState.Loading) }
@@ -499,6 +502,24 @@ class ProductTagViewModel @AssistedInject constructor(
             /** TODO: emit event */
             _sortFilter.setValue { copy(state = PagedState.Error(it)) }
         }
+    }
+
+    private fun handleApplySortFilter(selectedSortFilter: Map<String, String>) {
+        val newParam = _globalSearchProduct.value.param.copy().apply {
+            resetPagination()
+        }
+
+        selectedSortFilter.forEach { selected ->
+            newParam.apply {
+                rewriteParam(selected.key, selected.value)
+            }
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleLoadGlobalSearchShop() {

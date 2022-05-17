@@ -40,12 +40,24 @@ data class SearchParamUiModel(
             value[KEY_USER_ID] = newValue
         }
 
+    var source: String
+        get() = value[KEY_SOURCE]?.toString() ?: ""
+        set(newValue) {
+            value[KEY_SOURCE] = newValue
+        }
+
+    /** Add param 1 by 1, if exists then param will be appended */
     fun addParam(key: String, value: Any) {
         val newValue = if(this.value.containsKey(key))
             (this.value[key] as String) + DEFAULT_MULTIPLE_PARAM_SEPARATOR + value
          else value
 
         this.value[key] = newValue
+    }
+
+    /** Rewrite existing param if any */
+    fun rewriteParam(key: String, value: String) {
+        this.value[key] = value
     }
 
     fun removeParam(key: String, value: String) {
@@ -79,15 +91,16 @@ data class SearchParamUiModel(
     }
 
     fun toCompleteParam(): String {
-        value[KEY_DEVICE] = "android"
-        value[KEY_FROM] = "feed_content"
-        value[KEY_SOURCE] = "universe"
-
         return value.map {
             it.toString()
         }.joinToString(separator = DEFAULT_PARAM_SEPARATOR)
     }
 
+    fun setDefaultParam() {
+        value[KEY_DEVICE] = "android"
+        value[KEY_FROM] = "feed_content"
+        value[KEY_SOURCE] = "universe"
+    }
 
     companion object {
         private const val KEY_DEVICE = "device"
@@ -106,9 +119,12 @@ data class SearchParamUiModel(
         private const val DEFAULT_MULTIPLE_PARAM_SEPARATOR = "#"
         private const val DEFAULT_PARAM_SEPARATOR = "&"
 
+        const val SOURCE_SEARCH_PRODUCT = "search_product"
+
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel().apply {
                 resetPagination()
+                setDefaultParam()
                 query = ""
             }
     }

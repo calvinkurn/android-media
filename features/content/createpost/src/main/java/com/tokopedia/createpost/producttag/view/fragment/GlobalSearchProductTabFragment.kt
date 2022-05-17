@@ -110,7 +110,13 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                             event.data,
                             object : SortFilterBottomSheet.Callback {
                                 override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-
+                                    applySortFilterModel.apply {
+                                        viewModel.submitAction(
+                                            ProductTagAction.ApplySortFilter(
+                                                selectedFilterMapParameter + selectedSortMapParameter
+                                            )
+                                        )
+                                    }
                                 }
 
                                 override fun getResultCount(mapParameter: Map<String, String>) {
