@@ -513,9 +513,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun onErrorGetInboxReviewData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
-        if (feedbackInboxList?.isEmpty() == true) {
+        if (feedbackInboxList.isNullOrEmpty()) {
             inboxReviewAdapter.clearAllElements()
-            inboxReviewAdapter.addInboxFeedbackError()
+            inboxReviewAdapter.addInboxFeedbackError(throwable)
         } else {
             onErrorLoadMoreToaster(
                 throwable.getErrorMessage(
