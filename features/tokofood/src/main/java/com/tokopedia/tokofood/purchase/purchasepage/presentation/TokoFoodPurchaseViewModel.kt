@@ -17,7 +17,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
-import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
@@ -480,24 +480,28 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun updateAddressPinpoint(latitude: String,
                               longitude: String) {
-        _isAddressHasPinpoint.value.first.takeIf { it.isNotEmpty() }?.let { addressId ->
-            launchCatchError(
-                block = {
-                    val isSuccess = withContext(dispatcher.io) {
-                        keroEditAddressUseCase.execute(addressId, latitude, longitude)
-                    }
-                    if (isSuccess) {
-                        _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
-                    } else {
+        _isAddressHasPinpoint.value.first.takeIf { it.isNotEmpty() }.let { addressId ->
+            if (addressId == null) {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+            } else {
+                launchCatchError(
+                    block = {
+                        val isSuccess = withContext(dispatcher.io) {
+                            keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                        }
+                        if (isSuccess) {
+                            _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                        } else {
+                            _isAddressHasPinpoint.value = addressId to false
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                        }
+                    }, onError = {
                         _isAddressHasPinpoint.value = addressId to false
                         _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                     }
-                }, onError = {
-                    _isAddressHasPinpoint.value = addressId to false
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
-                }
-            )
+                )
+            }
         }
     }
 

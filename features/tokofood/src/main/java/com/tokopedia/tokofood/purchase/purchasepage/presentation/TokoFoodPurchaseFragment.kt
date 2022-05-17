@@ -181,11 +181,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun loadData() {
         showLoadingLayout()
-        context?.applicationContext?.let {
+        context?.let {
             ChooseAddressUtils.getLocalizingAddressData(it).let { addressData ->
                 //TODO: Set correct value
                 viewModel.setIsHasPinpoint(addressData.address_id, true)
-//                viewModel.setIsHasPinpoint(addressData.latLong.isNotEmpty())
+//                viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
             }
         }
         viewModel.loadData()
