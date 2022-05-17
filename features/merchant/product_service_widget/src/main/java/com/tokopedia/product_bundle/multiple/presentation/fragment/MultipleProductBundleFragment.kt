@@ -69,13 +69,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         private const val SELECTED_BUNDLE_ID = "SELECTED_BUNDLE_ID"
         private const val SELECTED_PRODUCT_IDS = "SELECTED_PRODUCT_IDS"
         private const val PAGE_SOURCE = "PAGE_SOURCE"
+        private const val PARENT_PRODUCT_ID = "PARENT_PRODUCT_ID"
         private const val LOGIN_REQUEST_CODE = 1122
         @JvmStatic
         fun newInstance(productBundleInfo: List<BundleInfo>,
                         emptyVariantProductIds: List<String>,
                         selectedBundleId: String,
                         selectedProductIds: List<String>,
-                        pageSource: String) =
+                        pageSource: String,
+                        parentProductId: Long) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
@@ -83,6 +85,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     putString(SELECTED_BUNDLE_ID, selectedBundleId)
                     putStringArrayList(SELECTED_PRODUCT_IDS, ArrayList(selectedProductIds))
                     putString(PAGE_SOURCE, pageSource)
+                    putLong(PARENT_PRODUCT_ID, parentProductId)
                 }
             }
     }
@@ -126,6 +129,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             emptyVariantProductIds = arguments?.getStringArrayList(EMPTY_VARIANT_PRODUCT_IDS).orEmpty()
             viewModel.selectedProductIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
             viewModel.pageSource = arguments?.getString(PAGE_SOURCE) ?: ""
+            viewModel.parentProductID = arguments?.getLong(PARENT_PRODUCT_ID).orZero()
         }
 
         // setup multiple product bundle views

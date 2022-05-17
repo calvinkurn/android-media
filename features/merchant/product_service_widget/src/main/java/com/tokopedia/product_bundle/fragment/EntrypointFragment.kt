@@ -207,7 +207,8 @@ class EntrypointFragment : BaseDaggerFragment() {
                                     emptyVariantProductIds = emptyVariantProductIds,
                                     selectedBundleId = bundleId.toString(),
                                     selectedProductIds = selectedProductIds,
-                                    source
+                                    pageSource = source,
+                                    parentProductId = viewModel.parentProductID
                                 )
                             }
                         }
