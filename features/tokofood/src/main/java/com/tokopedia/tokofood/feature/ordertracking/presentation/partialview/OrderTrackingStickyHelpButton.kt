@@ -27,11 +27,11 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
 
     private var navigator: OrderTrackingNavigator? = null
 
-    fun setupHelpButton(primaryButton: ActionButtonsUiModel.ActionButton) {
+    fun setupHelpButton(orderId: String, primaryButton: ActionButtonsUiModel.ActionButton) {
         binding?.btnOrderTrackingSecondaryHelp?.run {
             text = primaryButton.label
             if (primaryButton.appUrl.isNotEmpty()) {
-                setOnClickListener(createPrimaryButtonClickListener(primaryButton.appUrl))
+                setOnClickListener(createPrimaryButtonClickListener(orderId, primaryButton.appUrl))
             }
         }
     }
@@ -40,9 +40,9 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
         this.navigator = navigator
     }
 
-    private fun createPrimaryButtonClickListener(appUrl: String): OnClickListener {
+    private fun createPrimaryButtonClickListener(orderId: String, appUrl: String): OnClickListener {
         return OnClickListener {
-            navigator?.goToHelpPage(appUrl)
+            navigator?.goToHelpPage(orderId, appUrl)
         }
     }
 }

@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyAction
 import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.SecondaryActionBottomSheet
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 
 
@@ -36,13 +37,14 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
         )
     }
 
-    private fun onPrimaryActionButtonClickListener(appUrl: String): OnClickListener {
+    private fun onPrimaryActionButtonClickListener(trackingWrapperUiModel: TrackingWrapperUiModel, appUrl: String): OnClickListener {
         return OnClickListener {
-            navigator?.goToMerchantPage(appUrl)
+            navigator?.goToMerchantPage(trackingWrapperUiModel, appUrl)
         }
     }
 
     private fun onSecondaryActionButtonClicked(
+        orderId: String,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ): OnClickListener {
@@ -51,24 +53,33 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
                 secondaryActionBottomSheet = SecondaryActionBottomSheet()
             }
             secondaryActionBottomSheet?.run {
-                setActionBtnList(secondaryButton)
                 dismissBottomSheet()
+                setOrderId(orderId)
+                setActionBtnList(secondaryButton)
+                navigator?.let { navigator -> setNavigator(navigator) }
                 show(fragmentManager)
             }
         }
     }
 
     private fun setupPrimaryButton(
+        trackingWrapperUiModel: TrackingWrapperUiModel,
         actionButton: ActionButtonsUiModel.ActionButton
     ) {
         binding?.beliLagiButton?.apply {
             text = actionButton.label
-            setOnClickListener(onPrimaryActionButtonClickListener(actionButton.appUrl))
+            setOnClickListener(
+                onPrimaryActionButtonClickListener(
+                    trackingWrapperUiModel,
+                    actionButton.appUrl
+                )
+            )
             show()
         }
     }
 
     private fun setupSecondaryButton(
+        orderId: String,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ) {
@@ -93,13 +104,28 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
                     R.color.food_order_detail_dms_secondary_action_button_color_filter
                 )
             )
-            setOnClickListener(onSecondaryActionButtonClicked(secondaryButton, fragmentManager))
+            setOnClickListener(
+                onSecondaryActionButtonClicked(
+                    orderId,
+                    secondaryButton,
+                    fragmentManager
+                )
+            )
         }
     }
 
-    fun setupActionButtons(actionButtons: ActionButtonsUiModel, fragmentManager: FragmentManager) {
-        setupPrimaryButton(actionButtons.primaryActionButton)
-        setupSecondaryButton(actionButtons.secondaryActionButton, fragmentManager)
+    fun setupActionButtons(
+        trackingWrapperUiModel: TrackingWrapperUiModel,
+        actionButtons: ActionButtonsUiModel,
+        fragmentManager: FragmentManager
+    ) {
+
+        setupPrimaryButton(trackingWrapperUiModel, actionButtons.primaryActionButton)
+        setupSecondaryButton(
+            trackingWrapperUiModel.orderId,
+            actionButtons.secondaryActionButton,
+            fragmentManager
+        )
     }
 
     fun setOrderTrackingNavigator(navigator: OrderTrackingNavigator) {

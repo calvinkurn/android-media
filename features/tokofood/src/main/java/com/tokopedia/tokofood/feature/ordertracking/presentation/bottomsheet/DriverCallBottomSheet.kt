@@ -20,6 +20,8 @@ class DriverCallBottomSheet : BottomSheetUnify() {
     private var driverPhoneNumber: String? = null
     private var isCallable: Boolean? = null
 
+    private var tracking: (() -> Unit)? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +62,7 @@ class DriverCallBottomSheet : BottomSheetUnify() {
 
     private fun setDriverCallBtn() {
         binding?.btnDriverCall?.setOnClickListener {
+            tracking?.invoke()
             driverPhoneNumber?.let { driverPhoneNumber ->
                 driverCallToIntent(driverPhoneNumber)
             }
@@ -80,6 +83,10 @@ class DriverCallBottomSheet : BottomSheetUnify() {
                 show(it, TAG)
             }
         }
+    }
+
+    fun setTrackingListener(tracking: () -> Unit) {
+        this.tracking = tracking
     }
 
     companion object {

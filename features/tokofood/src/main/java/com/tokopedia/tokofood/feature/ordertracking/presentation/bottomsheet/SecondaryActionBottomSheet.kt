@@ -27,6 +27,8 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
 
     private var navigator: OrderTrackingNavigator? = null
 
+    private var orderId: String? = ""
+
     private var actionButtonList: List<ActionButtonsUiModel.ActionButton>? = listOf()
 
     override fun onCreateView(
@@ -46,7 +48,7 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
     }
 
     override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator?.goToHelpPage(button.appUrl)
+        navigator?.goToHelpPage(orderId, button.appUrl)
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -61,6 +63,14 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
         if (isVisible) {
             dismiss()
         }
+    }
+
+    fun setOrderId(orderId: String) {
+        this.orderId = orderId
+    }
+
+    fun setNavigator(navigator: OrderTrackingNavigator) {
+        this.navigator = navigator
     }
 
     fun setActionBtnList(actionButtonList: List<ActionButtonsUiModel.ActionButton>) {

@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
+import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
@@ -37,6 +38,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TrackingWrapperUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,6 +53,9 @@ class BaseTokoFoodOrderTrackingFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var tracking: TokoFoodPostPurchaseAnalytics
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokoFoodOrderTrackingViewModel::class.java)
     }
@@ -64,7 +69,7 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     private val navigator by lazy {
-        OrderTrackingNavigator(this)
+        OrderTrackingNavigator(this, tracking)
     }
 
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
@@ -73,12 +78,19 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
-    private var orderId: String? = null
+    private val orderId: String by lazy {
+        arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(TokoFoodOrderTrackingComponent::class.java).inject(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tracking.viewOrderDetailPage("")
     }
 
     override fun onCreateView(
@@ -92,7 +104,6 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setOrderIdFromArgument()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail(ORDER_TRACKING_RESOURCE)
@@ -140,7 +151,8 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onClickDriverCall() {
-        viewModel.fetchDriverPhoneNumber(viewModel.getOrderId())
+        tracking.clickCallDriverIcon(orderId, "")
+        viewModel.fetchDriverPhoneNumber(orderId)
     }
 
     override fun onErrorActionClicked() {
@@ -149,10 +161,6 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
-
-    private fun setOrderIdFromArgument() {
-        this.orderId = arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
-    }
 
     private fun setupToolbar() {
         toolbarHandler = OrderTrackingToolbarHandler(WeakReference(activity), binding)
@@ -171,7 +179,7 @@ class BaseTokoFoodOrderTrackingFragment :
             hideError()
             showLoadingShimmer(LoadingModel())
         }
-        viewModel.fetchOrderDetail(orderId.orEmpty(), resourceId)
+        viewModel.fetchOrderDetail(orderId, resourceId)
     }
 
     private fun observeOrderDetail() {
@@ -225,6 +233,11 @@ class BaseTokoFoodOrderTrackingFragment :
             driverPhoneNumberUiModel.phoneNumber,
             driverPhoneNumberUiModel.isCallable
         )
+        driverCallBottomSheet.setTrackingListener {
+            tracking.clickCallDriverCtaInBottomSheet(
+                orderId, ""
+            )
+        }
         driverCallBottomSheet.show(childFragmentManager)
     }
 
@@ -338,7 +351,11 @@ class BaseTokoFoodOrderTrackingFragment :
             containerOrderTrackingHelpButton.hide()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
-                setupActionButtons(actionButtons, childFragmentManager)
+                setupActionButtons(
+                    TrackingWrapperUiModel(orderId, "", viewModel.getFoodItems()),
+                    actionButtons,
+                    childFragmentManager
+                )
                 show()
             }
         }
