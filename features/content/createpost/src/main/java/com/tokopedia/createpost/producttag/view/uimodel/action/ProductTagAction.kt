@@ -32,6 +32,7 @@ sealed interface ProductTagAction {
     object TickerClicked: ProductTagAction
     object CloseTicker: ProductTagAction
     data class SelectQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
+    object OpenSortFilterBottomSheet: ProductTagAction
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction

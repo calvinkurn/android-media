@@ -18,14 +18,17 @@ import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_global_search_ticker_list.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -46,6 +49,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) },
         )
     }
+    private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +97,29 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchProduct(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
                 renderQuickFilter(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is ProductTagUiEvent.OpenSortFilterBottomSheet -> {
+                        sortFilterBottomSheet.show(
+                            childFragmentManager,
+                            null,
+                            null,
+                            object : SortFilterBottomSheet.Callback {
+                                override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+
+                                }
+
+                                override fun getResultCount(mapParameter: Map<String, String>) {
+
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -172,6 +199,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             textView?.text = getString(R.string.cc_product_tag_filter_label)
             parentListener = {
                 /** TODO: open sort & filter bottomsheet */
+                viewModel.submitAction(ProductTagAction.OpenSortFilterBottomSheet)
             }
 
             show()

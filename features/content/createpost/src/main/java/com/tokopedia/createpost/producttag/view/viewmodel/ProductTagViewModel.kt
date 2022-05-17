@@ -213,6 +213,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.TickerClicked -> handleTickerClicked()
             ProductTagAction.CloseTicker -> handleCloseTicker()
             is ProductTagAction.SelectQuickFilter -> handleSelectQuickFilter(action.quickFilter)
+            ProductTagAction.OpenSortFilterBottomSheet -> handleOpenSortFilterBottomSheet()
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -474,6 +475,13 @@ class ProductTagViewModel @AssistedInject constructor(
         }
 
         handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleOpenSortFilterBottomSheet() {
+        /** TODO: load gql here */
+        viewModelScope.launch {
+            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(""))
+        }
     }
 
     private fun handleLoadGlobalSearchShop() {
