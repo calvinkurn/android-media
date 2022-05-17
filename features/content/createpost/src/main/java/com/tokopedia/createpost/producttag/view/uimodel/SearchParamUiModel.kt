@@ -42,7 +42,7 @@ data class SearchParamUiModel(
 
     fun addParam(key: String, value: Any) {
         val newValue = if(this.value.containsKey(key))
-            (this.value[key] as String) + DEFAULT_SEPARATOR + value
+            (this.value[key] as String) + DEFAULT_MULTIPLE_PARAM_SEPARATOR + value
          else value
 
         this.value[key] = newValue
@@ -51,10 +51,10 @@ data class SearchParamUiModel(
     fun removeParam(key: String, value: String) {
         if(this.value.containsKey(key)) {
             if(this.value[key] is String) {
-                val split = this.value[key].toString().split(DEFAULT_SEPARATOR).toMutableList()
+                val split = this.value[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR).toMutableList()
                 split.remove(value)
 
-                this.value[key] = split.joinToString(separator = DEFAULT_SEPARATOR)
+                this.value[key] = split.joinToString(separator = DEFAULT_MULTIPLE_PARAM_SEPARATOR)
             }
             else this.value.remove(key)
         }
@@ -63,7 +63,7 @@ data class SearchParamUiModel(
     fun isParamFound(key: String, value: Any): Boolean {
         if(this.value.containsKey(key)) {
             if(this.value[key] is String) {
-                val split = this.value[key].toString().split(DEFAULT_SEPARATOR)
+                val split = this.value[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR)
                 return split.firstOrNull { it == value } != null
             }
 
@@ -83,10 +83,9 @@ data class SearchParamUiModel(
         value[KEY_FROM] = "feed_content"
         value[KEY_SOURCE] = "universe"
 
-        return value.toString()
-            .replace("{", "")
-            .replace("}", "")
-            .replace(", ", "&")
+        return value.map {
+            it.toString()
+        }.joinToString(separator = DEFAULT_PARAM_SEPARATOR)
     }
 
 
@@ -104,7 +103,8 @@ data class SearchParamUiModel(
 
         private const val LIMIT_PER_PAGE = 20
 
-        private const val DEFAULT_SEPARATOR = "#"
+        private const val DEFAULT_MULTIPLE_PARAM_SEPARATOR = "#"
+        private const val DEFAULT_PARAM_SEPARATOR = "&"
 
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel().apply {
