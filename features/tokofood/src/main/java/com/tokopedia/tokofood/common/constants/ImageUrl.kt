@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.common
+package com.tokopedia.tokofood.common.constants
 
 object ImageUrl {
     object OrderTracking {

@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.mapper
 
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.tokofood.common.LottieUrl
+import com.tokopedia.tokofood.common.constants.LottieUrl
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel

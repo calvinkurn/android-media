@@ -6,7 +6,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.ImageUrl
+import com.tokopedia.tokofood.common.constants.ImageUrl
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingTemporaryFinishBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel

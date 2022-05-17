@@ -145,7 +145,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OrderTrackingLoadingViewHolder.LAYOUT -> OrderTrackingLoadingViewHolder(parent)
-            OrderTrackingErrorViewHolder.LAYOUT -> OrderTrackingErrorViewHolder(parent)
+            OrderTrackingErrorViewHolder.LAYOUT -> OrderTrackingErrorViewHolder(parent, orderTrackingListener)
             OrderTrackingTickerViewHolder.LAYOUT -> OrderTrackingTickerViewHolder(
                 parent,
                 orderTrackingListener

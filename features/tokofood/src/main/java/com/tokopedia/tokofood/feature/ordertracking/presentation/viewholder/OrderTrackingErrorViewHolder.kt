@@ -3,14 +3,12 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingErrorBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
-import com.tokopedia.utils.view.binding.viewBinding
-import java.io.IOException
 
-class OrderTrackingErrorViewHolder(itemView: View) :
+class OrderTrackingErrorViewHolder(itemView: View, private val listener: Listener) :
     AbstractViewHolder<OrderTrackingErrorUiModel>(itemView) {
 
     companion object {
@@ -23,11 +21,15 @@ class OrderTrackingErrorViewHolder(itemView: View) :
     override fun bind(element: OrderTrackingErrorUiModel) {
         with(binding) {
             globalErrorOrderTracking.run {
-                setType(if (element.throwable is IOException) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR)
+                setType(element.throwable.getGlobalErrorType())
                 setActionClickListener {
-                    //TODO
+                    listener.onErrorActionClicked()
                 }
             }
         }
+    }
+
+    interface Listener {
+        fun onErrorActionClicked()
     }
 }

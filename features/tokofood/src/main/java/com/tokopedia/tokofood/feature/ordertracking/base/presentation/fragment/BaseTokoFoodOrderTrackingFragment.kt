@@ -143,6 +143,10 @@ class BaseTokoFoodOrderTrackingFragment :
         viewModel.fetchDriverPhoneNumber(viewModel.getOrderId())
     }
 
+    override fun onErrorActionClicked() {
+        fetchOrderDetail(ORDER_TRACKING_RESOURCE)
+    }
+
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
@@ -197,7 +201,7 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateDriverCall(it.data)
                 }
                 is Fail -> {
-
+                    showErrorToaster("")
                 }
             }
         }
