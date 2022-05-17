@@ -143,6 +143,21 @@ class CatalogViewModelTest {
         assert(count != 0)
     }
 
+    @Test
+    fun `Get Catalog Product Count Response Zero`() {
+        val mockGqlResponse: GraphqlResponse  = CatalogProductListingViewModelTest.createMockGraphqlResponse(getJsonObject("catalog_product_listing_response.json"),CatalogSearchProductResponse().javaClass)
+        val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
+        data.searchProduct.data.totalData = 0
+        val productListResponse = ProductListResponse(data.searchProduct)
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
+            (secondArg() as Subscriber<ProductListResponse>).onCompleted()
+        }
+        viewModel.fetchProductListing(RequestParams())
+        val count = viewModel.mProductCount.value
+        assert(count == 0)
+    }
+
 
     @Test
     fun `Get Catalog Product Count Response Fail`() {
