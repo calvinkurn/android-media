@@ -108,10 +108,7 @@ object CatalogUtil {
         val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
-            //putString(CategoryNavConstants.START, (0 * CatalogDetailProductListingFragment.PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
-            //putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-            //putString(CategoryNavConstants.ROWS, CatalogDetailProductListingFragment.PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
         }

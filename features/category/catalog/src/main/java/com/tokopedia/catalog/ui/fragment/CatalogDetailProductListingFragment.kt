@@ -108,7 +108,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private var lastDetachedItemPosition : Int = 0
     private var lastAttachItemPosition : Int = 0
-    private var userScrolledList = false
+    private var isUserScrolledList = false
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -122,6 +122,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
         const val MORE_CATALOG_WIDGET_INDEX = 3
+        const val MINIMUM_SCROLL_FOR_ANIMATION = 15
 
         @JvmStatic
         fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
@@ -219,9 +220,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         product_recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if(!userScrolledList){
-                    if(dy > 15.toPx()){
-                        userScrolledList = true
+                if(!isUserScrolledList){
+                    if(dy > MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
+                        isUserScrolledList = true
                     }
                 }
             }
@@ -620,7 +621,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        if(userScrolledList)
+        if(isUserScrolledList)
             viewModel.lastSeenProductPosition = (lastAttachItemPosition + lastDetachedItemPosition)/2
         productNavListAdapter?.onPause()
     }

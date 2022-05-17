@@ -221,6 +221,11 @@ class CatalogDetailPageFragment : Fragment(),
                     (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                 }
                 catalogLinearLayoutManager?.scrollToBottom(userPressedLastTopPosition)
+                CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_PRODUCT,
+                    "$catalogName - $catalogId",userSession.userId,catalogId)
                 slideDownMoreProductsView()
             }
         }
@@ -228,6 +233,11 @@ class CatalogDetailPageFragment : Fragment(),
         mToTopLayout?.apply {
             setOnClickListener {
                 catalogLinearLayoutManager?.scrollToTop()
+                CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_LAST_SCROLL,
+                    "$catalogName - $catalogId",userSession.userId,catalogId)
                 slideUpMoreProductsView()
             }
         }
@@ -331,13 +341,16 @@ class CatalogDetailPageFragment : Fragment(),
 
         })
 
+        observerProductCount()
+        observerSharedProductCount()
+    }
+
+    private fun observerProductCount() {
         catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
             totalProducts?.let {
                 sharedViewModel.mProductCount.value = it
             }
         })
-
-        observerSharedProductCount()
     }
 
     private fun observerSharedProductCount() {
