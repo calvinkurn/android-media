@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -135,10 +137,27 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         binding.optionRv.adapter = reportTalkAdapter
 
         binding.sendButton.setOnClickListener {
-            reportTalk(talkId, commentId, binding.reason.text.toString(), reportTalkAdapter.getSelectedOption())
+            reportTalk(talkId, commentId, binding.reason.editText.text.toString(), reportTalkAdapter.getSelectedOption())
         }
+        setupToolbar()
+        setupReasonTextField()
+    }
 
-        binding.reason.addTextChangedListener(object : TextWatcher {
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                binding.headerReportTalk
+                binding.headerReportTalk.run {
+                    title = getString(R.string.title_report_talk)
+                    setNavigationOnClickListener { onBackPressed() }
+                }
+            }
+        }
+    }
+
+    private fun setupReasonTextField() {
+        binding.reason.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -152,12 +171,10 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
 
             }
         })
-
         binding.reason.setOnClickListener {
             reportTalkAdapter.setChecked(reportTalkAdapter.getItem(2))
         }
-
-        binding.reason.setOnEditorActionListener { v, actionId, event ->
+        binding.reason.editText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.hideSoftKeyboard(activity)
                 true
@@ -165,12 +182,11 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
                 false
             }
         }
-
-
+        binding.reason.labelText.gone()
     }
 
     private fun checkEnableSendButton() {
-        binding.reason.text?.let {
+        binding.reason.editText.text?.let {
             if (reportTalkAdapter.getItem(2).isChecked && it.isBlank()) {
                 disableSendButton()
             } else {
@@ -204,7 +220,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         logToCrashlytics(throwable)
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarWithAction(activity, message) {
-            reportTalk(talkId, commentId, binding.reason.text.toString(),
+            reportTalk(talkId, commentId, binding.reason.editText.text.toString(),
                     reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
     }
