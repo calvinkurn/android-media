@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
@@ -147,6 +148,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         val thirdProduct = if (thirdProductImageUrl.isNotEmpty()) thirdProductImageUrl else null
 
         val productCount = topProductImageUrls.filter { it.isNotBlank() }.size
+        val formattedShopName = MethodChecker.fromHtml(shop.shopName).toString()
 
         return remoteDataSource.previewImage(
             ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
@@ -158,7 +160,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             nominalAmount,
             symbol,
             shop.logo,
-            shop.shopName,
+            formattedShopName,
             couponCode,
             startTime,
             endTime,
