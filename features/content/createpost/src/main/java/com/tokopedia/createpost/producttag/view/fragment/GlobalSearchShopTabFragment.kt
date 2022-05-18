@@ -25,6 +25,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProduc
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
@@ -208,7 +209,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             parentListener = {
                 viewModel.submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
             }
-
+            indicatorCounter = getSortFilterCount(curr.param.value)
             show()
         }
     }

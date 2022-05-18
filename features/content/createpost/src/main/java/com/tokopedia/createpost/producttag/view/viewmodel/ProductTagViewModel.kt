@@ -513,9 +513,9 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             val sortFilters = if(currState.sortFilters.isEmpty()) {
-                val result = repo.getSortFilter(param)
-                _globalSearchProduct.setValue { copy(sortFilters = result) }
-                result
+                repo.getSortFilter(param).also {
+                    _globalSearchProduct.setValue { copy(sortFilters = it) }
+                }
             } else currState.sortFilters
 
             _uiEvent.emit(ProductTagUiEvent.OpenProductSortFilterBottomSheet(currState.param, sortFilters))
@@ -641,9 +641,9 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             val sortFilters = if(currState.sortFilters.isEmpty()) {
-                val result = repo.getSortFilter(param)
-                _globalSearchShop.setValue { copy(sortFilters = result) }
-                result
+                repo.getSortFilter(param).also {
+                    _globalSearchShop.setValue { copy(sortFilters = it) }
+                }
             } else currState.sortFilters
 
             _uiEvent.emit(ProductTagUiEvent.OpenShopSortFilterBottomSheet(currState.param, sortFilters))

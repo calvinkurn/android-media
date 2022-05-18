@@ -42,6 +42,10 @@ private val nonFilterParameterKeyList = setOf(
     SearchApiConst.USER_ID,
     SearchApiConst.TYPO,
     SearchApiConst.PAGE,
+    SearchApiConst.ROWS,
+    SearchApiConst.FROM,
+    SearchApiConst.DEVICE,
+    SearchApiConst.PAGE_SOURCE,
 )
 private val postProcessingFilterKeys = setOf(
     SearchApiConst.IS_FULFILLMENT,

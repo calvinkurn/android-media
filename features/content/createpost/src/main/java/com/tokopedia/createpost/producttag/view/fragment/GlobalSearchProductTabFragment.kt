@@ -16,8 +16,6 @@ import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecorat
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
@@ -26,9 +24,9 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.item_global_search_ticker_list.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.filter.common.helper.getSortFilterCount
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
@@ -222,7 +220,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             parentListener = {
                 viewModel.submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
             }
-
+            indicatorCounter = getSortFilterCount(curr.param.value)
             show()
         }
     }
