@@ -33,7 +33,7 @@ class MerchantInfoBottomSheet : BottomSheetUnify() {
 
     private var binding: BottomsheetMerchantInfoLayoutBinding? = null
 
-    private var adapter: MerchantOpsHourAdapter? = MerchantOpsHourAdapter()
+    private var adapter: MerchantOpsHourAdapter = MerchantOpsHourAdapter()
 
     private val merchantName: String by lazy {
         arguments?.getString(MERCHANT_NAME) ?: ""
@@ -82,7 +82,7 @@ class MerchantInfoBottomSheet : BottomSheetUnify() {
                            merchantOpsHours: ArrayList<MerchantOpsHour>) {
         binding?.tpgMerchantName?.text = merchantName
         binding?.tpgMerchantAddress?.text = merchantAddress
-        adapter?.setMerchantOpsHours(merchantOpsHours)
+        adapter.setMerchantOpsHours(merchantOpsHours)
     }
 
     fun show(fragmentManager: FragmentManager) {

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.merchant.domain
+package com.tokopedia.tokofood.feature.merchant.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

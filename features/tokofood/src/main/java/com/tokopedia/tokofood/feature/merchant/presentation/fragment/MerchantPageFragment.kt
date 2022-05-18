@@ -20,9 +20,16 @@ import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
+import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOrderDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
+import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
@@ -32,7 +39,9 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
-class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.OnCarouselItemClickListener {
+class MerchantPageFragment : BaseMultiFragment(),
+        MerchantCarouseItemViewHolder.OnCarouselItemClickListener,
+        ProductCardViewHolder.OnProductCardItemClickListener, OrderNoteBottomSheet.OnSaveNoteButtonClickListener {
 
     private var binding: FragmentMerchantPageLayoutBinding? = null
 
@@ -48,7 +57,10 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
     }
 
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
-    private var adapter: MerchantPageCarouselAdapter? = null
+    private var orderNoteBottomSheet: OrderNoteBottomSheet? = null
+
+    private var carouselAdapter: MerchantPageCarouselAdapter? = null
+    private var productListAdapter: ProductListAdapter? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -104,20 +116,21 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
     }
 
     override fun onDestroyView() {
-        binding = null
         super.onDestroyView()
+        binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
-
         setupMerchantLogo()
         setupMerchantProfileCarousel()
-
+        setupProductList()
+        setupOrderNoteBottomSheet()
         observeLiveData()
-        viewModel.getMerchantData("", "", "")
-
+        val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
+        val dummyLatLong = "-6.2,106.816666"
+        viewModel.getMerchantData(dummyMerchantId, dummyLatLong, "")
     }
 
     private fun observeLiveData() {
@@ -138,7 +151,11 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
                     val address = merchantProfile.address
                     val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
                     setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
-
+                    // render product list
+                    val isShopClosed = merchantProfile.opsHourFmt.isWarning
+                    val foodCategories = merchantData.categories
+                    val productListItems = viewModel.mapFoodCategoriesToProductListItems(isShopClosed, foodCategories)
+                    renderProductList(productListItems)
                 }
                 is Fail -> {
 
@@ -152,9 +169,9 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
     }
 
     private fun setupMerchantProfileCarousel() {
-        adapter = MerchantPageCarouselAdapter(this)
+        carouselAdapter = MerchantPageCarouselAdapter(this)
         binding?.rvMerchantInfoCarousel?.let {
-            it.adapter = adapter
+            it.adapter = carouselAdapter
             it.layoutManager = LinearLayoutManager(
                     requireContext(),
                     LinearLayoutManager.HORIZONTAL,
@@ -164,7 +181,19 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
     }
 
     private fun setupProductList() {
+        productListAdapter = ProductListAdapter(this)
+        binding?.rvProductList?.let {
+            it.adapter = productListAdapter
+            it.layoutManager = LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false
+            )
+        }
+    }
 
+    private fun setupOrderNoteBottomSheet() {
+        orderNoteBottomSheet = OrderNoteBottomSheet.createInstance(this)
     }
 
     private fun renderTicker(tickerData: TokoFoodTickerDetail) {
@@ -184,7 +213,7 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
         binding?.tpgMerchantName?.text = merchantProfile.name
         binding?.tpgMerchantCategory?.text = merchantProfile.merchantCategories.joinToString()
         val carouselData = viewModel.mapMerchantProfileToCarouselData(merchantProfile)
-        adapter?.setCarouselData(carouselData)
+        carouselAdapter?.setCarouselData(carouselData)
         // TODO: add close in xxx
     }
 
@@ -192,7 +221,54 @@ class MerchantPageFragment : BaseMultiFragment(), MerchantCarouseItemViewHolder.
         merchantInfoBottomSheet = MerchantInfoBottomSheet.createInstance(name, address, merchantOpsHours)
     }
 
+    private fun renderProductList(productListItems: List<ProductListItem>) {
+        productListAdapter?.setProductListItems(productListItems)
+    }
+
     override fun onCarouselItemClicked() {
         merchantInfoBottomSheet?.show(childFragmentManager)
+    }
+
+    override fun onProductCardClicked(productUiModel: ProductUiModel) {
+        ProductDetailBottomSheet.createInstance(productUiModel).show(childFragmentManager)
+    }
+
+    override fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
+        if (productUiModel.isCustomizable && productUiModel.isAtc) {
+            CustomOrderDetailBottomSheet.createInstance(
+                    productName = productUiModel.name,
+                    customOrderDetails = productUiModel.customOrderDetails
+            ).show(childFragmentManager)
+        } else if (productUiModel.isCustomizable) {
+            val orderCustomizationFragment = OrderCustomizationFragment.createInstance(productUiModel)
+            navigateToNewFragment(orderCustomizationFragment)
+        } else {
+            productListAdapter?.updateAtcStatus(true, cardPositions)
+        }
+    }
+
+    override fun onAddNoteButtonClicked(orderNote: String, cardPositions: Pair<Int, Int>) {
+        orderNoteBottomSheet?.renderOrderNote(orderNote)
+        orderNoteBottomSheet?.show(childFragmentManager)
+        viewModel.cardPositions = cardPositions
+    }
+
+    override fun onDeleteButtonClicked() {
+
+    }
+
+    override fun onIncreaseQtyButtonClicked() {
+
+    }
+
+    override fun onDecreaseQtyButtonClicked() {
+
+    }
+
+    override fun onSaveNoteButtonClicked(orderNote: String) {
+        viewModel.cardPositions?.run {
+            productListAdapter?.updateOrderNote(orderNote, this)
+        }
+        orderNoteBottomSheet?.dismiss()
     }
 }

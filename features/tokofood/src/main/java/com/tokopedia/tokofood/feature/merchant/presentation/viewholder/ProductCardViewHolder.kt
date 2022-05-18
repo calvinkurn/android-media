@@ -1,22 +1,23 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
+import android.graphics.Paint
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.MerchantProductCardLayoutBinding
+import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 class ProductCardViewHolder(
-        private val binding: MerchantProductCardLayoutBinding,
+        private val binding: TokofoodProductCardLayoutBinding,
         private val clickListener: OnProductCardItemClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductCardItemClickListener {
-        fun onProductCardClicked()
-        fun onAtcButtonClicked()
-        fun onAddNoteButtonClicked()
+        fun onProductCardClicked(productUiModel: ProductUiModel)
+        fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
+        fun onAddNoteButtonClicked(orderNote: String, cardPositions: Pair<Int, Int>)
         fun onDeleteButtonClicked()
         fun onIncreaseQtyButtonClicked()
         fun onDecreaseQtyButtonClicked()
@@ -27,18 +28,25 @@ class ProductCardViewHolder(
     init {
         context = binding.root.context
         binding.root.setOnClickListener {
-
             // open product bottom sheet
-            // product name, description, price, slash price
-            clickListener.onProductCardClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            clickListener.onProductCardClicked(productUiModel)
         }
         binding.atcButton.setOnClickListener {
-            clickListener.onAtcButtonClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            clickListener.onAtcButtonClicked(
+                    productUiModel = productUiModel,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
         binding.addCatatanButton.setOnClickListener {
-            // TODO: implement logic to determine add or edit
-            // note
-            clickListener.onAddNoteButtonClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            clickListener.onAddNoteButtonClicked(
+                    orderNote = productUiModel.orderNote,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
         binding.removeProductFromCartButton.setOnClickListener {
             clickListener.onDeleteButtonClicked()
@@ -51,11 +59,13 @@ class ProductCardViewHolder(
         }
     }
 
-    fun bindData(uiModel: ProductUiModel) {
-
+    fun bindData(productUiModel: ProductUiModel, dataSetPosition: Int) {
+        // bind product ui model and data set position
+        binding.root.setTag(R.id.product_ui_model, productUiModel)
+        binding.root.setTag(R.id.dataset_position, dataSetPosition)
         context?.run {
             // disabled condition
-            if (uiModel.isShopClosed) {
+            if (productUiModel.isShopClosed) {
                 val greyColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
                 binding.productName.setTextColor(greyColor)
                 binding.productSummary.setTextColor(greyColor)
@@ -64,7 +74,7 @@ class ProductCardViewHolder(
                 binding.atcButton.isEnabled = false
             }
             // product is already added to cart
-            if (uiModel.isAtc) {
+            if (productUiModel.isAtc) {
                 val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
                 binding.productCell.setCardBackgroundColor(greenColor)
             } else {
@@ -72,23 +82,28 @@ class ProductCardViewHolder(
                 binding.productCell.setCardBackgroundColor(whiteColor)
             }
         }
-
         // product card attributes
-        binding.productImage.setImageUrl(uiModel.imageURL)
-        binding.tpgOutOfStock.isVisible = uiModel.isOutOfStock
-        binding.customIndicatorLabel.isVisible = uiModel.isCustomizable
-        binding.productName.text = uiModel.name
-        binding.productSummary.text = uiModel.description
-        binding.productPrice.text = uiModel.priceFmt
-        binding.slashPriceInfo.isVisible = uiModel.isSlashPriceVisible
-        binding.productSlashPrice.isVisible = uiModel.isSlashPriceVisible
-        binding.productSlashPrice.text = uiModel.slashPrice.toString()
+        binding.productImage.setImageUrl(productUiModel.imageURL)
+        binding.tpgOutOfStock.isVisible = productUiModel.isOutOfStock
+        binding.customIndicatorLabel.isVisible = productUiModel.isCustomizable
+        binding.productName.text = productUiModel.name
+        binding.productSummary.text = productUiModel.description
+        binding.productPrice.text = productUiModel.priceFmt
+        binding.slashPriceInfo.isVisible = productUiModel.isSlashPriceVisible
+        binding.productSlashPrice.isVisible = productUiModel.isSlashPriceVisible
+        if (productUiModel.isSlashPriceVisible) {
+            binding.productSlashPrice.apply {
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                text = productUiModel.slashPriceFmt
+            }
+        }
 
-        // order detail layout - non variant
-        binding.orderDetailLayout.isVisible = uiModel.isOrderDetailLayoutVisible
+        binding.orderDetailLayout.isVisible = productUiModel.isAtc
+        binding.atcButton.isVisible = !productUiModel.isAtc
+
         if (binding.orderDetailLayout.isVisible) {
             context?.run {
-                if (uiModel.orderNote.isBlank()) {
+                if (productUiModel.orderNote.isBlank()) {
                     val addNoteIcon = ContextCompat.getDrawable(this, R.drawable.ic_add_note)
                     binding.iuAddNote.setImageDrawable(addNoteIcon)
                 } else {
@@ -97,7 +112,7 @@ class ProductCardViewHolder(
                 }
             }
             // set order detail quantity
-            binding.qeuProductQtyEditor.setValue(uiModel.orderDetail.qty)
+            binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
         }
     }
 }

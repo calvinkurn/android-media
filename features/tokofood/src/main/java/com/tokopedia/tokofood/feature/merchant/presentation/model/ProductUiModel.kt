@@ -8,25 +8,30 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ProductUiModel(
+        // immutable attributes
         val id: String = "",
         val name: String = "",
         val description: String = "",
         val imageURL: String = "",
         val price: Double = 0.0,
         val priceFmt: String = "",
+        var subTotal: Double = 0.0,
+        var subTotalFmt: String = "",
         val slashPrice: Double = 0.0,
         val slashPriceFmt: String = "",
         val isOutOfStock: Boolean = false,
         val isShopClosed: Boolean = false,
-        val isAtc: Boolean = false,
-        val orderNote: String = "",
-        val orderDetail: OrderDetail = OrderDetail(),
-        val variants: List<TokoFoodCatalogVariantDetail> = listOf()
+        val customListItems: List<CustomListItem> = listOf(),
+        // mutable attributes
+        var orderQty: Int = 1,
+        var orderNote: String = "",
+        var isAtc: Boolean = false,
+        var customOrderDetails: MutableList<CustomOrderDetail> = mutableListOf()
 ) : Parcelable {
     @IgnoredOnParcel
-    val isSlashPriceVisible = slashPrice >= 0.0
+    val isSlashPriceVisible = slashPriceFmt.isNotBlank()
     @IgnoredOnParcel
-    var isOrderDetailLayoutVisible = orderDetail.qty.isMoreThanZero() && variants.isEmpty()
+    val isCustomizable = customListItems.isNotEmpty()
     @IgnoredOnParcel
-    val isCustomizable = variants.isEmpty()
+    val customOrderCount = customOrderDetails.size
 }
