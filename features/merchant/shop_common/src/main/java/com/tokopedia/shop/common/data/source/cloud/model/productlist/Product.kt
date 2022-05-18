@@ -50,7 +50,10 @@ data class Product(
     val isCampaign: Boolean,
     @Expose
     @SerializedName("campaignType")
-    val campaignTypeList: List<ProductCampaignType>?
+    val campaignTypeList: List<ProductCampaignType>?,
+    @Expose
+    @SerializedName("suspendLevel")
+    val suspendLevel: Int = 0
 ) {
 
     fun isTopAds(): Boolean {
