@@ -42,6 +42,7 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
@@ -335,6 +336,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
         goToPDP(wishlistModel.productId, position)
+    }
+
+    override fun onErrorFavoriteShopClicked() {
+        viewModel.refreshFavoriteShopData()
+    }
+
+    override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
+        startActivity(intent)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

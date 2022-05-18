@@ -66,11 +66,11 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
             val favoriteShopList = mutableListOf<NavFavoriteShopModel>()
             responseData.data.shops?.map {
                 favoriteShopList.add(NavFavoriteShopModel(
-                    id = it.id,
-                    name = it.name,
-                    imageUrl = it.imageUrl,
-                    location = it.location,
-                    badgeImageUrl = it.badge?.firstOrNull()?.imageUrl ?: ""
+                    id = it.id.orEmpty(),
+                    name = it.name.orEmpty(),
+                    imageUrl = it.imageUrl.orEmpty(),
+                    location = it.location.orEmpty(),
+                    badgeImageUrl = it.badge?.firstOrNull()?.imageUrl.orEmpty()
                 ))
             }
             favoriteShopList

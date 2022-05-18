@@ -430,7 +430,21 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getFavoriteShops() {
+    fun refreshFavoriteShopData() {
+        val favoriteShopPlaceHolder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateFavoriteShopDataModel
+        }
+        favoriteShopPlaceHolder?.let {
+            updateWidget(ShimmerFavoriteShopDataModel(), favoriteShopPlaceHolder.index)
+        }
+        launchCatchError(coroutineContext, block = {
+            getFavoriteShops()
+        }) {
+
+        }
+    }
+
+    private suspend fun getFavoriteShops() {
         //find error state if available and change to shimmering
         val favoriteShopErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateFavoriteShopDataModel
