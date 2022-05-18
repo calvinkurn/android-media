@@ -16,6 +16,10 @@ fun constructContentToHtml(context: Context, content: String): String {
 	<style>
     body {
         background: $backgroundColor;
+        font-family: SFProText; 
+        font-size: 14px;
+        line-height: 18px;
+        color: $pColor;
     }
    
     ol li {
