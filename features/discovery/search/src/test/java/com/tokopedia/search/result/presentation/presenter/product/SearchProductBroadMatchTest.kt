@@ -1,14 +1,26 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.*
+import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BroadMatch
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.SeparatorDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining.hasItem
 import org.hamcrest.core.IsInstanceOf.instanceOf
@@ -427,7 +439,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedBottomSeparatorPosition = -1
 
         `Test broad match with position`(searchProductModelPage1, searchProductModelPage2, expectedTopSeparatorPosition, expectedBottomSeparatorPosition) { visitableList ->
-            val firstProductItemPosition = visitableList.indexOfFirst { it is SearchProductCountDataView }
+            val firstProductItemPosition = visitableList.indexOfFirst { it is ChooseAddressDataView }
 
             firstProductItemPosition + expectedTopSeparatorPosition + 1
         }

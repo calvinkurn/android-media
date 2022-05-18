@@ -270,7 +270,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendDataToViewModel(data: GetProductV3) {
-        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0) {
+        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0) {
             payLaterViewModel.getPayLaterAvailableDetail(
                 data.campaingnDetail?.discountedPrice
                     ?: 0.0, payLaterArgsDescriptor.productId
@@ -300,7 +300,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getProductPrice(data: GetProductV3) =
-        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0)
+        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0)
             PayLaterHelper.convertPriceValueToIdrFormat(
                 data.campaingnDetail?.discountedPrice ?: 0.0, false
             )

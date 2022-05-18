@@ -674,6 +674,7 @@ object ShopPageHomeMapper {
                 isShowFreeOngkir = it.isShowFreeOngkir
                 freeOngkirPromoIcon = it.freeOngkirPromoIcon
                 recommendationType = it.recommendationType
+                categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
             }
