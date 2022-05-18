@@ -49,31 +49,31 @@ class RegisterPushNotificationWorker(
     }
 
     override suspend fun doWork(): Result {
-        return try {
-            if (isRegistered()) {
-                Result.success()
+        when {
+            isRegistered() -> {
+                return Result.success()
             }
-
-            if (runAttemptCount > MAX_RUN_ATTEMPT) {
+            runAttemptCount > MAX_RUN_ATTEMPT -> {
                 saveRegisterStatus(false)
-                Result.failure()
+                return Result.failure()
             }
-
-            if (userSession.isLoggedIn) {
-                val response = registerPushNotification()
-                if (response?.isSuccess == true) {
-                    saveRegisterStatus(true)
-                    Result.success()
+            else -> return try {
+                if (userSession.isLoggedIn) {
+                    val response = registerPushNotification()
+                    if (response?.isSuccess == true) {
+                        saveRegisterStatus(true)
+                        Result.success()
+                    } else {
+                        recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", Throwable(response?.errorMessage))
+                        Result.retry()
+                    }
                 } else {
-                    recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", Throwable(response?.errorMessage))
-                    Result.retry()
+                    Result.failure()
                 }
-            } else {
-                Result.failure()
+            } catch (e: Exception) {
+                recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", e)
+                Result.retry()
             }
-        } catch (e: Exception) {
-            recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", e)
-            Result.retry()
         }
     }
 
