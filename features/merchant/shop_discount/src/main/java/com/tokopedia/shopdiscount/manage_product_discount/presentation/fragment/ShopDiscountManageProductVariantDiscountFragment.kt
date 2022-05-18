@@ -78,7 +78,8 @@ class ShopDiscountManageProductVariantDiscountFragment
         ShopDiscountManageProductVariantDiscountAdapter(
             typeFactory = ShopDiscountManageProductVariantDiscountTypeFactoryImpl(
                 this,
-                this
+                this,
+                mode
             )
         )
     }
@@ -386,7 +387,7 @@ class ShopDiscountManageProductVariantDiscountFragment
         val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
         val slashPriceStatus = viewModel.getProductData().productStatus.selectedSlashPriceStatus
-        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(slashPriceStatus)
+        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(mode)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
@@ -423,9 +424,9 @@ class ShopDiscountManageProductVariantDiscountFragment
         }
     }
 
-    private fun getBulkApplyBottomSheetMode(status: Int): DiscountBulkApplyBottomSheet.Mode {
-        return when (status) {
-            SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+    private fun getBulkApplyBottomSheetMode(mode: String): DiscountBulkApplyBottomSheet.Mode {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.CREATE -> {
                 DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {

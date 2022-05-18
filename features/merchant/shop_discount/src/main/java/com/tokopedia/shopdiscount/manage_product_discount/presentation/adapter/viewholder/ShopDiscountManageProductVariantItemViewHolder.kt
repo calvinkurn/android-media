@@ -29,6 +29,7 @@ import kotlin.math.round
 class ShopDiscountManageProductVariantItemViewHolder(
     itemView: View,
     private val listener: Listener,
+    private val mode: String,
     private val fragmentListener: ShopDiscountManageProductVariantDiscountFragmentListener
 ) : AbstractViewHolder<ShopDiscountManageProductVariantItemUiModel>(itemView) {
     private var viewBinding: LayoutShopDiscountManageProductVariantItemBinding? by viewBinding()
@@ -112,7 +113,8 @@ class ShopDiscountManageProductVariantItemViewHolder(
             uiModel.startDate.time,
             uiModel.endDate.time,
             uiModel.slashPriceStatusId,
-            uiModel.selectedPeriodChip
+            uiModel.selectedPeriodChip,
+            mode
         )
         bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
             setSelectedPeriodChip(selectedPeriodChip, uiModel)

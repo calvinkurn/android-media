@@ -169,7 +169,8 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             productData.slashPriceInfo.startDate.time,
             productData.slashPriceInfo.endDate.time,
             productData.slashPriceInfo.slashPriceStatusId,
-            selectedPeriodChip
+            selectedPeriodChip,
+            mode
         )
         bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
             this.selectedPeriodChip = selectedPeriodChip
