@@ -828,7 +828,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToTokopediaCareWebview() {
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+        RouteManager.route(activity, String.format(TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
@@ -1862,6 +1862,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
         const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
 
         private const val PASSWORD_MIN_LENGTH = 4
 

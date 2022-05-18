@@ -110,7 +110,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         RouteManager.route(
             context,
             String.format(
-                "%s?url=%s",
+                TOKOPEDIA_CARE_STRING_FORMAT,
                 ApplinkConst.WEBVIEW,
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
@@ -136,5 +136,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = LoginEmailPhoneFragment.TOKOPEDIA_CARE_PATH
+        private const val TOKOPEDIA_CARE_STRING_FORMAT = LoginEmailPhoneFragment.TOKOPEDIA_CARE_STRING_FORMAT
     }
 }
