@@ -289,16 +289,22 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             clearAllData()
             renderList(data.operators)
 
-            try {
-                recycler_view.post {
-                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                    if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
-                        voucherGameAnalytics.impressionOperatorCard(
-                                data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            recycler_view.post {
+                try {
+                    if (recycler_view != null) {
+                        val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                        if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
+                            voucherGameAnalytics.impressionOperatorCard(
+                                data.operators.subList(
+                                    visibleIndexes.first,
+                                    visibleIndexes.second + 1
+                                )
+                            )
+                        }
                     }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
                 }
-            } catch (t: Throwable) {
-                t.printStackTrace()
             }
         }
     }
