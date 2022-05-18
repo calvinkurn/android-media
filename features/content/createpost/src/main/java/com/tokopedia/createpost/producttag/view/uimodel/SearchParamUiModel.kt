@@ -100,7 +100,7 @@ data class SearchParamUiModel(
     fun toCompleteParam(): String {
         return value.map {
             it.toString()
-        }.joinToString(separator = DEFAULT_PARAM_SEPARATOR)
+        }.joinToString(separator = DEFAULT_PARAM_SEPARATOR).replace("#",",")
     }
 
     fun setDefaultParam() {
