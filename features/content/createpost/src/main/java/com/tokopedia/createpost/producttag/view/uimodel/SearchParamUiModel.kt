@@ -56,7 +56,7 @@ data class SearchParamUiModel(
     }
 
     /** Rewrite existing param if any */
-    fun rewriteParam(key: String, value: String) {
+    fun rewriteParam(key: String, value: Any) {
         this.value[key] = value
     }
 

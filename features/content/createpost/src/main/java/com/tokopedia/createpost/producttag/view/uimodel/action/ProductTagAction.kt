@@ -33,6 +33,7 @@ sealed interface ProductTagAction {
     object CloseTicker: ProductTagAction
     data class SelectQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
     object OpenSortFilterBottomSheet: ProductTagAction
+    data class RequestFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
     data class ApplySortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
 
     /** Global Search Shop */

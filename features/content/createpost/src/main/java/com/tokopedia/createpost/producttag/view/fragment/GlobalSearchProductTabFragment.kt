@@ -14,6 +14,7 @@ import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecoration
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
+import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
@@ -50,6 +51,21 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         )
     }
     private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
+    private val sortFilterCallback = object : SortFilterBottomSheet.Callback {
+        override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+            applySortFilterModel.apply {
+                viewModel.submitAction(
+                    ProductTagAction.ApplySortFilter(
+                        selectedFilterMapParameter + selectedSortMapParameter
+                    )
+                )
+            }
+        }
+
+        override fun getResultCount(mapParameter: Map<String, String>) {
+            viewModel.submitAction(ProductTagAction.RequestFilterProductCount(mapParameter))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,22 +124,18 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                             childFragmentManager,
                             event.param.value as Map<String, String>,
                             event.data,
-                            object : SortFilterBottomSheet.Callback {
-                                override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-                                    applySortFilterModel.apply {
-                                        viewModel.submitAction(
-                                            ProductTagAction.ApplySortFilter(
-                                                selectedFilterMapParameter + selectedSortMapParameter
-                                            )
-                                        )
-                                    }
-                                }
-
-                                override fun getResultCount(mapParameter: Map<String, String>) {
-
-                                }
-                            }
+                            sortFilterCallback,
                         )
+                    }
+                    is ProductTagUiEvent.SetFilterProductCount -> {
+                        val text = when(event.result) {
+                            is NetworkResult.Success -> {
+                                getString(R.string.cc_filter_product_count_template, event.result.data)
+                            }
+                            else -> getString(R.string.cc_filter_product_count_label)
+                        }
+
+                        sortFilterBottomSheet.setResultCountText(text)
                     }
                 }
             }

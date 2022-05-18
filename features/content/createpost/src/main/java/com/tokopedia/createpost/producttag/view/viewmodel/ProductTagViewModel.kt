@@ -217,6 +217,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.CloseTicker -> handleCloseTicker()
             is ProductTagAction.SelectQuickFilter -> handleSelectQuickFilter(action.quickFilter)
             ProductTagAction.OpenSortFilterBottomSheet -> handleOpenSortFilterBottomSheet()
+            is ProductTagAction.RequestFilterProductCount -> handleRequestFilterProductCount(action.selectedSortFilter)
             is ProductTagAction.ApplySortFilter -> handleApplySortFilter(action.selectedSortFilter)
 
             /** Global Search Shop */
@@ -501,6 +502,16 @@ class ProductTagViewModel @AssistedInject constructor(
         }) {
             /** TODO: emit event */
             _sortFilter.setValue { copy(state = PagedState.Error(it)) }
+        }
+    }
+
+    private fun handleRequestFilterProductCount(selectedSortFilter: Map<String, Any>) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.getSortFilterProductCount(SearchParamUiModel(HashMap(selectedSortFilter)))
+
+            _uiEvent.emit(ProductTagUiEvent.SetFilterProductCount(NetworkResult.Success(result)))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.SetFilterProductCount(NetworkResult.Error(it)))
         }
     }
 
