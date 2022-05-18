@@ -233,4 +233,5 @@
     <string name="error_invalid_format_phone_number">Nomor HP harus diawali angka 0 atau 62.</string>
     <string name="error_alamat_exceed_max_char">Alamat melebihi batas karakter. Cek lagi, ya.</string>
     <string name="error_notes_exceed_max_char">Catatan melebihi batas karakter. Cek lagi, ya.</string>
+    <string name="editaddress_back_dialog_secondary_cta">Batal</string>
 </resources>

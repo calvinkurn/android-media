@@ -44,7 +44,6 @@ class PinpointNewPageViewModelTest {
 
     private val autofillDistrictDataObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
     private val districtLocationObserver: Observer<Result<GetDistrictDataUiModel>> = mockk(relaxed = true)
-    private val autoCompleteDataObserver: Observer<Result<AutoCompleteResponse>> = mockk(relaxed = true)
     private val districtBoundaryObserver: Observer<Result<DistrictBoundaryResponseUiModel>> = mockk(relaxed = true)
     private val districtCenterObserver: Observer<Result<DistrictCenterUiModel>> = mockk(relaxed = true)
 
@@ -55,7 +54,6 @@ class PinpointNewPageViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         pinpointNewPageViewModel = PinpointNewPageViewModel(repo, getDistrictMapper, districtBoundaryMapper)
         pinpointNewPageViewModel.autofillDistrictData.observeForever(autofillDistrictDataObserver)
-        pinpointNewPageViewModel.autoCompleteData.observeForever(autoCompleteDataObserver)
         pinpointNewPageViewModel.districtLocation.observeForever(districtLocationObserver)
         pinpointNewPageViewModel.districtBoundary.observeForever(districtBoundaryObserver)
         pinpointNewPageViewModel.districtCenter.observeForever(districtCenterObserver)
@@ -73,20 +71,6 @@ class PinpointNewPageViewModelTest {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Get AutoComplete Data Success`() {
-        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
-        pinpointNewPageViewModel.getAutoComplete("Setiabudi")
-        verify { autoCompleteDataObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Get AutoComplete Data Fail`() {
-        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
-        pinpointNewPageViewModel.getAutoComplete("Setiabudi")
-        verify { autoCompleteDataObserver.onChanged(match { it is Fail }) }
     }
 
     @Test

@@ -355,6 +355,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
                 }
                 is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
                     val msg = it.throwable.message.toString()
                     view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
@@ -1264,7 +1265,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         activity?.onBackPressed()
                         backDialog?.dismiss()
                     }
-                    setSecondaryCTAText("Batal")
+                    setSecondaryCTAText(getString(R.string.editaddress_back_dialog_secondary_cta))
                     setSecondaryCTAClickListener {
                         isBackDialogClicked = false
                         backDialog?.dismiss()

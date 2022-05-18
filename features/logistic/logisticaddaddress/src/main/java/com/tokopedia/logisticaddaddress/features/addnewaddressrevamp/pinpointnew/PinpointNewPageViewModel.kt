@@ -37,10 +37,6 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
     val districtLocation: LiveData<Result<GetDistrictDataUiModel>>
         get() = _districtLocation
 
-    private val _autoCompleteData = MutableLiveData<Result<AutoCompleteResponse>>()
-    val autoCompleteData: LiveData<Result<AutoCompleteResponse>>
-        get() = _autoCompleteData
-
     private val _districtBoundary = MutableLiveData<Result<DistrictBoundaryResponseUiModel>>()
     val districtBoundary: LiveData<Result<DistrictBoundaryResponseUiModel>>
         get() = _districtBoundary
@@ -69,17 +65,6 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
             }
             catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
-            }
-        }
-    }
-
-    fun getAutoComplete(query: String) {
-        viewModelScope.launch {
-            try {
-                val autoComplete = repo.getAutoComplete(query, "")
-                _autoCompleteData.value = Success(autoComplete)
-            } catch (e: Throwable) {
-                _autoCompleteData.value = Fail(e)
             }
         }
     }

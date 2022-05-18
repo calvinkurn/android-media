@@ -389,7 +389,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {
-        setTitle("Kode Pos")
+        setTitle(getString(R.string.title_post_code))
         isKodePosShown = true
         val districtModel = Address()
         districtModel.setDistrictId(data.districtId)
@@ -419,7 +419,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             EditAddressRevampAnalytics.onClickDropDownSuggestionKota(userSession.userId)
         }
         context?.let {
-            setTitle("Kode Pos")
+            setTitle(getString(R.string.title_post_code))
             isKodePosShown = true
             districtModel.run {
                 discomRevampListener?.onGetDistrict(districtModel)

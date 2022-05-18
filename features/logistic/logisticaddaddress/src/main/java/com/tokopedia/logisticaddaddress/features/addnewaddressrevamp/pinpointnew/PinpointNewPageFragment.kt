@@ -192,11 +192,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
         }
-//        else {
-//            if (requestCode == GPS_REQUEST) {
-//                bottomSheetLocUndefined?.dismiss()
-//            }
-//        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -355,7 +350,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         updateGetDistrictBottomSheet(it)
                     }
                 } else {
-//                    currentDistrictName?.let { viewModel.getAutoComplete(it) }
                     districtId?.let { viewModel.getDistrictCenter(it) }
                 }
 
@@ -415,14 +409,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 is Success -> {
                     moveMap(getLatLng(it.data.latitude, it.data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(it.data.latitude, it.data.longitude)
-                }
-            }
-        })
-
-        viewModel.autoCompleteData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    viewModel.getDistrictLocation(it.data.keroMapsAutocomplete.AData.predictions[0].placeId)
                 }
             }
         })
@@ -625,22 +611,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-//        if (AddNewAddressUtils.isGpsEnabled(context)) {
-            showLoading()
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                isPermissionAccessed = false
-                if (data != null) {
-                    moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
-                    viewModel.getDistrictData(data.latitude, data.longitude)
-                } else {
-                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                            createLocationCallback(), null)
-                }
-
+        showLoading()
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+            isPermissionAccessed = false
+            if (data != null) {
+                moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
+                viewModel.getDistrictData(data.latitude, data.longitude)
+            } else {
+                fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                        createLocationCallback(), null)
             }
-//        } else {
-//            showBottomSheetLocUndefined(false)
-//        }
+
+        }
     }
 
     private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean){
