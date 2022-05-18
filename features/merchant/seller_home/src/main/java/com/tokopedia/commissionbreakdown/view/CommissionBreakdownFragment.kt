@@ -42,7 +42,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     companion object {
         private const val DOWNLOAD_URL =
             "https://api-staging.tokopedia.com/v1/commission/report/download"
-        private const val SELLER_EDU = "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia/"
+        private const val SELLER_EDU = "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_START_DATE = "start_date"
         private const val PARAM_END_DATE = "end_date"

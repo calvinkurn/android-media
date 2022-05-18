@@ -4,7 +4,7 @@ import java.util.*
 
 object CommissionBreakdownDateUtil {
 
-    fun isDatesAreSame(date1 : Date?, date2 : Date?): Boolean {
+    fun areTheDatesSame(date1 : Date?, date2 : Date?): Boolean {
         if(date1 == null || date2 == null)
             return false
         val cal1 = Calendar.getInstance()

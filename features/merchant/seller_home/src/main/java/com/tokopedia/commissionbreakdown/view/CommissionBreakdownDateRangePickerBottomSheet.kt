@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.commissionbreakdown.util.CommissionBreakdownDateUtil
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.CommissionBreakdownBottomsheetChooseDateBinding
@@ -19,6 +20,9 @@ import java.util.*
 class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
+        const val MAX_RANGE_90 = 90L
+        const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
+
         private const val MAX_RANGE = 30L
         private const val ARG_DATE_FROM = "ARG_DATE_FROM"
         private const val ARG_DATE_TO = "ARG_DATE_TO"
@@ -26,10 +30,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         private const val BOTTOM_SHEET_HEIGHT_3 = 3
         private const val BOTTOM_SHEET_HEIGHT_2 = 2
         private const val DATE_PATTERN = "dd MMMM yyyy"
-
         private const val JUNE_6_2020_IN_MILLIS = 1591012800000L
-        const val MAX_RANGE_90 = 90L
-        const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
 
         fun getInstanceRange(
             dateFrom: Date?,
@@ -53,7 +54,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     private var defaultDateFrom: Date? = null
     private var defaultDateTo: Date? = null
     private var newSelectedDateFrom: Date? = Date()
-    private var newSelectedDateTO: Date? = Date()
+    private var newSelectedDateTo: Date? = Date()
     private var maxRange: Long = MAX_RANGE
 
     private var binding: CommissionBreakdownBottomsheetChooseDateBinding? = null
@@ -90,16 +91,21 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         initCalender()
         binding?.unifyButtonSelect?.setOnClickListener {
-            if (newSelectedDateFrom != null && newSelectedDateTO != null &&
-                !(CommissionBreakdownDateUtil.isDatesAreSame(newSelectedDateTO, defaultDateTo)
-                        && CommissionBreakdownDateUtil.isDatesAreSame(
-                    newSelectedDateFrom,
-                    defaultDateFrom
-                ))
+            val selectedStartDate = newSelectedDateFrom
+            val selectedEndDate = newSelectedDateTo
+
+            val isNewSelectedStartDateSame = CommissionBreakdownDateUtil.areTheDatesSame(
+                selectedStartDate, defaultDateFrom
+            )
+            val isNewSelectedEndDateSame = CommissionBreakdownDateUtil.areTheDatesSame(
+                selectedEndDate, defaultDateTo
+            )
+            if (selectedStartDate != null && selectedEndDate != null &&
+                !(isNewSelectedStartDateSame && isNewSelectedEndDateSame)
             ) {
                 (parentFragment as? OnDateRangeSelectListener)?.onDateRangeSelected(
-                    newSelectedDateFrom!!,
-                    newSelectedDateTO!!
+                    selectedStartDate,
+                    selectedEndDate
                 )
             }
             dismissAllowingStateLoss()
@@ -111,14 +117,18 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private fun initCalender() {
         newSelectedDateFrom = defaultDateFrom
-        newSelectedDateTO = defaultDateTo
-        binding?.calendarSahCommission?.run {
-            calendarPickerView?.init(minDate, maxDate, arrayListOf())
-                ?.inMode(CalendarPickerView.SelectionMode.RANGE)
-                ?.maxRange(maxRange)
-                ?.withSelectedDates(arrayListOf(defaultDateFrom!!, defaultDateTo!!))
-            calendarPickerView?.selectDateClickListener()
-            calendarPickerView?.outOfRange()
+        newSelectedDateTo = defaultDateTo
+        val (startDate, endDate) = (newSelectedDateFrom to newSelectedDateTo)
+
+        if (startDate != null && endDate != null) {
+            binding?.calendarSahCommission?.run {
+                calendarPickerView?.init(minDate, maxDate, arrayListOf())
+                    ?.inMode(CalendarPickerView.SelectionMode.RANGE)
+                    ?.maxRange(maxRange)
+                    ?.withSelectedDates(arrayListOf(startDate, startDate))
+                calendarPickerView?.selectDateClickListener()
+                calendarPickerView?.outOfRange()
+            }
         }
     }
 
@@ -126,28 +136,22 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
             override fun onDateSelected(date: Date) {
-                val selectedDates =
-                    binding?.calendarSahCommission?.calendarPickerView?.selectedDates
-                when {
-                    selectedDates.isNullOrEmpty() -> {
-                        newSelectedDateFrom = null
-                        newSelectedDateTO = null
-                    }
-                    selectedDates.size == 1 -> {
-                        newSelectedDateFrom = selectedDates[0]
-                        newSelectedDateTO = selectedDates[0]
+                val selectedDates = binding?.calendarSahCommission?.calendarPickerView
+                    ?.selectedDates
+                when (selectedDates?.size) {
+                    Int.ONE -> {
+                        newSelectedDateFrom = selectedDates.firstOrNull()
+                        newSelectedDateTo = selectedDates.firstOrNull()
                     }
                     else -> {
-                        newSelectedDateFrom = selectedDates.first()
-                        newSelectedDateTO = selectedDates.last()
+                        newSelectedDateFrom = selectedDates?.firstOrNull()
+                        newSelectedDateTo = selectedDates?.lastOrNull()
                     }
                 }
                 setDatePlaceholder()
             }
 
-            override fun onDateUnselected(date: Date) {
-
-            }
+            override fun onDateUnselected(date: Date) {}
         })
     }
 
@@ -160,7 +164,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
             }
         }
         binding?.tvSahCommissionEndDate?.apply {
-            newSelectedDateTO?.let {
+            newSelectedDateTo?.let {
                 this.setPlaceholder(dateFormat.format(it))
             }
         }
