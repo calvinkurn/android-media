@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
@@ -22,6 +23,8 @@ class InputOldPhoneNumberActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+
+        updateTitle(getString(R.string.ipn_toolbar_title))
     }
 
     override fun getNewFragment(): Fragment {
