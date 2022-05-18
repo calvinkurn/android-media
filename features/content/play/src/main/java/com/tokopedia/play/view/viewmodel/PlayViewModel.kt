@@ -498,7 +498,7 @@ class PlayViewModel @AssistedInject constructor(
         override fun onPlaying() {
             if (videoLatencyPerformanceMonitoring.hasStarted) {
                 videoLatencyPerformanceMonitoring.stop()
-                val durationInSecond = TimeUnit.MILLISECONDS.toSeconds(videoLatencyPerformanceMonitoring.totalDuration)
+                val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / 1000
                 playLog.logTimeToFirstByte(durationInSecond.toString())
             }
         }

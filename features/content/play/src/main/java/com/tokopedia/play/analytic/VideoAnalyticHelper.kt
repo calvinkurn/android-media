@@ -7,7 +7,6 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
-import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 /**
@@ -90,14 +89,14 @@ class VideoAnalyticHelper(
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )
-            watchDurationInSeconds = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.watchTime ?: 0L)
+            watchDurationInSeconds = watchDurationModel.watchTime ?: 0L / 1000
         } else {
             val watchTime = watchDurationModel.watchTime
             if (watchTime != null) watchDurationModel = watchDurationModel.copy(
                     watchTime = null,
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
-            watchDurationInSeconds = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.cumulationDuration)
+            watchDurationInSeconds = watchDurationModel.cumulationDuration / 1000
         }
         log.logWatchingDuration(watchDurationInSeconds.toString())
     }
