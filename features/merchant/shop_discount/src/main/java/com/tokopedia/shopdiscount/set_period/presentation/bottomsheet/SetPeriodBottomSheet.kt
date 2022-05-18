@@ -17,6 +17,7 @@ import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitRespons
 import com.tokopedia.shopdiscount.common.bottomsheet.datepicker.ShopDiscountDatePicker
 import com.tokopedia.shopdiscount.databinding.BottomsheetSetPeriodBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
@@ -41,12 +42,14 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         private const val END_DATE_ARG = "END_DATE_ARG"
         private const val SLASH_PRICE_STATUS_ID_ARG = "SLASH_PRICE_STATUS_ID_ARG"
         private const val SELECTED_PERIOD_CHIP = "SELECTED_PERIOD_CHIP"
+        private const val MODE = "MODE"
 
         fun newInstance(
             startDateUnix: Long,
             endDateUnix: Long,
             slashPriceStatusId: String,
-            selectedPeriodChip: Int
+            selectedPeriodChip: Int,
+            mode: String
         ): SetPeriodBottomSheet {
             return SetPeriodBottomSheet().apply {
                 val args = Bundle()
@@ -54,6 +57,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 args.putLong(END_DATE_ARG, endDateUnix)
                 args.putString(SLASH_PRICE_STATUS_ID_ARG, slashPriceStatusId)
                 args.putInt(SELECTED_PERIOD_CHIP, selectedPeriodChip)
+                args.putString(MODE, mode)
                 arguments = args
             }
         }
@@ -71,6 +75,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     private var endDateUnix: Long = 0
     private var slashPriceStatusId: String = ""
     private var selectedPeriodChip: Int = 0
+    private var mode: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,6 +123,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             endDateUnix = it.getLong(END_DATE_ARG).orZero()
             slashPriceStatusId = it.getString(SLASH_PRICE_STATUS_ID_ARG).orEmpty()
             selectedPeriodChip = it.getInt(SELECTED_PERIOD_CHIP).orZero()
+            mode = it.getString(MODE).orEmpty()
         }
     }
 
@@ -161,9 +167,13 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 startDate = viewModel.defaultStartDate
                 endDate = maxDate
             }
+            when (mode) {
+                ShopDiscountManageDiscountMode.UPDATE -> {
+                    hideAllChips()
+                }
+            }
             when (slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.ONGOING, SlashPriceStatusId.PAUSED -> {
-                    hideAllChips()
                     binding?.tfuStartDate?.isEnabled = false
                 }
             }

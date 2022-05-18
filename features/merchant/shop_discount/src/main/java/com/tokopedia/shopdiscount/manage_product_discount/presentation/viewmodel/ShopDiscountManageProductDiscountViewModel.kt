@@ -56,10 +56,14 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
         get() = _inputValidation
     private val _inputValidation = MutableLiveData<Int>()
 
+    val discountPeriodDataBasedOnBenefitLiveData: LiveData<Pair<Date, Date>>
+        get() = _discountPeriodDataBasedOnBenefitLiveData
+    private val _discountPeriodDataBasedOnBenefitLiveData = MutableLiveData<Pair<Date, Date>>()
+
     private var productData: ShopDiscountSetupProductUiModel.SetupProductData =
         ShopDiscountSetupProductUiModel.SetupProductData()
 
-    val defaultStartDate: Date by lazy {
+    private val defaultStartDate: Date by lazy {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         calendar.time
@@ -93,14 +97,14 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
         _updatedDiscountPeriodData.postValue(productData)
     }
 
-    fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
+    private fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
         val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull {
             it.packageId.toIntOrZero() != -1
         }
         return Date(vpsPackageData?.expiredAtUnix?.unixToMs().orZero())
     }
 
-    fun getMembershipDefaultEndDate(): Date {
+    private fun getMembershipDefaultEndDate(): Date {
         val endDateCalendar = defaultStartDate.toCalendar()
         endDateCalendar.add(Calendar.YEAR, ONE_YEAR)
         return endDateCalendar.time
@@ -170,7 +174,11 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
 
     fun getMinDiscountPrice(): Int {
         val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.01).toInt()
+        val minDiscountPrice = (originalPrice.toDouble() * 0.01).toInt()
+        return if(minDiscountPrice < 100)
+            100
+        else
+            minDiscountPrice
     }
 
     fun getMaxDiscountPrice(): Int {
@@ -180,6 +188,16 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
 
     fun getProductData(): ShopDiscountSetupProductUiModel.SetupProductData {
         return productData
+    }
+
+    fun getDiscountPeriodDataBasedOnBenefit(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
+        val startDate = defaultStartDate
+        val endDate = if (slashPriceBenefitData.isUseVps) {
+            getVpsPackageDefaultEndDate(slashPriceBenefitData)
+        } else {
+            getMembershipDefaultEndDate()
+        }
+        _discountPeriodDataBasedOnBenefitLiveData.postValue(Pair(startDate, endDate))
     }
 
 }

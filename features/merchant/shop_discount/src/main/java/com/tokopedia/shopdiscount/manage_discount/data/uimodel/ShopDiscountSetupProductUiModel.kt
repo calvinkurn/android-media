@@ -59,7 +59,7 @@ data class ShopDiscountSetupProductUiModel(
             val isVariant: Boolean = false,
             val isMultiLoc: Boolean = false,
             val errorType: Int = 0,
-            val slashPriceStatus: Int = 0
+            val selectedSlashPriceStatus: Int = 0
         ) : Parcelable
 
         @Parcelize

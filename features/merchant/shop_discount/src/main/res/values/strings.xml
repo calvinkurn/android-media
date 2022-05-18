@@ -146,6 +146,8 @@
     <string name="shop_discount_manage_product_max_order_info">(Opsional)</string>
     <string name="shop_discount_manage_product_discount_original_price_format">%1s - %2s</string>
     <string name="shop_discount_manage_product_discount_multi_loc_ticker_desc"><![CDATA[Harga diskon akan otomatis terpasang untuk lokasi yang aktif. <a href="">Selengkapnya</a>]]></string>
+    <string name="shop_discount_manage_product_error_min_price_format">Min. %1s</string>
+    <string name="shop_discount_manage_product_error_max_price_format">Maks. %1s</string>
 
     <!--Shop discount manage product multi loc-->
     <string name="shop_discount_manage_product_discount_multi_loc_manage_toolbar_title">Atur Diskon Lokasi</string>

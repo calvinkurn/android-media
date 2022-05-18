@@ -16,8 +16,6 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
-import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
@@ -49,19 +47,6 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         get() = _updatedDiscountPeriodData
     private val _updatedDiscountPeriodData =
         MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
-
-    val updatedDiscountPercentageData: LiveData<ShopDiscountSetupProductUiModel.SetupProductData>
-        get() = _updatedDiscountPercentageData
-    private val _updatedDiscountPercentageData =
-        MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
-
-    val updatedDiscountPriceData: LiveData<Int>
-        get() = _updatedDiscountPriceData
-    private val _updatedDiscountPriceData = MutableLiveData<Int>()
-
-    val inputValidation: LiveData<Int>
-        get() = _inputValidation
-    private val _inputValidation = MutableLiveData<Int>()
 
     val isEnableSubmitButton: LiveData<Boolean>
         get() = _isEnableSubmitButton
@@ -138,16 +123,6 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         return endDateCalendar.time
     }
 
-    fun getMinDiscountPrice(): Int {
-        val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.01).toInt()
-    }
-
-    fun getMaxDiscountPrice(): Int {
-        val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
-        return (originalPrice.toDouble() * 0.99).toInt()
-    }
-
     fun getProductData(): ShopDiscountSetupProductUiModel.SetupProductData {
         return productData
     }
@@ -212,8 +187,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
 
     fun applyBulkUpdate(
         listVariantItemUiModel: List<ShopDiscountManageProductVariantItemUiModel>,
-        bulkApplyDiscountResult: DiscountSettings,
-        slashPriceStatus: Int
+        bulkApplyDiscountResult: DiscountSettings
     ) {
         launchCatchError(dispatcherProvider.io, {
             listVariantItemUiModel.filter { it.isEnabled }.forEach { variantProductData ->
@@ -221,8 +195,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
                 updateProductData(
                     variantProductData,
                     bulkApplyDiscountResult,
-                    minOriginalPrice,
-                    slashPriceStatus
+                    minOriginalPrice
                 )
             }
             _bulkApplyListVariantItemUiModel.postValue(listVariantItemUiModel)
@@ -232,8 +205,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     private fun updateProductData(
         productData: ShopDiscountManageProductVariantItemUiModel,
         bulkApplyDiscountResult: DiscountSettings,
-        minOriginalPrice: Int,
-        slashPriceStatus: Int
+        minOriginalPrice: Int
     ) {
         productData.apply {
             val discountedPrice: Int
@@ -251,7 +223,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
                         (100 - discountedPercentage) * this.variantMinOriginalPrice / 100
                 }
             }
-            when (slashPriceStatus) {
+            when (this.slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                     this.startDate = bulkApplyDiscountResult.startDate ?: Date()
                 }

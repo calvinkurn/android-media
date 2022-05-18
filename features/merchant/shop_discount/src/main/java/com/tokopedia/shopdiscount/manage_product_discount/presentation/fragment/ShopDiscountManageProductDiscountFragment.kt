@@ -169,7 +169,8 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             productData.slashPriceInfo.startDate.time,
             productData.slashPriceInfo.endDate.time,
             productData.slashPriceInfo.slashPriceStatusId,
-            selectedPeriodChip
+            selectedPeriodChip,
+            mode
         )
         bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
             this.selectedPeriodChip = selectedPeriodChip
@@ -179,16 +180,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     }
 
     private fun setDiscountPeriodBasedOnBenefit(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
-        val startDate = viewModel.defaultStartDate
-        val endDate = if (slashPriceBenefitData.isUseVps) {
-            viewModel.getVpsPackageDefaultEndDate(slashPriceBenefitData)
-        } else {
-            viewModel.getMembershipDefaultEndDate()
-        }
-        viewModel.updateProductDiscountPeriodData(
-            startDate,
-            endDate
-        )
+        viewModel.getDiscountPeriodDataBasedOnBenefit(slashPriceBenefitData)
     }
 
     private fun setDiscountPeriodBasedOnExistingData(
@@ -272,6 +264,15 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         observeUpdatedDiscountPercentageData()
         observeUpdatedDiscountPriceData()
         observeInputValidation()
+        observeDiscountPeriodDataBasedOnBenefitLiveData()
+    }
+
+    private fun observeDiscountPeriodDataBasedOnBenefitLiveData() {
+        viewModel.discountPeriodDataBasedOnBenefitLiveData.observe(viewLifecycleOwner, {
+            it?.let {
+                viewModel.updateProductDiscountPeriodData(it.first,it.second)
+            }
+        })
     }
 
     private fun observeInputValidation() {
@@ -280,12 +281,18 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             when (errorValidation) {
                 ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Maks. ${viewModel.getMaxDiscountPrice().getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_max_price_format),
+                            viewModel.getMaxDiscountPrice().getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 ERROR_PRICE_MIN -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
-                        "Min ${viewModel.getMinDiscountPrice().getCurrencyFormatted()}"
+                        String.format(
+                            getString(R.string.shop_discount_manage_product_error_min_price_format),
+                            viewModel.getMinDiscountPrice().getCurrencyFormatted()
+                        )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
                 NONE -> {
