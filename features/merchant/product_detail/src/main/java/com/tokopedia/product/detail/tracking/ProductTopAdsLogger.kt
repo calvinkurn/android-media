@@ -32,7 +32,7 @@ object ProductTopAdsLogger {
         }
         ServerLogger.log(
             Priority.P2,
-            TOPADS_PDP_GENERAL_ERROR,
+            TOPADS_PDP,
             mapOf(
                 "action" to tag,
                 "productId" to productId,
