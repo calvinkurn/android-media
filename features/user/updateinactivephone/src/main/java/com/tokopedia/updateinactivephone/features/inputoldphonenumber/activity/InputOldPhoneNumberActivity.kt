@@ -18,8 +18,6 @@ class InputOldPhoneNumberActivity : BaseSimpleActivity(),
     @Inject
     lateinit var analytics: InputOldPhoneNumberAnalytics
 
-    private var inactivePhoneNumberComponent: InactivePhoneComponent? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
@@ -36,11 +34,7 @@ class InputOldPhoneNumberActivity : BaseSimpleActivity(),
     }
 
     override fun getComponent(): InactivePhoneComponent =
-        inactivePhoneNumberComponent ?: initializeInactivePhoneNumber()
-
-    private fun initializeInactivePhoneNumber(): InactivePhoneComponent {
-        return InactivePhoneComponentBuilder.getComponent(application)
-    }
+        InactivePhoneComponentBuilder.getComponent(application)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

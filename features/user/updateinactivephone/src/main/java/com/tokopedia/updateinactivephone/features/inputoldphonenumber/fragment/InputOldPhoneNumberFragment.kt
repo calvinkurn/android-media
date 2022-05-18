@@ -36,8 +36,7 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(InputOldPhoneNumberViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this, viewModelFactory).get(InputOldPhoneNumberViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,9 +55,8 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         isLoadingObserver()
     }
 
-    override fun getScreenName(): String {
-        return SCREEN_NAME
-    }
+    override fun getScreenName(): String =
+        InputOldPhoneNumberFragment::class.java.simpleName
 
     override fun initInjector() {
         getComponent(InactivePhoneComponent::class.java).inject(this)
@@ -169,8 +167,6 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
     }
 
     companion object {
-
-        private val SCREEN_NAME = InputOldPhoneNumberFragment::class.java.simpleName
 
         @JvmStatic
         fun newInstance(bundle: Bundle) =
