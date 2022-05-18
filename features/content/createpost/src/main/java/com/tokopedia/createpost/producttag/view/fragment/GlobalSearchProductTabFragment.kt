@@ -23,9 +23,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_global_search_ticker_list.*
@@ -180,8 +178,16 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
-                    binding.rvGlobalSearchProduct.hide()
-                    binding.globalError.show()
+                    if(viewModel.hasProductSearchFilterApplied) {
+                        showFilterNoData()
+                        binding.rvGlobalSearchProduct.hide()
+                        binding.globalError.show()
+                    }
+                    else {
+                        /** TODO: handle this */
+                        binding.rvGlobalSearchProduct.show()
+                        binding.globalError.hide()
+                    }
                 }
                 else updateAdapterData(curr, curr.state.hasNextPage)
             }
@@ -223,6 +229,23 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         }
     }
 
+    private fun showFilterNoData() {
+        binding.rvGlobalSearchProduct.hide()
+        binding.globalError.apply {
+            /** TODO: gonna change this later */
+            errorIllustration.loadImage(getString(R.string.img_no_shop_product))
+            errorTitle.text = getString(R.string.cc_global_search_product_filter_not_found_title)
+            errorDescription.text = getString(R.string.cc_global_search_product_filter_not_found_desc)
+
+            errorAction.text = getString(R.string.cc_reset_filter)
+            errorAction.visible()
+            errorSecondaryAction.gone()
+            errorAction.setOnClickListener {
+                viewModel.submitAction(ProductTagAction.ResetProductFilter)
+            }
+            show()
+        }
+    }
     companion object {
         const val TAG = "GlobalSearchProductTabFragment"
 

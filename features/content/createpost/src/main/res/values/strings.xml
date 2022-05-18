@@ -133,4 +133,8 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_filter_product_count_label">Tampilkan produk</string>
     <string name="cc_filter_shop_count_template">Tampilkan %s Toko</string>
     <string name="cc_filter_shop_count_label">Tampilkan Toko</string>
+
+    <string name="cc_global_search_product_filter_not_found_title">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="cc_global_search_product_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_reset_filter">Reset Filter</string>
 </resources>

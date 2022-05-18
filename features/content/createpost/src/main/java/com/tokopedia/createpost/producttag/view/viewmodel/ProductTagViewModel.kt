@@ -71,6 +71,14 @@ class ProductTagViewModel @AssistedInject constructor(
     val selectedShop: ShopUiModel
         get() = _shopProduct.value.shop
 
+    val hasProductSearchFilterApplied: Boolean
+        get() {
+            val currState = _globalSearchProduct.value
+            return currState.quickFilters.firstOrNull {
+                currState.param.isParamFound(it.key, it.value)
+            } != null
+        }
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))
@@ -221,6 +229,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.OpenProductSortFilterBottomSheet -> handleOpenProductSortFilterBottomSheet()
             is ProductTagAction.RequestProductFilterProductCount -> handleRequestProductFilterProductCount(action.selectedSortFilter)
             is ProductTagAction.ApplyProductSortFilter -> handleApplyProductSortFilter(action.selectedSortFilter)
+            ProductTagAction.ResetProductFilter -> handleResetProductFilter()
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -533,6 +542,18 @@ class ProductTagViewModel @AssistedInject constructor(
 
         _globalSearchProduct.setValue {
             GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleResetProductFilter() {
+        val newResetParam = SearchParamUiModel.Empty.apply {
+            query = _globalSearchProduct.value.param.query
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newResetParam)
         }
 
         handleLoadGlobalSearchProduct()
