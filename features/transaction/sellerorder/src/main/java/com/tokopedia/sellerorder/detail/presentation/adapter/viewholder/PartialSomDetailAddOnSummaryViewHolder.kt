@@ -30,19 +30,40 @@ class PartialSomDetailAddOnSummaryViewHolder(
     private val adapter = BaseAdapter(typeFactory)
 
     init {
-        binding?.rvAddOn?.run {
-            setRecycledViewPool(recyclerViewSharedPool)
-            (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
-            adapter = this@PartialSomDetailAddOnSummaryViewHolder.adapter
-            if (itemDecorationCount == Int.ZERO) {
-                addItemDecoration(
-                    RecyclerViewItemDivider(
-                        MethodChecker.getDrawable(context, R.drawable.som_detail_add_on_divider),
-                        ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                        ITEM_DECORATION_VERTICAL_MARGIN.toPx()
-                    )
+        setupLayout()
+    }
+
+    private fun setupLayout() {
+        binding?.setupRecyclerviewRecycledViewPool()
+        binding?.setupRecyclerViewLayoutManager()
+        binding?.setupRecyclerViewItemDecoration()
+    }
+
+    private fun PartialAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
+        rvAddOn.setRecycledViewPool(recyclerViewSharedPool)
+    }
+
+    private fun PartialAddOnSummaryBinding.setupRecyclerViewLayoutManager() {
+        (rvAddOn.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
+    }
+
+    private fun PartialAddOnSummaryBinding.setupRecyclerViewItemDecoration() {
+        if (rvAddOn.itemDecorationCount == Int.ZERO) {
+            val dividerDrawable = try {
+                MethodChecker.getDrawable(
+                    root.context,
+                    R.drawable.som_detail_add_on_divider
                 )
+            } catch (t: Throwable) {
+                null
             }
+            rvAddOn.addItemDecoration(
+                RecyclerViewItemDivider(
+                    dividerDrawable,
+                    ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
+                    ITEM_DECORATION_VERTICAL_MARGIN.toPx()
+                )
+            )
         }
     }
 

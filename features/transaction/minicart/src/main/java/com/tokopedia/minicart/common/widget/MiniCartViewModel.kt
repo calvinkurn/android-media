@@ -553,7 +553,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-
     // User Interaction
 
     fun updateProductQty(productId: String, newQty: Int) {
@@ -740,7 +739,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         val updatedProductForWholesalePriceItems = mutableListOf<MiniCartProductUiModel>()
         val updatedProductForWholesalePriceItemsProductId = mutableListOf<String>()
         miniCartProductList.forEach { visitable ->
-            val updatedProduct = visitable.deepCopy()
+            val updatedProduct = visitable.copy()
             var isUpdatedWholeSalePrice = false // flag to update ui
             var isEligibleForWholesalePrice = false
             loop@ for (wholesalePrice in visitable.wholesalePriceGroup) {

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -36,11 +37,12 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_topads_product_list.*
 import javax.inject.Inject
 
 private const val ROW = 50
@@ -53,7 +55,19 @@ private const val CLICK_TIPS_PILIH_PRODUK = "click - tips on pilih produk page"
 private const val CLICK_SIMPAN_PILIH_PRODUK = "click - simpan on pilih produk page"
 private const val PRODUCT_NAME_HEADLINE = "android.topads_headline"
 
-class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
+class TopAdsProductListFragment : BaseDaggerFragment(),
+    ProductListAdapter.ProductListAdapterListener {
+
+    private var searchInputView: SearchBarUnify? = null
+    private var btnSort: UnifyImageButton? = null
+    private var emptyResultText: Typography? = null
+    private var quickFilterRecyclerView: RecyclerView? = null
+    private var ticker: Ticker? = null
+    private var selectProductCheckBox: CheckboxUnify? = null
+    private var productListRecyclerView: RecyclerView? = null
+    private var tooltipBtn: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var selectProductInfo: Typography? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,7 +85,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private var isDataEnded = false
     private var linearLayoutManager = LinearLayoutManager(context)
-    private var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> = HashMap()
+    private var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> =
+        HashMap()
     private var selectedProductList = mutableListOf<TopAdsProductModel>()
 
     companion object {
@@ -83,19 +98,34 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDataFromArguments()
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TopAdsProductListViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(TopAdsProductListViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topads_product_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_topads_product_list, container, false)
+        searchInputView = view.findViewById(R.id.searchInputView)
+        btnSort = view.findViewById(R.id.btnSort)
+        emptyResultText = view.findViewById(R.id.emptyResultText)
+        quickFilterRecyclerView = view.findViewById(R.id.quickFilterRecyclerView)
+        ticker = view.findViewById(R.id.ticker)
+        selectProductCheckBox = view.findViewById(R.id.selectProductCheckBox)
+        productListRecyclerView = view.findViewById(R.id.productListRecyclerView)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        btnNext = view.findViewById(R.id.btnNext)
+        selectProductInfo = view.findViewById(R.id.selectProductInfo)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,7 +136,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
+    private fun getKeyword() = searchInputView?.searchBarTextField?.text.toString()
 
     private fun getDataFromArguments() {
         arguments?.run {
@@ -121,14 +151,15 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setUpUI() {
         topAdsCategoryList = viewModel.getTopAdsCategoryList()
         selectedTabModel = topAdsCategoryList.first()
-        categoryListAdapter = CategoryListAdapter(topAdsCategoryList, chipFilterClick = this::onChipFilterClick)
+        categoryListAdapter =
+            CategoryListAdapter(topAdsCategoryList, chipFilterClick = this::onChipFilterClick)
         productsListAdapter = ProductListAdapter(ArrayList(), selectedTopAdsProductMap, this)
-        quickFilterRecyclerView.run {
+        quickFilterRecyclerView?.run {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryListAdapter
             addItemDecoration(SpaceItemDecoration(LinearLayoutManager.HORIZONTAL))
         }
-        productListRecyclerView.run {
+        productListRecyclerView?.run {
             layoutManager = linearLayoutManager
             adapter = productsListAdapter
             addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
@@ -141,10 +172,10 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         setUpSelectProductCheckBox()
         setUpSearchBarUnify()
         setUpToolTip()
-        btnSort.setOnClickListener {
+        btnSort?.setOnClickListener {
             sortProductList.show(childFragmentManager, "")
         }
-        btnNext.setOnClickListener {
+        btnNext?.setOnClickListener {
             setResultAndFinish()
         }
     }
@@ -161,8 +192,15 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun setUpSearchBarUnify() {
-        view?.let { Utils.setSearchListener(searchInputView, activity, it, ::refreshProduct) }
-        searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        view?.let {
+            searchInputView?.let { it1 ->
+                Utils.setSearchListener(it1,
+                    activity,
+                    it,
+                    ::refreshProduct)
+            }
+        }
+        searchInputView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -179,32 +217,37 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun hideEmptyView() {
-        emptyResultText.hide()
-        quickFilterRecyclerView.show()
-        selectProductCheckBox.show()
-        productListRecyclerView.show()
+        emptyResultText?.hide()
+        quickFilterRecyclerView?.show()
+        selectProductCheckBox?.show()
+        productListRecyclerView?.show()
     }
 
     private fun showEmptyView() {
         if (getKeyword().isNotEmpty()) {
-            emptyResultText.text = String.format(getString(R.string.topads_headline_search_result_with_keyword, getKeyword()))
-            emptyResultText.show()
-            quickFilterRecyclerView.hide()
+            emptyResultText?.text =
+                String.format(getString(R.string.topads_headline_search_result_with_keyword,
+                    getKeyword()))
+            emptyResultText?.show()
+            quickFilterRecyclerView?.hide()
         }
-        ticker.hide()
-        selectProductCheckBox.hide()
-        productListRecyclerView.hide()
+        ticker?.hide()
+        selectProductCheckBox?.hide()
+        productListRecyclerView?.hide()
     }
 
     private fun setUpSelectProductCheckBox() {
-        selectProductCheckBox.setOnClickListener {
-            val isChecked = selectProductCheckBox.isChecked
+        selectProductCheckBox?.setOnClickListener {
+            val isChecked = selectProductCheckBox?.isChecked == true
             if (isChecked) {
                 productsListAdapter.list.let {
                     var itemsToAdd = 0
                     it.forEach { product ->
-                        val category = Category(product.departmentID.toString(), product.departmentName)
-                        if (selectedTopAdsProductMap[category] == null || selectedTopAdsProductMap[category]?.contains(product) == false) {
+                        val category =
+                            Category(product.departmentID.toString(), product.departmentName)
+                        if (selectedTopAdsProductMap[category] == null || selectedTopAdsProductMap[category]?.contains(
+                                product) == false
+                        ) {
                             itemsToAdd++
                         }
                     }
@@ -214,7 +257,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                     }
                     if (itemsToAdd + alreadyAdded <= MAX_PRODUCT_SELECTION) {
                         it.forEach { product ->
-                            val category = Category(product.departmentID.toString(), product.departmentName)
+                            val category =
+                                Category(product.departmentID.toString(), product.departmentName)
                             if (selectedTopAdsProductMap[category] == null) {
                                 val value = ArrayList<TopAdsProductModel>()
                                 value.add(product)
@@ -225,7 +269,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                         }
                     } else {
                         onProductOverSelect()
-                        selectProductCheckBox.isChecked = false
+                        selectProductCheckBox?.isChecked = false
                     }
                 }
             } else {
@@ -237,7 +281,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
             isProductSelectedListEdited = true
-            if (!btnNext.isEnabled) {
+            if (btnNext?.isEnabled == false) {
                 setTickerAndBtn()
             }
         }
@@ -246,13 +290,13 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setTickerAndBtn() {
         val descriptionText = getDescriptionTextIfAny()
         if (descriptionText.isNotEmpty()) {
-            ticker.show()
-            ticker.setTextDescription(descriptionText)
+            ticker?.show()
+            ticker?.setTextDescription(descriptionText)
             productsListAdapter.notifyDataSetChanged()
         } else {
-            ticker.hide()
+            ticker?.hide()
         }
-        btnNext.isEnabled = ticker.visibility == View.GONE
+        btnNext?.isEnabled = ticker?.visibility == View.GONE
     }
 
     private fun getDescriptionTextIfAny(): String {
@@ -274,7 +318,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
         if (categoryCount > MIN_CATEGORY_SHOWN) {
             val others = categoryCount - MIN_CATEGORY_SHOWN
-            descriptionText += " " + getString(R.string.topads_headline_category_count_error, others)
+            descriptionText += " " + getString(R.string.topads_headline_category_count_error,
+                others)
         }
         return descriptionText
     }
@@ -284,27 +329,37 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         selectedTopAdsProductMap.values.forEach {
             totalCount += it.size
         }
-        selectProductInfo.text = String.format(getString(R.string.format_selected_produk), totalCount)
+        selectProductInfo?.text =
+            String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), totalCount)
     }
 
     private fun setUpToolTip() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_tooltip_text)
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    tvToolTipText?.text = getString(R.string.topads_headline_tooltip_text)
 
-            val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
-        }
-        tooltipBtn.addItem(tooltipView)
-        tooltipBtn.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", userSession.userId)
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
+        tooltipBtn?.addItem(tooltipView)
+        tooltipBtn?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
+                CLICK_TIPS_PILIH_PRODUK,
+                "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}",
+                userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_choosing_product))
-                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_reviews, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_popularity, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_same_category, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_name_and_photo_correct, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_reviews,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_popularity,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_same_category,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_name_and_photo_correct,
+                    R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
@@ -319,21 +374,24 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun setProductSelectCbText() {
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
-            selectProductCheckBox.text = getString(R.string.topads_headline_select_all_recommendation)
+            selectProductCheckBox?.text =
+                getString(R.string.topads_headline_select_all_recommendation)
         } else {
             val count = selectedTabModel?.count?.takeIf {
                 it <= MAX_PRODUCT_SELECTION
             } ?: MAX_PRODUCT_SELECTION
-            selectProductCheckBox.text = String.format(getString(R.string.topads_headline_select_first_n_recommendation), count)
+            selectProductCheckBox?.text =
+                String.format(getString(R.string.topads_headline_select_first_n_recommendation),
+                    count)
         }
-        selectProductCheckBox.isChecked = false
+        selectProductCheckBox?.isChecked = false
     }
 
     private fun setSelectProductCbCheck(data: ArrayList<TopAdsProductModel>) {
         if (data.isEmpty()) {
-            selectProductCheckBox.hide()
+            selectProductCheckBox?.hide()
         } else {
-            selectProductCheckBox.show()
+            selectProductCheckBox?.show()
             checkIfDeterminate()
         }
     }
@@ -344,17 +402,26 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             val category = Category(it.departmentID, it.departmentName)
             totalCount += selectedTopAdsProductMap[category]?.size ?: 0
         }
-        selectProductCheckBox.isChecked = totalCount != 0
+        selectProductCheckBox?.isChecked = totalCount != 0
         if (totalCount == productsListAdapter.list.size) {
-            selectProductCheckBox.setIndeterminate(false)
+            selectProductCheckBox?.setIndeterminate(false)
         } else if (totalCount != 0 && totalCount < productsListAdapter.list.size) {
-            selectProductCheckBox.setIndeterminate(true)
+            selectProductCheckBox?.setIndeterminate(true)
         }
     }
 
     private fun fetchTopAdsProducts() {
-        viewModel.getTopAdsProductList(userSession.shopId, getKeyword(), "", getSelectedSortId(), "", ROW, start,
-                selectedTabModel?.id, PRODUCT_NAME_HEADLINE, this::onSuccessGetProductList, this::onError)
+        viewModel.getTopAdsProductList(userSession.shopId,
+            getKeyword(),
+            "",
+            getSelectedSortId(),
+            "",
+            ROW,
+            start,
+            selectedTabModel?.id,
+            PRODUCT_NAME_HEADLINE,
+            this::onSuccessGetProductList,
+            this::onError)
     }
 
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsHeadlineTabModel) {
@@ -372,10 +439,14 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             setTabCount(data.size)
             prepareForNextFetch(eof)
             showCbIfRecommendation(data)
-            if (!btnNext.isEnabled) {
+            if (btnNext?.isEnabled == false) {
                 setTickerAndBtn()
             }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceViewEvent(VIEW_PILIH_PRODUK, "{${userSession.shopId}} - {${arguments?.getString(GROUP_NAME)}}", data, userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceViewEvent(
+                VIEW_PILIH_PRODUK,
+                "{${userSession.shopId}} - {${arguments?.getString(GROUP_NAME)}}",
+                data,
+                userSession.userId)
         } else {
             showEmptyView()
         }
@@ -383,11 +454,11 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun showCbIfRecommendation(data: ArrayList<TopAdsProductModel>) {
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
-            selectProductCheckBox.show()
+            selectProductCheckBox?.show()
             setProductSelectCbText()
             setSelectProductCbCheck(data)
         } else {
-            selectProductCheckBox.hide()
+            selectProductCheckBox?.hide()
         }
     }
 
@@ -408,17 +479,25 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun onError(t: Throwable) {
         view?.let {
-            Toaster.build(it, t.localizedMessage
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                refreshProduct()
-            }).show()
+            Toaster.build(it,
+                t.localizedMessage
+                    ?: "",
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                clickListener = View.OnClickListener {
+                    refreshProduct()
+                }).show()
         }
     }
 
     private fun setResultAndFinish() {
         setTickerAndBtn()
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_SIMPAN_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", selectedProductList, userSession.userId)
-        if (ticker.isVisible) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(
+            CLICK_SIMPAN_PILIH_PRODUK,
+            "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}",
+            selectedProductList,
+            userSession.userId)
+        if (ticker?.isVisible == true) {
             return
         }
         val intent = Intent()
@@ -432,8 +511,11 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
-            Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+            Toaster.build(it,
+                getString(R.string.topads_headline_over_product_selection),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -444,7 +526,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             checkIfDeterminate()
         }
         setSelectProductText()
-        if (!btnNext.isEnabled) {
+        if (btnNext?.isEnabled == false) {
             changeBackGround(category, product)
             setTickerAndBtn()
         }
