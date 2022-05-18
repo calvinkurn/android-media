@@ -273,14 +273,11 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
-                    val newProductParam = SearchParamUiModel.Empty.apply { this.query = query }
-                    val newShopParam = SearchParamUiModel.Empty.apply { this.query = query }
-
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = newProductParam)
+                        GlobalSearchProductUiModel.Empty.copy(param = resetParam(query))
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = newShopParam)
+                        GlobalSearchShopUiModel.Empty.copy(param = resetParam(query))
                     }
                 }
                 ProductTagSource.Shop -> {
@@ -548,12 +545,10 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleResetProductFilter() {
-        val newResetParam = SearchParamUiModel.Empty.apply {
-            query = _globalSearchProduct.value.param.query
-        }
+        val currQuery = _globalSearchProduct.value.param.query
 
         _globalSearchProduct.setValue {
-            GlobalSearchProductUiModel.Empty.copy(param = newResetParam)
+            GlobalSearchProductUiModel.Empty.copy(param = resetParam(currQuery))
         }
 
         handleLoadGlobalSearchProduct()
@@ -653,6 +648,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleRequestShopFilterProductCount(selectedSortFilter: Map<String, Any>) {
         viewModelScope.launchCatchError(block = {
+            /** Need to remove "device" param somehow */
             val param = SearchParamUiModel(HashMap(selectedSortFilter)).apply {
                 device = ""
             }
@@ -751,6 +747,10 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
+    }
+
+    private fun resetParam(query: String): SearchParamUiModel {
+        return SearchParamUiModel.Empty.apply { this.query = query }
     }
 
     companion object {
