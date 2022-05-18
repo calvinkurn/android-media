@@ -83,6 +83,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringProfileDataViewHolder.LAYOUT
     }
 
+    override fun type(initialShimmerTransactionRevampDataModel: InitialShimmerTransactionRevampDataModel): Int {
+        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+    }
+
     override fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel): Int {
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
@@ -135,6 +139,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
+            InitialShimmeringTransactionDataRevampViewHolder.LAYOUT -> InitialShimmeringTransactionDataRevampViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, mainNavListener)
             FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)

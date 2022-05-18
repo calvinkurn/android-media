@@ -7,10 +7,7 @@ import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_EMPTY
 import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 

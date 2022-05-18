@@ -2,7 +2,8 @@ package com.tokopedia.homenav.mainnav.domain.model
 
 data class NavOrderListModel (
         val orderList: List<NavProductOrder> = listOf(),
-        val paymentList: List<NavPaymentOrder> = listOf()
+        val paymentList: List<NavPaymentOrder> = listOf(),
+        val reviewList: List<NavReviewOrder> = listOf()
 )
 
 data class NavProductOrder(
@@ -25,4 +26,11 @@ data class NavPaymentOrder(
         val descriptionText: String = "",
         val imageUrl: String = "",
         val applink: String = ""
+)
+
+data class NavReviewOrder(
+        val productId: String = "",
+        val productName: String = "",
+        val imageUrl: String = "",
+        val appLink: String = ""
 )

@@ -10,13 +10,13 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ORDER_HISTORY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_WISHLIST
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -54,6 +54,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
@@ -77,6 +78,7 @@ class MainNavViewModel @Inject constructor(
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
         private const val ON_GOING_FAVORITE_SHOPS_TO_SHOW = 5
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
+        private const val INDEX_DEFAULT_ALL_CATEGORY = 8
 
         private const val SOURCE = "dave_home_nav"
         private const val MAX_ORDER_TO_SHOW = 6
@@ -177,9 +179,11 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun updateAllCategories(menus: List<Visitable<*>>, isExpanded: Boolean = false) {
-        allCategories.menus = menus
-        allCategories.isExpanded = isExpanded
-        updateWidget(allCategories, findBuStartIndexPosition())
+        if (isMePageUsingRollenceVariant) {
+            allCategories.menus = menus
+            allCategories.isExpanded = isExpanded
+            updateWidget(allCategories, findBuStartIndexPosition() ?: INDEX_DEFAULT_ALL_CATEGORY)
+        }
     }
 
     // ============================================================================================
@@ -224,7 +228,7 @@ class MainNavViewModel @Inject constructor(
             //update cached data with cloud data
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
-            onlyForLoggedInUser { getOngoingTransaction() }
+            onlyForLoggedInUser { getOngoingTransactionRevamp() }
             if(isMePageUsingRollenceVariant){
                 onlyForLoggedInUser { getFavoriteShops() }
                 onlyForLoggedInUser { getWishlist() }
@@ -245,10 +249,15 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        this.add(SeparatorDataModel())
-        allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
-        this.add(allCategories)
-        this.add(SeparatorDataModel())
+        if (isMePageUsingRollenceVariant) {
+            this.add(SeparatorDataModel())
+            allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
+            this.add(allCategories)
+            this.add(SeparatorDataModel())
+        } else {
+            this.addAll(buildBUTitleList())
+            this.add(InitialShimmerDataModel())
+        }
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -277,8 +286,17 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
 
-                allCategoriesCache = result
-                updateAllCategories(result)
+                if (isMePageUsingRollenceVariant) {
+                    allCategoriesCache = result
+                } else {
+                    val shimmeringDataModel = _mainNavListVisitable.find {
+                        it is InitialShimmerDataModel
+                    }
+                    shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
+                    findBuStartIndexPosition()?.let {
+                        addWidgetList(result, it)
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -286,8 +304,13 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun isAllCategoriesNotContainsShimmer(): Boolean =
+        allCategories.menus.firstOrNull { it is InitialShimmerDataModel } == null
+
     private suspend fun getBuListMenu(isExpanded: Boolean = false) {
-        updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+        if (isMePageUsingRollenceVariant && isAllCategoriesNotContainsShimmer()) {
+            updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+        }
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
@@ -296,13 +319,44 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-                updateAllCategories(result, isExpanded)
-            } catch (e: Exception) {
-                if (allCategoriesCache.isNotEmpty()) {
-                    updateAllCategories(allCategoriesCache, isExpanded)
+
+                if (isMePageUsingRollenceVariant) {
+                    updateAllCategories(result, isExpanded)
+                } else {
+                    val shimmeringDataModel = _mainNavListVisitable.find {
+                        it is InitialShimmerDataModel
+                    }
+                    shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
+                    findBuStartIndexPosition()?.let {
+                        if (findExistingEndBuIndexPosition() == null) {
+                            addWidgetList(result, it)
+                        }
+                    }
                 }
-                else {
-                    updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
+            } catch (e: Exception) {
+                if (isMePageUsingRollenceVariant) {
+                    if (allCategoriesCache.isNotEmpty()) {
+                        updateAllCategories(allCategoriesCache, isExpanded)
+                    } else {
+                        updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
+                    }
+                } else {
+                    val isBuExist = findExistingEndBuIndexPosition()
+                    if (isBuExist == null) {
+                        findBuStartIndexPosition()?.let {
+                            updateWidget(ErrorStateBuDataModel(), it)
+                        }
+                    }
+
+                    val buShimmering = _mainNavListVisitable.find {
+                        it is InitialShimmerDataModel
+                    }
+                    buShimmering?.let {
+                        updateWidget(
+                            ErrorStateBuDataModel(),
+                            _mainNavListVisitable.indexOf(it)
+                        )
+                    }
                 }
                 e.printStackTrace()
             }
@@ -372,6 +426,11 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshBuListData() {
         launchCatchError(coroutineContext, block = {
+            if (!isMePageUsingRollenceVariant) {
+                findBuStartIndexPosition()?.let {
+                    updateWidget(InitialShimmerDataModel(), it)
+                }
+            }
             getBuListMenu(isExpanded = true)
         }) {
             //no-op
@@ -383,47 +442,82 @@ class MainNavViewModel @Inject constructor(
             it.value is ErrorStateOngoingTransactionModel
         }
         transactionPlaceHolder?.let {
-            updateWidget(InitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
+            updateWidget(InitialShimmerTransactionRevampDataModel(), transactionPlaceHolder.index)
         }
         launchCatchError(coroutineContext, block = {
-            getOngoingTransaction()
+            getOngoingTransactionRevamp()
         }) {
 
         }
     }
 
-    suspend fun getOngoingTransaction() {
+    private fun getInitialShimmerTransactionDataModel() : Visitable<*> {
+        return if (isMePageUsingRollenceVariant) {
+            InitialShimmerTransactionRevampDataModel()
+        } else {
+            InitialShimmerTransactionDataModel()
+        }
+    }
+
+    private suspend fun getOngoingTransactionRevamp() {
         //find error state if availabxle and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateOngoingTransactionModel
         }
         transactionErrorState?.let {
-            updateWidget(InitialShimmerTransactionDataModel(), it.index)
+            updateWidget(getInitialShimmerTransactionDataModel(), it.index)
         }
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
+            val reviewList = listOf<NavReviewOrder>()
 
-            if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
+            if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
-                    NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
+                    NavOrderListModel(orderListToShow, paymentList, reviewList),
+                    othersTransactionCount,
+                    isMePageUsingRollenceVariant
+                )
 
                 //find shimmering and change with result value
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                    updateWidget(transactionListItemViewModel, it)
+                if (isMePageUsingRollenceVariant) {
+                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                        updateWidget(transactionListItemViewModel, it)
+                    }
+                }
+                else {
+                    findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                        updateWidget(transactionListItemViewModel, it)
+                    }
                 }
             } else {
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                val emptyTransaction = TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant)
+                if (isMePageUsingRollenceVariant) {
+                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                        updateWidget(emptyTransaction, it)
+                    }
+                }
+                else {
                     deleteWidget(InitialShimmerTransactionDataModel())
+                }
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
-            findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                updateWidget(ErrorStateOngoingTransactionModel(), it)
+            if (isMePageUsingRollenceVariant) {
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(ErrorStateOngoingTransactionModel(), it)
+                }
+            }
+            else {
+                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                    updateWidget(ErrorStateOngoingTransactionModel(), it)
+                }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
@@ -526,7 +620,7 @@ class MainNavViewModel @Inject constructor(
     private fun buildBUTitleList(): List<Visitable<*>> {
         clientMenuGenerator.get()?.let {
             return mutableListOf(
-                    it.getSectionTitle(IDENTIFIER_TITLE_ALL_CATEGORIES)
+                it.getSectionTitle(IDENTIFIER_TITLE_ALL_CATEGORIES, isMePageUsingRollenceVariant)
             )
         }
         return listOf()
@@ -562,9 +656,9 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
                         InitialShimmerTransactionDataModel(),
-                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER)
@@ -572,8 +666,8 @@ class MainNavViewModel @Inject constructor(
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                        it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER)
@@ -590,23 +684,19 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
                     SeparatorDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                    InitialShimmerTransactionDataModel(),
-                    it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
-                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    ShimmerWishlistDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    ShimmerFavoriteShopDataModel()
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        InitialShimmerTransactionRevampDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        ShimmerWishlistDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                        ShimmerFavoriteShopDataModel()
                 )
             } else {
                 transactionDataList = mutableListOf(
-                    SeparatorDataModel(),
-                    it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                    it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                    it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
-                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
+                        SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
                 )
             }
             return transactionDataList
@@ -839,13 +929,33 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    fun findBuStartIndexPosition(): Int {
-        val findBU = _mainNavListVisitable.firstOrNull {
-            it is HomeNavExpandableDataModel && it.id == IDENTIFIER_TITLE_ALL_CATEGORIES
+    fun findBuStartIndexPosition(): Int? {
+        if (isMePageUsingRollenceVariant) {
+            val findBU = _mainNavListVisitable.firstOrNull {
+                it is HomeNavExpandableDataModel && it.id == IDENTIFIER_TITLE_ALL_CATEGORIES
+            }
+            findBU.let {
+                return _mainNavListVisitable.indexOf(it)
+            }
+        } else {
+            val findBUTitle = _mainNavListVisitable.firstOrNull {
+                it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
+            }
+            findBUTitle?.let {
+                return _mainNavListVisitable.indexOf(it) + 1
+            }
+            return null
         }
-        findBU.let{
+    }
+
+    private fun findExistingEndBuIndexPosition(): Int? {
+        val findHomeMenu = _mainNavListVisitable.findLast {
+            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
+        }
+        findHomeMenu?.let {
             return _mainNavListVisitable.indexOf(it)
         }
+        return null
     }
 
     fun findMenu(menuId: Int): HomeNavMenuDataModel? {

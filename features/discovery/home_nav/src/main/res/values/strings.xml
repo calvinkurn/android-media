@@ -11,6 +11,7 @@
     <string name="content_desc_btn_wishlist">button wishlist</string>
     <string name="content_desc_btn_inbox">button inbox</string>
     <string name="content_desc_btn_notification">button notification</string>
+    <string name="content_desc_review">review star</string>
 
     <string name="title_category">Kategori</string>
     <string name="title_main_nav">Menu Utama</string>
@@ -40,6 +41,7 @@
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
     <string name="title_transaction_section">Aktivitas saya</string>
+    <string name="title_all_category_section">Semua Kategori</string>
     <string name="title_category_section">Kategori</string>
     <string name="title_helpcenter_section">Pusat bantuan</string>
     <string name="title_wishlist_section">Wishlist</string>
@@ -52,6 +54,7 @@
     <string name="transaction_item_total_product">%s\nBarang</string>
     <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
+    <string name="transaction_empty">Status belanjaanmu nanti bisa dicek di sini, lho!</string>
 
     <string name="favorite_shop_others_count">%d Toko\nLainnya</string>
 
@@ -75,13 +78,15 @@
     <string name="error_state_bu_title">Gagal memuat menu ini</string>
     <string name="error_state_bu_description">Klik untuk coba lagi.</string>
 
-    <string name="error_state_transaction_title">Gagal memuat transaksi</string>
-    <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+    <string name="error_state_transaction_title">Konten gagal ditampilkan</string>
+    <string name="error_state_transaction_description">Klik ikon di samping buat coba lagi.</string>
 
     <string name="error_state_shop_info">Gagal Memuat</string>
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="content_desc_image_review">image review</string>
+    <string name="content_desc_image_empty_transaction">image empty transaction</string>
     <string name="content_desc_affiliate">Affiliate</string>
     <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>

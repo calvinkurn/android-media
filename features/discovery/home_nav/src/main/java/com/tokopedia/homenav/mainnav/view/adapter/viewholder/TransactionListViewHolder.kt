@@ -13,9 +13,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderS
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderListAdapter
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -45,10 +43,20 @@ class TransactionListViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
-        visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
+        if (element.isMePageUsingRollenceVariant) {
+            visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
+            visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
+            visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
+        }
+        else {
+            visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
+            visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
+        }
         if (element.othersTransactionCount.isMoreThanZero()) {
             visitableList.add(OtherTransactionModel(element.othersTransactionCount))
+        }
+        if (visitableList.isEmpty()) {
+            visitableList.add(OrderEmptyModel())
         }
         adapter.setVisitables(visitableList)
     }
