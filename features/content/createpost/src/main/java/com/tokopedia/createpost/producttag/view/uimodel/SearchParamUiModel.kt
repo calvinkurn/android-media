@@ -67,11 +67,6 @@ data class SearchParamUiModel(
         this.value[key] = newValue
     }
 
-    /** Rewrite existing param if any */
-    fun rewriteParam(key: String, value: Any) {
-        this.value[key] = value
-    }
-
     fun removeParam(key: String, value: String) {
         if(this.value.containsKey(key)) {
             if(this.value[key] is String) {
@@ -125,7 +120,6 @@ data class SearchParamUiModel(
         private const val KEY_ROWS = "rows"
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_USER_ID = "user_id"
-        private const val KEY_OB = "ob"
 
         private const val LIMIT_PER_PAGE = 20
 
