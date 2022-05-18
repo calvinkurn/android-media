@@ -79,10 +79,6 @@ class SelectProductFragment : BaseDaggerFragment() {
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
 
-    private val discountStatusId by lazy {
-        arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
-    }
-
     private val productAdapter by lazy {
         SelectProductAdapter(
             onProductClicked,
