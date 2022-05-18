@@ -200,6 +200,10 @@ class CentralizedPromoViewModelTest {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
         every {
             resourcesProvider.composeBroadcastChatFreeQuotaLabel(any())
         } returns String.format("%d kuota gratis", 200)
@@ -216,7 +220,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[2].extra == "200 kuota gratis")
+                (result.data as PromoCreationListUiModel).items[3].extra == "200 kuota gratis")
     }
 
     @Test
@@ -249,7 +253,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+                (result.data as PromoCreationListUiModel).items[2].extra.isEmpty())
     }
 
     @Test
@@ -274,6 +278,10 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
 
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -282,7 +290,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+                (result.data as PromoCreationListUiModel).items[2].extra.isEmpty())
     }
 
     @Test
@@ -307,6 +315,10 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
 
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -319,7 +331,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                (result.data as PromoCreationListUiModel).items[2].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
         )
     }
 
@@ -347,6 +359,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             sharedPref.getBoolean(FirstPromoDataSource.IS_TOKOPEDIA_PLAY_FIRST_TIME, true)
         } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -356,7 +371,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(2)?.applink != expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(3)?.applink != expectedApplink)
     }
 
     @Test
@@ -380,6 +395,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             sharedPref.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
         } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -389,7 +407,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(3)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink == expectedApplink)
     }
 
     @Test
@@ -416,6 +434,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -425,7 +446,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "sellerapp://create-voucher-product"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink != expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(5)?.applink != expectedApplink)
     }
 
     @Test
@@ -452,6 +473,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -461,7 +485,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "sellerapp://create-voucher-product"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(5)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(6)?.applink == expectedApplink)
     }
 
     @Test
@@ -488,6 +512,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -496,7 +523,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(6) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
     }
 
     @Test
@@ -523,6 +550,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
         } throws MessageErrorException()
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -531,8 +561,85 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(6) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
     }
+
+    @Test
+    fun `When slash price is disabled, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns false
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
+    @Test
+    fun `When slash price isEnabled key throw exception, should not show the entry point`() = runBlocking {
+        // Given
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+        coEvery {
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+        } returns false
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } throws MessageErrorException()
+
+        // When
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        // Then
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+    }
+
 
     @Test
     fun `Failed get layout data for promo creation`() = runBlocking {
