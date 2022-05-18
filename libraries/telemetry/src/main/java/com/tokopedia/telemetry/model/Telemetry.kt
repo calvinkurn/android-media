@@ -123,6 +123,14 @@ class Telemetry {
             )
         }
 
+        fun getCurrentSectionName():String {
+            return if (telemetrySectionList.isEmpty()) {
+                ""
+            } else {
+                telemetrySectionList[0].eventName
+            }
+        }
+
         @JvmStatic
         fun addStopTime(eventNameStop: String = "", timeStop: Long = System.currentTimeMillis()) {
             if (telemetrySectionList.isEmpty()) return

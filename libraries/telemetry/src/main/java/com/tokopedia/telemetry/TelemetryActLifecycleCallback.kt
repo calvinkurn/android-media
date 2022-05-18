@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.telemetry.sensorlistener.TelemetryTextWatcher
 import com.tokopedia.telemetry.sensorlistener.TelemetryTouchListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import java.lang.ref.WeakReference
 
 class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
@@ -28,15 +30,48 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
     }
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+    private fun registerTelemetryListener(activity: AppCompatActivity) {
+        activity.lifecycleScope.launch {
+            try {
+                yield()
+                activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
+                    if (newFocus is EditText) {
+                        val et: EditText = newFocus
+                        et.removeTextChangedListener(TelemetryTextWatcher)
+                        et.addTextChangedListener(TelemetryTextWatcher)
+                    }
+                }
+                val sensorManager: SensorManager? =
+                    activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
+                val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+                sensorManager?.registerListener(TelemetryAccelListener, sensor, SENSOR_DELAY_NORMAL)
+
+                val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+                sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, SENSOR_DELAY_NORMAL)
+
+                if (activity is BaseActivity) {
+                    activity.addListener(TelemetryTouchListener)
+                }
+                // store this activity so it can be stopped later
+                prevActivityRef = WeakReference(activity)
+                Log.w("HENDRYTAG", "Telemetry registerTelemetryListener " + activity::class.java.simpleName)
+            } catch (e: Throwable) {
+                Log.w("HENDRYTAG", "Error Telemetry registerTelemetryListener $e")
+            }
+        }
+    }
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+    override fun onActivityStarted(activity: Activity) {
         // stop telemetry collection for previous activity to prevent listener leaking
         val prevActRef = prevActivityRef
         if (prevActRef != null) {
             val prevAct = prevActRef.get()
             if (prevAct != null) {
                 stopTelemetryListener(prevAct)
+                prevActivityRef = null
             }
-            prevActivityRef = null
         }
 
         // start new telemetry section
@@ -45,14 +80,16 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
         }
         if (activity is ITelemetryActivity) {
             val sectionName = activity.getTelemetrySectionName()
+
+            // continue track telemetry if the sectionName is different with the previous section Name.
+            if (sectionName == Telemetry.getCurrentSectionName()) {
+                return
+            }
             //stop time for prev telemetry
             Telemetry.addStopTime(sectionName)
-
             TelemetryWorker.scheduleWorker(activity.applicationContext)
 
-            // add new section
             Telemetry.addSection(sectionName)
-
             registerTelemetryListener(activity)
 
             // timer to stop after telemetry duration
@@ -68,6 +105,7 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                 // check if it is already past section duration or not
                 val elapsedDiff = Telemetry.getElapsedDiff()
                 if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
+                    Log.w("HENDRYTAG", "Regis tele $elapsedDiff")
                     registerTelemetryListener(activity)
                     // timer to stop after telemetry duration
                     activity.lifecycleScope.launch {
@@ -86,46 +124,13 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun registerTelemetryListener(activity: AppCompatActivity) {
-        activity.lifecycleScope.launch {
-            try {
-                activity.findViewById<View>(R.id.content).viewTreeObserver
-                    .addOnGlobalFocusChangeListener { _, newFocus ->
-                        if (newFocus is EditText) {
-                            val et: EditText = newFocus
-                            et.removeTextChangedListener(TelemetryTextWatcher)
-                            et.addTextChangedListener(TelemetryTextWatcher)
-                        }
-                    }
-                val sensorManager: SensorManager? =
-                    activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-                val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-                sensorManager?.registerListener(TelemetryAccelListener, sensor, SAMPLING)
-
-                val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-                sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, SAMPLING)
-
-                if (activity is BaseActivity) {
-                    activity.addListener(TelemetryTouchListener)
-                }
-                // store this activity so it can be stopped later
-                prevActivityRef = WeakReference(activity)
-                Log.w("HENDRYTAG", "Telemetry registerTelemetryListener")
-            } catch (e: Throwable) {
-                Log.w("HENDRYTAG", "Error Telemetry registerTelemetryListener $e")
-            }
-        }
-    }
-
-    override fun onActivityStarted(activity: Activity) {}
     override fun onActivityResumed(activity: Activity) {}
     override fun onActivityPaused(activity: Activity) {}
-    override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-    override fun onActivityDestroyed(activity: Activity) {
+    override fun onActivityStopped(activity: Activity) {
         stopTelemetryListener(activity)
     }
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivityDestroyed(activity: Activity) { }
 
     private fun stopTelemetryListener(activity: Activity) {
         try {
@@ -133,6 +138,13 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
             val sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             sensorManager?.unregisterListener(TelemetryAccelListener)
             sensorManager?.unregisterListener(TelemetryGyroListener)
+
+            activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
+                if (newFocus is EditText) {
+                    newFocus.removeTextChangedListener(TelemetryTextWatcher)
+                }
+            }
+
             if (activity is BaseActivity) {
                 activity.removeDispatchTouchListener(TelemetryTouchListener)
             }

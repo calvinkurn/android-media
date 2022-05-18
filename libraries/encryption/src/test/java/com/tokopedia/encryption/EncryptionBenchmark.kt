@@ -15,7 +15,7 @@ import kotlin.system.measureTimeMillis
 @Config(sdk = [Build.VERSION_CODES.O_MR1], manifest=Config.NONE)
 class EncryptionBenchmark {
     companion object {
-        const val dummy_data = "1"
+        const val dummy_data = "{\"start_time\":1639,\"end_time\":1639,\"acc\":[[-0.26,4.94,8.55,0]]}"
         const val n = 10
         const val ENCRYPTION_KEY_16 = "q(e#%Gf@oi>lkB~h"
         const val ENCRYPTION_KEY_32 = "randomlyGeneratedKeyAES123456789"

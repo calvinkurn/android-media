@@ -1,5 +1,6 @@
 package com.tokopedia.telemetry.network.usecase
 
+import android.util.Log
 import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.encryption.utils.Constants
@@ -32,7 +33,7 @@ class TelemetryUseCase @Inject constructor(
         const val PARAM_INPUT = "input"
         val query: String =
             """
-            mutation SubDvcTl(${'$'}input: SubDvcTlRequest!){
+            mutation subDvcTl(${'$'}input: SubDvcTlRequest!){
               mutationSubDvcTl(input: ${'$'}input) {
                 is_error
                 data {
@@ -43,10 +44,9 @@ class TelemetryUseCase @Inject constructor(
         """.trimIndent()
     }
 
-
     private fun getOrCreateUseCase(): GraphqlUseCase<TelemetryResponse> {
         val useCaseTemp = useCase
-        if (useCaseTemp == null) {
+        return if (useCaseTemp == null) {
             val newUseCase = GraphqlUseCase<TelemetryResponse>(repository.get())
             newUseCase.setGraphqlQuery(query)
             newUseCase.setCacheStrategy(
@@ -54,9 +54,9 @@ class TelemetryUseCase @Inject constructor(
             )
             newUseCase.setTypeClass(TelemetryResponse::class.java)
             useCase = newUseCase
-            return newUseCase
+            newUseCase
         } else {
-            return useCaseTemp
+            useCaseTemp
         }
     }
 
@@ -64,6 +64,9 @@ class TelemetryUseCase @Inject constructor(
         val useCase = getOrCreateUseCase()
         val key = generateRandom32Byte()
         val secretKey = aesEncryptorGCM.generateKey(key)
+        Log.w("HENDRYTAG", "telemetry key $key")
+        Log.w("HENDRYTAG", "telemetry secret key $secretKey")
+        Log.w("HENDRYTAG", "telemetry json " + telemetrySection.toJson())
         val params: Map<String, Any?> = mutableMapOf(
             PARAM_INPUT to MutationSubDvcTlRequest(
                 telemetrySection.eventName + "-" + telemetrySection.eventNameEnd,
@@ -81,7 +84,7 @@ class TelemetryUseCase @Inject constructor(
     }
 
     private fun generateRandom32Byte(): String {
-        val source = ('0'..'9') + ('a'..'z') + ('A'..'Z').toList()
+        val source = (('0'..'9') + ('a'..'z') + ('A'..'Z')).toList()
         return (1..32).map { source.random() }.joinToString("")
     }
 }

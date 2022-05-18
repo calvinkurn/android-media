@@ -9,7 +9,7 @@ abstract class BaseEncryptor {
 
     abstract fun encrypt(message: String, secretKey: SecretKey,
                 encoder: ((ByteArray) -> (String)) = { bytes ->
-                    Base64.encodeToString(bytes, Base64.DEFAULT)
+                    Base64.encodeToString(bytes, Base64.DEFAULT).replace("\n", "")
                 }): String
 
     abstract fun decrypt(message: String, secretKey: SecretKey,
@@ -19,7 +19,7 @@ abstract class BaseEncryptor {
 
     open fun encrypt(message: String, secretKey: SecretKey): String {
         return encrypt(message, secretKey) { bytes ->
-            Base64.encodeToString(bytes, Base64.DEFAULT)
+            Base64.encodeToString(bytes, Base64.DEFAULT).replace("\n", "")
         }
     }
 

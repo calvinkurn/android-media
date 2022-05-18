@@ -10,7 +10,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class TelemetryModule(val context: Context) {
@@ -30,7 +29,7 @@ class TelemetryModule(val context: Context) {
     @TelemetryScope
     @Provides
     fun provideAesGcm(): AESEncryptorGCM {
-        val source = ('0'..'9') + ('a'..'z') + ('A'..'Z') + "!@#$%^&*()-_=+".toList()
+        val source = (('0'..'9') + ('a'..'z') + ('A'..'Z')).toList()
         val randomNonce = (1..12).map { source.random() }.joinToString("")
         return AESEncryptorGCM(randomNonce, true)
     }
