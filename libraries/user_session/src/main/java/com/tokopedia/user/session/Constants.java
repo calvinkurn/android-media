@@ -66,5 +66,15 @@ public class Constants {
     public static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
     public static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
 
-    public static HashSet<String> PII_DATA_SET = SetsKt.hashSetOf("FULL_NAME_v2", "EMAIL_v2", "PHONE_NUMBER_v2", "PROFILE_PICTURE_v2", "TEMP_NAME_v2", "TEMP_PHONE_NUMBER_v2", "TEMP_EMAIL_v2");
+    public static final String IS_PII_MIGRATED = "IS_PII_MIGRATED";
+
+    public static HashSet<String> PII_DATA_SET = SetsKt.hashSetOf(
+            "FULL_NAME_v2",
+            "EMAIL_v2",
+            "PHONE_NUMBER_v2",
+            "PROFILE_PICTURE_v2",
+            "TEMP_NAME_v2",
+            "TEMP_PHONE_NUMBER_v2",
+            "TEMP_EMAIL_v2"
+    );
 }

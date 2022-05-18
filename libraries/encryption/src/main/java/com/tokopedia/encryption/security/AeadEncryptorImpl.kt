@@ -34,11 +34,14 @@ class AeadEncryptorImpl(val context: Context): AeadEncryptor {
 	return aeadInstance
     }
 
-    override fun encrypt(message: ByteArray, associatedData: ByteArray?): String {
-	return Base64.encodeToString(getAead()?.encrypt(message, associatedData), Base64.DEFAULT)
+    override fun encrypt(message: String, associatedData: ByteArray?): String {
+	val messageBytes = message.toByteArray(Charsets.UTF_8)
+	return Base64.encodeToString(getAead().encrypt(messageBytes, associatedData), Base64.DEFAULT)
     }
 
     override fun decrypt(base64EncryptedString: String, associatedData: ByteArray?): String {
-	return Base64.encodeToString(getAead()?.decrypt(Base64.decode(base64EncryptedString, Base64.DEFAULT), associatedData), Base64.DEFAULT)
+	val messageToDecrypt = Base64.decode(base64EncryptedString, Base64.DEFAULT)
+	return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
+//	return Base64.encodeToString(getAead()?.decrypt(Base64.decode(base64EncryptedString, Base64.DEFAULT), associatedData), Base64.DEFAULT)
     }
 }

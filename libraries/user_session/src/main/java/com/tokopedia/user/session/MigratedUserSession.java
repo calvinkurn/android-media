@@ -1,5 +1,6 @@
 package com.tokopedia.user.session;
 
+import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
 import static com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG;
 
 import android.content.Context;
@@ -20,8 +21,6 @@ import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.util.HashMap;
-
-import kotlin.text.Charsets;
 
 public class MigratedUserSession {
     public static final String suffix = "_v2";
@@ -181,7 +180,7 @@ public class MigratedUserSession {
 		 else use existing encryption
 	    */
 	    if(Constants.PII_DATA_SET.contains(keyName)) {
-		return aead.encrypt(message.getBytes(Charsets.UTF_8), null);
+		return aead.encrypt(message, null);
 	    } else {
 		return EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
 	    }
@@ -211,6 +210,18 @@ public class MigratedUserSession {
 	SharedPreferences.Editor editor = sharedPrefs.edit();
 	editor.putString(keyName, value);
 	editor.apply();
+    }
+
+    private void setPiiMigrationStatus(Boolean isMigrated) {
+	SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+	SharedPreferences.Editor editor = sharedPrefs.edit();
+	editor.putBoolean(Constants.IS_PII_MIGRATED, isMigrated);
+	editor.apply();
+    }
+
+    private Boolean isNeedPiiMigration() {
+	SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+	return sharedPrefs.getBoolean(Constants.IS_PII_MIGRATED, true);
     }
 
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
@@ -248,6 +259,15 @@ public class MigratedUserSession {
 	    String value = sharedPrefs.getString(newKeyName, defValue);
 
 	    if (value != null) {
+		if(isNeedPiiMigration()) {
+		    String decryptedCurValue = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
+		    String encryptedNewValue = encryptString(decryptedCurValue, newKeyName);
+		    internalSetString(newPrefName, newKeyName, encryptedNewValue);
+		    UserSessionMap.map.put(key, decryptedCurValue);
+		    setPiiMigrationStatus(false);
+		    return encryptedNewValue;
+		}
+
 		if (value.equals(defValue)) {// if value same with def value\
 		    return value;
 		} else {
