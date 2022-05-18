@@ -299,11 +299,13 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     private fun handleAppearanceForBulkUpdateMode() {
         hideAllChips()
 
-        binding?.tfuStartDate?.isEnabled = discountStatusId == DiscountStatus.ONGOING
-
         if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
             viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
             viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate ?: return)
+        }
+
+        if (discountStatusId == DiscountStatus.ONGOING) {
+            binding?.tfuStartDate?.isEnabled = false
         }
 
     }
