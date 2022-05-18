@@ -40,6 +40,7 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
@@ -277,10 +278,8 @@ class WishlistV2ViewModelTest {
         //given
         val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
         coEvery {
-            deleteWishlistV2UseCase.execute(any(), any())
-        } answers {
-            firstArg<(DeleteWishlistV2Response.Data.WishlistRemoveV2) -> Unit>().invoke(deleteResult)
-        }
+            deleteWishlistV2UseCase.executeOnBackground()
+        } returns Success(deleteResult)
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
@@ -294,19 +293,15 @@ class WishlistV2ViewModelTest {
     @Test
     fun deleteWishlist_shouldReturnFail() {
         //given
-        val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = false)
         coEvery {
-            deleteWishlistV2UseCase.execute(any(), any())
-        } answers {
-            firstArg<(DeleteWishlistV2Response.Data.WishlistRemoveV2) -> Unit>().invoke(deleteResult)
-        }
+            deleteWishlistV2UseCase.executeOnBackground()
+        } returns Fail(Throwable())
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
 
         //then
-        assert(wishlistV2ViewModel.deleteWishlistV2Result.value is Success)
-        assert(!(wishlistV2ViewModel.deleteWishlistV2Result.value as Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
+        assert(wishlistV2ViewModel.deleteWishlistV2Result.value is Fail)
     }
 
     // bulkDelete_success
