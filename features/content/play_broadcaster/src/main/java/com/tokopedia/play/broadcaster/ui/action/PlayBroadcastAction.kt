@@ -53,4 +53,5 @@ sealed interface PlayBroadcastAction {
     object ClickRefreshQuizOption : PlayBroadcastAction
     object DismissQuizDetailBottomSheet : PlayBroadcastAction
     data class ClickQuizChoiceOption(val choice: QuizChoicesUiModel) : PlayBroadcastAction
+    object LoadMoreCurrentChoiceParticipant : PlayBroadcastAction
 }

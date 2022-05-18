@@ -76,6 +76,7 @@ class PlayInteractiveLeaderboardViewComponent(
 
         registerAdapterObserver()
         rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {

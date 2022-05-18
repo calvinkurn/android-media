@@ -86,11 +86,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
                     QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
                     QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
                     is QuizDetailStateUiModel.Success -> {
-                        leaderboardSheetView.setError() /*for debugging layout purpose*/
-//                        setUIModel(
-//                            it.quizBottomSheetUiState.quizDetailState.dataUiModel,
-//                            it.quizBottomSheetUiState.quizChoiceDetailState
-//                        )
+                        setUIModel(
+                            it.quizBottomSheetUiState.quizDetailState.dataUiModel,
+                            it.quizBottomSheetUiState.quizChoiceDetailState
+                        )
                     }
                     QuizDetailStateUiModel.Unknown -> dismiss()
                 }
@@ -176,6 +175,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     override fun onRefreshButtonClicked(view: QuizOptionDetailViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizOption)
+    }
+
+    override fun loadMoreParticipant() {
+        parentViewModel.submitAction(PlayBroadcastAction.LoadMoreCurrentChoiceParticipant)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

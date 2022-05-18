@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -38,8 +37,10 @@ class QuizOptionDetailViewComponent(
         override fun onClicked(item: QuizChoicesUiModel) {
         }
     })
-    private val winnerAdapter = PlayBroadcastGameParticipantAdapter()
-    private val participantAdapter = PlayBroadcastGameParticipantAdapter()
+    private val winnerAdapter = PlayBroadcastGameParticipantAdapter {}
+    private val participantAdapter = PlayBroadcastGameParticipantAdapter {
+        listener.loadMoreParticipant()
+    }
 
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
     private val emptyParticipantView: ConstraintLayout = findViewById(R.id.cl_participant_empty)
@@ -68,6 +69,8 @@ class QuizOptionDetailViewComponent(
         rvWinner.adapter = winnerAdapter
         rvParticipant.adapter = participantAdapter
         rvParticipant.layoutManager = GridLayoutManager(container.context, 2)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
     }
 
     fun setData(choiceDetail: QuizChoiceDetailUiModel) {
@@ -86,16 +89,6 @@ class QuizOptionDetailViewComponent(
     fun setLoading() {
         errorView.hide()
         rvWinner.hide()
-    }
-
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
-
-        show()
     }
 
     fun setTitle(title: String) {
@@ -126,5 +119,6 @@ class QuizOptionDetailViewComponent(
     interface Listener {
         fun onBackButtonClicked(view: QuizOptionDetailViewComponent)
         fun onRefreshButtonClicked(view: QuizOptionDetailViewComponent)
+        fun loadMoreParticipant()
     }
 }

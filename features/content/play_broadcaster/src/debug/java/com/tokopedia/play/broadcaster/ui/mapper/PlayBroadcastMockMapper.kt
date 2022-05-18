@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostIntera
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -366,40 +367,38 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         response: GetInteractiveQuizChoiceDetailResponse,
         choiceIndex: Int
     ): QuizChoiceDetailUiModel {
-//        val win = (1 .. 100).toList().map {
-//            PlayWinnerUiModel(
-//                rank = it,
-//                id = it.toString(),
-//                name = "winner $it",
-//                allowChat = { false },
-//                imageUrl = "",
-//                topChatMessage = ""
-//            )
-//        }
-//        val par = (1 ..20).toList().map {
-//            QuizChoiceDetailUiModel.Participant(
-//                id = it.toString(),
-//                firstName = "participant num $it",
-//                imageURL = "",
-//            )
-//        }
-//        return with(response.playInteractiveQuizChoiceDetail) {
-//            QuizChoiceDetailUiModel(
-//                choice = QuizChoicesUiModel(
-//                    index = choiceIndex,
-//                    id = choice.id,
-//                    text = choice.text,
-//                    type = PlayQuizOptionState.Participant(
-//                        generateAlphabetChoices(choiceIndex),
-//                        choice.isCorrectAnswer,
-//                        "${choice.participantCount} Respon"
-//                    )
-//                ),
-//                winners = win,
-//                participants =par,
-//            )
-//        }
-        return QuizChoiceDetailUiModel(QuizChoicesUiModel(0,"1","1",PlayQuizOptionState.Unknown), emptyList(), emptyList())
+        return with(response.playInteractiveQuizChoiceDetail) {
+            QuizChoiceDetailUiModel(
+                choice = QuizChoicesUiModel(
+                    index = choiceIndex,
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        generateAlphabetChoices(choiceIndex),
+                        choice.isCorrectAnswer,
+                        "${choice.participantCount} Respon",
+                        false,
+                    )
+                ),
+                cursor = cursor,
+                winners = winners.map {
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name =  it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = true
+                    )
+                },
+                participants = participants.map {
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name =  it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = false
+                    )
+                },
+            )
+        }
     }
 
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]

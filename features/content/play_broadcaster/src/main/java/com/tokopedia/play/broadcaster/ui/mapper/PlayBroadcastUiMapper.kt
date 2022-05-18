@@ -471,63 +471,10 @@ class PlayBroadcastUiMapper(
         )
     }
 
-//    override fun mapChoiceDetail(
-//        response: GetInteractiveQuizChoiceDetailResponse,
-//        choiceIndex: Int
-//    ): QuizChoiceDetailUiModel {
-//        return with(response.playInteractiveQuizChoiceDetail) {
-//            QuizChoiceDetailUiModel(
-//                choice = QuizChoicesUiModel(
-//                    index = choiceIndex,
-//                    id = choice.id,
-//                    text = choice.text,
-//                    type = PlayQuizOptionState.Participant(
-//                        generateAlphabetChoices(choiceIndex),
-//                        choice.isCorrectAnswer,
-//                        "${choice.participantCount} Respon"
-//                    )
-//                ),
-//                winners = winners.mapIndexed { index, winner ->
-//                    PlayWinnerUiModel(
-//                        rank = index,
-//                        name = winner.firstName,
-//                        id = winner.id,
-//                        allowChat = {false},
-//                        topChatMessage = "",
-//                        imageUrl = winner.imageURL
-//                    )
-//                },
-//                participants = participants.map {
-//                    QuizChoiceDetailUiModel.Participant(
-//                        id = it.id,
-//                        firstName = it.firstName,
-//                        imageURL = it.imageURL,
-//                    )
-//                }
-//            )
-//        }
-//    }
-
     override fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
         choiceIndex: Int
     ): QuizChoiceDetailUiModel {
-//        val mockWin = listOf(
-//            GameParticipantUiModel(
-//                id = "1",
-//                name = "winner nich",
-//                imageUrl = "",
-//                isWinner = true,
-//            )
-//        )
-//        val mockPar = (1 ..25).toList().map {
-//            GameParticipantUiModel(
-//                id = it.toString(),
-//                name = "participant num $it",
-//                imageUrl = "",
-//                isWinner = false,
-//            )
-//        }
         return with(response.playInteractiveQuizChoiceDetail) {
             QuizChoiceDetailUiModel(
                 choice = QuizChoicesUiModel(
@@ -541,6 +488,7 @@ class PlayBroadcastUiMapper(
                         false,
                     )
                 ),
+                cursor = cursor,
                 winners = winners.map {
                                       GameParticipantUiModel(
                                           id = it.id,
