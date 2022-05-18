@@ -58,6 +58,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
@@ -255,6 +256,8 @@ class TokoNowRepurchaseFragment:
     override fun onCategoryClicked(position: Int, categoryId: String) {
         // TO-DO : analytics
     }
+
+    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)

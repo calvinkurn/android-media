@@ -412,6 +412,11 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickCategory(position, categoryId)
     }
 
+    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        analytics.trackCategoryImpression(data, warehouseId)
+    }
+
     override fun onRecomProductCardClicked(
         recomItem: RecommendationItem,
         channelId: String,

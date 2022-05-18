@@ -182,9 +182,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private fun setAffiliateGreeting() {
         view?.findViewById<Typography>(R.id.affiliate_greeting)?.text = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 6..10 -> getString(R.string.affiliate_morning)
-            in 11..15 -> getString(R.string.affiliate_noon)
-            in 16..18 -> getString(R.string.affiliate_afternoon)
+            in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
+            in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
+            in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
             else ->getString(R.string.affiliate_night)
         }
     }
@@ -282,22 +282,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
             }
         })
-        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
-            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
-                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
-            }else {
-                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
-                    try {
-                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                    }catch (e : Exception){
-                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
-                    }
-                }
-                activity?.finish()
-            }
-        })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
             adapter.removeShimmer(listSize)
@@ -344,6 +328,22 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                         onGetAnnouncementError()
                     }
                 }
+            }
+        })
+        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
+            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+            }else {
+                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
+                    try {
+                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }catch (e : Exception){
+                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
+                    }
+                }
+                activity?.finish()
             }
         })
     }
