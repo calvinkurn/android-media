@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
@@ -26,6 +27,11 @@ class CarouselFeaturedShopViewHolder (
     private var binding: ContentFeaturedShopBigContentBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.content_featured_shop_big_content
+        const val RATING_1 = 1
+        const val RATING_2 = 2
+        const val RATING_3 = 3
+        const val RATING_4 = 4
+        const val RATING_5 = 5
     }
 
     override fun bind(element: CarouselFeaturedShopCardDataModel) {
@@ -75,6 +81,7 @@ class CarouselFeaturedShopViewHolder (
         }
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setImageShop(imageUrl:String){
         binding?.featuredShopProductImage?.show()
         binding?.featuredShopProductImage?.loadImageNoRounded(imageUrl, R.drawable.placeholder_grey)
@@ -130,11 +137,11 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setImageRating(rating: Int){
-        binding?.featuredShopProductReviews1?.setImageResource(getRatingDrawable(rating >= 1))
-        binding?.featuredShopProductReviews2?.setImageResource(getRatingDrawable(rating >= 2))
-        binding?.featuredShopProductReviews3?.setImageResource(getRatingDrawable(rating >= 3))
-        binding?.featuredShopProductReviews4?.setImageResource(getRatingDrawable(rating >= 4))
-        binding?.featuredShopProductReviews5?.setImageResource(getRatingDrawable(rating >= 5))
+        binding?.featuredShopProductReviews1?.setImageResource(getRatingDrawable(rating >= RATING_1))
+        binding?.featuredShopProductReviews2?.setImageResource(getRatingDrawable(rating >= RATING_2))
+        binding?.featuredShopProductReviews3?.setImageResource(getRatingDrawable(rating >= RATING_3))
+        binding?.featuredShopProductReviews4?.setImageResource(getRatingDrawable(rating >= RATING_4))
+        binding?.featuredShopProductReviews5?.setImageResource(getRatingDrawable(rating >= RATING_5))
     }
 
     @DrawableRes

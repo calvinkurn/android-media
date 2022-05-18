@@ -30,6 +30,10 @@ class ReviewViewHolder(
         val LAYOUT = R.layout.home_item_review
         private const val FPM_REVIEW = "home_review"
         private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
+        private const val IMAGE_RADIUS = 8
+        private const val CARD_REVIEW_CLICK_AT = 5
+        private const val CARD_REVIEW_CLICK_DELAY = 0L
+        private const val ANIMATED_REVIEW_CLICK_DELAY = 500L
     }
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val performanceTraceName = "mp_home_review_widget_load_time"
@@ -52,7 +56,7 @@ class ReviewViewHolder(
                         suggestedProductReview.suggestedProductReview.title,
                         suggestedProductReview.suggestedProductReview.description
                 )
-                binding?.imgReview?.loadImageRounded(suggestedProductReview.suggestedProductReview.imageUrl, 8, FPM_REVIEW)
+                binding?.imgReview?.loadImageRounded(suggestedProductReview.suggestedProductReview.imageUrl, IMAGE_RADIUS, FPM_REVIEW)
 
                 itemView.addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
@@ -83,8 +87,8 @@ class ReviewViewHolder(
                         )
                         reviewListener.onReviewClick(
                                 adapterPosition,
-                                5,
-                                0,
+                                CARD_REVIEW_CLICK_AT,
+                                CARD_REVIEW_CLICK_DELAY,
                                 suggestedProductReview.suggestedProductReview.linkURL
                         )
                         isPressed = true
@@ -105,7 +109,7 @@ class ReviewViewHolder(
                             reviewListener.onReviewClick(
                                     adapterPosition,
                                     position,
-                                    500,
+                                    ANIMATED_REVIEW_CLICK_DELAY,
                                     suggestedProductReview.suggestedProductReview.linkURL
                             )
                             isPressed = true

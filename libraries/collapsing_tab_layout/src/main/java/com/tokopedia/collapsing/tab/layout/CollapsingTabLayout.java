@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -145,6 +146,7 @@ public class CollapsingTabLayout extends TabLayout {
         totalScrollUp = 0;
     }
 
+    @SuppressLint("ResourcePackage")
     private void initResources() {
         tabMaxHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height);
         tabMinHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_min_height);

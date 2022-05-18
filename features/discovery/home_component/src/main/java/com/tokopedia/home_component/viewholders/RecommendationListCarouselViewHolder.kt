@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         bind(element)
     }
 
+    @SuppressLint("ResourcePackage")
     override fun bind(element: RecommendationListCarouselDataModel) {
         isCacheData = element.isCache
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)

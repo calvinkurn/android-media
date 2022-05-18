@@ -101,12 +101,12 @@ open class SizeSmallBusinessViewHolder(
 
         if (element?.desc1st.isNullOrEmpty()) {
             if ((hasPrice(element) || hasTagLabel(element))) {
-                getTitle().maxLines = 2
+                getTitle().maxLines = MAX_LINES_2
             } else {
-                getTitle().maxLines = 3
+                getTitle().maxLines = MAX_LINES_3
             }
         } else {
-            getTitle().maxLines = 1
+            getTitle().maxLines = MAX_LINES_1
         }
     }
 
@@ -122,12 +122,12 @@ open class SizeSmallBusinessViewHolder(
             element?.tagName.isNullOrEmpty()
         ) {
             if (hasPrice(element) || hasTagLabel(element)) {
-                getSubtitle().maxLines = 2
+                getSubtitle().maxLines = MAX_LINES_2
             } else {
-                getSubtitle().maxLines = 3
+                getSubtitle().maxLines = MAX_LINES_3
             }
         } else {
-            getSubtitle().maxLines = 1
+            getSubtitle().maxLines = MAX_LINES_1
         }
     }
 
@@ -262,6 +262,9 @@ open class SizeSmallBusinessViewHolder(
 
     companion object {
         val LAYOUT: Int = R.layout.layout_template_small_business
+        const val MAX_LINES_1 = 1
+        const val MAX_LINES_2 = 2
+        const val MAX_LINES_3 = 3
     }
 
 }
