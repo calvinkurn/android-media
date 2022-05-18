@@ -19,7 +19,8 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_WISHLIST = "click on Wishlist"
     private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
-    private const val ACTION_CLICK_ON_REVIEW_CARD = "click review card - product star rating"
+    private const val ACTION_CLICK_ON_REVIEW_STAR_RATING = "click review card - product star rating"
+    private const val ACTION_CLICK_ON_REVIEW_CARD = "click review card - product card"
     private const val ACTION_CLICK_VIEW_ALL_TRANSACTION = "click view all transaction"
     private const val IMPRESSION_ON_ORDER_STATUS = "impression on order status"
     private const val IMPRESSION_ON_REVIEW_CARD = "impression review card"
@@ -28,8 +29,10 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val GLOBAL_MENU = "global_menu"
     private const val REVIEW_CARD = "review_card"
     private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
-    private const val EVENT_LABEL_CLICK_REVIEW_FORMAT = "%s - %s - %s - %s"
+    private const val EVENT_LABEL_CLICK_REVIEW_STAR_RATING_FORMAT = "%s - %s - %s - %s"
+    private const val EVENT_LABEL_CLICK_REVIEW_FORMAT = "%s - %s - %s"
     private const val STAR_RATING = "star rating"
+    private const val PRODUCT_CARD = "product card"
     private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
 
     fun clickOnAllTransaction(userId: String) {
@@ -146,7 +149,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 eventLabel = DEFAULT_EMPTY,
                 promotions = listOf(Promotion(
                         creative = DEFAULT_EMPTY,
-                        id = String.format(PROMOTION_ID_FORMAT, element.bannerId, element.reputationId, element.productId),
+                        id = PROMOTION_ID_FORMAT.format(element.bannerId, element.reputationId, element.productId),
                         name = PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD),
                         creativeUrl = DEFAULT_EMPTY,
                         position = positionCard
@@ -158,14 +161,14 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 .build() as HashMap<String, Any>
     }
 
-    fun getClickReview(position: Int, userId: String, element: NavReviewOrder, starRating: String) : Pair<String, Bundle> {
+    fun getClickReviewStars(position: Int, userId: String, element: NavReviewOrder, starRating: String) : Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_CARD)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_STAR_RATING)
         bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
-            EVENT_LABEL_CLICK_REVIEW_FORMAT.format(
+            EVENT_LABEL_CLICK_REVIEW_STAR_RATING_FORMAT.format(
                 STAR_RATING,
                 element.reputationId,
                 starRating,
@@ -191,6 +194,46 @@ object TrackingTransactionSection: BaseTrackerConst() {
             Promotion.ITEM_ID,
             String.format(
                 PROMOTION_ID_FORMAT,
+                element.bannerId,
+                element.reputationId,
+                element.productId
+            )
+        )
+        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
+        return Pair(Ecommerce.PROMO_CLICK, bundle)
+    }
+
+    fun getClickReviewCard(position: Int, userId: String, element: NavReviewOrder) : Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_CARD)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(
+            Label.KEY,
+            EVENT_LABEL_CLICK_REVIEW_FORMAT.format(
+                PRODUCT_CARD,
+                element.reputationId,
+                element.productId
+            )
+        )
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
+        bundle.putString(UserId.KEY, userId)
+        val promotion = Bundle()
+        promotion.putString(
+            Promotion.CREATIVE_NAME,
+            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(PRODUCT_CARD, DEFAULT_EMPTY)
+        )
+        val horizontalPosition = (position + 1).toString()
+        promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
+        promotion.putString(
+            Promotion.ITEM_NAME,
+            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+        )
+        promotion.putString(
+            Promotion.ITEM_ID,
+            PROMOTION_ID_FORMAT.format(
                 element.bannerId,
                 element.reputationId,
                 element.productId

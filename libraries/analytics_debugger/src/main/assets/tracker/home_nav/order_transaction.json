@@ -52,6 +52,24 @@
       "sessionIris": ".*",
       "userId": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click review card - product card",
+      "eventCategory": "global menu",
+      "eventLabel": "product card - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "pageSource:home side nav;",
+      "promotions": [
+        {
+          "creative_name": "product card_.*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*",
+          "item_name": "/global_menu - review_card"
+        }
+      ],
+      "userId": ".*"
     }
   ]
 }

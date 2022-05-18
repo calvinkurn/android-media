@@ -47,7 +47,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
     }
 
     private fun clickReviewCard(element: OrderReviewModel, rateStars: String) {
-        val tracking = TrackingTransactionSection.getClickReview(adapterPosition, mainNavListener.getUserId(), element.navReviewModel, rateStars)
+        val tracking = TrackingTransactionSection.getClickReviewStars(adapterPosition, mainNavListener.getUserId(), element.navReviewModel, rateStars)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, rateStars))
     }
@@ -120,7 +120,9 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
             clickReviewCard(element, RATE_STARS_4)
         }
         binding?.layoutReviewStars?.star5?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_5)
+            val tracking = TrackingTransactionSection.getClickReviewCard(adapterPosition, mainNavListener.getUserId(), element.navReviewModel)
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
         }
         itemView.addOnImpressionListener(element) {
             mainNavListener.putEEToTrackingQueue(
