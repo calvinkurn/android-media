@@ -1829,11 +1829,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String) {
+        if (isError) {
+            cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, productId, errorType)
+        } else {
+            cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+        }
         setProductImageAnimationData(imageView, false)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        var forceExpand = false
+        if (isError) {
+            // If unavailable item > 1 and state is collapsed, then expand first
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+        }
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -1939,6 +1951,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         scrollToLastAddedProductShop()
 
         renderAdditionalWidget()
+        resetArguments()
     }
 
     private fun scrollToLastAddedProductShop() {
@@ -3070,9 +3083,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     // get newly added cart id if open cart after ATC on PDP
     override fun getCartId(): String {
-        return if (!TextUtils.isEmpty(arguments?.getString(CartActivity.EXTRA_CART_ID))) {
-            arguments?.getString(CartActivity.EXTRA_CART_ID) ?: "0"
-        } else "0"
+        val cartId = arguments?.getString(CartActivity.EXTRA_CART_ID).orEmpty()
+        return cartId.ifEmpty { "0" }
     }
 
     private fun getAtcProductId(): Long {
@@ -3081,6 +3093,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
+    }
+
+    private fun resetArguments() {
+        arguments?.putString(CartActivity.EXTRA_CART_ID, null)
+        arguments?.putLong(CartActivity.EXTRA_PRODUCT_ID, 0)
     }
 
     override fun renderRecentView(recommendationWidget: RecommendationWidget?) {
@@ -3228,7 +3245,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (allDisabledCartItemDataList.isNotEmpty()) {
             val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
-                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+                var forceExpand = false
+                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                    collapseOrExpandDisabledItem()
+                    forceExpand = true
+                }
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, forceExpand)
                 cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(
                         dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)

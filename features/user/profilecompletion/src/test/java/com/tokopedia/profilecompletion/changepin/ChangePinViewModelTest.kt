@@ -9,27 +9,38 @@ import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.changepin.data.usecase.ResetPinV2UseCase
+import com.tokopedia.profilecompletion.changepin.data.usecase.UpdatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.data.pin.PinStatusData
+import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertTrue
 
 /**
  * Created by Yoris Prayogo on 23/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
+@ExperimentalCoroutinesApi
 class ChangePinViewModelTest {
 
     @get:Rule
@@ -59,6 +70,11 @@ class ChangePinViewModelTest {
     private var changePinObserver = mockk<Observer<Result<AddChangePinData>>>(relaxed = true)
     private var resetPin2FAObserver = mockk<Observer<Result<ChangePin2FAData>>>(relaxed = true)
 
+    val resetPinV2UseCase = mockk<ResetPinV2UseCase>(relaxed = true)
+    val updatePinV2UseCase = mockk<UpdatePinV2UseCase>(relaxed = true)
+    val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
+    val checkPinHashV2UseCase = mockk<CheckPinHashV2UseCase>(relaxed = true)
+
     @Before
     fun setUp() {
         viewModel = ChangePinViewModel(
@@ -66,10 +82,14 @@ class ChangePinViewModelTest {
                 checkPinUseCase,
                 checkPin2FAUseCase,
                 resetPinUseCase,
+                resetPinV2UseCase,
                 reset2FAPinUseCase,
                 changePinUseCase,
+                updatePinV2UseCase,
                 userSession,
                 rawQueries,
+                checkPinHashV2UseCase,
+                generatePublicKeyUseCase,
                 testDispatcher
         )
         viewModel.resetPinResponse.observeForever(resetPinObserver)
@@ -581,5 +601,16 @@ class ChangePinViewModelTest {
         Assert.assertThat((viewModel.resetPin2FAResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
         Assert.assertEquals(resetPin2FaPojo.data.error, (viewModel.resetPin2FAResponse.value as Fail).throwable.message)
         verify(atLeast = 1){ resetPin2FAObserver.onChanged(any()) }
+    }
+
+    @Test
+    fun `isNeedHash - success` () {
+        val pinStatusData = PinStatusData(isNeedHash = true)
+        val pinStatusResponse = PinStatusResponse(pinStatusData)
+
+        coEvery { checkPinHashV2UseCase(any()) } returns pinStatusResponse
+        runBlocking {
+            assertTrue(viewModel.isNeedHash("", ""))
+        }
     }
 }

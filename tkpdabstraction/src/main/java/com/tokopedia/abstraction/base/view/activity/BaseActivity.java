@@ -219,8 +219,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void setLogCrash() {
-        if (!GlobalConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+        try {
+            if (!GlobalConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
