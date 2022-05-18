@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/img_mvc_cashback_khusus" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcVoucherName"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"

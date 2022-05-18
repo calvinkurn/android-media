@@ -10,7 +10,7 @@
         android:layout_height="@dimen/mvc_create_progressbar_height"
         app:layout_constraintTop_toBottomOf="@id/createMerchantVoucherHeader">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/createMerchantVoucherProgressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:theme="@style/progressBarGreen"
