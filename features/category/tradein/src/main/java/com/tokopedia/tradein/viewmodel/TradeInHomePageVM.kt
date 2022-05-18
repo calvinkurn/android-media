@@ -97,6 +97,8 @@ class TradeInHomePageVM @Inject constructor(
     private fun setTestData(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
         laku6DeviceModel.value?.apply {
             deviceAttribute?.let { deviceAttribute ->
+                if(deviceAttribute.imei.isNotEmpty())
+                    this@TradeInHomePageVM.imei = deviceAttribute.imei.firstOrNull() ?: ""
                 val json = Gson().toJson(
                     Laku6TestDataModel(
                         rootBlocked = rootDetected,
@@ -108,7 +110,7 @@ class TradeInHomePageVM @Inject constructor(
                             storage = deviceAttribute.storage
                         ),
                         finalPageInfo = Laku6TestDataModel.FinalPageInfo(
-                            imei = if(deviceAttribute.imei.isNotEmpty()) deviceAttribute.imei.firstOrNull() ?: "" else this@TradeInHomePageVM.imei,
+                            imei = this@TradeInHomePageVM.imei,
                             productImage = data?.productImage ?: "",
                             productName = data?.productName ?: "",
                             productOriginalValue = data?.productPrice ?: 0.0,
