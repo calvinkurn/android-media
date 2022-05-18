@@ -769,36 +769,22 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         return false
     }
 
-    private fun validateLabel() : Boolean {
+    private fun validateLabel(): Boolean {
         binding?.run {
-            if (isPositiveFlow) {
-                val label = formAddress.etLabel.textFieldInput.text.toString()
-                if (label.length < MIN_CHAR_ADDRESS_LABEL) {
-                    if (label.isEmpty() || label == " ") {
-                        setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
-                    }
-                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                    return false
-                } else {
-                    return true
+            val field = if (isPositiveFlow) formAddress.etLabel else formAddressNegative.etLabel
+            val label = field.textFieldInput.text.toString()
+            if (label.length < MIN_CHAR_ADDRESS_LABEL) {
+                if (label.isEmpty() || label == " ") {
+                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
                 }
+                view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                return false
             } else {
-                val label = formAddressNegative.etLabel.textFieldInput.text.toString()
-                if (label.length < MIN_CHAR_ADDRESS_LABEL) {
-                    if (label.isEmpty() || label == " ") {
-                        setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
-                    }
-                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                    return false
-                } else {
-                    return true
-                }
+                return true
             }
         }
         return false
     }
-
-
 
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
         return object : TextWatcher {
