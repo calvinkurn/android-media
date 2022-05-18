@@ -18,6 +18,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -547,18 +548,15 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val quickFilterParam = globalSearchShop.param.copy().apply {
+            val newParam = globalSearchShop.param.copy().apply {
+                userId = userSession.userId
                 pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
             }
 
             val quickFilters = repo.getQuickFilter(
-                query = quickFilterParam.query,
-                extraParams = quickFilterParam.toCompleteParam(),
+                query = newParam.query,
+                extraParams = newParam.toCompleteParam(),
             )
-
-            val newParam = globalSearchShop.param.copy().apply {
-                userId = userSession.userId
-            }
 
             val result = repo.searchAceShops(param = newParam)
 
@@ -636,8 +634,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val result = repo.searchAceShops(SearchParamUiModel(HashMap(selectedSortFilter)))
 
-            /** TODO: convert this to rb */
-            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Success(result.totalShop.toString())))
+            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Success(result.totalShop.toAmountString())))
         }) {
             _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Error(it)))
         }
