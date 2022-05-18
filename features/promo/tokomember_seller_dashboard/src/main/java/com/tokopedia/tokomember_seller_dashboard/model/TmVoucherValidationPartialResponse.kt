@@ -9,7 +9,7 @@ data class TmVoucherValidationPartialResponse(
 	val voucherValidationPartial: VoucherValidationPartial? = null
 )
 
-data class Header(
+data class HeaderPartial(
 	@Expose
 	@SerializedName("reason")
 	val reason: String? = null,
@@ -30,7 +30,7 @@ data class VoucherValidationPartial(
 	val data: DataPartialValidate? = null,
 	@Expose
 	@SerializedName("header")
-	val header: Header? = null
+	val header: HeaderPartial? = null
 )
 
 data class ValidationError(
