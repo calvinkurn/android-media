@@ -478,7 +478,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         val minStartDate = adapter.getMinStartDateOfProductList()
         val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
-        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(selectedSlashPriceStatusId)
+        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(mode)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
@@ -492,9 +492,9 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun getBulkApplyBottomSheetMode(mode: Int): DiscountBulkApplyBottomSheet.Mode {
+    private fun getBulkApplyBottomSheetMode(mode: String): DiscountBulkApplyBottomSheet.Mode {
         return when (mode) {
-            SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+            ShopDiscountManageDiscountMode.CREATE -> {
                 DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {

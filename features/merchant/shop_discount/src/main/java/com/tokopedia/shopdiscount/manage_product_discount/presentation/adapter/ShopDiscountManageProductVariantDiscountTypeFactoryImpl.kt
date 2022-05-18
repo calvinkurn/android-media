@@ -10,7 +10,8 @@ import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.
 
 class ShopDiscountManageProductVariantDiscountTypeFactoryImpl(
     private val variantItemListener: ShopDiscountManageProductVariantItemViewHolder.Listener,
-    private val fragmentListener: ShopDiscountManageProductVariantDiscountFragmentListener
+    private val fragmentListener: ShopDiscountManageProductVariantDiscountFragmentListener,
+    private val mode: String
 ) : BaseAdapterTypeFactory(), ShopDiscountManageProductVariantDiscountTypeFactory {
 
     override fun type(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {
@@ -20,7 +21,7 @@ class ShopDiscountManageProductVariantDiscountTypeFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopDiscountManageProductVariantItemViewHolder.LAYOUT -> {
-                ShopDiscountManageProductVariantItemViewHolder(view, variantItemListener, fragmentListener)
+                ShopDiscountManageProductVariantItemViewHolder(view, variantItemListener, mode, fragmentListener)
             }
             else -> {
                 super.createViewHolder(view, type)
