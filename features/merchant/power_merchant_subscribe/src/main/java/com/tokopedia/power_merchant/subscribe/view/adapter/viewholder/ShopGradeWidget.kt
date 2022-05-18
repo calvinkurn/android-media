@@ -43,6 +43,7 @@ class ShopGradeWidget(
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
+        const val SATURATION_INACTIVE = 0.0f
     }
 
     private val binding: WidgetPmShopGradeBinding? by viewBinding()
@@ -103,7 +104,7 @@ class ShopGradeWidget(
 
     private fun stepInActive(stepIcon: IconUnify?, text: Typography? = null) {
         val colorMatrix = ColorMatrix()
-        colorMatrix.setSaturation(0.0f)
+        colorMatrix.setSaturation(SATURATION_INACTIVE)
         val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
         stepIcon?.iconImg?.colorFilter = colorMatrixColorFilter
         stepIcon?.layoutParams?.height =
@@ -381,6 +382,6 @@ class ShopGradeWidget(
 
     interface Listener {
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
-
+        fun goToMembershipDetail(model: PMProStatusInfoUiModel)
     }
 }

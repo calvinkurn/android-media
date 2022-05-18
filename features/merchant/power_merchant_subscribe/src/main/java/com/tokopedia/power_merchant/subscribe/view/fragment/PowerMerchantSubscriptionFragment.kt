@@ -178,6 +178,10 @@ open class PowerMerchantSubscriptionFragment :
         bottomSheet.show(childFragmentManager)
     }
 
+    override fun goToMembershipDetail(model: PMProStatusInfoUiModel) {
+
+    }
+
     override fun onPMProNewSellerLearnMore() {
         context?.let {
             RouteManager.route(
