@@ -30,6 +30,7 @@ import io.mockk.mockkStatic
 import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.ArgumentMatchers
 
 abstract class CreateReviewViewModelTestFixture {
 
@@ -45,6 +46,8 @@ abstract class CreateReviewViewModelTestFixture {
         const val SAMPLE_USER_ID = "1111111110"
         const val SAMPLE_USER_NAME = "Spongebob"
         const val SAMPLE_SHOP_ID = "6996572"
+        const val SAMPLE_UPLOAD_ID = "abcd-1234-efgh-5678-ijkl"
+        const val SAMPLE_VIDEO_URL = "https://www.tokopedia.com/patrick-belly-dancing.mp4"
 
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_valid_to_review.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_INVALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_invalid_to_review.json"
@@ -211,8 +214,11 @@ abstract class CreateReviewViewModelTestFixture {
         coEvery { getBadRatingCategoryUseCase.executeOnBackground() } returns response
     }
 
-    protected fun mockSuccessUploadMedia() {
-        coEvery { uploaderUseCase(any()) } returns UploadResult.Success()
+    protected fun mockSuccessUploadMedia(
+        uploadID: String = SAMPLE_UPLOAD_ID,
+        videoUrl: String = SAMPLE_VIDEO_URL
+    ) {
+        coEvery { uploaderUseCase(any()) } returns UploadResult.Success(uploadID, videoUrl)
     }
 
     protected fun mockErrorUploadMedia(withException: Boolean = true, delayTime: Long = 0L) {

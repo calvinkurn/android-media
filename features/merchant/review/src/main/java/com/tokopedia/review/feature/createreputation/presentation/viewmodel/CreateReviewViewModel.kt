@@ -61,6 +61,7 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
+import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
@@ -1636,7 +1637,7 @@ class CreateReviewViewModel @Inject constructor(
     fun getSelectedTemplateCount(): Int {
         return reviewTemplate.value.let { reviewTemplate ->
             if (reviewTemplate is ReviewTemplateRequestSuccessState){
-                reviewTemplate.result.count { it.selected }.orZero()
+                reviewTemplate.result.count { it.selected }
             } else Int.ZERO
         }
     }
@@ -1655,11 +1656,6 @@ class CreateReviewViewModel @Inject constructor(
     // endregion Flow value getter
 
     // region save UI state handle
-    @Suppress("UNCHECKED_CAST")
-    private fun <T: Any> Bundle.getSavedState(key: String, defaultValue: T): T {
-        return get(key) as? T ?: defaultValue
-    }
-
     fun saveUiState(outState: Bundle) {
         with(outState) {
             putInt(SAVED_STATE_RATING, rating.value)
@@ -1688,27 +1684,27 @@ class CreateReviewViewModel @Inject constructor(
 
     fun restoreUiState(savedInstanceState: Bundle) {
         with(savedInstanceState) {
-            reviewForm.value = getSavedState(SAVED_STATE_REVIEW_FORM, reviewForm.value)
-            incentiveOvo.value = getSavedState(SAVED_STATE_INCENTIVE_OVO, incentiveOvo.value)
-            reviewTemplate.value = getSavedState(SAVED_STATE_REVIEW_TEMPLATE, reviewTemplate.value)
-            badRatingCategories.value = getSavedState(SAVED_STATE_BAD_RATING_CATEGORIES, badRatingCategories.value)
-            submitReviewResult.value = getSavedState(SAVED_STATE_SUBMIT_REVIEW_RESULT, submitReviewResult.value)
-            postSubmitReviewResult.value = getSavedState(SAVED_STATE_POST_SUBMIT_REVIEW_RESULT, postSubmitReviewResult.value)
-            rating.value = getSavedState(SAVED_STATE_RATING, rating.value)
-            anonymous.value = getSavedState(SAVED_STATE_ANONYMOUS, anonymous.value)
-            mediaUris.value = getSavedState(SAVED_STATE_MEDIA_URIS, mediaUris.value)
-            mediaUploadResults.value = getSavedState(SAVED_STATE_MEDIA_UPLOAD_RESULTS, mediaUploadResults.value)
-            editMode.value = getSavedState(SAVED_STATE_EDIT_MODE, editMode.value)
-            orderId.value = getSavedState(SAVED_STATE_ORDER_ID, orderId.value)
-            feedbackId.value = getSavedState(SAVED_STATE_FEEDBACK_ID, feedbackId.value)
-            utmSource.value = getSavedState(SAVED_STATE_UTM_SOURCE, utmSource.value)
-            shouldShowIncentiveBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)
-            shouldShowTextAreaBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)
-            sendingReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendingReview.value)
-            reviewText.value = getSavedState(SAVED_STATE_REVIEW_TEXT, reviewText.value).copy(source = CreateReviewTextAreaTextUiModel.Source.SAVED_INSTANCE_STATE)
-            shopId.value = getSavedState(SAVED_STATE_SHOP_ID, shopId.value)
-            productId.value = getSavedState(SAVED_STATE_PRODUCT_ID, productId.value)
-            reputationId.value = getSavedState(SAVED_STATE_REPUTATION_ID, reputationId.value)
+            reviewForm.value = getSavedState(SAVED_STATE_REVIEW_FORM, reviewForm.value)!!
+            incentiveOvo.value = getSavedState(SAVED_STATE_INCENTIVE_OVO, incentiveOvo.value)!!
+            reviewTemplate.value = getSavedState(SAVED_STATE_REVIEW_TEMPLATE, reviewTemplate.value)!!
+            badRatingCategories.value = getSavedState(SAVED_STATE_BAD_RATING_CATEGORIES, badRatingCategories.value)!!
+            submitReviewResult.value = getSavedState(SAVED_STATE_SUBMIT_REVIEW_RESULT, submitReviewResult.value)!!
+            postSubmitReviewResult.value = getSavedState(SAVED_STATE_POST_SUBMIT_REVIEW_RESULT, postSubmitReviewResult.value)!!
+            rating.value = getSavedState(SAVED_STATE_RATING, rating.value)!!
+            anonymous.value = getSavedState(SAVED_STATE_ANONYMOUS, anonymous.value)!!
+            mediaUris.value = getSavedState(SAVED_STATE_MEDIA_URIS, mediaUris.value)!!
+            mediaUploadResults.value = getSavedState(SAVED_STATE_MEDIA_UPLOAD_RESULTS, mediaUploadResults.value)!!
+            editMode.value = getSavedState(SAVED_STATE_EDIT_MODE, editMode.value)!!
+            orderId.value = getSavedState(SAVED_STATE_ORDER_ID, orderId.value)!!
+            feedbackId.value = getSavedState(SAVED_STATE_FEEDBACK_ID, feedbackId.value)!!
+            utmSource.value = getSavedState(SAVED_STATE_UTM_SOURCE, utmSource.value)!!
+            shouldShowIncentiveBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)!!
+            shouldShowTextAreaBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)!!
+            sendingReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendingReview.value)!!
+            reviewText.value = getSavedState(SAVED_STATE_REVIEW_TEXT, reviewText.value)!!.copy(source = CreateReviewTextAreaTextUiModel.Source.SAVED_INSTANCE_STATE)
+            shopId.value = getSavedState(SAVED_STATE_SHOP_ID, shopId.value)!!
+            productId.value = getSavedState(SAVED_STATE_PRODUCT_ID, productId.value)!!
+            reputationId.value = getSavedState(SAVED_STATE_REPUTATION_ID, reputationId.value)!!
         }
     }
     // endregion save UI state handle

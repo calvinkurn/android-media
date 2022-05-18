@@ -9,6 +9,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.domain.RequestState
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
@@ -1319,12 +1320,12 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `getSelectedTemplateCount should return zero when template is loaded, not empty and at least 1 template selected`() = runBlockingTest {
+    fun `getSelectedTemplateCount should return non zero when template is loaded, not empty and at least 1 template selected`() = runBlockingTest {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.first().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = (viewModel.templateUiState.first().templates.last().uiState as CreateReviewTemplateItemUiState.Showing).data
         viewModel.selectTemplate(templateToSelect)
         viewModel.templateUiState.first()
         Assert.assertEquals(1, viewModel.getSelectedTemplateCount())
@@ -1418,6 +1419,92 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
 
             Assert.assertFalse(viewModel.shouldUseUniversalMediaPicker())
+        }
+    }
+
+    @Test
+    fun `updateMediaPicker should filter temp downloaded image from old media picker`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.updateMediaPicker(
+            mutableListOf(
+                "cached-image1.0",
+                "cached-image2.0",
+                "image3.jpg",
+                "image4.jpg",
+                "image5.jpg"
+            ), mutableListOf(
+                "https://www.tokopedia.com/image1.jpg",
+                "https://www.tokopedia.com/image2.jpg",
+            )
+        )
+        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it.uri.endsWith(".0") })
+    }
+
+    @Test
+    fun `submit review should include uploaded image attachment ID when there's any uploaded image`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        mockSuccessUploadMedia()
+        mockSuccessSubmitReview()
+        mockSuccessPostSubmitBottomSheet()
+        setInitialData()
+        viewModel.updateMediaPicker(listOf("image.jpg"))
+        viewModel.submitReview()
+        coVerify {
+            submitReviewUseCase.setParams(
+                ProductrevSubmitReviewUseCase.SubmitReviewRequestParams(
+                    reputationId = SAMPLE_REPUTATION_ID,
+                    productId = SAMPLE_PRODUCT_ID,
+                    shopId = SAMPLE_SHOP_ID,
+                    reputationScore = Int.ZERO,
+                    rating = 5,
+                    reviewText = "",
+                    isAnonymous = false,
+                    attachmentIds = listOf(SAMPLE_UPLOAD_ID),
+                    videoAttachments = emptyList(),
+                    utmSource = SAMPLE_UTM_SOURCE,
+                    badRatingCategoryIds = emptyList(),
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `submit review should include uploaded video attachment ID and URL when there's any uploaded video`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        mockSuccessUploadMedia()
+        mockSuccessSubmitReview()
+        mockSuccessPostSubmitBottomSheet()
+        setInitialData()
+        viewModel.updateMediaPicker(listOf("video.mp4"))
+        viewModel.submitReview()
+        coVerify {
+            submitReviewUseCase.setParams(
+                ProductrevSubmitReviewUseCase.SubmitReviewRequestParams(
+                    reputationId = SAMPLE_REPUTATION_ID,
+                    productId = SAMPLE_PRODUCT_ID,
+                    shopId = SAMPLE_SHOP_ID,
+                    reputationScore = Int.ZERO,
+                    rating = 5,
+                    reviewText = "",
+                    isAnonymous = false,
+                    attachmentIds = emptyList(),
+                    videoAttachments = listOf(
+                        ProductrevSubmitReviewUseCase.SubmitReviewRequestParams.VideoAttachment(
+                            SAMPLE_UPLOAD_ID, SAMPLE_VIDEO_URL
+                        )
+                    ),
+                    utmSource = SAMPLE_UTM_SOURCE,
+                    badRatingCategoryIds = emptyList(),
+                )
+            )
         }
     }
 
