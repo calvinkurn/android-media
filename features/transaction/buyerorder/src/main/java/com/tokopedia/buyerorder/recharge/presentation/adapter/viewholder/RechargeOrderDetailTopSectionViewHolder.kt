@@ -48,7 +48,6 @@ class RechargeOrderDetailTopSectionViewHolder(
             }
             tgRechargeSeeInvoice.setOnClickListener {
                 listener?.onSeeInvoiceClicked(element.invoiceRefNum, element.invoiceUrl)
-                RouteManager.route(root.context, element.invoiceUrl)
             }
 
             if (containerRechargeOrderDetailTopSectionTitles.childCount < element.titleData.size) {

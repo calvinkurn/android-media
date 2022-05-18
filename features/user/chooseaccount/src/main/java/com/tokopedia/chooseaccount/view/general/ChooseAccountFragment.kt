@@ -192,7 +192,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     protected fun onErrorGetAccountList(e: Throwable) {
         dismissLoadingProgress()
-        val errorMessage = ErrorHandler.getErrorMessage(context, e)
+        val errorMessage = ErrorHandler.getErrorMessage(context, e, getErrorHandlerBuilder())
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             showLoadingProgress()
             getAccountList()

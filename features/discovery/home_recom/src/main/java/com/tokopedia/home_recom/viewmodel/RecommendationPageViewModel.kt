@@ -1,7 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -29,7 +28,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -207,7 +205,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         pageName = ""
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                val dataList = recommendationListLiveData.value as MutableList
+                val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
@@ -245,10 +243,6 @@ open class RecommendationPageViewModel @Inject constructor(
             )
             it.printStackTrace()
         }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
     }
 
     /**

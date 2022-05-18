@@ -420,7 +420,7 @@
     <string name="efektivitas_iklan_sub_title">Perbandingan pendapatan dengan pengeluaran iklan.</string>
     <string name="topads_dashboard_home_dialog_title">Tampilan TopAds yang baru!</string>
     <string name="topads_dashboard_home_dialog_description">Yuk, pelajari tampilan baru TopAds biar kamu bisa kelola iklan dengan lebih mudah.</string>
-    <string name="topads_dashboard_home_dialog_button_text">Ayo Cek Tampilannnya</string>
+    <string name="topads_dashboard_home_dialog_button_text">Ayo Cek Tampilannya</string>
 
     <string name="topads_dashboard_home_coachmark_1_title">Ringkasan performa iklan</string>
     <string name="topads_dashboard_home_coachmark_1_desc">Ayo cek performa iklanmu di sini. Kamu bisa klik di tiap bagiannya untuk lihat grafiknya juga.</string>

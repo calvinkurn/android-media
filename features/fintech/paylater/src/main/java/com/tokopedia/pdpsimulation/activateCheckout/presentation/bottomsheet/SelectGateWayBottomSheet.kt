@@ -140,7 +140,7 @@ class SelectGateWayBottomSheet : BottomSheetUnify(), GateWayCardClicked {
         }
     }
 
-    override fun gatewayCardSelected(gatewayId: Int, newPosition: Int) {
+    override fun gatewayCardSelected(gatewayId: String, newPosition: Int) {
         activity?.let { fragmentActivity ->
             (fragmentActivity as GatewaySelectActivityListner).setGatewayValue(
                 gatewayId
@@ -157,5 +157,5 @@ class SelectGateWayBottomSheet : BottomSheetUnify(), GateWayCardClicked {
 }
 
 interface GateWayCardClicked {
-    fun gatewayCardSelected(gatewayId: Int, newPosition: Int)
+    fun gatewayCardSelected(gatewayId: String, newPosition: Int)
 }

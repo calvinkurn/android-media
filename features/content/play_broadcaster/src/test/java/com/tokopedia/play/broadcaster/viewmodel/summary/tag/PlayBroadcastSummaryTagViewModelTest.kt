@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.viewmodel.summary.tag
 
+import android.net.Network
 import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
@@ -14,10 +15,12 @@ import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertTrue
+import junit.framework.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 
@@ -56,11 +59,18 @@ class PlayBroadcastSummaryTagViewModelTest {
             val state = robot.recordState {  }
 
             with(state.tag) {
-                tags.size.assertEqualTo(mockTagUnique.size)
+                if(this is NetworkResult.Success) {
+                    val tags = this.data.tags
 
-                val mockTagUniqueList = mockTagUnique.toList()
-                tags.forEachIndexed { idx, e ->
-                    e.tag.assertEqualTo(mockTagUniqueList[idx])
+                    tags.size.assertEqualTo(mockTagUnique.size)
+
+                    val mockTagUniqueList = mockTagUnique.toList()
+                    tags.forEachIndexed { idx, e ->
+                        e.tag.assertEqualTo(mockTagUniqueList[idx])
+                    }
+                }
+                else {
+                    fail("Tag network result should be success")
                 }
             }
         }
@@ -77,7 +87,15 @@ class PlayBroadcastSummaryTagViewModelTest {
 
         robot.use {
             val state = robot.recordState {  }
-            assertTrue(state.tag.tags.isEmpty())
+
+            with(state.tag) {
+                if(this is NetworkResult.Fail) {
+                    this.error.assertEqualTo(mockException)
+                }
+                else {
+                    fail("Tag network result should be fail")
+                }
+            }
         }
     }
 
@@ -98,7 +116,15 @@ class PlayBroadcastSummaryTagViewModelTest {
                 getViewModel().submitAction(PlayBroadcastSummaryAction.ToggleTag(mockSelectedTag))
             }
 
-            state.tag.tags.first { it.tag == mockTagString }.isChosen.assertTrue()
+            with(state.tag) {
+                if(this is NetworkResult.Success) {
+                    val tags = this.data.tags
+                    tags.first { it.tag == mockTagString }.isChosen.assertTrue()
+                }
+                else {
+                    fail("Cannot select tag if network result is not success")
+                }
+            }
         }
     }
 
@@ -119,13 +145,62 @@ class PlayBroadcastSummaryTagViewModelTest {
                 getViewModel().submitAction(PlayBroadcastSummaryAction.ToggleTag(mockSelectedTag))
             }
 
-            state.tag.tags.first { it.tag == mockTagString }.isChosen.assertTrue()
+            with(state.tag) {
+                if(this is NetworkResult.Success) {
+                    val tags = this.data.tags
 
-            val state2 = robot.recordState {
-                getViewModel().submitAction(PlayBroadcastSummaryAction.ToggleTag(mockSelectedTag))
+                    tags.first { it.tag == mockTagString }.isChosen.assertTrue()
+
+                    val state2 = robot.recordState {
+                        getViewModel().submitAction(PlayBroadcastSummaryAction.ToggleTag(mockSelectedTag))
+                    }
+
+                    with(state2.tag) {
+                        if(this is NetworkResult.Success) {
+                            this.data.tags.first { it.tag == mockTagString }.isChosen.assertFalse()
+                        }
+                        else {
+                            fail("Cannot de-select tag if network result is not success")
+                        }
+                    }
+                }
+                else {
+                    fail("Cannot select tag if network result is not success")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user refresh tag, it should emit a new tag`() {
+        coEvery { mockGetRecommendedChannelTagsUseCase.executeOnBackground() } throws mockException
+
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+            getRecommendedChannelTagsUseCase = mockGetRecommendedChannelTagsUseCase
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                coEvery { mockGetRecommendedChannelTagsUseCase.executeOnBackground() } returns mockTag
+                getViewModel().submitAction(PlayBroadcastSummaryAction.RefreshLoadTag)
             }
 
-            state2.tag.tags.first { it.tag == mockTagString }.isChosen.assertFalse()
+            with(state.tag) {
+                if(this is NetworkResult.Success) {
+                    val tags = this.data.tags
+
+                    tags.size.assertEqualTo(mockTagUnique.size)
+
+                    val mockTagUniqueList = mockTagUnique.toList()
+                    tags.forEachIndexed { idx, e ->
+                        e.tag.assertEqualTo(mockTagUniqueList[idx])
+                    }
+                }
+                else {
+                    fail("Tag network result should be success")
+                }
+            }
         }
     }
 }

@@ -443,7 +443,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 val shopId = userSessionInterface.shopId
-                val variantInputParam = mapResultToUpdateParam(shopId, result)
+                val variantInputParam = mapResultToUpdateParam(shopId, result, false)
                 val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
                 editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }

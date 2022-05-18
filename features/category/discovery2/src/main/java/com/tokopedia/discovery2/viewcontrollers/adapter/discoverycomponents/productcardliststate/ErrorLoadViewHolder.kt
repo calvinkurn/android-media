@@ -1,6 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
@@ -37,7 +40,12 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) :
         errorReLoadState.run {
             setTitle(context?.getString(R.string.discovery_product_empty_state_title).orEmpty())
             setDescription(context?.getString(R.string.discovery_product_empty_state_description).orEmpty())
-            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
+            getAppCompatDrawable(
+                context,
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+            )?.let {
+                setImageDrawable(it)
+            }
             setPrimaryCTAText(context?.getString(R.string.discovery_error_500_action).orEmpty())
             setPrimaryCTAClickListener {
                 errorLoadViewModel.reloadComponentData()
@@ -70,6 +78,19 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) :
         lifecycleOwner?.let {
             errorLoadViewModel.getSyncPageLiveData().removeObservers(it)
             errorLoadViewModel.getShowLoaderStatus().removeObservers(it)
+        }
+    }
+
+    private fun getAppCompatDrawable(context: Context?, resID: Int): Drawable? {
+        return try {
+            context?.let {
+                AppCompatResources.getDrawable(
+                    context,
+                    resID
+                )
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

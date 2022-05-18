@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumChannelView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumBannerView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumTranscodeView
@@ -120,6 +121,18 @@ class PlayWidgetMediumViewHolder private constructor() {
             override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
                 listener.onMenuActionButtonClicked(view, item, adapterPosition)
             }
+
+            override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
+                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
+                listener.onLabelPromoChannelClicked(item, adapterPosition)
+            }
+
+            override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
+                listener.onLabelPromoChannelImpressed(item, adapterPosition)
+            }
         }
 
         init {
@@ -165,6 +178,16 @@ class PlayWidgetMediumViewHolder private constructor() {
 
             fun onMenuActionButtonClicked(
                 view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onLabelPromoChannelClicked(
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onLabelPromoChannelImpressed(
                 item: PlayWidgetChannelUiModel,
                 position: Int
             )

@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
@@ -27,39 +26,14 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCH
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Test
 
 @UiTest
 class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
-    lateinit var productPreview: ProductPreview
-
-    private val DEFAULT_PRODUCT_ID = "1111"
-
-    @Before
-    override fun before() {
-        super.before()
-        productPreview = ProductPreview(
-            DEFAULT_PRODUCT_ID,
-            ProductPreviewAttribute.productThumbnail,
-            ProductPreviewAttribute.productName,
-            "Rp 23.000.000",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "tokopedia://product/1111",
-            false,
-            "",
-            "Rp 50.000.000",
-            500000.0,
-            "50%",
-            false
-        )
+    companion object {
+        private const val DEFAULT_PRODUCT_ID = "1111"
     }
-
 
     @Test
     fun srw_preview_displayed_if_buyer_attach_from_start_intent() {
@@ -812,7 +786,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_sticker() {
+    fun srw_bubble_should_expanded_when_user_open_sticker() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -830,7 +804,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
         assertChatMenuVisibility((isDisplayed()))
         assertChatStickerMenuVisibility((isDisplayed()))
     }
@@ -861,7 +835,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_chat_menu() {
+    fun srw_bubble_should_expanded_when_user_open_chat_menu() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -879,7 +853,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
         assertChatMenuVisibility(((isDisplayed())))
         assertChatAttachmentMenuVisibility(isDisplayed())
     }
@@ -924,7 +898,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
-        clickSrwBubbleExpandCollapse(0)
+        clickSrwBubbleExpandCollapse(0) //Collapse
+        clickSrwBubbleExpandCollapse(0) //Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -948,7 +923,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
-        clickSrwBubbleExpandCollapse(0)
+        clickSrwBubbleExpandCollapse(0) //Collapse
+        clickSrwBubbleExpandCollapse(0) //Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -957,7 +933,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_keyboard() {
+    fun srw_bubble_should_remain_expanded_when_user_open_keyboard() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -975,7 +951,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1002,7 +978,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_remain_collapsed_when_user_click_sticker_menu_and_click_open_keyboard() {
+    fun srw_bubble_should_remain_expanded_when_user_click_sticker_menu_and_click_open_keyboard() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -1021,11 +997,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
-    fun srw_bubble_should_remain_collapsed_when_user_open_keyboard_and_open_sticker_menu() {
+    fun srw_bubble_should_remain_expanded_when_user_open_keyboard_and_open_sticker_menu() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -1044,7 +1020,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1189,7 +1165,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1211,7 +1187,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1281,7 +1257,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(
             wsSellerProductResponse
                 .changeTimeStampTo(today())
-                .matchProductWith(productPreview)
+                .matchProductWith(
+                    DEFAULT_PRODUCT_ID,
+                    ProductPreviewAttribute.productThumbnail,
+                    ProductPreviewAttribute.productName,
+                    ProductPreviewAttribute.productPrice
+                )
         )
         websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
@@ -1496,7 +1477,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(productPreview)
+        val productPreviews = listOf(DEFAULT_PRODUCT_ID)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
