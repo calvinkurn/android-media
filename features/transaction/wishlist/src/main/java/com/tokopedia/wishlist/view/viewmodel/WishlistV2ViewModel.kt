@@ -162,14 +162,19 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             listData = mapToEmptyState(wishlistV2Response, listData, isFilterActive)
 
         } else {
-            if (wishlistV2Response.ticker.message.isNotEmpty() && wishlistV2Response.page == 1) {
-                val bundleTickerData = WishlistV2TickerCleanerData(
-                    tickerCleanerData = wishlistV2Response.ticker,
-                    bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet,
-                    countRemovableItems = wishlistV2Response.countRemovableItems)
-                listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
-                isTickerShow = true
-                recommPosition = 5
+            if (wishlistV2Response.page == 1) {
+                if (wishlistV2Response.ticker.message.isNotEmpty()) {
+                    val bundleTickerData = WishlistV2TickerCleanerData(
+                        tickerCleanerData = wishlistV2Response.ticker,
+                        bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet,
+                        countRemovableItems = wishlistV2Response.countRemovableItems)
+                    listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
+                    isTickerShow = true
+                    recommPosition = recommWithTickerPosition
+                } else {
+                    recommPosition = recommPositionDefault
+                }
+
             }
 
             // only for wishlist which has 1 page response
@@ -365,6 +370,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     companion object {
         private var recommPosition = 4
+        private var recommPositionDefault = 4
+        private var recommWithTickerPosition = 5
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
