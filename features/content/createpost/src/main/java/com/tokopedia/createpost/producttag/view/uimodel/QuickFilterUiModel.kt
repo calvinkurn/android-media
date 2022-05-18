@@ -17,6 +17,8 @@ data class QuickFilterUiModel(
             title = name,
             listener = listener,
             type = if(isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
-        )
+        ).apply {
+            typeUpdated = false
+        }
     }
 }
