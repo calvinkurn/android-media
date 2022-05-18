@@ -191,7 +191,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     override fun refreshLayoutPage() = onRefreshLayout()
 
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
-        return TokoFoodHomeLegoComponentCallback()
+        return TokoFoodHomeLegoComponentCallback(this)
     }
 
     private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
@@ -199,7 +199,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
-        return TokoFoodHomeCategoryWidgetV2ComponentCallback()
+        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this)
     }
 
     override fun onUSPClicked(uspResponse: USPResponse) {
