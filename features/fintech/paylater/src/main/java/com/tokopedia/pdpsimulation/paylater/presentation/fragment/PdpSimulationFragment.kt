@@ -50,6 +50,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
+    // parent view is required to show the toaster
     private lateinit var parentView: View
     private var detail: Detail? = null
 

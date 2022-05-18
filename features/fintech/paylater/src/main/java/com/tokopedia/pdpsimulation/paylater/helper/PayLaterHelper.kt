@@ -24,9 +24,6 @@ object PayLaterHelper {
     private const val TYPE_HOW_TO_USE = 3
     private const val TYPE_HOW_TO_USE_II = 4
 
-    private const val parameterAppLink = "?gateway_code={gateway_code}&" +
-            "tenure_type={tenure_type}&" +
-            "source={source}"
 
     fun handleClickNavigation(
         context: Context?,
@@ -96,11 +93,11 @@ object PayLaterHelper {
                         }
                     }"
         } else {
-            setUrlToOcc(detail)
+            setUrlForOcc(detail)
         }
     }
 
-    private fun setUrlToOcc(detail: Detail) =
+    private fun setUrlForOcc(detail: Detail) =
         UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
                 detail.gatewayDetail?.paymentGatewayCode ?: "",
                 detail.tenure.toString(),
