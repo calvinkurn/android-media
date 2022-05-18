@@ -20,7 +20,6 @@ class CouponImagePreviewViewModel @Inject constructor(
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-
     private val _couponImage = SingleLiveEvent<Result<ByteArray>>()
     val couponImage: LiveData<Result<ByteArray>>
         get() = _couponImage
@@ -37,7 +36,6 @@ class CouponImagePreviewViewModel @Inject constructor(
                 val result = withContext(dispatchers.io) {
                     getCouponImagePreviewUseCase.execute(
                         isCreateMode,
-                        this,
                         couponInformation,
                         couponSettings,
                         parentProductIds,

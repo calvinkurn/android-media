@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "CheckProductViolation": {
+        "data": [
+          {
+            "productID": "3256380553",
+            "infoImpact": [
+              "Stok produkmu otomatis menjadi kosong, sehingga pembeli tidak bisa memesannya"
+            ],
+            "infoReason": [
+              "Terjadi 1% pembatalan dalam 1 minggu karena tidak menerima pesanan masuk."
+            ],
+            "infoFootNote": [
+              "Jika pembatalan terus terjadi, produk akan dihapus"
+            ],
+            "infoToResolve": [
+              "Tunggu <b>2x24 jam</b>.",
+              "Isi stok sesuai dengan stok sebenarnya"
+            ],
+            "dueDate": "2022-04-21",
+            "dueDateUnix": "1650542875",
+            "urlHelpCenter": "https://www.tokopedia.com/bantuan"
+          }
+        ]
+      }
+    }
+  }
+]
