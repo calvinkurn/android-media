@@ -137,7 +137,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
             listVariantItemUiModel.filter {
                 it.isEnabled
             }.allCheckEmptyList {
-                it.errorType == NONE && !it.discountedPrice.isZero()
+                it.valueErrorType == NONE && !it.discountedPrice.isZero()
             }
         }
         _isEnableSubmitButton.postValue(isEnabledButtonSubmit)
