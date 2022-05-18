@@ -239,7 +239,7 @@ public class MigratedUserSession {
 
 	    if (oldValue != null && !oldValue.equals(defValue)) {
 		internalCleanKey(prefName, keyName);
-		internalSetString(newPrefName, newKeyName, encryptString(oldValue, keyName));
+		internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
 		UserSessionMap.map.put(key, oldValue);
 		return oldValue;
 	    }
@@ -251,7 +251,7 @@ public class MigratedUserSession {
 		if (value.equals(defValue)) {// if value same with def value\
 		    return value;
 		} else {
-		    value = decryptString(value, keyName);
+		    value = decryptString(value, newKeyName);
 		    if(value.isEmpty()) {
 			return defValue;
 		    } else {
