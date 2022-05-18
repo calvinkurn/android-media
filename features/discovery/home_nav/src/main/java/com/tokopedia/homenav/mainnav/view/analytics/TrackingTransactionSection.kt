@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
+import android.os.Bundle
 import com.tokopedia.homenav.common.TrackingConst.CATEGORY_GLOBAL_MENU
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BUSINESS_UNIT
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
@@ -18,6 +19,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_WISHLIST = "click on Wishlist"
     private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
+    private const val ACTION_CLICK_ON_REVIEW_CARD = "click review card - product star rating"
     private const val IMPRESSION_ON_ORDER_STATUS = "impression on order status"
     private const val IMPRESSION_ON_REVIEW_CARD = "impression review card"
     private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
@@ -25,6 +27,9 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val GLOBAL_MENU = "global_menu"
     private const val REVIEW_CARD = "review_card"
     private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
+    private const val EVENT_LABEL_CLICK_REVIEW_FORMAT = "%s - %s - %s - %s"
+    private const val STAR_RATING = "star rating"
+    private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -130,7 +135,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 .build() as HashMap<String, Any>
     }
 
-    fun getImpressionOnReviewOrder(position: Int, userId: String, element: NavReviewOrder) : HashMap<String, Any>  {
+    fun getImpressionOnReviewProduct(position: Int, userId: String, element: NavReviewOrder) : HashMap<String, Any>  {
         val trackingBuilder = BaseTrackerBuilder()
         val positionCard = (position + 1).toString()
         return trackingBuilder.constructBasicPromotionView(
@@ -150,5 +155,47 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
                 .appendCustomKeyValue(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
                 .build() as HashMap<String, Any>
+    }
+
+    fun getClickReview(position: Int, userId: String, element: NavReviewOrder, starRating: String) : Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_REVIEW_CARD)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(
+            Label.KEY,
+            EVENT_LABEL_CLICK_REVIEW_FORMAT.format(
+                STAR_RATING,
+                element.reputationId,
+                starRating,
+                element.productId
+            )
+        )
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(PAGE_SOURCE, DEFAULT_PAGE_SOURCE)
+        bundle.putString(UserId.KEY, userId)
+        val promotion = Bundle()
+        promotion.putString(
+            Promotion.CREATIVE_NAME,
+            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(STAR_RATING, starRating)
+        )
+        val horizontalPosition = (position + 1).toString()
+        promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
+        promotion.putString(
+            Promotion.ITEM_NAME,
+            PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD)
+        )
+        promotion.putString(
+            Promotion.ITEM_ID,
+            String.format(
+                PROMOTION_ID_FORMAT,
+                element.bannerId,
+                element.reputationId,
+                element.productId
+            )
+        )
+        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
+        return Pair(Ecommerce.PROMO_CLICK, bundle)
     }
 }

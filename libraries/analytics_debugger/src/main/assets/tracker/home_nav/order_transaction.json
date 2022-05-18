@@ -21,6 +21,26 @@
       ],
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click review card - product star rating",
+      "eventCategory": "global menu",
+      "eventLabel": "star rating - .* - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "pageSource:home side nav;",
+      "promotions": [
+        {
+          "creative_name": "star rating_.*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*",
+          "item_name": "/global_menu - review_card"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }

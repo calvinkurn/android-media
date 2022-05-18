@@ -19,6 +19,7 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.track.TrackApp
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -43,6 +44,30 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
 
     override fun bind(element: OrderReviewModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun clickReviewCard(element: OrderReviewModel, rateStars: String) {
+        val tracking = TrackingTransactionSection.getClickReview(adapterPosition, mainNavListener.getUserId(), element.navReviewModel, rateStars)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+        mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, rateStars))
+    }
+
+    private fun generateUriShowBottomSheetReview(element: OrderReviewModel, rateStars: String) : String {
+        return Uri.parse(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.CREATE_REVIEW,
+                element.navReviewModel.reputationId,
+                element.navReviewModel.productId
+            )
+        )
+            .buildUpon()
+            .appendQueryParameter(RATING, rateStars)
+            .appendQueryParameter(
+                SOURCE,
+                UTM_SOURCE_GLOBAL_NAV
+            )
+            .build()
+            .toString()
     }
 
     override fun bind(element: OrderReviewModel) {
@@ -80,49 +105,31 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         }
 
         binding?.orderReviewContainer?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
+            clickReviewCard(element, RATE_STARS_5)
         }
         binding?.layoutReviewStars?.star1?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_1))
+            clickReviewCard(element, RATE_STARS_1)
         }
         binding?.layoutReviewStars?.star2?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_2))
+            clickReviewCard(element, RATE_STARS_2)
         }
         binding?.layoutReviewStars?.star3?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_3))
+            clickReviewCard(element, RATE_STARS_3)
         }
         binding?.layoutReviewStars?.star4?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_4))
+            clickReviewCard(element, RATE_STARS_4)
         }
         binding?.layoutReviewStars?.star5?.setOnClickListener {
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
+            clickReviewCard(element, RATE_STARS_5)
         }
         itemView.addOnImpressionListener(element) {
             mainNavListener.putEEToTrackingQueue(
-                TrackingTransactionSection.getImpressionOnReviewOrder(
+                TrackingTransactionSection.getImpressionOnReviewProduct(
                     userId = mainNavListener.getUserId(),
                     element = element.navReviewModel,
                     position = adapterPosition
                 )
             )
         }
-    }
-
-    private fun generateUriShowBottomSheetReview(element: OrderReviewModel, rateStars: String) : String {
-        return Uri.parse(
-            UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.CREATE_REVIEW,
-                element.navReviewModel.reputationId,
-                element.navReviewModel.productId
-            )
-        )
-            .buildUpon()
-            .appendQueryParameter(RATING, rateStars)
-            .appendQueryParameter(
-                SOURCE,
-                UTM_SOURCE_GLOBAL_NAV
-            )
-            .build()
-            .toString()
     }
 }
