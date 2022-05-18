@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -135,6 +136,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidList = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
         bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
         tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
+        view.findViewById<TextFieldUnify>(R.id.biaya_pencarian).hide()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
