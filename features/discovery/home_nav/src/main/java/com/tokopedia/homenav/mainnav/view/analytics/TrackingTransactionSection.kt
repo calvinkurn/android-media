@@ -38,7 +38,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
-                event = EVENT_CLICK_NAVIGATION_DRAWER,
+                event = Event.CLICK_HOMEPAGE,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = ACTION_CLICK_ON_ALL_TRANSACTION,
                 eventLabel = DEFAULT_EMPTY

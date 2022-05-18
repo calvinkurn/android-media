@@ -249,6 +249,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
+            hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
@@ -261,7 +262,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
