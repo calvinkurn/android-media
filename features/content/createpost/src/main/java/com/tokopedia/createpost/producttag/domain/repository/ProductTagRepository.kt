@@ -40,4 +40,8 @@ interface ProductTagRepository {
     suspend fun getSortFilter(
         param: SearchParamUiModel,
     ) : DynamicFilterModel
+
+    suspend fun getSortFilterProductCount(
+        param: SearchParamUiModel,
+    ) : String
 }

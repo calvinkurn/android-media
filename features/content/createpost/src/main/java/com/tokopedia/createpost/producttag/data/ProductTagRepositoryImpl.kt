@@ -20,6 +20,7 @@ class ProductTagRepositoryImpl @Inject constructor(
     private val feedAceSearchShopUseCase: FeedAceSearchShopUseCase,
     private val feedQuickFilterUseCase: FeedQuickFilterUseCase,
     private val getSortFilterUseCase: GetSortFilterUseCase,
+    private val getSortFilterProductCountUseCase: GetSortFilterProductCountUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -119,6 +120,18 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapSortFilter(response)
+        }
+    }
+
+    override suspend fun getSortFilterProductCount(param: SearchParamUiModel): String {
+        return withContext(dispatchers.io) {
+            val response = getSortFilterProductCountUseCase.apply {
+                setRequestParams(GetSortFilterProductCountUseCase.createParams(
+                    param = param,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapSortFilterProductCount(response)
         }
     }
 }
