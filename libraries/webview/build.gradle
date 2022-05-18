@@ -56,8 +56,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore
-    implementation "androidx.webkit:webkit:1.4.0"
-
 }
 
 project.ext {
