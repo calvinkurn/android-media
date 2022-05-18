@@ -28,9 +28,11 @@ private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
 private const val GIVEAWAY = "GIVEAWAY"
 
 
-
-
 object FeedPlayVideoTabMapper {
+
+    private const val AUTO_PLAY_AMOUNT = 8
+    private const val MAX_AUTO_PLAY_WIFI_DURATION = 30
+    private const val BUSINESS_WIDGET_POSITION = 30
 
     fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse): List<PlaySlot> {
         return playGetContentSlotResponse.data.filter {
@@ -112,9 +114,7 @@ object FeedPlayVideoTabMapper {
 
         val autoRefresh = false
         val autoRefreshTimer: Long = 0
-        val autoPlayAmount: Int = 8
-        val maxAutoPlayWifiDuration: Int = 30
-        val businessWidgetPosition: Int = 30
+
         //till here
         val actionLink = if (PlayWidgetChannelType.getByValue(playSlot.items.first().air_time) == PlayWidgetChannelType.Upcoming) FEED_SEE_MORE_UPCOMING_APP_LINK else FEED_SEE_MORE_LIVE_APP_LINK
 
@@ -125,8 +125,8 @@ object FeedPlayVideoTabMapper {
             actionAppLink = actionLink,
             isActionVisible = playSlot.lihat_semua.show,
             config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, playWidgetPreference.getAutoPlay(meta.is_autoplay), autoPlayAmount,
-                meta.max_autoplay_in_cell, maxAutoPlayWifiDuration, businessWidgetPosition
+                autoRefresh, autoRefreshTimer, playWidgetPreference.getAutoPlay(meta.is_autoplay), AUTO_PLAY_AMOUNT,
+                meta.max_autoplay_in_cell, MAX_AUTO_PLAY_WIFI_DURATION, BUSINESS_WIDGET_POSITION
             ),
             background = PlayWidgetBackgroundUiModel(
                 "", item.appLink, item.webLink, emptyList(), ""
