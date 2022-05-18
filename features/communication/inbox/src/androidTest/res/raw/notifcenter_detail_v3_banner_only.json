@@ -39,6 +39,8 @@
         "notif_order_type":0,
         "is_last_journey":false,
         "is_show_expire":false,
+        "is_pinned": false,
+        "pinned_text": "",
         "unique_id":0,
         "widget":{
           "title":"",

@@ -24,4 +24,7 @@ object EditShippingConstant {
     const val TICKER_STATE_WARNING = 2
 
     const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
+
+    const val GOCAR_SHIPPER_PRODUCT_ID = "28"
+
 }
