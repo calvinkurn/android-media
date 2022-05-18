@@ -12,10 +12,11 @@
       "pageSource": "pageSource:home side nav;",
       "promotions": [
         {
-          "creative_name": ".*",
+          "creative_name": "",
           "creative_slot": ".*",
           "item_id": ".*_.*_.*",
-          "item_name": "/global_menu - review_card"
+          "item_name": "/global_menu - review_card",
+          "creative_url": ""
         }
       ],
       "userId": ".*",

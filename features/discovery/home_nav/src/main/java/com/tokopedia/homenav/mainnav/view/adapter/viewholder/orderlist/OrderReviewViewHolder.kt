@@ -13,8 +13,10 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionReviewBinding
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
@@ -94,6 +96,15 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         }
         binding?.layoutReviewStars?.star5?.setOnClickListener {
             mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
+        }
+        itemView.addOnImpressionListener(element) {
+            mainNavListener.putEEToTrackingQueue(
+                TrackingTransactionSection.getImpressionOnReviewOrder(
+                    userId = mainNavListener.getUserId(),
+                    element = element.navReviewModel,
+                    position = adapterPosition
+                )
+            )
         }
     }
 
