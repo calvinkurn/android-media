@@ -11,6 +11,7 @@
         android:focusable="true"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
+        android:background="@color/Unify_Background"
         tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
 
         <include layout="@layout/bottom_sheet_header" />

@@ -11,6 +11,7 @@
         android:focusable="true"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
+        android:background="@color/Unify_Background"
         tools:ignore="SpeakableTextPresentCheck"
         tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
 
