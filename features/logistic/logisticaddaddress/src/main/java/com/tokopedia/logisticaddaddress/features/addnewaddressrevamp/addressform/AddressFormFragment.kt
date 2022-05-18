@@ -75,7 +75,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var currentPostalCode: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
-    private var pinpointKotaKecamatan: String = ""
 
     private var isEdit: Boolean = false
     var isBackDialogClicked: Boolean = false
@@ -168,15 +167,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         if (addressDataFromPinpoint != null) {
             if (isEdit) {
                 if (addressDataFromPinpoint.latitude != saveDataModel?.latitude || addressDataFromPinpoint.longitude != saveDataModel?.longitude) {
-                    if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan && !isPositiveFlow) {
+                    if (addressDataFromPinpoint.districtId != saveDataModel?.districtId && !isPositiveFlow) {
                         showToasterInfo(getString(R.string.change_pinpoint_outside_district))
                     } else {
                         showToasterInfo(getString(R.string.change_pinpoint_edit_address))
                     }
                     focusOnDetailAddress()
-                }
-                if (kotaKecamatanFromEditPinpoint != null) {
-                    pinpointKotaKecamatan = kotaKecamatanFromEditPinpoint
                 }
             }
             saveDataModel = addressDataFromPinpoint
