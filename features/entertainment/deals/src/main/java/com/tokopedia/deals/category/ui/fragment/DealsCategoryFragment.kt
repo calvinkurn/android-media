@@ -156,9 +156,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     if (dealsBaseItemDataView.isSuccess) {
                         binding.oneRowShimmering.root.hide()
                         binding.shimmering.root.hide()
+                        binding.dealsCategoryRecyclerView.show()
                     }  else {
                         binding.oneRowShimmering.root.show()
                         binding.shimmering.root.show()
+                        binding.dealsCategoryRecyclerView.hide()
                     }
                 }
 
