@@ -77,6 +77,7 @@ class BannerNotificationViewHolder(
             }
         } else {
             hidePinNotif()
+            bindPinExpired(isShow = false)
         }
     }
 
