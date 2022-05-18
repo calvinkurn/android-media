@@ -9,13 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.databinding.ItemTokofoodIconBinding
+import com.tokopedia.tokofood.databinding.ItemTokofoodIconsBinding
 import com.tokopedia.tokofood.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoFoodHomeIconsViewHolder(
-    itemView: View
+    itemView: View,
+    private val homeIconsListener: TokoFoodHomeIconsListener? = null,
 ): AbstractViewHolder<TokoFoodHomeIconsUiModel>(itemView) {
 
     companion object {
@@ -25,6 +29,7 @@ class TokoFoodHomeIconsViewHolder(
         private const val GRID_ITEM = 4
     }
 
+    private val binding: ItemTokofoodIconsBinding? by viewBinding()
     private val adapter = TokoFoodIconAdapter()
     private var iconRecyclerView: RecyclerView? = null
 
@@ -34,7 +39,7 @@ class TokoFoodHomeIconsViewHolder(
 
     private fun setupTokoFoodIcon(element: TokoFoodHomeIconsUiModel){
         val icons = element.listIcons
-        iconRecyclerView = itemView.findViewById(R.id.tokofood_icon_recycler_view)
+        iconRecyclerView = binding?.tokofoodIconRecyclerView
         if (!icons.isNullOrEmpty()){
             adapter.submitList(element)
         }
@@ -46,9 +51,12 @@ class TokoFoodHomeIconsViewHolder(
         private val iconList = mutableListOf<DynamicIcon>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokoFoodIconViewHolder {
-            return TokoFoodIconViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_tokofood_icon, parent, false))
+            val bindingIcon = ItemTokofoodIconBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return TokoFoodIconViewHolder(bindingIcon)
         }
 
         override fun onBindViewHolder(holder: TokoFoodIconViewHolder, position: Int) {
@@ -69,20 +77,25 @@ class TokoFoodHomeIconsViewHolder(
         }
     }
 
-    internal inner class TokoFoodIconViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    internal inner class TokoFoodIconViewHolder(private val bindingIcon: ItemTokofoodIconBinding):
+        RecyclerView.ViewHolder(bindingIcon.root){
         var imgIcon : ImageUnify? = null
         var tgIcon : Typography? = null
 
         fun bind(item: DynamicIcon){
-            imgIcon = itemView.findViewById(R.id.img_icon_tokofood_home)
-            tgIcon = itemView.findViewById(R.id.tg_icon_tokofood_home)
+            imgIcon = bindingIcon.imgIconTokofoodHome
+            tgIcon = bindingIcon.tgIconTokofoodHome
 
             imgIcon?.loadImage(item.imageUrl)
             tgIcon?.text = item.name
 
-            itemView?.setOnClickListener {
-
+            bindingIcon.root.setOnClickListener {
+                homeIconsListener?.onClickHomeIcon(item.applinks)
             }
         }
+    }
+
+    interface TokoFoodHomeIconsListener {
+        fun onClickHomeIcon(applink: String)
     }
 }

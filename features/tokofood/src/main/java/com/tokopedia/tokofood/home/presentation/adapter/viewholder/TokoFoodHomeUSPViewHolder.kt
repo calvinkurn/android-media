@@ -9,11 +9,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.databinding.ItemTokofoodUspBinding
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoFoodHomeUSPViewHolder(
     itemView: View,
@@ -28,6 +30,7 @@ class TokoFoodHomeUSPViewHolder(
         private const val GO_FOOD_IMAGE = "https://images.tokopedia.net/img/ic_tokofood_gofood.png"
     }
 
+    private var binding: ItemTokofoodUspBinding? by viewBinding()
     private var imgFirstUsp: ImageUnify? = null
     private var imgSecondUsp: ImageUnify? = null
     private var imgThirdUsp: ImageUnify? = null
@@ -39,15 +42,15 @@ class TokoFoodHomeUSPViewHolder(
     private var shimmeringLayout: View? = null
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
-        shimmeringLayout = itemView.findViewById(R.id.usp_load_layout)
-        imgFirstUsp = itemView.findViewById(R.id.img_first_usp)
-        imgSecondUsp = itemView.findViewById(R.id.img_second_usp)
-        imgThirdUsp = itemView.findViewById(R.id.img_third_usp)
-        imgGoFood = itemView.findViewById(R.id.img_gofood)
-        tgFirstUsp = itemView.findViewById(R.id.tg_first_usp)
-        tgSecondUsp = itemView.findViewById(R.id.tg_second_usp)
-        tgThirdUsp = itemView.findViewById(R.id.tg_third_usp)
-        tgPowered = itemView.findViewById(R.id.tg_powered)
+        shimmeringLayout = binding?.uspLoadLayout?.root
+        imgFirstUsp = binding?.imgFirstUsp
+        imgSecondUsp = binding?.imgSecondUsp
+        imgThirdUsp = binding?.imgThirdUsp
+        imgGoFood = binding?.imgGofood
+        tgFirstUsp = binding?.tgFirstUsp
+        tgSecondUsp = binding?.tgSecondUsp
+        tgThirdUsp = binding?.tgThirdUsp
+        tgPowered = binding?.tgPowered
 
         when(element.state){
             TokoFoodHomeLayoutState.SHOW -> onShowLayout(element)
@@ -75,7 +78,7 @@ class TokoFoodHomeUSPViewHolder(
             }
         }
 
-        itemView?.setOnClickListener {
+        binding?.root?.setOnClickListener {
             element.uspModel?.response?.let {
                 listener?.onUSPClicked(it)
             }

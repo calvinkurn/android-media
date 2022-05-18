@@ -50,6 +50,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeF
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
@@ -71,6 +72,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
         TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
         TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
+        TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
         ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 {
 
@@ -95,6 +97,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 uspListener = this,
                 chooseAddressWidgetListener = this,
                 emptyStateLocationListener = this,
+                homeIconListener = this,
             ),
             differ = TokoFoodHomeListDiffer(),
         )
@@ -240,6 +243,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     override fun onLocalizingAddressLoginSuccessBottomSheet() {}
 
     override fun onLocalizingAddressServerDown() {}
+
+    override fun onClickHomeIcon(applink: String) {
+        RouteManager.route(context, applink)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

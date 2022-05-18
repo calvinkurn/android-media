@@ -60,6 +60,7 @@ class TokoFoodHomeAdapterTypeFactory (
     private val uspListener: TokoFoodHomeUSPViewHolder.TokoFoodUSPListener? = null,
     private val chooseAddressWidgetListener: TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener? = null,
     private val emptyStateLocationListener: TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener? = null,
+    private val homeIconListener: TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener? = null,
 ):  BaseAdapterTypeFactory(),
     TokoFoodHomeTypeFactory,
     HomeComponentTypeFactory {
@@ -100,7 +101,7 @@ class TokoFoodHomeAdapterTypeFactory (
             TokoFoodHomeEmptyStateLocationViewHolder.LAYOUT -> TokoFoodHomeEmptyStateLocationViewHolder(view, emptyStateLocationListener)
             TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
             TokoFoodHomeMerchantListViewHolder.LAYOUT -> TokoFoodHomeMerchantListViewHolder(view)
-            TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view)
+            TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view, homeIconListener)
             TokoFoodHomeChooseAddressViewHolder.LAYOUT -> TokoFoodHomeChooseAddressViewHolder(view, tokoFoodHomeView, chooseAddressWidgetListener)
             // endregion
 
