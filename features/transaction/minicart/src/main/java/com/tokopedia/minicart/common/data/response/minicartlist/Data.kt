@@ -10,6 +10,8 @@ data class Data(
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
+        @SerializedName("placeholder_note")
+        val placeholderNote: String = "",
         @SerializedName("beli_button_config")
         val beliButtonConfig: BeliButtonConfig = BeliButtonConfig(),
         @SerializedName("header_title")
