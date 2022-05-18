@@ -180,8 +180,6 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                 if(curr.products.isEmpty()) {
                     if(viewModel.hasProductSearchFilterApplied) {
                         showFilterNoData()
-                        binding.rvGlobalSearchProduct.hide()
-                        binding.globalError.show()
                     }
                     else {
                         /** TODO: handle this */
@@ -232,7 +230,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private fun showFilterNoData() {
         binding.rvGlobalSearchProduct.hide()
         binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_no_product_filter))
+            errorIllustration.loadImage(getString(R.string.img_search_no_product))
             errorTitle.text = getString(R.string.cc_global_search_product_filter_not_found_title)
             errorDescription.text = getString(R.string.cc_global_search_product_filter_not_found_desc)
 
@@ -245,6 +243,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             show()
         }
     }
+
     companion object {
         const val TAG = "GlobalSearchProductTabFragment"
 

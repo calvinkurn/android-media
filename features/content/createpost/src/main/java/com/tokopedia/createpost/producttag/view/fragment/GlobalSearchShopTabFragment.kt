@@ -25,8 +25,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProduc
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
@@ -164,8 +163,14 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             }
             is PagedState.Success -> {
                 if(curr.shops.isEmpty()) {
-                    binding.rvGlobalSearchShop.hide()
-                    binding.globalError.show()
+                    if(viewModel.hasShopSearchFilterApplied) {
+                        showFilterNoData()
+                    }
+                    else {
+                        /** TODO: handle this */
+                        binding.rvGlobalSearchShop.show()
+                        binding.globalError.hide()
+                    }
                 }
                 else updateAdapterData(curr.shops, curr.state.hasNextPage)
             }
@@ -204,6 +209,23 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 viewModel.submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
             }
 
+            show()
+        }
+    }
+
+    private fun showFilterNoData() {
+        binding.rvGlobalSearchShop.hide()
+        binding.globalError.apply {
+            errorIllustration.loadImage(getString(R.string.img_search_no_shop))
+            errorTitle.text = getString(R.string.cc_global_search_shop_filter_not_found_title)
+            errorDescription.text = getString(R.string.cc_global_search_shop_filter_not_found_desc)
+
+            errorAction.text = getString(R.string.cc_reset_filter)
+            errorAction.visible()
+            errorSecondaryAction.gone()
+            errorAction.setOnClickListener {
+                viewModel.submitAction(ProductTagAction.ResetShopFilter)
+            }
             show()
         }
     }
