@@ -53,16 +53,22 @@ class RegistrationHeaderWidget(
             tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
 
             if (!isEligiblePM) {
-                if (isPartlyEligible(element)) {
-                    horLinePmHeader.gone()
-                    tvPmHeaderEligibleFor.gone()
-                } else {
-                    horLinePmHeader.visible()
-                    tvPmHeaderEligibleFor.visible()
-                    tvPmHeaderEligibleFor.text = root.context.getString(
-                        R.string.pm_registration_term_header
-                    )
-                    tvPmHeaderEligibleFor.gravity = Gravity.CENTER
+                val shopInfo = element.shopInfo
+                when {
+                    (shopInfo.isKyc && (!shopInfo.isEligibleShopScore() ||
+                            (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))) ||
+                            !(element.shopInfo.isKyc && element.shopInfo.isEligibleShopScore()) -> {
+                        horLinePmHeader.visible()
+                        tvPmHeaderEligibleFor.visible()
+                        tvPmHeaderEligibleFor.text = root.context.getString(
+                            R.string.pm_registration_term_header
+                        )
+                        tvPmHeaderEligibleFor.gravity = Gravity.CENTER
+                    }
+                    else -> {
+                        horLinePmHeader.gone()
+                        tvPmHeaderEligibleFor.gone()
+                    }
                 }
                 return
             }
