@@ -232,8 +232,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private fun showFilterNoData() {
         binding.rvGlobalSearchProduct.hide()
         binding.globalError.apply {
-            /** TODO: gonna change this later */
-            errorIllustration.loadImage(getString(R.string.img_no_shop_product))
+            errorIllustration.loadImage(getString(R.string.img_no_product_filter))
             errorTitle.text = getString(R.string.cc_global_search_product_filter_not_found_title)
             errorDescription.text = getString(R.string.cc_global_search_product_filter_not_found_desc)
 
