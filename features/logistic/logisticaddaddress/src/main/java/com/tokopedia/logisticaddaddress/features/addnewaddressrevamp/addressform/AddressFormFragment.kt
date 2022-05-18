@@ -637,51 +637,50 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun validateForm(): Boolean {
         validated = true
         val field = mutableListOf<String>()
-        binding?.run {
-            if (isPositiveFlow) {
-                if (!validatePhoneNumber()) {
-                    field.add(getString(R.string.field_nomor_hp))
-                    validated = false
-                }
-                if (!validateReceiverName()) {
-                    field.add(getString(R.string.field_nama_penerima))
-                    validated = false
-                }
-                if (!validateCourierNote()) {
-                    field.add(getString(R.string.field_catatan_kurir))
-                    validated = false
-                }
-                if (!validateAlamat()) {
-                    field.add(getString(R.string.field_alamat))
-                    validated = false
-                }
-                if (!validateLabel()) {
-                    field.add(getString(R.string.field_label_alamat))
-                    validated = false
-                }
-            } else {
-                if (!validateCourierNote()) {
-                    field.add(getString(R.string.field_catatan_kurir))
-                    validated = false
-                }
-                if (!validateAlamat()) {
-                    field.add(getString(R.string.field_alamat))
-                    validated = false
-                }
-                if (!validateLabel()) {
-                    field.add(getString(R.string.field_label_alamat))
-                    validated = false
-                }
-                if (!validatePhoneNumber()) {
-                    field.add(getString(R.string.field_nomor_hp))
-                    validated = false
-                }
-                if (!validateReceiverName()) {
-                    field.add(getString(R.string.field_nama_penerima))
-                    validated = false
-                }
+        if (isPositiveFlow) {
+            if (!validatePhoneNumber()) {
+                field.add(getString(R.string.field_nomor_hp))
+                validated = false
+            }
+            if (!validateReceiverName()) {
+                field.add(getString(R.string.field_nama_penerima))
+                validated = false
+            }
+            if (!validateCourierNote()) {
+                field.add(getString(R.string.field_catatan_kurir))
+                validated = false
+            }
+            if (!validateAlamat()) {
+                field.add(getString(R.string.field_alamat))
+                validated = false
+            }
+            if (!validateLabel()) {
+                field.add(getString(R.string.field_label_alamat))
+                validated = false
+            }
+        } else {
+            if (!validateCourierNote()) {
+                field.add(getString(R.string.field_catatan_kurir))
+                validated = false
+            }
+            if (!validateAlamat()) {
+                field.add(getString(R.string.field_alamat))
+                validated = false
+            }
+            if (!validateLabel()) {
+                field.add(getString(R.string.field_label_alamat))
+                validated = false
+            }
+            if (!validatePhoneNumber()) {
+                field.add(getString(R.string.field_nomor_hp))
+                validated = false
+            }
+            if (!validateReceiverName()) {
+                field.add(getString(R.string.field_nama_penerima))
+                validated = false
             }
         }
+        
         if (!isEdit) {
             if (!validated && isPositiveFlow) {
                 AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.joinToString ("," ))
