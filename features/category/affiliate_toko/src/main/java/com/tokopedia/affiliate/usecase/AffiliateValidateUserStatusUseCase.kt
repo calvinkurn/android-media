@@ -20,8 +20,8 @@ class AffiliateValidateUserStatusUseCase @Inject constructor(
                 "    \"validateAffiliateUserStatus\": {\n" +
                 "      \"Data\": {\n" +
                 "        \"Status\": 1,\n" +
-                "        \"IsEligible\": false,\n" +
-                "        \"IsReviewed\": true,\n" +
+                "        \"IsEligible\": true,\n" +
+                "        \"IsReviewed\": false,\n" +
                 "        \"IsRegistered\": true,\n" +
                 "        \"IsSystemDown\": true,\n" +
                 "        \"Error\": {\n" +

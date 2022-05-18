@@ -428,6 +428,15 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     override fun onSystemDown() {
         affiliateIncomeViewModel.getAnnouncementInformation()
         hideAllView()
+        disableSwipeToRefresh()
+    }
+
+    private fun disableSwipeToRefresh() {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.apply {
+            setOnRefreshListener {
+                isRefreshing = false
+            }
+        }
     }
 
     private fun hideAllView() {

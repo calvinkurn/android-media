@@ -403,6 +403,11 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
 
     override fun onSystemDown() {
         affiliateHomeViewModel.getAnnouncementInformation()
+        hideViews()
+    }
+
+    private fun hideViews() {
+        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
     }
 
     override fun onReviewed() {
