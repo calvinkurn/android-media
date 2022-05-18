@@ -41,6 +41,17 @@
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all transaction",
+      "eventCategory": "global menu",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "clientId": ".*"
     }
   ]
 }

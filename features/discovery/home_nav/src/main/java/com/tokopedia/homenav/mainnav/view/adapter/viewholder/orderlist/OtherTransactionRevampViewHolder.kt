@@ -12,6 +12,7 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.track.TrackApp
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -35,9 +36,8 @@ class OtherTransactionRevampViewHolder (itemView: View, val mainNavListener: Mai
         setForegroundClickViewAllCard()
         binding?.cardViewAllFavshop?.setCta(itemView.resources.getString(R.string.transaction_view_all))
         binding?.cardViewAllFavshop?.cardView?.setOnClickListener {
-            TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    OTHER_TRACKING_LABEL)
+            val tracking = TrackingTransactionSection.getClickViewAllTransaction()
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
             RouteManager.route(itemView.context, ApplinkConst.PURCHASE_ORDER)
         }
     }

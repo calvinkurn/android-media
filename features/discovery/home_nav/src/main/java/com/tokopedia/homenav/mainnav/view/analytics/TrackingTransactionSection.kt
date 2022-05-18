@@ -20,6 +20,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVOURITE_SHOP = "click on Favorite Shop"
     private const val ACTION_CLICK_ON_ORDER_STATUS = "click on order status"
     private const val ACTION_CLICK_ON_REVIEW_CARD = "click review card - product star rating"
+    private const val ACTION_CLICK_VIEW_ALL_TRANSACTION = "click view all transaction"
     private const val IMPRESSION_ON_ORDER_STATUS = "impression on order status"
     private const val IMPRESSION_ON_REVIEW_CARD = "impression review card"
     private const val TEMPLATE_GLOBAL_MENU = "/global_menu - order_status_card"
@@ -197,5 +198,16 @@ object TrackingTransactionSection: BaseTrackerConst() {
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
         return Pair(Ecommerce.PROMO_CLICK, bundle)
+    }
+
+    fun getClickViewAllTransaction() : Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Action.KEY, ACTION_CLICK_VIEW_ALL_TRANSACTION)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Label.KEY, DEFAULT_EMPTY)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 }
