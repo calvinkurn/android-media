@@ -98,7 +98,7 @@ class InputOldPhoneNumberViewModel @Inject constructor(
     companion object {
         private const val MINIMUM_LENGTH_NUMBER = 9
         private const val MAXIMUM_LENGTH_NUMBER = 15
-        private const val STATUS_USER_ACTIVE = 1
+        const val STATUS_USER_ACTIVE = 1
     }
 
 }
