@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -235,7 +234,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
-    private var commentArea: LinearLayout? = null
+    private var replyBox: ComposeMessageAreaConstraintLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -361,11 +360,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun collapseSrw() {
-        collapseSrwPreview()
-        adapter.collapseSrwBubble()
-    }
-
-    private fun collapseSrwPreview() {
         rvSrw?.isExpanded = false
     }
 
@@ -444,7 +438,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
-        commentArea = view?.findViewById(R.id.add_comment_area)
+        replyBox = view?.findViewById(R.id.reply_box)
     }
 
     private fun initStickerView() {
@@ -452,7 +446,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu?.setVisibilityListener(object : ChatMenuView.VisibilityListener {
             override fun onShow() {
                 collapseSrw()
-                adapter.collapseSrwBubble()
             }
 
             override fun onHide() {
@@ -771,7 +764,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, commentArea, context
+                rv, adapter, replyBox, context
             )
         }
     }
@@ -2409,6 +2402,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addSrwBubble() {
+        expandSrwPreview()
         val srwState = rvSrw?.getStateInfo()
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)

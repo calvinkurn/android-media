@@ -226,6 +226,8 @@ open class NotifcenterDetailUseCase @Inject constructor(
             		    notif_order_type
             		    is_last_journey
             		    is_show_expire
+                        is_pinned
+                        pinned_text
                         unique_id
                         widget {
                             title
@@ -357,6 +359,9 @@ open class NotifcenterDetailUseCase @Inject constructor(
             			read_status
             		    notif_order_type
             		    is_last_journey
+                        is_show_expire
+                        is_pinned
+                        pinned_text
                         unique_id
                         widget {
                             title
