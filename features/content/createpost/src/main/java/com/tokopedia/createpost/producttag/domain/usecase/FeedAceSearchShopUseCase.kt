@@ -27,19 +27,12 @@ class FeedAceSearchShopUseCase @Inject constructor(
 
     companion object {
         private const val PARAMS = "params"
-        private const val PARAM_DEVICE = "device"
-        private const val PARAM_FROM = "from"
-        private const val PARAM_ROWS = "rows"
-        private const val PARAM_START = "start"
-        private const val PARAM_QUERY = "q"
-        private const val PARAM_SOURCE = "source"
-        private const val PARAM_ST = "st"
-        private const val PARAM_SORT = "ob"
 
         const val QUERY_NAME = "FeedAceSearchShopUseCaseQuery"
         const val QUERY = """
             query FeedAceSearchShop(${"$$PARAMS"}: String!) {
               aceSearchShop($PARAMS: ${"$$PARAMS"}) {
+                total_shop
                 shops {
                   shop_id
                   shop_name

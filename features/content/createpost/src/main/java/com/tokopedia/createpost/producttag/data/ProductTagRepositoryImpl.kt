@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.domain.usecase.*
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -77,7 +78,7 @@ class ProductTagRepositoryImpl @Inject constructor(
 
     override suspend fun searchAceShops(
         param: SearchParamUiModel,
-    ): PagedDataUiModel<ShopUiModel> {
+    ): PagedGlobalSearchShopResponse {
         return withContext(dispatchers.io) {
             val response = feedAceSearchShopUseCase.apply {
                 setRequestParams(FeedAceSearchShopUseCase.createParams(

@@ -12,6 +12,9 @@ data class FeedAceSearchShopResponse(
     data class Data(
         @SerializedName("shops")
         val shops: List<Shop> = emptyList(),
+
+        @SerializedName("total_shop")
+        val totalShop: Int = 0,
     )
 
     data class Shop(

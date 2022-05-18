@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.domain.repository
 
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 
@@ -27,7 +28,7 @@ interface ProductTagRepository {
 
     suspend fun searchAceShops(
         param: SearchParamUiModel,
-    ) : PagedDataUiModel<ShopUiModel>
+    ) : PagedGlobalSearchShopResponse
 
     suspend fun getQuickFilter(
         query: String,

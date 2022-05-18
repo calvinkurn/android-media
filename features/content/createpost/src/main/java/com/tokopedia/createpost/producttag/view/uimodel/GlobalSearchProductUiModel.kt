@@ -1,5 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+import com.tokopedia.filter.common.data.DynamicFilterModel
+
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
@@ -7,6 +9,7 @@ package com.tokopedia.createpost.producttag.view.uimodel
 data class GlobalSearchProductUiModel(
     val products: List<ProductUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
@@ -15,14 +18,16 @@ data class GlobalSearchProductUiModel(
 ) {
 
     companion object {
-        val Empty = GlobalSearchProductUiModel(
-            products = emptyList(),
-            quickFilters = emptyList(),
-            nextCursor = 0,
-            state = PagedState.Unknown,
-            param = SearchParamUiModel.Empty,
-            suggestion = "",
-            ticker = TickerUiModel()
-        )
+        val Empty: GlobalSearchProductUiModel
+            get() = GlobalSearchProductUiModel(
+                products = emptyList(),
+                quickFilters = emptyList(),
+                sortFilters = DynamicFilterModel(),
+                nextCursor = 0,
+                state = PagedState.Unknown,
+                param = SearchParamUiModel.Empty,
+                suggestion = "",
+                ticker = TickerUiModel()
+            )
     }
 }

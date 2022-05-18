@@ -15,17 +15,21 @@ import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
+import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -45,6 +49,23 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             onSelected = { viewModel.submitAction(ProductTagAction.ShopSelected(it)) },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop) }
         )
+    }
+
+    private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
+    private val sortFilterCallback = object : SortFilterBottomSheet.Callback {
+        override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+            applySortFilterModel.apply {
+                viewModel.submitAction(
+                    ProductTagAction.ApplyShopSortFilter(
+                        selectedFilterMapParameter + selectedSortMapParameter
+                    )
+                )
+            }
+        }
+
+        override fun getResultCount(mapParameter: Map<String, String>) {
+            viewModel.submitAction(ProductTagAction.RequestShopFilterProductCount(mapParameter))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +113,31 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchShop(it.prevValue?.globalSearchShop, it.value.globalSearchShop)
                 renderQuickFilter(it.prevValue?.globalSearchShop, it.value.globalSearchShop)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is ProductTagUiEvent.OpenShopSortFilterBottomSheet -> {
+                        sortFilterBottomSheet.show(
+                            childFragmentManager,
+                            event.param.value as Map<String, String>,
+                            event.data,
+                            sortFilterCallback,
+                        )
+                    }
+                    is ProductTagUiEvent.SetShopFilterProductCount -> {
+                        val text = when(event.result) {
+                            is NetworkResult.Success -> {
+                                getString(R.string.cc_filter_shop_count_template, event.result.data)
+                            }
+                            else -> getString(R.string.cc_filter_shop_count_label)
+                        }
+
+                        sortFilterBottomSheet.setResultCountText(text)
+                    }
+                }
             }
         }
     }
@@ -149,13 +195,13 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             addItem(
                 curr.quickFilters.map {
                     it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
-                        viewModel.submitAction(ProductTagAction.SelectQuickFilter(it))
+                        viewModel.submitAction(ProductTagAction.SelectShopQuickFilter(it))
                     }
                 } as ArrayList<SortFilterItem>
             )
             textView?.text = getString(R.string.cc_product_tag_filter_label)
             parentListener = {
-                viewModel.submitAction(ProductTagAction.OpenSortFilterBottomSheet)
+                viewModel.submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
             }
 
             show()

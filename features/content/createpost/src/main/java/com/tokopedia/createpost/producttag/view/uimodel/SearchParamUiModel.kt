@@ -5,7 +5,7 @@ package com.tokopedia.createpost.producttag.view.uimodel
  * Created By : Jonathan Darwin on May 17, 2022
  */
 data class SearchParamUiModel(
-    val value: HashMap<String, Any> = hashMapOf(),
+    val value: HashMap<String, Any>,
 ) {
 
     var query: String
@@ -130,7 +130,7 @@ data class SearchParamUiModel(
         const val SOURCE_SEARCH_SHOP = "search_shop"
 
         val Empty: SearchParamUiModel
-            get() = SearchParamUiModel().apply {
+            get() = SearchParamUiModel(value = hashMapOf()).apply {
                 resetPagination()
                 setDefaultParam()
                 query = ""

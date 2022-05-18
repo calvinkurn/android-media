@@ -122,22 +122,25 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int): PagedDataUiModel<ShopUiModel> {
-        return PagedDataUiModel(
-            dataList = response.wrapper.shops.map {
-                ShopUiModel(
-                    shopId = it.shopId,
-                    shopName = it.shopName,
-                    shopImage = it.shopImage,
-                    shopLocation = it.shopLocation,
-                    shopGoldShop = it.shopGoldShop,
-                    shopStatus = it.shopStatus,
-                    isOfficial = it.isOfficial,
-                    isPMPro = it.isPMPro,
-                )
-            },
-            hasNextPage = response.wrapper.shops.isNotEmpty(),
-            nextCursor = nextCursor.toString(),
+    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int): PagedGlobalSearchShopResponse {
+        return PagedGlobalSearchShopResponse(
+            pagedData = PagedDataUiModel(
+                dataList = response.wrapper.shops.map {
+                    ShopUiModel(
+                        shopId = it.shopId,
+                        shopName = it.shopName,
+                        shopImage = it.shopImage,
+                        shopLocation = it.shopLocation,
+                        shopGoldShop = it.shopGoldShop,
+                        shopStatus = it.shopStatus,
+                        isOfficial = it.isOfficial,
+                        isPMPro = it.isPMPro,
+                    )
+                },
+                hasNextPage = response.wrapper.shops.isNotEmpty(),
+                nextCursor = nextCursor.toString(),
+            ),
+            totalShop = response.wrapper.totalShop,
         )
     }
 

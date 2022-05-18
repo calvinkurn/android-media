@@ -55,7 +55,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
             applySortFilterModel.apply {
                 viewModel.submitAction(
-                    ProductTagAction.ApplySortFilter(
+                    ProductTagAction.ApplyProductSortFilter(
                         selectedFilterMapParameter + selectedSortMapParameter
                     )
                 )
@@ -63,7 +63,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         }
 
         override fun getResultCount(mapParameter: Map<String, String>) {
-            viewModel.submitAction(ProductTagAction.RequestFilterProductCount(mapParameter))
+            viewModel.submitAction(ProductTagAction.RequestProductFilterProductCount(mapParameter))
         }
     }
 
@@ -119,7 +119,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is ProductTagUiEvent.OpenSortFilterBottomSheet -> {
+                    is ProductTagUiEvent.OpenProductSortFilterBottomSheet -> {
                         sortFilterBottomSheet.show(
                             childFragmentManager,
                             event.param.value as Map<String, String>,
@@ -127,7 +127,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                             sortFilterCallback,
                         )
                     }
-                    is ProductTagUiEvent.SetFilterProductCount -> {
+                    is ProductTagUiEvent.SetProductFilterProductCount -> {
                         val text = when(event.result) {
                             is NetworkResult.Success -> {
                                 getString(R.string.cc_filter_product_count_template, event.result.data)
@@ -210,13 +210,13 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             addItem(
                 curr.quickFilters.map {
                     it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
-                        viewModel.submitAction(ProductTagAction.SelectQuickFilter(it))
+                        viewModel.submitAction(ProductTagAction.SelectProductQuickFilter(it))
                     }
                 } as ArrayList<SortFilterItem>
             )
             textView?.text = getString(R.string.cc_product_tag_filter_label)
             parentListener = {
-                viewModel.submitAction(ProductTagAction.OpenSortFilterBottomSheet)
+                viewModel.submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
             }
 
             show()

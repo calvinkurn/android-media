@@ -131,4 +131,6 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_product_tag_filter_label">Filter</string>
     <string name="cc_filter_product_count_template">Tampilkan %s produk</string>
     <string name="cc_filter_product_count_label">Tampilkan produk</string>
+    <string name="cc_filter_shop_count_template">Tampilkan %s Toko</string>
+    <string name="cc_filter_shop_count_label">Tampilkan Toko</string>
 </resources>

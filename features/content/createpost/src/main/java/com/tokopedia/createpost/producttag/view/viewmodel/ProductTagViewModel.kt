@@ -81,8 +81,6 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
     private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
 
-    private val _sortFilter = MutableStateFlow(SortFilterUiModel.Empty)
-
     /** Ui State */
     private val _productTagSourceUiState = combine(
         _productTagSourceList, _productTagSourceStack
@@ -124,6 +122,7 @@ class ProductTagViewModel @AssistedInject constructor(
         GlobalSearchProductUiState(
             products = it.products,
             quickFilters = it.quickFilters,
+            sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
             state = it.state,
             param = it.param,
@@ -136,6 +135,7 @@ class ProductTagViewModel @AssistedInject constructor(
         GlobalSearchShopUiState(
             shops = it.shops,
             quickFilters = it.quickFilters,
+            sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
             state = it.state,
             param = it.param,
@@ -216,14 +216,18 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
             ProductTagAction.TickerClicked -> handleTickerClicked()
             ProductTagAction.CloseTicker -> handleCloseTicker()
-            is ProductTagAction.SelectQuickFilter -> handleSelectQuickFilter(action.quickFilter)
-            ProductTagAction.OpenSortFilterBottomSheet -> handleOpenSortFilterBottomSheet()
-            is ProductTagAction.RequestFilterProductCount -> handleRequestFilterProductCount(action.selectedSortFilter)
-            is ProductTagAction.ApplySortFilter -> handleApplySortFilter(action.selectedSortFilter)
+            is ProductTagAction.SelectProductQuickFilter -> handleSelectProductQuickFilter(action.quickFilter)
+            ProductTagAction.OpenProductSortFilterBottomSheet -> handleOpenProductSortFilterBottomSheet()
+            is ProductTagAction.RequestProductFilterProductCount -> handleRequestProductFilterProductCount(action.selectedSortFilter)
+            is ProductTagAction.ApplyProductSortFilter -> handleApplyProductSortFilter(action.selectedSortFilter)
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
             is ProductTagAction.ShopSelected -> handleShopSelected(action.shop)
+            is ProductTagAction.SelectShopQuickFilter -> handleSelectShopQuickFilter(action.quickFilter)
+            ProductTagAction.OpenShopSortFilterBottomSheet -> handleOpenShopSortFilterBottomSheet()
+            is ProductTagAction.RequestShopFilterProductCount -> handleRequestShopFilterProductCount(action.selectedSortFilter)
+            is ProductTagAction.ApplyShopSortFilter -> handleApplyShopSortFilter(action.selectedSortFilter)
 
             /** Shop Product */
             ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
@@ -259,14 +263,14 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
-                    val newParam = SearchParamUiModel.Empty.apply {
-                        this.query = query
-                    }
+                    val newProductParam = SearchParamUiModel.Empty.apply { this.query = query }
+                    val newShopParam = SearchParamUiModel.Empty.apply { this.query = query }
+
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = newParam)
+                        GlobalSearchProductUiModel.Empty.copy(param = newProductParam)
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = newParam)
+                        GlobalSearchShopUiModel.Empty.copy(param = newShopParam)
                     }
                 }
                 ProductTagSource.Shop -> {
@@ -465,7 +469,7 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSelectQuickFilter(quickFilter: QuickFilterUiModel) {
+    private fun handleSelectProductQuickFilter(quickFilter: QuickFilterUiModel) {
         val currState = _globalSearchProduct.value
 
         val newParam = currState.param.copy().apply {
@@ -483,40 +487,39 @@ class ProductTagViewModel @AssistedInject constructor(
         handleLoadGlobalSearchProduct()
     }
 
-    private fun handleOpenSortFilterBottomSheet() {
+    private fun handleOpenProductSortFilterBottomSheet() {
         viewModelScope.launchCatchError(block = {
             val param = _globalSearchProduct.value.param.copy().apply {
                 source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
             }
 
-            if(_sortFilter.value.state !is PagedState.Success) {
-                _sortFilter.setValue { copy(state = PagedState.Loading) }
-
+            if(_globalSearchProduct.value.sortFilters.isEmpty()) {
                 val result = repo.getSortFilter(param)
 
-                _sortFilter.setValue {
-                    copy(data = result, state = PagedState.Success(false))
+                _globalSearchProduct.setValue {
+                    copy(sortFilters = result)
                 }
             }
 
-            _uiEvent.emit(ProductTagUiEvent.OpenSortFilterBottomSheet(param, _sortFilter.value.data))
+            _uiEvent.emit(ProductTagUiEvent.OpenProductSortFilterBottomSheet(param, _globalSearchProduct.value.sortFilters))
         }) {
-            /** TODO: emit event */
-            _sortFilter.setValue { copy(state = PagedState.Error(it)) }
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
+            })
         }
     }
 
-    private fun handleRequestFilterProductCount(selectedSortFilter: Map<String, Any>) {
+    private fun handleRequestProductFilterProductCount(selectedSortFilter: Map<String, Any>) {
         viewModelScope.launchCatchError(block = {
             val result = repo.getSortFilterProductCount(SearchParamUiModel(HashMap(selectedSortFilter)))
 
-            _uiEvent.emit(ProductTagUiEvent.SetFilterProductCount(NetworkResult.Success(result)))
+            _uiEvent.emit(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Success(result)))
         }) {
-            _uiEvent.emit(ProductTagUiEvent.SetFilterProductCount(NetworkResult.Error(it)))
+            _uiEvent.emit(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Error(it)))
         }
     }
 
-    private fun handleApplySortFilter(selectedSortFilter: Map<String, String>) {
+    private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
         val newParam = _globalSearchProduct.value.param.copy().apply {
             resetPagination()
         }
@@ -557,19 +560,19 @@ class ProductTagViewModel @AssistedInject constructor(
                 userId = userSession.userId
             }
 
-            val pagedDataList = repo.searchAceShops(param = newParam)
+            val result = repo.searchAceShops(param = newParam)
 
             /** Update Param */
-            val nextCursor = pagedDataList.nextCursor.toInt()
+            val nextCursor = result.pagedData.nextCursor.toInt()
             newParam.start = nextCursor
 
             _globalSearchShop.setValue {
                 copy(
-                    shops = shops + pagedDataList.dataList,
+                    shops = shops + result.pagedData.dataList,
                     quickFilters = quickFilters,
                     nextCursor = nextCursor,
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     ),
                     param = newParam,
                 )
@@ -588,6 +591,74 @@ class ProductTagViewModel @AssistedInject constructor(
             _shopProduct.setValue { ShopProductUiModel.Empty.copy(shop = shop) }
             _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
         }
+    }
+
+    private fun handleSelectShopQuickFilter(quickFilter: QuickFilterUiModel) {
+        val currState = _globalSearchShop.value
+
+        val newParam = currState.param.copy().apply {
+            resetPagination()
+
+            if(isParamFound(quickFilter.key, quickFilter.value))
+                removeParam(quickFilter.key, quickFilter.value)
+            else addParam(quickFilter.key, quickFilter.value)
+        }
+
+        _globalSearchShop.setValue {
+            GlobalSearchShopUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchShop()
+    }
+
+    private fun handleOpenShopSortFilterBottomSheet() {
+        viewModelScope.launchCatchError(block = {
+            val param = _globalSearchShop.value.param.copy().apply {
+                source = SearchParamUiModel.SOURCE_SEARCH_SHOP
+                pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
+            }
+
+            if(_globalSearchShop.value.sortFilters.isEmpty()) {
+                val result = repo.getSortFilter(param)
+
+                _globalSearchShop.setValue { copy(sortFilters =  result) }
+            }
+
+            _uiEvent.emit(ProductTagUiEvent.OpenShopSortFilterBottomSheet(param, _globalSearchShop.value.sortFilters))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
+            })
+        }
+    }
+
+    private fun handleRequestShopFilterProductCount(selectedSortFilter: Map<String, Any>) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.searchAceShops(SearchParamUiModel(HashMap(selectedSortFilter)))
+
+            /** TODO: convert this to rb */
+            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Success(result.totalShop.toString())))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Error(it)))
+        }
+    }
+
+    private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
+        val newParam = _globalSearchShop.value.param.copy().apply {
+            resetPagination()
+        }
+
+        selectedSortFilter.forEach { selected ->
+            newParam.apply {
+                rewriteParam(selected.key, selected.value)
+            }
+        }
+
+        _globalSearchShop.setValue {
+            GlobalSearchShopUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchShop()
     }
 
     private fun handleLoadShopProduct() {

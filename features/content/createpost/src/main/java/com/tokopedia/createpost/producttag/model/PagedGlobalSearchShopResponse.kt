@@ -1,0 +1,12 @@
+package com.tokopedia.createpost.producttag.model
+
+import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+
+/**
+ * Created By : Jonathan Darwin on May 18, 2022
+ */
+data class PagedGlobalSearchShopResponse(
+    val pagedData: PagedDataUiModel<ShopUiModel>,
+    val totalShop: Int,
+)

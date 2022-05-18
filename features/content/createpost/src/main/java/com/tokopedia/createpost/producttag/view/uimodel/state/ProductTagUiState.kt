@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel.state
 
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -48,6 +49,7 @@ data class MyShopProductUiState(
 data class GlobalSearchProductUiState(
     val products: List<ProductUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
@@ -58,6 +60,7 @@ data class GlobalSearchProductUiState(
 data class GlobalSearchShopUiState(
     val shops: List<ShopUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,

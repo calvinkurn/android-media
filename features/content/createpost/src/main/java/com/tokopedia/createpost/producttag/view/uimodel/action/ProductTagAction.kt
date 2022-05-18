@@ -31,14 +31,18 @@ sealed interface ProductTagAction {
     object LoadGlobalSearchProduct: ProductTagAction
     object TickerClicked: ProductTagAction
     object CloseTicker: ProductTagAction
-    data class SelectQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
-    object OpenSortFilterBottomSheet: ProductTagAction
-    data class RequestFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
-    data class ApplySortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
+    data class SelectProductQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
+    object OpenProductSortFilterBottomSheet: ProductTagAction
+    data class RequestProductFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
+    data class ApplyProductSortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction
     data class ShopSelected(val shop: ShopUiModel): ProductTagAction
+    data class SelectShopQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
+    object OpenShopSortFilterBottomSheet: ProductTagAction
+    data class RequestShopFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
+    data class ApplyShopSortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
 
     /** Shop Product */
     object LoadShopProduct: ProductTagAction
