@@ -52,6 +52,12 @@ data class SearchParamUiModel(
             value[KEY_PAGE_SOURCE] = newValue
         }
 
+    var device: String
+        get() = value[KEY_DEVICE]?.toString() ?: ""
+        set(newValue) {
+            value[KEY_DEVICE] = newValue
+        }
+
     /** Add param 1 by 1, if exists then param will be appended */
     fun addParam(key: String, value: Any) {
         val newValue = if(this.value.containsKey(key))

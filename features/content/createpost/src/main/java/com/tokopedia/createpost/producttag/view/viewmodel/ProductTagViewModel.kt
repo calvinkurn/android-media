@@ -632,7 +632,10 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleRequestShopFilterProductCount(selectedSortFilter: Map<String, Any>) {
         viewModelScope.launchCatchError(block = {
-            val result = repo.searchAceShops(SearchParamUiModel(HashMap(selectedSortFilter)))
+            val param = SearchParamUiModel(HashMap(selectedSortFilter)).apply {
+                device = ""
+            }
+            val result = repo.searchAceShops(param)
 
             _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Success(result.totalShop.toAmountString())))
         }) {
