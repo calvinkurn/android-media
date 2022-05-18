@@ -45,7 +45,7 @@ private val nonFilterParameterKeyList = setOf(
 )
 private val postProcessingFilterKeys = setOf(
     SearchApiConst.IS_FULFILLMENT,
-    SearchApiConst.GIFTING,
+    SearchApiConst.GIFTING
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
