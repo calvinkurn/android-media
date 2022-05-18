@@ -34,6 +34,8 @@ class VideoAnalyticHelper(
             cumulationDuration = 0L
     )
 
+    private var watchDurationInSeconds: Long = 0L
+
     fun onPause() {
         bufferTrackingModel = bufferTrackingModel.copy(
                 isBuffering = false,
@@ -88,16 +90,16 @@ class VideoAnalyticHelper(
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )
+            watchDurationInSeconds = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.watchTime ?: 0L)
         } else {
             val watchTime = watchDurationModel.watchTime
             if (watchTime != null) watchDurationModel = watchDurationModel.copy(
                     watchTime = null,
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
+            watchDurationInSeconds = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.cumulationDuration)
         }
-
-        val watchingDurationInSecond = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.cumulationDuration)
-        log.logWatchingDuration(watchingDurationInSecond.toString())
+        log.logWatchingDuration(watchDurationInSeconds.toString())
     }
 
     /**
