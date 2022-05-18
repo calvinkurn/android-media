@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage_product_discount.util;
+package com.tokopedia.shopdiscount.manage_product_discount.util
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -27,7 +27,8 @@ object ShopDiscountManageProductVariantMapper {
                 maxOrder = it.listProductWarehouse.firstOrNull()?.maxOrder.orEmpty(),
                 isMultiLoc = it.variantStatus.isMultiLoc,
                 slashPriceStatusId = it.slashPriceInfo.slashPriceStatusId,
-                errorType = it.variantStatus.errorType
+                valueErrorType = it.variantStatus.errorType,
+                isAbusive = it.listProductWarehouse.any { it.abusiveRule }
             )
         }
     }

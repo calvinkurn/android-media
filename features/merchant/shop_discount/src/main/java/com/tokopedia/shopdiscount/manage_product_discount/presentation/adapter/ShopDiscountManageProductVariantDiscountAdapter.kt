@@ -79,21 +79,6 @@ class ShopDiscountManageProductVariantDiscountAdapter(
         submitList(newList)
     }
 
-    fun updateVariantDiscountPercentData(variantProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopDiscountManageProductVariantItemUiModel>().firstOrNull {
-            it.variantId == variantProductData.productId
-        }?.let {
-            val index = newList.indexOf(it)
-            newList.setElement(
-                index, it.copy(
-                    discountedPercentage = variantProductData.slashPriceInfo.discountPercentage
-                )
-            )
-        }
-        submitList(newList)
-    }
-
     fun getListVariantItemUiModel(): List<ShopDiscountManageProductVariantItemUiModel> {
         return visitables.filterIsInstance<ShopDiscountManageProductVariantItemUiModel>()
     }

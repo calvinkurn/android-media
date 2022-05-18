@@ -37,10 +37,8 @@
         android:id="@+id/icon_product"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/divider"
-        app:layout_constraintLeft_toLeftOf="@id/text_variant_original_price"
+        app:layout_constraintBottom_toTopOf="@id/text_error_abusive"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_variant_original_price"
         app:srcCompat="@drawable/ic_shop_discount_product_icon"
         app:unify_image_corner_radius="0" />
@@ -67,16 +65,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_error_abusive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_RN500"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_total_variant_stock"
+        app:typographyType="body_3"
+        android:text="@string/shop_discount_manage_discount_abusive_all"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_error_abusive"
+        android:layout_width="13dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/text_error_abusive"
+        app:layout_constraintLeft_toRightOf="@id/text_error_abusive"
+        app:layout_constraintTop_toTopOf="@id/text_error_abusive"
+        app:srcCompat="@drawable/ic_shop_discount_warning"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:visibility="gone"
+        android:layout_marginTop="12dp"
         app:layout_constraintBottom_toTopOf="@+id/layout_field_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_total_variant_stock"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@id/text_error_abusive"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/layout_field_container"
@@ -88,6 +112,6 @@
         android:layout_marginEnd="8dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/divider"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -53,7 +53,8 @@ class ShopDiscountSetupProductItemViewHolder(
                 this,
                 uiModel.mappedResultData.totalVariant,
                 uiModel.mappedResultData.totalDiscountedVariant,
-                uiModel.productStatus.isProductDiscounted
+                uiModel.productStatus.isProductDiscounted,
+                uiModel.productStatus.errorType
             )
             setDisplayedPrice(textDisplayedPrice, uiModel.mappedResultData, uiModel.productStatus)
             setLabelDiscount(labelDiscount, uiModel.mappedResultData, uiModel.productStatus)
@@ -171,7 +172,7 @@ class ShopDiscountSetupProductItemViewHolder(
         uiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ) {
         buttonManageDiscount.apply {
-            if (uiModel.productStatus.isProductDiscounted) {
+            if (uiModel.productStatus.isProductDiscounted && !isError(uiModel.productStatus.errorType)) {
                 isEnabled = true
                 buttonType = UnifyButton.Type.ALTERNATE
                 text = getString(R.string.shop_discount_manage_discount_edit_toolbar_title)
@@ -181,7 +182,7 @@ class ShopDiscountSetupProductItemViewHolder(
                         false
                     }
                     PARTIAL_ABUSIVE_ERROR -> {
-                        false
+                        true
                     }
                     VALUE_ERROR -> {
                         true
@@ -199,11 +200,16 @@ class ShopDiscountSetupProductItemViewHolder(
         }
     }
 
+    private fun isError(errorType: Int): Boolean {
+        return errorType != NO_ERROR
+    }
+
     private fun setLabelTotalProductVariant(
         binding: ShopDiscountSetupProductItemLayoutBinding,
         totalVariant: Int,
         totalDiscountedVariant: Int,
-        isProductDiscounted: Boolean
+        isProductDiscounted: Boolean,
+        errorType: Int
     ) {
         binding.labelTotalVariant.shouldShowWithAction(!totalVariant.isZero()) {
             binding.labelTotalVariant.apply {
@@ -213,7 +219,9 @@ class ShopDiscountSetupProductItemViewHolder(
                 )
             }
         }
-        binding.labelTotalDiscountedVariant.shouldShowWithAction(!totalDiscountedVariant.isZero() && isProductDiscounted) {
+        binding.labelTotalDiscountedVariant.shouldShowWithAction(!totalDiscountedVariant.isZero() &&
+                isProductDiscounted &&
+                !isError(errorType)) {
             binding.labelTotalDiscountedVariant.apply {
                 text = String.format(
                     getString(R.string.shop_discount_manage_discount_total_discounted_variant_format),
@@ -230,12 +238,12 @@ class ShopDiscountSetupProductItemViewHolder(
     ) {
         val minDisplayedPrice: Int
         val maxDisplayedPrice: Int
-        if (!productStatus.isProductDiscounted) {
-            minDisplayedPrice = uiModel.minOriginalPrice
-            maxDisplayedPrice = uiModel.maxOriginalPrice
-        } else {
+        if (productStatus.isProductDiscounted && !isError(productStatus.errorType)) {
             minDisplayedPrice = uiModel.minDisplayedPrice
             maxDisplayedPrice = uiModel.maxDisplayedPrice
+        } else {
+            minDisplayedPrice = uiModel.minOriginalPrice
+            maxDisplayedPrice = uiModel.maxOriginalPrice
         }
         val formattedDisplayedPrice = RangeFormatterUtil.getFormattedRangeString(
             minDisplayedPrice,
@@ -269,7 +277,7 @@ class ShopDiscountSetupProductItemViewHolder(
                 )
             }
         )
-        textOriginalPrice.shouldShowWithAction(productStatus.isProductDiscounted) {
+        textOriginalPrice.shouldShowWithAction(productStatus.isProductDiscounted && !isError(productStatus.errorType)) {
             textOriginalPrice.apply {
                 text = formattedOriginalPrice
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -297,7 +305,7 @@ class ShopDiscountSetupProductItemViewHolder(
                 )
             }
         )
-        labelDiscount.shouldShowWithAction(productStatus.isProductDiscounted) {
+        labelDiscount.shouldShowWithAction(productStatus.isProductDiscounted && !isError(productStatus.errorType)) {
             labelDiscount.text = formattedDiscountPercentage
         }
     }
