@@ -29,7 +29,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.BroadcastQuizState
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
@@ -216,6 +215,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _quizDetailState = MutableStateFlow<QuizDetailStateUiModel>(QuizDetailStateUiModel.Unknown)
 
+    private val _onboarding = MutableStateFlow(OnboardingUiModel.create(sharedPref))
+
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
@@ -244,8 +245,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactiveConfig,
         _interactiveSetup,
         _quizDetailState,
+        _onboarding,
     ) { channelState, pinnedMessage, productMap, schedule, isExiting,
-        quizForm, interactive, interactiveConfig, interactiveSetup, quizDetail ->
+        quizForm, interactive, interactiveConfig, interactiveSetup, quizDetail,
+        onboarding ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -257,6 +260,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
             quizDetail = quizDetail,
+            onboarding = onboarding,
         )
     }.stateIn(
         viewModelScope,
@@ -707,26 +711,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-//    private suspend fun onInteractiveFinished() {
-//        _observableInteractiveState.value =
-//            BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-//        delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-//        val err = getLeaderboardInfo(channelId)
-//        if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
-//            val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
-//            val coachMark =
-//                if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
-//                    leaderboard.config.loserMessage,
-//                    leaderboard.config.sellerMessage
-//                )
-//            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(
-//                state = BroadcastInteractiveInitState.HasPrevious(coachMark)
-//            )
-//        } else {
-//            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-//        }
-//    }
-
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
@@ -1171,6 +1155,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             sharedPref.setNotFirstSelectQuizOption()
             sharedPref.setNotFirstQuizPrice()
             sharedPref.setNotFirstInteractive()
+            _onboarding.update {
+                it.copy(firstInteractive = sharedPref.isFirstInteractive())
+            }
             initQuizFormData()
             _quizFormState.setValue { QuizFormStateUiModel.Nothing }
         }) {
@@ -1203,7 +1190,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleGiveawayOngoingEnded() {
-        sharedPref.setNotFirstInteractive()
         viewModelScope.launchCatchError(dispatcher.computation, block = {
             val interactive = _interactive.getAndUpdate {
                 if (it !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
@@ -1245,7 +1231,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(isSubmitting = true)
         }
         if (!isCreateSessionAllowed(durationInMs)) {
-            error("Not allowed to create session")
+            _uiEvent.tryEmit(
+                PlayBroadcastEvent.ShowError(
+                    IllegalStateException("Not allowed to create session")
+                )
+            )
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
@@ -1258,6 +1248,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
             _uiEvent.emit(PlayBroadcastEvent.CreateInteractive.Success(session.durationInMs))
+
+            sharedPref.setNotFirstInteractive()
+            _onboarding.update {
+                it.copy(firstInteractive = sharedPref.isFirstInteractive())
+            }
         }) { err ->
             _interactiveSetup.update {
                 it.copy(isSubmitting = false)

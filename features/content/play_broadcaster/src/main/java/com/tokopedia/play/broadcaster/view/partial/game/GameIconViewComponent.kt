@@ -57,6 +57,11 @@ class GameIconViewComponent(
         )
     }
 
+    override fun hide() {
+        super.hide()
+        cancelCoachMark()
+    }
+
     fun cancelCoachMark() {
         job.cancelChildren()
         coachMark.dismissCoachMark()

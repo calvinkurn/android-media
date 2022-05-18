@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -39,6 +41,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -59,7 +62,6 @@ import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialo
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
-import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -221,6 +223,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 })
             }
         }
+
+        /**
+         * Hide coachmark everytime there's a dialog (either floating dialog or bottomsheet)
+         */
+        if (childFragment is DialogFragment) gameIconView.cancelCoachMark()
     }
 
     private fun getViewModelProvider(): ViewModelProvider {
@@ -683,6 +690,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     state.interactive,
                     prevState?.interactiveConfig,
                     state.interactiveConfig,
+                    prevState?.onboarding,
+                    state.onboarding,
                 )
 
                 renderInteractionView(state.interactiveSetup, state.quizForm, state.pinnedMessage)
@@ -805,18 +814,25 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         state: InteractiveUiModel,
         prevConfig: InteractiveConfigUiModel?,
         config: InteractiveConfigUiModel,
+        prevOnboarding: OnboardingUiModel?,
+        onboarding: OnboardingUiModel,
     ) {
-        if (prevState == state && prevConfig == config) return
+        if (prevState == state &&
+            prevConfig == config &&
+            prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
 
         if (state !is InteractiveUiModel.Unknown || config.isNoGameActive()) {
             gameIconView.hide()
+        }
+        else {
+            gameIconView.show()
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-//                if(state.showOnBoarding && !hasPinnedFormView() && !isQuizFormVisible()) gameIconView.showCoachmark()
-                if(!hasPinnedFormView() && !isQuizFormVisible()) gameIconView.showCoachmark()
             }
+            if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
+                gameIconView.showCoachmark()
+            } else gameIconView.cancelCoachMark()
         }
-        else gameIconView.show()
     }
 
     private fun renderInteractionView(
