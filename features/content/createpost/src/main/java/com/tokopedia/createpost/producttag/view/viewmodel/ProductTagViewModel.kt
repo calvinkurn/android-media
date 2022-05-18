@@ -283,10 +283,10 @@ class ProductTagViewModel @AssistedInject constructor(
             when(source) {
                 ProductTagSource.GlobalSearch -> {
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = resetParam(query))
+                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query))
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = resetParam(query))
+                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query))
                     }
                 }
                 ProductTagSource.Shop -> {
@@ -505,19 +505,20 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenProductSortFilterBottomSheet() {
         viewModelScope.launchCatchError(block = {
-            val param = _globalSearchProduct.value.param.copy().apply {
+            val currState = _globalSearchProduct.value
+
+            val query = currState.param.query
+            val param = initParam(query).apply {
                 source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
             }
 
-            if(_globalSearchProduct.value.sortFilters.isEmpty()) {
+            val sortFilters = if(currState.sortFilters.isEmpty()) {
                 val result = repo.getSortFilter(param)
+                _globalSearchProduct.setValue { copy(sortFilters = result) }
+                result
+            } else currState.sortFilters
 
-                _globalSearchProduct.setValue {
-                    copy(sortFilters = result)
-                }
-            }
-
-            _uiEvent.emit(ProductTagUiEvent.OpenProductSortFilterBottomSheet(param, _globalSearchProduct.value.sortFilters))
+            _uiEvent.emit(ProductTagUiEvent.OpenProductSortFilterBottomSheet(currState.param, sortFilters))
         }) {
             _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
                 submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
@@ -537,7 +538,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
         val query = _globalSearchProduct.value.param.query
-        val newParam = resetParam(query)
+        val newParam = initParam(query)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -552,7 +553,7 @@ class ProductTagViewModel @AssistedInject constructor(
         val currQuery = _globalSearchProduct.value.param.query
 
         _globalSearchProduct.setValue {
-            GlobalSearchProductUiModel.Empty.copy(param = resetParam(currQuery))
+            GlobalSearchProductUiModel.Empty.copy(param = initParam(currQuery))
         }
 
         handleLoadGlobalSearchProduct()
@@ -631,18 +632,21 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenShopSortFilterBottomSheet() {
         viewModelScope.launchCatchError(block = {
-            val param = _globalSearchShop.value.param.copy().apply {
+            val currState = _globalSearchShop.value
+
+            val query = currState.param.query
+            val param = initParam(query).apply {
                 source = SearchParamUiModel.SOURCE_SEARCH_SHOP
                 pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
             }
 
-            if(_globalSearchShop.value.sortFilters.isEmpty()) {
+            val sortFilters = if(currState.sortFilters.isEmpty()) {
                 val result = repo.getSortFilter(param)
+                _globalSearchShop.setValue { copy(sortFilters = result) }
+                result
+            } else currState.sortFilters
 
-                _globalSearchShop.setValue { copy(sortFilters =  result) }
-            }
-
-            _uiEvent.emit(ProductTagUiEvent.OpenShopSortFilterBottomSheet(param, _globalSearchShop.value.sortFilters))
+            _uiEvent.emit(ProductTagUiEvent.OpenShopSortFilterBottomSheet(currState.param, sortFilters))
         }) {
             _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
                 submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
@@ -666,7 +670,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
         val query = _globalSearchShop.value.param.query
-        val newParam = resetParam(query)
+        val newParam = initParam(query)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -681,7 +685,7 @@ class ProductTagViewModel @AssistedInject constructor(
         val currQuery = _globalSearchShop.value.param.query
 
         _globalSearchShop.setValue {
-            GlobalSearchShopUiModel.Empty.copy(param = resetParam(currQuery))
+            GlobalSearchShopUiModel.Empty.copy(param = initParam(currQuery))
         }
 
         handleLoadGlobalSearchShop()
@@ -758,7 +762,7 @@ class ProductTagViewModel @AssistedInject constructor(
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
 
-    private fun resetParam(query: String): SearchParamUiModel {
+    private fun initParam(query: String): SearchParamUiModel {
         return SearchParamUiModel.Empty.apply { this.query = query }
     }
 
