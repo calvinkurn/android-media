@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,14 +35,13 @@ import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -61,7 +62,6 @@ import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialo
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
-import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -134,60 +134,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
-    private val interactiveView by viewComponent {
-        BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
-            override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
-                if (allowSetupInteractive()) {
-                    /** TODO: gonna delete this */
-//                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
-//                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
-//                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
-                    interactiveSetupView.show()
-                    analytic.onClickInteractiveTool(parentViewModel.channelId)
-                } else {
-                    showToaster(
-                        message = getString(R.string.play_interactive_broadcast_not_allowed),
-                        duration = Toaster.LENGTH_SHORT
-                    )
-                }
-            }
-
-            override fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent) {
-                openInteractiveLeaderboardSheet()
-                analytic.onClickWinnerIcon(
-                    parentViewModel.channelId,
-                    parentViewModel.interactiveId,
-                    parentViewModel.activeInteractiveTitle
-                )
-            }
-        })
-    }
-
-    private val interactiveSetupView by viewComponent {
-        BroadcastInteractiveSetupViewComponent(it, object : BroadcastInteractiveSetupViewComponent.Listener {
-            override fun onTitleInputChanged(
-                view: BroadcastInteractiveSetupViewComponent,
-                title: String
-            ) {
-                parentViewModel.setInteractiveTitle(title)
-            }
-
-            override fun onPickerValueChanged(
-                view: BroadcastInteractiveSetupViewComponent,
-                durationInMs: Long
-            ) {
-                parentViewModel.setSelectedInteractiveDuration(durationInMs)
-            }
-
-            override fun onApplyButtonClicked(
-                view: BroadcastInteractiveSetupViewComponent,
-                title: String,
-                durationInMs: Long
-            ) {
-                parentViewModel.createInteractiveSession(title, durationInMs)
-            }
-        })
-    }
     private val productTagView by viewComponent {
         ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
             override fun impressProductTag(view: ProductTagViewComponent) {
@@ -207,6 +153,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /** Game */
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClicked() {
+                analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 openSelectInteractiveSheet()
             }
         })
@@ -276,6 +223,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 })
             }
         }
+
+        /**
+         * Hide coachmark everytime there's a dialog (either floating dialog or bottomsheet)
+         */
+        if (childFragment is DialogFragment) gameIconView.cancelCoachMark()
     }
 
     private fun getViewModelProvider(): ViewModelProvider {
@@ -304,7 +256,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
 
-            interactiveView.cancelCoachMark()
+            gameIconView.cancelCoachMark()
 
             if (message.isBlank()) {
                 analytic.clickAddPinChatMessage(
@@ -396,8 +348,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeEvent()
-        observeInteractiveConfig()
-        observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
     }
@@ -723,48 +673,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeInteractiveConfig() {
-        parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is BroadcastInteractiveState.Forbidden -> {
-                    gameIconView.hide()
-                }
-                is BroadcastInteractiveState.Allowed -> {
-                    handleHasInteractiveState(state)
-                }
-            }
-        }
-    }
-
-    private fun observeCreateInteractiveSession() {
-        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                /** TODO: gonna delete this */
-//                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
-                is NetworkResult.Success -> {
-                    analytic.onStartInteractive(
-                        channelId = parentViewModel.channelId,
-                        interactiveId = parentViewModel.interactiveId,
-                        interactiveTitle = parentViewModel.activeInteractiveTitle,
-                        durationInMs = state.data.durationInMs
-                    )
-                    /** TODO: gonna delete this */
-//                    interactiveSetupView.setLoading(false)
-//                    interactiveSetupView.reset()
-                }
-                is NetworkResult.Fail -> {
-                    /** TODO: gonna delete this */
-//                    interactiveSetupView.setLoading(false)
-                    showErrorToaster(
-                        err = state.error,
-                        customErrMessage = getString(R.string.play_interactive_broadcast_create_fail),
-                        duration = Toaster.LENGTH_SHORT
-                    )
-                }
-            }
-        }
-    }
-
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
@@ -777,7 +685,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     state.interactiveConfig
                 )
                 renderInteractiveView(prevState?.interactive, state.interactive)
-                renderGameIconView(prevState?.interactive, state.interactive)
+                renderGameIconView(
+                    prevState?.interactive,
+                    state.interactive,
+                    prevState?.interactiveConfig,
+                    state.interactiveConfig,
+                    prevState?.onboarding,
+                    state.onboarding,
+                )
 
                 renderInteractionView(state.interactiveSetup, state.quizForm, state.pinnedMessage)
 
@@ -805,6 +720,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
+                    is PlayBroadcastEvent.CreateInteractive.Success -> {
+                        analytic.onStartInteractive(
+                            channelId = parentViewModel.channelId,
+                            interactiveId = parentViewModel.interactiveId,
+                            interactiveTitle = parentViewModel.activeInteractiveTitle,
+                            durationInMs = event.durationInMs,
+                        )
+                    }
+                    else -> {}
                 }
             }
         }
@@ -840,7 +764,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             PinnedMessageEditStatus.Uploading -> {
                 val formView = getPinnedFormView()
                 if (formView.visibility != View.VISIBLE) formView.setPinnedMessage(state.message)
-                else interactiveView.cancelCoachMark()
+                else gameIconView.cancelCoachMark()
                 formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
                 formView.visibility = View.VISIBLE
             }
@@ -888,11 +812,27 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun renderGameIconView(
         prevState: InteractiveUiModel?,
         state: InteractiveUiModel,
+        prevConfig: InteractiveConfigUiModel?,
+        config: InteractiveConfigUiModel,
+        prevOnboarding: OnboardingUiModel?,
+        onboarding: OnboardingUiModel,
     ) {
-        if (prevState == state) return
+        if (prevState == state &&
+            prevConfig == config &&
+            prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
 
-        if (state !is InteractiveUiModel.Unknown) gameIconView.hide()
-        else gameIconView.show()
+        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive()) {
+            gameIconView.hide()
+        }
+        else {
+            gameIconView.show()
+            if (prevState != state) {
+                analytic.onImpressInteractiveTool(parentViewModel.channelId)
+            }
+            if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
+                gameIconView.showCoachmark()
+            } else gameIconView.cancelCoachMark()
+        }
     }
 
     private fun renderInteractionView(
@@ -1063,44 +1003,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun allowSetupInteractive(): Boolean {
         return parentViewModel.interactiveDurations.isNotEmpty()
-    }
-
-    private fun handleHasInteractiveState(state: BroadcastInteractiveState.Allowed) {
-
-        fun setLive(timeInMs: Long) {
-            interactiveView.setLive(timeInMs) {
-                parentViewModel.onInteractiveLiveEnded()
-            }
-        }
-
-        gameIconView.showWithCondition(state is BroadcastInteractiveState.Allowed.Init)
-
-        when (state) {
-            is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
-            is BroadcastInteractiveState.Allowed.Schedule -> {
-                interactiveView.setSchedule(state.title, state.timeToStartInMs) {
-                    setLive(state.durationInMs)
-                }
-            }
-            is BroadcastInteractiveState.Allowed.Live -> {
-                setLive(state.remainingTimeInMs)
-            }
-        }
-    }
-
-    private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
-        when (state) {
-            is BroadcastInteractiveInitState.NoPrevious -> {
-                analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                if(state.showOnBoarding && !hasPinnedFormView() && !isQuizFormVisible()) gameIconView.showCoachmark()
-            }
-            BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
-            is BroadcastInteractiveInitState.HasPrevious -> {
-                /** TODO: show winner badge */
-                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.activeInteractiveTitle)
-                interactiveView.setFinish(state.coachMark)
-            }
-        }
     }
 
     /** Game Region */
