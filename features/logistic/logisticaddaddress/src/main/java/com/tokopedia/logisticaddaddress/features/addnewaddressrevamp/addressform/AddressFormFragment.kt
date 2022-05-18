@@ -639,149 +639,68 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val field = mutableListOf<String>()
         binding?.run {
             if (isPositiveFlow) {
-                if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty() || formAccount.etNamaPenerima.textFieldInput.text.toString() == " ") {
+                if (!validatePhoneNumber()) {
+                    field.add(getString(R.string.field_nomor_hp))
                     validated = false
+                }
+                if (!validateReceiverName()) {
                     field.add(getString(R.string.field_nama_penerima))
-                    setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
-                    validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-
-                if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
-                    validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-
-                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
-                    validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
-                    validated = false
-                    field.add(getString(R.string.field_nama_penerima))
-                    view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-
-                if (formAddress.etCourierNote.textFieldWrapper.error != null) {
                     validated = false
                 }
-
-                if (formAddress.etAlamatNew.textFieldWrapper.error != null) {
+                if (!validateCourierNote()) {
+                    field.add(getString(R.string.field_catatan_kurir))
                     validated = false
                 }
-
-                if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
-                    validated = false
+                if (!validateAlamat()) {
                     field.add(getString(R.string.field_alamat))
-                    setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field.add(getString(R.string.field_alamat))
-                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
-
-                if (formAddress.etLabel.textFieldInput.text.toString().isEmpty() || formAddress.etLabel.textFieldInput.text.toString() == " ") {
-                    validated = false
+                if (!validateLabel()) {
                     field.add(getString(R.string.field_label_alamat))
-                    setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field.add(getString(R.string.field_label_alamat))
-                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             } else {
-                if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
-                    validated = false
-                    field.add(getString(R.string.field_label_alamat))
-                    setWrapperError(formAddressNegative.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAddressNegative.etCourierNote.textFieldWrapper.error != null) {
+                if (!validateCourierNote()) {
+                    field.add(getString(R.string.field_catatan_kurir))
                     validated = false
                 }
-
-                if (formAddressNegative.etAlamat.textFieldWrapper.error != null) {
-                    validated = false
-                }
-
-                if (formAddressNegative.etAlamat.textFieldInput.text.toString().isEmpty() || formAddressNegative.etAlamat.textFieldInput.text.toString() == " ") {
-                    validated = false
+                if (!validateAlamat()) {
                     field.add(getString(R.string.field_alamat))
-                    setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field.add(getString(R.string.field_alamat))
-                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
-
-                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
-                    validated = false
+                if (!validateLabel()) {
                     field.add(getString(R.string.field_label_alamat))
-                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-                if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty() || formAccount.etNamaPenerima.textFieldInput.text.toString() == " ") {
                     validated = false
+                }
+                if (!validatePhoneNumber()) {
+                    field.add(getString(R.string.field_nomor_hp))
+                    validated = false
+                }
+                if (!validateReceiverName()) {
                     field.add(getString(R.string.field_nama_penerima))
-                    setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
                     validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-
-                if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
-                    validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-
-                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
-                    validated = false
-                    field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
-                if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
-                    validated = false
-                    field.add(getString(R.string.field_nama_penerima))
-                    view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
         }
         if (!isEdit) {
             if (!validated && isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.toSet().joinToString ("," ))
+                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.joinToString ("," ))
             } else if (!validated && !isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field.toSet().joinToString ("," ))
+                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field.joinToString ("," ))
             }
         } else {
             if (!validated) {
                 EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field.toSet().joinToString ("," ))
+                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field.joinToString ("," ))
             }
         }
         return validated
     }
 
-    fun validateReceiverName() : Boolean {
+    private fun validateReceiverName() : Boolean {
         binding?.formAccount?.etNamaPenerima?.let { field ->
             val receiverName = field.textFieldInput.text.toString()
-            if (receiverName.length < 2) {
+            if (receiverName.length < MIN_CHAR_RECEIVER_NAME) {
                 if (receiverName.isEmpty() || receiverName == " ") {
                     setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
                 }
@@ -795,7 +714,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         return false
     }
 
-    fun validatePhoneNumber() : Boolean {
+    private fun validatePhoneNumber() : Boolean {
         binding?.formAccount?.etNomorHp?.let { field ->
             val phoneNumber = field.textFieldInput.text.toString()
             if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
@@ -813,6 +732,72 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
         return false
     }
+
+    private fun validateCourierNote() : Boolean {
+        binding?.run {
+            if (isPositiveFlow) {
+                return formAddress.etCourierNote.textFieldWrapper.error == null
+            } else {
+                return formAddressNegative.etCourierNote.textFieldWrapper.error == null
+            }
+        }
+        return false
+    }
+
+    private fun validateAlamat() : Boolean {
+        binding?.run {
+            if (isPositiveFlow) {
+                val alamat = formAddress.etAlamatNew.textFieldInput.text.toString()
+                if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
+                    if (alamat.isEmpty() || alamat == " ") {
+                        setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
+                    }
+                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    return false
+                } else return formAddress.etAlamatNew.textFieldWrapper.error == null
+            } else {
+                val alamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
+                if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
+                    if (alamat.isEmpty() || alamat == " ") {
+                        setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
+                    }
+                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    return false
+                } else return formAddressNegative.etAlamat.textFieldWrapper.error == null
+            }
+        }
+        return false
+    }
+
+    private fun validateLabel() : Boolean {
+        binding?.run {
+            if (isPositiveFlow) {
+                val label = formAddress.etLabel.textFieldInput.text.toString()
+                if (label.length < MIN_CHAR_ADDRESS_LABEL) {
+                    if (label.isEmpty() || label == " ") {
+                        setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+                    }
+                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    return false
+                } else {
+                    return true
+                }
+            } else {
+                val label = formAddressNegative.etLabel.textFieldInput.text.toString()
+                if (label.length < MIN_CHAR_ADDRESS_LABEL) {
+                    if (label.isEmpty() || label == " ") {
+                        setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+                    }
+                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
 
 
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
@@ -1323,6 +1308,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
         private const val MIN_CHAR_PHONE_NUMBER = 9
+        private const val MIN_CHAR_ADDRESS_LABEL = 3
+        private const val MIN_CHAR_RECEIVER_NAME = 2
         private const val MAX_CHAR_ALAMAT = 200
         private const val MAX_CHAR_NOTES = 45
 
@@ -1333,7 +1320,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
 
-        const val MINIMUM_CHAR = 3
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
