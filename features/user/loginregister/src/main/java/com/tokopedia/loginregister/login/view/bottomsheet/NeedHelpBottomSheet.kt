@@ -20,8 +20,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
-import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -136,6 +136,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = LoginEmailPhoneFragment.TOKOPEDIA_CARE_PATH
-        const val TOKOPEDIA_CARE_STRING_FORMAT = LoginEmailPhoneFragment.TOKOPEDIA_CARE_STRING_FORMAT
+        private const val TOKOPEDIA_CARE_STRING_FORMAT = LoginEmailPhoneFragment.TOKOPEDIA_CARE_STRING_FORMAT
     }
 }

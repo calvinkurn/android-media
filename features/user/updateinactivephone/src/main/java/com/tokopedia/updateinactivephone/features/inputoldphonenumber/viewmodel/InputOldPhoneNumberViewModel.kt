@@ -82,7 +82,10 @@ class InputOldPhoneNumberViewModel @Inject constructor(
                 response.data.errors.isNotEmpty() ->
                     _statusPhoneNumber.value = Fail(MessageErrorException(response.data.errors[0]))
                 else ->
-                    _formState.value = PhoneFormState(numberError = ipn_number_not_registered)
+                    _formState.value = phoneFormState.apply {
+                        numberError = ipn_number_not_registered
+                        isDataValid = false
+                    }
             }
 
             _isLoading.value = false
