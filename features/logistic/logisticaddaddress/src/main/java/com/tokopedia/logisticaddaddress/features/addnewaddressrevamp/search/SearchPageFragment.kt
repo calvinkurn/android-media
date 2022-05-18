@@ -73,14 +73,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
-//    private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var hasRequestedLocation: Boolean = false
     private var isPositiveFlow: Boolean = true
 
     private var isFromPinpoint: Boolean = false
 
     private var isPermissionAccessed: Boolean = false
-//    private var isUndefinedWithoutPermission: Boolean = false
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
@@ -92,7 +90,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var isEdit: Boolean = false
     private var isAccessAppPermissionFromSettings: Boolean = false
-//    private var clickDontAllowForTheFirstTime: Boolean = false
+
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -127,7 +125,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 viewModel.setAddress(it)
             }
         }
-//        permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -154,7 +151,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
             } else if (requestCode == GPS_REQUEST) {
-//                clickDontAllowForTheFirstTime = false
                 bottomSheetLocUndefined?.dismiss()
                 if (allPermissionsGranted()) {
                     binding?.loaderCurrentLocation?.visibility = View.VISIBLE
@@ -162,9 +158,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
             }
         } else {
-//            if (requestCode == GPS_REQUEST) {
-//                bottomSheetLocUndefined?.dismiss()
-//            }
             showInitialLoadMessage()
         }
     }
@@ -222,7 +215,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     showBottomSheetLocUndefined(false)
                 }
             }
-//            getLastLocationClient()
         }
     }
 
@@ -468,51 +460,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun requestPermissionLocation() {
         requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
-//        permissionCheckerHelper?.checkPermissions(this, requiredPermissions,
-//            object : PermissionCheckerHelper.PermissionCheckListener {
-//                override fun onPermissionDenied(permissionText: String) {
-////                    ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
-////                    hasRequestedLocation = false
-////                    showDialogAskGps()
-//                    permissionState = PERMISSION_DENIED
-//                    if (!isEdit) {
-//                        AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
-//                    }
-//                    // todo on permission denied:
-//                    // // set flag on never ask again to true
-//                    //                    // show bottomsheet to location settings
-//                    ////                    showBottomSheetLocUndefined(false)
-//                    //                    // do nothing
-//                }
-//
-//                override fun onNeverAskAgain(permissionText: String) {
-//                    // no op
-//                    // todo on never ask again:
-//                    // set flag on never ask again to true
-//                    // show bottomsheet to permission
-////                    showBottomSheetLocUndefined(true)
-//                    // do nothing
-//                    permissionState = PERMISSION_DONT_ASK_AGAIN
-//                    if (!isEdit) {
-//                        AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
-//                    }
-//                }
-//
-//                @SuppressLint("MissingPermission")
-//                override fun onPermissionGranted() {
-//                    permissionState = PERMISSION_GRANTED
-////                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-//                    if (AddNewAddressUtils.isGpsEnabled(context)) {
-//                        getLocation()
-//                    } else {
-//                        showBottomSheetLocUndefined(false)
-//                    }
-//                    if (!isEdit) {
-//                        AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
-//                    }
-//                }
-//
-//            }, getString(R.string.rationale_need_location))
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -526,27 +473,23 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-//        if (AddNewAddressUtils.isGpsEnabled(context) && allPermissionsGranted()) {
-            binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                isPermissionAccessed = false
-                if (data != null) {
-                    binding?.loaderCurrentLocation?.visibility = View.GONE
-                    currentLat = data.latitude
-                    currentLong = data.longitude
-                    goToPinpointPage(null, data.latitude, data.longitude,
-                        isFromAddressForm = false,
-                        isPositiveFlow = true
-                    )
-                } else {
-                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                        createLocationCallback(), null)
-                }
-
+        binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+            isPermissionAccessed = false
+            if (data != null) {
+                binding?.loaderCurrentLocation?.visibility = View.GONE
+                currentLat = data.latitude
+                currentLong = data.longitude
+                goToPinpointPage(null, data.latitude, data.longitude,
+                    isFromAddressForm = false,
+                    isPositiveFlow = true
+                )
+            } else {
+                fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                    createLocationCallback(), null)
             }
-//        } else {
-//            showBottomSheetLocUndefined(false)
-//        }
+
+        }
     }
 
     private fun createLocationCallback(): LocationCallback {

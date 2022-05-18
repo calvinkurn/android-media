@@ -34,6 +34,7 @@ class AddressFormViewModelTest {
     private val defaultAddressObserver: Observer<Result<DefaultAddressData>> = mockk(relaxed = true)
     private val editAddressObserver: Observer<Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>> = mockk(relaxed = true)
     private val detailAddressObserver: Observer<Result<KeroGetAddressResponse.Data>> = mockk(relaxed = true)
+    private val pinpointValidationObserver: Observer<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>> = mockk(relaxed = true)
 
     private lateinit var addressFormViewModel: AddressFormViewModel
 
@@ -48,6 +49,7 @@ class AddressFormViewModelTest {
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
         addressFormViewModel.editAddress.observeForever(editAddressObserver)
         addressFormViewModel.addressDetail.observeForever(detailAddressObserver)
+        addressFormViewModel.pinpointValidation.observeForever(pinpointValidationObserver)
     }
 
     @Test
@@ -119,6 +121,20 @@ class AddressFormViewModelTest {
         coEvery { repo.editAddress(any()) } throws defaultThrowable
         addressFormViewModel.saveEditAddress(saveAddressDataModel)
         verify { editAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Pinpoint Validation Data Success`() {
+        coEvery { repo.pinpointValidation(any(), any(), any(), any()) } returns PinpointValidationResponse()
+        addressFormViewModel.validatePinpoint(saveAddressDataModel)
+        verify { pinpointValidationObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `Pinpoint Validation Data Fail`() {
+        coEvery { repo.pinpointValidation(any(), any(), any(), any()) } throws defaultThrowable
+        addressFormViewModel.validatePinpoint(saveAddressDataModel)
+        verify { pinpointValidationObserver.onChanged(match { it is Fail }) }
     }
 
 }

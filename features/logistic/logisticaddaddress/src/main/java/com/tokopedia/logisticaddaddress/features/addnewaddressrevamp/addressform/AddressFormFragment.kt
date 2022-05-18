@@ -24,6 +24,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
@@ -56,7 +57,6 @@ import javax.inject.Inject
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
         DiscomBottomSheetRevamp.DiscomRevampListener {
 
-
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
     private var formattedAddress: String = ""
@@ -75,7 +75,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var currentPostalCode: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
-    private var pinpointKotaKecamatan: String = ""
 
     private var isEdit: Boolean = false
     var isBackDialogClicked: Boolean = false
@@ -143,7 +142,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-            onContactPickerResult(requestCode, resultCode, data)
+            onContactPickerResult(data)
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
             onPinpointResult(data)
         }
@@ -168,15 +167,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         if (addressDataFromPinpoint != null) {
             if (isEdit) {
                 if (addressDataFromPinpoint.latitude != saveDataModel?.latitude || addressDataFromPinpoint.longitude != saveDataModel?.longitude) {
-                    if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan && !isPositiveFlow) {
+                    if (addressDataFromPinpoint.districtId != saveDataModel?.districtId && !isPositiveFlow) {
                         showToasterInfo(getString(R.string.change_pinpoint_outside_district))
                     } else {
                         showToasterInfo(getString(R.string.change_pinpoint_edit_address))
                     }
                     focusOnDetailAddress()
-                }
-                if (kotaKecamatanFromEditPinpoint != null) {
-                    pinpointKotaKecamatan = kotaKecamatanFromEditPinpoint
                 }
             }
             saveDataModel = addressDataFromPinpoint
@@ -202,7 +198,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
-    private fun onContactPickerResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    private fun onContactPickerResult(data: Intent?) {
         val contactURI = data?.data
         var contact: ContactData? = null
         if (contactURI != null) {
@@ -344,6 +340,28 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
         })
+
+        viewModel.pinpointValidation.observe(viewLifecycleOwner, Observer {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    if (it.data.result) {
+                        saveDataModel?.let { addressData -> viewModel.saveEditAddress(addressData) }
+                    } else {
+                        view?.let { v ->
+                            Toaster.build(v, getString(R.string.error_district_pinpoint_mismatch), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    }
+                }
+                is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -444,10 +462,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             etNamaPenerima.textFieldInput.setText(data.receiverName)
             infoNameLayout.visibility = View.GONE
             setupFormAccount()
-            etNomorHp.textFieldInput.setText(data.phone)
-            etNomorHp.getFirstIcon().setOnClickListener {
-                EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
-                onNavigateToContact()
+            etNomorHp.let { nomorHpField ->
+                nomorHpField.textFieldInput.setText(data.phone)
+                nomorHpField.getFirstIcon().setOnClickListener {
+                    EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
+                    onNavigateToContact()
+                }
             }
             btnInfo.setOnClickListener {
                 showBottomSheetInfoPenerima()
@@ -487,28 +507,31 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                             showDistrictRecommendationBottomSheet(false)
                         }
                     }
-                    etLabel.textFieldInput.setText(data.addrName)
+                    etLabel.run {
+                        textFieldInput.setText(data.addrName)
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
+                    }
                     rvLabelAlamatChips.visibility = View.GONE
                     etAlamat.run {
                         textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > 200) {
+                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Alamat melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_alamat_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > 45) {
-                            this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Catatan melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
+                            textFieldWrapper.let { wrapper ->
+                                wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(textFieldWrapper))
                         }
                     }
-                    etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(etLabel.textFieldWrapper, null))
-                    etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(etAlamat.textFieldWrapper, null))
                     currentAlamat = etAlamat.textFieldInput.text.toString()
                 }
             }
@@ -531,26 +554,29 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.run {
                     etAlamatNew.run {
                         textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > 200) {
-                            this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Alamat melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
+                            textFieldWrapper.let { wrapper ->
+                                wrapper.error = context.getString(R.string.error_alamat_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > 45) {
+                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Catatan melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(textFieldWrapper))
                         }
                     }
-                    etLabel.textFieldInput.setText(data.addrName)
+                    etLabel.run {
+                        textFieldInput.setText(data.addrName)
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
+                    }
                     rvLabelAlamatChips.visibility = View.GONE
-                    etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(etLabel.textFieldWrapper, null))
-                    etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(etAlamatNew.textFieldWrapper, null))
                 }
             }
         }
@@ -643,6 +669,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
+                if (formAddress.etCourierNote.textFieldWrapper.error != null) {
+                    validated = false
+                }
+
                 if (formAddress.etAlamatNew.textFieldWrapper.error != null) {
                     validated = false
                 }
@@ -665,26 +695,23 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-//                if (isPhoneNumberValid(formAddress.etLabel.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
-//                    validated = false
-//                    field.add(getString(R.string.field_label_alamat))
-//                    view?.let { Toaster.build(it, getString(R.string.invalid_character_label_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-//                }
-
                 if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field.add(getString(R.string.field_label_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             } else {
-
                 if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
                     field.add(getString(R.string.field_label_alamat))
                     setWrapperError(formAddressNegative.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etAlamatNew.textFieldWrapper.error != null) {
+                if (formAddressNegative.etCourierNote.textFieldWrapper.error != null) {
+                    validated = false
+                }
+
+                if (formAddressNegative.etAlamat.textFieldWrapper.error != null) {
                     validated = false
                 }
 
@@ -729,30 +756,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-//                if (containsInvalidCharacter(formAccount.etNamaPenerima.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
-//                    validated = false
-//                    field.add(getString(R.string.field_nama_penerima))
-//                    view?.let { Toaster.build(it, getString(R.string.invalid_character_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-//                }
-
                 if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
                     validated = false
                     field.add(getString(R.string.field_nama_penerima))
                     view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-            }
-        }
-
-        if (isEdit && !isPositiveFlow) {
-            if (pinpointKotaKecamatan.isNotEmpty() && currentKotaKecamatan != pinpointKotaKecamatan) {
-                validated = false
-                view?.let {
-                    Toaster.build(
-                        it,
-                        getString(R.string.error_district_pinpoint_mismatch),
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    ).show()
                 }
             }
         }
@@ -826,6 +833,24 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (text.isNotEmpty()) {
                     setWrapperError(wrapper, null)
                 }
+            }
+        }
+    }
+
+    private fun setNotesWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                wrapper.error = null
+                wrapper.setErrorEnabled(false)
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                wrapper.error = null
+                wrapper.setErrorEnabled(false)
             }
         }
     }
@@ -1206,7 +1231,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun doSaveEditAddress() {
         setSaveAddressDataModel()
-        saveDataModel?.let { viewModel.saveEditAddress(it) }
+        saveDataModel?.let {
+            if (currentLat != 0.0 && currentLong != 0.0) {
+                binding?.loaderAddressForm?.visibility = View.VISIBLE
+                viewModel.validatePinpoint(it)
+            } else {
+                viewModel.saveEditAddress(it)
+            }
+        }
     }
 
     private fun setSaveAddressDataModel() {
@@ -1252,8 +1284,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_EDIT_ADDRESS, saveDataModel?.id?.toString())
-                // todo after fetch release please use constant
-                putExtra("EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED", isEditChosenAddress)
+                putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, isEditChosenAddress)
             })
             finish()
         }
@@ -1276,7 +1307,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         activity?.onBackPressed()
                         backDialog?.dismiss()
                     }
-                    setSecondaryCTAText("Batal")
+                    setSecondaryCTAText(getString(R.string.editaddress_back_dialog_secondary_cta))
                     setSecondaryCTAClickListener {
                         isBackDialogClicked = false
                         backDialog?.dismiss()
@@ -1292,6 +1323,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
         private const val MIN_CHAR_PHONE_NUMBER = 9
+        private const val MAX_CHAR_ALAMAT = 200
+        private const val MAX_CHAR_NOTES = 45
 
         const val REQUEST_PINPONT_PAGE = 1998
         const val PARAM_ANA_POSITIVE = "1"
@@ -1301,8 +1334,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val NOT_SUCCESS = "not success"
 
         const val MINIMUM_CHAR = 3
-        const val LABEL_NAMA_PENERIMA_RULE = "[^A-Za-z0-9() ,.']"
-        const val ALAMAT_NOTES_VALID_RULE = """[^A-Za-z0-9() ,.\/\-\:&\n+=']"""
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
