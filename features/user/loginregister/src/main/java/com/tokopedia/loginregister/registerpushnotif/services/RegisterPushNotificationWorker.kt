@@ -49,16 +49,16 @@ class RegisterPushNotificationWorker(
     }
 
     override suspend fun doWork(): Result {
-        if (isRegistered()) {
-            return Result.success()
-        }
-
-        if (runAttemptCount > MAX_RUN_ATTEMPT) {
-            saveRegisterStatus(false)
-            return Result.failure()
-        }
-
         return try {
+            if (isRegistered()) {
+                Result.success()
+            }
+
+            if (runAttemptCount > MAX_RUN_ATTEMPT) {
+                saveRegisterStatus(false)
+                Result.failure()
+            }
+            
             if (userSession.isLoggedIn) {
                 val response = registerPushNotification()
                 if (response?.isSuccess == true) {
