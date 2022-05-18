@@ -34,7 +34,7 @@ class VideoPreview(
         }
     }
 
-    override fun onIsPlayingChanged(isPlaying: Boolean) {
+    override fun isPlayingOnChanged(isPlaying: Boolean) {
         if (isSkipUpdateState) {
             return
         }

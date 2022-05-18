@@ -34,7 +34,7 @@ class PickerVideoPlayer constructor(
         exoPlayer.addListener(object : Player.EventListener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-                listener?.onIsPlayingChanged(isPlaying)
+                listener?.isPlayingOnChanged(isPlaying)
             }
         })
     }
@@ -93,7 +93,7 @@ class PickerVideoPlayer constructor(
     }
 
     interface Listener {
-        fun onIsPlayingChanged(isPlaying: Boolean)
+        fun isPlayingOnChanged(isPlaying: Boolean)
     }
 
 }
