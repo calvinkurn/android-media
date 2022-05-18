@@ -26,7 +26,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMockMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
@@ -1066,11 +1065,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             )
             if (cursor.isNotBlank()){
                 val updatedQuizChoicesDetailUiModel = quizChoicesDetailUiModel.copy(participants = oldParticipant + quizChoicesDetailUiModel.participants)
-                _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.LoadMoreParticipant(updatedQuizChoicesDetailUiModel)
+                _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Success(updatedQuizChoicesDetailUiModel)
             } else {
                 _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Success(quizChoicesDetailUiModel)
             }
         }) {
+            it.stackTrace
             _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error
         }
     }
@@ -1355,7 +1355,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleLoadMoreParticipant() {
         if(_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success) {
             val detailStateUiModel = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel
-            getQuizChoiceDetailData(choiceId = detailStateUiModel.choice.id, index = detailStateUiModel.choice.index, cursor = detailStateUiModel.cursor)
+            if (detailStateUiModel.cursor != "-1") {
+                getQuizChoiceDetailData(
+                    choiceId = detailStateUiModel.choice.id,
+                    index = detailStateUiModel.choice.index,
+                    cursor = detailStateUiModel.cursor
+                )
+            }
         }
     }
 
