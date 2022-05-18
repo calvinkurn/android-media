@@ -24,6 +24,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUi
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 
@@ -90,6 +91,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchShop(it.prevValue?.globalSearchShop, it.value.globalSearchShop)
+                renderQuickFilter(it.prevValue?.globalSearchShop, it.value.globalSearchShop)
             }
         }
     }
@@ -135,6 +137,28 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 ).show()
             }
             else -> {}
+        }
+    }
+
+    private fun renderQuickFilter(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
+        if(prev?.quickFilters == curr.quickFilters) return
+
+        binding.sortFilter.apply {
+            resetAllFilters()
+            sortFilterItems.removeAllViews()
+            addItem(
+                curr.quickFilters.map {
+                    it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
+                        viewModel.submitAction(ProductTagAction.SelectQuickFilter(it))
+                    }
+                } as ArrayList<SortFilterItem>
+            )
+            textView?.text = getString(R.string.cc_product_tag_filter_label)
+            parentListener = {
+                viewModel.submitAction(ProductTagAction.OpenSortFilterBottomSheet)
+            }
+
+            show()
         }
     }
 

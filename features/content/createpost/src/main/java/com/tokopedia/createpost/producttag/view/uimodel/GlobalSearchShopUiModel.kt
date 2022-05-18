@@ -5,17 +5,19 @@ package com.tokopedia.createpost.producttag.view.uimodel
  */
 data class GlobalSearchShopUiModel(
     val shops: List<ShopUiModel>,
+    val quickFilters: List<QuickFilterUiModel>,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
 
     companion object {
         val Empty = GlobalSearchShopUiModel(
             shops = emptyList(),
+            quickFilters = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
-            query = "",
+            param = SearchParamUiModel.Empty,
         )
     }
 }

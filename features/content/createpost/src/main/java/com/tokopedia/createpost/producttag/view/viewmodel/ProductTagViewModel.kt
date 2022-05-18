@@ -135,9 +135,10 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchShopUiState = _globalSearchShop.map {
         GlobalSearchShopUiState(
             shops = it.shops,
+            quickFilters = it.quickFilters,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
         )
     }
 
@@ -265,7 +266,7 @@ class ProductTagViewModel @AssistedInject constructor(
                         GlobalSearchProductUiModel.Empty.copy(param = newParam)
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(query = query)
+                        GlobalSearchShopUiModel.Empty.copy(param = newParam)
                     }
                 }
                 ProductTagSource.Shop -> {
@@ -543,20 +544,34 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceShops(
-                rows = LIMIT_PER_PAGE,
-                start = globalSearchShop.nextCursor,
-                query = globalSearchShop.query,
-                sort = 9 /** TODO: gonna change this later */
+            val quickFilterParam = globalSearchShop.param.copy().apply {
+                pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
+            }
+
+            val quickFilters = repo.getQuickFilter(
+                query = quickFilterParam.query,
+                extraParams = quickFilterParam.toCompleteParam(),
             )
+
+            val newParam = globalSearchShop.param.copy().apply {
+                userId = userSession.userId
+            }
+
+            val pagedDataList = repo.searchAceShops(param = newParam)
+
+            /** Update Param */
+            val nextCursor = pagedDataList.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _globalSearchShop.setValue {
                 copy(
                     shops = shops + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    quickFilters = quickFilters,
+                    nextCursor = nextCursor,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
-                    )
+                    ),
+                    param = newParam,
                 )
             }
         }) {

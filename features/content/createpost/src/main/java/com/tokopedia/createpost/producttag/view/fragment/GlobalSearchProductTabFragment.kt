@@ -216,7 +216,6 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             )
             textView?.text = getString(R.string.cc_product_tag_filter_label)
             parentListener = {
-                /** TODO: open sort & filter bottomsheet */
                 viewModel.submitAction(ProductTagAction.OpenSortFilterBottomSheet)
             }
 

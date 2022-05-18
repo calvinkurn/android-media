@@ -46,6 +46,12 @@ data class SearchParamUiModel(
             value[KEY_SOURCE] = newValue
         }
 
+    var pageSource: String
+        get() = value[KEY_PAGE_SOURCE]?.toString() ?: ""
+        set(newValue) {
+            value[KEY_PAGE_SOURCE] = newValue
+        }
+
     /** Add param 1 by 1, if exists then param will be appended */
     fun addParam(key: String, value: Any) {
         val newValue = if(this.value.containsKey(key))
@@ -106,6 +112,7 @@ data class SearchParamUiModel(
         private const val KEY_DEVICE = "device"
         private const val KEY_FROM = "from"
         private const val KEY_SOURCE = "source"
+        private const val KEY_PAGE_SOURCE = "page_source"
 
         private const val KEY_QUERY = "q"
         private const val KEY_START = "start"
@@ -120,6 +127,7 @@ data class SearchParamUiModel(
         private const val DEFAULT_PARAM_SEPARATOR = "&"
 
         const val SOURCE_SEARCH_PRODUCT = "search_product"
+        const val SOURCE_SEARCH_SHOP = "search_shop"
 
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel().apply {

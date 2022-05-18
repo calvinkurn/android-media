@@ -76,22 +76,16 @@ class ProductTagRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchAceShops(
-        rows: Int,
-        start: Int,
-        query: String,
-        sort: Int
+        param: SearchParamUiModel,
     ): PagedDataUiModel<ShopUiModel> {
         return withContext(dispatchers.io) {
             val response = feedAceSearchShopUseCase.apply {
                 setRequestParams(FeedAceSearchShopUseCase.createParams(
-                    rows = rows,
-                    start = start,
-                    query = query,
-                    sort = sort,
+                    param = param,
                 ))
             }.executeOnBackground()
 
-            mapper.mapSearchAceShops(response, start + rows)
+            mapper.mapSearchAceShops(response, param.start + param.rows)
         }
     }
 

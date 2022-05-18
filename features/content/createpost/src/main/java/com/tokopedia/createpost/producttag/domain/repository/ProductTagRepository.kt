@@ -26,10 +26,7 @@ interface ProductTagRepository {
     ) : PagedGlobalSearchProductResponse
 
     suspend fun searchAceShops(
-        rows: Int,
-        start: Int,
-        query: String,
-        sort: Int,
+        param: SearchParamUiModel,
     ) : PagedDataUiModel<ShopUiModel>
 
     suspend fun getQuickFilter(

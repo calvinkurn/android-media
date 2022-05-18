@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.domain.usecase
 
 import com.tokopedia.createpost.producttag.model.FeedAceSearchShopResponse
+import com.tokopedia.createpost.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -54,33 +55,11 @@ class FeedAceSearchShopUseCase @Inject constructor(
         """
 
         fun createParams(
-            rows: Int,
-            start: Int,
-            query: String,
-            sort: Int,
+            param: SearchParamUiModel,
         ): Map<String, Any> {
             return mapOf<String, Any>(
-                PARAMS to generateParam(rows, start, query, sort)
+                PARAMS to param.toCompleteParam()
             )
         }
-
-        private fun generateParam(
-            rows: Int,
-            start: Int,
-            query: String,
-            sort: Int,
-        ): String = mutableMapOf<String, Any>(
-            PARAM_DEVICE to "android",
-            PARAM_FROM to "feed_content",
-            PARAM_ROWS to rows,
-            PARAM_START to start,
-            PARAM_QUERY to query.trim(),
-            PARAM_SOURCE to "universe",
-            PARAM_ST to "shop",
-            PARAM_SORT to sort,
-        ).toString()
-            .replace("{", "")
-            .replace("}", "")
-            .replace(", ", "&")
     }
 }
