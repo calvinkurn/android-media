@@ -14,7 +14,10 @@ class PMFeeServiceBottomSheet :
     companion object {
         private const val TAG = "PMFeeServiceBottomSheet"
         fun createInstance(): PMFeeServiceBottomSheet {
-            return PMFeeServiceBottomSheet()
+            return PMFeeServiceBottomSheet().apply {
+                isFullpage = true
+                clearContentPadding = true
+            }
         }
     }
 

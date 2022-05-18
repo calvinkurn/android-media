@@ -32,16 +32,10 @@ object Constant {
     const val PM_FREE_DELIVERY = "2,25%"
     const val PM_PRO_FREE_DELIVERY = "1,5%"
 
-
     const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"
     const val PM_PRO_EXPERT = "Expert"
     const val PM_PRO_ULTIMATE = "Ultimate"
-
-    const val POWER_MERCHANT_TAB_INDEX = 0
-    const val PM_PRO_ADVANCED_TAB_INDEX = 1
-    const val PM_PRO_EXPERT_TAB_INDEX = 2
-    const val PM_PRO_ULTIMATE_TAB_INDEX = 3
 
     const val PM_PRO_MIN_ORDER = 3
     const val PM_PRO_MIN_INCOME = 350000L
@@ -58,7 +52,7 @@ object Constant {
         const val PM_PRO_IDLE =
             "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
         const val PM_FEE_SERVICE =
-            "https://1137-beta-feature.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori"
+            "https://seller.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori"
     }
 
     object Image {
@@ -68,16 +62,6 @@ object Constant {
             "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_upsale_pm_pro_inactive.png"
         const val PM_BG_REGISTRATION_PM =
             "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm.png"
-        const val PM_BG_REGISTRATION_PM_PRO =
-            "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm_pro.png"
-        const val IC_HERO_PM_NEW_SELLER =
-            "https://images.tokopedia.net/img/android/power_merchant/ic_hero_pm_pro_new_seller.png"
-        const val IC_PM_PRO_NEW_SELLER_VERIFIED =
-            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_verified.png"
-        const val IC_PM_PRO_NEW_SELLER_SCORE =
-            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_score.png"
-        const val IC_PM_PRO_NEW_SELLER_TRANSACTION =
-            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_transaction.png"
         const val BG_BENEFIT_PACKAGE_PM_PRO_ULTIMATE =
             "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_ultimate.png"
         const val BG_BENEFIT_PACKAGE_PM_PRO_ADVANCED =

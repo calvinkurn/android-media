@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ class GradeBenefitWidget(
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
     }
 
+    private var highestHeight = Int.ZERO
     private val binding: WidgetPmGradeBenefitBinding? by viewBinding()
 
     override fun bind(element: WidgetGradeBenefitUiModel) {
@@ -111,7 +113,7 @@ class GradeBenefitWidget(
         val colorMatrix = ColorMatrix()
         colorMatrix.setSaturation(saturation)
         val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
-        view?.findViewById<IconUnify>(R.id.tab_item_icon_unify_id)?.colorFilter =
+        view?.findViewById<IconUnify>(com.tokopedia.unifycomponents.R.id.tab_item_icon_unify_id)?.colorFilter =
             colorMatrixColorFilter
     }
 
@@ -142,8 +144,37 @@ class GradeBenefitWidget(
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         selectTab(mLayoutManager)
                     }
+                    val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (position != RecyclerView.NO_POSITION && element.benefitPages.size > Int.ONE) {
+                        mLayoutManager.findViewByPosition(position)?.let { view ->
+                            refreshTableHeight(view)
+                        }
+                    }
                 }
             })
+        }
+    }
+
+    private fun refreshTableHeight(view: View) {
+        view.post {
+            binding?.run {
+                val wMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                val hMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+                view.measure(wMeasureSpec, hMeasureSpec)
+
+                if (rvPmGradeBenefitPager.layoutParams?.height != view.measuredHeight) {
+                    rvPmGradeBenefitPager.layoutParams =
+                        (rvPmGradeBenefitPager.layoutParams as? ConstraintLayout.LayoutParams)
+                            ?.also { lp ->
+                                if (view.measuredHeight > highestHeight) {
+                                    highestHeight = view.measuredHeight
+                                    lp.height = view.measuredHeight
+                                }
+                            }
+                }
+            }
         }
     }
 

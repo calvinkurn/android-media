@@ -50,7 +50,7 @@ data class PickerParam(
     fun minImageResolution() = minImageResolution
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
-    fun withEditor() = withEditor
+    fun isEditorEnabled() = withEditor
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }

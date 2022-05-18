@@ -6,7 +6,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 02/03/21
  */
 
-data class WidgetPotentialUiModel(val isNewSeller: Boolean) : BaseWidgetUiModel {
+object WidgetPotentialUiModel : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)

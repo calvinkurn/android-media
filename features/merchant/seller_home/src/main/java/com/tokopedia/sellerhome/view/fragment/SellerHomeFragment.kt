@@ -370,15 +370,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onRemoveWidget(position: Int) {}
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val cardValue = model.data?.value ?: "0"
+        val cardValue = model.data?.value ?: Int.ZERO.toString()
         val state = model.data?.state?.name.orEmpty()
-        SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
+        SellerHomeTracking.sendImpressionCardEvent(
+            dataKey = model.dataKey,
+            state = state,
+            cardValue = cardValue,
+            isSingle = isSingle
+        )
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
         SellerHomeTracking.sendClickCardEvent(
-            model.dataKey,
-            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
+            dataKey = model.dataKey,
+            state = model.data?.state?.name.orEmpty(),
+            cardValue = model.data?.value ?: Int.ZERO.toString(),
+            isSingle = isSingle
         )
     }
 
@@ -445,6 +454,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         item: RecommendationItemUiModel
     ) {
         SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
+    }
+
+    override fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationTickerCtaClickEvent(element)
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
@@ -1194,8 +1207,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
-
-            isFirstLoad = false
         })
 
         setProgressBarVisibility(true)
@@ -1283,8 +1294,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 newWidget.apply {
                                     data = oldWidget.data.also {
                                         if (it is LastUpdatedDataInterface && newData != null) {
-                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
-                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                            it.lastUpdated.lastUpdatedInMillis =
+                                                newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated =
+                                                newData.lastUpdated.needToUpdated
                                         }
                                     }
                                     isLoaded = oldWidget.isLoaded

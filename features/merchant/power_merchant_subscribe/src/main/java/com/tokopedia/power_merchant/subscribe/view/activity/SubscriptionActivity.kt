@@ -300,12 +300,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         val shopInfo = data.shopInfo
-        val isPmProSelected = shopInfo.isEligiblePmPro
-
         val isRegularMerchant = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                 data.pmStatus.status == PMStatusConst.INACTIVE
-        val isRMNewSeller = data.shopInfo.isNewSeller &&
-                isRegularMerchant
 
         val registrationTerms = PMRegistrationTermHelper.getPmRegistrationTerms(
             this,
@@ -313,9 +309,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             isRegularMerchant
         )
 
-        val isEligiblePm =
-            (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
-                    && !registrationTerms.any { !it.isChecked }
+        val isEligiblePm = shopInfo.isEligiblePm && !registrationTerms.any { !it.isChecked }
 
         val firstPriorityTerm = registrationTerms.filter {
             if (!shopInfo.isNewSeller) {
@@ -335,14 +329,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         binding?.pmRegistrationFooterView?.run {
-            val isHideCta = isRMNewSeller && isPmProSelected
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
-            if (isHideCta) {
-                setTnCVisibility(false)
-            } else {
-                setTnCVisibility(needTnC)
-            }
+            setTnCVisibility(needTnC)
             setOnTickboxCheckedListener {
                 powerMerchantTracking.sendEventClickTickBox()
             }
@@ -356,7 +345,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             setOnTncClickListener {
                 showPmTermAndCondition()
             }
-            if (isHideCta) hide() else show()
         }
     }
 

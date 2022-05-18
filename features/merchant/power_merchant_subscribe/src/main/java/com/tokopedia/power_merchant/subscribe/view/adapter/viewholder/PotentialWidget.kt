@@ -34,16 +34,9 @@ class PotentialWidget(
         binding?.run {
             setupRecyclerView()
 
-            if (element.isNewSeller) {
-                tvPmPotentialDescription.text = root.context.getString(
-                    R.string.pm_registration_potential_description_new_seller,
-                    Constant.POWER_MERCHANT_CHARGING
-                ).parseAsHtml()
-            } else {
-                tvPmPotentialDescription.text = root.context.getString(
-                    R.string.pm_registration_potential_description
-                ).parseAsHtml()
-            }
+            tvPmPotentialDescription.text = root.context.getString(
+                R.string.pm_registration_potential_description
+            ).parseAsHtml()
 
             tvPmPotentialCtaCategory.text = root.context.getString(
                 R.string.pm_service_fee_by_category

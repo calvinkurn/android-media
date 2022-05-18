@@ -1,15 +1,18 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmRegistrationHeaderBinding
@@ -47,11 +50,28 @@ class RegistrationHeaderWidget(
     private fun setupPmEligibilityView(element: WidgetRegistrationHeaderUiModel) {
         binding?.run {
             val isEligiblePM = getPmEligibilityStatus(element)
-            horLinePmHeader.isVisible = isEligiblePM
-            tvPmHeaderEligibleFor.isVisible = isEligiblePM
             tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
 
-            if (!isEligiblePM) return
+            if (!isEligiblePM) {
+                val shopInfo = element.shopInfo
+                when {
+                    (shopInfo.isKyc && (!shopInfo.isEligibleShopScore() ||
+                            (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))) ||
+                            !(element.shopInfo.isKyc && element.shopInfo.isEligibleShopScore()) -> {
+                        horLinePmHeader.visible()
+                        tvPmHeaderEligibleFor.visible()
+                        tvPmHeaderEligibleFor.text = root.context.getString(
+                            R.string.pm_registration_term_header
+                        )
+                        tvPmHeaderEligibleFor.gravity = Gravity.CENTER
+                    }
+                    else -> {
+                        horLinePmHeader.gone()
+                        tvPmHeaderEligibleFor.gone()
+                    }
+                }
+                return
+            }
 
             val text = when (element.shopInfo.shopLevel) {
                 PMConstant.ShopLevel.TWO -> getString(R.string.pm_pro_advanced)
@@ -61,6 +81,7 @@ class RegistrationHeaderWidget(
             }
             tvPmHeaderEligibleFor.text = root.context.getString(R.string.pm_eligible_pm_grade, text)
                 .parseAsHtml()
+            tvPmHeaderEligibleFor.gravity = Gravity.START
             tvPmHeaderEligiblePMDetail.setOnClickListener {
                 listener.onMoreDetailPMEligibilityClicked()
             }
@@ -75,6 +96,10 @@ class RegistrationHeaderWidget(
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
         return element.registrationTerms.all { it.isChecked }
+    }
+
+    private fun isPartlyEligible(element: WidgetRegistrationHeaderUiModel): Boolean {
+        return element.registrationTerms.count { it.isChecked } == Int.ONE
     }
 
     private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) =

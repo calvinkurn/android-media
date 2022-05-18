@@ -50,7 +50,7 @@ object PMRegistrationBenefitHelper {
                 getProductBundlingBenefit(context, Constant.PM_PRO_ULT_PRODUCT_BUNDLING),
                 getFreeDeliveryBenefit(context),
                 getFlashSaleBenefit(context),
-                getCashBackBenefit(context)
+                getRewardBenefit(context)
             )
         )
     }
@@ -74,7 +74,7 @@ object PMRegistrationBenefitHelper {
                 getProductBundlingBenefit(context, Constant.PM_PRO_EXP_PRODUCT_BUNDLING),
                 getFreeDeliveryBenefit(context),
                 getFlashSaleBenefit(context),
-                getCashBackBenefit(context)
+                getRewardBenefit(context)
             )
         )
     }
@@ -101,10 +101,7 @@ object PMRegistrationBenefitHelper {
                     resIcon = R.drawable.ic_pm_flash_sale,
                     benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
                 ),
-                PMBenefitItemUiModel(
-                    resIcon = R.drawable.ic_pm_cash_back,
-                    benefitDescription = context.getString(R.string.pm_benefit_reward)
-                )
+                getRewardBenefit(context)
             )
         )
     }
@@ -134,10 +131,10 @@ object PMRegistrationBenefitHelper {
         )
     }
 
-    private fun getCashBackBenefit(context: Context): PMBenefitItemUiModel {
+    private fun getRewardBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
             resIcon = R.drawable.ic_pm_cash_back,
-            benefitDescription = context.getString(R.string.pm_benefit_cahs_back)
+            benefitDescription = context.getString(R.string.pm_benefit_reward)
         )
     }
 
