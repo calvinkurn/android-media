@@ -75,6 +75,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int = HomeQuestAllClaimedWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeSwitcherUiModel): Int = HomeSwitcherViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselUiModel): Int = HomeLeftCarouselViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -117,6 +118,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
+            HomeLeftCarouselViewHolder.LAYOUT -> HomeLeftCarouselViewHolder(view, )
             // endregion
 
             // region Global Home Component
