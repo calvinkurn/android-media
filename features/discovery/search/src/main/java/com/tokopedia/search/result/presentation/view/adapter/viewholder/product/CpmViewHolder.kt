@@ -7,6 +7,8 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -33,11 +35,13 @@ class CpmViewHolder(
             it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
                     bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                    if (data?.cpm?.layout == LAYOUT_6 || data?.cpm?.layout == LAYOUT_5) {
+                        bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
+                    }
                 }
             })
         }
     }
-
     override fun bind(element: CpmDataView) {
         binding?.adsBanner?.displayAds(element.cpmModel)
     }

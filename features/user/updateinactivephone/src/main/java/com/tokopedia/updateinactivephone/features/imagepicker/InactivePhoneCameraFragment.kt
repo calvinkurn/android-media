@@ -10,14 +10,16 @@ import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Mode
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
-import com.tokopedia.updateinactivephone.common.utils.convertBitmapToImageFile
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneCameraViewBinding
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.File
 
@@ -69,10 +71,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         viewBinding?.btnReCapture?.setOnClickListener {
-            viewBinding?.imgPreview?.let {
-                ImageUtils.clearImage(it)
-            }
-
             showCamera()
         }
 
@@ -140,54 +138,54 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         viewBinding?.txtDescription?.text = description
     }
 
-    private fun showCamera(isSavingBook: Boolean = false) {
-        viewBinding?.imgPreview?.visibility = View.GONE
-        viewBinding?.layoutButtonPreview?.visibility = View.GONE
-        viewBinding?.cameraView?.visibility = View.VISIBLE
-        viewBinding?.btnShutter?.visibility = View.VISIBLE
-        viewBinding?.btnFlipCamera?.visibility = View.VISIBLE
+    private fun showCamera() {
+        viewBinding?.apply {
+            imgPreview.hide()
+            layoutButtonPreview.hide()
+            cameraView.show()
+            btnShutter.show()
+            btnFlipCamera.show()
+            txtDescription.show()
 
-        if (isSavingBook) {
-            viewBinding?.txtDescription?.visibility = View.GONE
-            viewBinding?.txtDescriptionSavingBook?.visibility = View.VISIBLE
-        } else {
-            viewBinding?.txtDescription?.visibility = View.VISIBLE
-            viewBinding?.txtDescriptionSavingBook?.visibility = View.GONE
-        }
+            cameraView.apply {
+                clearCameraListeners()
+                if (isOpened) {
+                    close()
+                }
 
-        viewBinding?.cameraView?.apply {
-            clearCameraListeners()
-            if (isOpened) {
-                close()
+                mode = Mode.PICTURE
+                addCameraListener(listenerOnPictureTaken {
+                    onSuccessTakePicture(it)
+                })
+                open()
             }
-
-            mode = Mode.PICTURE
-            addCameraListener(listenerOnPictureTaken {
-                onSuccessTakePicture(it)
-            })
-            open()
         }
     }
 
     private fun showPreview(file: File) {
-        viewBinding?.imgPreview?.let {
-            ImageUtils.loadImage(it, file.absolutePath)
-            it.visibility = View.VISIBLE
-        }
+        viewBinding?.apply {
+            layoutButtonPreview.show()
+            cameraView.hide()
+            btnShutter.hide()
+            btnFlipCamera.hide()
 
-        viewBinding?.layoutButtonPreview?.visibility = View.VISIBLE
-        viewBinding?.cameraView?.visibility = View.GONE
-        viewBinding?.btnShutter?.visibility = View.GONE
-        viewBinding?.btnFlipCamera?.visibility = View.GONE
+            imgPreview.apply {
+                loadImage(file.absolutePath) {
+                    useCache(false)
+                    setCacheStrategy(MediaCacheStrategy.NONE)
+                }
+                show()
+            }
+        }
     }
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
-        pictureResult.toBitmap { bitmap ->
-            bitmap?.let {
-                val file = convertBitmapToImageFile(it, 100, filePath().orEmpty())
-                if (file.exists()) {
-                    showPreview(file)
-                }
+        val file = File(filePath().orEmpty())
+        if (file.exists()) file.delete()
+
+        pictureResult.toFile(file) {
+            if (it?.exists() == true) {
+                showPreview(it)
             }
         }
     }

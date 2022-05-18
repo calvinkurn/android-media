@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.stubRepository
 import com.tokopedia.topchat.stubRepositoryAsThrow
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -44,7 +43,7 @@ class GetExistingMessageIdUseCaseTest {
         val expectedResult = GetExistingMessageIdPojo().apply {
             this.chatExistingChat.messageId = expectedMessageId
         }
-        val params = ExistingMessageIdParam(testShopId, testUserId, source)
+        val params = GetExistingMessageIdUseCase.Param(testShopId, testUserId, source)
 
         //Then
         runBlocking {
@@ -57,7 +56,7 @@ class GetExistingMessageIdUseCaseTest {
     @Test
     fun should_get_throwable_when_failed_to_get_data() {
         //Given
-        val params = ExistingMessageIdParam(testShopId, testUserId, source)
+        val params = GetExistingMessageIdUseCase.Param(testShopId, testUserId, source)
         val expectedResult = Throwable("Oops!")
         repository.stubRepositoryAsThrow(expectedResult)
 

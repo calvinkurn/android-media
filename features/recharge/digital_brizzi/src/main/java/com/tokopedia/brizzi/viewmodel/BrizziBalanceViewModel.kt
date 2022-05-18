@@ -2,7 +2,7 @@ package com.tokopedia.brizzi.viewmodel
 
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.authentication.AuthKey
+import com.tokopedia.network.authentication.AuthKey
 import com.tokopedia.brizzi.data.BrizziInquiryLogResponse
 import com.tokopedia.brizzi.data.BrizziTokenResponse
 import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper

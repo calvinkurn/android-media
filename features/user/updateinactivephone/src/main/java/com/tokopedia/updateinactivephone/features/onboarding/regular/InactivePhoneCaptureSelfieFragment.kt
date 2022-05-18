@@ -15,15 +15,9 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
     override fun initView() {
         super.initView()
 
+        updateImageHeader(IMAGE_SELFIE_SAMPLE)
         updateTitle(getString(R.string.text_title_selfie))
         updateDescription(getString(R.string.text_onboarding_selfie_description))
-
-        viewBinding?.imgHeader?.let {
-            ImageUtils.clearImage(it)
-            context?.let { ctx ->
-                it.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_sample_selfie))
-            }
-        }
     }
 
     override fun onButtonNextClicked() {
@@ -41,5 +35,9 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
                 (it as InactivePhoneRegularActivity).gotoUploadData()
             }
         }
+    }
+
+    companion object {
+        private const val IMAGE_SELFIE_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_selfie.png"
     }
 }

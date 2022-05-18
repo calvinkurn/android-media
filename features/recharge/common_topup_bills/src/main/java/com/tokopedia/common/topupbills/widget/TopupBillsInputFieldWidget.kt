@@ -82,6 +82,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                 }
             }
         }
+
         ac_input.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (isCustomInput) {
@@ -192,7 +193,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     fun resetState() {
         isCustomInput = false
-        ac_input.setText("")
         hideErrorMessage()
     }
 

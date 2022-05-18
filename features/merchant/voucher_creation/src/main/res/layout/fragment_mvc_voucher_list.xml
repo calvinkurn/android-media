@@ -36,24 +36,6 @@
                 app:titleTextAppearance="?titleTextAppearance"
                 app:unify_header_is_show_shadow="false" />
 
-            <com.tokopedia.unifycomponents.SearchBarUnify
-                android:id="@+id/searchBarMvc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
-                app:layout_scrollFlags="scroll|snap"
-                app:search_bar_clearable="true"
-                app:search_bar_placeholder="@string/mvc_find_shop_voucher"
-                app:search_bar_show_icon="false"
-                tools:visibility="visible" />
-
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/mvcTickerBc"
                 android:layout_width="match_parent"
@@ -62,22 +44,41 @@
                 app:closeButtonVisibility="visible"
                 app:descriptionText="@string/mvc_broadcast_chat_announcement"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
                 app:tickerType="announcement" />
 
-            <com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.HeaderChipsView
-                android:id="@+id/headerChipMvc"
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/searchBarMvc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/mvc_dimen_6dp"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mvcTickerBc"
+                app:layout_scrollFlags="scroll|snap"
+                app:search_bar_clearable="true"
+                app:search_bar_placeholder="@string/mvc_find_shop_voucher"
+                app:search_bar_show_icon="false"
+                tools:visibility="visible" />
+
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/sf_voucher_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/mvc_dimen_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
-                tools:listitem="@layout/item_mvc_header_chip"
-                tools:visibility="visible" />
+                app:sort_filter_type="advanced" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -3,8 +3,8 @@
     android:id="@+id/channel_title_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/unify_space_12"
-    android:layout_marginTop="13dp"
+    android:paddingTop="9dp"
+    android:paddingBottom="12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     android:orientation="vertical">
 
     <TextView
@@ -12,12 +12,13 @@
         android:background="@drawable/bg_white_outline_grey"
         android:gravity="center"
         android:text="@string/syarat_amp_ketentuan"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_18" />
 
     <com.tokopedia.abstraction.base.view.webview.TkpdWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN0" />
 
 </LinearLayout>

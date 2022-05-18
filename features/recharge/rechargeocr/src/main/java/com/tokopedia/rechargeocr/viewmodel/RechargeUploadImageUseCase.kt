@@ -7,8 +7,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -31,20 +32,17 @@ class RechargeUploadImageUseCase @Inject constructor(private val uploadImageUseC
 
     private fun createUploadParams(fileLocation: String?): RequestParams {
         val maps = HashMap<String, RequestBody>()
-        val webService = RequestBody.create(
-                MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE
-        )
-        val resolution = RequestBody.create(
-                MediaType.parse(TEXT_PLAIN), RESOLUTION_500
-        )
-        val id = RequestBody.create(
-                MediaType.parse(TEXT_PLAIN),
-                userSession.userId + UUID.randomUUID() + System.currentTimeMillis()
-        )
+        val webService = DEFAULT_WEB_SERVICE
+            .toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val resolution = RESOLUTION_500
+            .toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val id = (userSession.userId + UUID.randomUUID() + System.currentTimeMillis()
+                ).toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
         maps[PARAM_WEB_SERVICE] = webService
         maps[PARAM_ID] = id
         maps[PARAM_RESOLUTION] = resolution
-        return uploadImageUseCase.createRequestParam(fileLocation, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps
+        return uploadImageUseCase.createRequestParam(
+            fileLocation, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps
         )
     }
 

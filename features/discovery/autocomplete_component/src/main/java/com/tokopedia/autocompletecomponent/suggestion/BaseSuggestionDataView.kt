@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking.Companion.Misc.PRODUCT_LINE_SUGGESTION_ACTION_FIELD
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.ShopAdsDataView
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -28,8 +29,8 @@ class BaseSuggestionDataView(
     val dimension90: String = "",
     val trackingOption: Int = 0,
     val componentId: String = "",
-    val keyword: String = "",
     val childItems: List<ChildItem> = listOf(),
+    val shopAdsDataView: ShopAdsDataView? = null,
 ) : ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
@@ -49,7 +50,17 @@ class BaseSuggestionDataView(
         val title: String = "",
         val searchTerm: String = "",
         val dimension90: String = "",
-        val position: Int = 0
+        val position: Int = 0,
+        val componentId: String = "",
+        val trackingOption: Int = 0,
+    ) : SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
+        keyword = searchTerm,
+        valueId = "0",
+        valueName = title,
+        componentId = componentId,
+        applink = applink,
+        dimension90 = dimension90,
     )
 
     fun hasSlashedPrice(): Boolean {

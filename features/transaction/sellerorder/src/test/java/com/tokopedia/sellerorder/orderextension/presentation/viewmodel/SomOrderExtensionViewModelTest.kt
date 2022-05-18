@@ -9,6 +9,7 @@ import com.tokopedia.sellerorder.orderextension.domain.usecases.SendOrderExtensi
 import com.tokopedia.sellerorder.orderextension.presentation.mapper.GetOrderExtensionRequestInfoResponseMapper
 import com.tokopedia.sellerorder.orderextension.presentation.mapper.OrderExtensionRequestResultResponseMapper
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.StringComposer
 import com.tokopedia.sellerorder.orderextension.presentation.util.ResourceProvider
 import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.track.TrackApp
@@ -28,6 +29,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -101,42 +103,39 @@ class SomOrderExtensionViewModelTest {
             somGetOrderExtensionRequestInfoUseCase,
             somSendOrderExtensionRequestUseCase,
             GetOrderExtensionRequestInfoResponseMapper(resourceProvider),
-            OrderExtensionRequestResultResponseMapper(resourceProvider)
+            OrderExtensionRequestResultResponseMapper()
         )
-        every {
-            resourceProvider.getErrorMessageFromThrowable(any())
-        } returns sampleErrorMessage
         every {
             resourceProvider.getOrderExtensionRequestCommentNotEmptyRegex()
         } returns REGEX_COMMENT_NOT_EMPTY
         every {
             resourceProvider.getErrorMessageOrderExtensionRequestCommentCannotEmpty()
-        } returns ERROR_MESSAGE_COMMENT_CANNOT_EMPTY
+        } returns StringComposer { ERROR_MESSAGE_COMMENT_CANNOT_EMPTY }
         every {
             resourceProvider.getOrderExtensionRequestCommentCannotLessThanRegex()
         } returns REGEX_COMMENT_CANNOT_LESS_THAN
         every {
             resourceProvider.getErrorMessageOrderExtensionRequestCommentCannotLessThan()
-        } returns ERROR_MESSAGE_COMMENT_CANNOT_LESS_THAN
+        } returns StringComposer { ERROR_MESSAGE_COMMENT_CANNOT_LESS_THAN }
         every {
             resourceProvider.getOrderExtensionRequestCommentAllowedCharactersRegex()
         } returns REGEX_COMMENT_ALLOWED_CHARACTERS
         every {
             resourceProvider.getErrorMessageOrderExtensionRequestCommentCannotContainsIllegalCharacters()
-        } returns ERROR_MESSAGE_COMMENT_CANNOT_CONTAINS_ILLEGAL_CHAR
+        } returns StringComposer { ERROR_MESSAGE_COMMENT_CANNOT_CONTAINS_ILLEGAL_CHAR }
         every {
-            resourceProvider.getOrderExtensionRequestBottomSheetTitle()
-        } returns ORDER_REQUEST_EXTENSION_INFO_TITLE
+            resourceProvider.getOrderExtensionRequestBottomSheetTitleComposer()
+        } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_TITLE }
         every {
-            resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitle()
-        } returns ORDER_REQUEST_EXTENSION_INFO_REASON_TITLE
+            resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitleComposer()
+        } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_REASON_TITLE }
         every {
-            resourceProvider.getOrderExtensionRequestBottomSheetFooter()
-        } returns ORDER_REQUEST_EXTENSION_INFO_FOOTER
+            resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer()
+        } returns StringComposer { ORDER_REQUEST_EXTENSION_INFO_FOOTER }
         every {
-            resourceProvider.composeOrderExtensionDescription(any(), any())
+            resourceProvider.getOrderExtensionDescriptionComposer(any(), any())
         } answers {
-            "${firstArg<String?>().orEmpty()} ${secondArg<String?>().orEmpty()}."
+            StringComposer { "${firstArg<String?>().orEmpty()} ${secondArg<String?>().orEmpty()}." }
         }
     }
 
@@ -157,6 +156,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -177,6 +177,7 @@ class SomOrderExtensionViewModelTest {
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+        assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
     }
 
     @Test
@@ -193,8 +194,9 @@ class SomOrderExtensionViewModelTest {
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.completed)
         assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
-        assertFalse(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
+        assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
         assertTrue(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+        assertNotNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
     }
 
     @Test
@@ -235,6 +237,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -260,6 +263,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -289,6 +293,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -324,6 +329,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -348,6 +354,7 @@ class SomOrderExtensionViewModelTest {
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -372,6 +379,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -392,6 +400,7 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -414,8 +423,9 @@ class SomOrderExtensionViewModelTest {
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.success)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.completed)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
-            assertFalse(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
+            assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNotNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     @Test
@@ -451,6 +461,8 @@ class SomOrderExtensionViewModelTest {
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.completed)
             assertFalse(viewModel.orderExtensionRequestInfo.value!!.refreshOnDismiss)
             assertTrue(viewModel.orderExtensionRequestInfo.value!!.message.isBlank())
+            assertFalse(viewModel.orderExtensionRequestInfo.value!!.isLoadingOrderExtensionRequestInfo())
+            assertNull(viewModel.orderExtensionRequestInfo.value!!.throwable)
         }
 
     private fun onGetOrderExtensionRequestInfoSuccess_thenReturn() {

@@ -1,6 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor
 
-import com.tokopedia.network.BuildConfig
+import com.tokopedia.instrumentation.test.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer
@@ -22,7 +22,7 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
             try {
                 val requestCopy = chain.request()
                 val buffer = Buffer()
-                requestCopy.body()?.writeTo(buffer)
+                requestCopy.body?.writeTo(buffer)
                 val requestString = buffer.readUtf8()
 
                 val requestArray = JSONArray(requestString)
@@ -30,8 +30,8 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
                 val queryString = requestObject.getString("query")
 
                 val queryStringCopy = queryString.removePrefix("query ")
-                        .removePrefix("{\n ")
-                        .removePrefix(" ")
+                    .removePrefix("{\n ")
+                    .removePrefix(" ")
                 val firstWord = queryStringCopy.substringBefore(" ", "")
 
                 val response = chain.proceed(chain.request())

@@ -266,7 +266,7 @@ open class TopChatTypeFactoryImpl constructor(
                 fraudAlertListener
             )
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(
-                parent, imageUploadListener, replyBubbleListener
+                parent, imageUploadListener, replyBubbleListener, commonListener
             )
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(
                 parent,

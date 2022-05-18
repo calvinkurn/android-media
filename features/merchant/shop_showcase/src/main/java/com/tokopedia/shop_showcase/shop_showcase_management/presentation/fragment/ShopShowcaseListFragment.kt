@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -30,6 +29,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -572,12 +572,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             loader?.visibility = View.GONE
             recyclerView?.visibility = View.VISIBLE
             emptyStateContainer?.visibility = View.GONE
-            ImageHandler.loadImage(context, imageEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
         } else {
             loader?.visibility = View.GONE
             recyclerView?.visibility = View.GONE
             emptyStateContainer?.visibility = View.VISIBLE
-            ImageHandler.loadImage(context, imageEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
+            imageEmptyState?.loadImage(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
         }
     }
 

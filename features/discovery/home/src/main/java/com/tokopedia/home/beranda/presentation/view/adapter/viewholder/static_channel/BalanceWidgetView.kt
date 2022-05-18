@@ -48,6 +48,7 @@ class BalanceWidgetView: FrameLayout {
     companion object {
         const val LAYOUT_SPAN_2 = 2
         const val LAYOUT_SPAN_3 = 3
+        var disableAnimation: Boolean = false
     }
 
     init {
@@ -69,14 +70,7 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.isGopayEligible == null) {
-            viewBalanceCoachmark?.visibility = View.GONE
-            viewBalanceCoachmarkNew?.visibility = View.GONE
-        }
-        if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == false) {
-            viewBalanceCoachmark?.visibility = View.INVISIBLE
-            viewBalanceCoachmarkNew?.visibility = View.GONE
-        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == true) {
+        if (element.balanceType == TYPE_STATE_2) {
             viewBalanceCoachmark?.visibility = View.GONE
             viewBalanceCoachmarkNew?.visibility = View.INVISIBLE
         } else {
@@ -122,10 +116,12 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun startRotationForPosition(position: Int) {
-        val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
-        viewholder?.let {
-            (it as? BalanceAdapter.Holder)?.let {
-                it.setDrawerItemWithAnimation()
+        if (!disableAnimation) {
+            val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
+            viewholder?.let {
+                (it as? BalanceAdapter.Holder)?.let {
+                    it.setDrawerItemWithAnimation()
+                }
             }
         }
     }

@@ -17,16 +17,16 @@ class WishlistV2FilterCheckboxViewHolder(private val binding: BottomsheetWishlis
             binding.cbOption.isChecked = selected
         }
 
-        binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
+        binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId, title))
         binding.root.setOnClickListener {
             binding.cbOption.isChecked = !binding.cbOption.isChecked
-            listener?.onCheckboxSelected(parentFilterName, optionId, binding.cbOption.isChecked)
+            listener?.onCheckboxSelected(parentFilterName, optionId, binding.cbOption.isChecked, title)
         }
     }
 
-    private fun checkboxListener(parentFilterName: String, optionId: String): CompoundButton.OnCheckedChangeListener {
+    private fun checkboxListener(parentFilterName: String, optionId: String, titleCheckbox: String): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            listener?.onCheckboxSelected(parentFilterName, optionId, isChecked)
+            listener?.onCheckboxSelected(parentFilterName, optionId, isChecked, titleCheckbox)
         }
     }
 }

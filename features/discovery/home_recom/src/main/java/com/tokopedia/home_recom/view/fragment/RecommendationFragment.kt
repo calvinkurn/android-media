@@ -24,7 +24,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
-import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
@@ -54,12 +53,13 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -90,7 +90,6 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener, TitleListener, RecommendationErrorListener, ProductInfoViewHolder.ProductInfoListener {
 
-    private var productCardBinding: FragmentProductInfoBinding? by viewBinding()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var trackingQueue: TrackingQueue? = null
@@ -103,6 +102,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var navToolbar: NavToolbar? = null
+    private var remoteConfig: RemoteConfig? = null
+
     private lateinit var viewModelProvider: ViewModelProvider
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
@@ -119,6 +120,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LOGIN = 283
         private const val SPACING_30 = 30
+        private const val PRIMARY_PRODUCT_POS = 0
 
         fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
@@ -141,6 +143,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             recommendationWidgetViewModel = viewModelProvider.get(RecommendationPageViewModel::class.java)
             trackingQueue = TrackingQueue(it)
+            remoteConfig = FirebaseRemoteConfigImpl(it)
         }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
@@ -383,7 +386,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    productCardBinding?.addToCart?.isEnabled = true
+                    val view = getRecyclerView(view)?.findViewHolderForAdapterPosition(PRIMARY_PRODUCT_POS)
+                    (view as? ProductInfoViewHolder)?.let {
+                        it.getAddToCartView()?.isEnabled = true
+                    }
                     activity?.run {
                         showToastError(response.exception)
                     }
@@ -406,7 +412,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    productCardBinding?.buyNow?.isEnabled = true
+                    val view = getRecyclerView(view)?.findViewHolderForAdapterPosition(PRIMARY_PRODUCT_POS)
+                    (view as? ProductInfoViewHolder)?.let {
+                        it.getBuyNowView()?.isEnabled = true
+                    }
                     activity?.run {
                         showToastError(response.exception)
                     }
@@ -484,6 +493,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_HIT_ADS_TRACKER_IMPRESSION,
+                    productId = productId,
+                    queryParam = queryParam
+                )
             }
         }
     }
@@ -501,6 +515,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_HIT_ADS_TRACKER,
+                    productId = productId,
+                    queryParam = queryParam
+                )
             }
         }
         RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
@@ -635,6 +654,14 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onClickSeeMore(pageName: String, seeMoreAppLink: String) {
         RecommendationPageTracking.eventUserClickSeeMore(pageName, productId)
         RouteManager.route(this.context, seeMoreAppLink)
+    }
+
+    override fun getProductQueryParam(): String {
+        return queryParam
+    }
+
+    override fun getFragmentRemoteConfig(): RemoteConfig? {
+        return remoteConfig
     }
 
     /**

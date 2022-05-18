@@ -9,7 +9,9 @@ import com.tokopedia.carouselproductcard.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.CarouselSeeMoreCardGridViewHolder
 import com.tokopedia.carouselproductcard.CarouselSeeMoreCardModel
 
-internal class CarouselProductCardGridTypeFactoryImpl : CarouselProductCardTypeFactory{
+internal class CarouselProductCardGridTypeFactoryImpl(
+    private val internalListener: CarouselProductCardInternalListener,
+) : CarouselProductCardTypeFactory{
     override fun type(carouselProductCardModel: CarouselProductCardModel) : Int{
         return CarouselProductCardGridViewHolder.LAYOUT
     }
@@ -23,8 +25,10 @@ internal class CarouselProductCardGridTypeFactoryImpl : CarouselProductCardTypeF
                 .from(viewGroup.context)
                 .inflate(viewType, viewGroup, false)
         return when(viewType){
-            CarouselProductCardGridViewHolder.LAYOUT -> CarouselProductCardGridViewHolder(view)
-            else -> CarouselSeeMoreCardGridViewHolder(view)
+            CarouselProductCardGridViewHolder.LAYOUT ->
+                CarouselProductCardGridViewHolder(view, internalListener)
+            else ->
+                CarouselSeeMoreCardGridViewHolder(view)
         } as BaseProductCardViewHolder<BaseCarouselCardModel>
     }
 }

@@ -6,8 +6,8 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.createInspirationCardListener
 import com.tokopedia.search.mock.MockSearchProductModel.getInspirationCardViewModel
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridInspirationCardViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder
+import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
+import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule

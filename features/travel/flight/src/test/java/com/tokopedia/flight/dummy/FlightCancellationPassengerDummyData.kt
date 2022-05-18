@@ -1,8 +1,8 @@
 package com.tokopedia.flight.dummy
 
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 
 /**
  * @author by furqan on 23/07/2020
@@ -10,7 +10,7 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 val DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCancellationModel>(
         FlightCancellationModel(
                 "1234567890",
-                FlightCancellationJourney(
+                FlightCancellationResponseEntity(
                         "54321",
                         "Banda Aceh",
                         "",
@@ -31,7 +31,7 @@ val DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCancellation
 val DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCancellationModel>(
         FlightCancellationModel(
                 "1234567890",
-                FlightCancellationJourney(
+                FlightCancellationResponseEntity(
                         "54321",
                         "Banda Aceh",
                         "",
@@ -74,7 +74,7 @@ val DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCan
         ),
         FlightCancellationModel(
                 "0987654321",
-                FlightCancellationJourney(
+                FlightCancellationResponseEntity(
                         "09876",
                         "Jakarta",
                         "JKTA",
@@ -106,7 +106,7 @@ val DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCan
 )
 
 val DUMMY_CANCELLATION_JOURNEY = arrayListOf(
-        FlightCancellationJourney(
+        FlightCancellationResponseEntity(
                 "54321",
                 "Banda Aceh",
                 "",
@@ -120,7 +120,7 @@ val DUMMY_CANCELLATION_JOURNEY = arrayListOf(
                 true,
                 arrayListOf()
         ),
-        FlightCancellationJourney(
+        FlightCancellationResponseEntity(
                 "09876",
                 "Jakarta",
                 "JKTA",

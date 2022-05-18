@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import java.util.*
+import java.util.ArrayList
 
 @Parcelize
 class Filter(@SerializedName("title")
@@ -93,6 +93,16 @@ class Filter(@SerializedName("title")
 
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
+
+    fun getFlattenedOptions() : List<Option> {
+        return options.flatMap { option ->
+            option.levelTwoCategoryList.flatMap { levelTwoCategory ->
+                levelTwoCategory.levelThreeCategoryList.map { levelThreeCategory ->
+                    levelThreeCategory.asOption()
+                } + levelTwoCategory.asOption()
+            } + option
+        }
+    }
 
     override fun toString(): String {
         return Gson().toJson(this)

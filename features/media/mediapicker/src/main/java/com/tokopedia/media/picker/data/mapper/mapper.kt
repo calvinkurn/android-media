@@ -5,16 +5,10 @@ import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 
-fun Media.toUiModel() = MediaUiModel(
-    id = id,
-    name = name,
-    path = path,
-    uri = uri,
-)
-
-@JvmName("listMediaToListUiModel")
-fun List<Media>.toUiModel() = map {
-    it.toUiModel()
+fun mediaToUiModel(mediaList: List<Media>): List<MediaUiModel>{
+    return mediaList.map {
+        MediaUiModel(it.id, it.name, it.path, it.uri)
+    }
 }
 
 fun Album.toUiModel() = AlbumUiModel(

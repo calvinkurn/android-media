@@ -9,6 +9,7 @@ import org.hamcrest.Matcher
 import android.content.Intent
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.matcher.ViewMatchers.withId
 
 object GeneralResult {
 
@@ -30,5 +31,11 @@ object GeneralResult {
 
     fun openPageWithIntent(intent: Intent) {
         intended(hasData(intent.data))
+    }
+
+    fun assertChatRecyclerview(matcher: Matcher<in View>) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(matches(matcher))
     }
 }

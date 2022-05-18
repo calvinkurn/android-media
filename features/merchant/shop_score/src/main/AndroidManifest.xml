@@ -4,7 +4,7 @@
 
     <application android:hasCode="true">
         <activity
-            android:name=".performance.presentation.activity.ShopPerformancePageActivity"
+            android:name="com.tokopedia.shop.score.performance.presentation.activity.ShopPerformancePageActivity"
             android:label="@string/title_shop_performance"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"

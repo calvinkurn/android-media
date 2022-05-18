@@ -6,10 +6,10 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.common.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
-import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessage
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString

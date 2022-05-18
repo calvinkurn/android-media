@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.common.model
 
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -18,6 +18,7 @@ class VoucherMapper @Inject constructor() {
                     typeFormatted = it.voucherTypeFormatted,
                     image = it.voucherImage,
                     imageSquare = it.imageSquare,
+                    imagePortrait = it.imagePortrait,
                     status = it.voucherStatus,
                     discountTypeFormatted = it.discountTypeFormatted,
                     discountAmt = it.discountAmt,
@@ -32,7 +33,10 @@ class VoucherMapper @Inject constructor() {
                     code = it.voucherCode,
                     createdTime = it.createTime,
                     updatedTime = it.updateTime,
-                    isPublic = it.isPublic == 1
+                    isPublic = it.isPublic == 1,
+                    isVps = it.isVps == 1,
+                    packageName = it.packageName,
+                    isSubsidy = it.isSubsidy == 1
             )
         }
     }
@@ -46,6 +50,7 @@ class VoucherMapper @Inject constructor() {
                     typeFormatted = it.voucherTypeFormatted,
                     image = it.voucherImage,
                     imageSquare = it.imageSquare,
+                    imagePortrait = it.imagePortrait,
                     status = it.voucherStatus,
                     discountTypeFormatted = it.discountTypeFormatted,
                     discountAmt = it.discountAmt,
@@ -60,7 +65,11 @@ class VoucherMapper @Inject constructor() {
                     code = it.voucherCode,
                     createdTime = it.createTime,
                     updatedTime = it.updateTime,
-                    isPublic = it.isPublic == 1
+                    isPublic = it.isPublic == 1,
+                    isVps = it.isVps == 1,
+                    packageName = it.packageName,
+                    isSubsidy = it.isSubsidy == 1,
+                    tnc = it.tnc
             )
         }
 

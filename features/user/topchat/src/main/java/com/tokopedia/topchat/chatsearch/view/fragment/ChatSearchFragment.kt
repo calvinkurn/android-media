@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
@@ -33,8 +32,6 @@ import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatV
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
-import com.tokopedia.topchat.common.Constant
-import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import javax.inject.Inject
 
 /**

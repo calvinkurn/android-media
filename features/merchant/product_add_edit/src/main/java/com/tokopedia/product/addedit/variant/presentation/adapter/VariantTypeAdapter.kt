@@ -3,9 +3,11 @@ package com.tokopedia.product.addedit.variant.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.swap
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder.ViewHolderState
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
@@ -13,11 +15,12 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     interface OnVariantTypeClickListener {
         fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
         fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean
+        fun onCustomVariantTypeCountChanged(count: Int)
     }
 
-    private var items: List<VariantDetail> = listOf()
+    private var items: MutableList<VariantDetail> = mutableListOf()
     private var maxSelectedItems = 0
-    private var selectedItems: ArrayList<VariantTypeViewHolder.ViewHolderState> = arrayListOf()
+    private var selectedItems: ArrayList<ViewHolderState> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantTypeViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_type, parent, false)
@@ -35,7 +38,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     override fun onVariantTypeSelected(position: Int) {
         if (position < 0 || position > selectedItems.lastIndex) return
         // from normal to selected
-        selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
+        selectedItems[position] = ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
         manageUnselectedItems(getSelectedCount())
         // execute the callback function
@@ -47,15 +50,28 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // execute the callback function
         val isConfirmed = clickListener.onVariantTypeDeselected(position, items[position])
         // from selected to normal if confirmed
-        if (isConfirmed) selectedItems[position] = VariantTypeViewHolder.ViewHolderState.NORMAL
+        if (isConfirmed) selectedItems[position] = ViewHolderState.NORMAL
         // disable unselected items when maximum selected items reached
         manageUnselectedItems(getSelectedCount())
         return isConfirmed
     }
 
+    fun addData(variantDetail: VariantDetail, isSelected: Boolean = true) {
+        items.add(variantDetail)
+        if (isSelected) {
+            selectedItems.add(ViewHolderState.SELECTED)
+            onVariantTypeSelected(selectedItems.lastIndex) // set as selected, trigger onVariantTypeSelected
+        } else {
+            selectedItems.add(ViewHolderState.NORMAL)
+            manageUnselectedItems(getSelectedCount())
+        }
+        clickListener.onCustomVariantTypeCountChanged(getCustomVariantCount())
+        notifyDataSetChanged()
+    }
+
     fun setData(items: List<VariantDetail>) {
-        this.items = items
-        selectedItems = ArrayList(items.map { VariantTypeViewHolder.ViewHolderState.NORMAL })
+        this.items = items.toMutableList()
+        selectedItems = ArrayList(items.map { ViewHolderState.NORMAL })
         notifyDataSetChanged()
     }
 
@@ -63,33 +79,92 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         maxSelectedItems = max
     }
 
-    fun getItem(position: Int): VariantDetail {
-        return items[position]
+    fun getItem(position: Int): VariantDetail? {
+        return items.getOrNull(position)
     }
 
+    fun getItems(): List<VariantDetail> = items
+
     fun deselectItem(adapterPosition: Int) {
-        selectedItems[adapterPosition] = VariantTypeViewHolder.ViewHolderState.NORMAL
+        selectedItems[adapterPosition] = ViewHolderState.NORMAL
         manageUnselectedItems(getSelectedCount())
     }
 
     fun getSelectedItems(): List<VariantDetail> {
         return items.filterIndexed { index, _ ->
-            selectedItems.getOrNull(index) == VariantTypeViewHolder.ViewHolderState.SELECTED
+            selectedItems.getOrNull(index) == ViewHolderState.SELECTED
         }
     }
 
+    fun getCustomVariantTypeItems(): List<VariantDetail> {
+        return items.filter { it.isCustom }
+    }
+
+    fun getSelectedAdapterPosition(): List<Int> {
+        val result: MutableList<Int> = mutableListOf()
+        selectedItems.forEachIndexed { index, viewHolderState ->
+            if (viewHolderState == ViewHolderState.SELECTED) {
+                result.add(index)
+            }
+        }
+        return result
+    }
+
+    fun isItemAtPositionSelected(position: Int) =
+            selectedItems.getOrNull(position) == ViewHolderState.SELECTED
+
     fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
+        // select predefined variant
         items.forEachIndexed { position, variantDetail ->
             val isVariantIdExist = selectedVariantDetails.any {
-                it.variantID == variantDetail.variantID
+                it.variantID == variantDetail.variantID && it.name == variantDetail.name
             }
             if (isVariantIdExist) {
-                items.getOrNull(position)?.let {
-                    selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
+                selectedItems.getOrNull(position)?.let {
+                    selectedItems[position] = ViewHolderState.SELECTED
                 }
             }
         }
+        // add custom variant
+        selectedVariantDetails.forEach { variantDetail ->
+            val isVariantIdExist = items.any { it.name == variantDetail.name }
+            if (!isVariantIdExist) {
+                addData(variantDetail.apply { isCustom = true })
+            }
+        }
+        // enable/ disable selection if reached max selection
         manageUnselectedItems(getSelectedCount())
+    }
+
+    fun swapSelectedItem() {
+        val firstIndex = selectedItems.indexOfFirst { it == ViewHolderState.SELECTED }
+        val lastIndex = selectedItems.indexOfLast { it == ViewHolderState.SELECTED }
+
+        items.swap(firstIndex, lastIndex)
+        selectedItems.swap(firstIndex, lastIndex)
+        notifyItemChanged(firstIndex)
+        notifyItemChanged(lastIndex)
+    }
+
+    fun replaceItem(index: Int, variantDetail: VariantDetail) {
+        items[index] = variantDetail
+        notifyItemChanged(index)
+    }
+
+    fun deleteItem(index: Int, variantDetail: VariantDetail) {
+        if (variantDetail.isCustom) {
+            items.removeAt(index)
+            selectedItems.removeAt(index)
+            manageUnselectedItems(getSelectedCount())
+            clickListener.onCustomVariantTypeCountChanged(getCustomVariantCount())
+        } else {
+            deselectItem(index)
+        }
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedCount(): Int {
+        return selectedItems.count { it == ViewHolderState.SELECTED }
     }
 
     private fun manageUnselectedItems(selectedCount: Int) {
@@ -97,14 +172,14 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         else enableUnselectedItems()
     }
 
-    private fun getSelectedCount(): Int {
-        return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
+    private fun getCustomVariantCount(): Int {
+        return items.count { it.isCustom }
     }
 
     private fun disableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->
-            if (viewHolderState == VariantTypeViewHolder.ViewHolderState.NORMAL) {
-                selectedItems[index] = VariantTypeViewHolder.ViewHolderState.DISABLED
+            if (viewHolderState == ViewHolderState.NORMAL) {
+                selectedItems[index] = ViewHolderState.DISABLED
             }
         }
         notifyDataSetChanged()
@@ -112,8 +187,8 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     private fun enableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->
-            if (viewHolderState == VariantTypeViewHolder.ViewHolderState.DISABLED) {
-                selectedItems[index] = VariantTypeViewHolder.ViewHolderState.NORMAL
+            if (viewHolderState == ViewHolderState.DISABLED) {
+                selectedItems[index] = ViewHolderState.NORMAL
             }
         }
         notifyDataSetChanged()

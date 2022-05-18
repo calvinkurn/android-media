@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.tkpd.atcvariant.util.roundToIntOrZero
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
@@ -28,6 +29,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import kotlin.math.roundToInt
 
 
 private const val OFFICIAL_STORE = 1
@@ -135,7 +137,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
             setStockProgress(dataItem.stockSoldPercentage)
-            showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            showOutOfStockLabel(dataItem.stockSoldPercentage?.roundToIntOrZero().toString(), SALE_PRODUCT_STOCK)
         }
         carouselProductWidth()
         setLabelDiscount(dataItem.discountPercentage.toString())
@@ -262,12 +264,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
 
-    private fun setStockProgress(stockSoldPercentage: String?) {
-        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+    private fun setStockProgress(stockSoldPercentage: Double?) {
+        if (stockSoldPercentage?.roundToInt() == null) {
             hideStockProgressUI()
         } else {
-            if (stockSoldPercentage.toIntOrZero() in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
-                stockPercentageProgress.progress = stockSoldPercentage.toIntOrZero()
+            if (stockSoldPercentage.roundToIntOrZero() in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+                stockPercentageProgress.progress = stockSoldPercentage.roundToIntOrZero()
                 stockPercentageProgress.show()
                 showStockProgressTitle()
             } else {

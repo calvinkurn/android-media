@@ -4,22 +4,22 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ToggleLikeReviewResponse(
-        @SerializedName("toggleProductReviewLikeV2")
+        @SerializedName("productrevLikeReview")
         @Expose
-        val toggleProductReviewLike: ToggleProductReviewLike = ToggleProductReviewLike()
+        val productrevLikeReview: ProductrevLikeReview = ProductrevLikeReview()
 )
 
-data class ToggleProductReviewLike(
-        @SerializedName("id")
+data class ProductrevLikeReview(
+    @SerializedName("feedbackID")
         @Expose
-        val reviewId: String = "",
-        @SerializedName("likeStatus")
+        val feedbackId: String = "",
+    @SerializedName("likeStatus")
         @Expose
         val likeStatus: Int = 0,
-        @SerializedName("totalLike")
+    @SerializedName("totalLike")
         @Expose
         val totalLike: Int = 0,
-        @SerializedName("totalDislike")
+    @SerializedName("totalDislike")
         @Expose
         val totalDislike: Int = 0
 ) {

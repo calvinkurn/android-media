@@ -68,4 +68,8 @@ class InspirationCarouselOptionGridViewHolder(
             }
         }
     }
+
+    override fun onViewRecycled() {
+        binding?.optionGridCardView?.recycle()
+    }
 }

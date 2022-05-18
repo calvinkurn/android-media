@@ -61,23 +61,7 @@ class GetProductUseCase @Inject constructor(
                     weight
                     condition
                     mustInsurance
-                    isKreasiLokal
-                    mustInsurance
-                    alias
                     sku
-                    gtin
-                    url
-                    brand{
-                      brandID
-                      name
-                      brandStatus
-                      isActive
-                    }
-                    catalog{
-                      catalogID
-                      name
-                      url
-                    }
                     category{
                       id
                       name
@@ -137,26 +121,8 @@ class GetProductUseCase @Inject constructor(
                     cashback {
                       percentage
                     }
-                    lock{
-                      full
-                      partial{
-                        price
-                        status
-                        stock
-                        wholesale
-                        name
-                      }
-                    }
-                    stats{
-                      countView
-                      countReview
-                      countTalk
-                      rating
-                    }
                     txStats{
                       itemSold
-                      txSuccess
-                      txReject
                     }
                     variant{
                       products{

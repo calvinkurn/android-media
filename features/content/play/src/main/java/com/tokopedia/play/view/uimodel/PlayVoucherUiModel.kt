@@ -17,6 +17,8 @@ data class MerchantVoucherUiModel(
         val code: String,
         val copyable: Boolean,
         val highlighted: Boolean,
+        val voucherStock: Int,
+        val expiredDate: String,
         @TrackingField val impressHolder: ImpressHolder = ImpressHolder()
 ) : PlayVoucherUiModel()
 

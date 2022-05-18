@@ -317,6 +317,42 @@
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
     <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
 
+    <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
+    <string name="topads_insight_title_bid_keyword">Rekomendasi biaya kata kunci (%d)</string>
+    <string name="topads_insight_title_new_keyword">Rekomendasi kata kunci baru (%d)</string>
+    <string name="topads_insight_title_negative_keyword">Rekomendasi kata kunci negatif (%d)</string>
+    <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk %d iklanmu supaya bisa</string>
+    <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +%s kali!</string>
+    <string name="topads_insight_keyword_error">Lengkapi informasi iklan produkmu.</string>
+    <string name="topads_insight_oke_button">Oke</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
+    <string name="apply_keyword_toast_message">"%d rekomendasi anggaran harian berhasil diterapkan"</string>
+    <string name="empty_view_title">Semua kata kunci iklanmu sudah dimaksimalkan!</string>
+    <string name="empty_view_desc">Ayo cek rekomendasi iklan lainnya yang masih menunggumu untuk dioptimalkan.</string>
+    <string name="label_select_all">Pilih Semua</string>
+    <string name="bid_keyword_btn_text">Terapkan Biaya (%d)</string>
+    <string name="new_keyword_btn_text">Terapkan Kata Kunci Baru (%d)</string>
+    <string name="neg_keyword_btn_text">Tambah Kata Kunci Negatif (%d)</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS ADAPTER -->
+    <string name="label_group">Grup:</string>
+    <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
+    <string name="per_click_value">%d/klik</string>
+    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>%d</b></font>]]>/1.000x tampil</string>
+    <string name="keyword_recommended_budget">•Rekomendasi Rp%d</string>
+    <string name="biaya_optimal">Biaya optimal ✔️</string>
+    <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
+
+    <string name="error_bid_not_multiple_50">Harus kelipatan Rp50</string>
+    <string name="min_bid_error_number">Biaya min. Rp%d</string>
+    <string name="max_bid_error_number">Biaya maks. Rp%d</string>
+    <string name="new_keyword_subtitle2">Biaya kata kunci</string>
+
+    <string name="title_current_cost">Biaya saat ini</string>
+    <string name="title_new_fee">Biaya baru</string>
+
+
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>
     <string name="topads_dash_recom_daily_budget_desc">Yuk, tambah anggaran harian untuk %d iklanmu supaya bisa dapat <![CDATA["<font color='#fa31353b'><b>  +%d klik/hari!</b></font> ]]></string>
@@ -336,9 +372,9 @@
     <string name="topads_dash_grp_bs_item_desc">%d Produk • %d Kata Kunci</string>
     <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%s</string>
     <string name="topads_dash_potential_click_text">Maks. +%s klik/hari</string>
-    <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#fa31353b'><b> %s</b></font> ]]> .%s</string>
     <string name="topads_dash_product_recomm_min_budget_error">Oops, biaya terlalu rendah!</string>
     <string name="topads_dash_product_recomm_max_budget_error">Oops, biaya terlalu tinggi!</string>
+    <string name="topads_dash_max_times_month">%s kali/bulan</string>
 
     <string name="topads_dash_success_daily_budget_toast">Berhasil menerapkan anggaran baru untuk grup Kemeja Kerja!</string>
     <string name="topads_dash_success_product_toast">%d Produk berhasil diiklankan!</string>
@@ -354,7 +390,7 @@
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>
-    <string name="topads_dash_headline_empty_title">Oops, pencarianOkHttpmu dengan filter “%s” nggak ditemukan.Coba lagi ya.</string>
+    <string name="topads_dash_headline_empty_title">Oops, pencarianmu dengan filter “%s” nggak ditemukan. Coba lagi ya.</string>
     <string name="topads_dash_headline_delete_toast">Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_delete_toast_multiple">[%d] Iklan Toko berhasil dihapus</string>
     <string name="topads_dash_headline_bulk_delete_title">Yakin hapus [%d] Iklan Toko?</string>
@@ -368,5 +404,67 @@
 
     <string name="sampai_dengan">Sampai dengan</string>
     <string name="topads_headline_recom_grp_bs_title">Iklankan Produk Dengan Grup</string>
+    <string name="topads_dash_text_ringkasan">Ringkasan:</string>
+    <string name="topads_dash_from_last_week"><![CDATA[<font color="#03AC0E" size="17"><b>%s </b></font>dari minggu lalu]]></string>
+    <string name="topads_dash_text_bacaan_terbaru_untukmu">Bacaan terbaru untukmu</string>
+    <string name="topads_dash_read_more">Selengkapnya</string>
+    <string name="topads_dashboard_last_update_text">Update terakhir %s WIB</string>
+    <string name="topads_dashboard_information_title">Info statistik ringkasan iklan</string>
+
+    <string name="topads_dashboard_efektivitas_iklan">Efektivitas Iklan</string>
+    <string name="tampil_sub_title">Jumlah orang yang melihat iklanmu.</string>
+    <string name="klik_sub_title">Jumlah klik pada iklanmu.</string>
+    <string name="total_terjual_sub_title">Total produk yang terjual melalui iklanmu.</string>
+    <string name="pendapatan_sub_title">Total pendapatan dari produk terjual melalui iklanmu.</string>
+    <string name="pengeluaran_sub_title">Total pengeluaran untuk semua iklanmu.</string>
+    <string name="efektivitas_iklan_sub_title">Perbandingan pendapatan dengan pengeluaran iklan.</string>
+    <string name="topads_dashboard_home_dialog_title">Tampilan TopAds yang baru!</string>
+    <string name="topads_dashboard_home_dialog_description">Yuk, pelajari tampilan baru TopAds biar kamu bisa kelola iklan dengan lebih mudah.</string>
+    <string name="topads_dashboard_home_dialog_button_text">Ayo Cek Tampilannya</string>
+
+    <string name="topads_dashboard_home_coachmark_1_title">Ringkasan performa iklan</string>
+    <string name="topads_dashboard_home_coachmark_1_desc">Ayo cek performa iklanmu di sini. Kamu bisa klik di tiap bagiannya untuk lihat grafiknya juga.</string>
+    <string name="topads_dashboard_home_coachmark_2_title">Details grafik saat diklik</string>
+    <string name="topads_dashboard_home_coachmark_2_desc">Memantau performa iklan jadi lebih mudah, kan? Grafiknya bisa diganti juga dengan data performa iklan lainnya, ya.</string>
+    <string name="topads_dashboard_home_coachmark_3_title">Rekomendasi iklan</string>
+    <string name="topads_dashboard_home_coachmark_3_desc">Ikuti juga rekomendasi jitu dari hasil analisa TopAds untuk tingkatkan performa iklanmu!</string>
+    <string name="topads_dashboard_home_coachmark_4_title">Selalu update dengan bacaan terbaru</string>
+    <string name="topads_dashboard_home_coachmark_4_desc">Biar tidak ketinggalan info terbaru tentang TopAds, pastikan juga kamu baca artikel di sini, ya!</string>
+    <string name="topads_dashboard_home_coachmark_5_title">Ada yang baru juga di sini!</string>
+    <string name="topads_dashboard_home_coachmark_5_desc">Tersedia 6 topik artikel tentang TopAds untukmu. Biar makin kenal TopAds, yuk pilih topik mana yang mau kamu baca.</string>
+
+    <string name="topads_dashboard_iklan_google">Iklan Google</string>
+    <string name="topads_dashboard_iklan_banner">Iklan Banner</string>
+    <string name="topads_dashboard_iklan_tanpa_modal">Iklan Tanpa Modal</string>
+    <string name="topads_education_title">Pusat Edukasi TopAds</string>
+    <string name="topads_education_pengenalan_topads">Pengenalan TopAds</string>
+    <string name="topads_education_tipe_tipe_topads">Tipe-tipe Iklan TopAds</string>
+    <string name="topads_education_seputar_topads">Seputar Kredit TopAds</string>
+    <string name="topads_education_tingkatkan_topads">Tingkatkan Performa Iklan</string>
+    <string name="topads_education_kisah_sukses_topads">Kisah Sukses Penjual</string>
+    <string name="topads_education_tips_lainnya_topads">Tips Lainnya</string>
+    <string name="topads_education_article_frag_title">Ayo kenalan lebih dekat dengan TopAds dan pelajari cara beriklan yang efektif di TopAds.</string>
+
+    <string name="topads_dashboard_potensi_tampil_str"><![CDATA[Potensi tampil <font color="#03AC0E" size="14"><b>%s kali/hari</b></font>]]></string>
+    <string name="topads_dashboard_kata_kunci_neg">Kata Kunci Negatif</string>
+    <string name="topads_dashboard_kata_kunci_baru">Kata kunci baru</string>
+    <string name="topads_dashboard_lihat_semua">Lihat Semua</string>
+    <string name="topads_dashboard_grup_iklan">+%d Grup Iklan Lainnya</string>
+    <string name="topads_dashboard_kata_kunci_yang">Kata kunci yang disarankan untuk</string>
+    <string name="topads_dashboard_atur_kata_kunci">Atur Kata Kunci</string>
+    <string name="topads_dashboard_atur_anggaran_harian">Atur Anggaran Harian</string>
+    <string name="topads_dashboard_atur_iklannya">Atur Iklannya</string>
+    <string name="topads_dashboard_produk_berpotensi">Produk Berpotensi</string>
+    <string name="topads_dashboard_potensi_tampil">Potensi Tampil</string>
+    <string name="topads_dashboard_kali_hari_value"><![CDATA[<b><font size="17">+%d</font></b> kali/hari]]></string>
+    <string name="topads_dashboard_produk_berpostensi_desc"><![CDATA[<b><font size=17">%d produkmu</font></b> lagi banyak dicari, nih! Yuk, ikuti trennya dan iklankan produkmu.]]></string>
+    <string name="topads_dashboard_anggaran_harian_desc"><![CDATA[Wah, <b><font size=17">%d grup iklanmu</font></b> tidak tampil karena Anggaran Hariannya habis. Atur anggarannya yuk!]]></string>
+    <string name="topads_dashboard_kata_kunci_desc"><![CDATA[Ada <b><font size=17">%d grup iklanmu</font></b> yang bisa dimaksimalkan. Yuk, pakai rekomendasi kata kunci di bawah ini!]]></string>
+    <string name="topads_dashboard_n_grup_iklanmu"><![CDATA[Ada<b><font size=17"> %d </font></b>grup iklanmu]]></string>
+    <string name="topads_dashboard_recommendation_info_sheet_title">Info rekomendasi dari TopAds</string>
+    <string name="topads_dashboard_recommendation_info_sheet_sub_title">Tingkatkan performa iklanmu</string>
+    <string name="topads_dashboard_recommendation_info_sheet_desc">Ikuti rekomendasi jitu dari hasil analisa kami untuk tingkatkan performa iklanmu!</string>
+    <string name="topads_dash_deleted_group_empty_result_title">Tidak ada iklan di periode ini</string>
+    <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
 </resources>
 

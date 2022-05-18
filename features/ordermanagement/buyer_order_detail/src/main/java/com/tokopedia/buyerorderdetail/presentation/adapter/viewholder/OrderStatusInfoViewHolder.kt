@@ -28,6 +28,7 @@ class OrderStatusInfoViewHolder(
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val maskTriggerCopyArea = itemView?.findViewById<View>(R.id.maskTriggerCopyArea)
     private val icBuyerOrderDetailCopyInvoice = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailCopyInvoice)
     private val icBuyerOrderDetailDeadline = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailDeadline)
     private val tvBuyerOrderDetailSeeInvoice = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeInvoice)
@@ -74,13 +75,13 @@ class OrderStatusInfoViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.icBuyerOrderDetailCopyInvoice -> copyInvoice()
+            R.id.maskTriggerCopyArea -> copyInvoice()
             R.id.tvBuyerOrderDetailSeeInvoice -> goToPrintInvoicePage()
         }
     }
 
     private fun setupClickListener() {
-        icBuyerOrderDetailCopyInvoice?.setOnClickListener(this)
+        maskTriggerCopyArea?.setOnClickListener(this)
         tvBuyerOrderDetailSeeInvoice?.setOnClickListener(this)
     }
 
@@ -89,11 +90,13 @@ class OrderStatusInfoViewHolder(
             tvBuyerOrderDetailSeeInvoice?.gone()
             tvBuyerOrderDetailInvoice?.gone()
             icBuyerOrderDetailCopyInvoice?.gone()
+            maskTriggerCopyArea?.gone()
         } else {
             tvBuyerOrderDetailInvoice?.text = invoice
             tvBuyerOrderDetailInvoice?.show()
             tvBuyerOrderDetailSeeInvoice?.show()
             icBuyerOrderDetailCopyInvoice?.show()
+            maskTriggerCopyArea?.show()
         }
     }
 
@@ -120,9 +123,9 @@ class OrderStatusInfoViewHolder(
     private fun copyInvoice() {
         element?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                icBuyerOrderDetailCopyInvoice?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                maskTriggerCopyArea?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             } else {
-                icBuyerOrderDetailCopyInvoice?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                maskTriggerCopyArea?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
             Utils.copyText(itemView.context, LABEL_INVOICE, it.invoice.invoice)
             showToaster(itemView.context.getString(R.string.message_invoice_copied))

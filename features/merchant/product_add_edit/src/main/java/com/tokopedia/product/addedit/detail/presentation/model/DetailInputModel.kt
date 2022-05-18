@@ -19,7 +19,6 @@ data class DetailInputModel(
         var currentProductName: String = "", // product name, before do editing
         var categoryName: String = "",
         var categoryId: String = "",
-        var catalogId: String = "",
         var price: BigInteger = 0.toBigInteger(),
         var stock: Int = DEFAULT_STOCK_VALUE,
         var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,

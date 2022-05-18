@@ -1,0 +1,34 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="app_name">campaign_list</string>
+    <string name="active_campaign_list">Daftar Campaign Aktif</string>
+    <string name="search_active_campaign">Cari Campaign Aktif</string>
+    <string name="another_campaign_type_wording">Tipe campaign lainnya akan segera hadir, ya.</string>
+    <string name="campaign_type">Tipe Campaign</string>
+    <string name="campaign_status">Status Campaign</string>
+    <string name="no_active_campaign_title">Belum ada campaign %1$s yang aktif</string>
+    <string name="no_active_campaign_wording">Saat ini, kamu hanya bisa membagikan campaign %1$s. Yuk, buat %1$s dulu untuk tarik calon pembeli!</string>
+    <string name="action_share">Bagikan</string>
+    <string name="action_apply">Terapkan</string>
+    <string name="label_coming_soon">Segera Hadir</string>
+    <string name="campaign_list_product_quantity_label">%s Produk</string>
+    <string name="campaign_time_template" tools:ignore="ExtraTranslation">%s WIB</string>
+    <string name="campaign_list_label_status">Status</string>
+    <string name="campaign_error_fetch_campaign_list">Ada gangguan dirumah Toped. Coba lagi atau kembali nanti</string>
+    <string name="no_internet_error_message">Tidak ada koneksi internet</string>
+    <string name="campaign_error_fetch_metadata">Sedang terjadi gangguan, coba beberapa saat lagi</string>
+    <string name="retry">Ulangi</string>
+    <string name="ok">Oke</string>
+
+    <!-- share template -->
+    <string name="campaign_list_share_bottom_sheet_title">Rilisan Spesial dari %s</string>
+    <string name="campaign_list_share_text">Wah, ada %s dari %s di \@Tokopedia, lho. Mulai %s pukul %s! Cek sekarang, yuk!</string>
+    <string name="campaign_list_ongoing_share_text">Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s!</string>
+    <string name="campaign_list_share_title_og">%s dari %s</string>
+    <string name="campaign_list_share_desc_og">Dapatkan produk Rilisan Spesial dari %s, selama stok tersedia. Yuk, pasang pengingatnya!</string>
+    <string name="campaign_list_ongoing_share_desc_og">Dapatkan produk Rilisan Spesial dari %s. Jangan sampai ketinggalan!</string>
+
+    <!-- id tag -->
+    <item name="active_campaign" type="id"/>
+
+</resources>

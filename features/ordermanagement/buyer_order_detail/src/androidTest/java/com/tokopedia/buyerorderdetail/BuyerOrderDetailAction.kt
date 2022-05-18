@@ -111,7 +111,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyInvoice(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopyInvoice)))
+        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.maskTriggerCopyArea)))
     }
 
     private fun scrollToSeeInvoice(activity: AppCompatActivity) {
@@ -135,7 +135,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyAWB(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(activity.getString(R.string.copy_label_awb_number)))))
+        scrollThroughUntilViewVisible(activity, firstView(allOf(withId(R.id.maskTriggerCopyArea), withTagStringValue(activity.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun waitUntilViewVisible(matcher: Matcher<View>) {
@@ -209,7 +209,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickCopyInvoice() {
-        clickView(firstView(withId(R.id.icBuyerOrderDetailCopyInvoice)))
+        clickView(firstView(withId(R.id.maskTriggerCopyArea)))
     }
 
     private fun clickSeeInvoice() {
@@ -233,7 +233,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickCopyAWB(context: Context) {
-        clickView(firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(context.getString(R.string.copy_label_awb_number)))))
+        clickView(firstView(allOf(withId(R.id.maskTriggerCopyArea), withTagStringValue(context.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun clickPrimaryActionButton() {

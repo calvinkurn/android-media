@@ -204,7 +204,7 @@
 
                 <include
                     android:id="@+id/top_layout"
-                    layout="@layout/item_select_all"
+                    layout="@layout/header_select_all"
                     android:visibility="gone"
                     tools:visibility="visible" />
 

@@ -3,10 +3,10 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.ImageButton
 import com.tokopedia.product.manage.databinding.WidgetHeaderBinding
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 
 class HeaderWidget : BaseCustomView {
@@ -27,7 +27,7 @@ class HeaderWidget : BaseCustomView {
 
     val title: Typography?
         get() = binding?.title
-    val arrow: ImageButton?
+    val arrow: UnifyImageButton?
         get() = binding?.arrow
 
     private fun init() {

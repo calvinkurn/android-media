@@ -110,39 +110,4 @@
             app:unifyButtonVariant="ghost"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAllCaps="false"
-            android:layout_marginEnd="4dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/old_cart_checkout_btn"
-            android:text="@string/old_cart_checkout"
-            app:unifyButtonType="alternate"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost"/>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAllCaps="false"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/new_cart_checkout_btn"
-            android:text="@string/new_cart_checkout_bundling"
-            app:unifyButtonType="alternate"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost"/>
-    </LinearLayout>
-
 </LinearLayout>

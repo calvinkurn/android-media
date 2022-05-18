@@ -217,10 +217,10 @@ class CommonTopupBillsAnalytics {
     }
 
     //#13
-    fun clickViewErrorToasterTelcoAddBills(category: String) {
+    fun clickViewErrorToasterTelcoAddBills(category: String, errorMessage: String) {
         val data = DataLayer.mapOf(
                 TrackAppUtils.EVENT_ACTION, "view error - toaster box",
-                TrackAppUtils.EVENT_LABEL, category)
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, errorMessage))
         data.addGeneralViewAddBills()
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -421,6 +421,48 @@ class CommonTopupBillsAnalytics {
                 TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
                 TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_FAV_NUMBER_AND_CONTACT,
                 TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber - $clickPosition",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickMenuFavoriteNumberDelete(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_DELETE_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickMenuFavoriteNumberModify(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_UBAH_NAMA_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickMenuCancelFavoriteNumberModify(categoryName: String, operatorName: String, loyaltyStatus: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.CLICK_DIGITAL,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_X_ON_KEBAB_MENU,
+                TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}",
                 DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                 DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                 DigitalTrackingConst.Label.USER_ID, userId

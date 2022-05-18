@@ -74,34 +74,42 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         }
     }
 
+    //shop performance
     fun clickHereTickerPenalty() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_DETAIL_PENALTY)
     }
 
+    //shop performance
     fun clickMenuPenalty() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_CHECK_PENALTY)
     }
 
+    //shop performance
     fun clickMenuCompleteInfo() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_COMPLETE_INFO)
     }
 
+    //shop performance - pm
     fun clickPowerMerchantSection(isNewSeller: Boolean) {
         sendShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, CLICK_YOUR_SHOP_GET_PM, isNewSeller)
     }
 
+    //shop performance - rm
     fun clickSeeAllBenefitInRM(isNewSeller: Boolean) {
         sendShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_ALL_BENEFIT, isNewSeller)
     }
 
+    //shop penalty
     fun clickLearMorePenaltyPage() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, CLICK_LEARN_MORE)
     }
 
+    //shop penalty - detail
     fun clickLearMoreHelpCenterPenaltyDetail() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, CLICK_CONTACT_HELP_CENTER)
     }
 
+    //shop performance
     fun clickMerchantToolsRecommendation(identifier: String) {
         val toolsLabel = when (identifier) {
             FREE_SHIPPING_IDENTIFIER -> FREE_SHIPPING
@@ -122,58 +130,72 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         tracker.sendGeneralEvent(mapData)
     }
 
+    //shop performance
     fun impressTickerPenaltyShopScore() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_PENALTY_DETAIL)
     }
 
+    //shop performance
     fun impressMenuPenalty() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_CHECK_PENALTY)
     }
 
+    //shop performance
     fun impressMenuInfoPage() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_COMPLETE_INFO)
     }
 
+    //shop performance - pm
     fun impressPotentialPowerMerchant(isNewSeller: Boolean) {
         impressShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_GET_PM, isNewSeller)
     }
 
+    //shop performance - rm
     fun impressSeeAllBenefitPowerMerchant(isNewSeller: Boolean) {
         impressShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
     }
 
+    //shop penalty
     fun impressLearnMorePenaltyPage() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_LEARN_MORE)
     }
 
+    //shop penalty - detail
     fun impressHelpCenterPenaltyDetail() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_CALL_HELP_CENTER)
     }
 
+    //shop performance - new seller
     fun impressWatchVideoNewSeller(isNewSeller: Boolean) {
         impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_WATCH_VIDEO, isNewSeller)
     }
 
+    //shop performance - new seller
     fun clickWatchVideoNewSeller() {
         sendShopScoreItemEventNewSeller(CLICK_WATCH_VIDEO)
     }
 
+    //shop performance - new seller
     fun clickLearnShopPerformanceNewSeller() {
         sendShopScoreItemEventNewSeller(CLICK_LEARN_SHOP_PERFORMANCE)
     }
 
+    //shop performance - new seller
     fun impressLearnShopPerformanceNewSeller(isNewSeller: Boolean) {
         impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_LEARN_SHOP_PERFORMANCE, isNewSeller)
     }
 
+    //shop performance - new seller
     fun clickHelpCenterFaqNewSeller() {
         sendShopScoreItemEventNewSeller(CLICK_HELP_CENTER)
     }
 
+    //shop performance - new seller
     fun impressHelpCenterFaqNewSeller(isNewSeller: Boolean) {
         impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_HELP_CENTER, isNewSeller)
     }
 
+    //shop performance
     fun impressMerchantToolsRecommendation(identifier: String) {
         val toolsLabel = when (identifier) {
             FREE_SHIPPING_IDENTIFIER -> FREE_SHIPPING

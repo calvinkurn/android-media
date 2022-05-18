@@ -259,10 +259,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
         }
         if (filterModel.canFilterFreeRapidTest && filterModel.isFreeRapidTest) {
-            sqlStringBuilder.append("FlightJourneyTable.hasFreeRapidTest = 1 AND ")
+            sqlStringBuilder.append("FlightJourneyTable.freeRapidTestLabel is null or FlightJourneyTable.freeRapidTestLabel = ''  AND ")
         }
         if (filterModel.canFilterSeatDistancing && filterModel.isSeatDistancing) {
-            sqlStringBuilder.append("FlightJourneyTable.isSeatDistancing = 1 AND ")
+            sqlStringBuilder.append("FlightJourneyTable.seatDistancingLabel is null or FlightJourneyTable.seatDistancingLabel = '' AND ")
         }
         sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
 

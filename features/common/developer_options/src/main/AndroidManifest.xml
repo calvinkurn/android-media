@@ -51,6 +51,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
+        <activity
+            android:name=".applink.presentation.activity.AppLinkListActivity"
+            android:label="@string/applink_list"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
             android:name=".presentation.service.DeleteFirebaseTokenService"
             android:exported="false" />

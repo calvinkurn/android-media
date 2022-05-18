@@ -19,6 +19,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class InspirationCarouselOptionListViewHolder(
         itemView: View,
@@ -148,7 +149,7 @@ class InspirationCarouselOptionListViewHolder(
                 else -> Color.parseColor(this)
             }
         } catch (throwable: Throwable){
-            throwable.printStackTrace()
+            Timber.w(throwable)
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
         }
     }

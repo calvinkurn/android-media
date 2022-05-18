@@ -23,13 +23,14 @@ object FileCamera {
         )
     }
 
-    fun createPhoto(captureSize: Size?, byteArray: ByteArray, invoke: (File?) -> Unit) {
+    fun createPhoto(captureSize: Size?, byteArray: ByteArray?, invoke: (File?) -> Unit) {
         val compressFormat = Bitmap.CompressFormat.JPEG
         val nativeCaptureSize = captureSize?: return
+        val imageByteData = byteArray?: return
 
         try {
             CameraUtils.decodeBitmap(
-                byteArray,
+                imageByteData,
                 nativeCaptureSize.width,
                 nativeCaptureSize.height
             ) {

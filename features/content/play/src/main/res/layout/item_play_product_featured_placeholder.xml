@@ -1,71 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/play_product_featured_width"
-    android:layout_height="@dimen/play_product_featured_height"
-    android:background="@drawable/bg_play_product_featured"
-    android:padding="@dimen/spacing_lvl3"
+    android:layout_height="@dimen/play_product_featured_placeholder_height"
+    app:rcl_cornerRadius="@dimen/play_featured_product_radius"
     >
 
     <View
         android:id="@+id/ph_product_image"
         style="@style/PlayPlaceholderLight"
-        android:layout_width="@dimen/play_product_image_size"
-        android:layout_height="@dimen/play_product_image_size"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@tools:sample/avatars"
         />
 
-    <View
-        android:id="@+id/ph_product_title"
-        style="@style/PlayPlaceholderLight"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
-        android:layout_marginStart="@dimen/play_product_line_title_image_margin"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toTopOf="@id/ph_product_ori_price"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_price_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ph_product_image"
-        app:layout_constraintTop_toTopOf="@id/ph_product_image"
-        app:layout_constraintVertical_chainStyle="packed"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/Unify_N0"
+        >
 
-    <View
-        android:id="@+id/ph_product_ori_price"
-        style="@style/PlayPlaceholderLight"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toTopOf="@id/ph_product_final_price"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/ph_product_title"
-        app:layout_constraintTop_toBottomOf="@id/ph_product_title"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
-        />
+        <View
+            style="@style/PlayPlaceholderLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_placeholder_product_featured_text_height"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
+            app:layout_constraintBottom_toTopOf="@id/ph_slashed_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/ph_slashed_price"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.6"
+            />
 
-    <View
-        android:id="@+id/ph_product_final_price"
-        style="@style/PlayPlaceholderLight"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_placeholder_product_featured_text_height"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/ph_product_image"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/ph_product_title"
-        app:layout_constraintTop_toBottomOf="@id/ph_product_ori_price"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.4"
-        />
+        <View
+            android:id="@+id/ph_slashed_price"
+            style="@style/PlayPlaceholderLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/play_placeholder_product_featured_text_height"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.4"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

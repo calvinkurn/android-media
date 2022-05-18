@@ -1,6 +1,10 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
+import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
+import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoListItemUiModel(
@@ -13,48 +17,31 @@ data class PromoListItemUiModel(
         return typeFactory.type(this)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PromoListItemUiModel
-
-        if (uiData != other.uiData) return false
-        if (uiState != other.uiState) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = uiData.hashCode()
-        result = 31 * result + uiState.hashCode()
-        return result
-    }
-
     data class UiData(
+            var promoId: String = "",
             var uniqueId: String = "",
             var shopId: Int = 0,
-            var title: String = "",
-            var subTitle: String = "",
-            var errorMessage: String = "",
-            var imageResourceUrls: List<String> = emptyList(),
             var parentIdentifierId: Int = 0,
+            var title: String = "",
+            var currencyDetailStr: String = "",
+
+            var errorMessage: String = "",
+            var errorIcon: String = "",
             var benefitAmount: Int = 0,
             var promoCode: String = "",
             var couponAppLink: String = "",
-            var currencyDetailStr: String = "",
-            var coachMark: UiCoachmarkData = UiCoachmarkData(),
+            var coachMark: PromoCoachmark = PromoCoachmark(),
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
-            var clashingInfo: MutableMap<String, String> = mutableMapOf(),
+            var clashingInfos: List<ClashingInfo> = emptyList(),
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
-            var currentClashingPromo: MutableList<String> = mutableListOf()
-    )
-
-    data class UiCoachmarkData(
-            val isShown: Boolean = false,
-            val title: String = "",
-            val content: String = ""
+            var currentClashingPromo: MutableList<String> = mutableListOf(),
+            var promoInfos: List<PromoInfo> = emptyList(),
+            var remainingPromoCount: Int = 0,
+            var tabId: String = "",
+            var shippingOptions: String = "",
+            var paymentOptions: String = "",
+            var benefitDetail: BenefitDetail = BenefitDetail()
     )
 
     data class UiState(
@@ -63,12 +50,10 @@ data class PromoListItemUiModel(
             var isAttempted: Boolean = false,
             var isCausingOtherPromoClash: Boolean = false,
             var isRecommended: Boolean = false,
-            var isDisabled: Boolean = false
-    ) {
-        companion object {
-            const val STATE_IS_ENABLED = "enabled"
-            const val STATE_IS_DISABLED = "disabled"
-        }
-    }
+            var isDisabled: Boolean = false,
+            var isHighlighted: Boolean = false,
+            var isUpdateSelectionStateAction: Boolean = false,
+            var isLastPromoItem: Boolean = false
+    )
 
 }

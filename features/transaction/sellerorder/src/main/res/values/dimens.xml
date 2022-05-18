@@ -22,6 +22,6 @@
     <dimen name="som_detail_welcome_illustration_horizontal_margin">50dp</dimen>
 
     <!-- order extension -->
-    <dimen name="som_order_extension_bottom_sheet_long_description_shimmer_width">304</dimen>
-    <dimen name="som_order_extension_bottom_sheet_short_description_shimmer_width">249</dimen>
+    <dimen name="som_order_extension_bottom_sheet_long_description_shimmer_width">304dp</dimen>
+    <dimen name="som_order_extension_bottom_sheet_short_description_shimmer_width">249dp</dimen>
 </resources>

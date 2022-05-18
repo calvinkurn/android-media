@@ -11,7 +11,8 @@ data class NavigationSellerSearchUiModel(
         override val appUrl: String? = "",
         override val url: String? = "",
         override val keyword: String? = "",
-        override val section: String? = ""
+        override val section: String? = "",
+        val subItems: List<NavigationSellerSearchSubItemUiModel> = emptyList()
 ): ItemSellerSearchUiModel(), BaseSuggestionSearchSeller {
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)

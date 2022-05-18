@@ -5,7 +5,7 @@ import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -28,7 +28,7 @@ class RepurchaseProductCardListener(
         AtcVariantHelper.goToAtcVariant(
             context = context,
             productId = item.id,
-            pageSource = TokoNowHomeFragment.SOURCE,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = item.shopId,
             startActivitResult = startActivityForResult

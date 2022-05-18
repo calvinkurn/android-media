@@ -23,9 +23,8 @@ import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
-    var balanceType: Int? = null,
-    var isTokopointsOrOvoFailed: Boolean = false,
-    var isGopayEligible: Boolean? = null
+    var balanceType: Int? = TYPE_STATE_2,
+    var isTokopointsOrOvoFailed: Boolean = false
 ) {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
@@ -77,44 +76,14 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        if (isGopayEligible != null) {
-            when (balanceType) {
-                TYPE_STATE_1 -> {
-                    balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
 
-                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-                }
-                TYPE_STATE_2 -> {
-                    if (isGopayEligible != null && isGopayEligible == true) {
-                        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
-                        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                    } else {
-                        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                        balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-                        balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = resetDrawerItem(
-                            BALANCE_POSITION_FOURTH)
-                    }
-                }
-                TYPE_STATE_3 -> {
-                    balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                    balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-                }
-            }
-        } else {
-            balanceDrawerItemModels.clear()
-        }
+        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
     }
 
-    private fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
+    fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
         val balance =  balanceDrawerItemModels.getOrElse(
             position
         ) { BalanceDrawerItemModel() }.copy()
@@ -131,7 +100,7 @@ data class HomeBalanceModel(
         tokopointDrawerListHomeData?.let { mapTokopoint(tokopointDrawerListHomeData) }
         homeHeaderWalletAction?.let { mapWallet(homeHeaderWalletAction) }
         pendingCashBackData?.let { mapPendingCashback(homeHeaderWalletAction, pendingCashBackData) }
-        walletAppData?.let { mapWalletApp(walletAppData, isGopayEligible?:false) }
+        walletAppData?.let { mapWalletApp(walletAppData) }
     }
 
     fun mapErrorTokopoints() {
@@ -141,13 +110,7 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible != null && isGopayEligible == true) {
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
-                } else {
-                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
-                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultTokopointsErrorState()
-                    balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = getDefaultCouponsRewardsErrorState()
-                }
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
             }
             TYPE_STATE_3 -> {
                 balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultTokopointsErrorState()
@@ -260,6 +223,12 @@ data class HomeBalanceModel(
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
+    fun isGopayActive(): Boolean {
+        val isGopayActive = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS)
+        return isGopayActive
+    }
+
     fun containsGopay(): Boolean {
         val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
                 || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
@@ -351,61 +320,39 @@ data class HomeBalanceModel(
     }
 
     private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
-        if (isGopayEligible != null && isGopayEligible == true) {
-            val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
-                val type = getDrawerType(it.type)
-                it.mapToHomeBalanceItemModel(
+        val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
+            val type = getDrawerType(it.type)
+            it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
                     defaultIconRes = mapTokopointDefaultIconRes(type)
-                )
-            }
-            val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
-            tokopointDrawerListHomeData?.tokopointsDrawerList?.coachmarkList?.getOrNull(0)?.coachmarkContent?.getOrNull(0)?.let {
-                tokopointAnimDrawerContent?.balanceCoachmark = BalanceCoachmark(
+            )
+        }
+        val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
+        tokopointDrawerListHomeData?.tokopointsDrawerList?.coachmarkList?.getOrNull(0)?.coachmarkContent?.getOrNull(0)?.let {
+            tokopointAnimDrawerContent?.balanceCoachmark = BalanceCoachmark(
                     title = it.title,
                     description = it.content
-                )
-            }
-            val alternateAnimDrawerContent = tokopointMapData?.toMutableList()?.apply {
-                remove(tokopointAnimDrawerContent)
-            }
-            tokopointAnimDrawerContent?.alternateBalanceDrawerItem = alternateAnimDrawerContent
-            if (tokopointAnimDrawerContent != null) {
-                flagStateCondition(
+            )
+        }
+        val alternateAnimDrawerContent = tokopointMapData?.toMutableList()?.apply {
+            remove(tokopointAnimDrawerContent)
+        }
+        tokopointAnimDrawerContent?.alternateBalanceDrawerItem = alternateAnimDrawerContent
+        if (tokopointAnimDrawerContent != null) {
+            flagStateCondition(
                     itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
                         balanceDrawerItemModels[it] = tokopointAnimDrawerContent
                     }
-                )
-            } else {
-                flagStateCondition(itemType = TYPE_TOKOPOINT,
-                action = {
-                    balanceDrawerItemModels[it] = getDefaultTokopointsErrorState().apply {
-                        state = STATE_ERROR
-                    }
-                })
-            }
-
+            )
         } else {
-            tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.forEach { drawerContent ->
-                val type = getDrawerType(drawerContent.type)
-                flagStateCondition(
-                    itemType = type,
+            flagStateCondition(itemType = TYPE_TOKOPOINT,
                     action = {
-                        balanceDrawerItemModels[it] = drawerContent.mapToHomeBalanceItemModel(
-                            drawerItemType = type,
-                            state = STATE_SUCCESS,
-                            defaultIconRes = mapTokopointDefaultIconRes(type)
-                        )
-                    }
-                )
-            }
-//            balanceDrawerItemModels.forEach {
-//                if (it.value.state == STATE_LOADING && ) {
-//                    balanceDrawerItemModels[it.key] = it.value.copy(state = STATE_ERROR)
-//                }
-//            }
+                        balanceDrawerItemModels[it] = getDefaultTokopointsErrorState().apply {
+                            state = STATE_ERROR
+                        }
+                    })
         }
     }
 
@@ -417,10 +364,10 @@ data class HomeBalanceModel(
         else -> null
     }
 
-    private fun mapWalletApp(walletAppData: WalletAppData?, isGopayEligible: Boolean = false) {
+    private fun mapWalletApp(walletAppData: WalletAppData?) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
-                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS, isGopayEligible = isGopayEligible)
+                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
             if (selectedBalance != null) {
                 selectedBalance.let { balance ->
                     flagStateCondition(
@@ -451,47 +398,34 @@ data class HomeBalanceModel(
         itemType: Int,
         action: (pos: Int) -> Unit
     ) {
-        if (isGopayEligible != null) {
-            when (balanceType) {
-                TYPE_STATE_1 -> {
-                    itemTypeCondition(
+        when (balanceType) {
+            TYPE_STATE_1 -> {
+                itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
                         typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
-                    )
-                }
-                TYPE_STATE_2 -> {
-                    if (isGopayEligible != null && isGopayEligible == true) {
-                        itemTypeCondition(
-                            itemType,
-                            typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                            typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                            typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                            typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                            typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
-                        )
-                    } else {
-                        itemTypeCondition(
-                            itemType,
-                            typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                            typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                            typeTokopointCondition = { action.invoke(BALANCE_POSITION_THIRD) },
-                            typeCouponCondition = { action.invoke(BALANCE_POSITION_FOURTH) },
-                            typeRewardsCondition = { action.invoke(BALANCE_POSITION_FOURTH) }
-                        )
-                    }
-                }
-                TYPE_STATE_3 -> {
-                    itemTypeCondition(
+                )
+            }
+            TYPE_STATE_2 -> {
+                itemTypeCondition(
+                        itemType,
+                        typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
+                )
+            }
+            TYPE_STATE_3 -> {
+                itemTypeCondition(
                         itemType,
                         typeTokopointCondition = { action.invoke(BALANCE_POSITION_FIRST) },
                         typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
-                    )
-                }
+                )
             }
         }
     }

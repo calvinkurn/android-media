@@ -2,7 +2,7 @@ package com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsear
 
 import android.text.TextUtils
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE

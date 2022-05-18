@@ -9,13 +9,13 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
@@ -37,8 +37,6 @@ class AddEmailViewModelTest {
 
     val context = mockk<Context>(relaxed = true)
 
-    private val testDispatcher = TestCoroutineDispatcher()
-
     private var checkEmailObserver = mockk<Observer<Result<String>>>(relaxed = true)
     private var addEmailObserver = mockk<Observer<Result<AddEmailResult>>>(relaxed = true)
 
@@ -53,7 +51,7 @@ class AddEmailViewModelTest {
     @Before
     fun setUp() {
         viewModel = AddEmailViewModel(
-                testDispatcher,
+                CoroutineTestDispatchersProvider,
                 checkEmaillUseCase,
                 addEmaillUseCase
         )

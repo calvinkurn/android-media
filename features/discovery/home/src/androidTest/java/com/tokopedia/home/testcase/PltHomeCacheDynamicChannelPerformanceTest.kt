@@ -1,6 +1,5 @@
 package com.tokopedia.home.testcase
 
-import android.content.Context
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
@@ -10,13 +9,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.home.R
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -42,7 +39,6 @@ class PltHomeCacheDynamicChannelPerformanceTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             setupRemoteConfig()
             setupIdlingResource()
@@ -73,13 +69,6 @@ class PltHomeCacheDynamicChannelPerformanceTest {
         activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun disableCoachMark(){
-        val sharedPrefs = InstrumentationRegistry
-                .getInstrumentation().context
-                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
-    }
 
     private fun isCacheDataSource(datasource: String): Boolean {
         return datasource == TYPE_CACHE

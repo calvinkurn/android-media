@@ -2,6 +2,8 @@ package com.tokopedia.seller.menu.common.domain.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 
 data class UserShopInfoResponse(
@@ -14,6 +16,9 @@ data class UserShopInfoResponse(
         @Expose
         @SerializedName("goldGetPMSettingInfo")
         val goldGetPMSettingInfo: GoldGetPMSettingInfo = GoldGetPMSettingInfo(),
+        @Expose
+        @SerializedName("goldGetPMShopInfo")
+        val goldGetPMShopInfo: GoldGetPMShopInfo = GoldGetPMShopInfo(),
         @Expose
         @SerializedName("goldGetPMOSStatus")
         val goldGetPMOSStatus: GoldGetPMOSStatus = GoldGetPMOSStatus()
@@ -94,6 +99,26 @@ data class UserShopInfoResponse(
             @SerializedName("period_type_pm_pro")
             val periodTypePmPro: String = ""
     )
+
+    data class GoldGetPMShopInfo(
+        @Expose
+        @SerializedName("kyc_status_id")
+        val kycStatusId: String? = "",
+        @Expose
+        @SerializedName("is_eligible_pm")
+        val isEligiblePm: Boolean? = false,
+        @Expose
+        @SerializedName("is_eligible_pm_pro")
+        val isEligiblePmPro: Boolean? = false,
+    ) {
+        fun isPendingKyc(): Boolean {
+            return kycStatusId.toIntSafely() == KYCStatusId.PENDING
+        }
+
+        fun isVerifiedKyc(): Boolean {
+            return kycStatusId.toIntSafely() == KYCStatusId.VERIFIED
+        }
+    }
 
     data class GoldGetPMOSStatus(
             @Expose

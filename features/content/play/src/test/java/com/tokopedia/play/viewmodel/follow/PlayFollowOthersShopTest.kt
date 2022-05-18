@@ -8,10 +8,11 @@ import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -80,8 +81,8 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
-                    PlayPartnerFollowStatus.Followable(isFollowing = true)
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.Followed)
                 )
             }
         }
@@ -105,8 +106,8 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
         }
@@ -129,8 +130,8 @@ class PlayFollowOthersShopTest {
             submitAction(ClickFollowAction)
         } thenVerify { event ->
             withState {
-                partner.followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(followStatus = PartnerFollowableStatus.NotFollowed)
                 )
             }
 

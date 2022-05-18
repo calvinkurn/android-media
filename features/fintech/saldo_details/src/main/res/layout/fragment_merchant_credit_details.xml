@@ -5,11 +5,22 @@
     android:id="@+id/mcl_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/unify_space_4"
     app:card_type="shadow">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_alignTop="@+id/mcl_parent_rl"
+            android:layout_alignBottom="@+id/mcl_parent_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/saldo_merchant_credit_background" />
+
         <RelativeLayout
-            android:id="@+id/merchant_detail_rl"
+            android:id="@+id/mcl_parent_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
@@ -20,8 +31,8 @@
                 android:layout_width="@dimen/unify_space_24"
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_alignParentStart="true"
-                app:srcCompat="@drawable/ic_refund_disbursement"
-                android:contentDescription="@string/merchant_credit_mcl_logo_text" />
+                android:contentDescription="@string/merchant_credit_mcl_logo_text"
+                app:srcCompat="@drawable/ic_refund_disbursement" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_title"
@@ -74,7 +85,7 @@
                 android:layout_below="@+id/mcl_title"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:lineSpacingExtra="@dimen/sp_4"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 app:typographyType="body_2"
@@ -100,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mcl_info_list"
                 android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginBottom="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_4"
                 android:background="@drawable/bg_saldo_round_corner_solid_grey"
                 android:padding="@dimen/unify_space_8"
                 android:visibility="visible">
@@ -127,6 +138,12 @@
                     app:typographyType="small"
                     tools:text="Status: Menunggu Verifikasi Aplikasi" />
             </RelativeLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/unify_space_4"
+                android:layout_below="@+id/mcl_box_layout" />
         </RelativeLayout>
+    </RelativeLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

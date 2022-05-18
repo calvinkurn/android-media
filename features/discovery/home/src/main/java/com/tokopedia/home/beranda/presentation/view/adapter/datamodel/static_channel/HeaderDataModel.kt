@@ -95,20 +95,6 @@ data class HeaderDataModel(
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = homeHeaderWalletActionData?.hashCode() ?: 0
-        result = HASH_CODE * result + (tokoPointDrawerData?.hashCode() ?: 0)
-        result = HASH_CODE * result + (tokopointsDrawerHomeData?.hashCode() ?: 0)
-        result = HASH_CODE * result + (tokopointsDrawerBBOHomeData?.hashCode() ?: 0)
-        result = HASH_CODE * result + (cashBackData?.hashCode() ?: 0)
-        result = HASH_CODE * result + isPendingTokocashChecked.hashCode()
-        result = HASH_CODE * result + isWalletDataError.hashCode()
-        result = HASH_CODE * result + isTokoPointDataError.hashCode()
-        result = HASH_CODE * result + isUserLogin.hashCode()
-        result = HASH_CODE * result + homeBalanceModel.hashCode()
-        return result
-    }
-
     companion object {
         private const val HASH_CODE = 31
     }

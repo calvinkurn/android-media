@@ -19,7 +19,12 @@ import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -319,5 +324,26 @@ class DeleteCartTest {
 
         //then
         assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
+    fun `WHEN bulk delete unavailable items with hidden items THEN should remove all items including hidden items`() {
+        //given
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.toggleUnavailableItemsAccordion()
+
+        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
+        val slotUnavailableCartIdList = slot<List<String>>()
+        coEvery { deleteCartUseCase.setParams(capture(slotUnavailableCartIdList)) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.bulkDeleteUnavailableCartItems()
+
+        //then
+        assert(slotUnavailableCartIdList.captured.size == 2)
     }
 }

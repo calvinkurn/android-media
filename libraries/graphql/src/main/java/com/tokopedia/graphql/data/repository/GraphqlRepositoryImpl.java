@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlError;
@@ -82,7 +83,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
-                    String operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
+                    String operationName = CommonUtils.getFullOperationName(requests.get(i));
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -134,7 +135,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
-                operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
+                operationName = CommonUtils.getFullOperationName(requests.get(i));
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }

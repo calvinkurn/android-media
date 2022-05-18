@@ -99,6 +99,10 @@ public class KycUserProjectInfoPojo {
         }
 
         public boolean isSelfie() { return isSelfie; }
+
+        public void setSelfie(Boolean selfie) {
+            isSelfie = selfie;
+        }
     }
 
     public class TypeList {

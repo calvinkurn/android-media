@@ -29,7 +29,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticaddaddress.R
@@ -216,7 +215,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.clearFocus()
         et_receiver_name.clearFocus()
         et_phone.clearFocus()
-        LogisticUserConsentHelper().displayUserConsent(activity as Context, user_consent, getString(R.string.add_new_address_save))
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, user_consent, getString(R.string.add_new_address_save), if(!isMismatch && !isMismatchSolved) LogisticUserConsentHelper.ANA_POSITIVE else LogisticUserConsentHelper.ANA_NEGATIVE)
     }
 
     private fun setViewListener() {

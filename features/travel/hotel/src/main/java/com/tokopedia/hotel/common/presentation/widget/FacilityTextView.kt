@@ -19,7 +19,7 @@ class FacilityTextView(context: Context) : BaseCustomView(context) {
 
     fun setIconAndText(iconUrl: String, text: String) {
         facility_icon.loadIcon(iconUrl){
-            setPlaceHolder(R.drawable.ic_hotel_loading_image)
+            setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
         }
         facility_text_view.text = text
     }

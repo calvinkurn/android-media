@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.core.app.NotificationManagerCompat;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -23,6 +22,7 @@ import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
+import com.tokopedia.pushnotif.util.LoggerUtil;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -235,11 +235,13 @@ public class PushNotification {
 
     private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
                                       int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
-
-        notificationManagerCompat.notify(notificationType, notifChat);
-
+        try{
+            Notification notifChat = new GeneralNotificationFactory(context)
+                    .createNotification(applinkNotificationModel, notificationType, notificationType);
+            notificationManagerCompat.notify(notificationType, notifChat);
+        }catch(Throwable th){
+            LoggerUtil.recordErrorServerLog("notifyGeneral", th);
+        }
     }
 
     private static boolean isNotificationEnabled(Context context) {
@@ -247,6 +249,8 @@ public class PushNotification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
+            if(channel == null)
+                return true;
             return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
         } else {
             return isAllNotificationEnabled;

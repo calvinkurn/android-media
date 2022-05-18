@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.di.module
 
 import android.content.Context
+import com.tokopedia.atc_common.domain.mapper.AddToCartBundleDataMapper
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -12,8 +14,7 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -42,6 +43,20 @@ class ShopPageHomeModule {
                                         addToCartDataMapper: AddToCartDataMapper,
                                         chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartOccMultiUseCase {
         return AddToCartOccMultiUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToCartBundleUseCase(
+            graphqlRepository: GraphqlRepository,
+            addToCartBundleDataMapper: AddToCartBundleDataMapper,
+            chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartBundleUseCase {
+        return AddToCartBundleUseCase(
+                graphqlRepository,
+                addToCartBundleDataMapper,
+                chosenAddressRequestHelper
+        )
     }
 
     @ShopPageHomeScope
@@ -115,14 +130,14 @@ class ShopPageHomeModule {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          mapper: PlayWidgetUiMapper,
                           connectionUtil: PlayWidgetConnectionUtil,
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
             playWidgetReminderUseCase,
             playWidgetUpdateChannelUseCase,
-            mapperProviders,
+            mapper,
             connectionUtil
         )
     }

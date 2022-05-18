@@ -3,7 +3,6 @@ package com.tokopedia.filter.bottomsheet.filtercategorydetail
 import com.tokopedia.filter.bottomsheet.getCategoryFilter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
 
@@ -48,6 +47,7 @@ internal class OnViewCreatedTest : FilterCategoryDetailViewModelTestFixtures() {
         `Then assert header view model list`(categoryFilter)
         `Then assert filter category header view model is selected`(0)
         `Then assert content view model list`(categoryFilter.options[0])
+        `Then assert button reset visibility`(false)
     }
 
     private fun `When view created`() {
@@ -103,6 +103,7 @@ internal class OnViewCreatedTest : FilterCategoryDetailViewModelTestFixtures() {
 
         `Then assert filter category header view model is selected`(selectedCategoryFilterPosition)
         `Then assert filter category content view model is selected`(selectedLevelTwoCategoryPosition, selectedLevelThreeCategoryPosition)
+        `Then assert button reset visibility`(true)
     }
 
     private fun `Then assert filter category content view model is selected`(

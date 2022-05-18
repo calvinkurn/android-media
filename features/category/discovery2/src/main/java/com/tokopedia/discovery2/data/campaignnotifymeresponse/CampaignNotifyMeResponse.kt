@@ -10,7 +10,7 @@ class CampaignNotifyMeResponse(
             @SerializedName("campaign_id")
             val campaignID: Int? = 0,
             @SerializedName("product_id")
-            val productID: Int? = 0,
+            val productID: Long? = 0,
             @SerializedName("success")
             val success: Boolean? = false,
             @SerializedName("message")

@@ -93,13 +93,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             shopId: String = "",
             isProductReview: Boolean
         ): ReadReviewFragment {
-            return ReadReviewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
-                    putString(ReviewConstants.ARGS_SHOP_ID, shopId)
-                    putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
-                }
-            }
+            val fragment = ReadReviewFragment()
+            val fragmentArguments = Bundle()
+            fragmentArguments.putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
+            fragmentArguments.putString(ReviewConstants.ARGS_SHOP_ID, shopId)
+            fragmentArguments.putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
+            fragment.arguments = fragmentArguments
+            return fragment
         }
     }
 
@@ -257,7 +257,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onLikeButtonClicked(
         reviewId: String,
-        shopId: String,
         likeStatus: Int,
         index: Int
     ) {
@@ -270,7 +269,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             isLiked(likeStatus),
             viewModel.getProductId()
         )
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
+        viewModel.toggleLikeReview(reviewId, likeStatus, index)
     }
 
     override fun onShopReviewLikeButtonClicked(
@@ -289,7 +288,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             isLiked(likeStatus),
             shopId
         )
-        viewModel.toggleLikeShopReview(reviewId, shopId, productId, likeStatus, index)
+        viewModel.toggleLikeShopReview(reviewId, likeStatus, index)
     }
 
     override fun onItemImpressed(

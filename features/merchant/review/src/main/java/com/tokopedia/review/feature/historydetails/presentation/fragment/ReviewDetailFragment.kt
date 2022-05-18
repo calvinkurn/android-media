@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -46,7 +47,6 @@ import com.tokopedia.review.feature.historydetails.presentation.viewmodel.Review
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -242,7 +242,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
-                            setTicker(review.editable)
+                            setTicker(review.editable, review.editDisclaimer)
                         }
                     } else {
                         with(it.data) {
@@ -419,18 +419,19 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setTicker(isEditable: Boolean) {
+    private fun setTicker(isEditable: Boolean, editDisclaimer: String) {
         if (isEditable) {
-            binding?.reviewDetailTicker?.apply {
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
+            binding?.reviewDetailTicker?.run {
+                setTextDescription(editDisclaimer)
+                show()
             }
-            return
-        }
-        binding?.reviewDetailTicker?.apply {
-            tickerType = Ticker.TYPE_INFORMATION
-            tickerTitle = ""
-            setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
+            binding?.reviewDetailTips?.gone()
+        } else {
+            binding?.reviewDetailTips?.run {
+                description = editDisclaimer
+                show()
+            }
+            binding?.reviewDetailTicker?.gone()
         }
     }
 

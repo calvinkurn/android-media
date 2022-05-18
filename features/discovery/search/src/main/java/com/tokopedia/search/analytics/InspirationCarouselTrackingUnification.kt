@@ -7,6 +7,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option.Product
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.remoteconfig.RollenceKey.SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION as ROLLENCE_KEY
 
@@ -30,6 +31,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
 
             remoteConfig.getString(ROLLENCE_KEY, "") == ROLLENCE_KEY
         } catch (throwable: Throwable) {
+            Timber.w(throwable)
             false
         }
     }
@@ -43,7 +45,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
             SearchTracking.trackEventImpressionInspirationCarouselUnification(
                 trackingQueue,
                 data.eventLabel,
-                listOf(data.productDataLayer)
+                arrayListOf(data.productDataLayer)
             )
         else
             fallback()
@@ -55,7 +57,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
                 data.eventLabel,
                 data.product.inspirationCarouselType,
                 data.product.componentId,
-                listOf(data.productDataLayer),
+                arrayListOf(data.productDataLayer),
             )
         else
             fallback()

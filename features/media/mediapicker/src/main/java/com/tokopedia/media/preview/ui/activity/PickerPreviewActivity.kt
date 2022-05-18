@@ -160,7 +160,7 @@ open class PickerPreviewActivity : BaseActivity()
                 .distinctUntilChanged()
                 .filter { it.originalPaths.isNotEmpty() }
                 .collectLatest {
-                    val withEditor = param.get().withEditor()
+                    val withEditor = param.get().isEditorEnabled()
 
                     val buttonState = if (withEditor) {
                         PREVIEW_PAGE_LANJUT
@@ -224,7 +224,7 @@ open class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().withEditor()) {
+        if (!param.get().isEditorEnabled()) {
             navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
         }
     }

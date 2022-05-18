@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.data
 
 import android.app.Application
-import android.util.Log
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.PushController
@@ -84,7 +83,7 @@ object AmplificationDataSource {
     private fun inAppData(amplification: Amplification) {
         if (amplification.inAppData.isNotEmpty()) {
             amplification.inAppData.forEach {
-                CMInAppManager.getInstance().handleAmplificationInAppData(it)
+                CMInAppManager.getInstance().handleCMInAppAmplificationData(it)
             }
         }
     }

@@ -4,12 +4,25 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_product_manage_edit_price_multiloc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/product_manage_quick_edit_price_ticker_info"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/quickEditPriceTextField"
+        app:tickerShapeType="loose"
+        app:tickerType="information" />
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/quickEditPriceTextField"
         android:contentDescription="@string/content_desc_quickEditPriceTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ticker_product_manage_edit_price_multiloc"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_layout"

@@ -62,7 +62,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="@id/voucherTargetItem"/>
 
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherTargetPromoCodeInfoView
+    <com.tokopedia.vouchercreation.shop.create.view.customview.VoucherTargetPromoCodeInfoView
         android:id="@+id/voucherTargetPromoCodeInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

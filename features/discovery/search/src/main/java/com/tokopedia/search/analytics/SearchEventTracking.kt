@@ -47,7 +47,6 @@ interface SearchEventTracking {
             const val CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty"
             const val IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related"
             const val GENERAL_SEARCH = "general search"
-            const val CLICK_CHANGE_KEYWORD = "click ganti kata kunci"
             const val IMPRESSION_SHOP = "impression - shop"
             const val IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative"
             const val CLICK_SHOP = "click - shop"
@@ -117,6 +116,7 @@ interface SearchEventTracking {
             const val PRODUCTS = "products"
             const val IMPRESSIONS = "impressions"
             const val CLICK = "click"
+            const val LIST = "list"
         }
     }
 

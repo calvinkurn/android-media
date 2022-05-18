@@ -42,7 +42,10 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
         `Then verify tracking chips click`(clickedInspirationCarouselOption)
         `Then assert view is refreshed`(adapterPosition)
-        `Then assert get inspiration carousel chips API is called`(clickedInspirationCarouselOption.identifier)
+        `Then assert get inspiration carousel chips API is called`(
+            clickedInspirationCarouselOption.identifier,
+            clickedInspirationCarouselOption.componentId,
+        )
     }
 
     private fun `Given view already load data`(searchProductModel: SearchProductModel) {
@@ -80,7 +83,10 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         )
     }
 
-    private fun `Then assert get inspiration carousel chips API is called`(expectedIdentifier: String) {
+    private fun `Then assert get inspiration carousel chips API is called`(
+        expectedIdentifier: String,
+        expectedSRPComponentId: String,
+    ) {
         val requestParamsSlot = slot<RequestParams>()
 
         verify {
@@ -89,7 +95,8 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
         }
 
         val requestParams = requestParamsSlot.captured
-        requestParams.parameters["identifier"] shouldBe expectedIdentifier
+        requestParams.parameters[SearchApiConst.IDENTIFIER] shouldBe expectedIdentifier
+        requestParams.parameters[SearchApiConst.SRP_COMPONENT_ID] shouldBe expectedSRPComponentId
     }
 
     private fun `Then verify tracking chips click`(clickedInspirationCarouselOption: InspirationCarouselDataView.Option) {

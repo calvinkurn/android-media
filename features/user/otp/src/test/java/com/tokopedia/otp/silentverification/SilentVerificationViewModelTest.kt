@@ -116,7 +116,7 @@ class SilentVerificationViewModelTest {
         val mockNetwork = mockk<Network>(relaxed = true)
 
         /* When */
-        coEvery { getEvUrlUseCase.executeOnBackground() } returns testResult
+        coEvery { getEvUrlUseCase(Unit) } returns testResult
 
 
         viewModel.verifyBoku(mockNetwork, "url")
@@ -130,7 +130,7 @@ class SilentVerificationViewModelTest {
         val mockNetwork = mockk<Network>(relaxed = true)
 
         /* When */
-        coEvery { getEvUrlUseCase.executeOnBackground() } throws throwable
+        coEvery { getEvUrlUseCase(Unit) } throws throwable
 
         viewModel.verifyBoku(mockNetwork, "url")
 

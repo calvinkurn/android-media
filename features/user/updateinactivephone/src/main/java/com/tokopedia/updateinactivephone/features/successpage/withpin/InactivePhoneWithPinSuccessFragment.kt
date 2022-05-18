@@ -2,12 +2,10 @@ package com.tokopedia.updateinactivephone.features.successpage.withpin
 
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.successpage.BaseInactivePhoneSuccessFragment
-import com.tokopedia.utils.image.ImageUtils
 
 open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragment() {
 
@@ -16,7 +14,7 @@ open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding?.tickerInactivePhoneNumber?.hide()
-        setImageHeader()
+        setImageHeader(IMAGE_HEADER_URL_EXPEDITED)
     }
 
     override fun onClickButtonGotoHome() {
@@ -29,11 +27,6 @@ open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragmen
         return false
     }
 
-    private fun setImageHeader() {
-        ImageUtils.clearImage(viewBinding?.imgHeader)
-        viewBinding?.imgHeader?.setImageUrl(IMAGE_HEADER_URL)
-    }
-
     override fun title(): String {
         return getString(R.string.expedited_title_success_page)
     }
@@ -43,7 +36,7 @@ open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragmen
     }
 
     companion object {
-        private const val IMAGE_HEADER_URL = "https://images.tokopedia.net/img/android/user/inactive_phone_expedited_success_page.png"
+        private const val IMAGE_HEADER_URL_EXPEDITED = "https://images.tokopedia.net/img/android/user/inactive_phone_expedited_success_page.png"
         fun instance(bundle: Bundle): InactivePhoneWithPinSuccessFragment {
             return InactivePhoneWithPinSuccessFragment().apply {
                 arguments = bundle

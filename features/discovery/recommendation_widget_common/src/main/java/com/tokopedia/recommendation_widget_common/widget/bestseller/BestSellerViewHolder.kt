@@ -109,16 +109,16 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             }
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
-                        CommonMarginStartDecoration(
-                                marginStart = 12f.toDpInt()
-                        )
+                    CommonMarginStartDecoration(
+                        marginStart = 12f.toDpInt()
+                    )
                 )
             }
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
-                        CommonMarginStartDecoration(
-                                marginStart = 8f.toDpInt()
-                        )
+                    CommonMarginStartDecoration(
+                        marginStart = 8f.toDpInt()
+                    )
                 )
             }
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
@@ -144,12 +144,12 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
             annotationChipAdapter.submitList(
-                    it.filterChip.map {filter ->
-                        filter.copy(
-                                isActivated = annotationChip.title == filter.title
-                                        && !annotationChip.isActivated
-                        )
-                    }
+                it.filterChip.map {filter ->
+                    filter.copy(
+                        isActivated = annotationChip.title == filter.title
+                                && !annotationChip.isActivated
+                    )
+                }
             )
             listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition, position)
             binding?.bestSellerLoadingRecommendation?.root?.show()
@@ -164,11 +164,11 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         if (item.isTopAds) TopAdsUrlHitter(view.context).hitClickUrl(
-                CLASS_NAME,
-                item.clickUrl,
-                item.productId.toString(),
-                item.name,
-                item.imageUrl
+            CLASS_NAME,
+            item.clickUrl,
+            item.productId.toString(),
+            item.name,
+            item.imageUrl
         )
         bestSellerDataModel?.let { listener.onBestSellerClick(it, item, adapterPosition) }
     }

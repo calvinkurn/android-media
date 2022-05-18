@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thickness="4dp"
-            android:thicknessRatio="2"
-            android:useLevel="false">
+        <shape android:innerRadius="0dp" android:shape="ring" android:thickness="4dp" android:thicknessRatio="2" android:useLevel="false">
             <solid android:color="@color/Unify_N0"/>
-            <stroke
-                android:width="0.5dp"
-                android:color="@color/Unify_N100" />
+            <stroke android:width="0.5dp" android:color="@color/Unify_N100"/>
         </shape>
     </item>
 </layer-list>

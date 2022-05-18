@@ -1,5 +1,7 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.*
@@ -145,6 +147,7 @@ val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 val DEFAULT_QTY_0: Int = 0
 val DEFAULT_QTY_1: Int = 1
 
+//tokonow validation
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC
 }
@@ -166,4 +169,33 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
         )
     }
     return null
+}
+
+fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<String, MiniCartItem>?) {
+    val recomItemList = mutableListOf<RecommendationItem>()
+    recomWidget.recommendationItemList.forEach { item ->
+        val minicartcopy = miniCartMap?.toMutableMap()
+        minicartcopy?.let {
+            if (item.isProductHasParentID()) {
+                var variantTotalItems = 0
+                it.values.forEach { miniCartItem ->
+                    if (miniCartItem.productParentId == item.parentID.toString()) {
+                        variantTotalItems += miniCartItem.quantity
+                    }
+                }
+                item.updateItemCurrentStock(variantTotalItems)
+            } else {
+                item.updateItemCurrentStock(
+                    it[item.productId.toString()]?.quantity
+                        ?: 0
+                )
+            }
+        }
+        recomItemList.add(item)
+    }
+    recomWidget.recommendationItemList = recomItemList
+}
+
+fun List<MiniCartItem>.convertMiniCartToProductIdMap() : MutableMap<String, MiniCartItem> {
+    return this.associateBy({it.productId}) {it}.toMutableMap()
 }

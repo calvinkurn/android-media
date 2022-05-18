@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.presenter
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import com.google.gson.Gson
@@ -23,6 +24,22 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CREATE_TIME
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.DESCRIPTION
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_COLOR
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
@@ -34,6 +51,7 @@ import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
@@ -63,6 +81,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -74,6 +95,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -166,7 +189,7 @@ class ChatbotPresenter @Inject constructor(
                 }
                 sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
-
+                view.sendInvoiceForArticle()
             }
 
             override fun onMessage(text: String) {
@@ -394,9 +417,23 @@ class ChatbotPresenter @Inject constructor(
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String,
-                                       opponentId: String) {
-        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
-                invoiceLinkPojo, startTime, opponentId), listInterceptor)
+                                       opponentId: String,isArticleEntry: Boolean,usedBy: String) {
+
+        if (!isArticleEntry) {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendInvoice(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId
+                ), listInterceptor
+            )
+        } else {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId, usedBy
+                ), listInterceptor
+            )
+        }
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
@@ -404,6 +441,17 @@ class ChatbotPresenter @Inject constructor(
                                 opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
                 quickReply, startTime, opponentId), listInterceptor)
+    }
+
+    override fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyViewModel,
+                                startTime: String,
+                                opponentId: String,event : String, usedBy: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                messageId,
+                quickReply, startTime, opponentId, event, usedBy
+            ), listInterceptor
+        )
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
@@ -442,13 +490,18 @@ class ChatbotPresenter @Inject constructor(
             uploadImageUseCase.unsubscribe()
 
             val reqParam = HashMap<String, RequestBody>()
-            val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+            val webService = "1".toRequestBody("text/plain".toMediaTypeOrNull())
             reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
-            val params = uploadImageUseCase.createRequestParam(it.imageUrl,
-                    "/upload/attachment",
-                    "fileToUpload\"; filename=\"image.jpg",
-                    reqParam)
+            reqParam.put(
+                "id",
+                createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
+            )
+            val params = uploadImageUseCase.createRequestParam(
+                it.imageUrl,
+                "/upload/attachment",
+                "fileToUpload\"; filename=\"image.jpg",
+                reqParam
+            )
 
             uploadImageUseCase.execute(params,
                 object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
@@ -461,21 +514,23 @@ class ChatbotPresenter @Inject constructor(
                                         this.picSrc,
                                         this.picObj,
                                         it.startTime,
-                                        opponentId))
+                                        opponentId
+                                    )
+                            )
                         }
                         isUploading = false
                     }
 
-                        override fun onCompleted() {
+                    override fun onCompleted() {
 
-                        }
+                    }
 
-                        override fun onError(e: Throwable) {
-                            isUploading = false
-                            onError(e, it)
-                        }
+                    override fun onError(e: Throwable) {
+                        isUploading = false
+                        onError(e, it)
+                    }
 
-                    })
+                })
         }
 
     }
@@ -516,6 +571,48 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
+    override fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel {
+        return AttachInvoiceSingleViewModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[DESCRIPTION] ?: "",
+            url = hashMap[IMAGE_URL] ?: "",
+            id = hashMap.get(ID)!!.toLongOrZero(),
+            imageUrl = hashMap[IMAGE_URL] ?: "",
+            status = hashMap[STATUS] ?: "",
+            statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
+            title = hashMap[TITLE] ?: "",
+            amount = hashMap[TOTAL_AMOUNT] ?: ""
+        )
+    }
+
+    override fun getValuesForArticleEntry(uri: Uri): Map<String, String> {
+        return mapOf(
+            ARTICLE_ID to getQueryParam(uri, ARTICLE_ID),
+            ARTICLE_TITLE to getQueryParam(uri, ARTICLE_TITLE),
+            CODE to getQueryParam(uri, CODE),
+            CREATE_TIME to getQueryParam(uri, CREATE_TIME),
+            DESCRIPTION to getQueryParam(uri, DESCRIPTION),
+            EVENT to getQueryParam(uri, EVENT),
+            ID to getQueryParam(uri, ID),
+            IMAGE_URL to getQueryParam(uri, IMAGE_URL),
+            IS_ATTACHED to getQueryParam(uri, IS_ATTACHED),
+            STATUS to getQueryParam(uri, STATUS),
+            STATUS_COLOR to getQueryParam(uri, STATUS_COLOR),
+            STATUS_ID to getQueryParam(uri, STATUS_ID),
+            TITLE to getQueryParam(uri, TITLE),
+            TOTAL_AMOUNT to getQueryParam(uri, TOTAL_AMOUNT),
+            USED_BY to getQueryParam(uri, USED_BY)
+        )
+
+    }
+
+    private fun getQueryParam(uri: Uri, key: String): String {
+        return uri.getQueryParameter(key).toBlankOrString()
+    }
+
     override fun cancelImageUpload() {
         uploadImageUseCase.unsubscribe()
     }
@@ -529,7 +626,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun createRequestBody(content: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), content)
+        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun validateImageAttachment(uri: String?, maxFileSize:Int): Boolean {

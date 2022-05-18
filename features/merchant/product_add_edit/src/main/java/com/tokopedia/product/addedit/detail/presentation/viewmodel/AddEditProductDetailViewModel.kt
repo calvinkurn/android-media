@@ -7,6 +7,8 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -28,9 +30,11 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -40,26 +44,30 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
 @FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
-        val provider: ResourceProvider,
-        private val dispatchers: CoroutineDispatchers,
-        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
-        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
-        private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
-        private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
-        private val userSession: UserSessionInterface
+    val provider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
+    private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+    private val validateProductUseCase: ValidateProductUseCase,
+    private val validateProductNameUseCase: ValidateProductNameUseCase,
+    private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+    private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+    private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
+    private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
+    private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     var isEditing = false
@@ -70,12 +78,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isFirstMoved = false
     var shouldUpdateVariant = false
 
-    var productInputModel = ProductInputModel()
-    val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
-    val hasTransaction get() = productInputModel.itemSold > 0
-
-    var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
-
     var isAddingWholeSale = false
     var isAddingValidationWholeSale = false
 
@@ -84,6 +86,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private var minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
     private var stockAllocationDefaultMessage = ""
     private var priceAllocationDefaultMessage = ""
+
+    var productInputModel = ProductInputModel()
+    val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
+    val hasTransaction get() = productInputModel.itemSold > 0
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
@@ -104,7 +110,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductPriceInputError
     var productPriceMessage: String = ""
 
-    var isWholeSalePriceActivated = MutableLiveData<Boolean>(false)
+    var isWholeSalePriceActivated = MutableLiveData(false)
     var wholeSaleErrorCounter = MutableLiveData(0)
     var isTheLastOfWholeSale = MutableLiveData<Boolean>()
 
@@ -118,7 +124,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsOrderQuantityInputError
     var orderQuantityMessage: String = ""
 
-    var isPreOrderActivated = MutableLiveData<Boolean>(false)
+    var isPreOrderActivated = MutableLiveData(false)
     private val mIsPreOrderDurationInputError = MutableLiveData<Boolean>()
     val isPreOrderDurationInputError: LiveData<Boolean>
         get() = mIsPreOrderDurationInputError
@@ -129,16 +135,36 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
 
-    init {
-        launch {
-            mProductNameInputLiveData.asFlow()
-                    .debounce(DEBOUNCE_DELAY_MILLIS)
-                    .distinctUntilChanged()
-                    .collect {
-                        validateProductNameInput(it)
-                    }
-        }
-    }
+    private var _productNameValidationFromNetwork = MutableLiveData<Result<String>>()
+    val productNameValidationFromNetwork : LiveData<Result<String>>
+        get() = _productNameValidationFromNetwork
+
+    val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
+
+    var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
+    private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
+        get() = mShopShowCases
+
+    private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
+    val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
+        get() = mAnnotationCategoryData
+    private val mSelectedSpecificationList = MutableLiveData<List<SpecificationInputModel>>()
+    val selectedSpecificationList: LiveData<List<SpecificationInputModel>>
+        get() = mSelectedSpecificationList
+    private val mSpecificationText = MutableLiveData<String>()
+    val specificationText: LiveData<String>
+        get() = mSpecificationText
+    private val mHasRequiredSpecification = MutableLiveData<Boolean>()
+    val hasRequiredSpecification: LiveData<Boolean>
+        get() = mHasRequiredSpecification
+
+    private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
+    val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
+        get() = mProductPriceRecommendation
+    private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
+    val productPriceRecommendationError: LiveData<Throwable>
+        get() = mProductPriceRecommendationError
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
@@ -183,29 +209,18 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
 
-    val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
-
-    private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
-    val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
-        get() = mShopShowCases
-
-    var specificationList: List<SpecificationInputModel> = emptyList()
-    private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
-    val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
-        get() = mAnnotationCategoryData
-    private val mSpecificationText = MutableLiveData<String>()
-    val specificationText: LiveData<String>
-        get() = mSpecificationText
-
-    private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
-    val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
-        get() = mProductPriceRecommendation
-    private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
-    val productPriceRecommendationError: LiveData<Throwable>
-        get() = mProductPriceRecommendationError
+    init {
+        launch {
+            mProductNameInputLiveData.asFlow()
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .distinctUntilChanged()
+                .collect {
+                    validateProductNameInput(it)
+                }
+        }
+    }
 
     private fun isInputValid(): Boolean {
-
         // by default the product photos are never empty
         val isProductPhotoError = mIsProductPhotoError.value ?: false
 
@@ -297,14 +312,14 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun validateProductPriceInput(productPriceInput: String) {
         if (productPriceInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductPriceErrorMessage()
-            errorMessage?.let { productPriceMessage = it }
+            errorMessage.let { productPriceMessage = it }
             mIsProductPriceInputError.value = true
             return
         }
         val productPrice: BigInteger = productPriceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductPriceErrorMessage()
-            errorMessage?.let { productPriceMessage = it }
+            errorMessage.let { productPriceMessage = it }
             mIsProductPriceInputError.value = true
             return
         }
@@ -366,14 +381,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
-            errorMessage?.let { productStockMessage = it }
+            errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
         val productStock = productStockInput.toBigIntegerOrNull().orZero()
         if (productStock < minimumStockCount.toBigInteger()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
-            errorMessage?.let { productStockMessage = it }
+            errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
@@ -441,6 +456,28 @@ class AddEditProductDetailViewModel @Inject constructor(
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
+    }
+
+    fun validateProductNameInputFromNetwork(productName: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                validateProductNameUseCase.setParamsProductName(
+                    productInputModel.productId.toString(), productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")
+            _productNameValidationFromNetwork.value = Success(validationMessage)
+        }, onError = {
+            _productNameValidationFromNetwork.value = Fail(it)
+        })
+    }
+
+    fun setProductNameInputFromNetwork(value: Result<String>?) {
+        _productNameValidationFromNetwork.value = value
+    }
+
+    fun setIsProductNameInputError(value: Boolean) {
+        mIsProductNameInputError.value = value
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {
@@ -618,26 +655,32 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun updateSpecification(specificationList: List<SpecificationInputModel>) {
-        this.specificationList = specificationList
-        updateSpecificationText(specificationList)
-    }
-
     fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        val selectedSpecificationList = mutableListOf<SpecificationInputModel>()
         annotationCategoryList.forEach {
             val selectedValue = it.data.firstOrNull { value -> value.selected }
             selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id.toString(), name)
-                result.add(specificationInputModel)
+                val specificationInputModel = SpecificationInputModel(id.toString(), name, it.variant)
+                selectedSpecificationList.add(specificationInputModel)
             }
         }
 
-        updateSpecification(result)
+        updateSelectedSpecification(selectedSpecificationList)
     }
 
-    fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
-        val specificationNames = specificationList.map { it.data }
+    fun updateHasRequiredSpecification(annotationCategoryList: List<AnnotationCategoryData>) {
+        mHasRequiredSpecification.value = annotationCategoryList.any {
+            it.variant == SIGNAL_STATUS_VARIANT
+        }
+    }
+
+    fun updateSelectedSpecification(selectedSpecificationList: List<SpecificationInputModel>) {
+        mSelectedSpecificationList.value = selectedSpecificationList
+        updateSpecificationText(selectedSpecificationList)
+    }
+
+    fun updateSpecificationText(selectedSpecificationList: List<SpecificationInputModel>) {
+        val specificationNames = selectedSpecificationList.map { it.data }
         mSpecificationText.value = if (specificationNames.isEmpty()) {
             provider.getProductSpecificationTips()
         } else {
@@ -647,6 +690,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             } else {
                 result
             }
+        }
+    }
+
+    fun validateSelectedSpecificationList(): Boolean {
+        return !hasRequiredSpecification.value.orFalse() || mSelectedSpecificationList.value.orEmpty().any {
+            it.specificationVariant == SIGNAL_STATUS_VARIANT
         }
     }
 

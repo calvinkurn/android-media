@@ -5,11 +5,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetHomeLayoutResponse(
+    @Expose
     @SerializedName("dynamicHomeChannel")
     val response: DynamicHomeChannelResponse
 )
 
 data class DynamicHomeChannelResponse(
+    @Expose
     @SerializedName("channels")
     val data: List<HomeLayoutResponse>
 )
@@ -54,6 +56,7 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("campaignID")
     val campaignID: String = "",
+    @Expose
     @SerializedName("showPromoBadge")
     val showPromoBadge: Boolean = false,
     @Expose
@@ -71,16 +74,25 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("banner")
     val banner: Banner = Banner(),
+    @Expose
     @SerializedName("promoName")
     var promoName: String = "",
+    @Expose
     @SerializedName("homeAttribution")
     val homeAttribution: String = "",
+    @Expose
     @SerializedName("has_close_button")
     val hasCloseButton: Boolean = false,
+    @Expose
     @SerializedName("isAutoRefreshAfterExpired")
     val isAutoRefreshAfterExpired: Boolean = false,
+    @Expose
     @SerializedName("token")
     var token: String = "",
+    @Expose
+    @SerializedName("widgetParam")
+    var widgetParam: String = "",
+    @Expose
     @SerializedName("timestamp")
     var timestamp: String = ""
 )
@@ -207,7 +219,10 @@ data class Grid(
     val benefit: Benefit = Benefit(),
     @Expose
     @SerializedName("textColor")
-    val textColor: String = ""
+    val textColor: String = "",
+    @Expose
+    @SerializedName("param")
+    val param: String = ""
 )
 
 data class Benefit(

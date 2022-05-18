@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.checkout.bundle.subfeature.webview.CheckoutWebViewActivity"
+            android:name=".webview.CheckoutWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>

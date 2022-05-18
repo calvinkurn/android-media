@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
@@ -16,7 +17,7 @@ data class CarouselPlayWidgetUiModel(
         override val type: String,
         override val header: BaseShopHomeWidgetUiModel.Header,
         val actionEvent: Event<Action> = Event(Action.Refresh),
-        val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val playWidgetState: PlayWidgetState = PlayWidgetState(isLoading = true),
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 

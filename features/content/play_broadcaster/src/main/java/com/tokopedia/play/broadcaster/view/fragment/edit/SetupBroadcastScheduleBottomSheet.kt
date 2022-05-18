@@ -6,12 +6,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.extension.toCalendar
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -20,7 +20,10 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
+import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -32,6 +35,17 @@ import kotlin.coroutines.CoroutineContext
  * Created by mzennis on 01/12/20.
  */
 class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
+
+    private val retainedComponent by retainedComponent({ requireActivity() }) {
+        DaggerActivityRetainedComponent.builder()
+            .baseAppComponent(
+                (requireActivity().application as BaseMainApplication).baseAppComponent
+            )
+            .build()
+    }
+
+    @Inject
+    lateinit var parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -64,7 +78,10 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
         dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(BroadcastScheduleViewModel::class.java)
 
@@ -95,7 +112,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     private fun inject() {
         DaggerPlayBroadcastSetupComponent.builder()
-                .setBroadcastComponent((requireActivity() as PlayBroadcastComponentProvider).getBroadcastComponent())
+                .setActivityRetainedComponent(retainedComponent)
                 .build()
                 .inject(this)
     }

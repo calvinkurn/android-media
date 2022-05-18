@@ -1,31 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-  <group
-      android:scaleX="0.85"
-      android:scaleY="0.85"
-      android:pivotX="12"
-      android:pivotY="12">
-  <path
-      android:pathData="M20.2,21.3H3.8001C3.2001,21.3 2.8001,20.8 2.8001,20.3V3.8001C2.8001,3.2001 3.3001,2.8001 3.8001,2.8001H20.2C20.8,2.8001 21.2,3.3001 21.2,3.8001V20.2001C21.2,20.8001 20.8,21.3 20.2,21.3Z"
-      android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="@color/Unify_NN900"/>
-  <path
-      android:pathData="M5.4001,13.2L8.7001,9.9001L10.9001,12.1L14.2001,8.8L18.6002,13.2"
-      android:strokeLineJoin="round"
-      android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="@color/Unify_NN900"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M6,17H18"
-      android:strokeLineJoin="round"
-      android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="@color/Unify_NN900"
-      android:strokeLineCap="round"/>
-  </group>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M18.97 19.905H5.03c-0.51 0-0.85-0.425-0.85-0.85V5.03c0-0.51 0.425-0.85 0.85-0.85h13.94c0.51 0 0.85 0.425 0.85 0.85v13.94c0 0.51-0.34 0.935-0.85 0.935z" android:strokeWidth="1.5" android:strokeColor="@color/Unify_NN900"/>
+    <path android:pathData="M6.39 13.02l2.805-2.805 1.87 1.87L13.87 9.28l3.74 3.74M6.9 16.25h10.2" android:strokeLineJoin="round" android:strokeWidth="1.5" android:strokeColor="@color/Unify_NN900" android:strokeLineCap="round"/>
 </vector>

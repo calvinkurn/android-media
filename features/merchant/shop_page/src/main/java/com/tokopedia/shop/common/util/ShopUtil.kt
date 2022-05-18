@@ -11,7 +11,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -114,19 +113,6 @@ object ShopUtil {
             it.isNotEmpty()
         }
         return TextUtils.join(delimiter, filteredListString)
-    }
-
-    fun isUsingNewShopHomeTab(intentData: Intent? = null): Boolean {
-        val isBypassNewShopHome = intentData?.extras?.getString(ShopPageConstant.HOME_V2_EXTRA).toBoolean()
-        return if (isBypassNewShopHome)
-            true
-        else {
-            val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                    AB_TEST_SHOP_NEW_HOME_TAB,
-                    ""
-            ).orEmpty()
-            newShopHomeTabAbTestKey.isNotEmpty()
-        }
     }
 
     fun <E> MutableList<E>.setElement(index: Int, element: E){

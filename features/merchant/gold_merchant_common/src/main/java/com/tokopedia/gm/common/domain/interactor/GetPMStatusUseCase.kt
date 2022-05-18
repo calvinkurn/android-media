@@ -56,6 +56,7 @@ class GetPMStatusUseCase @Inject constructor(
                    pm_tier
                    auto_extend {
                      status
+                     tkpd_product_id 
                    }
                  }
                  official_store {

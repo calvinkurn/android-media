@@ -67,6 +67,7 @@ class TopAdsDebuggerPresenter(private val getTopAdsLogUseCase: GetTopAdsLogUseCa
     private fun setRequestParams(page: Int, keyword: String) {
         requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword)
         requestParams.putInt(AnalyticsDebuggerConst.PAGE, page)
+        requestParams.putBoolean(AnalyticsDebuggerConst.TOPADS_VERIFICATOR_BE, true)
     }
 
     private fun loadMoreSubscriber(): Subscriber<List<Visitable<*>>> {

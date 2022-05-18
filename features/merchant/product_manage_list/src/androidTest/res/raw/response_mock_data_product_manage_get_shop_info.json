@@ -1,0 +1,392 @@
+[
+  {
+    "data": {
+      "shopInfoByID": {
+        "result": [
+          {
+            "shopCore": {
+              "shopID": "1479278",
+              "description": "SELLERAPP!!!🌬️ Test Test Test",
+              "domain": "tumblersbux",
+              "name": "Tumbler Starbucks 123",
+              "tagLine": "SELLERAPP!!!🌬️ - Test",
+              "url": "https://www.tokopedia.com/tumblersbux"
+            },
+            "freeOngkir": {
+              "isActive": false,
+              "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            },
+            "closedInfo": {
+              "closedNote": "",
+              "reason": "User Banned",
+              "until": "",
+              "detail": {
+                "openDate": "0"
+              }
+            },
+            "createInfo": {
+              "openSince": "September 2016",
+              "shopCreated": "2016-09-27",
+              "epochShopCreated": "1474972753",
+              "epochShopCreatedUTC": "1474947553"
+            },
+            "shopAssets": {
+              "avatar": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/4/e6145c7a-6ce0-41de-a568-aba9c2fe4f5a.jpg",
+              "cover": "https://images.tokopedia.net/img/cache/1334/BpoSLE/seller_no_cover_2.png"
+            },
+            "shipmentInfo": [
+              {
+                "isAvailable": 1,
+                "code": "rex",
+                "shipmentID": "16",
+                "image": "https://ecs7.tokopedia.net/img/kurir-rex.png",
+                "name": "REX",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "REX-10",
+                    "shipProdID": "32",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "jne",
+                "shipmentID": "1",
+                "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                "name": "JNE",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "YES",
+                    "shipProdID": "6",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "OKE",
+                    "shipProdID": "2",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "1",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "JNE Trucking",
+                    "shipProdID": "22",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 1
+              },
+              {
+                "isAvailable": 1,
+                "code": "pos",
+                "shipmentID": "4",
+                "image": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                "name": "Pos Indonesia",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Pos Kilat Khusus",
+                    "shipProdID": "10",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "sicepat",
+                "shipmentID": "11",
+                "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                "name": "SiCepat",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "BEST",
+                    "shipProdID": "33",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "HALU",
+                    "shipProdID": "51",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Regular Package",
+                    "shipProdID": "18",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Regular Package",
+                    "shipProdID": "44",
+                    "uiHidden": true
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "GOKIL",
+                    "shipProdID": "43",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "anteraja",
+                "shipmentID": "23",
+                "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                "name": "AnterAja",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Same Day",
+                    "shipProdID": "49",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Next Day",
+                    "shipProdID": "46",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "45",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Cargo",
+                    "shipProdID": "56",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Economy",
+                    "shipProdID": "55",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "ninja",
+                "shipmentID": "12",
+                "image": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+                "name": "Ninja Xpress",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "25",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "jnt",
+                "shipmentID": "14",
+                "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                "name": "J\u0026T",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "27",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 1
+              },
+              {
+                "isAvailable": 1,
+                "code": "wahana",
+                "shipmentID": "6",
+                "image": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+                "name": "Wahana",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Service Normal",
+                    "shipProdID": "8",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "grab",
+                "shipmentID": "13",
+                "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                "name": "GrabExpress",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Same Day",
+                    "shipProdID": "24",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Instant",
+                    "shipProdID": "37",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "lion",
+                "shipmentID": "24",
+                "image": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+                "name": "Lion Parcel",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "47",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "tiki",
+                "shipmentID": "2",
+                "image": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                "name": "TIKI",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Reguler",
+                    "shipProdID": "3",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Over Night Service",
+                    "shipProdID": "16",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "gojek",
+                "shipmentID": "10",
+                "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                "name": "GoSend",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Instant Courier",
+                    "shipProdID": "28",
+                    "uiHidden": false
+                  },
+                  {
+                    "isAvailable": 1,
+                    "productName": "Same Day",
+                    "shipProdID": "20",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              },
+              {
+                "isAvailable": 1,
+                "code": "paxel",
+                "shipmentID": "28",
+                "image": "https://ecs7.tokopedia.net/img/kurir-paxel.png",
+                "name": "Paxel",
+                "product": [
+                  {
+                    "isAvailable": 1,
+                    "productName": "Next Day",
+                    "shipProdID": "54",
+                    "uiHidden": false
+                  }
+                ],
+                "isPickup": 0,
+                "maxAddFee": 0,
+                "awbStatus": 0
+              }
+            ],
+            "shopLastActive": "1644485627",
+            "location": "Jakarta Selatan",
+            "isAllowManage": 1,
+            "goldOS": {
+              "isGold": 0,
+              "isGoldBadge": 0,
+              "isOfficial": 0
+            },
+            "favoriteData": {
+              "totalFavorite": 109,
+              "alreadyFavorited": 0
+            },
+            "statusInfo": {
+              "shopStatus": 1,
+              "statusMessage": "",
+              "statusTitle": "",
+              "isIdle": false
+            },
+            "bbInfo": [],
+            "topContent": {
+              "topURL": ""
+            },
+            "address": [],
+            "shopStats": {
+              "productSold": "",
+              "totalTx": "",
+              "totalShowcase": ""
+            },
+            "activeProduct": 0,
+            "shopHomeType": "none"
+          }
+        ]
+      }
+    }
+  }
+]

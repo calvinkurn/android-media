@@ -1,7 +1,9 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -27,9 +29,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
+import com.tokopedia.tokopoints.notification.view.TokopointNotifActivity
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
@@ -55,16 +60,20 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.topquest.SectionTopQuestViewBinder
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.QUEST
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder>
 
@@ -72,7 +81,8 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
  * */
-class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
+class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener, QuestWidgetCallbacks,
+    TopSectionVH.RefreshOnTierUpgrade {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
 
@@ -98,6 +108,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
     var listener: RewardsRecomListener? = null
     lateinit var mUsersession: UserSession
+    private var questWidgetPosition = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -139,28 +151,29 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addRewardIntroObserver()
     }
 
-    private fun setLayoutParams(cardheight: Int) {
+    private fun setLayoutParams(cardheight: Int , heightBackground:Float) {
+        val imgEggView = view?.findViewById<AppCompatImageView>(R.id.img_egg)
+        val imgBgHeader = view?.findViewById<ImageView>(R.id.img_bg_header)
         val statusBarHeight = getStatusBarHeight(activity)
-        val layoutParams = tokoPointToolbar!!.layoutParams as FrameLayout.LayoutParams
+        val layoutParams = tokoPointToolbar?.layoutParams as FrameLayout.LayoutParams
         layoutParams.topMargin = statusBarHeight
-        tokoPointToolbar!!.layoutParams = layoutParams
-        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as? RelativeLayout.LayoutParams
+        tokoPointToolbar?.layoutParams = layoutParams
+        val imageEggLp = imgEggView?.layoutParams as? RelativeLayout.LayoutParams
         imageEggLp?.topMargin = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
-        view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams = imageEggLp
-        val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as? RelativeLayout.LayoutParams
-        imageBigLp?.height = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
-        view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams = imageBigLp
+        imgEggView?.layoutParams = imageEggLp
+        val imageBigLp = imgBgHeader?.layoutParams as? RelativeLayout.LayoutParams
+        imageBigLp?.height = (statusBarHeight + heightBackground + cardheight).toInt()
+        imgBgHeader?.layoutParams = imageBigLp
     }
 
     private fun setStatusBarViewHeight() {
         if (activity != null) statusBarBgView?.layoutParams?.height = getStatusBarHeight(activity)
     }
 
+    @SuppressLint("DeprecatedMethod")
     private fun hideStatusBar() {
         coordinatorLayout?.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            coordinatorLayout?.requestApplyInsets()
-        }
+        coordinatorLayout?.requestApplyInsets()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = coordinatorLayout?.systemUiVisibility
             flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
@@ -168,19 +181,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 coordinatorLayout?.systemUiVisibility = flags
             }
             if (context != null) {
-                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
             }
         }
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            activity?.window?.statusBarColor = Color.TRANSPARENT
-        }
+        activity?.window?.decorView?.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        activity?.window?.statusBarColor = Color.TRANSPARENT
     }
 
     private fun handleAppBarOffsetChange(offset: Int) {
@@ -194,14 +204,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             offsetAlpha = 255f
         }
         var alpha = offsetAlpha / 255 - 1
-        if (alpha < 0) alpha = alpha * -1
+        if (alpha < 0) alpha *= -1
         statusBarBgView?.alpha = alpha
         if (alpha > 0.5) tokoPointToolbar?.switchToDarkMode() else tokoPointToolbar?.switchToTransparentMode()
         tokoPointToolbar?.applyAlphaToToolbarBackground(alpha)
     }
 
     private fun handleAppBarIconChange(verticalOffset: Int) {
-        val verticalOffset1 = Math.abs(verticalOffset)
+        val verticalOffset1 = abs(verticalOffset)
         if (verticalOffset1 >= (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height))) {
             tokoPointToolbar?.showToolbarIcon()
         } else
@@ -214,6 +224,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Success -> {
                     showOnBoardingTooltip(it.data.tokopediaRewardIntroPage)
                 }
+                else -> {}
             }
         }
     })
@@ -231,8 +242,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList,it.data.recomData )
+                    renderRewardUi(
+                        it.data.topSectionResponse,
+                        it.data.sectionList,
+                        it.data.recomData
+                    )
                 }
+                else -> {}
             }
         }
     })
@@ -243,6 +259,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             serverErrorView?.showErrorUi(hasInternet,error)
         }
     }
+
     private fun initViews(view: View) {
         listener = getRecommendationListener()
         coordinatorLayout = view.findViewById(R.id.container)
@@ -313,8 +330,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun renderRewardUi(topSectionData: TopSectionResponse?, sections: List<SectionContent>, recommList : RewardsRecommendation?) {
 
-        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
-                topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
+        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() || sections.isEmpty()) {
             onError(SHOW_ERROR_TOOLBAR, true)
             return
         }
@@ -388,7 +404,23 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    when (sectionContent.layoutBannerAttr.bannerType) {
+                    if (sectionContent.layoutQuestWidgetAttr != null && !sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam.isNullOrEmpty()) {
+                        // add Quest View binder here
+                        val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
+                        @Suppress("UNCHECKED_CAST")
+                        if(sectionList.any { it is SectionContent }){
+                            if(sectionContent.layoutType == QUEST) {
+                                viewBinders.put(
+                                    sectionContent.layoutType,
+                                    sectionTopQuestViewBinder as SectionItemBinder
+                                )
+                                sectionList.add(sectionContent)
+                            }
+                        }
+                    }
+
+
+                        when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
                             @Suppress("UNCHECKED_CAST")
@@ -479,8 +511,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onResume() {
         super.onResume()
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
-    }
 
+        if(this.questWidgetPosition != -1 && this.questWidgetPosition != sectionList.size - 1
+            && this.questWidgetPosition != 0 && (sectionList[questWidgetPosition] as SectionContent).layoutType == QUEST){
+            adapter?.notifyItemChanged(this.questWidgetPosition)
+        }
+    }
 
     private fun getRecommendationListener(): RewardsRecomListener {
 
@@ -593,7 +629,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun onClick(source: View) {
-        if (source.id == R.id.text_membership_label || source.id == R.id.img_egg || source.id == R.id.text_membership_value) {
+        if ( source.id == R.id.img_egg || source.id == R.id.text_membership_value) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -613,8 +649,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_ERROR = 2
         private const val SHOW_ERROR_TOOLBAR = 1
         const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
-        const val REQUEST_FROM_PDP = 138
+        const val REQUEST_FROM_TP_NOTIFICATION = 138
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
@@ -698,7 +733,44 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 })
     }
 
-    override fun setCardLayoutHeight(height: Int) {
-        setLayoutParams(height)
+    override fun setCardLayoutHeight(height: Int , heightBackground: Float) {
+        setLayoutParams(height , heightBackground)
     }
+
+    override fun deleteQuestWidget() {
+        // delete widget
+    }
+
+    override fun updateQuestWidget(position: Int) {
+        this.questWidgetPosition = position
+    }
+
+    override fun questLogin(){
+
+    }
+
+    override fun refreshReward(popupNotification: PopupNotif?) {
+        activity?.let {
+            if (!it.isFinishing && !it.isDestroyed) {
+                startActivityForResult(
+                    Intent(
+                        TokopointNotifActivity.getIntent(
+                            it,
+                            popupNotification
+                        )
+                    ), REQUEST_FROM_TP_NOTIFICATION
+                )
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            REQUEST_FROM_TP_NOTIFICATION -> {
+                mPresenter.getTokoPointDetail()
+            }
+        }
+    }
+
 }

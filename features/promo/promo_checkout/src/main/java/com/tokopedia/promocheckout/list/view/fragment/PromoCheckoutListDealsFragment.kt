@@ -4,11 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -21,6 +17,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,15 +32,19 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     @Inject
     lateinit var promoCheckoutListDealsPresenter: PromoCheckoutListDealsPresenter
 
-    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
+    override var serviceId: String = PromoCheckoutListPresenter.SERVICE_ID_NEW_DEALS
     var categoryID: Int = 1
-    var checkoutData: String = ""
+    var categoryName: String = ""
+    var grandTotal: Int = 0
+    var metaData: String = ""
     var promoCodeApplied: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        metaData = arguments?.getString(EXTRA_META_DATA, "") ?: ""
+        categoryName = arguments?.getString(EXTRA_CATEGORY_NAME) ?: ""
         categoryID = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
-        checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
+        grandTotal = arguments?.getInt(EXTRA_GRAND_TOTAL, 0) ?: 0
         promoCheckoutListDealsPresenter.attachView(this)
         promoCodeApplied = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
     }
@@ -59,14 +60,8 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun onPromoCodeUse(promoCode: String) {
         if (promoCheckoutListDealsPresenter.isViewAttached) promoCheckoutListDealsPresenter.attachView(this)
-        if (promoCode.isNotEmpty()) {
-            var requestBody: JsonObject? = null
-            if (checkoutData.isNotBlank() || checkoutData.length > 0) {
-                val jsonElement: JsonElement = JsonParser().parse(checkoutData)
-                requestBody = jsonElement.asJsonObject
-                requestBody.addProperty(PROMOCODE, promoCode)
-                promoCheckoutListDealsPresenter.processCheckDealPromoCode(false, requestBody)
-            }
+        if (promoCode.isNotEmpty() && metaData.isNotEmpty()) {
+             promoCheckoutListDealsPresenter.processCheckDealPromoCode(listOf(promoCode), categoryName, metaData, grandTotal)
         }
     }
 
@@ -82,7 +77,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailDealsActivity.newInstance(
                 activity, promoCheckoutListModel?.code
-                ?: "", false, checkoutData), REQUEST_CODE_PROMO_DETAIL)
+                ?: "", false, categoryName, grandTotal, metaData), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
@@ -121,30 +116,35 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryID, page, resources)
+            promoCheckoutListPresenter.getListPromo(serviceId, OMP_CATEGORY_ID, page, resources)
         }
         promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
     }
 
     companion object {
 
+        val EXTRA_GRAND_TOTAL = "EXTRA_GRAND_TOTAL"
+        val EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME"
         val EXTRA_CATEGORY_ID = "EXTRA_CATEGORYID"
         val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
         val VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT"
-        val EXTRA_CHECKOUT_DATA = "checkoutdata"
+        val EXTRA_META_DATA = "EXTRA_META_DATA"
         val VOUCHER_CODE = "voucher_code"
         val VOUCHER_MESSAGE = "voucher_message"
+        val OMP_CATEGORY_ID = 0
         val PROMOCODE = "promocode"
 
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, pageTracking: Int?, productId: String?, checkoutData: String?): PromoCheckoutListDealsFragment {
+        fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, categoryName: String?, grandTotal:Int?, metaData: String?, pageTracking: Int?, productId: String?): PromoCheckoutListDealsFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDealsFragment()
             val bundle = Bundle()
             bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
+            bundle.putString(EXTRA_PROMO_CODE, promoCode.orEmpty())
+            bundle.putString(EXTRA_CATEGORY_NAME, categoryName.orEmpty())
             bundle.putInt(EXTRA_CATEGORY_ID, categoryId ?: 1)
+            bundle.putInt(EXTRA_GRAND_TOTAL, grandTotal ?: 0)
             bundle.putInt(PAGE_TRACKING, pageTracking ?: 1)
-            bundle.putString(EXTRA_PRODUCTID, productId ?: "")
-            bundle.putString(EXTRA_CHECKOUT_DATA, checkoutData ?: "")
+            bundle.putString(EXTRA_PRODUCTID, productId.orEmpty())
+            bundle.putString(EXTRA_META_DATA, metaData.orEmpty())
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
         }

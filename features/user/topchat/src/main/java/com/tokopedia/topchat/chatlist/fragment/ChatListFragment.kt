@@ -372,7 +372,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 }
                 //found on list, not the first
                 index >= 0 -> {
-                    adapter.onNewIncomingChatMessage(index, newChat, readStatus, chatItemListViewModel.pinnedMsgId)
+                    adapter.onNewIncomingChatMessage(
+                        index = index,
+                        newChat = newChat,
+                        readStatus = readStatus,
+                        pinnedMsgId = chatItemListViewModel.pinnedMsgId,
+                        shouldUpdateReadStatus = true
+                    )
                 }
             }
         }
@@ -465,7 +471,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<TopchatItemMenu>()
-            val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
+            val arrayFilterString = chatItemListViewModel.getFilterTitles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
                 if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, hasCheck = true))

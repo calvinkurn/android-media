@@ -18,6 +18,7 @@
         android:text="@string/label_product_detail"
         android:textColor="@color/Unify_N700_96"
         android:translationY="-1.97dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,16 +40,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailShopName"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
         android:translationY="-1.97dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailProductDetailLabel"
         app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailSeeShopPage"
         app:layout_constraintStart_toEndOf="@id/icBuyerOrderDetailSeeShopBadge"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailProductDetailLabel"
-        app:layout_constraintWidth_default="wrap"
         app:typographyType="heading_6"
         tools:text="Rockerpower Shopz" />
 
@@ -58,8 +59,8 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:translationY="-1.3dp"
         android:contentDescription="@null"
+        android:translationY="-1.3dp"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintHorizontal_bias="1"

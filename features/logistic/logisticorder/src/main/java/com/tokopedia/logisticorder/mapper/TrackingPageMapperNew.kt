@@ -11,6 +11,18 @@ class TrackingPageMapperNew @Inject constructor() {
         return TrackingDataModel().apply {
             trackOrder = mapTrackOrder(data.trackOrder)
             page = mapPage(data.page)
+            tipping = mapTippingData(data.tipping)
+            lastDriver = mapLastDriverData(data.lastDriver)
+        }
+    }
+
+    private fun mapLastDriverData(lastDriver: LastDriver): LastDriverModel {
+        return LastDriverModel().apply {
+            photo = lastDriver.photo
+            name =lastDriver.name
+            phone = lastDriver.phone
+            licenseNumber = lastDriver.licenseNumber
+            isChanged = lastDriver.isChanged
         }
     }
 
@@ -44,7 +56,7 @@ class TrackingPageMapperNew @Inject constructor() {
     }
 
     private fun mapProofOrder(proof: Proof): ProofModel {
-        return ProofModel(imageId = proof.imageId)
+        return ProofModel(imageId = proof.imageId, description = proof.description)
     }
 
     private fun mapTrackingHistory(trackHistory: List<TrackHistory>): List<TrackHistoryModel> {
@@ -55,6 +67,7 @@ class TrackingPageMapperNew @Inject constructor() {
                     it.status,
                     it.city,
                     it.time,
+                    it.partnerName,
                     mapProofOrder(it.proof)
             )
         }
@@ -74,6 +87,25 @@ class TrackingPageMapperNew @Inject constructor() {
                     it.urlDetail,
                     it.urlText
             )
+        }
+    }
+
+    private fun mapTippingData(tipping: Tipping): TippingModel {
+        return TippingModel().apply {
+            status = tipping.status
+            statusTitle = tipping.statusTitle
+            statusSubtitle = tipping.statusSubtitle
+            tippingLastDriver = mapTippingLastDriverData(tipping.tippingLastDriver)
+        }
+    }
+
+    private fun mapTippingLastDriverData(tippingLastDriver: TippingLastDriver): TippingLastDriverModel {
+        return TippingLastDriverModel().apply {
+            phone = tippingLastDriver.phone
+            name = tippingLastDriver.name
+            photo = tippingLastDriver.photo
+            licenseNumber = tippingLastDriver.licenseNumber
+            isChanged = tippingLastDriver.isChanged
         }
     }
 

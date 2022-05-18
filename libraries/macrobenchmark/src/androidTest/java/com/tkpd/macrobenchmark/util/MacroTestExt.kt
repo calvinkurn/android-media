@@ -9,11 +9,12 @@ import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 fun MacrobenchmarkRule.measureStartup(
     startupMode: StartupMode,
     iterations: Int = 3,
-    intent: () -> Intent
+    intent: () -> Intent,
+    waitUntil: () -> Unit
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
     metrics = listOf(StartupTimingMetric()),
-    compilationMode = CompilationMode.None,
+    compilationMode = CompilationMode.None(),
     iterations = iterations,
     startupMode = startupMode,
     setupBlock = {
@@ -22,6 +23,6 @@ fun MacrobenchmarkRule.measureStartup(
     measureBlock = {
         Thread.sleep(2000)
         startActivityAndWait(intent.invoke())
-        Thread.sleep(2000)
+        waitUntil.invoke()
     }
 )

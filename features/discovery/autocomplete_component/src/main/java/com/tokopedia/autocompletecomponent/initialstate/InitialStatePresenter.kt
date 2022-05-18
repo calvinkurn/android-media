@@ -29,6 +29,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,12 +83,12 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun createInitialStateRequestParams(): RequestParams {
-        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+        val chooseAddressData = view?.chooseAddressData ?: LocalCacheModel()
 
         return InitialStateRequestUtils.getParams(
             searchParameter,
             userSession,
-            warehouseId,
+            chooseAddressData,
         )
     }
 

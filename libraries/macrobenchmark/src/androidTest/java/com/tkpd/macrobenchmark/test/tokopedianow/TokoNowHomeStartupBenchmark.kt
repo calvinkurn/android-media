@@ -5,6 +5,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
 import com.tkpd.macrobenchmark.util.MacroIntent
+import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -20,4 +21,15 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 class TokoNowHomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
     override fun getIntent() = MacroIntent.TokopediaNow.getHomeIntent()
+
+    override fun waitUntil() {
+        MacroInteration.waitForRecyclerViewContent(
+                MacroIntent.TokopediaNow.PACKAGE_NAME,
+                MacroIntent.TokopediaNow.RV_RESOURCE_ID,
+        )
+        MacroInteration.waitForRecyclerViewContent(
+                MacroIntent.TokopediaNow.PACKAGE_NAME,
+                MacroIntent.TokopediaNow.RV_RESOURCE_ID,
+        )
+    }
 }

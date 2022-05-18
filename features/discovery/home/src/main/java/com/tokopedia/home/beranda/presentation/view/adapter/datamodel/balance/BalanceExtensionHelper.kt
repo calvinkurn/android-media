@@ -18,6 +18,7 @@ const val WALLET_CODE_GOPAY_POINTS = "PEMUDAPOINTS"
 const val defaultActivationCta = "Sambungkan"
 private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
 private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
+private const val WALLET_PEMUDA_POINTS_THRESHOLD = 10000
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
@@ -159,8 +160,10 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean): BalanceDrawerItemModel? {
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel? {
     val selectedBalance = walletappGetBalance.balances.getOrNull(0)
+    var pemudaPointsReserveBalance = ""
+
     selectedBalance?.let { balances ->
         var balanceTitle = BalanceTextAttribute()
         var balanceSubtitle = BalanceTextAttribute()
@@ -185,28 +188,15 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean
                 )
                 return null
             }
-            if (isGopayEligible) {
-                balanceTitle = BalanceTextAttribute(
+            balanceTitle = BalanceTextAttribute(
                     text = gopayBalance?.amountFmt?:"",
                     isBold = true,
                     colourRef = R.color.Unify_N700_96
-                )
-                balanceSubtitle = BalanceTextAttribute(
+            )
+            balanceSubtitle = BalanceTextAttribute(
                     text = gopayPointsBalance?.amountFmt?:"",
                     colourRef = R.color.Unify_N700_68
-                )
-            } else {
-                balanceTitle = BalanceTextAttribute(
-                    text = balances.walletName?:"",
-                    isBold = true,
-                    colourRef = R.color.Unify_N700_96
-                )
-                balanceSubtitle = BalanceTextAttribute(
-                    text = gopayBalance?.amountFmt?:"",
-                    isBold = false,
-                    colourRef = R.color.Unify_N700_96
-                )
-            }
+            )
         } else {
             balanceTitle = BalanceTextAttribute(
                 text = balances.walletName,
@@ -218,13 +208,20 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean
                 colourRef = R.color.Unify_G500,
                 isBold = true
             )
+
+            val pemudaReserveBalance = balances.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
+            if (pemudaReserveBalance?.amount?:0 >= WALLET_PEMUDA_POINTS_THRESHOLD) {
+                pemudaPointsReserveBalance = pemudaReserveBalance?.amountFmt?:""
+                pemudaPointsReserveBalance+=" "
+            }
         }
 
         return buildWalletAppBalanceDrawerModel(
             selectedBalance = balances,
             balanceTitleTextAttribute = balanceTitle,
             balanceSubTitleTextAttribute = balanceSubtitle,
-            state = state
+            state = state,
+            pemudaPointsReserveBalance = pemudaPointsReserveBalance
         )
     }
     return null
@@ -235,7 +232,8 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     balanceTitleTextAttribute: BalanceTextAttribute,
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
-    walletCode: String = ""
+    walletCode: String = "",
+    pemudaPointsReserveBalance: String = ""
 ) = BalanceDrawerItemModel(
     applinkContainer = selectedBalance.redirectUrl,
     applinkActionText = selectedBalance.redirectUrl,
@@ -245,7 +243,8 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
     drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
-    trackingAttribute = walletCode
+    trackingAttribute = walletCode,
+    reserveBalance = pemudaPointsReserveBalance
 )
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {

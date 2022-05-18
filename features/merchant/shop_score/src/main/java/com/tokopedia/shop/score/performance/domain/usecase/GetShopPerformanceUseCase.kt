@@ -7,11 +7,9 @@ import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
-class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+open class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
     UseCase<ShopScoreWrapperResponse>() {
 
     companion object {

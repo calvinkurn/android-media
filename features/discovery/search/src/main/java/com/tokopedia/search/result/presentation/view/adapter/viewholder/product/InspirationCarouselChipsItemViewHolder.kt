@@ -15,6 +15,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class InspirationCarouselChipsItemViewHolder(
         itemView: View,
@@ -82,7 +83,7 @@ class InspirationCarouselChipsItemViewHolder(
             Color.parseColor(color)
         }
         catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            Timber.w(throwable)
             0
         }
     }

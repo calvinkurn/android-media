@@ -111,7 +111,10 @@ open class MerchantVoucherView : CustomVoucherView {
         return R.layout.widget_merchant_voucher_view
     }
 
-    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, hasActionButton: Boolean = true) {
+    fun setData(
+        merchantVoucherViewModel: MerchantVoucherViewModel?,
+        hasActionButton: Boolean = true,
+    ) {
         setData(merchantVoucherViewModel)
         if (!hasActionButton) {
             btnUseVoucher?.visibility = View.GONE
@@ -148,7 +151,9 @@ open class MerchantVoucherView : CustomVoucherView {
                     merchantVoucherViewModel.getAmountShortString()
             ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle?.text = spannedVoucherTitle
-            val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
+            val voucherDesc = merchantVoucherViewModel
+                .getMinSpendLongString(context)
+                .getAdditionalText(merchantVoucherViewModel.isLockToProduct)
             tvVoucherDesc?.text = SpanText(
                     voucherDesc,
                     merchantVoucherViewModel.getMinSpendAmountShortString()
@@ -200,4 +205,9 @@ open class MerchantVoucherView : CustomVoucherView {
         }
     }
 
+    private fun String.getAdditionalText(isLockToProduct: Boolean): String {
+        return if (isLockToProduct) {
+            "$this ${context.getString(R.string.voucher_public_suffix)}"
+        } else this
+    }
 }

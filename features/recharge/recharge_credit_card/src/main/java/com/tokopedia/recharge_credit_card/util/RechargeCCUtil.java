@@ -7,6 +7,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class RechargeCCUtil {
 
+    private static final int DIVIDER_POSITION = 4;
+    private static final int LUHN_ALGORITHM_MODULO = 10;
+
     public static boolean isInputCorrect(Editable s, int totalSymbols, int dividerModulo, char divider) {
         boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
         for (int i = 0; i < s.length(); i++) { // check that every element is right
@@ -19,19 +22,19 @@ public class RechargeCCUtil {
         return isCorrect;
     }
 
-    //this method used to separate cc per 4digits
-    public static String concatString(char[] digits, int dividerPosition, char divider) {
-        final StringBuilder formatted = new StringBuilder();
-
-        for (int i = 0; i < digits.length; i++) {
-            if (digits[i] != 0) {
-                formatted.append(digits[i]);
-                if ((i > 0) && (i < (digits.length - 1)) && (((i + 1) % dividerPosition) == 0)) {
+    //this method used for separate cc with following patterns xxxx-xxxx-xxxx-xxxx
+    public static String concatStringWith16D(char[] text, char divider){
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        for (char c : text) {
+            if (Character.isDigit(c)) {
+                if (count % DIVIDER_POSITION == 0 && count > 0) {
                     formatted.append(divider);
                 }
+                formatted.append(c);
+                ++count;
             }
         }
-
         return formatted.toString();
     }
 
@@ -61,7 +64,7 @@ public class RechargeCCUtil {
             incNum = Integer.parseInt(String.valueOf(temp.charAt(i)));
             counter += (odd = !odd) ? incNum : luhnArr[incNum];
         }
-        return (counter % 10 == 0);
+        return (counter % LUHN_ALGORITHM_MODULO == 0);
     }
 
     public static String generateIdemPotencyCheckout(String userLoginId) {
