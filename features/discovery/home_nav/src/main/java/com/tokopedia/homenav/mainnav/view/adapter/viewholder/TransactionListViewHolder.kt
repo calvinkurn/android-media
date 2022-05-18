@@ -68,8 +68,8 @@ class TransactionListViewHolder(itemView: View,
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
             } else {
-                binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
                 visitableList.add(OtherTransactionRevampModel())
+                binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
             }
         }
         else {
