@@ -24,6 +24,7 @@ object PromoCreationStaticData {
         isProductCouponFirstTime: Boolean,
         isTokopediaPlayFirstTime: Boolean,
         isProductCouponEnabled: Boolean,
+        isSlashPriceEnabled: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -36,40 +37,57 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
                 }
-            ),
-            PromoCreationUiModel(
-                R.drawable.sh_ic_top_ads_color,
-                resourceProvider.getPromoCreationTitleTopAds(),
-                resourceProvider.getPromoCreationDescriptionTopAds(),
-                "",
-                if (isTopAdsOnBoardingEnable){
-                    ApplinkConst.SellerApp.TOPADS_ONBOARDING
-                }else{
-                    ApplinkConst.CustomerApp.TOPADS_DASHBOARD
-                }
+            )
+        )
 
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_broadcast_chat,
-                resourceProvider.getPromoCreationTitleBroadcastChat(),
-                resourceProvider.getPromoCreationDescriptionBroadcastChat(),
-                broadcastChatExtra,
-                String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_voucher_cashback,
-                resourceProvider.getPromoCreationTitleMerchantVoucher(),
-                resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
-                "",
-                if (isVoucherCashbackEligible) {
-                    if (isVoucherCashbackFirstTime) {
-                        getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
-                    } else {
-                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
+        if (isSlashPriceEnabled) {
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_slash_price,
+                    resourceProvider.getPromoCreationTitleSlashPrice(),
+                    resourceProvider.getPromoCreationDescriptionSlashPrice(),
+                    resourceProvider.getPromoCreationExtraSlashPrice(),
+                    ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+                )
+            )
+        }
+
+        promoItems.addAll(
+            listOf(
+                PromoCreationUiModel(
+                    R.drawable.sh_ic_top_ads_color,
+                    resourceProvider.getPromoCreationTitleTopAds(),
+                    resourceProvider.getPromoCreationDescriptionTopAds(),
+                    "",
+                    if (isTopAdsOnBoardingEnable){
+                        ApplinkConst.SellerApp.TOPADS_ONBOARDING
+                    }else{
+                        ApplinkConst.CustomerApp.TOPADS_DASHBOARD
                     }
-                } else {
-                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
-                }
+
+                ),
+                PromoCreationUiModel(
+                    R.drawable.ic_broadcast_chat,
+                    resourceProvider.getPromoCreationTitleBroadcastChat(),
+                    resourceProvider.getPromoCreationDescriptionBroadcastChat(),
+                    broadcastChatExtra,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
+                ),
+                PromoCreationUiModel(
+                    R.drawable.ic_voucher_cashback,
+                    resourceProvider.getPromoCreationTitleMerchantVoucher(),
+                    resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
+                    "",
+                    if (isVoucherCashbackEligible) {
+                        if (isVoucherCashbackFirstTime) {
+                            getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
+                        } else {
+                            ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                        }
+                    } else {
+                        ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                    }
+                )
             )
         )
 
