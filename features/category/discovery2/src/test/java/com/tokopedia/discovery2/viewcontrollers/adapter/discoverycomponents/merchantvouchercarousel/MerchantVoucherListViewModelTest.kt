@@ -42,6 +42,7 @@ class MerchantVoucherListViewModelTest {
 
     @Test
     fun `test for coupon data sync logic`() {
+//        Todo:: Fix these
         viewModel.merchantVoucherUseCase = useCase
         coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) } returns true
         viewModel.onAttachToViewHolder()
