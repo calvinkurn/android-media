@@ -28,7 +28,7 @@ class PickerVideoPlayer constructor(
         .Builder(context)
         .build()
 
-    private lateinit var loopingMediaSource: LoopingMediaSource
+    private var loopingMediaSource: LoopingMediaSource? = null
 
     init {
         exoPlayer.addListener(object : Player.EventListener {
@@ -44,12 +44,14 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        if (!::loopingMediaSource.isInitialized) {
+        if (loopingMediaSource == null) {
             loopingMediaSource = LoopingMediaSource(getOrCreateMediaSource(Uri.parse(videoUrl)))
         }
 
-        exoPlayer.playWhenReady = true
-        exoPlayer.prepare(loopingMediaSource, true, false)
+        loopingMediaSource?.let {
+            exoPlayer.playWhenReady = true
+            exoPlayer.prepare(it, true, false)
+        }
     }
 
     fun stop() {

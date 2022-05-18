@@ -16,7 +16,7 @@ class VideoPreview(
     override val layout: Int
         get() = R.layout.view_item_preview_video
 
-    private lateinit var videoControl: VideoControlView
+    private var videoControl: VideoControlView? = null
     private var isSkipUpdateState = false
 
     override fun setupView(media: PreviewUiModel): View {
@@ -25,12 +25,12 @@ class VideoPreview(
             videoControl = it.findViewById(R.id.video_control)
 
             viewPlayer.player = videoPlayer.player()
-            videoControl.player = videoPlayer.player()
+            videoControl?.player = videoPlayer.player()
 
             videoPlayer.videoUrl = media.data.path
 
             videoPlayer.listener = this
-            videoControl.listener = this
+            videoControl?.listener = this
         }
     }
 
@@ -38,8 +38,8 @@ class VideoPreview(
         if (isSkipUpdateState) {
             return
         }
-        videoControl.updateCenterButtonState(isPlaying)
-        videoControl.showController(isPlaying)
+        videoControl?.updateCenterButtonState(isPlaying)
+        videoControl?.showController(isPlaying)
     }
 
     override fun onCenterPauseButtonClicked() {
@@ -52,7 +52,7 @@ class VideoPreview(
 
     override fun onScrubStart() {
         videoPlayer.pause()
-        videoControl.cleanHideJob()
+        videoControl?.cleanHideJob()
         isSkipUpdateState = true
     }
 
