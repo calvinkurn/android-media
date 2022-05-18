@@ -11,7 +11,6 @@ import com.tokopedia.homenav.databinding.HolderOtherFavoriteShopBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.track.TrackApp
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,7 +22,6 @@ class OtherTransactionRevampViewHolder (itemView: View, val mainNavListener: Mai
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_other_favorite_shop
-        private const val OTHER_TRACKING_LABEL = "other"
     }
 
     private fun setForegroundClickViewAllCard() {
