@@ -27,6 +27,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
@@ -230,8 +231,10 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                 is Fail -> {
                     view?.let { view ->
                         Toaster.build(view,
-                            context?.getString(R.string.error_message_load_more_review_product)
-                                .orEmpty(),
+                            it.throwable.getErrorMessage(
+                                context,
+                                getString(R.string.error_message_load_more_review_product)
+                            ),
                             type = Toaster.TYPE_ERROR,
                             actionText =
                             context?.getString(R.string.action_retry_toaster_review_product)
@@ -256,7 +259,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
@@ -275,7 +278,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
@@ -297,7 +300,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG
                         ).show()

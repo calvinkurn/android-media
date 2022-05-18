@@ -29,6 +29,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
@@ -200,9 +201,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         )
     }
 
-    override fun onImageLoadFailed(index: Int) {
+    override fun onImageLoadFailed(index: Int, throwable: Throwable?) {
         showErrorToaster(
-            getString(R.string.review_reading_connection_error),
+            throwable.getErrorMessage(context, getString(R.string.review_reading_connection_error)),
             getString(R.string.review_refresh)
         ) {
             adapter.reloadImageAtIndex(index)

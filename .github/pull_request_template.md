@@ -83,3 +83,6 @@ https://phab.tokopedia.com/XXXXX
 - **approved for ut-decrease** - send along with the approval to cast the magic
 *(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1867484824/Unit+Test+Coverage+Decrease+Checker)*
 
+- **approved for darkmode-decrease** - send along with the approval to cast the magic
+*(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1959690974/Dark+Mode+Coverage+Decrease+Checker)*
+

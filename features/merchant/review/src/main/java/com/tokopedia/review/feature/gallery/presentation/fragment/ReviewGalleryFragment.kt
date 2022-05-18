@@ -27,6 +27,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
@@ -315,7 +316,7 @@ class ReviewGalleryFragment :
 
     private fun onFailGetReviewImages(throwable: Throwable) {
         if (isFirstPage()) showFullPageError()
-        showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
+        showToasterError(throwable.getErrorMessage(context)) {
             if (isFirstPage()) loadInitialData() else {
                 loadData(currentPage)
             }

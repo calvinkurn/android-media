@@ -30,6 +30,7 @@ data class MiniCartProductUiModel(
         var selectedUnavailableActionLink: String = "",
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
+        var placeholderNote: String = "",
         var isProductDisabled: Boolean = false,
         var productCashbackPercentage: Int = 0,
 

@@ -36,6 +36,7 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.FragmentReviewDetailBinding
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
@@ -285,8 +286,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     viewModel.getReviewDetails(viewModel.feedbackId, false)
                     onFailInsertReputation(
-                        it.fail.message
-                            ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message)
+                        it.fail.getErrorMessage(
+                            context,
+                            getString(R.string.review_history_details_toaster_modify_smiley_error_default_message)
+                        )
                     )
                 }
                 is LoadingView -> {
