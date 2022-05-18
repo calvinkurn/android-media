@@ -536,15 +536,10 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
-        val newParam = _globalSearchProduct.value.param.copy().apply {
-            resetPagination()
-        }
+        val query = _globalSearchProduct.value.param.query
+        val newParam = resetParam(query)
 
-        selectedSortFilter.forEach { selected ->
-            newParam.apply {
-                rewriteParam(selected.key, selected.value)
-            }
-        }
+        selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
         _globalSearchProduct.setValue {
             GlobalSearchProductUiModel.Empty.copy(param = newParam)
@@ -670,15 +665,10 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
-        val newParam = _globalSearchShop.value.param.copy().apply {
-            resetPagination()
-        }
+        val query = _globalSearchShop.value.param.query
+        val newParam = resetParam(query)
 
-        selectedSortFilter.forEach { selected ->
-            newParam.apply {
-                rewriteParam(selected.key, selected.value)
-            }
-        }
+        selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
         _globalSearchShop.setValue {
             GlobalSearchShopUiModel.Empty.copy(param = newParam)
