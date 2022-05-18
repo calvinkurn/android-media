@@ -249,8 +249,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         CommissionBreakdownDateRangePickerBottomSheet.getInstanceRange(
             selectedDateFrom,
             selectedDateTo,
-            CommissionBreakdownDateRangePickerBottomSheet.MAX_RANGE_90,
-            CommissionBreakdownDateRangePickerBottomSheet.TWO_YEAR_MILLIS
+            CommissionBreakdownDateRangePickerBottomSheet.MAX_RANGE_90
         ).show(childFragmentManager, CommissionBreakdownDateRangePickerBottomSheet.TAG)
     }
 

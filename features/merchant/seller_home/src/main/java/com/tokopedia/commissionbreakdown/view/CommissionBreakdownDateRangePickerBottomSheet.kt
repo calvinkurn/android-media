@@ -23,20 +23,18 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         private const val ARG_DATE_FROM = "ARG_DATE_FROM"
         private const val ARG_DATE_TO = "ARG_DATE_TO"
         private const val ARG_MAX_RANGE = "ARG_MAX_RANGE"
-        private const val ARG_MIN_DATE_GAP = "ARG_MIN_DATE_GAP"
         private const val BOTTOM_SHEET_HEIGHT_3 = 3
         private const val BOTTOM_SHEET_HEIGHT_2 = 2
         private const val DATE_PATTERN = "dd MMMM yyyy"
 
-        const val TWO_YEAR_MILLIS = (2 * 365 * 24 * 3600 * 1000L)
+        private const val JUNE_6_2020_IN_MILLIS = 1591012800000L
         const val MAX_RANGE_90 = 90L
         const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
 
         fun getInstanceRange(
             dateFrom: Date?,
             dateTo: Date?,
-            range: Long,
-            minDate: Long
+            range: Long
         ): CommissionBreakdownDateRangePickerBottomSheet {
             return CommissionBreakdownDateRangePickerBottomSheet().apply {
                 isFullpage = true
@@ -44,14 +42,13 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
                 bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
                 bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
                 bundle.putLong(ARG_MAX_RANGE, range)
-                bundle.putLong(ARG_MIN_DATE_GAP, minDate)
                 arguments = bundle
             }
         }
     }
 
     private val maxDate = Date()
-    private var minDate = Date(System.currentTimeMillis() - TWO_YEAR_MILLIS)
+    private val minDate = Date(JUNE_6_2020_IN_MILLIS)
 
     private var defaultDateFrom: Date? = null
     private var defaultDateTo: Date? = null
@@ -70,12 +67,6 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         if (arguments?.containsKey(ARG_MAX_RANGE) == true) {
             arguments?.getLong(ARG_MAX_RANGE)?.let {
                 maxRange = it
-            }
-        }
-
-        if (arguments?.containsKey(ARG_MIN_DATE_GAP) == true) {
-            arguments?.getLong(ARG_MIN_DATE_GAP)?.let {
-                minDate = Date(System.currentTimeMillis() - it)
             }
         }
     }
@@ -180,7 +171,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
             override fun onNotifyMax() {
                 activity?.let {
                     showErrorToaster(
-                        it.getString(
+                        errorMessage = it.getString(
                             R.string.sp_title_max_day,
                             maxRange
                         )
@@ -190,10 +181,9 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         })
     }
 
-
     private fun showErrorToaster(errorMessage: String) {
         dialog?.window?.decorView?.let {
-            Toaster.build(it, errorMessage, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
