@@ -10,7 +10,6 @@ import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
-import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +54,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         get() = _benefit
 
     private var benefitPackageName = EMPTY_STRING
+    private var isUsingCustomPeriod = false
 
     sealed class ValidationState {
         object InvalidDiscountAmount : ValidationState()
@@ -102,6 +102,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
     fun onOneYearPeriodSelected(calendar: Calendar) {
+        this.isUsingCustomPeriod = false
+
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         this.selectedStartDate = calendar.time
 
@@ -113,6 +115,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
     fun onSixMonthPeriodSelected(calendar: Calendar) {
+        this.isUsingCustomPeriod = false
+
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         this.selectedStartDate = calendar.time
 
@@ -124,6 +128,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
     fun onOneMonthPeriodSelected(calendar: Calendar) {
+        this.isUsingCustomPeriod = false
+
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         this.selectedStartDate = calendar.time
 
@@ -135,6 +141,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
     fun onCustomSelectionPeriodSelected(calendar: Calendar) {
+        this.isUsingCustomPeriod = true
+
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         this.selectedStartDate = calendar.time
 
@@ -164,7 +172,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
             selectedEndDate,
             selectedDiscountType,
             selectedDiscountAmount,
-            selectedMaxQuantity
+            selectedMaxQuantity,
+            isUsingCustomPeriod
         )
     }
 

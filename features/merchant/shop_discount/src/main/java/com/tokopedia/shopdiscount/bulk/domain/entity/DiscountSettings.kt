@@ -8,4 +8,5 @@ data class DiscountSettings(
     val discountType : DiscountType,
     val discountAmount: Int,
     val maxPurchaseQuantity: Int,
+    val isUsingCustomPeriod : Boolean
 )

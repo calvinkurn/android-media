@@ -52,6 +52,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "discount_status_id"
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
+        private const val ONE_YEAR = 1
 
         /**
          * @param bulkUpdateDefaultStartDate
@@ -112,10 +113,17 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private var onApplyClickListener: (DiscountSettings) -> Unit = {}
 
+    init {
+        clearContentPadding = true
+        isSkipCollapseState = true
+        isKeyboardOverlap = false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
     }
+
 
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
@@ -136,12 +144,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetDiscountBulkApplyBinding.inflate(inflater, container, false)
-        isKeyboardOverlap = false
-        clearContentPadding = true
         setChild(binding?.root)
         setTitle(title)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -364,7 +369,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
                 viewModel.validateInput()
             }
-            binding?.tfuDiscountAmount?.textInputLayout?.editText?.addTextChangedListener(watcher)
+            tfuDiscountAmount.textInputLayout.editText?.addTextChangedListener(watcher)
         }
 
     }
@@ -472,13 +477,21 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private fun displayEndDateTimePicker() {
+        val isUsingCustomPeriod = viewModel.getCurrentSelection().isUsingCustomPeriod
+        val endDate = if (isUsingCustomPeriod) {
+            val selectedStartDate = viewModel.getSelectedStartDate()
+            selectedStartDate?.advanceByOneYear()
+        } else {
+            viewModel.getSelectedEndDate()
+        }
+
         ShopDiscountDatePicker.show(
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
             viewModel.getSelectedEndDate() ?: return,
             viewModel.getSelectedStartDate() ?: return,
-            viewModel.getSelectedEndDate() ?: return,
+            endDate ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -519,5 +532,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.chipSixMonthPeriod?.gone()
         binding?.chipOneMonthPeriod?.gone()
         binding?.chipCustomSelection?.gone()
+    }
+
+    private fun Date.advanceByOneYear() : Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+        calendar.add(Calendar.YEAR, ONE_YEAR)
+        return calendar.time
     }
 }
