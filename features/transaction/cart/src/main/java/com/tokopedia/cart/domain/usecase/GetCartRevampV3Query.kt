@@ -11,6 +11,7 @@ const val CART_REVAMP_V3_QUERY =
               errors
               popup_error_message
               pop_up_message
+              placeholder_note
               localization_choose_address {
                 address_id
                 address_name

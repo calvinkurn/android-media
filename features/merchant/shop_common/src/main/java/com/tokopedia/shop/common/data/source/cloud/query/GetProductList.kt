@@ -43,6 +43,7 @@ internal object GetProductList {
                     name
                     iconURL
                 }
+                suspendLevel
             }
         }
     }

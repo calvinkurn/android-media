@@ -271,6 +271,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
+        if (fragmentCallbacks != null) { fragmentCallbacks.hideMainToolbar(); }
         dealsAnalytics.sendScreenNameEvent(getScreenName());
         this.dealDetail = detailsViewModel;
         if (userSession.isLoggedIn()) {

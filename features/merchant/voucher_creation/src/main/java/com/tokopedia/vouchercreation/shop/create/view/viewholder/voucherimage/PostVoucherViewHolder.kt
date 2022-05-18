@@ -13,10 +13,11 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcPostImageBinding
 import com.tokopedia.vouchercreation.shop.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.PostVoucherUiModel
-import kotlinx.android.synthetic.main.mvc_post_image.view.*
 
 class PostVoucherViewHolder(itemView: View?,
                             private val activity: Activity?,
@@ -25,36 +26,37 @@ class PostVoucherViewHolder(itemView: View?,
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.mvc_post_image
-
     }
 
-    override fun bind(element: PostVoucherUiModel) {
-        itemView.run {
-            Glide.with(context)
-                    .asDrawable()
-                    .load(element.postBaseUiModel.postBaseUrl)
-                    .signature(ObjectKey(System.currentTimeMillis().toString()))
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+    private var binding: MvcPostImageBinding? by viewBinding()
 
-                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            activity?.runOnUiThread {
-                                val bitmap = resource.toBitmap()
-                                val painter = SquareVoucherPainter(context, bitmap, ::onSuccessGetBitmap)
-                                painter.drawInfo(element)
-                            }
-                            return false
+    override fun bind(element: PostVoucherUiModel) {
+        binding?.apply {
+            Glide.with(root.context)
+                .asDrawable()
+                .load(element.postBaseUiModel.postBaseUrl)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        activity?.runOnUiThread {
+                            val bitmap = resource.toBitmap()
+                            val painter = SquareVoucherPainter(root.context, bitmap, ::onSuccessGetBitmap)
+                            painter.drawInfo(element)
                         }
-                    })
-                    .submit()
+                        return false
+                    }
+                })
+                .submit()
         }
     }
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
-            itemView.postVoucherImage?.setImageBitmap(bitmap)
+            binding?.postVoucherImage?.setImageBitmap(bitmap)
             onSuccessGetPostBitmap(bitmap)
         }
     }

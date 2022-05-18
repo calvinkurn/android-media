@@ -239,9 +239,6 @@ public interface ApplinkConst {
 
     String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
-    String HOST_OVOUPGRADE = "ovoupgrade";
-    String OVOUPGRADE = "tokopedia://ovoupgrade";
-    String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
@@ -262,6 +259,7 @@ public interface ApplinkConst {
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String TOKOPEDIA_CARE_HELP = "tokopedia://webview?url=https://www.tokopedia.com/help/seller";
 
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
