@@ -414,7 +414,8 @@ class PlayViewModel @AssistedInject constructor(
     private val isMonitoringLogEnabled: Boolean
         get() {
             val arrOfPostFix = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING, 0)
-            return arrOfPostFix.toString().toCharArray().any {
+            return if(!userSession.isLoggedIn) false
+            else arrOfPostFix.toString().toCharArray().any {
                 userId.last() == it
             }
         }
