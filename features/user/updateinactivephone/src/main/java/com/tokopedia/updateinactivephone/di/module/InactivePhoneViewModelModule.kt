@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.updateinactivephone.features.InactivePhoneViewModel
 import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListViewModel
-import com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel.InputOldPhoneNumberViewModel
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel.InputOldPhoneNumberViewModel
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneDataUploadViewModel
 import dagger.Binds
 import dagger.Module

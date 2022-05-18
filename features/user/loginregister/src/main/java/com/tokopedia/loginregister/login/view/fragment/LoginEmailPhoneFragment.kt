@@ -64,6 +64,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -75,7 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.bottomsheet.NeedHelpBottomSheet
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -155,6 +156,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -669,10 +673,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
 
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+            forgotPassword?.text = setUpForgotPasswordTitle()
             forgotPassword?.setOnClickListener {
-                analytics.trackClickForgotPassword()
-//                goToForgotPassword()
-                showNeedHelpBottomSheet()
+                if (isUsingInactivePhoneNumber()) {
+                    needHelpAnalytics.trackPageClickButuhBantuan()
+                    showNeedHelpBottomSheet()
+                } else {
+                    analytics.trackClickForgotPassword()
+                    goToForgotPassword()
+                }
             }
         }
 
@@ -794,6 +803,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
     }
 
+    private fun setUpForgotPasswordTitle(): String?{
+        return context?.getString(
+            if (isUsingInactivePhoneNumber())
+                R.string.loginregister_need_help
+            else
+                R.string.title_forgot_password
+        )
+    }
+
+    private fun isUsingInactivePhoneNumber(): Boolean {
+        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
+            ""
+        ).orEmpty()
+        return newInactivePhoneNumberAbTestKey.isNotEmpty()
+    }
+
     private fun showNeedHelpBottomSheet(){
         if (needHelpBottomSheetUnify == null)
             needHelpBottomSheetUnify = NeedHelpBottomSheet()
@@ -802,7 +828,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToTokopediaCareWebview() {
-        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+        RouteManager.route(activity, String.format(TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
@@ -1828,12 +1854,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
+        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
         const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
 
         private const val PASSWORD_MIN_LENGTH = 4
 

@@ -1,11 +1,11 @@
-package com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.updateinactivephone.R.string.*
-import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.model.PhoneFormState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.updateinactivephone.domain.usecase.InputOldPhoneNumberUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class InputOldPhoneNumberViewModel @Inject constructor(
-    private val inactivePhoneNumberUseCase: InputOldPhoneNumberUseCase,
+    private val inputOldPhoneNumberUseCase: InputOldPhoneNumberUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -74,7 +74,7 @@ class InputOldPhoneNumberViewModel @Inject constructor(
 
     private fun postNumber(number: String) {
         launchCatchError(coroutineContext, {
-            val response = inactivePhoneNumberUseCase(number)
+            val response = inputOldPhoneNumberUseCase(number)
 
             when {
                 response.data.status == STATUS_USER_ACTIVE ->
@@ -82,7 +82,10 @@ class InputOldPhoneNumberViewModel @Inject constructor(
                 response.data.errors.isNotEmpty() ->
                     _statusPhoneNumber.value = Fail(MessageErrorException(response.data.errors[0]))
                 else ->
-                    _formState.value = PhoneFormState(numberError = ipn_number_not_registered)
+                    _formState.value = phoneFormState.apply {
+                        numberError = ipn_number_not_registered
+                        isDataValid = false
+                    }
             }
 
             _isLoading.value = false

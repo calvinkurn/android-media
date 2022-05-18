@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.features.inputoldphone.fragment
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -13,11 +13,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.model.PhoneFormState
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
+import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_CLICK
+import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_FAILED
+import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_SUCCESS
 import com.tokopedia.updateinactivephone.databinding.FragmentInputOldPhoneNumberBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
-import com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel.InputOldPhoneNumberViewModel
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel.InputOldPhoneNumberViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
@@ -26,6 +30,9 @@ import javax.inject.Inject
 class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private val binding : FragmentInputOldPhoneNumberBinding? by viewBinding()
+
+    @Inject
+    lateinit var analytics: InputOldPhoneNumberAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,8 +68,11 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
             binding?.textInputOldPhoneNumber?.setMessage(
-                if (!it.isDataValid && it.numberError != PhoneFormState.DEFAULT_NUMBER_ERROR)
-                    getString(it.numberError)
+                if (!it.isDataValid && it.numberError != PhoneFormState.DEFAULT_NUMBER_ERROR) {
+                    val message = getString(it.numberError)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, binding?.textInputOldPhoneNumber?.getEditableValue().toString())
+                    message
+                }
                 else " "
             )
 
@@ -72,6 +82,7 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private fun onClickListener() {
         binding?.ubNext?.setOnClickListener {
+            analytics.trackPageInactivePhoneNumberClickNext(LABEL_CLICK)
             submitData()
         }
     }
@@ -96,10 +107,13 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_SUCCESS)
                     onGoToInactivePhoneNumber(it.data)
                 }
                 is Fail -> {
-                    onError(it.throwable)
+                    val message = getErrorMsgWithLogging(it.throwable)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, viewModel.currentNumber)
+                    onError(message)
                 }
             }
         }
@@ -114,8 +128,7 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onError(throwable: Throwable) {
-        val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
+    private fun onError(message: String) {
         binding?.textInputOldPhoneNumber?.apply {
             setMessage(message)
             isInputError = true
@@ -141,12 +154,12 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private fun getErrorMsgWithLogging(
         throwable: Throwable,
-        flow: String,
-        withErrorCode: Boolean = true
+        withErrorCode: Boolean = false
     ): String {
         val mClassName =
-            if (flow.isEmpty()) InputOldPhoneNumberFragment::class.java.name else "${InputOldPhoneNumberFragment::class.java.name} - $flow"
-        val message = ErrorHandler.getErrorMessage(context, throwable,
+            InputOldPhoneNumberFragment::class.java.name
+        val message = ErrorHandler.getErrorMessage(
+            context, throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
                 className = mClassName

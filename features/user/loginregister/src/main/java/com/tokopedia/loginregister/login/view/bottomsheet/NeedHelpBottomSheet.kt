@@ -1,5 +1,6 @@
-package com.tokopedia.loginregister.common.view.bottomsheet
+package com.tokopedia.loginregister.login.view.bottomsheet
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -17,16 +18,27 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import javax.inject.Inject
 
 class NeedHelpBottomSheet: BottomSheetUnify() {
 
+    @Inject
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
+
     private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
     private val bindingChild get() = _bindingChild!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,16 +59,23 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         setListener()
     }
 
-    private fun setListener(){
+    private fun setListener() {
 
         initTokopediaCareText(bindingChild.toNeedAnotherHelp)
 
         bindingChild.ubInactivePhoneNumber.setOnClickListener {
+            needHelpAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
         }
 
         bindingChild.ubForgotPassword.setOnClickListener {
+            needHelpAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
+        }
+
+        setCloseClickListener {
+            needHelpAnalytics.trackPageBottomSheetClickClose()
+            dismiss()
         }
 
     }
@@ -67,11 +86,15 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
+                    needHelpAnalytics.trackPageBottomSheetClickTokopediaCare()
                     goToTokopediaCare()
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
@@ -83,8 +106,15 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
         typography.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
-    private fun goToTokopediaCare(){
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)))
+    private fun goToTokopediaCare() {
+        RouteManager.route(
+            context,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+            )
+        )
     }
 
     private fun goToForgotPassword() {
@@ -106,5 +136,6 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = LoginEmailPhoneFragment.TOKOPEDIA_CARE_PATH
+        private const val TOKOPEDIA_CARE_STRING_FORMAT = LoginEmailPhoneFragment.TOKOPEDIA_CARE_STRING_FORMAT
     }
 }
