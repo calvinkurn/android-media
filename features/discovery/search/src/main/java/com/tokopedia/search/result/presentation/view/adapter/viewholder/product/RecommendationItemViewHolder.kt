@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultRecommendationCardSmallGridBinding
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationItemViewHolder (
@@ -26,7 +27,9 @@ class RecommendationItemViewHolder (
     override fun bind(recommendationItemDataView: RecommendationItemDataView) {
         val view = binding?.root ?: return
         val recommendationItem = recommendationItemDataView.recommendationItem
-        view.setProductModel(recommendationItem.toProductCardModel(hasThreeDots = true))
+        val productModel = recommendationItem.toProductCardModel(hasThreeDots = true)
+        productModel.animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        view.setProductModel(productModel)
 
         view.setOnClickListener {
             listener.onProductClick(recommendationItem, "", adapterPosition)

@@ -15,6 +15,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
@@ -79,6 +80,7 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
+                    animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

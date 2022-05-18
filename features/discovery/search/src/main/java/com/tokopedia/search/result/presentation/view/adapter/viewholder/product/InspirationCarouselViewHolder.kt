@@ -32,6 +32,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -252,21 +253,22 @@ class InspirationCarouselViewHolder(
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                countSoldRating = ratingAverage,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
-                        title = it.title,
-                        position = it.position,
-                        type = it.type,
-                        imageUrl = it.imageUrl,
-                ) },
-                shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
-                isTopAds = isOrganicAds,
+            productImageUrl = imgUrl,
+            productName = name,
+            formattedPrice = priceStr,
+            countSoldRating = ratingAverage,
+            slashedPrice = if (discountPercentage > 0) originalPrice else "",
+            discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+            labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
+                    title = it.title,
+                    position = it.position,
+                    type = it.type,
+                    imageUrl = it.imageUrl,
+            ) },
+            shopLocation = shopLocation,
+            shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            isTopAds = isOrganicAds,
+            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         )
     }
 

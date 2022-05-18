@@ -12,6 +12,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -28,6 +29,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
     override fun bind(element: BannerShopProductViewModel?) {
         element?.let { model ->
             val productCardViewModel = model.product
+            productCardViewModel.animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)

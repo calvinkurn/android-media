@@ -24,6 +24,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -37,7 +38,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val video: VideoPlayerController by lazy{
         VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
     }
-    private val cardViewProductCard: CardView? by lazy(NONE) {
+    private val cardViewProductCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.cardViewProductCard)
     }
     private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
@@ -186,6 +187,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
+        cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
@@ -281,6 +284,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getVideoPlayerController(): VideoPlayerController {
         return video
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardViewProductCard?.setOnClickListener(l)
     }
 
     /**
