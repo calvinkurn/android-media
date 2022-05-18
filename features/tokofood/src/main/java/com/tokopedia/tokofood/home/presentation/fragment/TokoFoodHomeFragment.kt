@@ -195,7 +195,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
-        return TokoFoodHomeBannerComponentCallback()
+        return TokoFoodHomeBannerComponentCallback(this)
     }
 
     private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {

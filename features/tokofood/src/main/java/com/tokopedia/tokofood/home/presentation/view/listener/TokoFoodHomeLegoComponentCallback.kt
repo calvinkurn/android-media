@@ -1,34 +1,34 @@
 package com.tokopedia.tokofood.home.presentation.view.listener
 
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodHomeLegoComponentCallback: DynamicLegoBannerListener {
+class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodHomeView): DynamicLegoBannerListener {
 
-    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
+    private val context by lazy { view.getFragmentPage().context }
 
-    }
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {}
 
-    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-    }
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {}
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
     }
 
-    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
-    }
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {}
 
     override fun onClickGridFourImage(
         channelModel: ChannelModel,
         channelGrid: ChannelGrid,
         position: Int,
         parentPosition: Int
-    ) {
-    }
+    ) {}
 
     override fun onClickGridSixImage(
         channelModel: ChannelModel,
@@ -36,6 +36,7 @@ class TokoFoodHomeLegoComponentCallback: DynamicLegoBannerListener {
         position: Int,
         parentPosition: Int
     ) {
+        RouteManager.route(context, channelGrid.applink)
     }
 
     override fun onClickGridThreeImage(
@@ -44,6 +45,7 @@ class TokoFoodHomeLegoComponentCallback: DynamicLegoBannerListener {
         position: Int,
         parentPosition: Int
     ) {
+        RouteManager.route(context, channelGrid.applink)
     }
 
     override fun onClickGridTwoImage(
@@ -51,36 +53,25 @@ class TokoFoodHomeLegoComponentCallback: DynamicLegoBannerListener {
         channelGrid: ChannelGrid,
         position: Int,
         parentPosition: Int
-    ) {
-    }
+    ) {}
 
-    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
-    }
+    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {}
 
-    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
-    }
+    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {}
 
-    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {}
 
-    }
+    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {}
 
-    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-
-    }
+    override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {}
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-
+        RouteManager.route(context, channelModel.channelHeader.applink)
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-
+        RouteManager.route(context, channelModel.channelHeader.applink)
     }
 
-    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
-
-    }
+    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {}
 }
