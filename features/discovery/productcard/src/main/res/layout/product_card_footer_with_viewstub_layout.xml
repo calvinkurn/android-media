@@ -33,7 +33,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/buttonAddToCart"
         app:layout_constraintBottom_toBottomOf="@id/buttonAddToCart"
-        tools:visibility="gone">
+        tools:visibility="gone"
+        tools:ignore="NotSibling">
 
         <ImageView
             android:id="@+id/imageRemoveFromWishlist"
@@ -81,7 +82,8 @@
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
         app:layout_constraintTop_toBottomOf="@id/buttonNotify"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="NotSibling" />
 
 
     <com.tokopedia.iconunify.IconUnify
@@ -169,7 +171,8 @@
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/buttonThreeDotsWishlist"
         app:layout_constraintTop_toBottomOf="@id/buttonAddVariant"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="NotSibling">
 
         <ViewStub
             android:id="@+id/buttonAddToCartWishlistStub"

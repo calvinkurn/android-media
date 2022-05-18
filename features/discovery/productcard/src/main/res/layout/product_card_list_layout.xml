@@ -75,6 +75,7 @@
 
         <ImageView
             android:id="@+id/imageVideoIdentifier"
+            android:contentDescription="@string/content_desc_videoPlay"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
