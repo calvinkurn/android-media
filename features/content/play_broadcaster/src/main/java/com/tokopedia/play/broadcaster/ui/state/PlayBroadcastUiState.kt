@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
 
@@ -27,6 +28,7 @@ data class PlayBroadcastUiState(
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
     val quizDetail: QuizDetailStateUiModel,
+    val onboarding: OnboardingUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -47,6 +49,7 @@ data class PlayBroadcastUiState(
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
                 quizDetail = QuizDetailStateUiModel.Unknown,
+                onboarding = OnboardingUiModel.Empty,
             )
     }
 }
@@ -111,4 +114,21 @@ data class QuizFormUiState(
                 )
             }
     }
+}
+
+data class OnboardingUiModel(
+    val firstInteractive: Boolean,
+) {
+
+    companion object {
+        val Empty: OnboardingUiModel
+            get() = OnboardingUiModel(
+                firstInteractive = false,
+            )
+
+        fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
+            firstInteractive = pref.isFirstInteractive()
+        )
+    }
+
 }
