@@ -128,7 +128,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             latitude = model.latitude,
             longitude = model.longitude
         )
-        val gqlParam = mapOf("input" to param.toMap())
+        val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_edit_address,
                 KeroEditAddressResponse.Data::class.java, gqlParam)
         return gql.getResponse(request)

@@ -1,32 +1,31 @@
 package com.tokopedia.logisticCommon.data.request
 
-data class EditAddressParam(
-        val addressId: Long,
-        val addressName: String,
-        val receiverName: String,
-        val address1: String,
-        val address2: String,
-        val postalCode: String,
-        val district: String,
-        val city: String,
-        val province: String,
-        val phone: String,
-        val latitude: String,
-        val longitude: String,
+import android.annotation.SuppressLint
+import com.google.gson.annotations.SerializedName
 
-) {
-    fun toMap(): Map<String, Any> = mapOf(
-            "addr_id" to addressId,
-            "addr_name" to addressName,
-            "receiver_name" to receiverName,
-            "address_1" to address1,
-            "address_2" to address2,
-            "postal_code" to postalCode,
-            "phone" to phone,
-            "province" to province,
-            "city" to city,
-            "district" to district,
-            "latitude" to latitude,
-            "longitude" to longitude,
-    )
-}
+data class EditAddressParam(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("addr_id")
+    val addressId: Long,
+    @SerializedName("addr_name")
+    val addressName: String,
+    @SerializedName("receiver_name")
+    val receiverName: String,
+    @SerializedName("address_1")
+    val address1: String,
+    @SerializedName("address_2")
+    val address2: String,
+    @SerializedName("postal_code")
+    val postalCode: String,
+    @SerializedName("district")
+    val district: String,
+    @SerializedName("city")
+    val city: String,
+    @SerializedName("province")
+    val province: String,
+    @SerializedName("phone")
+    val phone: String,
+    @SerializedName("latitude")
+    val latitude: String,
+    @SerializedName("longitude")
+    val longitude: String)

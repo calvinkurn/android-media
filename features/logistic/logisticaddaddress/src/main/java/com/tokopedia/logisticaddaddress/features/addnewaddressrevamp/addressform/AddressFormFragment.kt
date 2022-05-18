@@ -142,7 +142,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-            onContactPickerResult(requestCode, resultCode, data)
+            onContactPickerResult(data)
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
             onPinpointResult(data)
         }
@@ -198,7 +198,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
-    private fun onContactPickerResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    private fun onContactPickerResult(data: Intent?) {
         val contactURI = data?.data
         var contact: ContactData? = null
         if (contactURI != null) {
@@ -462,10 +462,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             etNamaPenerima.textFieldInput.setText(data.receiverName)
             infoNameLayout.visibility = View.GONE
             setupFormAccount()
-            etNomorHp.textFieldInput.setText(data.phone)
-            etNomorHp.getFirstIcon().setOnClickListener {
-                EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
-                onNavigateToContact()
+            etNomorHp.let { nomorHpField ->
+                nomorHpField.textFieldInput.setText(data.phone)
+                nomorHpField.getFirstIcon().setOnClickListener {
+                    EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
+                    onNavigateToContact()
+                }
             }
             btnInfo.setOnClickListener {
                 showBottomSheetInfoPenerima()
@@ -505,7 +507,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                             showDistrictRecommendationBottomSheet(false)
                         }
                     }
-                    etLabel.textFieldInput.setText(data.addrName)
+                    etLabel.run {
+                        textFieldInput.setText(data.addrName)
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
+                    }
                     rvLabelAlamatChips.visibility = View.GONE
                     etAlamat.run {
                         textFieldInput.setText(addressDetail)
@@ -515,19 +520,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                                 wrapper.isErrorEnabled = true
                             }
                         }
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
                         if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
-                            this.textFieldWrapper.let { wrapper ->
+                            textFieldWrapper.let { wrapper ->
                                 wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
                                 wrapper.isErrorEnabled = true
                             }
-                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(this.textFieldWrapper))
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(textFieldWrapper))
                         }
                     }
-                    etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(etLabel.textFieldWrapper, null))
-                    etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(etAlamat.textFieldWrapper, null))
                     currentAlamat = etAlamat.textFieldInput.text.toString()
                 }
             }
@@ -551,11 +555,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     etAlamatNew.run {
                         textFieldInput.setText(addressDetail)
                         if (addressDetail.length > MAX_CHAR_ALAMAT) {
-                            this.textFieldWrapper.let { wrapper ->
+                            textFieldWrapper.let { wrapper ->
                                 wrapper.error = context.getString(R.string.error_alamat_exceed_max_char)
                                 wrapper.isErrorEnabled = true
                             }
                         }
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
@@ -564,13 +569,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                                 wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
                                 wrapper.isErrorEnabled = true
                             }
-                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(this.textFieldWrapper))
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(textFieldWrapper))
                         }
                     }
-                    etLabel.textFieldInput.setText(data.addrName)
+                    etLabel.run {
+                        textFieldInput.setText(data.addrName)
+                        textFieldInput.addTextChangedListener(setWrapperWatcher(textFieldWrapper, null))
+                    }
                     rvLabelAlamatChips.visibility = View.GONE
-                    etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(etLabel.textFieldWrapper, null))
-                    etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(etAlamatNew.textFieldWrapper, null))
                 }
             }
         }

@@ -27,7 +27,6 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val ctx = holder.itemView.context
         val label = labelAlamatList[position]
         holder.itemView.chips_item.run {
             chipText = label.first
