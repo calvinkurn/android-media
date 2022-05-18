@@ -731,26 +731,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-//    private suspend fun onInteractiveFinished() {
-//        _observableInteractiveState.value =
-//            BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-//        delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-//        val err = getLeaderboardInfo(channelId)
-//        if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
-//            val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
-//            val coachMark =
-//                if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
-//                    leaderboard.config.loserMessage,
-//                    leaderboard.config.sellerMessage
-//                )
-//            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(
-//                state = BroadcastInteractiveInitState.HasPrevious(coachMark)
-//            )
-//        } else {
-//            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-//        }
-//    }
-
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
