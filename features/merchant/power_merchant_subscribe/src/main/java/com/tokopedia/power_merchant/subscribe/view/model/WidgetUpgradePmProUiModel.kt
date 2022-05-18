@@ -8,11 +8,12 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  */
 
 class WidgetUpgradePmProUiModel(
-        val shopInfo: PMShopInfoUiModel,
-        val registrationTerms: List<PmActiveTermUiModel> = emptyList(),
-        val generalBenefits: List<PMProBenefitUiModel> = emptyList(),
-        val isPmActive:String = "",
-        val shopGrade:String = ""
+    val shopInfo: PMShopInfoUiModel,
+    val registrationTerms: List<PmActiveTermUiModel> = emptyList(),
+    val generalBenefits: List<PMProBenefitUiModel> = emptyList(),
+    val isPmActive: String = "",
+    val shopGrade: String = "",
+    val nextMonthlyRefreshDate: String = "",
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

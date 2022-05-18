@@ -67,7 +67,6 @@
         android:id="@+id/tickerPmWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:descriptionText="Kamu berpotensi langsung menjadi PM PRO Advanced pada tanggal 8 Agustus 2022. Pertahankan performa tokomu, ya!"
         app:tickerType="announcement"
         app:tickerShapeType="loose"
         app:closeButtonVisibility="gone"

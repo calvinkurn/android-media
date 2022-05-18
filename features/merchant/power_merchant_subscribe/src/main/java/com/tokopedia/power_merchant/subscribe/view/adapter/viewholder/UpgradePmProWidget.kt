@@ -1,35 +1,23 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
-import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.PATTERN_DATE_TEXT
 import com.tokopedia.gm.common.constant.PMConstant
-import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
-import com.tokopedia.gm.common.utils.GoldMerchantUtil
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetUpgradePmProBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProBenefitAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.PmActiveTermAdapter
-import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.PmActiveTermUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetUpgradePmProUiModel
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
-import java.text.ParseException
 
 /**
  * Created By @ilhamsuaib on 10/05/21
@@ -37,13 +25,11 @@ import java.text.ParseException
 
 class UpgradePmProWidget(
     itemView: View?,
-    private val listener: Listener,
     private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetUpgradePmProUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_upgrade_pm_pro
-        private const val THIRTY_DAYS = 30
     }
 
     private val binding: WidgetUpgradePmProBinding? by viewBinding()
@@ -61,38 +47,20 @@ class UpgradePmProWidget(
         val shopInfo = element.shopInfo
         val shopGrade = element.shopGrade
         binding?.run {
-            if (shopInfo.isNewSeller) {
-                if (shopInfo.is30DaysFirstMonday) {
-                    if (shopInfo.isEligiblePmPro) {
-                        tvPmUpgradePmProDesc.hide()
-                    } else {
-                        tvPmUpgradePmProDesc.hide()
-                    }
-                } else {
-                    tvPmUpgradePmProDesc.show()
-                    tvPmUpgradePmProDesc.text = getString(
-                        R.string.pm_desc_new_seller_before_30_days,
-                        getDaysDate(shopInfo.shopCreatedDate)
-                    )
-                }
-            } else {
-                tvPmUpgradePmProDesc.hide()
-            }
+            tvPmUpgradePmProDesc.text = getString(
+                R.string.pm_desc_next_update,
+                element.nextMonthlyRefreshDate
+            )
 
             if (shopGrade ==  PMConstant.ShopGrade.PM && shopInfo.shopScore > 70){
+                tickerPmWidget.setTextDescription(getString(
+                    R.string.pm_ticker_update_pm_pro,
+                    element.nextMonthlyRefreshDate
+                ))
                 tickerPmWidget.show()
             }else{
                 tickerPmWidget.hide()
             }
-        }
-    }
-
-    private fun getDaysDate(shopCreatedDate: String): String {
-        return try {
-            return GoldMerchantUtil.getNNextDaysBasedOnShopScoreCalculation(shopCreatedDate)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            ""
         }
     }
 
@@ -131,10 +99,4 @@ class UpgradePmProWidget(
         icTargetHeader.loadImage(PMConstant.Images.PM_BADGE)
     }
 
-
-
-    interface Listener {
-        fun onUpgradePmProTnCClickListener()
-        fun onDeactivatePMClickListener()
-    }
 }

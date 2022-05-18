@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -40,7 +39,6 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryI
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.*
 import com.tokopedia.power_merchant.subscribe.view.helper.PMActiveTermHelper
-import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
@@ -167,21 +165,8 @@ open class PowerMerchantSubscriptionFragment :
         fragment.show(childFragmentManager)
     }
 
-    override fun onUpgradePmProTnCClickListener() {
-        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
-        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
-            return
-        }
-
-        bottomSheet.show(childFragmentManager)
-    }
-
     override fun onMembershipStatusPmProClickListener() {
         showPmProDeactivationBottomSheet()
-    }
-
-    override fun onDeactivatePMClickListener() {
-        showRegularPmDeactivationBottomSheet()
     }
 
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
@@ -635,7 +620,7 @@ open class PowerMerchantSubscriptionFragment :
                 && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
-            getUpgradePmProWidget(getShopGradeWidgetData(data))?.let {
+            getUpgradePmProWidget(getShopGradeWidgetData(data),data)?.let {
                 widgets.add(it)
             }
         }
@@ -765,7 +750,10 @@ open class PowerMerchantSubscriptionFragment :
         binding?.swipeRefreshPm?.isRefreshing = false
     }
 
-    private fun getUpgradePmProWidget(shopGradeWidgetData: WidgetShopGradeUiModel): WidgetUpgradePmProUiModel? {
+    private fun getUpgradePmProWidget(
+        shopGradeWidgetData: WidgetShopGradeUiModel,
+        data: PMGradeBenefitInfoUiModel
+    ): WidgetUpgradePmProUiModel? {
         context?.let { context ->
             pmBasicInfo?.shopInfo?.let {
                 return WidgetUpgradePmProUiModel(
@@ -777,7 +765,8 @@ open class PowerMerchantSubscriptionFragment :
                     ),
                     generalBenefits = PMActiveTermHelper.getBenefitList(context),
                     isPmActive = shopGradeWidgetData.pmStatus,
-                    shopGrade = shopGradeWidgetData.shopGrade
+                    shopGrade = shopGradeWidgetData.shopGrade,
+                    nextMonthlyRefreshDate = data.nextMonthlyRefreshDate
                 )
             }
         }

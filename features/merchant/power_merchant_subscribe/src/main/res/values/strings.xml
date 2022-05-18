@@ -255,4 +255,6 @@
 
     <string name="pm_active_shop_score_description">Batas min. skor %1$d</string>
 
+    <string name="pm_desc_next_update">Update Selanjutnya: %s</string>
+    <string name="pm_ticker_update_pm_pro">Kamu berpotensi langsung menjadi PM PRO Advanced pada tanggal %s. Pertahankan performa tokomu, ya!</string>
 </resources>
