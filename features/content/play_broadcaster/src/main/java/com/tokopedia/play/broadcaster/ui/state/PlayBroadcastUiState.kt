@@ -29,7 +29,7 @@ data class PlayBroadcastUiState(
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
     val quizDetail: QuizDetailStateUiModel,
-    val onboarding: OnboardingUiModel,
+    val onBoarding: OnboardingUiModel,
     val quizBottomSheetUiState: QuizBottomSheetUiState,
 ) {
     companion object {
@@ -51,7 +51,7 @@ data class PlayBroadcastUiState(
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
                 quizDetail = QuizDetailStateUiModel.Unknown,
-                onboarding = OnboardingUiModel.Empty,
+                onBoarding = OnboardingUiModel.Empty,
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
             )
     }

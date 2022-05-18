@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -72,7 +71,6 @@ import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
@@ -690,8 +688,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     state.interactive,
                     prevState?.interactiveConfig,
                     state.interactiveConfig,
-                    prevState?.onboarding,
-                    state.onboarding,
+                    prevState?.onBoarding,
+                    state.onBoarding,
                 )
 
                 renderInteractionView(state.interactiveSetup, state.quizForm, state.pinnedMessage)

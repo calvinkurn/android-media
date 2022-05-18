@@ -266,7 +266,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         interactiveConfig,
         interactiveSetup,
         quizDetail,
-        onboarding,
+        onBoarding,
         quizBottomSheetUiState ->
         PlayBroadcastUiState(
             channel = channelState,
@@ -279,7 +279,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
             quizDetail = quizDetail,
-            onboarding = onboarding,
+            onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
         )
     }.stateIn(
