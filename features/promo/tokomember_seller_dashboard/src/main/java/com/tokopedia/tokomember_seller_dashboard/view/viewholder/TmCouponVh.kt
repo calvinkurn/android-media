@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
@@ -52,9 +51,13 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
         when(item.minimumTierLevel){
             COUPON_VIP ->{
                 tvMembership.text = "VIP"
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN100))
             }
             COUPON_MEMBER ->{
-                tvMembership.hide()
+                tvMembership.text = "Premium"
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN600)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN100))
             }
         }
         tvQuota.text = "${item.voucherQuota}/${item.remainingQuota}"
