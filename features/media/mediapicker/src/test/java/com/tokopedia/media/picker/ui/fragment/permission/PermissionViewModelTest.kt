@@ -121,7 +121,7 @@ class PermissionViewModelTest {
         viewModel.getDynamicPermissionList()
 
         // Then
-        assert(viewModel.permissionList.value == expectedValue)
+        assert(viewModel.permissionList.value?.size == expectedValue.size)
     }
 
     @Test
