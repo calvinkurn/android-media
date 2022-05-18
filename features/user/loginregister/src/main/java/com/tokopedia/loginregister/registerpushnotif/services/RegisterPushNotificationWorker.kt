@@ -58,7 +58,7 @@ class RegisterPushNotificationWorker(
                 saveRegisterStatus(false)
                 Result.failure()
             }
-            
+
             if (userSession.isLoggedIn) {
                 val response = registerPushNotification()
                 if (response?.isSuccess == true) {
@@ -181,7 +181,6 @@ class RegisterPushNotificationWorker(
         private const val REGISTER_PUSH_NOTIFICATION_PREFERENCE = "registerPushNotification"
         private const val IS_REGISTERED = "isRegistered"
 
-        private val ERROR_HEADER = "${RegisterPushNotificationWorker::class.java.name} error on "
         private const val TAG_REGISTER_PUSH_NOTIF = "CRASH_REGISTER_PUSHNOTIF"
         private const val MAX_LENGTH_ERROR = 1000
 
