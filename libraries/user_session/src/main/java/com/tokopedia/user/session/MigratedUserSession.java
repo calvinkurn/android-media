@@ -63,8 +63,7 @@ public class MigratedUserSession {
 		} else {
 		    return (long) value;
 		}
-	    } catch (Exception ignored) {
-	    }
+	    } catch (Exception ignored) {}
 	}
 
 	long oldValue = internalGetLong(prefName, keyName, defValue);
@@ -212,16 +211,21 @@ public class MigratedUserSession {
 	editor.apply();
     }
 
-    private void setPiiMigrationStatus(Boolean isMigrated) {
-	SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+    private void setPiiMigrationStatus(Boolean isMigrated, String keyName) {
+	String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+	SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
 	SharedPreferences.Editor editor = sharedPrefs.edit();
-	editor.putBoolean(Constants.IS_PII_MIGRATED, isMigrated);
+	editor.putBoolean(keyName + Constants.IS_PII_MIGRATED, isMigrated);
 	editor.apply();
     }
 
-    private Boolean isNeedPiiMigration() {
-	SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-	return sharedPrefs.getBoolean(Constants.IS_PII_MIGRATED, true);
+    private Boolean isMigratedToAead(String keyName) {
+	if(Constants.PII_DATA_SET.contains(keyName)) {
+	    String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+	    SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+	    return sharedPrefs.getBoolean(keyName + Constants.IS_PII_MIGRATED, false);
+	}
+	return true;
     }
 
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
@@ -259,12 +263,12 @@ public class MigratedUserSession {
 	    String value = sharedPrefs.getString(newKeyName, defValue);
 
 	    if (value != null) {
-		if(isNeedPiiMigration()) {
+		if(!isMigratedToAead(newKeyName)) {
 		    String decryptedCurValue = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
 		    String encryptedNewValue = encryptString(decryptedCurValue, newKeyName);
 		    internalSetString(newPrefName, newKeyName, encryptedNewValue);
 		    UserSessionMap.map.put(key, decryptedCurValue);
-		    setPiiMigrationStatus(false);
+		    setPiiMigrationStatus(true, newKeyName);
 		    return encryptedNewValue;
 		}
 
@@ -337,8 +341,7 @@ public class MigratedUserSession {
 		} else {
 		    return (boolean) value;
 		}
-	    } catch (Exception ignored) {
-	    }
+	    } catch (Exception ignored) {}
 	}
 
 	boolean oldValue = internalGetBoolean(prefName, keyName, defValue);

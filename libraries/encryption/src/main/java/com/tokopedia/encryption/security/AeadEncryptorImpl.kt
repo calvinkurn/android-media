@@ -42,6 +42,5 @@ class AeadEncryptorImpl(val context: Context): AeadEncryptor {
     override fun decrypt(base64EncryptedString: String, associatedData: ByteArray?): String {
 	val messageToDecrypt = Base64.decode(base64EncryptedString, Base64.DEFAULT)
 	return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
-//	return Base64.encodeToString(getAead()?.decrypt(Base64.decode(base64EncryptedString, Base64.DEFAULT), associatedData), Base64.DEFAULT)
     }
 }
