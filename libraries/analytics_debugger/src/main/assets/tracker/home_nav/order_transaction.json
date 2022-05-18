@@ -69,7 +69,9 @@
           "item_name": "/global_menu - review_card"
         }
       ],
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }
