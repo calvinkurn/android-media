@@ -99,10 +99,10 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         mode: String,
         slashPriceStatus: Int
     ) {
-        setupProductData.productStatus = setToProductStatus(setupProductData, slashPriceStatus)
         setupProductData.listProductVariant.forEach {
             it.variantStatus = mapToVariantStatus(it, mode)
         }
+        setupProductData.productStatus = setToProductStatus(setupProductData, slashPriceStatus)
         setupProductData.mappedResultData = mapToMappedResultData(setupProductData)
     }
 
@@ -113,21 +113,28 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         return ShopDiscountSetupProductUiModel.SetupProductData.VariantStatus(
             isMultiLoc = isMultiLoc(setupProductData, false),
             isVariantEnabled = getIsVariantEnabled(
+                setupProductData.listProductWarehouse.any {
+                    it.abusiveRule
+                },
                 setupProductData.variantStatus.isVariantEnabled,
                 mode
             )
         )
     }
 
-    private fun getIsVariantEnabled(isVariantEnabled: Boolean?, mode: String): Boolean {
+    private fun getIsVariantEnabled(
+        isHasAbusiveRule: Boolean,
+        isVariantEnabled: Boolean?,
+        mode: String
+    ): Boolean {
         return isVariantEnabled ?: when (mode) {
-                ShopDiscountManageDiscountMode.UPDATE -> {
-                    true
-                }
-                else -> {
-                    false
-                }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                !isHasAbusiveRule
             }
+            else -> {
+                false
+            }
+        }
     }
 
     private fun setToProductStatus(
@@ -135,16 +142,13 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         slashPriceStatus: Int
     ): ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus {
         val isVariant = isVariant(setupProductUiModel)
-        var isProductDiscounted = getIsProductDiscounted(setupProductUiModel, isVariant)
+        val isProductDiscounted = getIsProductDiscounted(setupProductUiModel, isVariant)
         val isMultiLoc = isMultiLoc(setupProductUiModel, isVariant)
         val errorType = setProductError(
             setupProductUiModel,
             isVariant,
             isProductDiscounted
         )
-        if (errorType != NO_ERROR) {
-            isProductDiscounted = false
-        }
         return ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
             isProductDiscounted = isProductDiscounted,
             isVariant = isVariant,
@@ -258,9 +262,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariant: Boolean
     ): Boolean {
         return if (isVariant) {
-            setupProductUiModel.listProductVariant.filter {
-                it.variantStatus.isVariantEnabled == true
-            }.any {
+            setupProductUiModel.listProductVariant.any {
                 checkProductWarehousePartialAbusiveRuleError(it)
             }
         } else {
@@ -281,9 +283,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariant: Boolean
     ): Boolean {
         return if (isVariant) {
-            setupProductUiModel.listProductVariant.filter {
-                it.variantStatus.isVariantEnabled == true
-            }.allCheckEmptyList {
+            setupProductUiModel.listProductVariant.allCheckEmptyList {
                 checkProductWarehouseAllAbusiveRuleError(it)
             }
         } else {
@@ -496,10 +496,19 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
-        val isEnableButtonSubmit = allProductData.allCheckEmptyList {
-            it.productStatus.isProductDiscounted && it.productStatus.errorType == NO_ERROR
+        val isAllProductDiscounted = allProductData.allCheckEmptyList {
+            it.productStatus.isProductDiscounted
         }
-        _enableButtonSubmitLiveData.postValue(isEnableButtonSubmit)
+        val isErrorTypeAllowed = checkAllowedProductErrorTypeToEnableButtonSubmit(allProductData)
+        _enableButtonSubmitLiveData.postValue(isAllProductDiscounted && isErrorTypeAllowed)
+    }
+
+    private fun checkAllowedProductErrorTypeToEnableButtonSubmit(
+        allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>
+    ): Boolean {
+        return allProductData.none {
+            it.productStatus.errorType == ALL_ABUSIVE_ERROR || it.productStatus.errorType == VALUE_ERROR
+        }
     }
 
     fun submitProductDiscount(

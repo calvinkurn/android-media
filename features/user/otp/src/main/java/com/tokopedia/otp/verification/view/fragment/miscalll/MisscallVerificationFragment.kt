@@ -12,17 +12,18 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
-import com.tokopedia.otp.verification.domain.data.*
+import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.data.OtpRequestData
+import com.tokopedia.otp.verification.domain.data.OtpValidateData
+import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -32,6 +33,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
+import com.tokopedia.unifyprinciples.R as RUnify
 
 open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastReceiver.OnCallStateChange {
 
@@ -39,7 +41,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     lateinit var phoneCallBroadcastReceiver: PhoneCallBroadcastReceiver
 
     private val permissionCheckerHelper = PermissionCheckerHelper()
-    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     private var remoteConfigInstance: RemoteConfigInstance? = null
     private var rollanceType = ""
@@ -275,8 +276,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
         if (permissionCheckerHelper.hasPermission(context, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(context, this)
-        } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(context, getPermissions())}")
         }
     }
 
@@ -286,14 +285,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
                 PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
         )
-    }
-
-    private fun sendLogTracker(message: String) {
-        try {
-            crashlytics.recordException(Throwable(message))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun setPrefixMiscall(prefix: String = DEFAULT_PREFIX_MISCALL) {

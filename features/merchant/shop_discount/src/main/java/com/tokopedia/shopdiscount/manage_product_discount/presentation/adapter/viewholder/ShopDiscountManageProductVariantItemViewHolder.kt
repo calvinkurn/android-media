@@ -19,6 +19,7 @@ import com.tokopedia.shopdiscount.utils.formatter.NumberFormatter
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.thousandFormattedWithoutCurrency
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -34,6 +35,8 @@ class ShopDiscountManageProductVariantItemViewHolder(
 ) : AbstractViewHolder<ShopDiscountManageProductVariantItemUiModel>(itemView) {
     private var viewBinding: LayoutShopDiscountManageProductVariantItemBinding? by viewBinding()
     private var toggleEnableVariant: SwitchUnify? = null
+    private var textErrorAbusive: Typography? = null
+    private var imageErrorAbusive: ImageUnify? = null
     private var divider: View? = null
     private var layoutFieldContainer: View? = null
     private var textVariantName: Typography? = null
@@ -68,6 +71,8 @@ class ShopDiscountManageProductVariantItemViewHolder(
             textVariantOriginalPrice = it.textVariantOriginalPrice
             textTotalStock = it.textTotalVariantStock
             toggleEnableVariant = viewBinding?.switcherToggleVariant
+            textErrorAbusive = viewBinding?.textErrorAbusive
+            imageErrorAbusive = viewBinding?.imageErrorAbusive
             divider = viewBinding?.divider
             layoutFieldContainer = viewBinding?.layoutFieldContainer?.fieldContainer
             it.layoutFieldContainer.let { layoutFieldContainer ->
@@ -84,7 +89,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
         setVariantInfoData(uiModel)
         setVariantToggle(uiModel)
         setVariantFieldData(uiModel)
-        checkShouldValidateInputAfterPopulateData(uiModel)
+        checkErrorState(uiModel)
         listener.checkShouldEnableButtonSubmit()
         listener.checkShouldEnableBulkApplyVariant()
     }
@@ -168,11 +173,26 @@ class ShopDiscountManageProductVariantItemViewHolder(
         }
     }
 
-    private fun checkShouldValidateInputAfterPopulateData(uiModel: ShopDiscountManageProductVariantItemUiModel) {
+    private fun checkErrorState(uiModel: ShopDiscountManageProductVariantItemUiModel) {
         val initialDiscountPrice = uiModel.discountedPrice
-        if (initialDiscountPrice.isMoreThanZero()) {
+        if (initialDiscountPrice.isMoreThanZero() && !uiModel.isAbusive) {
+            hideAbusiveError()
             validateInput(uiModel)
+        } else {
+            showAbusiveError()
         }
+    }
+
+    private fun hideAbusiveError() {
+        toggleEnableVariant?.isEnabled = true
+        textErrorAbusive?.hide()
+        imageErrorAbusive?.hide()
+    }
+
+    private fun showAbusiveError() {
+        toggleEnableVariant?.isEnabled = false
+        textErrorAbusive?.show()
+        imageErrorAbusive?.show()
     }
 
     private fun updateTextFieldDiscountPercentageText(uiModel: ShopDiscountManageProductVariantItemUiModel) {
@@ -321,15 +341,15 @@ class ShopDiscountManageProductVariantItemViewHolder(
                     textFieldDiscountPercentage?.textInputLayout?.error = null
                 }
             }
-            updateErrorTypeData(errorValidation, uiModel)
+            updateValueErrorTypeData(errorValidation, uiModel)
         }
     }
 
-    private fun updateErrorTypeData(
+    private fun updateValueErrorTypeData(
         errorType: Int,
         uiModel: ShopDiscountManageProductVariantItemUiModel
     ) {
-        uiModel.errorType = errorType
+        uiModel.valueErrorType = errorType
     }
 
     private fun getMinDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {

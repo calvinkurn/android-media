@@ -19,7 +19,8 @@ data class ShopDiscountManageProductVariantItemUiModel(
     var maxOrder: String = "",
     val isMultiLoc: Boolean = false,
     val slashPriceStatusId: String = "",
-    var errorType: Int = 0,
+    var valueErrorType: Int = 0,
+    var isAbusive: Boolean = false,
     var selectedPeriodChip: Int = 0
 ) : Visitable<ShopDiscountManageProductVariantDiscountTypeFactory> {
 

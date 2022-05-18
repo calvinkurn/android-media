@@ -140,6 +140,65 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
+    /***
+     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
+     */
+    override fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = "promoClick",
+            eventCategory = "feed updates - cmp",
+            eventAction = "click",
+            eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - is rilisan spesial true",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = "feed - play sgc channel - $businessWidgetPosition",
+                    creative = item.title,
+                    position = channelPositionInList.toString()
+                )
+            )
+        ).appendUserId(userId)
+            .appendBusinessUnit("content")
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
+            event = "promoView",
+            eventCategory = "feed updates - cmp",
+            eventAction = "impression on play sgc channel",
+            eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType} - is rilisan spesial true",
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = "feed - play sgc channel - $businessWidgetPosition - ${item.recommendationType}",
+                    creative = item.title,
+                    position = channelPositionInList.toString()
+                )
+            )
+        ).appendUserId(userId)
+            .appendBusinessUnit("content")
+            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"
         PlayWidgetChannelType.Vod -> "vod"
