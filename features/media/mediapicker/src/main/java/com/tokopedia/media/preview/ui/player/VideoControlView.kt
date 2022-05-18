@@ -1,4 +1,4 @@
-package com.tokopedia.media.preview.ui.activity.pagers.views
+package com.tokopedia.media.preview.ui.player
 
 import android.content.Context
 import android.os.Handler

@@ -5,6 +5,7 @@ import android.view.View
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.media.R
 import com.tokopedia.media.preview.ui.player.PickerVideoPlayer
+import com.tokopedia.media.preview.ui.player.VideoControlView
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class VideoPreview(

@@ -17,7 +17,7 @@
         app:use_artwork="false"
         app:use_controller="false" />
 
-    <com.tokopedia.media.preview.ui.activity.pagers.views.VideoControlView
+    <com.tokopedia.media.preview.ui.player.VideoControlView
         android:id="@+id/video_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
