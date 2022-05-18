@@ -16,13 +16,15 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
-import com.tokopedia.wishlistcommon.domain.WishlistV2UseCase
+import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
+import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL
@@ -32,6 +34,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -73,6 +77,9 @@ class WishlistV2ViewModelTest {
     lateinit var bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase
 
     @RelaxedMockK
+    lateinit var countDeleteWishlistV2UseCase: CountDeletionWishlistV2UseCase
+
+    @RelaxedMockK
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
 
     @RelaxedMockK
@@ -85,7 +92,7 @@ class WishlistV2ViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         wishlistV2ViewModel = spyk(WishlistV2ViewModel(dispatcher, wishlistV2UseCase, deleteWishlistV2UseCase,
-                bulkDeleteWishlistV2UseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
+                bulkDeleteWishlistV2UseCase, countDeleteWishlistV2UseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
 
         val primaryButton1 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "ADD_TO_CART")
         val primaryButton2 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
@@ -180,7 +187,7 @@ class WishlistV2ViewModelTest {
             wishlistV2ViewModel.organizeWishlistV2Data(
                 wishlistV2Response.data.wishlistV2,
                 "",
-                isAutomaticDelete
+                false
             )
         } returns listOf()
 
@@ -206,7 +213,7 @@ class WishlistV2ViewModelTest {
 
 
         //when
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         //then
         assert(wishlistV2ViewModel.wishlistV2.value is Success)
@@ -227,7 +234,7 @@ class WishlistV2ViewModelTest {
 
 
         //when
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         //then
         assert(wishlistV2ViewModel.wishlistV2.value is Fail)
@@ -268,35 +275,38 @@ class WishlistV2ViewModelTest {
     @Test
     fun deleteWishlist_shouldReturnSuccess() {
         //given
-        val deleteResult = com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2(
-                button = com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2.Button("", "", ""),
-                success = true, id = "", message = "")
+        val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
         coEvery {
-            deleteWishlistV2UseCase.executeSuspend(any(), any())
-        } returns Success(deleteResult)
-
+            deleteWishlistV2UseCase.execute(any(), any())
+        } answers {
+            firstArg<(DeleteWishlistV2Response.Data.WishlistRemoveV2) -> Unit>().invoke(deleteResult)
+        }
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
 
         //then
         assert(wishlistV2ViewModel.deleteWishlistV2Result.value is Success)
-        assert((wishlistV2ViewModel.deleteWishlistV2Result.value as Success<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
+        assert((wishlistV2ViewModel.deleteWishlistV2Result.value as Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
     }
 
     // delete_success
     @Test
     fun deleteWishlist_shouldReturnFail() {
         //given
+        val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = false)
         coEvery {
-            deleteWishlistV2UseCase.executeSuspend(any(), any())
-        } returns Fail(Exception())
+            deleteWishlistV2UseCase.execute(any(), any())
+        } answers {
+            firstArg<(DeleteWishlistV2Response.Data.WishlistRemoveV2) -> Unit>().invoke(deleteResult)
+        }
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
 
         //then
-        assert(wishlistV2ViewModel.deleteWishlistV2Result.value is Fail)
+        assert(wishlistV2ViewModel.deleteWishlistV2Result.value is Success)
+        assert(!(wishlistV2ViewModel.deleteWishlistV2Result.value as Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
     }
 
     // bulkDelete_success
@@ -306,12 +316,12 @@ class WishlistV2ViewModelTest {
         val bulkDeleteResult = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2(id = "",
                 success = true, message = "", button = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2.Button("", "", ""))
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
         } returns Success(bulkDeleteResult)
 
 
         //when
-        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "")
+        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams())
 
         //then
         assert(wishlistV2ViewModel.bulkDeleteWishlistV2Result.value is Success)
@@ -323,11 +333,11 @@ class WishlistV2ViewModelTest {
     fun bulkDeleteWishlist_shouldReturnFail() {
         //given
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
         } returns Fail(Exception())
 
         //when
-        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "")
+        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams())
 
         //then
         assert(wishlistV2ViewModel.bulkDeleteWishlistV2Result.value is Fail)
@@ -378,7 +388,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
@@ -394,7 +404,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
@@ -409,7 +419,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
@@ -424,7 +434,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
@@ -437,7 +447,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[3].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
@@ -451,7 +461,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
@@ -465,7 +475,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "test"), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "test"), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
@@ -483,7 +493,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "", sortFilters = paramListSortFilter), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "", sortFilters = paramListSortFilter), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_STATE))
@@ -496,7 +506,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_STATE_CAROUSEL))
@@ -510,7 +520,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget(recommendationItemList = listOf(recomItem)) }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
@@ -526,7 +536,7 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget(recommendationItemList = listOf(recomItem)) }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
