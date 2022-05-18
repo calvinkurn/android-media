@@ -1,11 +1,18 @@
 package com.tokopedia.topads.sdk.domain.interactor
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestCacheStrategy
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.UrlTopAdsSdk
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
+import com.tokopedia.topads.sdk.repository.KEY_IRIS_SESSION_ID
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -13,19 +20,32 @@ import javax.inject.Inject
  */
 
 class GetTopadsIsAdsUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<TopadsIsAdsQuery>)
-    : UseCase<TopadsIsAdsQuery>() {
+    private val irisSession: TopAdsIrisSession,
+) {
 
-    init {
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase.setTypeClass(TopadsIsAdsQuery::class.java)
-    }
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    override suspend fun executeOnBackground(): TopadsIsAdsQuery {
-        graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(params.parameters)
-        return graphqlUseCase.executeOnBackground()
+    suspend fun executeOnBackground(): TopadsIsAdsQuery {
+        try {
+            val restRequest = RestRequest.Builder(UrlTopAdsSdk.getTopAdsImageViewUrl(),
+                object : TypeToken<DataResponse<TopadsIsAdsQuery>>() {}.type)
+                .setRequestType(RequestType.POST)
+                .setBody(
+                    GraphqlRequest(
+                        query,
+                        TopadsIsAdsQuery::class.java,
+                        params.parameters
+                    )
+                )
+                .setHeaders(mapOf(KEY_IRIS_SESSION_ID to irisSession.getSessionId()))
+                .setCacheStrategy(RestCacheStrategy.Builder(com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD)
+                        .build())
+                .build()
+            val r = restRepository.getResponse(restRequest)
+            return r.getData<DataResponse<TopadsIsAdsQuery>>().data
+        } catch (t: Throwable) {
+            throw t
+        }
     }
 
     companion object {
@@ -86,14 +106,16 @@ class GetTopadsIsAdsUseCase @Inject constructor(
     }
     //endregion
 
-    fun setParams(productId: String = "",
-                  productKey: String = "",
-                  shopDomain: String = "",
-                  src: String = DEFAULT_SRC,
-                  device: String = DEFAULT_DEVICE,
-                  q: String = DEFAULT_Q,
-                  urlParam: String = "",
-                  pageName: String = "") {
+    fun setParams(
+        productId: String = "",
+        productKey: String = "",
+        shopDomain: String = "",
+        src: String = DEFAULT_SRC,
+        device: String = DEFAULT_DEVICE,
+        q: String = DEFAULT_Q,
+        urlParam: String = "",
+        pageName: String = "",
+    ) {
         params.parameters.clear()
         params.putString(PARAM_PRODUCT_ID, productId)
         params.putString(PARAM_PRODUCT_KEY, productKey)
