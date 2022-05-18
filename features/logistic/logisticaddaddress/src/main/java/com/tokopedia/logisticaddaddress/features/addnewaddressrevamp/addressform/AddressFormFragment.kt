@@ -746,25 +746,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun validateAlamat() : Boolean {
         binding?.run {
-            if (isPositiveFlow) {
-                val alamat = formAddress.etAlamatNew.textFieldInput.text.toString()
-                if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
-                    if (alamat.isEmpty() || alamat == " ") {
-                        setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
-                    }
-                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                    return false
-                } else return formAddress.etAlamatNew.textFieldWrapper.error == null
-            } else {
-                val alamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
-                if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
-                    if (alamat.isEmpty() || alamat == " ") {
-                        setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
-                    }
-                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                    return false
-                } else return formAddressNegative.etAlamat.textFieldWrapper.error == null
-            }
+            val field = if (isPositiveFlow) formAddress.etAlamatNew else formAddressNegative.etAlamat
+            val alamat = field.textFieldInput.text.toString()
+            if (alamat.length < MIN_CHAR_ADDRESS_LABEL) {
+                if (alamat.isEmpty() || alamat == " ") {
+                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+                view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                return false
+            } else return field.textFieldWrapper.error == null
         }
         return false
     }
