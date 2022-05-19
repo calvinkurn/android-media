@@ -11,6 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class CameraPageUiTest : CameraPageTest() {
+
     @get:Rule
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         android.Manifest.permission.CAMERA,
@@ -123,7 +124,7 @@ class CameraPageUiTest : CameraPageTest() {
 
     private fun startCameraPage(param: PickerParam.() -> Unit = {}) {
         val pickerParam: PickerParam = PickerParam()
-            .apply { param }
+            .apply(param)
             .also {
                 it.pageSource(PageSource.Feed)
                 it.pageType(PageType.COMMON)

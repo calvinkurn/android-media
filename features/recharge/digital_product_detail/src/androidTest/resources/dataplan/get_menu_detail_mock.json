@@ -1,0 +1,96 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 290,
+          "name": "pdp2022_paket_data",
+          "label": "Paket Data Test",
+          "icon": ""
+        },
+        "user_perso": {
+          "prefill": "",
+          "client_name": "",
+          "user_type": "non login",
+          "loyalty_status": "non login",
+          "prefill_operator_id": 0
+        },
+        "recommendations": [],
+        "promos": [
+          {
+            "id": 6897,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-smartfren",
+            "status": 1,
+            "title": "Smartfren Unlimited / Volume min 100rb, diskon hingga Rp20rb. Terbatas!",
+            "subtitle": "Kode Promo: {SFDIS20}",
+            "promo_code": "SFDIS20"
+          },
+          {
+            "id": 6896,
+            "filename": "https://images.tokopedia.net/img/ULHhFV/2022/4/1/3ede4983-ba0f-4e1e-bf12-40b588154dcf.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-telco/",
+            "status": 1,
+            "title": "Bonus 3 Kupon Hiburan \u0026 Belajar Cashback hingga Rp100rb. Terbatas!",
+            "subtitle": "Kode Promo: {NGABUBURIT}",
+            "promo_code": "NGABUBURIT"
+          },
+          {
+            "id": 2476,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-8/",
+            "status": 1,
+            "title": "Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+            "subtitle": "kode promo : {FASHDG}",
+            "promo_code": "FASHDG"
+          },
+          {
+            "id": 2739,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/8/34631992/34631992_c28f7d1c-3e77-41ae-b384-5a9fcf7b21a9.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-diskon-5/",
+            "status": 1,
+            "title": "[INDOTAGIHAN] Bayar tagihan, diskon Rp35rb. Khusus pembayaran Indodana.",
+            "subtitle": "Kode Promo: {INDOTAGIHAN}",
+            "promo_code": "INDOTAGIHAN"
+          },
+          {
+            "id": 2420,
+            "filename": "https://images.tokopedia.net/img/ULHhFV/2022/2/1/ec7fd00a-d1fa-4793-9e72-99cfc54ebf85.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-indosat-2",
+            "status": 1,
+            "title": "Beli produk promo Indosat, ada tambahan cashback.",
+            "subtitle": "Kode Promo: {CBINDOSAT}",
+            "promo_code": "CBINDOSAT"
+          },
+          {
+            "id": 4013,
+            "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/5/c756f11d-4b5a-46aa-aff7-27e2ac315753.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/pulsa",
+            "status": 1,
+            "title": "Khusus hari Rabu, Diskon Rp500rb dengan Kartu Kredit Digital digibank by DBS",
+            "subtitle": "Kode promo: {DIGIDGP500}",
+            "promo_code": "DIGIDP500"
+          }
+        ],
+        "tickers": [],
+        "banners": [
+          {
+            "id": 1,
+            "title": "",
+            "img_url": "https://images.tokopedia.net/img/HjsoxQ/2022/3/18/8a222858-567a-41f4-a36f-8a8aeb96bcd7.png",
+            "link_url": "https://images.tokopedia.net/img/HjsoxQ/2022/3/18/8a222858-567a-41f4-a36f-8a8aeb96bcd7.png",
+            "promo_code": "",
+            "app_link": ""
+          }
+        ],
+        "express_checkout": false
+      }
+    }
+  }
+]

@@ -13,6 +13,7 @@ import com.tokopedia.picker.common.types.ModeType
 
 @UiTest
 class CameraPhotoOnlyUiTest : CameraPageTest() {
+
     @get:Rule
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         android.Manifest.permission.CAMERA,
@@ -91,10 +92,9 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
         Assert.verifyOpenPreviewActivity()
     }
 
-
     private fun startCameraPage(param: PickerParam.() -> Unit = {}) {
         val pickerParam = PickerParam()
-            .apply { param }
+            .apply(param)
             .also {
                 it.pageSource(PageSource.Feed)
                 it.pageType(PageType.CAMERA)

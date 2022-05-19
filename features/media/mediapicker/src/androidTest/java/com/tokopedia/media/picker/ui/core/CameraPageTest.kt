@@ -16,6 +16,7 @@ import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
 
 open class CameraPageTest : PickerTest() {
+
     override fun createAndAppendUri(builder: Uri.Builder) {}
 
     object Robot {
