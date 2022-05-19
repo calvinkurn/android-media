@@ -358,60 +358,11 @@ class AddEditProductPreviewFragment :
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
-                REQUEST_CODE_IMAGE -> {
-                    val result = ImagePickerResultExtractor.extract(data)
-                    val imagePickerResult = result.imageUrlOrPathList as ArrayList
-                    val originalImageUrl = result.originalImageUrl as ArrayList
-                    val isEditted = result.isEditted as ArrayList
-                    if (imagePickerResult.size > 0) {
-                        val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
-                                viewModel.isDuplicate ||
-                                viewModel.productInputModel.value != null
-                        // update the product pictures in the preview page
-                        // this should be executed when the user press "Ubah" on stepper in add or edit or duplicate product
-                        if (shouldUpdatePhotosInsteadMoveToDetail) {
-                            viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
-                        } else {
-                            // this only executed when we came from empty stepper page (add product)
-                            val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
-                            moveToDetailFragment(newProductInputModel, true)
-                        }
-                    }
-                    if (isEditted.any { true }) {
-                        viewModel.setIsDataChanged(true)
-                    }
-                }
-                REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
-                    val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
-                    SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
-                        viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
-                        viewModel.productInputModel.value?.let {
-                            updateProductStatusSwitch(it)
-                        }
-                        viewModel.setIsDataChanged(true)
-                    }
-                }
-                SET_CASHBACK_REQUEST_CODE -> {
-                    val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
-                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    onSetCashbackResult(cacheManager)
-                }
-                REQUEST_CODE_SHOP_LOCATION -> {
-                    showLoading()
-                    data.let { intent ->
-                        val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-
-                        saveAddressDataModel?.let { model ->
-                            latitude = model.latitude
-                            longitude = model.longitude
-                            postalCode = model.postalCode
-                            districtId = model.districtId
-                            formattedAddress = model.formattedAddress
-                        }
-
-                        saveShippingLocation()
-                    }
-                }
+                REQUEST_CODE_IMAGE -> updateImageListFromIntentData(data)
+                REQUEST_CODE_VARIANT_DIALOG_EDIT -> updateVariantFromIntentData(data)
+                REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
+                SET_CASHBACK_REQUEST_CODE -> updateCashbackFromIntentData(data)
+                REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
             }
         }
     }
@@ -1291,6 +1242,64 @@ class AddEditProductPreviewFragment :
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_SHIPMENT)?.removeObservers(this)
+    }
+
+    private fun updateImageListFromIntentData(data: Intent) {
+        val result = ImagePickerResultExtractor.extract(data)
+        val imagePickerResult = result.imageUrlOrPathList as ArrayList
+        val originalImageUrl = result.originalImageUrl as ArrayList
+        val isEditted = result.isEditted as ArrayList
+        if (imagePickerResult.size > 0) {
+            val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
+                    viewModel.isDuplicate ||
+                    viewModel.productInputModel.value != null
+            // update the product pictures in the preview page
+            // this should be executed when the user press "Ubah" on stepper in add or edit or duplicate product
+            if (shouldUpdatePhotosInsteadMoveToDetail) {
+                viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
+            } else {
+                // this only executed when we came from empty stepper page (add product)
+                val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
+                moveToDetailFragment(newProductInputModel, true)
+            }
+        }
+        if (isEditted.any { true }) {
+            viewModel.setIsDataChanged(true)
+        }
+    }
+
+    private fun updateCashbackFromIntentData(data: Intent) {
+        val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
+        val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+        onSetCashbackResult(cacheManager)
+    }
+
+    private fun updateShopLocationFromIntentData(data: Intent) {
+        showLoading()
+        data.let { intent ->
+            val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+
+            saveAddressDataModel?.let { model ->
+                latitude = model.latitude
+                longitude = model.longitude
+                postalCode = model.postalCode
+                districtId = model.districtId
+                formattedAddress = model.formattedAddress
+            }
+
+            saveShippingLocation()
+        }
+    }
+
+    private fun updateVariantFromIntentData(data: Intent) {
+        val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
+        SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
+            viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+            viewModel.productInputModel.value?.let {
+                updateProductStatusSwitch(it)
+            }
+            viewModel.setIsDataChanged(true)
+        }
     }
 
     private fun setCashback() {
