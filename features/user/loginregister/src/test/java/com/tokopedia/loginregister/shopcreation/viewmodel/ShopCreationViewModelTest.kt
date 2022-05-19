@@ -14,6 +14,7 @@ import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
+import com.tokopedia.shopadmin.common.domain.usecase.GetAdminTypeUseCaseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -65,6 +66,9 @@ class ShopCreationViewModelTest {
     lateinit var shopInfoUseCase: ShopInfoUseCase
 
     @RelaxedMockK
+    lateinit var getAdminTypeUseCaseCase: GetAdminTypeUseCaseCase
+
+    @RelaxedMockK
     lateinit var addNameObserver: Observer<Result<UserProfileUpdate>>
 
     @RelaxedMockK
@@ -107,6 +111,7 @@ class ShopCreationViewModelTest {
                 updateUserProfileUseCase,
                 getProfileUseCase,
                 shopInfoUseCase,
+                getAdminTypeUseCaseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )

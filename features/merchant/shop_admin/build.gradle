@@ -55,6 +55,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation projectOrAar(rootProject.ext.libraries.track)

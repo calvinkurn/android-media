@@ -177,7 +177,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun initButtonListener() {
         buttonOpenShop.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
-            if (userSession.userId != "0" && userSession.userId.isNotEmpty()) {
+            if (userSession.userId != DEFAULT_SHOP_ID_NOT_OPEN && userSession.userId.isNotEmpty()) {
                 goToShopAdminRedirection()
             } else {
                 showLoading()
@@ -423,6 +423,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
         private const val REQUEST_CODE_PHONE_SHOP_CREATION = 101
+
+        private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
