@@ -30,7 +30,7 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
         additionalParams: WishlistV2BulkRemoveAdditionalParams
     ): MutableMap<String, Any> {
         val params = mutableMapOf(
-            WishlistV2Consts.PRODUCT_ID to productId,
+            WishlistV2Consts.PRODUCT_IDs to productId,
             WishlistV2Consts.USER_ID to userId,
             WishlistV2Consts.MODE to mode)
 
