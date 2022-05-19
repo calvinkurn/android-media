@@ -21,7 +21,7 @@ class CampaignListActivity: BaseSimpleActivity() {
 
 
     override fun getLayoutRes() = R.layout.activity_campaign_list
-    override fun getNewFragment() = CampaignListFragment.newInstance()
+    override fun getNewFragment() = CampaignListContainerFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {

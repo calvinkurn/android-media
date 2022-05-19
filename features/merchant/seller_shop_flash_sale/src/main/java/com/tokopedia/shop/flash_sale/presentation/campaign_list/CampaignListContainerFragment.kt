@@ -15,12 +15,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignListFragment: BaseDaggerFragment() {
+class CampaignListContainerFragment: BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(): CampaignListFragment {
-            val fragment = CampaignListFragment()
+        fun newInstance(): CampaignListContainerFragment {
+            val fragment = CampaignListContainerFragment()
             return fragment
         }
 
@@ -32,9 +32,9 @@ class CampaignListFragment: BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(CampaignListContainerViewModel::class.java) }
 
-    override fun getScreenName(): String = CampaignListFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = CampaignListContainerFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopFlashSaleComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -54,8 +54,38 @@ class CampaignListFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        observeTabsMeta()
+        observeCampaigns()
+        viewModel.getTabsMeta()
+        viewModel.getCampaigns(10, 1, emptyList(), "", false)
     }
 
+    private fun observeTabsMeta() {
+        viewModel.tabsMeta.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    val tabs = result.data
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+
+    private fun observeCampaigns() {
+        viewModel.campaigns.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    val campaigns = result.data
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
     private fun setupView() {
 
     }

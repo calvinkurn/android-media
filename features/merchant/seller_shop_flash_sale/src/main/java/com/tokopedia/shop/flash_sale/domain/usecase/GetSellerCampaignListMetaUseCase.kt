@@ -10,14 +10,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.flash_sale.data.mapper.SellerCampaignListMetaMapper
 import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignListMetaRequest
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListMetaResponse
-import com.tokopedia.shop.flash_sale.domain.entity.ProductListMeta
+import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
 import javax.inject.Inject
 
 
 class GetSellerCampaignListMetaUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: SellerCampaignListMetaMapper
-) : GraphqlUseCase<List<ProductListMeta>>(repository) {
+) : GraphqlUseCase<List<TabMeta>>(repository) {
 
     companion object {
         private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
@@ -51,7 +51,7 @@ class GetSellerCampaignListMetaUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    suspend fun execute(sellerCampaignType: Int = CAMPAIGN_TYPE_SHOP_FLASH_SALE): List<ProductListMeta> {
+    suspend fun execute(sellerCampaignType: Int = CAMPAIGN_TYPE_SHOP_FLASH_SALE): List<TabMeta> {
         val request = buildRequest(sellerCampaignType)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignListMetaResponse>()

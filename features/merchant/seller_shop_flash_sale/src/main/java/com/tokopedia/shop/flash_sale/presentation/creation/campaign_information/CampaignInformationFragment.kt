@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.FragmentCampaignInformationBinding
-import com.tokopedia.seller_shop_flash_sale.databinding.FragmentCampaignListBinding
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignInformationFragment: BaseDaggerFragment() {
