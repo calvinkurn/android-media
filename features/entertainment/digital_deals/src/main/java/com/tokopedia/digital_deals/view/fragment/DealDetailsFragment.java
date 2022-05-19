@@ -60,7 +60,6 @@ import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.EventContentData;
-import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.CustomWidthToaster;

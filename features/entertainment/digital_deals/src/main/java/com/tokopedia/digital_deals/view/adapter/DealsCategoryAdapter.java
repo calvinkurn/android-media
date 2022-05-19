@@ -32,7 +32,6 @@ import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
