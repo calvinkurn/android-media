@@ -40,12 +40,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     private var viewedAnchorTabsSet: MutableSet<String> = HashSet()
 
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_DISCOVERY, eventAction: String,
-                                   eventLabel: String = EMPTY_STRING): MutableMap<String, Any> {
+                                   eventLabel: String = EMPTY_STRING, pageSourceIdentifier: String = sourceIdentifier): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_EVENT to eventName,
                 KEY_EVENT_CATEGORY to eventDiscoveryCategory,
                 KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel)
+                KEY_EVENT_LABEL to eventLabel,
+                PAGE_SOURCE to pageSourceIdentifier)
     }
 
     override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {
@@ -1911,6 +1912,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[PAGE_TYPE] = pageType
         customDimensionMap[PAGE_PATH] = removedDashPageIdentifier
+        customDimensionMap[PAGE_SOURCE] = sourceIdentifier
         customDimensionMap[BUSINESS_UNIT] = HOME_BROWSE
         customDimensionMap[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         customDimensionMap[USER_ID] = userSession.userId
@@ -1932,7 +1934,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.data?.firstOrNull()?.creativeName
                     ?: EMPTY_STRING)
-            addSourceData(shopMap)
         }
         list.add(shopMap)
 
@@ -2120,6 +2121,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[PAGE_TYPE] = pageType
         customDimensionMap[PAGE_PATH] = removedDashPageIdentifier
+        customDimensionMap[PAGE_SOURCE] = sourceIdentifier
         customDimensionMap[BUSINESS_UNIT] = HOME_BROWSE
         customDimensionMap[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         customDimensionMap[USER_ID] = userSession.userId
@@ -2141,7 +2143,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             shopMap[KEY_POSITION] = "${componentsItems.position + 1}"
             shopMap[KEY_CREATIVE] = (componentsItems.data?.firstOrNull()?.creativeName
                     ?: EMPTY_STRING)
-            addSourceData(shopMap)
         }
         list.add(shopMap)
 
