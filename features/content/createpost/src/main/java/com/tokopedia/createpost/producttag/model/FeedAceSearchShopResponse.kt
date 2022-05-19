@@ -10,11 +10,14 @@ data class FeedAceSearchShopResponse(
     val wrapper: Data = Data(),
 ) {
     data class Data(
+        @SerializedName("total_shop")
+        val totalShop: Int = 0,
+
         @SerializedName("shops")
         val shops: List<Shop> = emptyList(),
 
-        @SerializedName("total_shop")
-        val totalShop: Int = 0,
+        @SerializedName("top_shop")
+        val topShop: List<Shop> = emptyList(),
     )
 
     data class Shop(

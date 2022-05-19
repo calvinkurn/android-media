@@ -49,7 +49,9 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     private val adapter: ShopCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ShopCardAdapter(
             onSelected = { viewModel.submitAction(ProductTagAction.ShopSelected(it)) },
-            onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop) }
+            onLoading = {
+                viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }
         )
     }
 
@@ -146,7 +148,10 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     }
 
     private fun renderGlobalSearchShop(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
-        if(prev?.shops == curr.shops && prev.state == curr.state) return
+        if(prev?.shops == curr.shops &&
+            prev.recomShops == curr.recomShops &&
+            prev.state == curr.state
+        ) return
 
         when(curr.state) {
             is PagedState.Loading -> {
@@ -196,20 +201,26 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     @OptIn(ExperimentalStdlibApi::class)
     private fun updateAdapterData(state: GlobalSearchShopUiState, hasNextPage: Boolean) {
         val finalShops = buildList {
-            if(state.shops.isEmpty() && !hasNextPage) {
+            if(state.shops.isEmpty()) {
                 if(state.param.hasFilterApplied()) {
                     add(ShopCardAdapter.Model.EmptyState(true) {
                         viewModel.submitAction(ProductTagAction.ResetShopFilter)
                     })
                     binding.sortFilter.show()
                 }
-                else {
+                else if(state.recomShops.isNotEmpty()) {
                     add(ShopCardAdapter.Model.EmptyState(false) {
                         viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
                     })
                     add(ShopCardAdapter.Model.Divider)
                     add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
+                    addAll(state.recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
+                    if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+
                     binding.sortFilter.hide()
+                }
+                else if(hasNextPage) {
+                    add(ShopCardAdapter.Model.Loading)
                 }
             }
             else {

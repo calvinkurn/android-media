@@ -135,6 +135,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchShopUiState = _globalSearchShop.map {
         GlobalSearchShopUiState(
             shops = it.shops,
+            recomShops = it.recomShops,
             quickFilters = it.quickFilters,
             sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
@@ -572,10 +573,11 @@ class ProductTagViewModel @AssistedInject constructor(
             _globalSearchShop.setValue {
                 copy(
                     shops = shops + result.pagedData.dataList,
+                    recomShops = recomShops + result.recomPagedData.dataList,
                     quickFilters = quickFilters,
                     nextCursor = nextCursor,
                     state = PagedState.Success(
-                        hasNextPage = result.pagedData.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage || result.recomPagedData.hasNextPage,
                     ),
                     param = newParam,
                 )

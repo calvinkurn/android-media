@@ -141,7 +141,8 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
         if(prev?.products == curr.products &&
             prev.state == curr.state &&
-            prev.ticker == curr.ticker
+            prev.ticker == curr.ticker &&
+            prev.suggestion == curr.suggestion
         ) return
 
         when(curr.state) {

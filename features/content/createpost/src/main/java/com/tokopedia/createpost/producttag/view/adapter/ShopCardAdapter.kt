@@ -32,14 +32,23 @@ class ShopCardAdapter(
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return if(oldItem is Model.Shop && newItem is Model.Shop) {
-            oldItem.shop.shopId == newItem.shop.shopId
-        } else if(oldItem is Model.Loading && newItem is Model.Loading) false
-        else oldItem == newItem
+        return isModelTheSame(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return oldItem == newItem
+        return isModelTheSame(oldItem, newItem)
+    }
+
+    private fun isModelTheSame(oldItem: Model, newItem: Model): Boolean {
+        return if(oldItem is Model.Shop && newItem is Model.Shop) {
+            oldItem.shop.shopId == newItem.shop.shopId
+        } else if(oldItem is Model.EmptyState && newItem is Model.EmptyState) {
+            oldItem.hasFilterApplied == newItem.hasFilterApplied
+        } else if(oldItem is Model.RecommendationTitle && newItem is Model.RecommendationTitle) {
+            oldItem.text == newItem.text
+        }
+        else if(oldItem is Model.Loading && newItem is Model.Loading) false
+        else oldItem == newItem
     }
 
     sealed interface Model {
