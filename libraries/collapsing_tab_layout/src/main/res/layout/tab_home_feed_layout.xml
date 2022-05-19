@@ -21,6 +21,7 @@
                 android:id="@+id/tabBackgroundImage"
                 android:layout_width="@dimen/tab_home_feed_width"
                 android:layout_height="@dimen/tab_home_feed_max_height"
+                android:contentDescription="@string/content_desc_tab_background"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 />

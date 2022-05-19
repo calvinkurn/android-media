@@ -221,8 +221,7 @@ public class CollapsingTabLayout extends TabLayout {
         }
         setScrollEnabled(true);
         int scrollTargetX = ((ViewGroup) getChildAt(0)).getChildAt(getSelectedTabPosition()).getLeft() - leftmostItemPadding;
-        Animator animator = ObjectAnimator.ofInt(this, "scrollX",  scrollTargetX);
-        animator.setDuration(DEFAULT_ANIMATION_DURATION);
+        Animator animator = ObjectAnimator.ofInt(this, "scrollX",  scrollTargetX).setDuration(DEFAULT_ANIMATION_DURATION);
         animator.addListener(
                 new AnimatorListenerAdapter() {
                     @Override

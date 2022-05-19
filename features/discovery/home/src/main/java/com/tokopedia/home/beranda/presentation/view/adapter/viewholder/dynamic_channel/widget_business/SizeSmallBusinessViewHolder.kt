@@ -190,7 +190,7 @@ open class SizeSmallBusinessViewHolder(
             tagLine?.text = MethodChecker.fromHtml(element?.tagName)
             if (element != null) {
                 when (element.tagType) {
-                    1 -> {
+                    TAG_TYPE_1 -> {
                         tagLine?.background = ContextCompat.getDrawable(
                             itemView.context,
                             R.drawable.bg_rounded_pink_label
@@ -202,7 +202,7 @@ open class SizeSmallBusinessViewHolder(
                             )
                         )
                     }
-                    2 -> {
+                    TAG_TYPE_2 -> {
                         tagLine?.background = ContextCompat.getDrawable(
                             itemView.context,
                             R.drawable.bg_rounded_green_label
@@ -214,7 +214,7 @@ open class SizeSmallBusinessViewHolder(
                             )
                         )
                     }
-                    3 -> {
+                    TAG_TYPE_3 -> {
                         tagLine?.background = ContextCompat.getDrawable(
                             itemView.context,
                             R.drawable.bg_rounded_blue_label
@@ -226,7 +226,7 @@ open class SizeSmallBusinessViewHolder(
                             )
                         )
                     }
-                    4 -> {
+                    TAG_TYPE_4 -> {
                         tagLine?.background = ContextCompat.getDrawable(
                             itemView.context,
                             R.drawable.bg_rounded_yellow_label
@@ -238,7 +238,7 @@ open class SizeSmallBusinessViewHolder(
                             )
                         )
                     }
-                    5 -> {
+                    TAG_TYPE_5 -> {
                         tagLine?.background = ContextCompat.getDrawable(
                             itemView.context,
                             R.drawable.bg_rounded_grey_label
@@ -265,6 +265,11 @@ open class SizeSmallBusinessViewHolder(
         const val MAX_LINES_1 = 1
         const val MAX_LINES_2 = 2
         const val MAX_LINES_3 = 3
+        const val TAG_TYPE_1 = 1
+        const val TAG_TYPE_2 = 2
+        const val TAG_TYPE_3 = 3
+        const val TAG_TYPE_4 = 4
+        const val TAG_TYPE_5 = 5
     }
 
 }
