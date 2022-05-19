@@ -68,6 +68,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tickerType="announcement"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:tickerShapeType="loose"
         app:closeButtonVisibility="gone"
         android:layout_marginTop="@dimen/unify_space_12"

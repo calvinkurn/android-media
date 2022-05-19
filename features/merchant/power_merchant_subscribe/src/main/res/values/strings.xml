@@ -256,4 +256,6 @@
 
     <string name="pm_desc_next_update">Update Selanjutnya: %s</string>
     <string name="pm_ticker_update_pm_pro">Kamu berpotensi langsung menjadi PM PRO Advanced pada tanggal %s. Pertahankan performa tokomu, ya!</string>
+    <string name="pm_info_benefit_increase_desc"><![CDATA[Klik ikon <font color=\"%1$s\"> <b> > </b> </font>  di bagian atas halaman ini untuk lihat caranya. Yuk, cek targetmu selanjutnya!]]></string>
+    <string name="pm_info_benefit_increase_title">Level Toko naik, keuntungan bertambah!</string>
 </resources>
