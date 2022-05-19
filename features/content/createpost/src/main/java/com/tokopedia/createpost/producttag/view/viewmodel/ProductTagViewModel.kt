@@ -438,7 +438,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val quickFilters = repo.getQuickFilter(
                 query = globalSearchProduct.param.query,
-                extraParams = globalSearchProduct.param.toCompleteParam(),
+                extraParams = globalSearchProduct.param.joinToString(),
             )
 
             val newParam = globalSearchProduct.param.copy().apply {
@@ -576,7 +576,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val quickFilters = repo.getQuickFilter(
                 query = newParam.query,
-                extraParams = newParam.toCompleteParam(),
+                extraParams = newParam.joinToString(),
             )
 
             val result = repo.searchAceShops(param = newParam)

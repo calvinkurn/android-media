@@ -51,7 +51,7 @@ class FeedAceSearchShopUseCase @Inject constructor(
             param: SearchParamUiModel,
         ): Map<String, Any> {
             return mapOf<String, Any>(
-                PARAMS to param.toCompleteParam()
+                PARAMS to param.joinToString()
             )
         }
     }

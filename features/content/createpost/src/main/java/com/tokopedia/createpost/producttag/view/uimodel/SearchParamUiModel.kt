@@ -1,5 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+import com.tokopedia.filter.common.helper.getSortFilterCount
+
 
 /**
  * Created By : Jonathan Darwin on May 17, 2022
@@ -68,14 +70,17 @@ data class SearchParamUiModel(
     }
 
     fun removeParam(key: String, value: String) {
-        if(this.value.containsKey(key)) {
-            if(this.value[key] is String) {
-                val split = this.value[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR).toMutableList()
+        val map = this.value
+        if(map.containsKey(key)) {
+            if(map[key] is String) {
+                val split = map[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR).toMutableList()
                 split.remove(value)
 
-                this.value[key] = split.joinToString(separator = DEFAULT_MULTIPLE_PARAM_SEPARATOR)
+                if(split.size > 0)
+                    map[key] = split.joinToString(separator = DEFAULT_MULTIPLE_PARAM_SEPARATOR)
+                else map.remove(key)
             }
-            else this.value.remove(key)
+            else map.remove(key)
         }
     }
 
@@ -97,13 +102,21 @@ data class SearchParamUiModel(
         start = 0
     }
 
-    fun toCompleteParam(): String {
+    fun joinToString(): String {
         return value.map {
             it.toString()
         }.joinToString(separator = DEFAULT_PARAM_SEPARATOR).replace("#",",")
     }
 
-    fun setDefaultParam() {
+    fun getFilterCount(): Int {
+        return getSortFilterCount(value)
+    }
+
+    fun hasFilterApplied(): Boolean {
+        return getFilterCount() > 0
+    }
+
+    private fun setDefaultParam() {
         value[KEY_DEVICE] = "android"
         value[KEY_FROM] = "feed_content"
         value[KEY_SOURCE] = "universe"

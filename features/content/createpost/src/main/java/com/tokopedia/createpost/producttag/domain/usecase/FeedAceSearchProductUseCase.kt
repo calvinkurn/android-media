@@ -87,7 +87,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
         fun createParams(
             param: SearchParamUiModel,
         ): Map<String, Any> = mapOf(
-            PARAMS to param.toCompleteParam()
+            PARAMS to param.joinToString()
         )
     }
 }

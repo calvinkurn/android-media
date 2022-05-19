@@ -209,7 +209,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             parentListener = {
                 viewModel.submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
             }
-            indicatorCounter = getSortFilterCount(curr.param.value)
+            indicatorCounter = curr.param.getFilterCount()
             show()
         }
     }
