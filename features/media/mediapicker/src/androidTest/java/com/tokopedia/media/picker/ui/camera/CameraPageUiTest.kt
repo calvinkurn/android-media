@@ -30,7 +30,8 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.captureVideo(CAPTURED_VIDEO_DURATION)
+        Robot.swipeLeftCameraMode()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
 
         // Then
         Assert.assertCaptureImage()
@@ -67,10 +68,21 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @Test
-    fun should_open_preview_activity_onLanjutClicked() {
+    fun should_open_image_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
         Robot.clickCaptureButton()
+        Robot.clickLanjutButton()
+
+        // Then
+        Assert.verifyOpenPreviewActivity()
+    }
+
+    @Test
+    fun should_open_video_preview_activity_onLanjutClicked() {
+        // When
+        startCameraPage()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickLanjutButton()
 
         // Then
