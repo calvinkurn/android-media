@@ -24,8 +24,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class RegisterPushNotificationWorker(
-    val context: Context,
-    params: WorkerParameters
+        val context: Context,
+        params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
     @Named(SessionModule.SESSION_MODULE)
@@ -43,37 +43,34 @@ class RegisterPushNotificationWorker(
 
     init {
         DaggerRegisterPushNotificationComponent.builder()
-            .registerPushNotificationModule(RegisterPushNotificationModule(context))
-            .build()
-            .inject(this)
+                .registerPushNotificationModule(RegisterPushNotificationModule(context))
+                .build()
+                .inject(this)
     }
 
     override suspend fun doWork(): Result {
-        when {
+        return when {
             isRegistered() -> {
-                return Result.success()
+                Result.success()
             }
             runAttemptCount > MAX_RUN_ATTEMPT -> {
                 saveRegisterStatus(false)
-                return Result.failure()
+                Result.failure()
             }
-            else -> return try {
-                if (userSession.isLoggedIn) {
-                    val response = registerPushNotification()
-                    if (response?.isSuccess == true) {
-                        saveRegisterStatus(true)
-                        Result.success()
-                    } else {
-                        recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", Throwable(response?.errorMessage))
-                        Result.retry()
-                    }
+            userSession.isLoggedIn -> try {
+                val response = registerPushNotification()
+                if (response?.isSuccess == true) {
+                    saveRegisterStatus(true)
+                    Result.success()
                 } else {
-                    Result.failure()
+                    recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", Throwable(response?.errorMessage))
+                    Result.retry()
                 }
             } catch (e: Exception) {
-                recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", e)
+                recordLog(LOG_TYPE_DO_WORK, "retry count catch = $runAttemptCount", e)
                 Result.retry()
             }
+            else -> Result.failure()
         }
     }
 
@@ -84,9 +81,9 @@ class RegisterPushNotificationWorker(
                 signData(userSession.userId.orEmpty(), userSession.deviceId.orEmpty()).let {
                     try {
                         return registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
-                            publicKey = it.publicKey,
-                            signature = it.signature,
-                            datetime = it.datetime
+                                publicKey = it.publicKey,
+                                signature = it.signature,
+                                datetime = it.datetime
                         )).data
                     } catch (e: Exception) {
                         saveRegisterStatus(false)
@@ -101,12 +98,12 @@ class RegisterPushNotificationWorker(
     @RequiresApi(Build.VERSION_CODES.M)
     private fun generateKey() {
         val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(
-            KeyProperties.KEY_ALGORITHM_RSA,
-            ANDROID_KEY_STORE
+                KeyProperties.KEY_ALGORITHM_RSA,
+                ANDROID_KEY_STORE
         )
 
         val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(PUSH_NOTIF_ALIAS,
-            KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
+                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
             setDigests(KeyProperties.DIGEST_SHA256)
             setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             build()
@@ -202,21 +199,21 @@ class RegisterPushNotificationWorker(
 
         private fun runWorker(context: Context) {
             WorkManager.getInstance(context).enqueueUniqueWork(
-                WORKER_NAME,
-                ExistingWorkPolicy.KEEP,
-                OneTimeWorkRequestBuilder<RegisterPushNotificationWorker>()
-                    .setConstraints(Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                    ).build()
+                    WORKER_NAME,
+                    ExistingWorkPolicy.KEEP,
+                    OneTimeWorkRequestBuilder<RegisterPushNotificationWorker>()
+                            .setConstraints(Constraints.Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build()
+                            ).build()
             )
         }
 
         private fun recordLog(type: String, message: String, throwable: Throwable) {
             ServerLogger.log(Priority.P2, TAG_REGISTER_PUSH_NOTIF, mapOf(
-                "type" to type,
-                "message" to message,
-                "err" to throwable.toString().take(MAX_LENGTH_ERROR)
+                    "type" to type,
+                    "message" to message,
+                    "err" to throwable.toString().take(MAX_LENGTH_ERROR)
             ))
         }
     }
