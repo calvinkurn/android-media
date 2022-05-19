@@ -63,27 +63,50 @@ class TkpdAuthenticatorGql(
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
             val path: String = getRefreshQueryPath(response.request, response)
-            return if(responseCount(response) == 0)
+            return if(responseCount(response) == 0) {
                 try {
                     val originalRequest = response.request
-                    val tokenResponse = refreshTokenUseCaseGql.refreshToken(application.applicationContext, userSession, networkRouter)
-                    if(tokenResponse != null) {
-                        return if(tokenResponse.accessToken?.isEmpty() == true) {
-                            logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_EMPTY, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken))
+                    val tokenResponse = refreshTokenUseCaseGql.refreshToken(
+                        application.applicationContext,
+                        userSession,
+                        networkRouter
+                    )
+                    if (tokenResponse != null) {
+                        return if (tokenResponse.accessToken?.isEmpty() == true) {
+                            logRefreshTokenEvent(
+                                ERROR_GQL_ACCESS_TOKEN_EMPTY,
+                                TYPE_REFRESH_WITH_GQL,
+                                path,
+                                trimToken(userSession.accessToken)
+                            )
                             return refreshWithOldMethod(response)
                         } else {
-                            onRefreshTokenSuccess(accessToken = tokenResponse.accessToken ?:"", refreshToken = tokenResponse.refreshToken ?:"", tokenType = tokenResponse.tokenType ?: "")
+                            onRefreshTokenSuccess(
+                                accessToken = tokenResponse.accessToken ?: "",
+                                refreshToken = tokenResponse.refreshToken ?: "",
+                                tokenType = tokenResponse.tokenType ?: ""
+                            )
                             updateRequestWithNewToken(originalRequest)
                         }
                     } else {
-                        logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_NULL, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken))
+                        logRefreshTokenEvent(
+                            ERROR_GQL_ACCESS_TOKEN_NULL,
+                            TYPE_REFRESH_WITH_GQL,
+                            path,
+                            trimToken(userSession.accessToken)
+                        )
                         return refreshWithOldMethod(response)
                     }
                 } catch (ex: Exception) {
-                    logRefreshTokenEvent(formatThrowable(ex), TYPE_FAILED_AUTHENTICATE, path, trimToken(userSession.accessToken))
+                    logRefreshTokenEvent(
+                        formatThrowable(ex),
+                        TYPE_FAILED_AUTHENTICATE,
+                        path,
+                        trimToken(userSession.accessToken)
+                    )
                     null
                 }
-            else {
+            } else {
                 networkRouter.showForceLogoutTokenDialog("/")
                 logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
                 return null
