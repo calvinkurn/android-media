@@ -1,16 +1,11 @@
 package com.tokopedia.media.picker.ui.core
 
 import android.net.Uri
-import android.os.Handler
-import android.view.View
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.picker.ui.PickerTest
@@ -19,7 +14,6 @@ import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matcher
 
 open class CameraPageTest : PickerTest() {
     override fun createAndAppendUri(builder: Uri.Builder) {}
@@ -85,23 +79,8 @@ open class CameraPageTest : PickerTest() {
         fun clickCaptureVideo(duration: Long) {
             onView(
                 withId(R.id.btn_take_camera)
-            ).perform(object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return isAssignableFrom(View::class.java)
-                }
-
-                override fun getDescription(): String {
-                    return "get camera view reference"
-                }
-
-                override fun perform(uiController: UiController?, view: View?) {
-                    view?.performClick()
-
-                    Handler().postDelayed({
-                        view?.performClick()
-                    },duration)
-                }
-            })
+            ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
+            Thread.sleep(duration)
         }
 
         fun clickGalleryTab() {

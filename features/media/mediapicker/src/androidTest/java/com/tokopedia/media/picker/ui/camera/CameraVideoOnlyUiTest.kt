@@ -103,7 +103,7 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
     }
 
     private companion object {
-        private const val CAPTURED_VIDEO_DURATION = 2000L
+        private const val CAPTURED_VIDEO_DURATION = 4000L
         private const val VIDEO_MIN_DURATION = 1000
     }
 }
