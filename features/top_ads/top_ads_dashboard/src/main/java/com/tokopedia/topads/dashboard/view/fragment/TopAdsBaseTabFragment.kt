@@ -161,9 +161,12 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
             commit()
         }
         setDateRangeText(TopAdsDashboardConstant.CUSTOM_DATE)
-        loadChildStatisticsData()
+        onDateRangeChanged()
     }
 
+    open fun onDateRangeChanged() {
+        loadChildStatisticsData()
+    }
 
     private fun showBottomSheet() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
@@ -190,7 +193,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         startDate = Date(date1)
         endDate = Date(date2)
         setDateRangeText(position)
-        loadChildStatisticsData()
+        onDateRangeChanged()
     }
 
     private fun initStatisticComponent() {

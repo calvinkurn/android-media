@@ -35,6 +35,7 @@ import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
@@ -176,6 +177,10 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     open fun handleInputNewPinState(input: String) {
 	changePinViewModel.checkPin(input)
+    }
+
+    private fun isResetPinV2(): Boolean {
+	return RemoteConfigInstance.getInstance().abTestPlatform.getString(RESET_PIN_ROLLENCE, "").isNotEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -392,6 +397,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 	const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
 	const val OTP_TYPE_PHONE_VERIFICATION = 125
 	const val PIN_LENGTH = 6
+	const val RESET_PIN_ROLLENCE = "pdh_rp_and"
 
 	fun createInstance(bundle: Bundle): ChangePinFragment {
 	    val fragment = ChangePinFragment()

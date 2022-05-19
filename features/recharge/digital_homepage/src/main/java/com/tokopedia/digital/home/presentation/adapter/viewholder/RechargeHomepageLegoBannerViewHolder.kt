@@ -98,9 +98,7 @@ class RechargeHomepageLegoBannerViewHolder(
     ) {
         if (element.channelModel.channelGrids.isNotEmpty()) {
             val defaultSpanCount = getRecyclerviewDefaultSpanCount(element)
-            if (!isCacheData) {
-                setViewportImpression(element)
-            }
+            setViewportImpression(element)
             with(binding.recycleList) {
                 setRecycledViewPool(viewPool)
                 setHasFixedSize(true)
