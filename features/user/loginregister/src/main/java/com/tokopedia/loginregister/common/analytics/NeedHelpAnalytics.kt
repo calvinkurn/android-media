@@ -2,8 +2,9 @@ package com.tokopedia.loginregister.common.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
-class NeedHelpAnalytics {
+class NeedHelpAnalytics @Inject constructor() {
 
     //1
     fun trackPageClickButuhBantuan() {

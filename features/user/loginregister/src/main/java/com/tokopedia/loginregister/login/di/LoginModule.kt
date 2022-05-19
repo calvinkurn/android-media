@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
@@ -43,10 +42,6 @@ open class LoginModule {
     fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
         return SocmedBottomSheet(context)
     }
-
-    @LoginScope
-    @Provides
-    fun provideNeedHelpAnalytics() = NeedHelpAnalytics()
 
     @Provides
     fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference = FingerprintPreferenceManager(context)

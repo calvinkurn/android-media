@@ -103,14 +103,14 @@ class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private fun statusPhoneNumberObserver() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
-            when (it) {
+            when (it.first) {
                 is Success -> {
                     analytics.trackPageInactivePhoneNumberClickNext(LABEL_SUCCESS)
-                    onGoToInactivePhoneNumber(it.data)
+                    onGoToInactivePhoneNumber((it.first as Success<String>).data)
                 }
                 is Fail -> {
-                    val message = getErrorMsgWithLogging(it.throwable)
-                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, viewModel.currentNumber)
+                    val message = getErrorMsgWithLogging((it.first as Fail).throwable)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, it.second)
                     onError(message)
                 }
             }

@@ -22,10 +22,8 @@ class InputOldPhoneNumberViewModel @Inject constructor(
     val formState get() = _formState
     private val phoneFormState = PhoneFormState()
 
-    private val _statusPhoneNumber = MutableLiveData<Result<String>>()
+    private val _statusPhoneNumber = MutableLiveData<Pair<Result<String>, String>>()
     val statusPhoneNumber get() = _statusPhoneNumber
-
-    var currentNumber: String = ""
 
     private val _isLoading = MutableLiveData(false)
     val isLoading get() = _isLoading
@@ -63,12 +61,9 @@ class InputOldPhoneNumberViewModel @Inject constructor(
     }
 
     fun submitNumber(number: String) {
-        if (_isLoading.value == false) {
-            if (validationNumber(number)) {
-                _isLoading.value = true
-                currentNumber = number
-                postNumber(number)
-            }
+        if (_isLoading.value == false && validationNumber(number)) {
+            _isLoading.value = true
+            postNumber(number)
         }
     }
 
@@ -78,9 +73,9 @@ class InputOldPhoneNumberViewModel @Inject constructor(
 
             when {
                 response.data.status == STATUS_USER_ACTIVE ->
-                    _statusPhoneNumber.value = Success(currentNumber)
+                    _statusPhoneNumber.value = Pair(Success(number), "")
                 response.data.errors.isNotEmpty() ->
-                    _statusPhoneNumber.value = Fail(MessageErrorException(response.data.errors[0]))
+                    _statusPhoneNumber.value = Pair(Fail(MessageErrorException(response.data.errors[0])), number)
                 else ->
                     _formState.value = phoneFormState.apply {
                         numberError = ipn_number_not_registered
@@ -90,7 +85,7 @@ class InputOldPhoneNumberViewModel @Inject constructor(
 
             _isLoading.value = false
         }, {
-            _statusPhoneNumber.value = Fail(it)
+            _statusPhoneNumber.value = Pair(Fail(it), number)
             _isLoading.value = false
         })
     }
