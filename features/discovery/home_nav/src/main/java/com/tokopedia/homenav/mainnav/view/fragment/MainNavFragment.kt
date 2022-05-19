@@ -63,7 +63,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
 
@@ -74,6 +73,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
         private const val OFFSET_TO_SHADOW = 100
+        private const val REQUEST_REVIEW_PRODUCT = 999
         private const val COACHMARK_SAFE_DELAY = 200L
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
@@ -176,6 +176,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                             false)
                     }
                 }
+                REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
     }
@@ -264,6 +265,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
+            hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
@@ -276,7 +278,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
@@ -347,6 +348,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
         startActivity(intent)
+    }
+
+    override fun showReviewProduct(uriReviewProduct: String) {
+        val intent = RouteManager.getIntent(context, uriReviewProduct)
+        startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

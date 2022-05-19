@@ -39,18 +39,23 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_review_product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/Unify_NN950"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/order_review_image"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
-            tools:text="Menunggu Pembayaran" />
+            tools:text="Produk 1" />
 
         <include
+            android:id="@+id/layout_review_stars"
             layout="@layout/layout_review_stars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

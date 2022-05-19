@@ -17,9 +17,21 @@ import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
+import com.tokopedia.homenav.mainnav.domain.usecases.GetUohOrdersNavUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetPaymentOrdersNavUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetShopInfoUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetFavoriteShopsNavUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetWishlistNavUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetReviewProductUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetUserInfoUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetSaldoUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetUserMembershipUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetTokopointStatusFiltered
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
@@ -48,7 +60,8 @@ fun createViewModel (
         accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
         getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
         getFavoriteShopsNavUseCase: GetFavoriteShopsNavUseCase? = null,
-        getWishlistNavUseCase: GetWishlistNavUseCase? = null
+        getWishlistNavUseCase: GetWishlistNavUseCase? = null,
+        getReviewProductUseCase: GetReviewProductUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -97,6 +110,10 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { listOf(NavWishlistModel()) }
     }
 
+    val getReviewProductUseCaseMock = getOrUseDefault(getReviewProductUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf() }
+    }
+
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
             clientMenuGenerator = clientMenuGeneratorMock,
@@ -110,7 +127,8 @@ fun createViewModel (
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
             getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
-            getWishlistNavUseCase = getWishlistUseCaseMock
+            getWishlistNavUseCase = getWishlistUseCaseMock,
+            getReviewProductUseCase = getReviewProductUseCaseMock
     )
 }
 

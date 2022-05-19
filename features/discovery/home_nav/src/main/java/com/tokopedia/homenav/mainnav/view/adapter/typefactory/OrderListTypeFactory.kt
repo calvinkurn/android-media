@@ -10,4 +10,5 @@ interface OrderListTypeFactory {
     fun type(otherTransactionModel: OtherTransactionModel): Int
     fun type(orderReviewModel: OrderReviewModel): Int
     fun type(orderEmptyModel: OrderEmptyModel): Int
+    fun type(otherTransactionRevampModel: OtherTransactionRevampModel): Int
 }

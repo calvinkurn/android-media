@@ -39,4 +39,6 @@ interface MainNavListener : HomeNavListener{
     fun onErrorFavoriteShopClicked()
 
     fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int)
+
+    fun showReviewProduct(uriReviewProduct: String)
 }

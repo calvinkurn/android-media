@@ -55,6 +55,7 @@
     <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
     <string name="transaction_empty">Status belanjaanmu nanti bisa dicek di sini, lho!</string>
+    <string name="transaction_view_all">Lihat Semua</string>
 
     <string name="favorite_shop_others_count">%d Toko\nLainnya</string>
 
