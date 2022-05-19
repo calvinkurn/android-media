@@ -10,12 +10,12 @@
     android:visibility="visible">
 
     <FrameLayout
-        android:id="@+id/sahCommissionBg"
+        android:id="@+id/trxCommissionBg"
         android:layout_width="match_parent"
         android:layout_height="208dp"
-        android:background="@color/Unify_GN50"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/Unify_GN50" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/trx_fee_heading"
@@ -90,7 +90,7 @@
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifycomponents.CardUnify
-                android:id="@+id/sahTrxDownloadDateCard"
+                android:id="@+id/trxDownloadDateCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/trx_fee_description"
@@ -113,7 +113,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/sahTrxDownloadDateSelected"
+                        android:id="@+id/trxDownloadDateSelected"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -141,10 +141,10 @@
             </com.tokopedia.unifycomponents.CardUnify>
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/sahTrxFeeDownload"
+                android:id="@+id/trxFeeDownload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sahTrxDownloadDateCard"
+                android:layout_below="@id/trxDownloadDateCard"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -159,7 +159,7 @@
                 android:id="@+id/sahInfoDownloadExcelReport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sahTrxFeeDownload"
+                android:layout_below="@id/trxFeeDownload"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
@@ -172,6 +172,15 @@
 
         </RelativeLayout>
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <WebView
+        android:id="@+id/tmpWebView"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trx_fee_card_view" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sahInfoCommissionBreakdown"

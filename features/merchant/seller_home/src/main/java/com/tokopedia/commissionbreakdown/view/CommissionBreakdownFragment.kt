@@ -1,9 +1,11 @@
 package com.tokopedia.commissionbreakdown.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
@@ -20,8 +22,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
+import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient
+import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.HEADER_AUTHORIZATION
+import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.HEADER_ORIGIN
+import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.ORIGIN_TOKOPEDIA
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -33,11 +40,14 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import timber.log.Timber
+import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListener {
+
+class CommissionBreakdownFragment : BaseDaggerFragment(),
+    CommissionBreakdownDateRangePickerBottomSheet.OnDateRangeSelectListener {
 
     companion object {
         private const val DOWNLOAD_URL =
@@ -46,13 +56,11 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_START_DATE = "start_date"
         private const val PARAM_END_DATE = "end_date"
-        private const val HEADER_ORIGIN = "Origin"
-        private const val HEADER_AUTHORIZATION = "Accounts-Authorization"
-        private const val ORIGIN_TOKOPEDIA = "tokopedia.com"
         private const val FORMAT_AUTHORIZATION = "Bearer %s"
         private const val FORMAT_FILE_NAME = "commission_report_%s.xlsx"
         private const val DATE_FORMAT = "dd/MM/yyyy"
         private const val LOADING_DELAY = 2000L
+        private const val TOASTER_BOTTOM_MARGIN = 64
 
         fun createInstance(): CommissionBreakdownFragment {
             return CommissionBreakdownFragment()
@@ -120,7 +128,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         setDateRangeChanged(dateFrom, dateTo)
     }
 
-    fun showSuccessToaster() {
+    private fun showSuccessToaster() {
+        Toaster.toasterCustomBottomHeight = requireContext().dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
         Toaster.build(
             requireView(),
             getString(R.string.sah_commission_download_complete_message),
@@ -129,15 +138,28 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         ).show()
     }
 
+    private fun showErrorToaster(message: String) {
+        Toaster.toasterCustomBottomHeight = requireContext().dpToPx(TOASTER_BOTTOM_MARGIN).toInt()
+        Toaster.build(
+            requireView(),
+            message,
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_ERROR,
+            getString(R.string.trx_refresh)
+        ) {
+            openWebView()
+        }.show()
+    }
+
     private fun initView() {
         binding?.run {
-            sahTrxFeeDownload.setSafeOnClickListener {
+            trxFeeDownload.setSafeOnClickListener {
                 checkPermissionDownload {
-                    downloadFile()
+                    openWebView()
                 }
             }
 
-            sahTrxDownloadDateCard.setSafeOnClickListener {
+            trxDownloadDateCard.setSafeOnClickListener {
                 openCalender()
             }
 
@@ -158,12 +180,12 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
 
     private fun setBackdropBackground() {
         try {
-            binding?.sahCommissionBg?.setBackgroundResource(R.drawable.bg_sah_download_commission)
+            binding?.trxCommissionBg?.setBackgroundResource(R.drawable.bg_sah_download_commission)
         } catch (e: Exception) {
             val resColor = requireContext().getResColor(
                 com.tokopedia.unifyprinciples.R.color.Unify_GN50
             )
-            binding?.sahCommissionBg?.setBackgroundColor(resColor)
+            binding?.trxCommissionBg?.setBackgroundColor(resColor)
         }
     }
 
@@ -189,30 +211,57 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         }
     }
 
-    private fun downloadFile() {
-        try {
-            startDownload()
-        } catch (e: Exception) {
-            dismissLoading()
-            setOnDownloadError(e)
-        }
-    }
-
-    private fun setOnDownloadError(exception: Exception) {
-        Timber.e(exception)
-    }
-
-    private fun startDownload() {
-        activity?.let { activity ->
+    @SuppressLint("DeprecatedMethod", "SetJavaScriptEnabled")
+    private fun openWebView() {
+        binding?.tmpWebView?.run {
             val startDate: String = DateTimeUtil.format(selectedDateFrom.time, DATE_FORMAT)
             val endDate: String = DateTimeUtil.format(selectedDateTo.time, DATE_FORMAT)
-            binding?.sahTrxFeeDownload?.isLoading = true
+            showLoading()
+
+            val authorization = String.format(FORMAT_AUTHORIZATION, userSession.accessToken)
+            settings.javaScriptEnabled = true
+            webViewClient = CommissionWebViewClient.getWebViewClient(
+                authorization, ::setOnDownloadError
+            )
+            setDownloadListener { url, _, _, _, _ ->
+                try {
+                    startDownload(url)
+                } catch (e: Exception) {
+                    dismissLoading()
+                }
+                dismissLoading()
+            }
+
             val param = mapOf<String, Any>(
                 PARAM_SHOP_ID to userSession.shopId,
                 PARAM_START_DATE to startDate,
                 PARAM_END_DATE to endDate
             )
             val url = UriUtil.buildUriAppendParams(DOWNLOAD_URL, param)
+
+            val header = mapOf(
+                HEADER_ORIGIN to ORIGIN_TOKOPEDIA,
+                HEADER_AUTHORIZATION to authorization
+            )
+            loadUrl(url, header)
+        }
+    }
+
+    private fun setOnDownloadError(exception: Exception) {
+        Timber.e(exception)
+        dismissLoading()
+        exception.printStackTrace()
+
+        val message = when (exception) {
+            is UnknownHostException -> getString(R.string.trx_no_network_error_message)
+            else -> getString(R.string.trx_server_error_message)
+        }
+        showErrorToaster(message)
+    }
+
+    private fun startDownload(url: String) {
+        activity?.let { activity ->
+            showLoading()
             val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(url))
             val fileName = String.format(FORMAT_FILE_NAME, getDatePlaceholderText())
             val authorization = String.format(FORMAT_AUTHORIZATION, userSession.accessToken)
@@ -224,7 +273,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
                 setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             }
             val dm: DownloadManager = activity
-                .getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                .getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             activity.registerReceiver(
                 downloadReceiver,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
@@ -237,8 +286,16 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         }
     }
 
+    private fun showLoading() {
+        Handler(Looper.getMainLooper()).post {
+            binding?.trxFeeDownload?.isLoading = true
+        }
+    }
+
     private fun dismissLoading() {
-        binding?.sahTrxFeeDownload?.isLoading = false
+        Handler(Looper.getMainLooper()).post {
+            binding?.trxFeeDownload?.isLoading = false
+        }
     }
 
     private fun unsubscribeDownLoadHelper() {
@@ -257,9 +314,9 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         this.selectedDateFrom = dateFrom
         this.selectedDateTo = endDate
         binding?.run {
-            sahTrxDownloadDateSelected.text = getDatePlaceholderText()
-            sahTrxFeeDownload.isEnabled = true
-            sahTrxFeeDownload.show()
+            trxDownloadDateSelected.text = getDatePlaceholderText()
+            dismissLoading()
+            trxFeeDownload.show()
             sahInfoDownloadExcelReport.show()
         }
     }

@@ -8,7 +8,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.commissionbreakdown.util.CommissionBreakdownDateUtil
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.CommissionBreakdownBottomsheetChooseDateBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -31,6 +33,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         private const val BOTTOM_SHEET_HEIGHT_2 = 2
         private const val DATE_PATTERN = "dd MMMM yyyy"
         private const val JUNE_6_2020_IN_MILLIS = 1591012800000L
+        private const val TOASTER_BOTTOM_MARGIN = 64
 
         fun getInstanceRange(
             dateFrom: Date?,
@@ -187,6 +190,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private fun showErrorToaster(errorMessage: String) {
         dialog?.window?.decorView?.let {
+            Toaster.toasterCustomBottomHeight = context?.dpToPx(TOASTER_BOTTOM_MARGIN).toIntSafely()
             Toaster.build(it, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
@@ -198,8 +202,8 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         customPeekHeight = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         setTitle(getString(R.string.sah_select_date_range))
     }
-}
 
-interface OnDateRangeSelectListener {
-    fun onDateRangeSelected(dateFrom: Date, dateTo: Date)
+    interface OnDateRangeSelectListener {
+        fun onDateRangeSelected(dateFrom: Date, dateTo: Date)
+    }
 }
