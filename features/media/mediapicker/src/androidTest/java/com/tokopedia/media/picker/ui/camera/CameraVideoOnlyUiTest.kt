@@ -30,7 +30,7 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.captureVideo(CAPTURED_VIDEO_DURATION)
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
 
         // Then
         Assert.assertCaptureImage()
@@ -60,7 +60,7 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
     fun should_open_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickLanjutButton()
 
         // Then
@@ -82,13 +82,12 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
     fun should_open_preview_activity_onThumbnailClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickPreviewThumbnail()
 
         // Then
         Assert.verifyOpenPreviewActivity()
     }
-
 
     private fun startCameraPage(param: PickerParam.() -> Unit = {}) {
         val pickerParam = PickerParam()
