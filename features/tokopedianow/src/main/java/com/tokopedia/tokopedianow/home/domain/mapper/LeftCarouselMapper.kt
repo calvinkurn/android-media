@@ -8,9 +8,15 @@ import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
 
 object LeftCarouselMapper {
+
+    private const val DEFAULT_PARENT_PRODUCT_ID = "0"
 
     fun mapToMixLeftCarousel(
         response: HomeLayoutResponse,
@@ -158,6 +164,6 @@ object LeftCarouselMapper {
     }
 
     private fun isVariant(parentProductId: String): Boolean {
-        return parentProductId != "0" && parentProductId.isNotBlank()
+        return parentProductId != DEFAULT_PARENT_PRODUCT_ID && parentProductId.isNotBlank()
     }
 }
