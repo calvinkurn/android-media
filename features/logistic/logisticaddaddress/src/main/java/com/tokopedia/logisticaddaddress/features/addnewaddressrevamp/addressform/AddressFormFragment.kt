@@ -965,7 +965,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        filters = arrayOf(InputFilter.LengthFilter(15))
+                        filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR_PHONE_NUMBER))
                     }
 
                 })
@@ -1283,6 +1283,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
         private const val MIN_CHAR_PHONE_NUMBER = 9
+        private const val MAX_CHAR_PHONE_NUMBER = 15
         private const val MIN_CHAR_ADDRESS_LABEL = 3
         private const val MIN_CHAR_RECEIVER_NAME = 2
         private const val MAX_CHAR_ALAMAT = 200

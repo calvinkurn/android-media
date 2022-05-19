@@ -384,7 +384,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
         locationRequest.fastestInterval = 2 * 1000
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val mLocationSettingsRequest = builder.build()
@@ -559,6 +559,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         private const val REQUEST_PINPOINT_PAGE = 1998
         private const val REQUEST_CODE_PERMISSION = 9876
 
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
         private const val DEFAULT_LONG = 0.0
         private const val DEFAULT_LAT = 0.0
 

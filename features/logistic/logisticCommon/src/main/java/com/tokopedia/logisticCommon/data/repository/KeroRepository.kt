@@ -15,6 +15,10 @@ import javax.inject.Inject
 
 class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
+    companion object {
+        private const val LIMIT_ADDRESS_LIST = 5
+    }
+
     suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
         val param = mapOf("param" to keyword, "latlng" to latlng)
         val request = GraphqlRequest(
@@ -57,7 +61,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
                 "input" to mapOf(
                         "show_address" to true,
                         "page" to 1,
-                        "limit" to 5
+                        "limit" to LIMIT_ADDRESS_LIST
                 )
         )
         val request = GraphqlRequest(KeroLogisticQuery.addressCorner,

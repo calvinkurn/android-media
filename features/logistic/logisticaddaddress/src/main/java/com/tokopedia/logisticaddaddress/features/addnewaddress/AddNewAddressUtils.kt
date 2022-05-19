@@ -32,6 +32,10 @@ import kotlin.math.abs
  */
 object AddNewAddressUtils {
 
+    private const val MAX_LINES = 5
+    private const val LOCATION_REQUEST_INTERVAL = 10000L
+    private const val COORDINATE_THRESHOLD = 0.00001
+
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
         var msg = message
@@ -44,7 +48,7 @@ object AddNewAddressUtils {
         snackbar.view.background = ContextCompat.getDrawable(activity, R.drawable.bg_snackbar_error)
         snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        snackbarTextView?.maxLines = 5
+        snackbarTextView?.maxLines = MAX_LINES
         snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
     }
 
@@ -95,7 +99,7 @@ object AddNewAddressUtils {
     fun getLocationRequest() : LocationRequest {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
         locationRequest.fastestInterval = 2 * 1000
         return locationRequest
     }
@@ -112,7 +116,7 @@ object AddNewAddressUtils {
     }
 
     fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
-        val threshold = 0.00001
+        val threshold = COORDINATE_THRESHOLD
         val diffLat = lat - AddressConstants.DEFAULT_LAT
         val diffLong = long - AddressConstants.DEFAULT_LONG
 

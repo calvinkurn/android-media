@@ -48,7 +48,6 @@ PopularCityAdapter.ActionListener {
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var isLocalization: Boolean? = null
-    private val REQUEST_LOCATION: Int = 288
     private var hasRequestedLocation: Boolean = false
 
     private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
