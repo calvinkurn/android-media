@@ -56,7 +56,7 @@ class SubmitPostService : JobIntentServiceX() {
 
     companion object {
         private const val JOB_ID = 13131313
-
+        private const val DURATION = 7
         fun startService(context: Context, draftId: String) {
             val work = Intent(context, SubmitPostService::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
@@ -144,7 +144,7 @@ class SubmitPostService : JobIntentServiceX() {
                 }
 
                 val cacheManager = SaveInstanceCacheManager(context, true)
-                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(DURATION.toLong()))
 
                 val intent = RouteManager.getIntent(
                         context,
