@@ -21,5 +21,14 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.creation.presentation.activity.CreationActivity"
+            android:label="Flash Sale Toko"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+        </activity>
     </application>
 </manifest>
