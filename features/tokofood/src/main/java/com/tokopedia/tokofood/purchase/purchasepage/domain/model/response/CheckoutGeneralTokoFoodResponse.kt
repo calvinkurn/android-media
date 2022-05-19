@@ -1,8 +1,11 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.model.response
 
+import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.network.data.model.response.Header
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadata
 
 data class CheckoutGeneralTokoFoodResponse(
     @SerializedName("checkout_general_v2")
@@ -38,7 +41,15 @@ data class CheckoutGeneralTokoFoodData(
     @SerializedName("data")
     @Expose
     val data: CheckoutGeneralTokoFoodMainData = CheckoutGeneralTokoFoodMainData()
-)
+) {
+
+    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS
+
+    fun getErrorMetadataObject(): CheckoutErrorMetadata {
+        return Gson().fromJson(errorMetadata, CheckoutErrorMetadata::class.java)
+    }
+
+}
 
 data class CheckoutGeneralTokoFoodMainData(
     @SerializedName("redirect_url")

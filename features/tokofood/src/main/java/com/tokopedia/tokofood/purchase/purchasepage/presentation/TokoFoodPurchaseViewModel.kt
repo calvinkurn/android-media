@@ -19,6 +19,8 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadataDetail
+import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
@@ -31,7 +33,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFood
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -42,7 +43,6 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @FlowPreview
@@ -50,6 +50,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val keroGetAddressUseCase: KeroGetAddressUseCase,
     private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
+    private val checkoutGeneralTokoFoodUseCase: CheckoutGeneralTokoFoodUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
@@ -561,24 +562,30 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun checkoutGeneral() {
         launchCatchError(block = {
-            // TODO: Hit checkout general
-            delay(1000)
-            throw SocketTimeoutException()
-            val dummyIsSuccess = false
-            if (dummyIsSuccess) {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL)
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL)
+            checkoutTokoFoodResponse.value?.let { checkoutResponse ->
+                checkoutGeneralTokoFoodUseCase(checkoutResponse).collect { response ->
+                    if (response.checkoutGeneralTokoFood.data.isSuccess()) {
+                        _uiEvent.value = PurchaseUiEvent(
+                            state = PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL,
+                            data = response.checkoutGeneralTokoFood.data.data
+                        )
+                    } else {
+                        _uiEvent.value = PurchaseUiEvent(
+                            state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER,
+                            data = response.checkoutGeneralTokoFood.data
+                        )
+                    }
+                }
             }
         }, onError = {
             _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL,
+                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
                 data = it.getGlobalErrorType()
             )
         })
     }
 
-    fun setPaymentButtonLoading(isLoading: Boolean = false) {
+    fun setPaymentButtonLoading(isLoading: Boolean) {
         val dataList = getVisitablesValue().toMutableList().apply {
             getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair

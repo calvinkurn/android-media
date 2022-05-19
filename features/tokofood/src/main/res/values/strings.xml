@@ -28,6 +28,8 @@
     <string name="text_purchase_success_notes">Sip! Catatan berhasil disimpan.</string>
     <string name="text_purchase_success_quantity">Quantity berhasil diubah</string>
     <string name="text_purchase_okay">Oke</string>
+    <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
+    <string name="text_purchase_try_again">Coba Lagi</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

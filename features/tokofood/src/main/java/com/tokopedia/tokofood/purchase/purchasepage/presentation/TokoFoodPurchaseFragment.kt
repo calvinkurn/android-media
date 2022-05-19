@@ -26,6 +26,9 @@ import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -48,8 +51,12 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
+import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadataDetail
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodData
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodMainData
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
@@ -331,25 +338,51 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL -> {
                     consentBottomSheet?.dismiss()
-                    viewModel.setPaymentButtonLoading()
-                    // TODO: Go to payment page
-                    navigateToNewFragment(TestMerchantFragment.createInstance())
+                    viewModel.setPaymentButtonLoading(false)
+                    (it.data as? CheckoutGeneralTokoFoodMainData)?.let { mainData ->
+                        val paymentData = mainData.queryString
+                        val paymentURL = mainData.redirectUrl
+                        val callbackUrl = mainData.callbackUrl
+                        if (paymentData.isNotEmpty() || paymentURL.isNotEmpty() || callbackUrl.isNotEmpty()) {
+
+                            val checkoutResultData = PaymentPassData()
+                            checkoutResultData.queryString = paymentData
+                            checkoutResultData.redirectUrl = paymentURL
+                            checkoutResultData.callbackSuccessUrl = callbackUrl
+
+                            val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                            val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+                        }
+                    }
                 }
-                PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL -> {
-                    // TODO: Check for error message attributes
+                PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET -> {
                     consentBottomSheet?.dismiss()
-                    viewModel.setPaymentButtonLoading()
+                    viewModel.setPaymentButtonLoading(false)
                     val globalErrorType = it.data as? Int
                     if (globalErrorType == null) {
-                        showToasterError(
-                            "Oops, gagal lanjut ke Pembayaran.",
-                            "Coba Lagi"
-                        ) {
-                            viewModel.setPaymentButtonLoading(true)
-                            viewModel.checkoutGeneral()
-                        }
+                        showDefaultCheckoutGeneralError()
                     } else {
-                        showGlobalError(globalErrorType)
+                        showCheckoutGeneralGlobalError(globalErrorType)
+                    }
+                }
+                PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER -> {
+                    consentBottomSheet?.dismiss()
+                    viewModel.setPaymentButtonLoading(false)
+                    (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
+                        val errorMetadata = checkoutData.getErrorMetadataObject()
+                        when {
+                            errorMetadata.popupErrorMessage.text.isNotEmpty() -> {
+                                showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
+                            }
+                            errorMetadata.popupMessage.text.isNotEmpty() -> {
+                                showToasterFromMetadata(false, errorMetadata.popupMessage)
+                            }
+                            else -> {
+                                showDefaultCheckoutGeneralError()
+                            }
+                        }
                     }
                 }
             }
@@ -556,6 +589,17 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         when (requestCode) {
             REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress()
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
+            REQUEST_CODE_PAYMENT -> {
+                when (resultCode) {
+                    PaymentConstant.PAYMENT_SUCCESS -> {
+                        onResultFromPaymentSuccess()
+                    }
+                    PaymentConstant.PAYMENT_FAILED -> {
+                        // TODO: Discuss on what to do when payment failed
+                        showDefaultCheckoutGeneralError()
+                    }
+                }
+            }
         }
     }
 
@@ -573,6 +617,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun onResultFromChangeAddress() {
         loadData()
+    }
+
+    private fun onResultFromPaymentSuccess() {
+        // TODO: Go to home, but elegantly
+        navigateToNewFragment(TokoFoodHomeFragment())
     }
 
     private fun showLoadingDialog() {
@@ -611,15 +660,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 this
             ).apply {
                 setOnDismissListener {
-                    this@TokoFoodPurchaseFragment.viewModel.setPaymentButtonLoading()
+                    this@TokoFoodPurchaseFragment.viewModel.setPaymentButtonLoading(false)
                 }
             }
             consentBottomSheet?.show(childFragmentManager)
         }
     }
 
-    private fun showGlobalError(globalErrorType: Int) {
-        // Todo : hit checkout API, validate response, show global error / toaster, reload
+    private fun showCheckoutGeneralGlobalError(globalErrorType: Int) {
         val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet.createInstance(
             globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
@@ -699,6 +747,45 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun getOkayMessage(): String = context?.getString(R.string.text_purchase_okay).orEmpty()
 
+    private fun showDefaultCheckoutGeneralError() {
+        val errorMessage = context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
+        val actionMessage = context?.getString(R.string.text_purchase_try_again).orEmpty()
+        showToasterError(errorMessage, actionMessage) {
+            viewModel.setPaymentButtonLoading(true)
+            viewModel.checkoutGeneral()
+        }
+    }
+
+    private fun showToasterFromMetadata(isErrorToaster: Boolean,
+                                        errorDetail: CheckoutErrorMetadataDetail) {
+        val actionText = errorDetail.actionText.takeIf { it.isNotEmpty() } ?: getOkayMessage()
+        val toasterAction: () -> Unit = {
+            when(errorDetail.action) {
+                CheckoutErrorMetadataDetail.REFRESH_ACTION -> {
+                    viewModel.setPaymentButtonLoading(true)
+                    viewModel.checkoutGeneral()
+                }
+                CheckoutErrorMetadataDetail.REDIRECT_ACTION -> {
+                    context?.let {
+                        RouteManager.route(it, errorDetail.link)
+                    }
+                }
+                else -> {
+                    // Dismiss only
+                }
+            }
+        }
+        if (isErrorToaster) {
+            showToasterError(errorDetail.text, actionText) {
+                toasterAction()
+            }
+        } else {
+            showToaster(errorDetail.text, actionText) {
+                toasterAction()
+            }
+        }
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -775,7 +862,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onFailedAgreeConsent(throwable: Throwable) {
-        viewModel.setPaymentButtonLoading()
+        viewModel.setPaymentButtonLoading(false)
         consentBottomSheet?.dismiss()
         showToasterError(throwable)
     }
@@ -786,6 +873,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
         const val REQUEST_CODE_CHANGE_ADDRESS = 111
         const val REQUEST_CODE_SET_PINPOINT = 112
+        const val REQUEST_CODE_PAYMENT = 113
 
         private const val SOURCE = "checkout_page"
 
