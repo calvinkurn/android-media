@@ -248,7 +248,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_POPUP_ADD_NEW_PRODUCT,
-            label = ""
+            label = getShopStatus()
         )
 
         sendEvent(event)
