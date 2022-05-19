@@ -104,6 +104,14 @@ class GameOptionView : ConstraintLayout {
                     )
                 )
             )
+            setOnClickListener {
+                mListener?.invoke()
+            }
+            this.setListener(object : QuizWidgetView.Listener {
+                override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
+                    mListener?.invoke()
+                }
+            })
         }
     }
 
