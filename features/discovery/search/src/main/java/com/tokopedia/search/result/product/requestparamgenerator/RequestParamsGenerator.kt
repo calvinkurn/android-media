@@ -2,8 +2,6 @@ package com.tokopedia.search.result.product.requestparamgenerator
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.utils.getValueString
@@ -174,15 +172,6 @@ class RequestParamsGenerator @Inject constructor(
         requestParams.putString(SearchApiConst.Q, getSearchQuery(searchParameter).omitNewlineAndPlusSign())
         requestParams.putString(SearchApiConst.UNIQUE_ID, getUniqueId())
         requestParams.putString(SearchApiConst.USER_ID, userId)
-        if (shouldAddFulfillment(searchParameter)) {
-            requestParams.putString(SearchApiConst.IS_FULFILLMENT, "true")
-        }
-    }
-
-    private fun shouldAddFulfillment(searchParameter: Map<String, Any>): Boolean {
-        return searchParameter.filter {
-            it.key == SearchApiConst.NAVSOURCE && it.value == SearchApiConst.DEFAULT_VALUE_OF_NAVSOURCE_TOKOCABANG
-        }.size.isMoreThanZero()
     }
 
     private fun getSearchRows() = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
