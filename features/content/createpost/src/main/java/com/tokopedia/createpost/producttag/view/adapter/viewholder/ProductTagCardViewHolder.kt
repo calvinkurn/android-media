@@ -5,12 +5,15 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.createpost.createpost.databinding.ItemGlobalSearchSuggestionListBinding
-import com.tokopedia.createpost.createpost.databinding.ItemGlobalSearchTickerListBinding
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagCardListBinding
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.createpost.databinding.*
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 /**
@@ -124,6 +127,83 @@ internal class ProductTagCardViewHolder private constructor() {
 
             fun create(parent: ViewGroup) = Loading(
                 ItemProductTagLoadingListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class GlobalError(
+        private val binding: ItemGlobalSearchErrorListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        fun bind(item: ProductTagCardAdapter.Model.GlobalError) {
+            val context = itemView.context
+            binding.globalError.apply {
+                errorIllustration.loadImage(context.getString(R.string.img_search_no_product))
+                errorAction.visible()
+                errorSecondaryAction.gone()
+                errorAction.setOnClickListener {
+                    item.onClicked(item.type)
+                }
+
+                when(item.type) {
+                    ProductTagCardAdapter.Model.GlobalError.Type.NORMAL -> {
+                        errorTitle.text = context.getString(R.string.cc_global_search_product_query_not_found_title)
+                        errorDescription.text = context.getString(R.string.cc_global_search_product_query_not_found_desc)
+
+                        errorAction.text = context.getString(R.string.cc_check_your_keyword)
+                    }
+                    ProductTagCardAdapter.Model.GlobalError.Type.FILTER_APPLIED -> {
+                        errorTitle.text = context.getString(R.string.cc_global_search_product_filter_not_found_title)
+                        errorDescription.text = context.getString(R.string.cc_global_search_product_filter_not_found_desc)
+
+                        errorAction.text = context.getString(R.string.cc_reset_filter)
+                    }
+                }
+            }
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = GlobalError(
+                ItemGlobalSearchErrorListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class RecommendationTitle(
+        private val binding: ItemGlobalSearchRecommendationTitleListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        fun bind(item: ProductTagCardAdapter.Model.RecommendationTitle) {
+            binding.root.text = item.text
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = RecommendationTitle(
+                ItemGlobalSearchRecommendationTitleListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

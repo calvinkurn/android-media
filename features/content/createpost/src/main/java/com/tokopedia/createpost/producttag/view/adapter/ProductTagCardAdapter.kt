@@ -42,6 +42,7 @@ class ProductTagCardAdapter(
     }
 
     sealed interface Model {
+
         data class Suggestion(
             val text: String,
         ) : Model
@@ -57,5 +58,18 @@ class ProductTagCardAdapter(
         ) : Model
 
         object Loading: Model
+
+        data class GlobalError(
+            val type: Type,
+            val onClicked: (Type) -> Unit,
+        ) : Model {
+            enum class Type {
+                NORMAL, FILTER_APPLIED,
+            }
+        }
+
+        data class RecommendationTitle(
+            val text: String,
+        ) : Model
     }
 }

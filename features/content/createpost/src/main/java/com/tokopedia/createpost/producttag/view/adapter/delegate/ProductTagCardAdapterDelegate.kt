@@ -102,4 +102,50 @@ internal class ProductTagCardAdapterDelegate private constructor() {
             return ProductTagCardViewHolder.Loading.create(parent)
         }
     }
+
+    internal class GlobalError: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.GlobalError,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.GlobalError>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.GlobalError,
+            holder: ProductTagCardViewHolder.GlobalError
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.GlobalError {
+            return ProductTagCardViewHolder.GlobalError.create(
+                parent
+            )
+        }
+    }
+
+    internal class RecommendationTitle: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.RecommendationTitle,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.RecommendationTitle>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.RecommendationTitle,
+            holder: ProductTagCardViewHolder.RecommendationTitle
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.RecommendationTitle {
+            return ProductTagCardViewHolder.RecommendationTitle.create(
+                parent
+            )
+        }
+    }
 }
