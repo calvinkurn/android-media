@@ -12,6 +12,7 @@ import com.tokopedia.media.picker.helper.matchers.withRecyclerView
 import com.tokopedia.media.picker.helper.utils.ImageGenerator
 import com.tokopedia.media.picker.helper.utils.VideoGenerator
 import com.tokopedia.media.picker.ui.PickerTest
+import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
@@ -52,6 +53,12 @@ open class GalleryPageTest : PickerTest() {
                     .atPosition(position)
             ).perform(click())
         }
+
+        fun removeFirstItemOnDrawer() {
+            onView(
+                withId(R.id.iv_delete)
+            ).perform(click())
+        }
     }
 
     object Asserts {
@@ -73,13 +80,20 @@ open class GalleryPageTest : PickerTest() {
             ).check(matches(isDisplayed()))
         }
 
-        fun assertItemListSize(size: Int) {
-            assertRecyclerviewItem(hasTotalItemOf(size))
+        fun assertMediaItemListSize(size: Int) {
+            assertRecyclerviewItem(R.id.lst_media, hasTotalItemOf(size))
         }
 
-        private fun assertRecyclerviewItem(matcher: Matcher<in View>) {
+        fun assertDrawerItemListSize(size: Int) {
+            assertRecyclerviewItem(
+                R.id.rv_thumbnail,
+                hasTotalItemOf(size, ThumbnailViewHolder::class.java)
+            )
+        }
+
+        private fun assertRecyclerviewItem(recyclerViewId: Int, matcher: Matcher<in View>) {
             onView(
-                withId(R.id.lst_media)
+                withId(recyclerViewId)
             ).check(matches(matcher))
         }
     }
