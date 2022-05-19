@@ -2,7 +2,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.ErrorState
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import io.mockk.*
@@ -12,6 +14,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.net.UnknownHostException
 
 class MerchantVoucherListViewModelTest {
     @get:Rule
@@ -42,7 +45,6 @@ class MerchantVoucherListViewModelTest {
 
     @Test
     fun `test for coupon data sync logic`() {
-//        Todo:: Fix these
         viewModel.merchantVoucherUseCase = useCase
         coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) } returns true
         viewModel.onAttachToViewHolder()
@@ -58,13 +60,16 @@ class MerchantVoucherListViewModelTest {
         assert(!componentsItem.verticalProductFailState)
         viewModel = spyk(MerchantVoucherListViewModel(application, componentsItem, 99))
         viewModel.merchantVoucherUseCase = useCase
-        coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }  throws Exception()
+        coEvery { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }  throws UnknownHostException()
         mockkStatic(::getComponent)
-        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns componentsItem
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val comp: ComponentsItem = spyk()
+        every { getComponent(componentsItem.id,componentsItem.pageEndPoint) } returns comp
         viewModel.onAttachToViewHolder()
         coVerify { useCase.loadFirstPageComponents(componentsItem.id,componentsItem.pageEndPoint) }
         assert(viewModel.syncData.value == true)
-//        Todo:: why is this not working ??
-//        assert(componentsItem.verticalProductFailState)
+        assert(comp.errorState == ErrorState.NetworkErrorState)
+        assert(comp.verticalProductFailState)
     }
 }

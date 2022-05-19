@@ -40,8 +40,8 @@ class MerchantVoucherListViewModel(application: Application, val components: Com
                         it.errorState = ErrorState.EmptyComponentState
                     }
                 }
-                this@MerchantVoucherListViewModel.syncData.value = shouldSync
             }
+            this@MerchantVoucherListViewModel.syncData.value = shouldSync
         }, onError = {
             getComponent(components.id, components.pageEndPoint)?.let { comp ->
                 if (it is UnknownHostException || it is SocketTimeoutException) {
