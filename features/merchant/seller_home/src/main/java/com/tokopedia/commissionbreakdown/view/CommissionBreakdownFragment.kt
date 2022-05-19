@@ -37,6 +37,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.FragmentCommissionBreakdownBinding
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -51,8 +53,11 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
     CommissionBreakdownDateRangePickerBottomSheet.OnDateRangeSelectListener {
 
     companion object {
-        private const val DOWNLOAD_URL =
+        private val DOWNLOAD_URL = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             "https://api-staging.tokopedia.com/v1/commission/report/download"
+        } else {
+            "https://api.tokopedia.com/v1/commission/report/download"
+        }
         private const val SELLER_EDU = "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_START_DATE = "start_date"
