@@ -525,7 +525,7 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshFavoriteShopData() {
         val favoriteShopPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateFavoriteShopDataModel
+            it.value is ErrorStateFavoriteShopDataModel || it.value is FavoriteShopListDataModel
         }
         favoriteShopPlaceHolder?.let {
             updateWidget(ShimmerFavoriteShopDataModel(), favoriteShopPlaceHolder.index)
@@ -573,7 +573,7 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshWishlistData() {
         val wishlistPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateWishlistDataModel
+            it.value is ErrorStateWishlistDataModel || it.value is WishlistDataModel
         }
         wishlistPlaceHolder?.let {
             updateWidget(ShimmerWishlistDataModel(), wishlistPlaceHolder.index)

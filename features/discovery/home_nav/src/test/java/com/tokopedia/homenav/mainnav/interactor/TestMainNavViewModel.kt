@@ -1067,4 +1067,80 @@ class TestMainNavViewModel {
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
     }
+
+    @Test
+    fun `test when refresh favorite shop should update existing list`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        val favoriteShop1 = NavFavoriteShopModel(
+            id = "1",
+            name = "Toko A",
+            location = "Tangerang"
+        )
+        val favoriteShop2 = NavFavoriteShopModel(
+            id = "2",
+            name = "Toko B",
+            location = "Jakarta"
+        )
+
+        // Initial favorite shop
+        every { userSession.isLoggedIn } returns true
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop1)
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
+                && it.favoriteShops.contains(favoriteShop1) } == true)
+
+        // Refresh data
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop2)
+        viewModel.refreshFavoriteShopData()
+
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
+                && it.favoriteShops.contains(favoriteShop2) } == true)
+    }
+
+    @Test
+    fun `test when refresh wishlist should update existing list`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
+
+        val wishlist1 = NavWishlistModel(
+            productId = "123",
+            productName = "Item 1",
+            wishlistId = "111"
+        )
+        val wishlist2 = NavWishlistModel(
+            productId = "234",
+            productName = "Item 2",
+            wishlistId = "112"
+        )
+
+        // Initial wishlist data
+        every { userSession.isLoggedIn } returns true
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist1)
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getWishlistNavUseCase = wishlistNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
+                && it.wishlist.contains(wishlist1) } == true)
+
+        // Refresh data
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist2)
+        viewModel.refreshWishlistData()
+
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
+                && it.wishlist.contains(wishlist2) } == true)
+    }
 }
