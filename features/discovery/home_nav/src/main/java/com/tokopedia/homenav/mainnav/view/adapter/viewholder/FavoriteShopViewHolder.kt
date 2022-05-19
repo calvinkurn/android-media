@@ -50,7 +50,7 @@ class FavoriteShopViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
-        if(element.favoriteShops.size >= 5){
+        if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
             visitableList.add(OtherFavoriteShopModel())
         }
         adapter.setVisitables(visitableList)
