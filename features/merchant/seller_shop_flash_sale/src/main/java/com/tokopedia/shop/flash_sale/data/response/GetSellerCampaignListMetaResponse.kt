@@ -4,7 +4,7 @@ package com.tokopedia.shop.flash_sale.data.response
 import com.google.gson.annotations.SerializedName
 
 
-data class GetSellerProductListMetaResponse(
+data class GetSellerCampaignListMetaResponse(
     @SerializedName("getSellerCampaignListMeta")
     val getSellerCampaignListMeta: CampaignMeta = CampaignMeta()
 ) {

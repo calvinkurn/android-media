@@ -7,10 +7,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flash_sale.data.mapper.SellerCampaignListMetaMapper
-import com.tokopedia.shop.flash_sale.data.request.GetSellerProductListMetaRequest
-import com.tokopedia.shop.flash_sale.data.response.GetSellerProductListMetaResponse
+import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignListMetaRequest
+import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListMetaResponse
 import com.tokopedia.shop.flash_sale.domain.entity.ProductListMeta
 import javax.inject.Inject
 
@@ -21,6 +20,7 @@ class GetSellerCampaignListMetaUseCase @Inject constructor(
 ) : GraphqlUseCase<List<ProductListMeta>>(repository) {
 
     companion object {
+        private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
         private const val REQUEST_PARAM_KEY = "params"
         private const val QUERY_NAME = "GetSellerCampaignListMeta"
         private const val QUERY = """
@@ -51,26 +51,20 @@ class GetSellerCampaignListMetaUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    suspend fun execute(sellerCampaignType: Int): List<ProductListMeta> {
-        val requestParams = buildRequest(sellerCampaignType)
-        val request = GraphqlRequest(
-            GetSellerCampaignListMeta(),
-            GetSellerProductListMetaResponse::class.java,
-            requestParams
-        )
-
+    suspend fun execute(sellerCampaignType: Int = CAMPAIGN_TYPE_SHOP_FLASH_SALE): List<ProductListMeta> {
+        val request = buildRequest(sellerCampaignType)
         val response = repository.response(listOf(request))
-        val errors = response.getError(GetSellerProductListMetaResponse::class.java)
-        return if (errors.isNullOrEmpty()) {
-            val data = response.getSuccessData<GetSellerProductListMetaResponse>()
-            mapper.map(data)
-        } else {
-             throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
+        val data = response.getSuccessData<GetSellerCampaignListMetaResponse>()
+        return mapper.map(data)
     }
 
-    private fun buildRequest(sellerCampaignType: Int): Map<String, Any> {
-        val payload = GetSellerProductListMetaRequest(sellerCampaignType)
-        return mapOf(REQUEST_PARAM_KEY to payload)
+    private fun buildRequest(sellerCampaignType: Int): GraphqlRequest {
+        val payload = GetSellerCampaignListMetaRequest(sellerCampaignType)
+        val params = mapOf(REQUEST_PARAM_KEY to payload)
+        return GraphqlRequest(
+            GetSellerCampaignListMeta(),
+            GetSellerCampaignListMetaResponse::class.java,
+            params
+        )
     }
 }

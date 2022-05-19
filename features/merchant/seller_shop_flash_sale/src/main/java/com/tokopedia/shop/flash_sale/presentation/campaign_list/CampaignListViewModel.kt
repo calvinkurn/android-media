@@ -21,11 +21,11 @@ class CampaignListViewModel @Inject constructor(
     val campaignListMeta: LiveData<Result<List<ProductListMeta>>>
         get() = _campaignListMeta
 
-    fun getCampaignMeta(sellerCampaignType: Int) {
+    fun getCampaignMeta() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaignMeta = getSellerCampaignListMetaUseCase.execute(sellerCampaignType)
+                val campaignMeta = getSellerCampaignListMetaUseCase.execute()
                 _campaignListMeta.postValue(Success(campaignMeta))
             },
             onError = { error ->

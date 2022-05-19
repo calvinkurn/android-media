@@ -55,7 +55,7 @@ class CampaignListFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeCampaignMeta()
-        viewModel.getCampaignMeta(0)
+        viewModel.getCampaignMeta()
     }
 
     private fun observeCampaignMeta() {
