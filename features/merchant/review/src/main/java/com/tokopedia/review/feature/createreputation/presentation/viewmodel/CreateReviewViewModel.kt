@@ -66,7 +66,6 @@ import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -102,7 +101,6 @@ typealias PostSubmitReviewRequestState = RequestState<ProductrevGetPostSubmitBot
 typealias MediaUploadResultMap = Map<String, CreateReviewMediaUploadResult>
 typealias MediaUploadJobMap = Map<String, Job>
 
-@ExperimentalCoroutinesApi
 @Suppress("UNUSED_PARAMETER")
 class CreateReviewViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatchers,

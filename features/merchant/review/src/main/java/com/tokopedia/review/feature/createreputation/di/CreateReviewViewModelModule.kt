@@ -8,9 +8,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @Module
 abstract class CreateReviewViewModelModule {
 

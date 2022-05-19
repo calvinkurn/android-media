@@ -64,8 +64,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
@@ -76,8 +74,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
     companion object {
         private const val TEXT_AREA_MAX_MIN_LINE = 4

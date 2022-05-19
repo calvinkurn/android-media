@@ -20,8 +20,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
@@ -30,7 +28,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-@ExperimentalCoroutinesApi
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     companion object {
@@ -119,7 +116,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
     }
 
-    @FlowPreview
     private inner class DaggerHandler {
         fun initInjector() {
             context?.let {

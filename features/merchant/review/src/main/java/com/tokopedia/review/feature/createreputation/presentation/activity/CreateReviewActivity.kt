@@ -17,13 +17,9 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-@ExperimentalCoroutinesApi
-@FlowPreview
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
