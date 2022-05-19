@@ -7,6 +7,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
@@ -43,7 +44,9 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private val tvEndsIn = itemView.findViewById<Typography>(R.id.tv_ends_in)
     private val timerEndsIn = itemView.findViewById<TimerUnifySingle>(R.id.timer_ends_in)
     private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener {
-        override fun onClicked(item: QuizChoicesUiModel) {}
+        override fun onClicked(item: QuizChoicesUiModel) {
+            listener.onChoiceItemClicked(item)
+        }
     })
 
     private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{
@@ -77,6 +80,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         when (leaderboard.leaderBoardType) {
             LeadeboardType.Quiz -> {
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
+                ivLeaderBoard.showWithCondition(leaderboard.endsIn == 0 )
             }
             LeadeboardType.Giveaway -> {
                 ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
@@ -167,6 +171,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
     interface Listener {
         fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int)
+        fun onChoiceItemClicked(item: QuizChoicesUiModel){}
     }
 
     companion object {

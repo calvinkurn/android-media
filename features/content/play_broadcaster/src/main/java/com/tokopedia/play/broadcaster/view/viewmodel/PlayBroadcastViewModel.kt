@@ -29,9 +29,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -57,6 +55,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.combine
@@ -214,6 +213,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
     private val _quizDetailState = MutableStateFlow<QuizDetailStateUiModel>(QuizDetailStateUiModel.Unknown)
+    private val _quizChoiceDetailState = MutableStateFlow<QuizChoiceDetailStateUiModel>(QuizChoiceDetailStateUiModel.Unknown)
 
     private val _onboarding = MutableStateFlow(OnboardingUiModel.create(sharedPref))
 
@@ -234,6 +234,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _quizBottomSheetUiState = combine(
+        _quizDetailState, _quizChoiceDetailState
+    ) { quizDetailState, quizChoiceDetailState ->
+        QuizBottomSheetUiState(
+            quizDetailState = quizDetailState,
+            quizChoiceDetailState = quizChoiceDetailState,
+        )
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -246,9 +255,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactiveSetup,
         _quizDetailState,
         _onboarding,
-    ) { channelState, pinnedMessage, productMap, schedule, isExiting,
-        quizForm, interactive, interactiveConfig, interactiveSetup, quizDetail,
-        onboarding ->
+        _quizBottomSheetUiState,
+    ) { channelState,
+        pinnedMessage,
+        productMap,
+        schedule,
+        isExiting,
+        quizForm,
+        interactive,
+        interactiveConfig,
+        interactiveSetup,
+        quizDetail,
+        onBoarding,
+        quizBottomSheetUiState ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -260,7 +279,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
             quizDetail = quizDetail,
-            onboarding = onboarding,
+            onBoarding = onBoarding,
+            quizBottomSheetUiState = quizBottomSheetUiState,
         )
     }.stateIn(
         viewModelScope,
@@ -331,6 +351,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
+    private var lastChoiceDetailIndex: Int = 0
+    private var lastChoiceDetailId: String = ""
+
     init {
         val savedTitle = handle.get<String>(KEY_TITLE)
         if (savedTitle != null) getCurrentSetupDataStore().setTitle(savedTitle)
@@ -380,17 +403,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
+            PlayBroadcastAction.QuizEnded -> handleQuizEnded()
+            is PlayBroadcastAction.ClickQuizChoiceOption -> handleChoiceDetail(event.choice)
+            is PlayBroadcastAction.LoadMoreCurrentChoiceParticipant -> handleLoadMoreParticipant()
 
             /**
              * Giveaway
              */
             PlayBroadcastAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
             PlayBroadcastAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
-            PlayBroadcastAction.QuizEnded -> handleQuizEnded()
             is PlayBroadcastAction.CreateGiveaway -> handleCreateGiveaway(
                 event.title, event.durationInMs
             )
             is PlayBroadcastAction.OngoingWidgetClicked -> handleOngoingWidgetClicked()
+            PlayBroadcastAction.ClickBackOnChoiceDetail -> handleBackClickOnChoiceDetail()
+            PlayBroadcastAction.DismissQuizDetailBottomSheet -> handleCloseQuizDetailBottomSheet()
+            PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
+            PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
         }
     }
 
@@ -948,6 +977,32 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun getQuizChoiceDetailData(choiceId: String, index : Int, cursor: String = "") {
+        lastChoiceDetailId = choiceId
+        lastChoiceDetailIndex = index
+        val oldParticipant = if (_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success && cursor.isNotBlank()) {
+            (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel.participants.toMutableList()
+        } else emptyList()
+        _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Loading
+        viewModelScope.launchCatchError(block = {
+            val quizChoicesDetailUiModel = repo.getInteractiveQuizChoiceDetail(
+                choiceIndex =  index,
+                choiceId = choiceId,
+                cursor = cursor,
+            )
+            if (cursor.isNotBlank()){
+                val updatedQuizChoicesDetailUiModel = quizChoicesDetailUiModel.copy(participants = oldParticipant + quizChoicesDetailUiModel.participants)
+                _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Success(updatedQuizChoicesDetailUiModel)
+            } else {
+                _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Success(quizChoicesDetailUiModel)
+            }
+        }) {
+            it.stackTrace
+            _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Error
+        }
+    }
+
+
     private fun handleEditPinnedMessage() {
         _pinnedMessage.setValue {
             copy(editStatus = PinnedMessageEditStatus.Editing)
@@ -1223,6 +1278,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
+        getQuizChoiceDetailData(choiceId = choice.id, index = choice.index)
+    }
+
+    private fun handleLoadMoreParticipant() {
+        if(_quizChoiceDetailState.value is QuizChoiceDetailStateUiModel.Success) {
+            val detailStateUiModel = (_quizChoiceDetailState.value as QuizChoiceDetailStateUiModel.Success).dataUiModel
+            if (detailStateUiModel.cursor != "-1") {
+                getQuizChoiceDetailData(
+                    choiceId = detailStateUiModel.choice.id,
+                    index = detailStateUiModel.choice.index,
+                    cursor = detailStateUiModel.cursor
+                )
+            }
+        }
+    }
+
     private fun handleCreateGiveaway(
         title: String,
         durationInMs: Long,
@@ -1271,6 +1343,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleBackClickOnChoiceDetail() {
+        _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Unknown
+    }
+
+    private fun handleCloseQuizDetailBottomSheet() {
+        _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Unknown
+        _quizDetailState.value = QuizDetailStateUiModel.Unknown
+    }
+
+    private fun handleRefreshQuizDetail(){
+        _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Unknown
+        getQuizDetailData()
+    }
+
+    private fun handleRefreshQuizOptionDetail(){
+        getQuizChoiceDetailData(choiceId = lastChoiceDetailId, index = lastChoiceDetailIndex)
+    }
     /**
      * Quiz Form
      */

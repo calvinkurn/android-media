@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
@@ -28,7 +29,8 @@ data class PlayBroadcastUiState(
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
     val quizDetail: QuizDetailStateUiModel,
-    val onboarding: OnboardingUiModel,
+    val onBoarding: OnboardingUiModel,
+    val quizBottomSheetUiState: QuizBottomSheetUiState,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -49,7 +51,8 @@ data class PlayBroadcastUiState(
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
                 quizDetail = QuizDetailStateUiModel.Unknown,
-                onboarding = OnboardingUiModel.Empty,
+                onBoarding = OnboardingUiModel.Empty,
+                quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
             )
     }
 }
@@ -131,4 +134,19 @@ data class OnboardingUiModel(
         )
     }
 
+}
+
+data class QuizBottomSheetUiState(
+    val quizDetailState: QuizDetailStateUiModel,
+    val quizChoiceDetailState: QuizChoiceDetailStateUiModel,
+) {
+    companion object {
+        val Empty: QuizBottomSheetUiState
+        get() {
+            return QuizBottomSheetUiState(
+                quizDetailState = QuizDetailStateUiModel.Unknown,
+                quizChoiceDetailState =  QuizChoiceDetailStateUiModel.Unknown,
+            )
+        }
+    }
 }

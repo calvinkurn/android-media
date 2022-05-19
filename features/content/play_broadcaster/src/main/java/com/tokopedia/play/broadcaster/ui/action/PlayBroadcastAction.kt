@@ -5,6 +5,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * Created by jegul on 12/10/21
@@ -47,6 +48,10 @@ sealed interface PlayBroadcastAction {
     object SubmitQuizForm: PlayBroadcastAction
     object QuizEnded : PlayBroadcastAction
     object OngoingWidgetClicked : PlayBroadcastAction
-    object ClickCloseQuizDetailBottomSheet : PlayBroadcastAction
     object ClickRefreshQuizDetailBottomSheet: PlayBroadcastAction
+    object ClickBackOnChoiceDetail : PlayBroadcastAction
+    object ClickRefreshQuizOption : PlayBroadcastAction
+    object DismissQuizDetailBottomSheet : PlayBroadcastAction
+    data class ClickQuizChoiceOption(val choice: QuizChoicesUiModel) : PlayBroadcastAction
+    object LoadMoreCurrentChoiceParticipant : PlayBroadcastAction
 }

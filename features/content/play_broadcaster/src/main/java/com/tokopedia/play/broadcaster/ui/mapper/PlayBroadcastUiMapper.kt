@@ -11,12 +11,15 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
@@ -449,12 +452,14 @@ class PlayBroadcastUiMapper(
             reward = dataUiModel.reward,
             choices = dataUiModel.choices.mapIndexed { index, choice ->
                 QuizChoicesUiModel(
+                    index = index,
                     id = choice.id,
                     text = choice.text,
                     type = PlayQuizOptionState.Participant(
                         alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount
+                        count = choice.participantCount.toString(),
+                        showArrow = true
                     )
                 )
             },
@@ -464,6 +469,44 @@ class PlayBroadcastUiMapper(
             winners = emptyList(),
             leaderBoardType = LeadeboardType.Quiz
         )
+    }
+
+    override fun mapChoiceDetail(
+        response: GetInteractiveQuizChoiceDetailResponse,
+        choiceIndex: Int
+    ): QuizChoiceDetailUiModel {
+        return with(response.playInteractiveQuizChoiceDetail) {
+            QuizChoiceDetailUiModel(
+                choice = QuizChoicesUiModel(
+                    index = choiceIndex,
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        generateAlphabetChoices(choiceIndex),
+                        choice.isCorrectAnswer,
+                        "${choice.participantCount} Respon",
+                        false,
+                    )
+                ),
+                cursor = cursor,
+                winners = winners.map {
+                                      GameParticipantUiModel(
+                                          id = it.id,
+                                          name =  it.firstName,
+                                          imageUrl = it.imageURL,
+                                          isWinner = true
+                                      )
+                },
+                participants = participants.map {
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name =  it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = false
+                    )
+                },
+            )
+        }
     }
 
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]

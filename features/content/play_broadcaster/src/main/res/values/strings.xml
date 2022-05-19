@@ -287,4 +287,8 @@
     <!-- Interactive -->
         <!-- Giveaway -->
     <string name="play_bro_giveaway_form_title">Buat Game Hadiah</string>
+
+    <!-- Ongoing bottomsheet -->
+    <string name="play_bro_ongoing_bottomsheet_title">Respon quiz</string>
+    <string name="play_bro_ongoing_bottomsheet_empty_participant_message">Belum ada respon. Ajak penonton untuk ikut quiz, yuk</string>
 </resources>

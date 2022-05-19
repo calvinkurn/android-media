@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,14 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
+import com.tokopedia.play.broadcaster.view.partial.game.QuizOptionDetailViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,10 +28,18 @@ import javax.inject.Inject
 class PlayQuizDetailBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val playBroadcastMapper: PlayBroadcastMapper,
-) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
+) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
+    QuizOptionDetailViewComponent.Listener {
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
+            it,
+            this
+        )
+    }
+
+    private val choiceDetailSheetView by viewComponent {
+        QuizOptionDetailViewComponent(
             it,
             this
         )
@@ -53,6 +66,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        leaderboardSheetView.setTitle(getString(com.tokopedia.play.broadcaster.R.string.play_bro_ongoing_bottomsheet_title))
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = (getScreenHeight() * 0.65f).toInt()
+        }
         parentViewModel.getQuizDetailData()
         observeQuizDetail()
     }
@@ -65,25 +82,64 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     private fun observeQuizDetail() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.collectLatest {
-                when (it.quizDetail) {
+                when (it.quizBottomSheetUiState.quizDetailState) {
                     QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
                     QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
-                    is QuizDetailStateUiModel.Success -> setUIModel(it.quizDetail.dataUiModel)
-                    QuizDetailStateUiModel.Unknown -> leaderboardSheetView.setError()
+                    is QuizDetailStateUiModel.Success -> {
+                        setUIModel(
+                            it.quizBottomSheetUiState.quizDetailState.dataUiModel,
+                            it.quizBottomSheetUiState.quizChoiceDetailState
+                        )
+                    }
+                    QuizDetailStateUiModel.Unknown -> {
+                        if (isVisible)
+                            dismiss()
+                    }
                 }
             }
         }
     }
 
-    private fun setUIModel(dataUiModel: QuizDetailDataUiModel) {
+    private fun setUIModel(
+        quizDetailDataUiModel: QuizDetailDataUiModel,
+        quizChoiceDetailState: QuizChoiceDetailStateUiModel
+    ) {
         leaderboardSheetView.setData(
             listOf(
                 playBroadcastMapper.mapQuizDetailToLeaderBoard(
-                    dataUiModel
+                    quizDetailDataUiModel
                 )
             )
         )
-        leaderboardSheetView.showWithHeight((getScreenHeight()*0.6).toInt())
+        when (quizChoiceDetailState) {
+            QuizChoiceDetailStateUiModel.Error -> showErrorChoiceDetail()
+            QuizChoiceDetailStateUiModel.Loading -> showLoadingChoiceDetail()
+            is QuizChoiceDetailStateUiModel.Success -> showChoiceDetail(quizChoiceDetailState.dataUiModel)
+            QuizChoiceDetailStateUiModel.Unknown -> showQuizDetail()
+        }
+    }
+
+    private fun showQuizDetail() {
+        leaderboardSheetView.show()
+        choiceDetailSheetView.hide()
+    }
+
+
+    private fun showLoadingChoiceDetail() {
+
+    }
+
+    private fun showChoiceDetail(dataUiModel: QuizChoiceDetailUiModel) {
+        leaderboardSheetView.hide()
+        choiceDetailSheetView.setData(dataUiModel)
+        choiceDetailSheetView.show()
+
+    }
+
+    private fun showErrorChoiceDetail() {
+        leaderboardSheetView.hide()
+        choiceDetailSheetView.show()
+        choiceDetailSheetView.setError()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -105,10 +161,31 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        parentViewModel.submitAction(PlayBroadcastAction.ClickCloseQuizDetailBottomSheet)
+        dismiss()
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
+    }
+
+    override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
+        parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
+    }
+
+    override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
+        parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
+    }
+
+    override fun onRefreshButtonClicked(view: QuizOptionDetailViewComponent) {
+        parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizOption)
+    }
+
+    override fun loadMoreParticipant() {
+        parentViewModel.submitAction(PlayBroadcastAction.LoadMoreCurrentChoiceParticipant)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        parentViewModel.submitAction(PlayBroadcastAction.DismissQuizDetailBottomSheet)
+        super.onDismiss(dialog)
     }
 }

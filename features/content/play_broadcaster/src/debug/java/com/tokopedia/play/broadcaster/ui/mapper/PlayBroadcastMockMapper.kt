@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
@@ -17,6 +18,8 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostIntera
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -25,10 +28,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
-import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -344,12 +344,14 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             reward = dataUiModel.reward,
             choices = dataUiModel.choices.mapIndexed { index, choice ->
                 QuizChoicesUiModel(
+                    index = index,
                     id = choice.id,
                     text = choice.text,
                     type = PlayQuizOptionState.Participant(
                         alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount
+                        count = choice.participantCount.toString(),
+                        showArrow = true
                     )
                 )
             },
@@ -359,6 +361,44 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             winners = emptyList(),
             leaderBoardType = LeadeboardType.Quiz
         )
+    }
+
+    override fun mapChoiceDetail(
+        response: GetInteractiveQuizChoiceDetailResponse,
+        choiceIndex: Int
+    ): QuizChoiceDetailUiModel {
+        return with(response.playInteractiveQuizChoiceDetail) {
+            QuizChoiceDetailUiModel(
+                choice = QuizChoicesUiModel(
+                    index = choiceIndex,
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        generateAlphabetChoices(choiceIndex),
+                        choice.isCorrectAnswer,
+                        "${choice.participantCount} Respon",
+                        false,
+                    )
+                ),
+                cursor = cursor,
+                winners = winners.map {
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name =  it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = true
+                    )
+                },
+                participants = participants.map {
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name =  it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = false
+                    )
+                },
+            )
+        }
     }
 
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]

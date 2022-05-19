@@ -94,7 +94,8 @@ class QuizChoicesView : ConstraintLayout {
                 else
                     getIconOption(alphabet = item.type.alphabet)
                 getBackground(isDefault = true)
-                setupResponded(item.type.count.toString())
+                setupResponded(item.type.count)
+                binding.llQuizOptionRight.ivArrow.showWithCondition(item.type.showArrow)
             }
         }
         binding.tvQuizQuestion.text = item.text
@@ -149,8 +150,12 @@ class QuizChoicesView : ConstraintLayout {
         binding.root.background = shape
     }
 
-    private fun setupClickable(type: PlayQuizOptionState){
-        binding.root.isClickable = type is PlayQuizOptionState.Default
+    private fun setupClickable(type: PlayQuizOptionState) {
+        binding.root.isClickable = when (type) {
+            is PlayQuizOptionState.Default -> true
+            is PlayQuizOptionState.Participant -> true
+            else -> false
+        }
     }
 
     /***
