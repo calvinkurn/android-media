@@ -19,16 +19,13 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
     RecyclerView.ViewHolder(binding.root) {
 
     private companion object {
-        private const val PADDING_TOPADS = 18
         private const val RADIUS_TOPADS = 24
     }
 
     fun bind(
         item: WishlistV2TypeLayoutData,
         adapterPosition: Int,
-        isShowCheckbox: Boolean,
-        wishlistItemTypeLayout: String
-    ) {
+        isShowCheckbox: Boolean) {
         if (isShowCheckbox) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
@@ -40,11 +37,6 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
             if (item.dataObject is TopAdsImageViewModel) {
                 binding.root.visible()
                 val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                    if (wishlistItemTypeLayout == WishlistV2Consts.TYPE_LIST) {
-                        setMargins(10.toPx(), 0, 10.toPx(), 0)
-                    } else {
-                        setMargins(0, 0, 0, 0)
-                    }
                     height = ViewGroup.LayoutParams.WRAP_CONTENT
                     width = ViewGroup.LayoutParams.WRAP_CONTENT
                     isFullSpan = true

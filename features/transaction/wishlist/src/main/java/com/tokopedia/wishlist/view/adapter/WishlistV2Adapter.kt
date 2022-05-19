@@ -38,7 +38,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var isRefreshing = false
     var hasDeletionProgressWidgetShow = false
     private var isAutoSelected = false
-    var wishlistItemTypeLayout = ""
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -220,7 +219,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2TdnViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, wishlistItemTypeLayout)
+                    (holder as WishlistV2TdnViewHolder).bind(element, holder.adapterPosition, isShowCheckbox)
                 }
                 TYPE_RECOMMENDATION_CAROUSEL -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
@@ -238,13 +237,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked, wishlistItemTypeLayout)
+                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked)
                 }
                 TYPE_DELETION_PROGRESS_WIDGET -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element, wishlistItemTypeLayout)
+                    (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element)
                 }
             }
         }
@@ -368,9 +367,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun changeTypeLayout(prefLayout: String?) {
         // 0 = LIST, 1 = GRID
-        if (prefLayout != null) {
-            wishlistItemTypeLayout = prefLayout
-        }
         if (listTypeData.isNotEmpty()) {
             listTypeData.forEach {
                 if (it.dataObject is ProductCardModel) {

@@ -259,7 +259,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             } else {
                                 hideLoader()
                                 showRvWishlist()
-                                addPaddingRv()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
                                 hideSortFilter(wishlistV2.sortFilters)
@@ -267,7 +266,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         } else {
                             hideLoader()
                             showRvWishlist()
-                            setPaddingReferToTypeLayout()
                             updateTotalLabel(wishlistV2.totalData)
                         }
 
@@ -352,18 +350,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         } ?: ""
         if (errorMessage.isEmpty()) errorMessage = getString(Rv2.string.wishlist_v2_failed_to_get_information)
         setDescription(errorMessage)
-    }
-
-    private fun addPaddingRv() {
-        binding?.run {
-            rvWishlist.setPadding(PADDING_RV.toPx(), 0, PADDING_RV.toPx(), 0)
-        }
-    }
-
-    private fun removePaddingRv() {
-        binding?.run {
-            rvWishlist.setPadding(0, 0, 0, 0)
-        }
     }
 
     private fun observingWishlistData() {
@@ -458,7 +444,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
             setActionListener(this@WishlistV2Fragment)
-            wishlistItemTypeLayout = wishlistPref?.getTypeLayout().toString()
         }
         addEndlessScrollListener()
     }
@@ -480,16 +465,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistPref?.setTypeLayout(TYPE_LIST_INT)
             WishlistV2Analytics.clickLayoutSettings(TYPE_LIST)
         }
-        setPaddingReferToTypeLayout()
         wishlistV2Adapter.changeTypeLayout(wishlistPref?.getTypeLayout())
-    }
-
-    private fun setPaddingReferToTypeLayout() {
-        if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
-            removePaddingRv()
-        } else {
-            addPaddingRv()
-        }
     }
 
     private fun setTypeLayoutIcon() {
