@@ -866,14 +866,15 @@ class PlayAnalytic(
     }
 
     fun impressFollowShopInteractive(
-        interactiveId: String,
-        shopId: String
+        shopId: String,
+        interactiveType: InteractiveUiModel,
     ) {
+        if(interactiveType !is InteractiveUiModel.Quiz) return
         sendCompleteGeneralEvent(
             event = KEY_TRACK_VIEW_CONTENT_IRIS,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "view - follow quiz popup",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+            eventLabel = "$shopId - $channelId - $userId - ${interactiveType.id}"
         )
     }
 
