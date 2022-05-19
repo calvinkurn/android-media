@@ -236,7 +236,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                 powerMerchantTracking.sendEventClickAddOneProductPopUp()
             })
 
-        powerMerchantTracking.sendEventShowPopupAddNewProduct(pmBasicInfo?.shopInfo?.shopScore.toString())
+        powerMerchantTracking.sendEventShowPopupAddNewProduct(pmBasicInfo?.shopInfo?.shopScore.orZero().toString())
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
