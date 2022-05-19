@@ -1,4 +1,4 @@
-package com.tokopedia.creation.di
+package com.tokopedia.shop.flash_sale.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -10,12 +10,12 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class CreationModule {
-    @CreationScope
+class ShopFlashSaleModule {
+    @ShopFlashSaleScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @CreationScope
+    @ShopFlashSaleScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 }

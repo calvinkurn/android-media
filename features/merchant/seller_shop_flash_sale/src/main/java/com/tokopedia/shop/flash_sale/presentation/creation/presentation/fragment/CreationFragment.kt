@@ -1,4 +1,4 @@
-package com.tokopedia.creation.presentation.fragment
+package com.tokopedia.shop.flash_sale.presentation.creation.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

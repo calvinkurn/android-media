@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.campaignlist.presentation.activity.CampaignListActivity"
+            android:name="com.tokopedia.shop.flash_sale.presentation.campaign_list.presentation.activity.CampaignListActivity"
             android:label="Flash Sale Toko"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.creation.presentation.activity.CreationActivity"
+            android:name="com.tokopedia.shop.flash_sale.presentation.creation.presentation.activity.CreationActivity"
             android:label="Flash Sale Toko"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
