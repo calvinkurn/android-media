@@ -66,5 +66,7 @@
 
     <string name="deals_error_reload">Ulangi</string>
     <string name="deals_empty_state_button">Ke Homepage</string>
+    <string name="deals_image_brand_content_description">Image Brand</string>
+    <string name="deals_image_category_empty_content_description">Image Category Empty</string>
 
 </resources>
