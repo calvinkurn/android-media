@@ -103,16 +103,6 @@ class InputOldPhoneNumberViewModelTest {
     }
 
     @Test
-    fun `click submit then set current number`(){
-        val phoneNumber = "0821876590"
-
-        viewModel.submitNumber(phoneNumber)
-
-        val result = viewModel.currentNumber
-        assertTrue(result.isNotEmpty())
-    }
-
-    @Test
     fun `submit phone number then exist`() {
         val phoneNumber = "0821876590"
         val data = RegisterCheckModel(RegisterCheckData(InputOldPhoneNumberViewModel.STATUS_USER_ACTIVE, emptyList()))
@@ -123,7 +113,7 @@ class InputOldPhoneNumberViewModelTest {
         viewModel.submitNumber(phoneNumber)
 
         val result = viewModel.statusPhoneNumber.value
-        assertEquals(Success(phoneNumber), result)
+        assertEquals(Success(phoneNumber), result?.first)
     }
 
     @Test
@@ -138,7 +128,8 @@ class InputOldPhoneNumberViewModelTest {
         viewModel.submitNumber(phoneNumber)
 
         val result = viewModel.statusPhoneNumber.value
-        assertTrue(result is Fail)
+        assertTrue(result?.first is Fail)
+        assertEquals(phoneNumber, result?.second)
     }
 
     @Test
@@ -169,6 +160,7 @@ class InputOldPhoneNumberViewModelTest {
         viewModel.submitNumber(phoneNumber)
 
         val result = viewModel.statusPhoneNumber.value
-        assertEquals(Fail(data), result)
+        assertEquals(Fail(data), result?.first)
+        assertEquals(phoneNumber, result?.second)
     }
 }
