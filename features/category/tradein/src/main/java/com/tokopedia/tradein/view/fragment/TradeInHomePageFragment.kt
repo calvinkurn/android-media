@@ -339,6 +339,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     bottomSheet.setOnLogisticSelected(this@TradeInHomePageFragment)
                     bottomSheet.show(childFragmentManager, "")
                 }
+            } else {
+                findViewById<View>(R.id.exchange_layout).setOnClickListener {}
             }
         }
     }
@@ -554,10 +556,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     private fun startLaku6Testing() {
         tradeInHomePageVM.startLaku6Testing(viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
-    }
-
-    private fun goToCheckout() {
-        tradeInHomePageVM.goToCheckout()
     }
 
     private fun showToast(
