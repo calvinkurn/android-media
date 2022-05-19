@@ -64,6 +64,11 @@ object TrackingConstant {
     const val ACTION_CLICK_STOP_PM_BECOME_RM = "click stop power merchant - become rm"
     const val ACTION_CLICK_STOP_PM_BECOME_PM = "click stop power merchant - become pm"
     const val ACTION_CLICK_STOP_PM_CONFIRM_TO_STOP = "stop power merchant - confirm to stop"
+    const val ACTION_CLICK_DETAIL_TERM_MEMBERSHIP = "click lihat detail - syarat keanggotaan"
+    const val ACTION_CLICK_LEARN_MORE_PM = "click pelajari power merchant selengkapnya - keuntungan"
+    const val ACTION_CLICK_SEE_CATEGORY = "click lihat kategori"
+
+    const val EVENT_CLICK_PG = "clickPG"
 
     fun getPowerMerchantCategory(): String = if (GlobalConfig.isSellerApp()) {
         "$CATEGORY_SELLER_APP - $POWER_MERCHANT_PRO"

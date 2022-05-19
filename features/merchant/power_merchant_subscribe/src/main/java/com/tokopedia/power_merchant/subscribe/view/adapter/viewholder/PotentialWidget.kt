@@ -7,7 +7,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmPotentialBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.PotentialAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
@@ -20,7 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class PotentialWidget(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetPotentialUiModel>(itemView) {
 
     companion object {
@@ -42,6 +43,7 @@ class PotentialWidget(
                 R.string.pm_service_fee_by_category
             ).parseAsHtml()
             tvPmPotentialCtaCategory.setOnClickListener {
+                powerMerchantTracking.sendEventClickSeeCategory()
                 listener.showServiceFeeByCategory()
             }
 

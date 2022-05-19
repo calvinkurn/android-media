@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
@@ -29,7 +30,8 @@ import timber.log.Timber
 
 class GradeBenefitWidget(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
 
     companion object {
@@ -50,6 +52,7 @@ class GradeBenefitWidget(
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
+            powerMerchantTracking.sendEventClickLearnMorePM()
             RouteManager.route(root.context, element.ctaAppLink)
         }
     }
@@ -94,6 +97,8 @@ class GradeBenefitWidget(
                             setUnifyTabIconColorFilter(view?.customView, SATURATION_INACTIVE)
                         }
                     }
+
+                    powerMerchantTracking.sendEventClickTabPowerMerchantPro()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}

@@ -256,7 +256,7 @@ class PowerMerchantTracking @Inject constructor(
 
     fun sendEventClickTabPowerMerchantPro() {
         val event = createEvent(
-            event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+            event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_TAB_POWER_MERCHANT_PRO,
             label = getShopStatus()
@@ -311,6 +311,39 @@ class PowerMerchantTracking @Inject constructor(
         )
 
         event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        sendEvent(event)
+    }
+
+    fun sendEventClickDetailTermPM() {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_DETAIL_TERM_MEMBERSHIP,
+            label = getShopStatus()
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickLearnMorePM() {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_LEARN_MORE_PM,
+            label = getShopStatus()
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickSeeCategory() {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_SEE_CATEGORY,
+            label = getShopStatus()
+        )
+
         sendEvent(event)
     }
 
