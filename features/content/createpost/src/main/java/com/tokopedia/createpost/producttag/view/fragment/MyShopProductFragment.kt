@@ -1,19 +1,14 @@
 package com.tokopedia.createpost.producttag.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
@@ -175,7 +170,14 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
     companion object {
         const val TAG = "MyShopProductFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): MyShopProductFragment {

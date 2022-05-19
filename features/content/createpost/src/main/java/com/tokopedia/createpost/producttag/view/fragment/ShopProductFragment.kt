@@ -9,19 +9,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
 import com.tokopedia.createpost.createpost.databinding.FragmentShopProductBinding
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.createpost.producttag.view.uimodel.state.MyShopProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ShopProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -174,7 +170,14 @@ class ShopProductFragment : BaseProductTagChildFragment() {
     companion object {
         const val TAG = "ShopProductFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): ShopProductFragment {

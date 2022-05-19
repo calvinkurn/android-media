@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
+import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
+import com.tokopedia.createpost.producttag.util.AUTHOR_USER
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
@@ -110,6 +112,8 @@ class ProductTagParentFragment @Inject constructor(
         binding.tvCcProductTagProductSource.setOnClickListener {
             viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
         }
+
+        showBreadcrumb(viewModel.isUser)
     }
 
     private fun setupObserve() {
@@ -228,42 +232,16 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
+        val classLoader = requireActivity().classLoader
         return when(productTagSource) {
-            ProductTagSource.LastTagProduct -> {
-                Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
-                )
-            }
-            ProductTagSource.LastPurchase -> {
-                Pair(
-                    LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastPurchasedProductFragment.TAG,
-                )
-            }
-            ProductTagSource.MyShop -> {
-                Pair(
-                    MyShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    MyShopProductFragment.TAG,
-                )
-            }
-            ProductTagSource.GlobalSearch -> {
-                Pair(
-                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    GlobalSearchFragment.TAG,
-                )
-            }
-            ProductTagSource.Shop -> {
-                Pair(
-                    ShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    ShopProductFragment.TAG,
-                )
-            }
+            ProductTagSource.LastTagProduct -> LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.LastPurchase -> LastPurchasedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.MyShop -> MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.GlobalSearch -> GlobalSearchFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.Shop -> ShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
             else -> {
-                Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
-                )
+                if(viewModel.isSeller) MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+                else LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
             }
         }
     }
@@ -293,6 +271,22 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun getStringArgument(key: String): String {
         return arguments?.getString(key) ?: ""
+    }
+
+    private fun showBreadcrumb(isShow: Boolean) {
+        binding.apply {
+            tvCcProductTagProductSourceLabel.showWithCondition(isShow)
+            tvCcProductTagProductSource.showWithCondition(isShow)
+            tvCcProductTagProductSource2.showWithCondition(isShow)
+
+            icCcProductTagShopBadge1.showWithCondition(isShow)
+            icCcProductTagShopBadge2.showWithCondition(isShow)
+
+            icCcProductTagChevron1.showWithCondition(isShow)
+            icCcProductTagChevron2.showWithCondition(isShow)
+
+            imgCcProductTagShopBadge1.showWithCondition(isShow)
+        }
     }
 
     fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {

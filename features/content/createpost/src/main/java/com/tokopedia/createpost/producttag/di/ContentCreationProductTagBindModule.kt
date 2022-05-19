@@ -33,11 +33,6 @@ abstract class ContentCreationProductTagBindModule {
     @FragmentKey(ProductTagSourceBottomSheet::class)
     abstract fun bindProductTagSourceBottomSheet(fragment: ProductTagSourceBottomSheet): Fragment
 
-    @Binds
-    @IntoMap
-    @FragmentKey(LastTaggedProductFragment::class)
-    abstract fun bindLastTaggedProductFragment(fragment: LastTaggedProductFragment): Fragment
-
     /** Repository */
     @Binds
     abstract fun bindProductTagRepository(productTagRepositoryImpl: ProductTagRepositoryImpl): ProductTagRepository

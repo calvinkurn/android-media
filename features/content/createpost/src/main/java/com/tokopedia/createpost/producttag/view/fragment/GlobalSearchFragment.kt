@@ -102,7 +102,14 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
     companion object {
         const val TAG = "GlobalSearchFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): GlobalSearchFragment {

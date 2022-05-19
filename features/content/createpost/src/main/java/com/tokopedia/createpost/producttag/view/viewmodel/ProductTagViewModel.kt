@@ -3,14 +3,16 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.util.*
 import com.tokopedia.createpost.producttag.util.AUTHOR_ID
 import com.tokopedia.createpost.producttag.util.AUTHOR_TYPE
+import com.tokopedia.createpost.producttag.util.AUTHOR_USER
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.util.extension.combine
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
-import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
-import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.util.extension.removeLast
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -50,6 +52,12 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     /** Public Getter */
+    val isUser: Boolean
+        get() = authorType == AUTHOR_USER
+
+    val isSeller: Boolean
+        get() = authorType == AUTHOR_SELLER
+
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 

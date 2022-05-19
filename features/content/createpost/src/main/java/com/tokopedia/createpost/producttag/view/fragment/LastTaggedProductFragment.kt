@@ -8,11 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
@@ -24,16 +22,13 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastTaggedProductFragment @Inject constructor(
-    private val userSession: UserSessionInterface,
-): BaseProductTagChildFragment() {
+class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastTaggedProductFragment"
 
@@ -150,7 +145,14 @@ class LastTaggedProductFragment @Inject constructor(
     companion object {
         const val TAG = "LastTaggedProductFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): LastTaggedProductFragment {
