@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/sfs_your_shop_flash_sale"
         app:unify_header_is_show_shadow="true" />
 
 
