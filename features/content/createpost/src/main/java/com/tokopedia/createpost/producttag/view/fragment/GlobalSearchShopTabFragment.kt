@@ -227,7 +227,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                     }
                 }
             }
-            else -> buildLoading()
+            else -> emptyList()
         }
 
         if(binding.rvGlobalSearchShop.isComputingLayout.not())
