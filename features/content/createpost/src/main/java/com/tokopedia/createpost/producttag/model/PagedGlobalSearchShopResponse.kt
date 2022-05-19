@@ -9,5 +9,4 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 data class PagedGlobalSearchShopResponse(
     val totalShop: Int,
     val pagedData: PagedDataUiModel<ShopUiModel>,
-    val recomPagedData: PagedDataUiModel<ShopUiModel>,
 )

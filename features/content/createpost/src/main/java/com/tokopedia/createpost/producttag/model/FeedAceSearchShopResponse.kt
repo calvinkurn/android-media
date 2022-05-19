@@ -15,9 +15,6 @@ data class FeedAceSearchShopResponse(
 
         @SerializedName("shops")
         val shops: List<Shop> = emptyList(),
-
-        @SerializedName("top_shop")
-        val topShop: List<Shop> = emptyList(),
     )
 
     data class Shop(

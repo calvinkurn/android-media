@@ -43,16 +43,6 @@ class FeedAceSearchShopUseCase @Inject constructor(
                   is_official
                   is_pm_pro
                 }
-                top_shop {
-                  shop_id
-                  shop_name
-                  shop_image
-                  shop_location
-                  shop_gold_shop
-                  shop_status
-                  is_official
-                  is_pm_pro
-                }
               }
             }
         """

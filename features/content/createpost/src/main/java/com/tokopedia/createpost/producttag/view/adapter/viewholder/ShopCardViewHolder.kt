@@ -106,10 +106,8 @@ internal class ShopCardViewHolder private constructor() {
             val context = itemView.context
             binding.emptyState.apply {
                 setImageUrl(context.getString(R.string.img_search_no_shop))
+                setPrimaryCTAText("")
                 setSecondaryCTAText("")
-                setPrimaryCTAClickListener {
-                    item.onClicked()
-                }
 
                 if(item.hasFilterApplied) {
                     setTitle(context.getString(R.string.cc_global_search_shop_filter_not_found_title))
@@ -128,56 +126,6 @@ internal class ShopCardViewHolder private constructor() {
 
             fun create(parent: ViewGroup) = EmptyState(
                 ItemGlobalSearchEmptyStateListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-            )
-        }
-    }
-
-    internal class RecommendationTitle(
-        private val binding: ItemGlobalSearchRecommendationTitleListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        fun bind(item: ShopCardAdapter.Model.RecommendationTitle) {
-            binding.root.text = item.text
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = RecommendationTitle(
-                ItemGlobalSearchRecommendationTitleListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-            )
-        }
-    }
-
-    internal class Divider(
-        binding: ItemGlobalSearchDividerListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = Divider(
-                ItemGlobalSearchDividerListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

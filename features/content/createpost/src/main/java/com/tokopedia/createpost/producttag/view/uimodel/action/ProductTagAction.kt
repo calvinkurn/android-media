@@ -43,7 +43,6 @@ sealed interface ProductTagAction {
     object OpenShopSortFilterBottomSheet: ProductTagAction
     data class RequestShopFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
     data class ApplyShopSortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
-    object ResetShopFilter: ProductTagAction
 
     /** Shop Product */
     object LoadShopProduct: ProductTagAction

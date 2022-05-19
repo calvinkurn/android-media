@@ -81,48 +81,4 @@ internal class ShopCardAdapterDelegate private constructor() {
             )
         }
     }
-
-    internal class RecommendationTitle: TypedAdapterDelegate<
-            ShopCardAdapter.Model.RecommendationTitle,
-            ShopCardAdapter.Model,
-            ShopCardViewHolder.RecommendationTitle>(
-        R.layout.view_cc_empty) {
-
-        override fun onBindViewHolder(
-            item: ShopCardAdapter.Model.RecommendationTitle,
-            holder: ShopCardViewHolder.RecommendationTitle
-        ) {
-            holder.bind(item)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): ShopCardViewHolder.RecommendationTitle {
-            return ShopCardViewHolder.RecommendationTitle.create(
-                parent
-            )
-        }
-    }
-
-    internal class Divider: TypedAdapterDelegate<
-            ShopCardAdapter.Model.Divider,
-            ShopCardAdapter.Model,
-            ShopCardViewHolder.Divider>(
-        R.layout.view_cc_empty) {
-
-        override fun onBindViewHolder(
-            item: ShopCardAdapter.Model.Divider,
-            holder: ShopCardViewHolder.Divider
-        ) {}
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): ShopCardViewHolder.Divider {
-            return ShopCardViewHolder.Divider.create(
-                parent
-            )
-        }
-    }
 }

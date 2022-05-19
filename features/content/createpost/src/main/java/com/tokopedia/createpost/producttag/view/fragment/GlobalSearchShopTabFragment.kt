@@ -7,27 +7,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchShopTabBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
-import com.tokopedia.createpost.producttag.view.decoration.ShopCardItemDecoration
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
-import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
@@ -109,7 +102,6 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
     private fun setupView() {
         binding.rvGlobalSearchShop.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvGlobalSearchShop.addItemDecoration(ShopCardItemDecoration(requireContext()))
         binding.rvGlobalSearchShop.adapter = adapter
     }
 
@@ -149,16 +141,21 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
     private fun renderGlobalSearchShop(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
         if(prev?.shops == curr.shops &&
-            prev.recomShops == curr.recomShops &&
             prev.state == curr.state
         ) return
 
         when(curr.state) {
-            is PagedState.Loading,
+            is PagedState.Loading -> {
+                binding.sortFilter.show()
+                updateAdapterData(curr, true)
+            }
             is PagedState.Success -> {
-                updateAdapterData(curr)
+                binding.sortFilter.showWithCondition(curr.shops.isNotEmpty() || (curr.shops.isEmpty() && curr.param.hasFilterApplied()))
+                updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
+                updateAdapterData(curr, false)
+
                 Toaster.build(
                     binding.root,
                     text = getString(R.string.cc_failed_load_shop),
@@ -193,81 +190,19 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
         }
     }
 
-    private fun updateAdapterData(currState: GlobalSearchShopUiState) {
-        val finalShops = when(currState.state) {
-            is PagedState.Loading -> {
-                when {
-                    currState.shops.isNotEmpty() -> {
-                        binding.sortFilter.show()
-                        buildShopList(currState.shops, true)
-                    }
-                    currState.recomShops.isNotEmpty() && !currState.param.hasFilterApplied() -> {
-                        binding.sortFilter.hide()
-                        buildEmptyStateWithRecom(currState.recomShops, true)
-                    }
-                    else -> {
-                        binding.sortFilter.show()
-                        buildLoading()
-                    }
-                }
-            }
-            is PagedState.Success -> {
-                when {
-                    currState.shops.isNotEmpty() -> {
-                        binding.sortFilter.show()
-                        buildShopList(currState.shops, currState.state.hasNextPage)
-                    }
-                    currState.param.hasFilterApplied() -> {
-                        binding.sortFilter.show()
-                        buildEmptyState()
-                    }
-                    else -> {
-                        binding.sortFilter.hide()
-                        buildEmptyStateWithRecom(currState.recomShops, currState.state.isNextPage)
-                    }
-                }
-            }
-            else -> emptyList()
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun updateAdapterData(currState: GlobalSearchShopUiState, hasNextPage: Boolean) {
+        val finalShops = buildList {
+            if(currState.shops.isEmpty() && currState.state is PagedState.Success)
+                add(ShopCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
+            else
+                addAll(currState.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
+
+            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
         }
 
         if(binding.rvGlobalSearchShop.isComputingLayout.not())
             adapter.setItemsAndAnimateChanges(finalShops)
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun buildShopList(shops: List<ShopUiModel>, hasNextPage: Boolean): List<ShopCardAdapter.Model> {
-        return buildList {
-            addAll(shops.map { ShopCardAdapter.Model.Shop(shop = it) })
-            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
-        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun buildEmptyState(): List<ShopCardAdapter.Model> {
-        return buildList {
-            add(ShopCardAdapter.Model.EmptyState(true) {
-                viewModel.submitAction(ProductTagAction.ResetShopFilter)
-            })
-        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun buildEmptyStateWithRecom(recomShops: List<ShopUiModel>, hasNextPage: Boolean): List<ShopCardAdapter.Model> {
-        return buildList {
-            add(ShopCardAdapter.Model.EmptyState(false) {
-                viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
-            })
-            add(ShopCardAdapter.Model.Divider)
-            addAll(recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
-            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
-        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun buildLoading(): List<ShopCardAdapter.Model> {
-        return buildList {
-            add(ShopCardAdapter.Model.Loading)
-        }
     }
 
     companion object {

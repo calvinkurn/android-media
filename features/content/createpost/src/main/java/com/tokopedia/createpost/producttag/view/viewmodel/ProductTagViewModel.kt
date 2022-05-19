@@ -135,7 +135,6 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchShopUiState = _globalSearchShop.map {
         GlobalSearchShopUiState(
             shops = it.shops,
-            recomShops = it.recomShops,
             quickFilters = it.quickFilters,
             sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
@@ -230,7 +229,6 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.OpenShopSortFilterBottomSheet -> handleOpenShopSortFilterBottomSheet()
             is ProductTagAction.RequestShopFilterProductCount -> handleRequestShopFilterProductCount(action.selectedSortFilter)
             is ProductTagAction.ApplyShopSortFilter -> handleApplyShopSortFilter(action.selectedSortFilter)
-            ProductTagAction.ResetShopFilter -> handleResetShopFilter()
 
             /** Shop Product */
             ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
@@ -562,11 +560,10 @@ class ProductTagViewModel @AssistedInject constructor(
             _globalSearchShop.setValue {
                 copy(
                     shops = shops + result.pagedData.dataList,
-                    recomShops = recomShops + result.recomPagedData.dataList,
                     quickFilters = quickFilters,
                     nextCursor = nextCursor,
                     state = PagedState.Success(
-                        hasNextPage = result.pagedData.hasNextPage || result.recomPagedData.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     ),
                     param = newParam,
                 )
@@ -651,16 +648,6 @@ class ProductTagViewModel @AssistedInject constructor(
 
         _globalSearchShop.setValue {
             GlobalSearchShopUiModel.Empty.copy(param = newParam)
-        }
-
-        handleLoadGlobalSearchShop()
-    }
-
-    private fun handleResetShopFilter() {
-        val currQuery = _globalSearchShop.value.param.query
-
-        _globalSearchShop.setValue {
-            GlobalSearchShopUiModel.Empty.copy(param = initParam(currQuery))
         }
 
         handleLoadGlobalSearchShop()

@@ -7,7 +7,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
  */
 data class GlobalSearchShopUiModel(
     val shops: List<ShopUiModel>,
-    val recomShops: List<ShopUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
     val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
@@ -19,7 +18,6 @@ data class GlobalSearchShopUiModel(
         val Empty: GlobalSearchShopUiModel
             get() = GlobalSearchShopUiModel(
                 shops = emptyList(),
-                recomShops = emptyList(),
                 sortFilters = DynamicFilterModel(),
                 quickFilters = emptyList(),
                 nextCursor = 0,

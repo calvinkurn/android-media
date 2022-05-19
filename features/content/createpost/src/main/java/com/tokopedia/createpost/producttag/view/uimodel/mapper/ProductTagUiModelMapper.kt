@@ -141,22 +141,6 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.shops.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
-            recomPagedData = PagedDataUiModel(
-                dataList = response.wrapper.topShop.map {
-                    ShopUiModel(
-                        shopId = it.shopId,
-                        shopName = it.shopName,
-                        shopImage = it.shopImage,
-                        shopLocation = it.shopLocation,
-                        shopGoldShop = it.shopGoldShop,
-                        shopStatus = it.shopStatus,
-                        isOfficial = it.isOfficial,
-                        isPMPro = it.isPMPro,
-                    )
-                },
-                hasNextPage = response.wrapper.topShop.isNotEmpty(),
-                nextCursor = nextCursor.toString(),
-            ),
         )
     }
 

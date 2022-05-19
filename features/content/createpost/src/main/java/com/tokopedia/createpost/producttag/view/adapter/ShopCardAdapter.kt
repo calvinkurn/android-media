@@ -18,8 +18,6 @@ class ShopCardAdapter(
             .addDelegate(ShopCardAdapterDelegate.Shop(onSelected))
             .addDelegate(ShopCardAdapterDelegate.Loading())
             .addDelegate(ShopCardAdapterDelegate.EmptyState())
-            .addDelegate(ShopCardAdapterDelegate.RecommendationTitle())
-            .addDelegate(ShopCardAdapterDelegate.Divider())
     }
 
     override fun onBindViewHolder(
@@ -32,23 +30,16 @@ class ShopCardAdapter(
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return isModelTheSame(oldItem, newItem)
-    }
-
-    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return isModelTheSame(oldItem, newItem)
-    }
-
-    private fun isModelTheSame(oldItem: Model, newItem: Model): Boolean {
         return if(oldItem is Model.Shop && newItem is Model.Shop) {
             oldItem.shop.shopId == newItem.shop.shopId
         } else if(oldItem is Model.EmptyState && newItem is Model.EmptyState) {
             oldItem.hasFilterApplied == newItem.hasFilterApplied
-        } else if(oldItem is Model.RecommendationTitle && newItem is Model.RecommendationTitle) {
-            oldItem.text == newItem.text
-        }
-        else if(oldItem is Model.Loading && newItem is Model.Loading) false
+        } else if(oldItem is Model.Loading && newItem is Model.Loading) false
         else oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return oldItem == newItem
     }
 
     sealed interface Model {
@@ -60,13 +51,6 @@ class ShopCardAdapter(
 
         data class EmptyState(
             val hasFilterApplied: Boolean,
-            val onClicked: () -> Unit,
         ) : Model
-
-        data class RecommendationTitle(
-            val text: String,
-        ) : Model
-
-        object Divider : Model
     }
 }
