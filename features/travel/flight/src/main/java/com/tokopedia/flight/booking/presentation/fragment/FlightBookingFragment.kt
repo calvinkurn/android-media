@@ -1164,8 +1164,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         action()
                     }
                     view?.let {
-                        val retryLayout = it.findViewById<LinearLayout>(R.id.main_retry)
-                        val ivIcon = retryLayout.findViewById<ImageView>(R.id.iv_icon)
+                        val retryLayout = it.findViewById<LinearLayout>(com.tokopedia.abstraction.R.id.main_retry)
+                        val ivIcon = retryLayout.findViewById<ImageView>(com.tokopedia.abstraction.R.id.iv_icon)
                         ivIcon.loadImage(getString(com.tokopedia.flight.R.string.flight_default_error_img_url))
                     }
                 } catch (t: Throwable) {
