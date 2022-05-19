@@ -137,11 +137,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:layout_constraintStart_toEndOf="@id/ic_my_shop"
-            app:layout_constraintTop_toTopOf="@id/ic_my_shop"
             app:layout_constraintBottom_toBottomOf="@id/ic_my_shop"
             app:layout_constraintEnd_toStartOf="@+id/ic_my_shop_chevron"
-            />
+            app:layout_constraintStart_toEndOf="@id/ic_my_shop"
+            app:layout_constraintTop_toTopOf="@id/ic_my_shop"
+            app:layout_goneMarginStart="0dp" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_my_shop_chevron"

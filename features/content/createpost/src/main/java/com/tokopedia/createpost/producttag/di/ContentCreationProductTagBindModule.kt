@@ -2,8 +2,11 @@ package com.tokopedia.createpost.producttag.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import com.tokopedia.createpost.producttag.data.ProductTagRepositoryImpl
 import com.tokopedia.createpost.producttag.di.key.FragmentKey
+import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.producttag.view.fragment.factory.ProductTagFragmentFactory
 import dagger.Binds
@@ -29,4 +32,13 @@ abstract class ContentCreationProductTagBindModule {
     @IntoMap
     @FragmentKey(ProductTagSourceBottomSheet::class)
     abstract fun bindProductTagSourceBottomSheet(fragment: ProductTagSourceBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(LastTaggedProductFragment::class)
+    abstract fun bindLastTaggedProductFragment(fragment: LastTaggedProductFragment): Fragment
+
+    /** Repository */
+    @Binds
+    abstract fun bindProductTagRepository(productTagRepositoryImpl: ProductTagRepositoryImpl): ProductTagRepository
 }

@@ -9,6 +9,7 @@ enum class ProductTagSource(val tag: String) {
     MyShop("own_shop"),
     LastPurchase("last_purchase"),
     LastTagProduct("last_tag_product"),
+    Shop("shop"),
     Unknown("");
 
     companion object {

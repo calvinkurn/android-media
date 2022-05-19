@@ -5,3 +5,5 @@ package com.tokopedia.createpost.producttag.util
  */
 internal const val PRODUCT_TAG_SOURCE_RAW = "productTagSourceRaw"
 internal const val SHOP_BADGE = "shopBadge"
+internal const val AUTHOR_ID = "authorId"
+internal const val AUTHOR_TYPE = "authorType"

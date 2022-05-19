@@ -74,6 +74,7 @@ class ProductTagSourceBottomSheet @Inject constructor(
 
     private fun setShopInfo() {
         if(userSession.hasShop()) {
+            binding.icMyShop.showWithCondition(mShopBadge.isNotEmpty())
             binding.icMyShop.setImageUrl(mShopBadge)
             binding.tvMyShop.text = userSession.shopName
         }
