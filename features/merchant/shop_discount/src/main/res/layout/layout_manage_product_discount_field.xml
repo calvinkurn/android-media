@@ -78,12 +78,29 @@
         app:unify_text_field_label="@string/sd_discount"
         app:unify_text_field_placeholder="@string/sd_discount" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_r2_abusive_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginRight="-2dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_field_price"
+        app:tickerShapeType="loose"
+        app:tickerType="error"
+        tools:visibility="visible" />
+
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/text_field_price" />
+        app:layout_constraintTop_toBottomOf="@id/ticker_r2_abusive_error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/max_order_label"

@@ -28,7 +28,8 @@ object ShopDiscountManageProductVariantMapper {
                 isMultiLoc = it.variantStatus.isMultiLoc,
                 slashPriceStatusId = it.slashPriceInfo.slashPriceStatusId,
                 valueErrorType = it.variantStatus.errorType,
-                isAbusive = it.listProductWarehouse.any { it.abusiveRule }
+                isAbusive = it.listProductWarehouse.any { it.abusiveRule },
+                averageSoldPrice = it.listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
             )
         }
     }

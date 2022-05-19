@@ -12,14 +12,16 @@ class NumberThousandSeparatorTextWatcher(
     private val afterTextChangedAction: (Int, String) -> Unit
 ) : TextWatcher {
 
+    var isForceTextChanged = false
+
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-        if (view.hasFocus()) {
+        if (view.hasFocus() || isForceTextChanged) {
             view.removeTextChangedListener(this)
-
+            isForceTextChanged = false
             try {
                 val number = s.toString().digitsOnly()
                 val formattedNumber = decimalFormatter.format(number)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
+import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.globalerror.GlobalError
@@ -36,8 +38,12 @@ import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
+import com.tokopedia.shopdiscount.utils.constant.UrlConstant.SELLER_EDU_R2_ABUSIVE_URL
+import com.tokopedia.shopdiscount.utils.extension.digitsOnly
 import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.formatter.SpannableHelper
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -91,6 +97,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private var textDiscountPeriodRange: Typography? = null
     private var textFieldDiscountPrice: TextFieldUnify2? = null
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
+    private var tickerR2AbusiveError: Ticker? = null
     private var quantityEditorMaxOrder: QuantityEditorUnify? = null
     private var buttonApply: UnifyButton? = null
     private var selectedPeriodChip: Int = 0
@@ -278,6 +285,8 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private fun observeInputValidation() {
         viewModel.inputValidation.observe(viewLifecycleOwner, { errorValidation ->
             buttonApply?.isEnabled = errorValidation == NONE
+            tickerR2AbusiveError?.hide()
+            textFieldDiscountPrice?.textInputLayout?.setOnClickListener(null)
             when (errorValidation) {
                 ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
@@ -295,12 +304,74 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
                         )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
+                ERROR_R2_ABUSIVE -> {
+                    textFieldDiscountPrice?.textInputLayout?.error = getR2AbusiveErrorMessage()
+                    textFieldDiscountPercentage?.textInputLayout?.error = " "
+                    textFieldDiscountPrice?.textInputLayout?.setOnClickListener {
+                        redirectToWebViewR2AbusiveSellerInformation()
+                    }
+                    tickerR2AbusiveError?.apply {
+                        show()
+                        val averageSoldPrice =
+                            viewModel.getProductData().listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero().getCurrencyFormatted()
+                        val tickerDesc = String.format(
+                                getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
+                                averageSoldPrice
+                            )
+                        setHtmlDescription(tickerDesc)
+                        setDescriptionClickEvent(object: TickerCallback{
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                applyRecommendedSoldPriceToDiscountedPrice()
+                            }
+
+                            override fun onDismiss() {
+                            }
+
+                        })
+                    }
+                }
                 NONE -> {
                     textFieldDiscountPrice?.textInputLayout?.error = null
                     textFieldDiscountPercentage?.textInputLayout?.error = null
                 }
             }
         })
+    }
+
+    private fun applyRecommendedSoldPriceToDiscountedPrice() {
+        val averageSoldPrice =
+            viewModel.getProductData().listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
+        textFieldDiscountPriceWatcher?.isForceTextChanged = true
+        textFieldDiscountPrice?.editText?.setText(averageSoldPrice.toString())
+    }
+
+    private fun getR2AbusiveErrorMessage(): SpannableString {
+        val errorMessageFormat =
+            getString(R.string.shop_discount_manage_product_error_r2_abusive_format)
+        val errorStringToBeColorSpanned =
+            getString(R.string.shop_discount_manage_product_error_r2_abusive_spanned_text)
+        val errorMessage = SpannableString(
+            String.format(
+                errorMessageFormat,
+                errorStringToBeColorSpanned
+            )
+        )
+        SpannableHelper.setSpannedColorString(
+            context,
+            errorMessage,
+            errorStringToBeColorSpanned,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
+        return errorMessage
+    }
+
+    private fun redirectToWebViewR2AbusiveSellerInformation() {
+        RouteManager.route(
+            context, String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW, SELLER_EDU_R2_ABUSIVE_URL
+            )
+        )
     }
 
     private fun observeUpdatedDiscountPercentageData() {
@@ -369,7 +440,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         configDiscountPeriodSection(productData, slashPriceBenefitData)
         setProductPriceData(productData)
         configQuantityEditorMaxOrder(productData)
-        checkShouldValidateInputAfterPopulateData()
+        checkShouldValidateInputAfterPopulateData(productData.mappedResultData.minDisplayedPrice)
     }
 
     private fun configTickerMultiLoc(isMultiLoc: Boolean) {
@@ -402,8 +473,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun checkShouldValidateInputAfterPopulateData() {
-        val initialDiscountPrice = textFieldDiscountPrice?.editText?.text?.toString()?.toIntOrZero()
+    private fun checkShouldValidateInputAfterPopulateData(initialDiscountPrice: Int) {
         if (initialDiscountPrice.isMoreThanZero()) {
             viewModel.validateInput()
         }
@@ -417,7 +487,11 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     }
 
     private fun setProductPriceData(productData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        textFieldDiscountPrice?.editText?.setText(productData.mappedResultData.minDisplayedPrice.toString())
+        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
+        numberFormatter.applyPattern(NUMBER_PATTERN)
+        val priceData = productData.mappedResultData.minDisplayedPrice.toString().digitsOnly()
+        val formattedPriceData = numberFormatter.format(priceData)
+        textFieldDiscountPrice?.editText?.setText(formattedPriceData)
         textFieldDiscountPercentage?.editText?.setText(productData.mappedResultData.minDiscountPercentage.toString())
     }
 
@@ -536,6 +610,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
                 textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
                 textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
                 textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount
+                tickerR2AbusiveError = layoutFieldContainer.tickerR2AbusiveError
                 quantityEditorMaxOrder = layoutFieldContainer.quantityEditorMaxOrder
             }
             buttonApply = it.buttonApply

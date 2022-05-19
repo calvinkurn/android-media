@@ -1,10 +1,13 @@
 package com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.viewholder
 
 import android.text.InputFilter
+import android.text.SpannableString
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutShopDiscountManageProductVariantItemBinding
@@ -15,14 +18,18 @@ import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodB
 import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation
+import com.tokopedia.shopdiscount.utils.constant.UrlConstant.SELLER_EDU_R2_ABUSIVE_URL
 import com.tokopedia.shopdiscount.utils.formatter.NumberFormatter
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.thousandFormattedWithoutCurrency
+import com.tokopedia.shopdiscount.utils.formatter.SpannableHelper
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.round
@@ -46,6 +53,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
     private var textDiscountPeriodRange: Typography? = null
     private var textFieldDiscountPrice: TextFieldUnify2? = null
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
+    private var tickerR2AbusiveError: Ticker? = null
     private var quantityEditorMaxOrder: QuantityEditorUnify? = null
     private var textFieldDiscountPercentageWatcher: NumberThousandSeparatorTextWatcher? = null
     private var textFieldDiscountPriceWatcher: NumberThousandSeparatorTextWatcher? = null
@@ -80,6 +88,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
                 textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
                 textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
                 textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount
+                tickerR2AbusiveError =  layoutFieldContainer.tickerR2AbusiveError
                 quantityEditorMaxOrder = layoutFieldContainer.quantityEditorMaxOrder
             }
         }
@@ -314,6 +323,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
             val minDiscountPrice = getMinDiscountPrice(uiModel)
             val maxDiscountPrice = getMaxDiscountPrice(uiModel)
             val discountedPrice = it.discountedPrice
+            val averageSoldPrice = it.averageSoldPrice
             val errorValidation = when {
                 discountedPrice > maxDiscountPrice -> {
                     ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MAX
@@ -321,10 +331,15 @@ class ShopDiscountManageProductVariantItemViewHolder(
                 discountedPrice < minDiscountPrice -> {
                     ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MIN
                 }
+                discountedPrice > averageSoldPrice -> {
+                    ShopDiscountManageProductDiscountErrorValidation.ERROR_R2_ABUSIVE
+                }
                 else -> {
                     ShopDiscountManageProductDiscountErrorValidation.NONE
                 }
             }
+            tickerR2AbusiveError?.hide()
+            textFieldDiscountPrice?.textInputLayout?.setOnClickListener(null)
             when (errorValidation) {
                 ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
@@ -342,6 +357,30 @@ class ShopDiscountManageProductVariantItemViewHolder(
                         )
                     textFieldDiscountPercentage?.textInputLayout?.error = " "
                 }
+                ShopDiscountManageProductDiscountErrorValidation.ERROR_R2_ABUSIVE -> {
+                    textFieldDiscountPrice?.textInputLayout?.error = getR2AbusiveErrorMessage()
+                    textFieldDiscountPercentage?.textInputLayout?.error = " "
+                    textFieldDiscountPrice?.textInputLayout?.setOnClickListener {
+                        redirectToWebViewR2AbusiveSellerInformation()
+                    }
+                    tickerR2AbusiveError?.apply {
+                        show()
+                        val tickerDesc = String.format(
+                            getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
+                            averageSoldPrice
+                        )
+                        setHtmlDescription(tickerDesc)
+                        setDescriptionClickEvent(object: TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                applyRecommendedSoldPriceToDiscountedPrice(averageSoldPrice)
+                            }
+
+                            override fun onDismiss() {
+                            }
+
+                        })
+                    }
+                }
                 ShopDiscountManageProductDiscountErrorValidation.NONE -> {
                     textFieldDiscountPrice?.textInputLayout?.error = null
                     textFieldDiscountPercentage?.textInputLayout?.error = null
@@ -351,11 +390,46 @@ class ShopDiscountManageProductVariantItemViewHolder(
         }
     }
 
+    private fun getR2AbusiveErrorMessage(): SpannableString {
+        val errorMessageFormat =
+            getString(R.string.shop_discount_manage_product_error_r2_abusive_format)
+        val errorStringToBeColorSpanned =
+            getString(R.string.shop_discount_manage_product_error_r2_abusive_spanned_text)
+        val errorMessage = SpannableString(
+            String.format(
+                errorMessageFormat,
+                errorStringToBeColorSpanned
+            )
+        )
+        SpannableHelper.setSpannedColorString(
+            itemView.context,
+            errorMessage,
+            errorStringToBeColorSpanned,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
+        return errorMessage
+    }
+
+    private fun applyRecommendedSoldPriceToDiscountedPrice(averageSoldPrice: Int) {
+        textFieldDiscountPriceWatcher?.isForceTextChanged = true
+        textFieldDiscountPrice?.editText?.setText(averageSoldPrice.toString())
+    }
+
     private fun updateValueErrorTypeData(
         errorType: Int,
         uiModel: ShopDiscountManageProductVariantItemUiModel
     ) {
         uiModel.valueErrorType = errorType
+    }
+
+    private fun redirectToWebViewR2AbusiveSellerInformation() {
+        RouteManager.route(
+            itemView.context, String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                SELLER_EDU_R2_ABUSIVE_URL
+            )
+        )
     }
 
     private fun getMinDiscountPrice(uiModel: ShopDiscountManageProductVariantItemUiModel): Int {

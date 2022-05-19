@@ -14,6 +14,7 @@ import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiMode
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
@@ -157,12 +158,16 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
             val minDiscountPrice = getMinDiscountPrice()
             val maxDiscountPrice = getMaxDiscountPrice()
             val discountedPrice = it.slashPriceInfo.discountedPrice
+            val averageSoldPrice = it.listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
             val errorValidation = when {
                 discountedPrice > maxDiscountPrice -> {
                     ERROR_PRICE_MAX
                 }
                 discountedPrice < minDiscountPrice -> {
                     ERROR_PRICE_MIN
+                }
+                discountedPrice > averageSoldPrice -> {
+                    ERROR_R2_ABUSIVE
                 }
                 else -> {
                     NONE
