@@ -64,13 +64,13 @@ class MainNavViewModel @Inject constructor(
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
-        private val getReviewProductUseCase: Lazy<GetReviewProductUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>,
         private val getAffiliateUserUseCase: Lazy<GetAffiliateUserUseCase>,
         private val getFavoriteShopsNavUseCase: Lazy<GetFavoriteShopsNavUseCase>,
-        private val getWishlistNavUseCase: Lazy<GetWishlistNavUseCase>
+        private val getWishlistNavUseCase: Lazy<GetWishlistNavUseCase>,
+        private val getReviewProductUseCase: Lazy<GetReviewProductUseCase>
 ): BaseViewModel(baseDispatcher.get().io) {
 
     companion object {
@@ -217,6 +217,7 @@ class MainNavViewModel @Inject constructor(
     fun setIsMePageUsingRollenceVariant(value: Boolean){
         isMePageUsingRollenceVariant = value
         _mainNavListVisitable = setInitialState()
+        _mainNavLiveData.postValue(MainNavigationDataModel(_mainNavListVisitable))
     }
 
     fun getMainNavData(useCacheData: Boolean) {
