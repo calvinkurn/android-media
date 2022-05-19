@@ -408,9 +408,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleSearchMyShopProduct(query: String) {
         _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
-                param = param.copy().apply {
-                    this.query = query
-                }
+                param = initParam(query)
             )
         }
         handleLoadMyShopProduct()
