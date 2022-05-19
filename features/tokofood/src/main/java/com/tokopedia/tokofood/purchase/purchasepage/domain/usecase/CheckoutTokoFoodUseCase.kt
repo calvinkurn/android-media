@@ -259,7 +259,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
-            emit(CheckoutDummyProvider.getAddressNotAvailableResponse())
+            emit(getDummyResponse())
         } else {
             val additionalAttributes = CartAdditionalAttributesTokoFood(
                 chosenAddressRequestHelper.getChosenAddress(),

@@ -1,0 +1,95 @@
+package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
+
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.TokoFoodCheckoutMetadata
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartParam
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodParam
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+
+class CheckoutGeneralTokoFoodUseCase @Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : FlowUseCase<CheckoutTokoFoodResponse, CheckoutGeneralTokoFoodResponse>(dispatchers.io) {
+
+    private val isDebug = true
+
+    override fun graphqlQuery(): String = """
+        mutation TokoFoodCheckoutGeneral($$PARAMS_KEY: CheckoutGeneralV2Params!) {
+          checkout_general_v2(params: $$PARAMS_KEY) {
+            header {
+              process_time
+              reason
+              error_code
+            }
+            data {
+              success
+              error
+              error_state
+              message
+              data{
+                callback_url
+                query_string
+                redirect_url
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
+    override suspend fun execute(params: CheckoutTokoFoodResponse): Flow<CheckoutGeneralTokoFoodResponse> =
+        flow {
+            if (isDebug) {
+                kotlinx.coroutines.delay(1000)
+                emit(getDummyResponse())
+            } else {
+                val param = generateParam(params)
+                val response =
+                    repository.request<Map<String, Any>, CheckoutGeneralTokoFoodResponse>(
+                        graphqlQuery(),
+                        param
+                    )
+                emit(response)
+            }
+        }
+
+    private fun getDummyResponse(): CheckoutGeneralTokoFoodResponse {
+        return CheckoutGeneralTokoFoodResponse()
+    }
+
+    companion object {
+
+        private const val PARAMS_KEY = "params"
+
+        private fun generateParam(tokoFoodResponse: CheckoutTokoFoodResponse): Map<String, Any> {
+            val checkoutMetadata = TokoFoodCheckoutMetadata(
+                shop = tokoFoodResponse.data.shop,
+                userAddress = tokoFoodResponse.data.userAddress,
+                availableSection = tokoFoodResponse.data.availableSection,
+                unavailableSection = tokoFoodResponse.data.unavailableSection,
+                shipping = tokoFoodResponse.data.shipping,
+                shoppingSummary = tokoFoodResponse.data.shoppingSummary
+            )
+            val metadataString = checkoutMetadata.generateString()
+            val param =
+                CheckoutGeneralTokoFoodParam(
+                    carts = CheckoutGeneralTokoFoodCartParam(
+                        cartInfo = listOf(
+                            CheckoutGeneralTokoFoodCartInfoParam(
+                                metadata = metadataString
+                            )
+                        )
+                    )
+                )
+            return mapOf(PARAMS_KEY to param)
+        }
+
+    }
+}
