@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
+import com.tokopedia.commissionbreakdown.tracker.CommissionTracker
 import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient
 import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.HEADER_AUTHORIZATION
 import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.HEADER_ORIGIN
@@ -154,6 +155,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
     private fun initView() {
         binding?.run {
             trxFeeDownload.setSafeOnClickListener {
+                CommissionTracker.sendDownloadCtaClickEvent()
+
                 checkPermissionDownload {
                     openWebView()
                 }

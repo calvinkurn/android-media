@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.analytics.SellerSaldoTracker
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.TickerDownloadFeeTransactionModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -42,6 +43,7 @@ class TickerDownloadFeeTransactionViewHolder(
     }
 
     private fun openCommissionBreakdown(context: Context?) {
+        SellerSaldoTracker.sendDownloadCommissionEntryPointClickEvent()
         RouteManager.route(context, ApplinkConstInternalGlobal.COMMISSION_BREAKDOWN)
     }
 }
