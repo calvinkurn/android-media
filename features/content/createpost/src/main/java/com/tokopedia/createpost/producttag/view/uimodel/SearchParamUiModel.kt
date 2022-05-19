@@ -17,7 +17,7 @@ data class SearchParamUiModel(
         }
 
     var start: Int
-        get() = try { value[KEY_START]?.toString()?.toInt() ?: LIMIT_PER_PAGE }
+        get() = try { value[KEY_START]?.toString()?.toInt() ?: 0 }
                 catch (e: Exception) { 0 }
         set(newValue) {
             value[KEY_START] = newValue
