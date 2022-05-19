@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -53,11 +53,10 @@ class RegistrationHeaderWidget(
             tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
 
             if (!isEligiblePM) {
-                val shopInfo = element.shopInfo
-                val isPartlyEligibleKycTrue = shopInfo.isKyc && ((!shopInfo.isNewSeller && !shopInfo.isEligibleShopScore()) || (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))
-                val isFullyNotEligible = !shopInfo.isKyc && ((!shopInfo.isNewSeller && !shopInfo.isEligibleShopScore()) || (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))
+                val isFistTermNotEligible = !element.registrationTerms
+                    .firstOrNull()?.isChecked.orFalse()
                 when {
-                    isPartlyEligibleKycTrue || isFullyNotEligible -> {
+                    isFistTermNotEligible -> {
                         horLinePmHeader.visible()
                         tvPmHeaderEligibleFor.visible()
                         tvPmHeaderEligibleFor.text = root.context.getString(
