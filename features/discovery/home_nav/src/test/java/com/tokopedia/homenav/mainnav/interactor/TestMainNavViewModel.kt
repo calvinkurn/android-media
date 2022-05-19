@@ -54,13 +54,15 @@ class TestMainNavViewModel {
     private lateinit var viewModel : MainNavViewModel
     private val shopId = 1224
     private val mockListAllCategory = listOf(HomeNavMenuDataModel())
+    private val MOCK_IS_ME_PAGE_ROLLENCE_DISABLE = false
+    private val MOCK_IS_ME_PAGE_ROLLENCE_ENABLE = true
 
     @Before
     fun setup(){
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
     @Test
-    fun `test when nav page launched from page others than homepage then show back to home icon`() {
+    fun `test when nav page launched from page others with disabled me page rollence than homepage then show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val pageSource = "Other page"
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
@@ -71,6 +73,7 @@ class TestMainNavViewModel {
             .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
@@ -144,7 +147,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when nav page launched from homepage then do show back to home icon with default pagesource`() {
+    fun `test when nav page launched and disable me page rollence from homepage then do show back to home icon with default pagesource`() {
         val defaultPageSource = "Default"
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
@@ -155,6 +158,7 @@ class TestMainNavViewModel {
             .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setPageSource()
         Assert.assertEquals(defaultPageSource, viewModel.getPageSource())
 
@@ -166,7 +170,7 @@ class TestMainNavViewModel {
 
     //user menu section
     @Test
-    fun `test when viewmodel created and user has no shop then viewmodel create at least 3 user menu`() {
+    fun `test when viewmodel created and user has no shop with disable me page rollence then viewmodel create at least 3 user menu`() {
         val defaultUserMenuCount = 3
 
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
@@ -178,6 +182,7 @@ class TestMainNavViewModel {
             .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?.filter {
             (it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.USER_MENU)
@@ -188,7 +193,7 @@ class TestMainNavViewModel {
 
     //user menu section
     @Test
-    fun `test when logged in user get complain notification then viewmodel update complain visitable with notification`() {
+    fun `test when logged in user get complain notification with disable me page rollence then viewmodel update complain visitable with notification`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val getNavNotification = mockk<GetNavNotification>()
 
@@ -206,6 +211,7 @@ class TestMainNavViewModel {
             clientMenuGenerator = clientMenuGenerator,
             getNavNotification = getNavNotification
         )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
@@ -216,7 +222,7 @@ class TestMainNavViewModel {
 
     //test user profile cache
     @Test
-    fun `test when set profile from cache`() {
+    fun `test when set profile from cache with disabled me page rollence`() {
         val mainNavProfileCacheMock = mockk<MainNavProfileCache>()
         val profileName = "Joko"
         val profilePicUrl = "http"
@@ -231,6 +237,7 @@ class TestMainNavViewModel {
         } throws MessageErrorException("")
 
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setProfileCache(mainNavProfileCacheMock)
         viewModel.getMainNavData(true)
 
@@ -248,7 +255,7 @@ class TestMainNavViewModel {
 
     //user menu section
     @Test
-    fun `test when logged in user get inbox ticket notification then viewmodel update tokopedia care visitable with notification`() {
+    fun `test when logged in user get inbox ticket notification with disable me page rollence then viewmodel update tokopedia care visitable with notification`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val getNavNotification = mockk<GetNavNotification>()
 
@@ -266,6 +273,7 @@ class TestMainNavViewModel {
             clientMenuGenerator = clientMenuGenerator,
             getNavNotification = getNavNotification
         )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
@@ -277,7 +285,7 @@ class TestMainNavViewModel {
 
     //transaction section
     @Test
-    fun `test when viewmodel created and user does not ongoing order and payment transaction then only create transaction menu item`() {
+    fun `test when viewmodel created and user does not ongoing order and payment transaction with disable me page rollence then only create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
 
@@ -287,6 +295,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             getUohOrdersNavUseCase = getUohOrdersNavUseCase,
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
@@ -302,7 +311,7 @@ class TestMainNavViewModel {
 
     //transaction section
     @Test
-    fun `test when viewmodel created and logged in user only have ongoing order then create transaction menu item`() {
+    fun `test when viewmodel created and logged in user only have ongoing order with disable me page rollence then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -319,6 +328,7 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
@@ -335,7 +345,7 @@ class TestMainNavViewModel {
 
     //transaction section
     @Test
-    fun `test when viewmodel created and loggedin user only have payment transaction then create transaction menu item`() {
+    fun `test when viewmodel created and loggedin user only have payment transaction with disable me page rollence then create transaction menu item`() {
         val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
@@ -351,6 +361,7 @@ class TestMainNavViewModel {
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
             userSession = userSession
         )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
@@ -367,9 +378,10 @@ class TestMainNavViewModel {
 
     //user menu section
     @Test
-    fun `test when data loaded complete then check account header menu section is available`() {
+    fun `test when data loaded complete with disabled me page rollence then check account header menu section is available`() {
         viewModel = createViewModel(
         )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val headerModelPosition = viewModel.findHeaderModelPosition()
@@ -387,18 +399,18 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when user not login first load init viewmodel then menu not empty`() {
+    fun `test when user not login first load init viewmodel with disabled me page rollence then menu not empty`() {
         val userSession = mockk<UserSessionInterface>()
         every { userSession.isLoggedIn() } returns false
         viewModel = createViewModel(userSession = userSession)
-        viewModel.setInitialState()
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList
         Assert.assertNotEquals(0, visitableList?.size)
     }
 
     @Test
-    fun `test when success refresh uoh and transaction then check result not null`() {
+    fun `test when success refresh uoh and transaction with disabled me page then check result not null`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val getNavOrderUseCase = mockk<GetUohOrdersNavUseCase>()
         val getPaymentUseCase = mockk<GetPaymentOrdersNavUseCase>()
@@ -410,6 +422,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentUseCase,
             getUohOrdersNavUseCase = getNavOrderUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.refreshTransactionListData()
 
 
@@ -426,7 +439,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when success refresh data after login then check data not null`(){
+    fun `test when success refresh data after login with disabled me page rollence then check data not null`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -444,6 +457,7 @@ class TestMainNavViewModel {
             )
         )
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         viewModel.reloadMainNavAfterLogin()
 
@@ -464,7 +478,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when success refresh shop data then check shop name and id changed`() {
+    fun `test when success refresh shop data with disable me page rollence then check shop name and id changed`() {
         val newShopName = "binatang kucing"
         val newShopId = "123123"
         val isLocationAdmin: Boolean = true
@@ -521,6 +535,7 @@ class TestMainNavViewModel {
             getProfileDataUseCase = getProfileDataUseCase,
             getShopInfoUseCase = shopInfoRefreshData,
             accountAdminInfoUseCase = accountAdminInfoUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         viewModel.refreshUserShopData()
 
@@ -535,7 +550,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given failed affiliate data when refresh data affiliate then affiliate data not error in header`() {
+    fun `given failed affiliate with disable me page rollence data when refresh data affiliate then affiliate data not error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         val affiliateUserDetailData = AffiliateUserDetailData()
@@ -565,6 +580,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
@@ -575,7 +591,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given failed affiliate data when refresh data affiliate with network error then affiliate data still error in header`() {
+    fun `given failed affiliate data when refresh data affiliate with network error and disable rollence me page then affiliate data still error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         coEvery {
@@ -603,6 +619,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
@@ -613,7 +630,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given failed affiliate data when refresh data affiliate with failed data then affiliate data still error in header`() {
+    fun `given failed affiliate data when refresh data affiliate with failed data and disable me page rollence then affiliate data still error in header`() {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         val getAffiliateUserUseCase = mockk<GetAffiliateUserUseCase>()
         coEvery {
@@ -641,6 +658,7 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             getProfileDataUseCase = getProfileDataUseCase,
             getAffiliateUserUseCase = getAffiliateUserUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
@@ -651,7 +669,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Success getProfileFullData`(){
+    fun `given disabled me page rollence then test Success getProfileFullData`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -668,6 +686,7 @@ class TestMainNavViewModel {
                 shopId = "1234"
             ))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -687,7 +706,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when success refresh profile after login then data not null and have exact result`(){
+    fun `test when success refresh profile after login with disabled me page rollence then data not null and have exact result`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
@@ -704,6 +723,7 @@ class TestMainNavViewModel {
                 shopId = "1234"
             ))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
         viewModel.refreshProfileData()
 
@@ -724,12 +744,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Success getUserNameAndPictureData`(){
+    fun `given disabled me page rollence then test Success getUserNameAndPictureData`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "Joko", userImage = "Tingkir"))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -741,12 +762,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Error getUserNameAndPictureData missing name`(){
+    fun `given disable me page rollence then Error getUserNameAndPictureData missing name`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "", userImage = "Tingkir"))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -758,12 +780,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Error getUserNameAndPictureData missing profile picture`(){
+    fun `given disabled me page rollence then test Error getUserNameAndPictureData missing profile picture`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "Joko", userImage = ""))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -775,12 +798,13 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Error getUserNameAndPictureData missing all`(){
+    fun `given disable rollence me page Error getUserNameAndPictureData missing all`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderDataModel(profileDataModel = ProfileDataModel(userName = "", userImage = ""))
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -826,7 +850,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when show coachmark complain with correct position for logged in user first time`() {
+    fun `test when show coachmark complain with correct position and disabled me page rollence for logged in user first time`() {
         val defaultPositionComplaintNotFound = -1
 
         val userSession = mockk<UserSessionInterface>()
@@ -834,6 +858,7 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
         every { userSession.isShopOwner } returns true
         viewModel = createViewModel(userSession = userSession)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
 
         viewModel.getMainNavData(true)
         val complainPosition = viewModel.findComplainModelPosition()
@@ -841,11 +866,12 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when show coachmark all transaction with correct position`() {
+    fun `test when show coachmark all transaction with correct position and disable me page rollence`() {
         val indexDefaultAllTransaction = 1
         val pageSource = "Other page"
 
         viewModel = createViewModel()
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.setPageSource(pageSource)
 
         val allTransactionPosition = viewModel.findAllTransactionModelPosition()
@@ -865,7 +891,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list then refresh bu list data will success delete error bu list`() {
+    fun `test show error bu list with disable me page rollence then refresh bu list data will success delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -881,6 +907,7 @@ class TestMainNavViewModel {
             getBuListUseCase.setStrategyCloudThenCache()
         } answers { }
         viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -900,7 +927,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given default data from cache when load all categories with exception then success get data from cache`() {
+    fun `given default data from cache and enable me page rollence when load all categories with exception then success get data from cache`() {
         val getCategoryGroupUseCase = mockk<GetCategoryGroupUseCase>()
         coEvery {
             getCategoryGroupUseCase.executeOnBackground()
@@ -919,6 +946,7 @@ class TestMainNavViewModel {
         } answers { }
 
         viewModel = createViewModel(getBuListUseCase = getCategoryGroupUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()

@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
@@ -13,7 +14,14 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderS
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderListAdapter
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.*
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderReviewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -24,6 +32,16 @@ class TransactionListViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
+    }
+
+    private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
+        if (element.isMePageUsingRollenceVariant) {
+            val productCardHeight = 84f.toDpInt()
+
+            val carouselLayoutParams = this.layoutParams
+            carouselLayoutParams?.height = productCardHeight
+            this.layoutParams = carouselLayoutParams
+        }
     }
 
     override fun bind(element: TransactionListItemDataModel) {
@@ -47,16 +65,19 @@ class TransactionListViewHolder(itemView: View,
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
             visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
+            if (visitableList.isEmpty()) {
+                visitableList.add(OrderEmptyModel())
+            } else {
+                visitableList.add(OtherTransactionRevampModel())
+                binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
+            }
         }
         else {
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
-        }
-        if (element.othersTransactionCount.isMoreThanZero()) {
-            visitableList.add(OtherTransactionModel(element.othersTransactionCount))
-        }
-        if (visitableList.isEmpty()) {
-            visitableList.add(OrderEmptyModel())
+            if (element.othersTransactionCount.isMoreThanZero()) {
+                visitableList.add(OtherTransactionModel(element.othersTransactionCount))
+            }
         }
         adapter.setVisitables(visitableList)
     }

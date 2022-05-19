@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -19,10 +18,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.MePageRollenceController
@@ -62,7 +59,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
 
@@ -73,6 +69,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
         private const val OFFSET_TO_SHADOW = 100
+        private const val REQUEST_REVIEW_PRODUCT = 999
         private const val COACHMARK_SAFE_DELAY = 200L
     }
 
@@ -163,6 +160,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
+                REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
     }
@@ -251,6 +249,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
+            hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
@@ -263,7 +262,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
@@ -316,6 +314,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
         RouteManager.route(context, homeNavTitleDataModel.applink)
+    }
+
+    override fun showReviewProduct(uriReviewProduct: String) {
+        val intent = RouteManager.getIntent(context, uriReviewProduct)
+        startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
