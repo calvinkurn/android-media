@@ -1050,7 +1050,6 @@ class DiscoveryFragment :
     }
 
     private fun setPageErrorState(it: Fail) {
-        Log.e("TEST_TAG","${it.throwable}")
         when (it.throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 globalError.setType(GlobalError.NO_CONNECTION)
