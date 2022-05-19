@@ -4,9 +4,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class UploadImageChatService: JobIntentService(), CoroutineScope {
+open class UploadImageChatService: JobIntentServiceX(), CoroutineScope {
 
     @Inject
     lateinit var uploadImageUseCase: TopchatUploadImageUseCase

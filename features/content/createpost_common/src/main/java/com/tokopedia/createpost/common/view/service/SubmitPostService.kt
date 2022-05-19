@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
@@ -38,7 +38,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 26/02/19.
  */
-class SubmitPostService : JobIntentService() {
+class SubmitPostService : JobIntentServiceX() {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCase
