@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 
+import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,6 +12,7 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -44,18 +46,29 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
             binding?.imageWishlist?.loadImage(wishlistModel.navWishlistModel.imageUrl)
         }
         binding?.textPriceValue?.text = wishlistModel.navWishlistModel.priceFmt
-        if(wishlistModel.navWishlistModel.discountPercentageFmt.isNotEmpty()){
-            binding?.textSlashedPrice?.apply {
-                text = wishlistModel.navWishlistModel.originalPriceFmt
-                show()
+        when {
+            wishlistModel.navWishlistModel.discountPercentageFmt.isNotEmpty() -> {
+                binding?.textSlashedPrice?.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    text = wishlistModel.navWishlistModel.originalPriceFmt
+                    show()
+                }
+                binding?.labelDiscountPercent?.apply {
+                    text = wishlistModel.navWishlistModel.discountPercentageFmt
+                    show()
+                }
+                binding?.labelCashback?.invisible()
             }
-            binding?.textDiscountPercent?.apply {
-                text = wishlistModel.navWishlistModel.discountPercentageFmt
-                show()
+            wishlistModel.navWishlistModel.cashback.isNotEmpty() -> {
+                binding?.textSlashedPrice?.invisible()
+                binding?.labelDiscountPercent?.invisible()
+                binding?.labelCashback?.visible()
             }
-        } else{
-            binding?.textSlashedPrice?.invisible()
-            binding?.textDiscountPercent?.invisible()
+            else -> {
+                binding?.textSlashedPrice?.invisible()
+                binding?.labelDiscountPercent?.invisible()
+                binding?.labelCashback?.invisible()
+            }
         }
 
         binding?.containerWishlistItem?.setOnClickListener {

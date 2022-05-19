@@ -20,7 +20,8 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
     }
 
     override fun bind(otherWishlistModel: OtherWishlistModel) {
-        binding?.cardViewAllWishlist?.setCta("Lihat Semua")
+        val context = itemView.context
+        binding?.cardViewAllWishlist?.setCta(context.getString(R.string.global_view_all))
         binding?.cardViewAllWishlist?.descriptionView?.gone()
         binding?.cardViewAllWishlist?.titleView?.gone()
 
