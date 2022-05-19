@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.commissionbreakdown.common.ImageUrl
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
 import com.tokopedia.commissionbreakdown.tracker.CommissionTracker
 import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient
@@ -30,9 +31,9 @@ import com.tokopedia.commissionbreakdown.util.CommissionWebViewClient.ORIGIN_TOK
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.FragmentCommissionBreakdownBinding
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -187,14 +188,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(),
     }
 
     private fun setBackdropBackground() {
-        try {
-            binding?.trxCommissionBg?.setBackgroundResource(R.drawable.bg_sah_download_commission)
-        } catch (e: Exception) {
-            val resColor = requireContext().getResColor(
-                com.tokopedia.unifyprinciples.R.color.Unify_GN50
-            )
-            binding?.trxCommissionBg?.setBackgroundColor(resColor)
-        }
+        binding?.trxCommissionIllustrationBg?.loadImage(ImageUrl.IMG_BG_BACKDROP)
     }
 
     private fun checkPermissionDownload(onGranted: () -> Unit) {
