@@ -14,6 +14,7 @@ import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.util.extension.removeLast
+import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
@@ -39,6 +40,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(AUTHOR_TYPE) private val authorType: String,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: ProductTagPreference,
 ): ViewModel() {
 
     @AssistedFactory
@@ -57,6 +59,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
     val isSeller: Boolean
         get() = authorType == AUTHOR_SELLER
+
+    val isShowCoachmarkGlobalTag: Boolean
+        get() = sharedPref.isFirstGlobalTag()
 
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
@@ -259,6 +264,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     _productTagSourceStack.setValue { removeLast() }
                 }
             }
+            sharedPref.setNotFirstGlobalTag()
         }
     }
 

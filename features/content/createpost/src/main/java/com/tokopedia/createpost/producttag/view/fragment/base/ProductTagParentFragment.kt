@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.view.fragment.base
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
@@ -54,6 +57,8 @@ class ProductTagParentFragment @Inject constructor(
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
         get() = _binding!!
+
+    private var coachmark: CoachMark2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +104,11 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        coachmark?.hideCoachMark()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -114,6 +124,7 @@ class ProductTagParentFragment @Inject constructor(
         }
 
         showBreadcrumb(viewModel.isUser)
+        showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }
 
     private fun setupObserve() {
@@ -286,6 +297,21 @@ class ProductTagParentFragment @Inject constructor(
             icCcProductTagChevron2.showWithCondition(isShow)
 
             imgCcProductTagShopBadge1.showWithCondition(isShow)
+        }
+    }
+
+    private fun showCoachmarkGlobalTag(isShow: Boolean) {
+        if(isShow && binding.tvCcProductTagProductSource.visibility == View.VISIBLE) {
+            coachmark = CoachMark2(activity as Context)
+
+            coachmark?.showCoachMark(arrayListOf(
+                CoachMark2Item(
+                    binding.tvCcProductTagProductSource,
+                    getString(R.string.content_creation_search_coachmark_header),
+                    getString(R.string.content_creation_search_coachmark_desc),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            ))
         }
     }
 
