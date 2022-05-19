@@ -14,6 +14,8 @@ class ProductManageMockResponseConfig : MockModelConfig() {
         private const val KEY_MUTATION_UPDATE_SHOP_ACTIVE = "updateShopActive"
         private const val KEY_QUERY_PRODUCT_LIST = "ProductList"
         private const val KEY_QUERY_GET_SHOP_INFO = "shopInfoByID"
+        private const val KEY_QUERY_CHEK_PRODUCT_VIOLATION = "checkProductViolation"
+
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -62,6 +64,14 @@ class ProductManageMockResponseConfig : MockModelConfig() {
             InstrumentationMockHelper.getRawString(
                 context,
                 R.raw.response_mock_data_product_manage_get_shop_info
+            ),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_QUERY_CHEK_PRODUCT_VIOLATION,
+            InstrumentationMockHelper.getRawString(
+                context,
+                R.raw.response_mock_data_product_manage_suspend_reason
             ),
             FIND_BY_CONTAINS
         )

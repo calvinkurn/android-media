@@ -7,13 +7,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
@@ -23,6 +24,7 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivit
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
@@ -45,6 +47,9 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     private var isUseCropping: Boolean = false
     private var isUseCompression: Boolean = false
+    private var projectId: Int = -1
+
+    private var analytics: UserIdentificationCommonAnalytics? = null
 
     private val isCameraVisible: Boolean
         get() = viewBinding?.cameraView != null &&
@@ -55,8 +60,11 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {
+    override fun initInjector() { }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +78,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         arguments?.let {
             isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
             isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
         }
 
         setupView()
@@ -78,6 +87,10 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         viewBinding?.let {
             bitmapProcessing = context?.let { context ->
                 BitmapCroppingAndCompression(context, it.cameraView)
+            }
+
+            if (it.cameraView.isOpened) {
+                analytics?.eventViewOpenCameraKtp()
             }
         }
     }
@@ -88,20 +101,29 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             subtitle.text = getString(R.string.camera_ktp_subtitle)
 
             imageButtonShutter.setOnClickListener {
+                analytics?.eventClickShutterCameraKtp()
                 hideCameraButtonAndShowLoading()
                 cameraView.takePicture()
             }
 
             imageButtonFlip.setOnClickListener {
+                analytics?.eventClickFlipCameraKtp()
                 toggleCamera()
             }
 
             recaptureButton.setOnClickListener {
+                analytics?.eventClickRecaptureKtp()
                 showCameraView()
             }
 
             closeButton.setOnClickListener {
                 activity?.let {
+                    if (isCameraVisible) {
+                        analytics?.eventClickBackCameraKtp()
+                    } else {
+                        analytics?.eventClickCloseImagePreviewKtp()
+                    }
+
                     it.setResult(Activity.RESULT_CANCELED)
                     it.finish()
                 }
@@ -120,6 +142,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
                     } else {
                         it.setResult(KYCConstant.IS_FILE_IMAGE_NOT_EXIST)
                     }
+                    analytics?.eventClickNextImagePreviewKtp()
                     it.finish()
                 }
             }
@@ -147,6 +170,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun showImagePreview() {
+        analytics?.eventViewImagePreviewKtp()
         viewBinding?.apply {
             subtitle.text = getString(R.string.camera_ktp_subtitle_preview)
 

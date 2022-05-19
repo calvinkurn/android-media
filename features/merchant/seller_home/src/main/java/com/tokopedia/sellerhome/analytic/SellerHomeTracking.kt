@@ -29,28 +29,51 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Seller Home Tracker
- * Data Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
- * Data Tracker for Recommendation Widget : https://mynakama.tokopedia.com/datatracker/requestdetail/781
+ * Data Tracker :
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/781
  * */
 
 object SellerHomeTracking {
 
-    fun sendImpressionCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendImpressionCardEvent(
+        dataKey: String,
+        state: String,
+        cardValue: String,
+        isSingle: Boolean
+    ) {
+        val subtitle = if (isSingle) {
+            TrackingConstant.SINGLE
+        } else {
+            TrackingConstant.MULTIPLE
+        }
         val map = createEventMap(
-            TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-            TrackingConstant.IMPRESSION_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue).joinToString(" - ")
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.IMPRESSION_WIDGET_CARD,
+            label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String, isSingle: Boolean) {
+        val subtitle = if (isSingle) {
+            TrackingConstant.SINGLE
+        } else {
+            TrackingConstant.MULTIPLE
+        }
         val map = createEventMap(
-            TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-            TrackingConstant.CLICK_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue).joinToString(" - ")
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.CLICK_WIDGET_CARD,
+            label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
