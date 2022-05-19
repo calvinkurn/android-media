@@ -439,6 +439,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         viewModel.mockPrivateField("homeLayoutItemList", null)
     }
 
+    protected fun onGetUserSession_returnNull() {
+        viewModel.mockPrivateField("userSession", null)
+    }
+
     object UnknownHomeLayout: HomeLayoutUiModel("1") {
         override fun type(typeFactory: HomeTypeFactory?) = 0
     }

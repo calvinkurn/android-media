@@ -188,6 +188,20 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when scroll home error should do nothing`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        onGetHomeLayoutData_thenReturn(MessageErrorException())
+
+        viewModel.onScrollTokoMartHome(1, LocalCacheModel(), listOf())
+
+        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
+    }
+
+    @Test
     fun `when getting loadingState should run and give the success result`() {
         viewModel.getLoadingState()
 
@@ -2991,6 +3005,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             isNow15 = false,
             isImpressionTracker = isImpressionTracker
         ))
+    }
+
+    @Test
+    fun `when trackSwitchService throws error should do nothing`() {
+        val isImpressionTracker = true
+        val localCacheModel = createLocalCacheModel()
+
+        onGetUserSession_returnNull()
+
+        viewModel.trackSwitchService(localCacheModel, isImpressionTracker)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(null)
     }
 
     @Test
