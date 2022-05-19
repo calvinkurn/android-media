@@ -25,14 +25,14 @@ object SharingMapper {
     fun mapSharingReferralUiModel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
-        isSender: Boolean = true
+        warehouseId: String
     ): HomeLayoutItemUiModel {
         val layout = HomeSharingReferralWidgetUiModel(
             id = response.id,
             state = state,
             slug = response.widgetParam,
-            isSender = isSender,
             campaignCode = response.campaignCode,
+            warehouseId = warehouseId
         )
         return HomeLayoutItemUiModel(layout, state)
     }
