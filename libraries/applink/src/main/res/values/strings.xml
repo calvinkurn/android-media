@@ -156,4 +156,7 @@
     <!-- Buyer Order Request Cancel -->
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
 
+    <!-- Voucher Creation -->
+    <string name="title_shop_flash_sale">Flash Sale Toko</string>
+
 </resources>

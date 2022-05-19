@@ -1,13 +1,10 @@
 package com.tokopedia.campaignlist.presentation.activity
 
-import android.os.Bundle
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.campaignlist.presentation.fragment.CampaignListFragment
 
-class CampaignListActivity: BaseActivity() {
+class CampaignListActivity: BaseSimpleActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.ssfs_activity_campaign_list)
-    }
+    override fun getNewFragment() = CampaignListFragment()
+
 }
