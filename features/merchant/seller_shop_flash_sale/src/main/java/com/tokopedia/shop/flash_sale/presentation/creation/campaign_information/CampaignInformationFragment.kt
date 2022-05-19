@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.seller_shop_flash_sale.databinding.FragmentCampaignInformationBinding
-import com.tokopedia.seller_shop_flash_sale.databinding.FragmentCampaignListBinding
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignInformationFragment: BaseDaggerFragment() {
@@ -24,7 +21,7 @@ class CampaignInformationFragment: BaseDaggerFragment() {
 
     }
 
-    private var binding by autoClearedNullable<FragmentCampaignInformationBinding>()
+    private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
 
 
     override fun getScreenName(): String = CampaignInformationFragment::class.java.canonicalName.orEmpty()
@@ -40,7 +37,7 @@ class CampaignInformationFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCampaignInformationBinding.inflate(inflater, container, false)
+        binding = SsfsFragmentCampaignInformationBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
