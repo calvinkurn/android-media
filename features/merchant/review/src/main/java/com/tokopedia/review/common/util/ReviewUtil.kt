@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -235,4 +236,11 @@ fun String?.mapToUnifyButtonSize(): Int {
         "MICRO" -> UnifyButton.Size.MICRO
         else -> UnifyButton.Size.MEDIUM
     }
+}
+
+fun Throwable?.getErrorMessage(context: Context?, defaultErrorMessage: String? = null): String {
+    return ErrorHandler.getErrorMessage(context, this).takeIf {
+        it.isNotBlank()
+    } ?: defaultErrorMessage ?: context?.getString(R.string.review_reading_connection_error)
+        .orEmpty()
 }
