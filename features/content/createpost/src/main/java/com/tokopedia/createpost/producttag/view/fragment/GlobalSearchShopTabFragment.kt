@@ -154,15 +154,11 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
         ) return
 
         when(curr.state) {
-            is PagedState.Loading -> {
-                updateAdapterData(curr, true)
-            }
+            is PagedState.Loading,
             is PagedState.Success -> {
-                updateAdapterData(curr, curr.state.hasNextPage)
+                updateAdapterData(curr)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr, false)
-
                 /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
@@ -198,41 +194,119 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun updateAdapterData(state: GlobalSearchShopUiState, hasNextPage: Boolean) {
-        val finalShops = buildList {
-            if(state.shops.isEmpty()) {
-                if(state.param.hasFilterApplied()) {
-                    add(ShopCardAdapter.Model.EmptyState(true) {
-                        viewModel.submitAction(ProductTagAction.ResetShopFilter)
-                    })
-                    binding.sortFilter.show()
-                }
-                else if(state.recomShops.isNotEmpty()) {
-                    add(ShopCardAdapter.Model.EmptyState(false) {
-                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
-                    })
-                    add(ShopCardAdapter.Model.Divider)
-                    add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
-                    addAll(state.recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
-                    if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+//    @OptIn(ExperimentalStdlibApi::class)
+//    private fun updateAdapterData(state: GlobalSearchShopUiState, hasNextPage: Boolean) {
+//        val finalShops = buildList {
+//            if(state.shops.isEmpty()) {
+//                if(state.param.hasFilterApplied()) {
+//                    add(ShopCardAdapter.Model.EmptyState(true) {
+//                        viewModel.submitAction(ProductTagAction.ResetShopFilter)
+//                    })
+//                    binding.sortFilter.show()
+//                }
+//                else if(state.recomShops.isNotEmpty()) {
+//                    add(ShopCardAdapter.Model.EmptyState(false) {
+//                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+//                    })
+//                    add(ShopCardAdapter.Model.Divider)
+//                    add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
+//                    addAll(state.recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
+//                    if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+//
+//                    binding.sortFilter.hide()
+//                }
+//                else if(hasNextPage) {
+//                    add(ShopCardAdapter.Model.Loading)
+//                }
+//            }
+//            else {
+//                addAll(state.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
+//                if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+//
+//                binding.sortFilter.show()
+//            }
+//        }
+//
+//        if(binding.rvGlobalSearchShop.isComputingLayout.not())
+//            adapter.setItemsAndAnimateChanges(finalShops)
+//    }
 
-                    binding.sortFilter.hide()
-                }
-                else if(hasNextPage) {
-                    add(ShopCardAdapter.Model.Loading)
+    private fun updateAdapterData(currState: GlobalSearchShopUiState) {
+        val finalShops = when(currState.state) {
+            is PagedState.Loading -> {
+                when {
+                    currState.shops.isNotEmpty() -> {
+                        binding.sortFilter.show()
+                        buildShopList(currState.shops, true)
+                    }
+                    currState.recomShops.isNotEmpty() && !currState.param.hasFilterApplied() -> {
+                        binding.sortFilter.hide()
+                        buildEmptyStateWithRecom(currState.recomShops, true)
+                    }
+                    else -> {
+                        binding.sortFilter.show()
+                        buildLoading()
+                    }
                 }
             }
-            else {
-                addAll(state.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
-                if(hasNextPage) add(ShopCardAdapter.Model.Loading)
-
-                binding.sortFilter.show()
+            is PagedState.Success -> {
+                when {
+                    currState.shops.isNotEmpty() -> {
+                        binding.sortFilter.show()
+                        buildShopList(currState.shops, currState.state.hasNextPage)
+                    }
+                    currState.param.hasFilterApplied() -> {
+                        binding.sortFilter.show()
+                        buildEmptyState()
+                    }
+                    else -> {
+                        binding.sortFilter.hide()
+                        buildEmptyStateWithRecom(currState.recomShops, currState.state.isNextPage)
+                    }
+                }
             }
+            else -> buildLoading()
         }
 
         if(binding.rvGlobalSearchShop.isComputingLayout.not())
             adapter.setItemsAndAnimateChanges(finalShops)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun buildShopList(shops: List<ShopUiModel>, hasNextPage: Boolean): List<ShopCardAdapter.Model> {
+        return buildList {
+            addAll(shops.map { ShopCardAdapter.Model.Shop(shop = it) })
+            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun buildEmptyState(): List<ShopCardAdapter.Model> {
+        return buildList {
+            add(ShopCardAdapter.Model.EmptyState(true) {
+                viewModel.submitAction(ProductTagAction.ResetShopFilter)
+            })
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun buildEmptyStateWithRecom(recomShops: List<ShopUiModel>, hasNextPage: Boolean): List<ShopCardAdapter.Model> {
+        return buildList {
+            add(ShopCardAdapter.Model.EmptyState(false) {
+                viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+            })
+            add(ShopCardAdapter.Model.Divider)
+            add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
+            addAll(recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
+            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun buildLoading(): List<ShopCardAdapter.Model> {
+        return buildList {
+            add(ShopCardAdapter.Model.Loading)
+        }
     }
 
     companion object {
