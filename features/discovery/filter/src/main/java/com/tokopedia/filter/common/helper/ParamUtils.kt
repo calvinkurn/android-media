@@ -156,4 +156,4 @@ fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> 
 fun isPostProcessingFilter(searchParameter: Map<String, Any>): Boolean =
    searchParameter
         .filter { postProcessingFilter[it.key] == it.value }
-        .size.isMoreThanZero()
+        .isNotEmpty()
