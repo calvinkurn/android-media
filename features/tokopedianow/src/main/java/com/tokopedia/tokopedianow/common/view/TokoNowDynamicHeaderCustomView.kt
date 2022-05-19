@@ -78,7 +78,7 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
             }
             tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tpSeeAll?.setOnClickListener {
-                listener?.onSeeAllClick(ctaTextLink)
+                listener?.onSeeAllClicked(ctaTextLink)
             }
             tpSeeAll?.show()
         } else {
@@ -87,6 +87,6 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
     }
 
     interface HeaderCustomViewListener {
-        fun onSeeAllClick(appLink: String)
+        fun onSeeAllClicked(appLink: String)
     }
 }

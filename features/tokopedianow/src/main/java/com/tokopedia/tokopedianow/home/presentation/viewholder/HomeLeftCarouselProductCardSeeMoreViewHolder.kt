@@ -8,8 +8,10 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselPr
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeLeftCarouselProductCardSeeMoreViewHolder(view: View)
-    : AbstractViewHolder<HomeLeftCarouselProductCardSeeMoreUiModel>(view){
+class HomeLeftCarouselProductCardSeeMoreViewHolder(
+    view: View,
+    private val listener: HomeLeftCarouselProductCardSeeMoreListener? = null
+) : AbstractViewHolder<HomeLeftCarouselProductCardSeeMoreUiModel>(view){
 
     companion object{
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_product_card_see_more
@@ -19,11 +21,15 @@ class HomeLeftCarouselProductCardSeeMoreViewHolder(view: View)
 
     override fun bind(element: HomeLeftCarouselProductCardSeeMoreUiModel) {
         binding?.backgroundBannerMixMore?.setOnClickListener {
-            // nothing to do
+            listener?.onProductCardSeeMoreClickListener(element)
         }
         binding?.backgroundBannerMixMore?.loadImageWithoutPlaceholder(element.backgroundImage)
         binding?.containerBannerMixMore?.setOnClickListener {
-            // nothing to do
+            listener?.onProductCardSeeMoreClickListener(element)
         }
+    }
+
+    interface HomeLeftCarouselProductCardSeeMoreListener {
+        fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselProductCardSeeMoreUiModel)
     }
 }

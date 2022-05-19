@@ -10,30 +10,52 @@ import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelM
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 
-object MixLeftCarouselMapper {
+object LeftCarouselMapper {
 
     fun mapToMixLeftCarousel(
         response: HomeLayoutResponse,
-        state: HomeLayoutItemState
+        state: HomeLayoutItemState,
+        miniCartData: MiniCartSimplifiedData?
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
 
         // Add front space to make distance
-        productList.add(HomeLeftCarouselProductCardSpaceUiModel())
+        productList.add(
+            HomeLeftCarouselProductCardSpaceUiModel(
+                channelId = channelModel.id,
+                channelHeaderName = channelModel.channelHeader.name,
+                appLink = channelModel.channelBanner.applink
+            )
+        )
 
         // Add mix left carousel products
         channelModel.channelGrids.forEach {
-            productList.add(HomeLeftCarouselProductCardUiModel(productCardModel = mapToProductCardModel(it), id = it.id))
+            productList.add(
+                HomeLeftCarouselProductCardUiModel(
+                    id = it.id,
+                    brandId = it.brandId,
+                    categoryId = it.categoryId,
+                    parentProductId = it.parentProductId,
+                    shopId = it.shopId,
+                    productCardModel = mapToProductCardModel(it, miniCartData),
+                    appLink = it.applink,
+                    channelId = channelModel.id,
+                    channelHeaderName = channelModel.channelHeader.name,
+                    channelPageName = channelModel.pageName,
+                    channelType = channelModel.type
+                )
+            )
         }
 
         // Add see more at the end of products
         if(channelModel.channelGrids.size > 1 && channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
                 HomeLeftCarouselProductCardSeeMoreUiModel(
+                    channelId = channelModel.id,
+                    channelHeaderName = channelModel.channelHeader.name,
                     appLink = channelModel.channelHeader.applink,
-                    backgroundImage = channelModel.channelHeader.backImage,
-                    listener = null
+                    backgroundImage = channelModel.channelHeader.backImage
                 )
             )
         }
@@ -49,7 +71,8 @@ object MixLeftCarouselMapper {
             ),
             productList = productList,
             backgroundColorArray = channelModel.channelBanner.gradientColor,
-            imageBanner = channelModel.channelBanner.imageUrl
+            imageBanner = channelModel.channelBanner.imageUrl,
+            imageBannerAppLink = channelModel.channelBanner.applink,
         )
 
         return HomeLayoutItemUiModel(

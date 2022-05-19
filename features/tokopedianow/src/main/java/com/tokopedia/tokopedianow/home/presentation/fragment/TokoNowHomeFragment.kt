@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -121,16 +120,16 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
+import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
@@ -219,8 +218,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
-                mixLeftComponentListener = createMixLeftComponentCallback(),
-                homeSwitcherListener = createHomeSwitcherListener()
+                homeSwitcherListener = createHomeSwitcherListener(),
+                homeLeftCarouselListener = createLeftCarouselCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1671,10 +1670,6 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun createMixLeftComponentCallback(): MixLeftComponentListener {
-        return MixLeftCarouselCallback(this, analytics)
-    }
-
     private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
@@ -1689,6 +1684,16 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
+    }
+
+    private fun createLeftCarouselCallback(): HomeLeftCarouselCallback {
+        return HomeLeftCarouselCallback(
+            context = requireContext(),
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
+        )
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

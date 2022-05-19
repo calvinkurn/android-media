@@ -12,7 +12,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselP
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardViewHolder
 
 class HomeLeftCarouselProductCardTypeFactoryImpl(
-    private val productCardListener: HomeLeftCarouselProductCardViewHolder.ProductCardListener
+    private val productCardListener: HomeLeftCarouselProductCardViewHolder.HomeLeftCarouselProductCardListener? = null,
+    private val productCardSeeMoreListener: HomeLeftCarouselProductCardSeeMoreViewHolder.HomeLeftCarouselProductCardSeeMoreListener? = null,
+    private val productCardSpaceListener: HomeLeftCarouselProductCardSpaceViewHolder.HomeLeftCarouselProductCardSpaceListener? = null
 ):  BaseAdapterTypeFactory(), HomeLeftCarouselProductCardTypeFactory {
     override fun type(uiModel: HomeLeftCarouselProductCardUiModel): Int = HomeLeftCarouselProductCardViewHolder.LAYOUT
 
@@ -23,8 +25,8 @@ class HomeLeftCarouselProductCardTypeFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HomeLeftCarouselProductCardViewHolder.LAYOUT -> HomeLeftCarouselProductCardViewHolder(view, productCardListener)
-            HomeLeftCarouselProductCardSpaceViewHolder.LAYOUT -> HomeLeftCarouselProductCardSpaceViewHolder(view)
-            HomeLeftCarouselProductCardSeeMoreViewHolder.LAYOUT -> HomeLeftCarouselProductCardSeeMoreViewHolder(view,)
+            HomeLeftCarouselProductCardSpaceViewHolder.LAYOUT -> HomeLeftCarouselProductCardSpaceViewHolder(view, productCardSpaceListener)
+            HomeLeftCarouselProductCardSeeMoreViewHolder.LAYOUT -> HomeLeftCarouselProductCardSeeMoreViewHolder(view, productCardSeeMoreListener)
             else -> super.createViewHolder(view, type)
         }
     }

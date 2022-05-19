@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,8 +16,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselBi
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +26,7 @@ import kotlin.math.abs
 
 class HomeLeftCarouselViewHolder (
     itemView: View,
-    private val listener: ThematicWidgetListener? = null
+    private val homeLeftCarouselListener: HomeLeftCarouselCallback? = null
 ) : AbstractViewHolder<HomeLeftCarouselUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
@@ -51,7 +49,9 @@ class HomeLeftCarouselViewHolder (
     private val adapter by lazy {
         HomeLeftCarouselProductCardAdapter(
             baseListAdapterTypeFactory = HomeLeftCarouselProductCardTypeFactoryImpl(
-                productCardListener = productCardListenerImpl()
+                productCardListener = homeLeftCarouselListener,
+                productCardSeeMoreListener = homeLeftCarouselListener,
+                productCardSpaceListener = homeLeftCarouselListener
             ),
             differ = HomeLeftCarouselProductCardDiffer()
         )
@@ -85,15 +85,32 @@ class HomeLeftCarouselViewHolder (
             element = element
         )
         setupImage(
-            imageBanner = element.imageBanner
+            element = element
         )
         setupBackgroundColor(
             backgroundColorArray = element.backgroundColorArray
         )
+        onLeftCarouselImpressed(
+            element = element
+        )
     }
 
-    override fun onSeeAllClick(appLink: String) {
+    override fun onSeeAllClicked(appLink: String) {
+        homeLeftCarouselListener?.onSeeMoreClicked(
+            appLink = appLink,
+            channelId = uiModel?.id.orEmpty(),
+            headerName = uiModel?.header?.title.orEmpty()
+        )
+    }
 
+    private fun onLeftCarouselImpressed(element: HomeLeftCarouselUiModel) {
+        if (!element.isInvoke) {
+            homeLeftCarouselListener?.onLeftCarouselImpressed(
+                channelId = element.id,
+                headerName = element.header.title
+            )
+            element.invoke()
+        }
     }
 
     private fun setupRecyclerView(element: HomeLeftCarouselUiModel) {
@@ -156,32 +173,28 @@ class HomeLeftCarouselViewHolder (
         rvProduct?.layoutParams = carouselLayoutParams
     }
 
-    private fun setupImage(imageBanner: String) {
+    private fun setupImage(element: HomeLeftCarouselUiModel) {
         ivParallaxImage?.show()
         ivParallaxImage?.layout(0,0,0,0)
         ivParallaxImage?.translationX = 0f
         ivParallaxImage?.alpha = 1f
-        ivParallaxImage?.loadImage(imageBanner)
+        ivParallaxImage?.loadImage(element.imageBanner)
+        ivParallaxImage?.setOnClickListener {
+            homeLeftCarouselListener?.onLeftCarouselLeftImageClicked(
+                appLink = element.imageBannerAppLink,
+                channelId = element.id,
+                headerName = element.header.title
+            )
+        }
     }
 
     private fun setupBackgroundColor(backgroundColorArray: ArrayList<String>) {
         viewParallaxBackground?.setGradientBackground(backgroundColorArray)
     }
 
-    private fun productCardListenerImpl(): HomeLeftCarouselProductCardViewHolder.ProductCardListener = object : HomeLeftCarouselProductCardViewHolder.ProductCardListener {
-        override fun onProductCardClickListener(product: HomeLeftCarouselProductCardUiModel) {
-            listener?.onProductCardThematicWidgetClickListener(
-                product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
-                position = adapterPosition
-            )
-        }
-
-        override fun onProductCardImpressListener(product: HomeLeftCarouselProductCardUiModel) { /* nothing to do */ }
-    }
-
-    interface ThematicWidgetListener {
-        fun onProductCardThematicWidgetClickListener(product: HomeLeftCarouselProductCardUiModel, campaignId: String, campaignName: String, position: Int)
+    interface HomeLeftCarouselListener {
+        fun onSeeMoreClicked(appLink: String, channelId: String, headerName: String)
+        fun onLeftCarouselImpressed(channelId: String, headerName: String)
+        fun onLeftCarouselLeftImageClicked(appLink: String, channelId: String, headerName: String)
     }
 }
