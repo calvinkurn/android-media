@@ -29,6 +29,7 @@ class FavoriteShopViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_favorite_shop_list
+        private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
     }
 
     override fun bind(element: FavoriteShopListDataModel) {
@@ -49,7 +50,9 @@ class FavoriteShopViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
-        visitableList.add(OtherFavoriteShopModel())
+        if(element.favoriteShops.size >= 5){
+            visitableList.add(OtherFavoriteShopModel())
+        }
         adapter.setVisitables(visitableList)
     }
 }
