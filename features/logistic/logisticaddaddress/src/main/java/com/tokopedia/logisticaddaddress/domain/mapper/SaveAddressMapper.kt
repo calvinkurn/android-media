@@ -10,7 +10,7 @@ class SaveAddressMapper @Inject constructor() {
     fun map(autoFillModel: Data, zipCodes: MutableList<String>?, existingModel: SaveAddressDataModel? = null): SaveAddressDataModel {
         val saveAddressDataModel = existingModel ?: SaveAddressDataModel()
         saveAddressDataModel.title = autoFillModel.title
-        saveAddressDataModel.formattedAddress = autoFillModel.formattedAddress
+        saveAddressDataModel.formattedAddress = "${autoFillModel.districtName}, ${autoFillModel.cityName}, ${autoFillModel.provinceName}"
         saveAddressDataModel.districtId = autoFillModel.districtId
         saveAddressDataModel.provinceId = autoFillModel.provinceId
         saveAddressDataModel.cityId = autoFillModel.cityId
@@ -28,7 +28,7 @@ class SaveAddressMapper @Inject constructor() {
     fun map(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?, existingModel: SaveAddressDataModel? = null): SaveAddressDataModel {
         val saveAddressDataModel = existingModel ?: SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
-        saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
+        saveAddressDataModel.formattedAddress = "${getDistrictDataUiModel.districtName}, ${getDistrictDataUiModel.cityName}, ${getDistrictDataUiModel.provinceName}"
         saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
         saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
         saveAddressDataModel.cityId = getDistrictDataUiModel.cityId

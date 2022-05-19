@@ -490,7 +490,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun updateGetDistrictBottomSheet(data: SaveAddressDataModel ) {
+    private fun updateGetDistrictBottomSheet(data: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
         setDefaultResultGetDistrict(data)
     }
