@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -133,12 +134,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun setSuccessProductCart() {
-        UriUtil.buildUri(
+        RouteManager.route(context,UriUtil.buildUri(
             ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
             payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
             payLaterViewModel.cardDetailSelected?.tenure.toString()?:"",
             "fintech"
-        )
+        ))
     }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
