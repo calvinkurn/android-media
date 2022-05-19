@@ -43,7 +43,7 @@ class PotentialWidget(
                 R.string.pm_service_fee_by_category
             ).parseAsHtml()
             tvPmPotentialCtaCategory.setOnClickListener {
-                powerMerchantTracking.sendEventClickSeeCategory()
+                powerMerchantTracking.sendEventClickSeeCategory(element.shopScore.toString())
                 listener.showServiceFeeByCategory()
             }
 

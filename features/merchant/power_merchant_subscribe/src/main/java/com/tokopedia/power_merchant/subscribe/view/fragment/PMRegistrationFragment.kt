@@ -176,7 +176,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             WidgetBannerPMRegistration,
             headerWidget,
             WidgetDividerUiModel,
-            WidgetPotentialUiModel,
+            WidgetPotentialUiModel(pmBasicInfo?.shopInfo?.shopScore.orZero()),
             getPmGradeBenefitWidget()
         )
         widgets.addAll(mainWidgets)
@@ -194,7 +194,8 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             benefitPages = PMRegistrationBenefitHelper.getPMBenefitList(requireContext(), shopInfo),
             ctaAppLink = Constant.Url.POWER_MERCHANT_EDU,
             isEligiblePm = shopInfo?.isEligiblePm.orFalse(),
-            isEligiblePmPro = shopInfo?.isEligiblePmPro.orFalse()
+            isEligiblePmPro = shopInfo?.isEligiblePmPro.orFalse(),
+            shopScore = shopInfo?.shopScore.orZero()
         )
     }
 
@@ -235,7 +236,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                 powerMerchantTracking.sendEventClickAddOneProductPopUp()
             })
 
-        powerMerchantTracking.sendEventShowPopupAddNewProduct()
+        powerMerchantTracking.sendEventShowPopupAddNewProduct(pmBasicInfo?.shopInfo?.shopScore.toString())
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 

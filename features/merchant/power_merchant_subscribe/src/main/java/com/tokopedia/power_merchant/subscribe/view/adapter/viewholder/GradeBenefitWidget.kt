@@ -52,7 +52,7 @@ class GradeBenefitWidget(
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            powerMerchantTracking.sendEventClickLearnMorePM()
+            powerMerchantTracking.sendEventClickLearnMorePM(element.shopScore.toString())
             RouteManager.route(root.context, element.ctaAppLink)
         }
     }
@@ -98,7 +98,7 @@ class GradeBenefitWidget(
                         }
                     }
 
-                    powerMerchantTracking.sendEventClickTabPowerMerchantPro()
+                    powerMerchantTracking.sendEventClickTabPowerMerchantPro(element.shopScore.toString())
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}

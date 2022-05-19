@@ -83,7 +83,7 @@ class RegistrationHeaderWidget(
                 .parseAsHtml()
             tvPmHeaderEligibleFor.gravity = Gravity.START
             tvPmHeaderEligiblePMDetail.setOnClickListener {
-                powerMerchantTracking.sendEventClickDetailTermPM()
+                powerMerchantTracking.sendEventClickDetailTermPM(element.shopInfo.shopScore.toString())
                 listener.onMoreDetailPMEligibilityClicked()
             }
         }
