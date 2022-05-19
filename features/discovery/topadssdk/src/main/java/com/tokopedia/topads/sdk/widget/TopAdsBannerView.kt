@@ -627,6 +627,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         displayAds(cpmModel, index)
     }
 
+    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0){
+        displayAds(cpmModel, index)
+    }
+
     override fun displayAds(cpmModel: CpmModel?, index: Int) {
         try {
             if (cpmModel != null && cpmModel.data.size > 0) {
