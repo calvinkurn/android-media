@@ -914,20 +914,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setupRvLabelAlamatChips() {
-        if (isPositiveFlow) {
-            binding?.formAddress?.rvLabelAlamatChips?.apply {
-                staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
-                layoutManager = labelAlamatChipsLayoutManager
-                adapter = labelAlamatChipsAdapter
-            }
-        } else {
-            binding?.formAddressNegative?.rvLabelAlamatChips?.apply {
+        binding?.run {
+            val field =  if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
+            field.apply {
                 staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
                 layoutManager = labelAlamatChipsLayoutManager
                 adapter = labelAlamatChipsAdapter
             }
         }
-
     }
 
     private fun setupFormAccount() {
@@ -1072,13 +1066,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchLabelAddress(type: String) {
-        if (isPositiveFlow) {
-            binding?.formAddress?.etLabel?.textFieldInput?.apply {
+        binding?.run {
+            val field = if (isPositiveFlow) formAddress.etLabel else formAddressNegative.etLabel
+            val rvChips = if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
+
+            field.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         eventShowListLabelAlamat()
                     } else {
-                        binding?.formAddress?.rvLabelAlamatChips?.visibility = View.GONE
+                        rvChips.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
@@ -1104,61 +1101,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         }
                         else {
                             if (s.toString().isNotEmpty() && filterList.isEmpty()) {
-                                binding?.formAddress?.rvLabelAlamatChips?.visibility = View.GONE
+                                rvChips.visibility = View.GONE
                             } else {
-                                binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
+                                rvChips.visibility = View.VISIBLE
                                 labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
                             }
                         }
 
-                    }
-                })
-                setOnTouchListener { view, event ->
-                    view.parent.requestDisallowInterceptTouchEvent(true)
-                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                        view.parent.requestDisallowInterceptTouchEvent(false)
-                    }
-                    return@setOnTouchListener false
-                }
-            }
-        } else {
-            binding?.formAddressNegative?.etLabel?.textFieldInput?.apply {
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        eventShowListLabelAlamat()
-                    } else {
-                        binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
-                    }
-                }
-                setOnClickListener {
-                    eventShowListLabelAlamat()
-                }
-                addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                                   after: Int) {
-                    }
-
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                               count: Int) {
-                    }
-
-                    override fun afterTextChanged(s: Editable) {
-                        val currentLabel = labelAlamatList
-                        labelAlamatList = currentLabel.map { item -> item.copy(second = item.first.equals(s.toString(), ignoreCase = true)) }.toTypedArray()
-                        val filterList = labelAlamatList.filter {
-                            it.first.contains("$s", true)
-                        }
-                        if (!isEdit) {
-                            labelAlamatChipsAdapter.submitList(filterList)
-                        }
-                        else {
-                            if (s.toString().isNotEmpty() && filterList.isEmpty()) {
-                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
-                            } else {
-                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
-                                labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
-                            }
-                        }
                     }
                 })
                 setOnTouchListener { view, event ->
@@ -1170,7 +1119,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
         }
-
     }
 
     private fun eventShowListLabelAlamat() {
@@ -1320,32 +1268,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
         binding?.run {
-            if (isPositiveFlow) {
+            val rvChips = if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
+            val field = if (isPositiveFlow) formAddress.etLabel else formAddressNegative.etLabel
+            if (!isEdit) {
+                rvChips.visibility = View.GONE
+            }
+            field.textFieldInput.run {
                 if (!isEdit) {
-                    formAddress.rvLabelAlamatChips.visibility = View.GONE
+                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
                 }
-                formAddress.etLabel.textFieldInput.run {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
-                    }
-                    setText(labelAlamat)
-                    setSelection(formAddress.etLabel.textFieldInput.text.length)
-                }
-            } else {
-                if (!isEdit) {
-                    formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
-                }
-                formAddressNegative.etLabel.textFieldInput.run {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
-                    } else {
-                        EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
-                    }
-                    setText(labelAlamat)
-                    setSelection(formAddressNegative.etLabel.textFieldInput.text.length)
-                }
+                setText(labelAlamat)
+                setSelection(field.textFieldInput.text.length)
             }
         }
     }
