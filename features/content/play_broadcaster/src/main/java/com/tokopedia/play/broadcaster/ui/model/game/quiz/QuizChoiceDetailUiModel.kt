@@ -8,8 +8,7 @@ data class QuizChoiceDetailUiModel(
     val cursor: String,
     val winners: List<GameParticipantUiModel> = emptyList(),
     val participants: List<GameParticipantUiModel> = emptyList(),
-    ) {
-}
+    )
 
 
 
