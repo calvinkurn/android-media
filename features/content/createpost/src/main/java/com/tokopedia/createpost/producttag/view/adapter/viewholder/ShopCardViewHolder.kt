@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagShopListBinding
+import com.tokopedia.createpost.createpost.databinding.*
+import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -82,6 +83,103 @@ internal class ShopCardViewHolder private constructor() {
 
             fun create(parent: ViewGroup) = Loading(
                 ItemProductTagLoadingListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class EmptyState(
+        private val binding: ItemGlobalSearchEmptyStateListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        fun bind(item: ShopCardAdapter.Model.EmptyState) {
+            val context = itemView.context
+            binding.emptyState.apply {
+                setImageUrl(context.getString(R.string.img_search_no_shop))
+                setSecondaryCTAText("")
+                setPrimaryCTAClickListener {
+                    item.onClicked()
+                }
+
+                if(item.hasFilterApplied) {
+                    setTitle(context.getString(R.string.cc_global_search_shop_filter_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_shop_filter_not_found_desc))
+                    setPrimaryCTAText(context.getString(R.string.cc_reset_filter))
+                    setOrientation(EmptyStateUnify.Orientation.VERTICAL)
+                }
+                else {
+                    setTitle(context.getString(R.string.cc_global_search_shop_query_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_shop_query_not_found_desc))
+                    setPrimaryCTAText(context.getString(R.string.cc_check_your_keyword))
+                    setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
+                }
+            }
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = EmptyState(
+                ItemGlobalSearchEmptyStateListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class RecommendationTitle(
+        private val binding: ItemGlobalSearchRecommendationTitleListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        fun bind(item: ShopCardAdapter.Model.RecommendationTitle) {
+            binding.root.text = item.text
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = RecommendationTitle(
+                ItemGlobalSearchRecommendationTitleListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class Divider(
+        binding: ItemGlobalSearchDividerListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = Divider(
+                ItemGlobalSearchDividerListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

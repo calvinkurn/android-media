@@ -17,6 +17,9 @@ class ShopCardAdapter(
         delegatesManager
             .addDelegate(ShopCardAdapterDelegate.Shop(onSelected))
             .addDelegate(ShopCardAdapterDelegate.Loading())
+            .addDelegate(ShopCardAdapterDelegate.EmptyState())
+            .addDelegate(ShopCardAdapterDelegate.RecommendationTitle())
+            .addDelegate(ShopCardAdapterDelegate.Divider())
     }
 
     override fun onBindViewHolder(
@@ -45,5 +48,16 @@ class ShopCardAdapter(
         ) : Model
 
         object Loading: Model
+
+        data class EmptyState(
+            val hasFilterApplied: Boolean,
+            val onClicked: () -> Unit,
+        ) : Model
+
+        data class RecommendationTitle(
+            val text: String,
+        ) : Model
+
+        object Divider : Model
     }
 }

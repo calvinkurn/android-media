@@ -71,14 +71,6 @@ class ProductTagViewModel @AssistedInject constructor(
     val selectedShop: ShopUiModel
         get() = _shopProduct.value.shop
 
-    val hasShopSearchFilterApplied: Boolean
-        get() {
-            val currState = _globalSearchShop.value
-            return currState.quickFilters.firstOrNull {
-                currState.param.isParamFound(it.key, it.value)
-            } != null
-        }
-
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))

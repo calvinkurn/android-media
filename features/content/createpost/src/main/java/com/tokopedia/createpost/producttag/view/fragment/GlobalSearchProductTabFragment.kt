@@ -189,7 +189,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
+    private fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
         val finalProducts = buildList {
             if(state.products.isEmpty() && !hasNextPage) {
                 if(state.param.hasFilterApplied()) {

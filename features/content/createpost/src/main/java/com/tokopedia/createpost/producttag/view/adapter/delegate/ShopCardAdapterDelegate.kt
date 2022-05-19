@@ -4,7 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.MyShopProductViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.ShopCardViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
@@ -54,6 +56,73 @@ internal class ShopCardAdapterDelegate private constructor() {
             basicView: View
         ): ShopCardViewHolder.Loading {
             return ShopCardViewHolder.Loading.create(parent)
+        }
+    }
+
+    internal class EmptyState: TypedAdapterDelegate<
+            ShopCardAdapter.Model.EmptyState,
+            ShopCardAdapter.Model,
+            ShopCardViewHolder.EmptyState>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ShopCardAdapter.Model.EmptyState,
+            holder: ShopCardViewHolder.EmptyState
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ShopCardViewHolder.EmptyState {
+            return ShopCardViewHolder.EmptyState.create(
+                parent
+            )
+        }
+    }
+
+    internal class RecommendationTitle: TypedAdapterDelegate<
+            ShopCardAdapter.Model.RecommendationTitle,
+            ShopCardAdapter.Model,
+            ShopCardViewHolder.RecommendationTitle>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ShopCardAdapter.Model.RecommendationTitle,
+            holder: ShopCardViewHolder.RecommendationTitle
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ShopCardViewHolder.RecommendationTitle {
+            return ShopCardViewHolder.RecommendationTitle.create(
+                parent
+            )
+        }
+    }
+
+    internal class Divider: TypedAdapterDelegate<
+            ShopCardAdapter.Model.Divider,
+            ShopCardAdapter.Model,
+            ShopCardViewHolder.Divider>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ShopCardAdapter.Model.Divider,
+            holder: ShopCardViewHolder.Divider
+        ) {}
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ShopCardViewHolder.Divider {
+            return ShopCardViewHolder.Divider.create(
+                parent
+            )
         }
     }
 }

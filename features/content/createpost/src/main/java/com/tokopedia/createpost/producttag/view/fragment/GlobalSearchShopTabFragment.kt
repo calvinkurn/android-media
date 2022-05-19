@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchShopTabBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
+import com.tokopedia.createpost.producttag.view.decoration.ShopCardItemDecoration
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
@@ -105,6 +107,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
     private fun setupView() {
         binding.rvGlobalSearchShop.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvGlobalSearchShop.addItemDecoration(ShopCardItemDecoration(requireContext()))
         binding.rvGlobalSearchShop.adapter = adapter
     }
 
@@ -143,40 +146,17 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     }
 
     private fun renderGlobalSearchShop(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
-
-        fun updateAdapterData(products: List<ShopUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ShopCardAdapter.Model.Shop(shop = it)
-            } + if(hasNextPage) listOf(ShopCardAdapter.Model.Loading) else emptyList()
-
-            if(binding.rvGlobalSearchShop.isComputingLayout.not())
-                adapter.setItemsAndAnimateChanges(finalProducts)
-
-            binding.rvGlobalSearchShop.show()
-            binding.globalError.hide()
-        }
-
         if(prev?.shops == curr.shops && prev.state == curr.state) return
 
         when(curr.state) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.shops, true)
+                updateAdapterData(curr, true)
             }
             is PagedState.Success -> {
-                if(curr.shops.isEmpty()) {
-                    if(viewModel.hasShopSearchFilterApplied) {
-                        showFilterNoData()
-                    }
-                    else {
-                        /** TODO: handle this */
-                        binding.rvGlobalSearchShop.show()
-                        binding.globalError.hide()
-                    }
-                }
-                else updateAdapterData(curr.shops, curr.state.hasNextPage)
+                updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.shops, false)
+                updateAdapterData(curr, false)
 
                 /** TODO: gonna handle this */
                 Toaster.build(
@@ -210,25 +190,38 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 viewModel.submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
             }
             indicatorCounter = curr.param.getFilterCount()
-            show()
         }
     }
 
-    private fun showFilterNoData() {
-        binding.rvGlobalSearchShop.hide()
-        binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_search_no_shop))
-            errorTitle.text = getString(R.string.cc_global_search_shop_filter_not_found_title)
-            errorDescription.text = getString(R.string.cc_global_search_shop_filter_not_found_desc)
-
-            errorAction.text = getString(R.string.cc_reset_filter)
-            errorAction.visible()
-            errorSecondaryAction.gone()
-            errorAction.setOnClickListener {
-                viewModel.submitAction(ProductTagAction.ResetShopFilter)
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun updateAdapterData(state: GlobalSearchShopUiState, hasNextPage: Boolean) {
+        val finalShops = buildList {
+            if(state.shops.isEmpty() && !hasNextPage) {
+                if(state.param.hasFilterApplied()) {
+                    add(ShopCardAdapter.Model.EmptyState(true) {
+                        viewModel.submitAction(ProductTagAction.ResetShopFilter)
+                    })
+                    binding.sortFilter.show()
+                }
+                else {
+                    add(ShopCardAdapter.Model.EmptyState(false) {
+                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+                    })
+                    add(ShopCardAdapter.Model.Divider)
+                    add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
+                    binding.sortFilter.hide()
+                }
             }
-            show()
+            else {
+                addAll(state.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
+                if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+
+                binding.sortFilter.show()
+            }
         }
+
+        if(binding.rvGlobalSearchShop.isComputingLayout.not())
+            adapter.setItemsAndAnimateChanges(finalShops)
     }
 
     companion object {
