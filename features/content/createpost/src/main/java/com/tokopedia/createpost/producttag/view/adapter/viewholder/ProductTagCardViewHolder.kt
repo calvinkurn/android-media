@@ -209,4 +209,27 @@ internal class ProductTagCardViewHolder private constructor() {
             )
         }
     }
+
+    internal class Divider(
+        binding: ItemGlobalSearchDividerListBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = Divider(
+                ItemGlobalSearchDividerListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
 }

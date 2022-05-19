@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.ProductTagCardViewHolder
 
 /**
@@ -16,9 +17,25 @@ class ProductTagItemDecoration(context: Context) : RecyclerView.ItemDecoration()
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val viewHolder = parent.getChildViewHolder(view)
 
-        if(viewHolder is ProductTagCardViewHolder.Suggestion ||
-            viewHolder is ProductTagCardViewHolder.Ticker) {
-            outRect.bottom = offset16
-        } else super.getItemOffsets(outRect, view, parent, state)
+        when(viewHolder) {
+            is ProductTagCardViewHolder.Suggestion,
+            is ProductTagCardViewHolder.Ticker,
+            is ProductTagCardViewHolder.RecommendationTitle -> {
+                outRect.left = offset16
+                outRect.right = offset16
+                outRect.bottom = offset16
+            }
+            is ProductTagCardViewHolder.Divider -> {
+                outRect.bottom = offset16
+            }
+            is ProductTagCardViewHolder.Product -> {
+                val layoutParams = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
+
+                when(layoutParams.spanIndex) {
+                    0 -> outRect.left = offset16
+                    1 -> outRect.right = offset16
+                }
+            }
+        }
     }
 }

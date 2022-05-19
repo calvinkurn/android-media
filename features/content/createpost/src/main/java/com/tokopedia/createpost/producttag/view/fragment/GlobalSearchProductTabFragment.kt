@@ -138,49 +138,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
-
-        fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
-            val finalProducts = buildList {
-                if(curr.products.isEmpty() && !hasNextPage) {
-                    if(curr.param.hasFilterApplied()) {
-                        add(ProductTagCardAdapter.Model.EmptyState(true) {
-                            viewModel.submitAction(ProductTagAction.ResetProductFilter)
-                        })
-                        binding.sortFilter.show()
-                    }
-                    else {
-                        add(ProductTagCardAdapter.Model.EmptyState(false) {
-                            viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
-                        })
-                        add(ProductTagCardAdapter.Model.RecommendationTitle(getString(R.string.cc_product_recommendation_title)))
-                        binding.sortFilter.hide()
-                    }
-                }
-                else {
-                    if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
-                    if(state.ticker.text.isNotEmpty())
-                        add(
-                            ProductTagCardAdapter.Model.Ticker(
-                                text = state.ticker.text,
-                                onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
-                                onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
-                            )
-                        )
-
-                    addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
-
-                    if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
-
-                    binding.sortFilter.show()
-                }
-            }
-
-            if(binding.rvGlobalSearchProduct.isComputingLayout.not())
-                adapter.setItemsAndAnimateChanges(finalProducts)
-        }
-
         if(prev?.products == curr.products &&
             prev.state == curr.state &&
             prev.ticker == curr.ticker
@@ -228,6 +186,48 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             }
             indicatorCounter = curr.param.getFilterCount()
         }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
+        val finalProducts = buildList {
+            if(state.products.isEmpty() && !hasNextPage) {
+                if(state.param.hasFilterApplied()) {
+                    add(ProductTagCardAdapter.Model.EmptyState(true) {
+                        viewModel.submitAction(ProductTagAction.ResetProductFilter)
+                    })
+                    binding.sortFilter.show()
+                }
+                else {
+                    add(ProductTagCardAdapter.Model.EmptyState(false) {
+                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+                    })
+                    add(ProductTagCardAdapter.Model.Divider)
+                    add(ProductTagCardAdapter.Model.RecommendationTitle(getString(R.string.cc_product_recommendation_title)))
+                    binding.sortFilter.hide()
+                }
+            }
+            else {
+                if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
+                if(state.ticker.text.isNotEmpty())
+                    add(
+                        ProductTagCardAdapter.Model.Ticker(
+                            text = state.ticker.text,
+                            onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
+                            onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
+                        )
+                    )
+
+                addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
+
+                if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
+
+                binding.sortFilter.show()
+            }
+        }
+
+        if(binding.rvGlobalSearchProduct.isComputingLayout.not())
+            adapter.setItemsAndAnimateChanges(finalProducts)
     }
 
     companion object {

@@ -21,6 +21,7 @@ class ProductTagCardAdapter(
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
             .addDelegate(ProductTagCardAdapterDelegate.EmptyState())
             .addDelegate(ProductTagCardAdapterDelegate.RecommendationTitle())
+            .addDelegate(ProductTagCardAdapterDelegate.Divider())
     }
 
     override fun onBindViewHolder(
@@ -59,7 +60,7 @@ class ProductTagCardAdapter(
             val product: ProductUiModel,
         ) : Model
 
-        object Loading: Model
+        object Loading : Model
 
         data class EmptyState(
             val hasFilterApplied: Boolean,
@@ -69,5 +70,7 @@ class ProductTagCardAdapter(
         data class RecommendationTitle(
             val text: String,
         ) : Model
+
+        object Divider : Model
     }
 }
