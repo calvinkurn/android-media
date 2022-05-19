@@ -1,10 +1,12 @@
 package com.tokopedia.vouchercreation.product.create.data.request
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class UpdateCouponRequestParams(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("voucher_id")
     @Expose
     val voucherId: Long = 0,
