@@ -29,30 +29,26 @@ object PayLaterHelper {
         context: Context?,
         detail: Detail,
         customUrl: String,
+        callAddOccApi:() -> Unit,
         openHowToUse: (Bundle) -> Unit,
         openGoPay: (Bundle) -> Unit
     ) {
         when (detail.cta.cta_type) {
-            TYPE_APP_LINK -> routeToAppLink(context, customUrl)
+            TYPE_APP_LINK ->
+            {
+                callAddOccApi()
+            }
             TYPE_WEB_VIEW -> {
                 if (shouldShowGoPayBottomSheet(detail))
                     openGoPay(PayLaterBundleGenerator.getGoPayBundle(detail.cta))
                 else routeToWebView(context, customUrl)
             }
             TYPE_HOW_TO_USE, TYPE_HOW_TO_USE_II -> {
-                if (detail.gatewayDetail?.how_toUse != null) {
+                if (detail.gatewayDetail?.howToUse != null) {
                     openHowToUse(PayLaterBundleGenerator.getHowToUseBundle(detail))
                 }
             }
         }
-    }
-
-    private fun routeToAppLink(context: Context?, appLink: String?) {
-        if (!appLink.isNullOrEmpty())
-            try {
-                RouteManager.route(context, appLink)
-            } catch (e: Exception) {
-            }
     }
 
     private fun routeToWebView(context: Context?, webLink: String?) {
@@ -76,34 +72,22 @@ object PayLaterHelper {
         detail: Detail,
         payLaterArgsDescriptor: PayLaterArgsDescriptor
     ): String {
-        return if (detail.cta.cta_type != TYPE_APP_LINK) {
-            detail.cta.android_url +
-                    "?productID=${payLaterArgsDescriptor.productId}" +
-                    "&tenure=${detail.tenure}" +
-                    "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                    "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
-                    "&productURL=${
-                        detail.tenure?.let { selectedTenure ->
-                            setAdditionalParam(
-                                payLaterArgsDescriptor.productId,
-                                selectedTenure,
-                                detail.gatewayDetail?.gatewayCode,
-                                detail.gatewayDetail?.gateway_id
-                            )
-                        }
-                    }"
-        } else {
-            setUrlForOcc(detail)
-        }
+        return detail.cta.android_url +
+                "?productID=${payLaterArgsDescriptor.productId}" +
+                "&tenure=${detail.tenure}" +
+                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
+                "&productURL=${
+                    detail.tenure?.let { selectedTenure ->
+                        setAdditionalParam(
+                            payLaterArgsDescriptor.productId,
+                            selectedTenure,
+                            detail.gatewayDetail?.gatewayCode,
+                            detail.gatewayDetail?.gateway_id
+                        )
+                    }
+                }"
     }
-
-    private fun setUrlForOcc(detail: Detail) =
-        UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-                detail.gatewayDetail?.paymentGatewayCode ?: "",
-                detail.tenure.toString(),
-                "fintech"
-            )
-
 
     // currently will be closed from backend
     private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty()

@@ -98,8 +98,8 @@ data class GatewayModel(
     @SerializedName("code") val gatewayCode: String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?,
-    @SerializedName("how_to_use") val how_toUse: HowToUse?,
-    @SerializedName("payment_gateway_code")val paymentGatewayCode: String?
+    @SerializedName("how_to_use") val howToUse: HowToUse?,
+    @SerializedName("payment_gateway_code") val paymentGatewayCode: String?
 
 ) : Parcelable
 

@@ -8,9 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
@@ -51,8 +54,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     // parent view is required to show the toaster
-    private lateinit var parentView: View
-    private var detail: Detail? = null
+
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -107,19 +109,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
-        this.detail = detail
-        if (detail.cta.cta_type == TYPE_APP_LINK_OCC)
-            payLaterViewModel.addProductToCart(
-                payLaterArgsDescriptor.productId
-            )
-        else
-            goToRedirectionHelper(detail)
-    }
-
-    private fun goToRedirectionHelper(detail: Detail) {
         PayLaterHelper.handleClickNavigation(context,
             detail,
             PayLaterHelper.setCustomProductUrl(detail, payLaterArgsDescriptor),
+            callAddOccApi = {
+                payLaterViewModel.addProductToCart(detail,
+                    payLaterArgsDescriptor.productId
+                )
+            },
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(
                     PayLaterActionStepsBottomSheet::class.java,
@@ -135,6 +132,15 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun setSuccessProductCart() {
+        UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+            payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
+            payLaterViewModel.cardDetailSelected?.tenure.toString()?:"",
+            "fintech"
+        )
+    }
+
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
@@ -146,8 +152,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        parentView = inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
-        return parentView
+         return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -201,13 +207,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun setFailProductCart(throwable: Throwable) {
         when (throwable) {
             is ShowToasterException -> showToaster(throwable.message)
+            else -> showToaster(ErrorHandler.getErrorMessage(context,throwable))
         }
     }
 
     private fun showToaster(message: String?) {
         message?.let {
             Toaster.build(
-                parentView,
+                baseSimulationView,
                 it,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
@@ -215,11 +222,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setSuccessProductCart() {
-        detail?.let {
-            goToRedirectionHelper(it)
-        }
-    }
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide shimmer

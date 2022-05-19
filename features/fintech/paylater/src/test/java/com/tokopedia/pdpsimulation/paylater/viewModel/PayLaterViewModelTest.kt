@@ -9,6 +9,7 @@ import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.model.Pictures
 import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
@@ -209,7 +210,7 @@ class PayLaterViewModelTest {
     @Test
     fun successAddToCart() {
         val addToCartMultiDataModel = mockk<AddToCartOccMultiDataModel>(relaxed = true)
-
+        val detail = mockk<Detail>(relaxed = true)
         coEvery {
             addToCartUseCase.execute(captureLambda(), any())
         } coAnswers {
@@ -217,7 +218,7 @@ class PayLaterViewModelTest {
             onSuccess.invoke(addToCartMultiDataModel)
         }
         viewModel.shopId = ""
-        viewModel.addProductToCart("")
+        viewModel.addProductToCart(detail,"")
         verify {
             addToCartUseCase.execute(any(), any())
         }
@@ -225,6 +226,7 @@ class PayLaterViewModelTest {
 
     @Test
     fun failAddToCart() {
+        val detail = mockk<Detail>(relaxed = true)
         coEvery {
             addToCartUseCase.execute(any(), captureLambda())
         } coAnswers {
@@ -232,7 +234,7 @@ class PayLaterViewModelTest {
             onError.invoke(mockThrowable)
         }
         viewModel.shopId = ""
-        viewModel.addProductToCart("")
+        viewModel.addProductToCart(detail,"")
         verify {
             addToCartUseCase.execute(any(), any())
         }

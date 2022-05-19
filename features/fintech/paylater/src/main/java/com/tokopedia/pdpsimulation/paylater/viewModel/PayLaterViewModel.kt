@@ -12,6 +12,7 @@ import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
@@ -53,6 +54,7 @@ class PayLaterViewModel @Inject constructor(
     var defaultSelectedSimulation: Int = 0
     var finalProductPrice: Double = 0.0
     var shopId: String? = null
+    var cardDetailSelected:Detail?= null
 
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
         finalProductPrice = price
@@ -111,14 +113,15 @@ class PayLaterViewModel @Inject constructor(
     }
 
 
-    fun addProductToCart(productId: String) {
-        shopId?.let {
+    fun addProductToCart(detailOfSelected: Detail, productId: String) {
+        cardDetailSelected = detailOfSelected
+        shopId?.let { shopId->
             addToCartUseCase.setParams(
                 AddToCartOccMultiRequestParams(
                     carts = arrayListOf(
                         AddToCartOccMultiCartParam(
                             productId = productId,
-                            shopId = it,
+                            shopId = shopId,
                             quantity = PRODUCT_QUANTITY,
                         )
                     ),
