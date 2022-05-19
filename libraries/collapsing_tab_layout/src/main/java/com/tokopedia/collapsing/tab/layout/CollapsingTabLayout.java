@@ -215,6 +215,7 @@ public class CollapsingTabLayout extends TabLayout {
         }, TAB_AUTO_SCROLL_DELAY_DURATION);
     }
 
+    @SuppressLint("Recycle")
     public void scrollActiveTabToLeftScreen() {
         if (getSelectedTabPosition() < 0) {
             return;
