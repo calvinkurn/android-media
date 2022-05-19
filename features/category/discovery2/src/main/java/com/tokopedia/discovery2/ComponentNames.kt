@@ -63,6 +63,10 @@ enum class ComponentNames(val componentName: String) {
     ProductListEmptyState("product_list_empty_state"),
     SaleEndState("sale_end_state"),
 
+//    Product Card Single
+    ProductCardSingle("product_card_single"),
+    ProductCardSingleItem("product_card_single_item"),
+
 //    Empty Item for MixLeft
     MixLeftEmptyItem("mix_left_empty_item"),
 
@@ -116,6 +120,9 @@ enum class ComponentNames(val componentName: String) {
 
     //my coupon
     MyCoupon("my_coupon"),
-    MyCouponItem("my_coupon_item")
+    MyCouponItem("my_coupon_item"),
+
+    BannerInfinite("banner_infinite"),
+    BannerInfiniteItem("banner_infinite_item")
 
 }
