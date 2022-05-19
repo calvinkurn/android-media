@@ -8,14 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +29,8 @@ import kotlin.math.abs
 
 class HomeLeftCarouselViewHolder (
     itemView: View,
-    private val homeLeftCarouselListener: HomeLeftCarouselCallback? = null
+    private val homeLeftCarouselListener: HomeLeftCarouselCallback? = null,
+    private val tokoNowView: TokoNowView? = null
 ) : AbstractViewHolder<HomeLeftCarouselUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
@@ -152,18 +156,15 @@ class HomeLeftCarouselViewHolder (
 
     private fun saveInstanceStateToLayoutManager(recyclerView: RecyclerView) {
         launch {
-//            uiModel?.productList?.firstOrNull()?.let {
-//                it.rvState = recyclerView.layoutManager?.onSaveInstanceState()
-//            }
+            val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
+            tokoNowView?.saveScrollState(adapterPosition, scrollState)
         }
     }
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-//            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
-//            if (null != rvState) {
-//                rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
-//            }
+            val scrollState = tokoNowView?.getScrollState(adapterPosition)
+            rvProduct?.layoutManager?.onRestoreInstanceState(scrollState)
         }
     }
 

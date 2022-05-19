@@ -119,7 +119,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-            HomeLeftCarouselViewHolder.LAYOUT -> HomeLeftCarouselViewHolder(view, homeLeftCarouselListener,)
+            HomeLeftCarouselViewHolder.LAYOUT -> HomeLeftCarouselViewHolder(view, homeLeftCarouselListener, tokoNowView)
             // endregion
 
             // region Global Home Component

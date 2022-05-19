@@ -12,7 +12,7 @@ data class HomeLeftCarouselUiModel(
     val backgroundColorArray: ArrayList<String> = arrayListOf(),
     val campaignId: String = "",
     var imageBanner: String = "",
-    var imageBannerAppLink: String = "",
+    var imageBannerAppLink: String = ""
 ): HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

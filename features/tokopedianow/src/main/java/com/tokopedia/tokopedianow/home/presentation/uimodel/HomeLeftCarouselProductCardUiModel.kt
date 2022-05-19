@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
-import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -12,7 +11,6 @@ data class HomeLeftCarouselProductCardUiModel(
     var categoryId: String = "",
     var parentProductId: String = "0",
     var shopId: String = "0",
-    var rvState: Parcelable? = null,
     var appLink: String = "",
     var channelId: String = "",
     var channelHeaderName: String = "",
