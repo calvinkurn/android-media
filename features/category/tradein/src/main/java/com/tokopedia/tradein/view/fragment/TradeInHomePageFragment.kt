@@ -386,7 +386,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                                 imei = tradeInHomePageVM.imei,
                                 isDiagnosed = logistic.isDiagnosed
                             )
-                            goToCheckout()
+                            startLaku6Testing()
                         }
                     } else {
                         findViewById<UnifyButton>(R.id.btn_continue).text =
