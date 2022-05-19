@@ -159,7 +159,6 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 updateAdapterData(curr)
             }
             is PagedState.Error -> {
-                /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
                     text = getString(R.string.cc_failed_load_shop),
@@ -193,43 +192,6 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             indicatorCounter = curr.param.getFilterCount()
         }
     }
-
-//    @OptIn(ExperimentalStdlibApi::class)
-//    private fun updateAdapterData(state: GlobalSearchShopUiState, hasNextPage: Boolean) {
-//        val finalShops = buildList {
-//            if(state.shops.isEmpty()) {
-//                if(state.param.hasFilterApplied()) {
-//                    add(ShopCardAdapter.Model.EmptyState(true) {
-//                        viewModel.submitAction(ProductTagAction.ResetShopFilter)
-//                    })
-//                    binding.sortFilter.show()
-//                }
-//                else if(state.recomShops.isNotEmpty()) {
-//                    add(ShopCardAdapter.Model.EmptyState(false) {
-//                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
-//                    })
-//                    add(ShopCardAdapter.Model.Divider)
-//                    add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
-//                    addAll(state.recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
-//                    if(hasNextPage) add(ShopCardAdapter.Model.Loading)
-//
-//                    binding.sortFilter.hide()
-//                }
-//                else if(hasNextPage) {
-//                    add(ShopCardAdapter.Model.Loading)
-//                }
-//            }
-//            else {
-//                addAll(state.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
-//                if(hasNextPage) add(ShopCardAdapter.Model.Loading)
-//
-//                binding.sortFilter.show()
-//            }
-//        }
-//
-//        if(binding.rvGlobalSearchShop.isComputingLayout.not())
-//            adapter.setItemsAndAnimateChanges(finalShops)
-//    }
 
     private fun updateAdapterData(currState: GlobalSearchShopUiState) {
         val finalShops = when(currState.state) {
