@@ -175,11 +175,17 @@ class ShopDiscountManageProductVariantItemViewHolder(
 
     private fun checkErrorState(uiModel: ShopDiscountManageProductVariantItemUiModel) {
         val initialDiscountPrice = uiModel.discountedPrice
-        if (initialDiscountPrice.isMoreThanZero() && !uiModel.isAbusive) {
-            hideAbusiveError()
-            validateInput(uiModel)
-        } else {
-            showAbusiveError()
+        when {
+            uiModel.isAbusive -> {
+                showAbusiveError()
+            }
+            initialDiscountPrice.isMoreThanZero() -> {
+                hideAbusiveError()
+                validateInput(uiModel)
+            }
+            else -> {
+                hideAbusiveError()
+            }
         }
     }
 
