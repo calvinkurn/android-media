@@ -1,6 +1,5 @@
 package com.tokopedia.telemetry.network.usecase
 
-import android.util.Base64
 import android.util.Log
 import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.encryption.security.RSA
