@@ -247,6 +247,10 @@ public class DealsDetailsResponse implements Parcelable {
         return webUrl;
     }
 
+    public void setWebUrl(String mWebUrl) {
+        this.webUrl = mWebUrl;
+    }
+
     public String getAppUrl() {
         return appUrl;
     }
