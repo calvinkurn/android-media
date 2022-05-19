@@ -5,7 +5,6 @@ import com.tokopedia.media.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
 
 class TestPickerActivity : PickerActivity() {
