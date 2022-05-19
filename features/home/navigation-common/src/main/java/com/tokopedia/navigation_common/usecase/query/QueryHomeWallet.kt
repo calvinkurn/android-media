@@ -27,6 +27,12 @@ object QueryHomeWallet {
             "                    active\n" +
             "                    message\n" +
             "                   }\n" +
+            "                   reserve_balance {\n" +
+            "                    wallet_code\n" +
+            "                    wallet_code_fmt\n" +
+            "                    amount\n" +
+            "                    amount_fmt\n" +
+            "                   }" +
             "                   redirect_url\n" +
             "                   icon_url\n" +
             "                   activation_cta\n" +

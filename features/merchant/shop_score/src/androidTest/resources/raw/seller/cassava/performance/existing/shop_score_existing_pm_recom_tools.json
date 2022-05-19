@@ -1,0 +1,134 @@
+{
+  "shopScoreLevel": {
+    "result": {
+      "shopScore": 70,
+      "shopLevel": 3,
+      "period": "1 Sep 2021 - 20 Nov 2021",
+      "nextUpdate": "29 Nov 2021",
+      "shopScoreDetail": [
+        {
+          "title": "Membuka Tokopedia Seller dalam 90 hari terakhir",
+          "identifier": "ct_active_days",
+          "value": 15,
+          "rawValue": 72,
+          "nextMinValue": 30,
+          "colorText": "#03AC0E"
+        },
+        {
+          "title": "Tingkat kesuksesan pesanan",
+          "identifier": "finish_rate",
+          "value": 9,
+          "rawValue": 1.00,
+          "nextMinValue": 0.94,
+          "colorText": "#31353B"
+        },
+        {
+          "title": "Kecepatan mengirim pesanan",
+          "identifier": "median_verified_to_shipping_minute",
+          "value": 9,
+          "rawValue": -1,
+          "nextMinValue": 359,
+          "colorText": "#31353B"
+        },
+        {
+          "title": "Penalti",
+          "identifier": "penalty",
+          "value": -8,
+          "rawValue": -8,
+          "nextMinValue": 0,
+          "colorText": "#31353B"
+        },
+        {
+          "title": "Ulasan produk dengan bintang 4+",
+          "identifier": "percent_good_rating",
+          "value": 3,
+          "rawValue": 0.74296875,
+          "nextMinValue": 0.95,
+          "colorText": "#D6001C"
+        },
+        {
+          "title": "Tingkat membalas chat dan diskusi",
+          "identifier": "chat_and_discussion_reply_rate",
+          "value": 9,
+          "rawValue": 0.68571427,
+          "nextMinValue": 0.9,
+          "colorText": "#31353B"
+        },
+        {
+          "title": "Kecepatan membalas chat dan diskusi",
+          "identifier": "chat_and_discussion_reply_speed",
+          "value": 12,
+          "rawValue": 18.023333,
+          "nextMinValue": 9,
+          "colorText": "#03AC0E"
+        },
+        {
+          "title": "Jumlah pembeli",
+          "identifier": "cnt_unique_buyer",
+          "value": 2,
+          "rawValue": -1,
+          "nextMinValue": 3,
+          "colorText": "#31353B"
+        }
+      ]
+    },
+    "error": {
+      "message": ""
+    }
+  },
+  "shopLevel": {
+    "result": {
+      "period": "2 Agu 2021 - 30 Okt 2021",
+      "nextUpdate": "6 Des 2021",
+      "shopLevel": 1,
+      "itemSold": -1,
+      "niv": -1
+    },
+    "error": {
+      "message": ""
+    }
+  },
+  "goldGetPMShopInfo": {
+    "is_new_seller": false,
+    "shop_age": 775,
+    "is_eligible_pm": false,
+    "is_eligible_pm_pro": false
+  },
+  "valuePropositionGetRecommendationTools": {
+    "recommendation_tools": [
+      {
+        "title": "Buat tokomu banyak dikunjungi pembeli dengan TopAds, yuk!",
+        "text": "Semakin banyak yang berkunjung, semakin produkmu berkesempatan jadi laris manis.",
+        "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/recommendation_tools/icon-topads.png",
+        "related_link_applink": "tokopedia://topads/dashboard",
+        "identifier": "topads_recommendation"
+      },
+      {
+        "title": "Buat pelangganmu makin setia dengan voucher eksklusif",
+        "text": "Kirim voucher khusus untuk followers dan pembeli supaya mereka jadi pelanggan setia.",
+        "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/recommendation_tools/icon-mvc.png",
+        "related_link_applink": "sellerapp://create-voucher",
+        "identifier": "voucher_recommendation"
+      },
+      {
+        "title": "Kirim Broadcast Chat supaya pelanggan makin ingat kamu~",
+        "text": "Buat pelanggan selalu tau berbagai promo menarik tokomu lewat fitur Broadcast Chat.",
+        "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/recommendation_tools/icon-bc.png",
+        "related_link_applink": "https://m.tokopedia.com/broadcast-chat",
+        "identifier": "broadcast_chat_recommendation"
+      }
+    ]
+  },
+  "goldGetPMOSStatus": {
+    "data": {
+      "power_merchant": {
+        "status": "active",
+        "pm_tier": 0
+      },
+      "official_store": {
+        "status": "inactive",
+        "error": ""
+      }
+    }
+  }
+}

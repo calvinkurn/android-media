@@ -78,14 +78,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_attached_images" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/read_review_like_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="@id/read_review_item_review"
         app:layout_constraintTop_toBottomOf="@id/read_review_bad_rating_reason"
-        app:srcCompat="@drawable/ic_read_review_like" />
+        app:icon_name="THUMB" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_like_count"

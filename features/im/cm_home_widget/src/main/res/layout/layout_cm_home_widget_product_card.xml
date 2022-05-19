@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_cm_home_widget_product_card"
+    android:layout_width="@dimen/cm_home_widget_dp_260"
+    android:layout_height="wrap_content"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/unify_space_8"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/cm_home_widget_dp_10">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_cm_home_widget_product"
+            android:layout_width="@dimen/cm_home_widget_dp_80"
+            android:layout_height="@dimen/cm_home_widget_dp_80"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:lines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_product"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Air Jordan 4 Retro SE 'What The 4'" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_product_current_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_product"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_product_name"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp1.799.000'" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lb_cm_home_widget_product_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:labelType="highlight_light_red"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_cm_home_widget_product_current_price"
+            app:layout_constraintStart_toEndOf="@+id/tv_cm_home_widget_product_current_price"
+            app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_product_current_price"
+            tools:labelTitle="20%" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_product_actual_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_cm_home_widget_product_current_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/lb_cm_home_widget_product_discount"
+            app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_product_current_price"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Rp1.799.000'" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/cm_home_widget_discount_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="lb_cm_home_widget_product_discount,tv_cm_home_widget_product_actual_price" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_cm_home_widget_product_shop"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_cm_home_widget_product_shop_name"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_product"
+            app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_product_shop_name"
+            app:unify_image_corner_radius="0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_product_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_product_shop"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_product_current_price"
+            app:typographyType="body_3"
+            tools:text="Nike Official" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_cm_home_widget_product_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cm_home_widget_dp_20"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_product"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_product_shop_name"
+            app:unify_image_corner_radius="0" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_cm_home_widget_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cm_home_widget_dp_6"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_product_badge"
+            app:unifyButtonSize="small"
+            app:unifyButtonVariant="ghost"
+            tools:text="Beli Langsung" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

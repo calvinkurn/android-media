@@ -18,6 +18,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -95,14 +96,15 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
                         btn_collapse?.setOnClickListener {
-                            ProductRecommendationTracking.getClickSpecDetailTracking(
+                            val tracking = ProductRecommendationTracking.getClickSpecDetailTracking(
                                     eventClick = recommendationTrackingModel.eventClick,
                                     eventCategory = recommendationTrackingModel.eventCategory,
                                     isLoggedIn = userSessionInterface.isLoggedIn,
                                     recomTitle = recommendationTrackingModel.headerTitle,
                                     pageName = comparisonListModel.recommendationWidget.pageName,
                                     userId = userSessionInterface.userId
-                            )
+                                )
+                            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.second, tracking.first)
                             onSpecDetailsClick(comparisonListModel)
                         }
                         comparison_widget_container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING);

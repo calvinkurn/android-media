@@ -1,5 +1,6 @@
 package com.tokopedia.digital_checkout.data.request
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -19,6 +20,11 @@ data class RequestBodyCheckout(
         var relationships: CheckoutRelationships = CheckoutRelationships()
 ) {
     class AttributesCheckout(
+
+            @SuppressLint("Invalid Data Type")
+            @SerializedName("device_id")
+            @Expose
+            var deviceId: Int = 5,
 
             @SerializedName("voucher_code")
             @Expose

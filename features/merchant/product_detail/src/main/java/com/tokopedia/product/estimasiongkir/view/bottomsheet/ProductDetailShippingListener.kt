@@ -5,6 +5,6 @@ package com.tokopedia.product.estimasiongkir.view.bottomsheet
  */
 interface ProductDetailShippingListener {
     fun onChooseAddressClicked()
-    fun openUspBottomSheet(freeOngkirUrl: String, uspImageUrl: String)
+    fun openUspBottomSheet(uspImageUrl: String)
     fun refreshPage(height: Int)
 }

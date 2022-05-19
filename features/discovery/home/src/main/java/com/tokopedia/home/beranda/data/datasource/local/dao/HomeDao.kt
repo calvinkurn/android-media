@@ -14,7 +14,7 @@ abstract class HomeDao{
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT * FROM AtfCacheEntity")
-    abstract fun getHomeDataObject(): List<AtfCacheEntity>
+    abstract fun getHomeDataObject(): Flow<List<AtfCacheEntity>>
 
     @Query("DELETE FROM AtfCacheEntity")
     abstract fun deleteAtfTable()

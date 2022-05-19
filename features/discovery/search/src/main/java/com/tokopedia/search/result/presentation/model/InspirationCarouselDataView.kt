@@ -22,6 +22,7 @@ class InspirationCarouselDataView(
         return typeFactory.type(this)
     }
 
+    @Suppress("LongParameterList")
     class Option(
             val title: String = "",
             val url: String = "",
@@ -65,6 +66,7 @@ class InspirationCarouselDataView(
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
+        @Suppress("LongParameterList")
         class Product(
                 val id: String = "",
                 val name: String = "",
@@ -96,6 +98,7 @@ class InspirationCarouselDataView(
                 val componentId: String = "",
                 val inspirationCarouselTitle: String = "",
                 val dimension90: String = "",
+                val customVideoURL : String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {

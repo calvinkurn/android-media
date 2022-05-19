@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/affiliate_terms_toolbar"
@@ -46,6 +47,7 @@
         app:layout_constraintStart_toStartOf="@+id/terms_accept_btn" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/syarat_text"
         app:typographyType="heading_5"
         android:layout_marginStart="32dp"
         android:textColor="@color/Unify_G500"
@@ -60,6 +62,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        tools:listitem="@layout/affiliate_terms_condition_item"
         app:layout_constraintBottom_toTopOf="@+id/checkbox_terms"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

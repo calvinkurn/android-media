@@ -42,7 +42,6 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     private var mclDescTV: TextView? = null
     private var mclInfoListLL: LinearLayout? = null
     private var mclBoxLayout: RelativeLayout? = null
-    private var mclParentLayout: RelativeLayout? = null
     private var mclboxTitleTV: TextView? = null
     private var mclBoxDescTV: TextView? = null
     private var mclParentCardView: CardUnify? = null
@@ -55,7 +54,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false)
+        val view = inflater.inflate(R.layout.fragment_merchant_credit_details, container, false)
         val bundle = arguments
         val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID)
                 ?: ""
@@ -79,13 +78,11 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         mclBoxDescTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_Desc)
         mclBlockedStatusTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_blocked_status)
         mclParentCardView = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_card_view)
-        mclParentLayout = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_detail_rl)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateData()
-        mclParentLayout?.setBackgroundResource(R.drawable.saldo_merchant_credit_background)
     }
 
     private fun populateData() {

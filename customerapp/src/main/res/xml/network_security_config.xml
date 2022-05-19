@@ -19,5 +19,6 @@
         <domain includeSubdomains="false">wso2am-prod-gdhsi-h3g.dhubckh.com</domain>
         <domain includeSubdomains="false">mi-id.dnlsrv.com</domain>
         <domain includeSubdomains="false">xl.co.id</domain>
+        <domain includeSubdomains="false">apigw.xl.co.id</domain>
     </domain-config>
 </network-security-config>

@@ -38,6 +38,7 @@ import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringCo
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getKeyByValue
 import com.tokopedia.review.common.util.setSelectedFilterOrSort
 import com.tokopedia.review.common.util.toggle
@@ -76,6 +77,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -258,6 +261,15 @@ class SellerReviewDetailFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -423,7 +435,7 @@ class SellerReviewDetailFragment :
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -435,7 +447,7 @@ class SellerReviewDetailFragment :
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -455,22 +467,27 @@ class SellerReviewDetailFragment :
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData() {
+    private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
             binding?.globalErrorReviewDetail?.apply {
-                setType(GlobalError.SERVER_ERROR)
+                if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                    setType(GlobalError.NO_CONNECTION)
+                } else {
+                    setType(GlobalError.SERVER_ERROR)
+                }
                 setActionClickListener {
                     loadInitialData()
                 }
+                errorDescription.text = throwable.getErrorMessage(context)
                 show()
             }
             reviewSellerDetailAdapter.removeReviewNotFound()
             binding?.rvRatingDetail?.hide()
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
@@ -481,11 +498,12 @@ class SellerReviewDetailFragment :
             Toaster.build(
                 it,
                 message,
+                duration = Toaster.LENGTH_INDEFINITE,
                 actionText = action,
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-                })
+                }).show()
         }
     }
 

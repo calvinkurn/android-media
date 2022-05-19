@@ -3,7 +3,6 @@ package com.tokopedia.tkpd
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -13,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         /* use mainapp login use case */
         logoutButton.setOnClickListener {
-            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT).apply {
+            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
             }
             startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
@@ -116,7 +116,10 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, etAppLink.text.toString())
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {

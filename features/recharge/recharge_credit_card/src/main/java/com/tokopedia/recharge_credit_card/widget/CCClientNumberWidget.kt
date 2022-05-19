@@ -5,14 +5,12 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.recharge_credit_card.R
+import com.tokopedia.recharge_credit_card.datamodel.RuleModel
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_cc_number.view.*
@@ -24,6 +22,8 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private lateinit var listener: ActionListener
+
+    private var rules: List<RuleModel> = listOf()
 
     init {
         View.inflate(context, R.layout.widget_cc_number, this)
@@ -53,18 +53,28 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                         cc_text_input.setMessage("")
 
                         if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
-                            it.replace(0, it.length, RechargeCCUtil.concatString(
-                                    RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER))
+                            cc_text_input.textFieldInput.removeTextChangedListener(this)
+                            it.replace(0, it.length, RechargeCCUtil.concatStringWith16D(
+                                RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER))
+                            cc_text_input.textFieldInput.addTextChangedListener(this)
                         }
 
                         val inputDigit = it.toString().replace(" ", "")
-                        if (it.length == TOTAL_SYMBOLS) {
-                            if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
+                        var isValid = false
+                        rules.forEach { rule ->
+                            isValid = inputDigit.matches(rule.rule.toRegex())
+                        }
+                        if (it.length in DEFAULT_MIN_SYMBOLS_LENGTH..DEFAULT_MAX_SYMBOLS_LENGTH) {
+                            if (isValid){
+                                if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
+                                    setErrorTextField(context.getString(R.string.cc_error_invalid_number))
+                                } else {
+                                    listener.onCheckPrefix(inputDigit)
+                                    cc_text_input.setError(false)
+                                    enableBtnNext()
+                                }
+                            }else{
                                 setErrorTextField(context.getString(R.string.cc_error_invalid_number))
-                            } else {
-                                listener.onCheckPrefix(inputDigit)
-                                cc_text_input.setError(false)
-                                enableBtnNext()
                             }
                         } else {
                             if (it.length > MIN_VALID_LENGTH) {
@@ -94,6 +104,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
             }
         })
 
+        cc_text_input.textFieldIcon2.contentDescription = CLEAR_BTN_CONTENT_DESCRIPTION
         cc_text_input.textFieldIcon2.setOnClickListener {
             cc_text_input.textFieldInput.setText("")
             cc_text_input.setError(false)
@@ -110,8 +121,12 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     private fun setLengthMaxTextField() {
         val filterArray = arrayOfNulls<InputFilter>(1)
-        filterArray[0] = InputFilter.LengthFilter(TOTAL_SYMBOLS)
+        filterArray[0] = InputFilter.LengthFilter(DEFAULT_MAX_SYMBOLS_LENGTH)
         cc_text_input.textFieldInput.filters = filterArray
+    }
+
+    fun setRules(rules: List<RuleModel>){
+        this.rules = rules
     }
 
     fun setErrorTextField(message: String) {
@@ -150,14 +165,17 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     }
 
     companion object {
+        private const val DEFAULT_MIN_SYMBOLS_LENGTH = 18
+        private const val DEFAULT_MAX_SYMBOLS_LENGTH = 19
         private const val TOTAL_SYMBOLS = 19
         private const val TOTAL_DIGITS = 16
         private const val DIVIDER_MODULO = 5
-        private const val DIVIDER_POSITION = DIVIDER_MODULO - 1
         private const val DIVIDER = ' '
         private const val MIN_VALID_LENGTH = 7
         private const val IMAGE_ICON_WIDTH = 150
         private const val IMAGE_ICON2_PADDING = 4
         private const val IMAGE_ICON2_PADDING_BOTTOM = 10
+
+        private const val CLEAR_BTN_CONTENT_DESCRIPTION = "icon_clear"
     }
 }

@@ -12,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowServerErrorViewHolder(
     itemView: View,
-    private val listener: ServerErrorListener
+    private val listener: ServerErrorListener? = null
 ): AbstractViewHolder<TokoNowServerErrorUiModel>(itemView) {
 
     companion object {
@@ -24,7 +24,7 @@ class TokoNowServerErrorViewHolder(
 
     override fun bind(item: TokoNowServerErrorUiModel) {
         binding?.emptyStateFailedToFetchData?.setActionClickListener {
-            listener.onClickRetryButton()
+            listener?.onClickRetryButton()
         }
     }
 

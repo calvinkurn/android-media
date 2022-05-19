@@ -33,6 +33,7 @@
         <activity
             android:name="com.tokopedia.review.feature.inbox.presentation.ReviewInboxActivity"
             android:label="@string/title_activity_reputation_review"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden" />

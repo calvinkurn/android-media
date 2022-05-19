@@ -80,6 +80,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
@@ -448,6 +449,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onResume() {
         super.onResume()
         tryReshowCoachMark()
+        updateShopActive()
     }
 
     override fun onPause() {
@@ -916,7 +918,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setDefaultSortByValue() {
-        if (somListSortFilterTab?.isSortByAppliedManually() != true) {
+        if (somListSortFilterTab?.isSortByAppliedManually() == true) {
+            somListSortFilterTab?.getSelectedSort()?.let { selectedSort ->
+                viewModel.setSortOrderBy(selectedSort)
+            }
+        } else {
             if (tabActive == KEY_CONFIRM_SHIPPING) {
                 viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
             } else {
@@ -1011,7 +1017,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         binding?.rvSomList?.show()
                     }
                 }
-                is Fail -> showToasterError(view)
+                is Fail -> {
+                    showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_TOP_ADS_CATEGORY_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1023,6 +1038,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     binding?.tickerSomList?.gone()
                     showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_TICKERS_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1039,7 +1061,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             realtimeDataChangeCount =
                                 onSuccessGetFilter(result, realtimeDataChangeCount)
                         }
-                        is Fail -> showGlobalError(result.throwable)
+                        is Fail -> {
+                            showGlobalError(result.throwable)
+                            SomErrorHandler.logExceptionToServer(
+                                errorTag = SomErrorHandler.SOM_TAG,
+                                throwable = result.throwable,
+                                errorType =
+                                SomErrorHandler.SomMessage.FILTER_DATA_ON_ORDER_LIST_ERROR,
+                                deviceId = userSession.deviceId.orEmpty()
+                            )
+                        }
                         else -> showGlobalError(Throwable())
                     }
                     binding?.shimmerViews?.gone()
@@ -1052,6 +1083,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             when (result) {
                 is Fail -> {
                     showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_WAITING_PAYMENT_COUNTER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             updateToolbarMenu()
@@ -1067,7 +1105,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             when (result) {
                 is Success -> renderOrderList(result.data)
-                is Fail -> showGlobalError(result.throwable)
+                is Fail -> {
+                    showGlobalError(result.throwable)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ORDER_LIST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1085,11 +1132,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.acceptOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onAcceptOrderSuccess(result.data.acceptOrder, false)
-                is Fail -> showToasterError(
-                    view,
-                    getString(R.string.som_list_failed_accept_order),
-                    canRetry = false
-                )
+                is Fail -> {
+                    showToasterError(
+                        view,
+                        getString(R.string.som_list_failed_accept_order),
+                        canRetry = false
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1111,6 +1167,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     it.throwable.showErrorToaster()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1145,6 +1208,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         it.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1161,6 +1231,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     SomErrorHandler.logExceptionToCrashlytics(
                         result.throwable,
                         SomConsts.ERROR_REJECT_CANCEL_ORDER
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     result.throwable.showErrorToaster()
                 }
@@ -1184,6 +1261,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         result.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.BULK_ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1210,7 +1294,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             7. s == 0 && f == 0 which mean that all order still have unknown state (maybe because the server is busy)
                (show in progress state, can retry to recheck remaining order status)
          */
-        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, { result ->
+        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val orderCount = result.data.data.totalOrder
@@ -1250,10 +1334,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 }
                 is Fail -> {
-                    newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
+                    newShowFailedAcceptAllOrderDialog(
+                        getSelectedOrderIds().size,
+                        getSelectedOrderIds().size
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_BULK_ACCEPT_ORDER_STATUS_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
-        })
+        }
     }
 
     private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
@@ -1417,6 +1511,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showErrorBulkRequestPickup()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.BULK_REQUEST_PICKUP_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1663,7 +1764,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
-                is Fail -> onFailedValidateOrder()
+                is Fail -> {
+                    onFailedValidateOrder()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1685,6 +1795,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showGlobalError(result.throwable)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ADMIN_PERMISSION_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -2521,7 +2638,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            mutableSetOf(filterOrderType)
+            mutableSetOf(filterOrderType.toLong())
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)

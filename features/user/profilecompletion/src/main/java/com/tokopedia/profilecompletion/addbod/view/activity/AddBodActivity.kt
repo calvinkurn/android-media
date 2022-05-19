@@ -17,22 +17,22 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
  * For navigate: use {@link ApplinkConstInternalGlobal.REQUEST_ADD_BOD}
  */
 
-class AddBodActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+class AddBodActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                    .build()
+	return DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
     }
 
     override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            val bodTitle = intent.extras?.getString(ApplinkConstInternalGlobal.PARAM_BOD_TITLE)
-            updateTitle(bodTitle)
-            bundle.putAll(intent.extras)
-        }
-        return AddBodFragment.createInstance(bundle)
+	val bundle = Bundle()
+	if (intent.extras != null) {
+	    val bodTitle = intent.extras?.getString(ApplinkConstInternalGlobal.PARAM_BOD_TITLE)
+	    updateTitle(bodTitle)
+	    bundle.putAll(intent.extras)
+	}
+	return AddBodFragment.createInstance(bundle)
     }
 }

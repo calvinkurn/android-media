@@ -23,8 +23,7 @@
         </activity>
         <activity
             android:name=".presentation.activity.BuyerOrderExtensionActivity"
-            android:theme="@style/BuyerOrderExtensionTheme.Transparent"
-            android:screenOrientation="portrait">
+            android:theme="@style/BuyerOrderExtensionTheme.Transparent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

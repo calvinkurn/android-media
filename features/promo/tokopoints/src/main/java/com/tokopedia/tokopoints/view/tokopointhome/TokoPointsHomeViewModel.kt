@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
+import com.tokopedia.tokopoints.notification.PopupNotifUsecase
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotifResponse
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
@@ -25,17 +27,20 @@ import javax.inject.Inject
 @TokoPointScope
 class TokoPointsHomeViewModel @Inject constructor(
     private val tokopointsHomeUsecase: TokopointsHomeUsecase,
-    private val recommUsecase: RewardsRecommUsecase
+    private val recommUsecase: RewardsRecommUsecase,
+    private val popupNotifUsecase: PopupNotifUsecase
 ) : BaseViewModel(Dispatchers.Main), TokoPointsHomeContract.Presenter {
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
+    var defferedPopUpNotifData : Deferred<PopupNotifResponse>? = null
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
     var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
     val PAGE_NAME = "rewards_page"
     val PAGE_NUMBER = 1
     val recommIndex = 0
+    val TOKOPOINT_DRAWER = "drawer"
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -53,6 +58,7 @@ class TokoPointsHomeViewModel @Inject constructor(
                 deferredSavingData = getUserSavingData()
             }
             defferedRewardTickerResponse = getStatusMatchingData()
+            defferedPopUpNotifData = getPopNotifData()
             defferedRecomData = getRecommendationData()
             if (data != null && dataSection != null && dataSection.sectionContent != null &&
                 data.tokopediaRewardTopSection != null
@@ -61,15 +67,14 @@ class TokoPointsHomeViewModel @Inject constructor(
                     TokopointSuccess(
                         TopSectionResponse(
                             data.tokopediaRewardTopSection,
-                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await()
+                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await(),
+                            defferedPopUpNotifData?.await()?.tokopoints
                         ), dataSection.sectionContent.sectionContent, defferedRecomData?.await()
                     )
                 )
             } else {
                 throw NullPointerException("error in data")
             }
-
-
         }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
@@ -81,6 +86,17 @@ class TokoPointsHomeViewModel @Inject constructor(
             val data = response.getData<IntroResponse>(IntroResponse::class.java)
             rewardIntroData.value = Success(data)
         }) {
+        }
+    }
+
+    fun getPopNotifData(): Deferred<PopupNotifResponse>{
+        var tokopointDetailEntity  = PopupNotifResponse()
+        return async(Dispatchers.IO) {
+            try {
+                val  response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
+                tokopointDetailEntity= response.getData(PopupNotifResponse::class.java)
+            }catch (e: Exception){}
+            tokopointDetailEntity
         }
     }
 

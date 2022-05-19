@@ -1,7 +1,13 @@
 package com.tokopedia.search.result.shop.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL.*
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_HEADLINE_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PAGE_SOURCE
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QUICK_FILTER_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.PAGE_SOURCE_SEARCH_SHOP
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.SOURCE_QUICK_FILTER
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

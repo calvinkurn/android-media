@@ -4,38 +4,14 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyTemplateListResponse
-import com.tokopedia.review.feature.reviewreply.data.ReviewReplyUpdateResponse
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
-import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
 
 object SellerReviewReplyMapper {
-
-    fun mapToInsertReplyUiModel(
-        inboxReviewInsertReviewResponse:
-        ReviewReplyInsertResponse.InboxReviewInsertReviewResponse
-    ): InsertReplyResponseUiModel {
-        return InsertReplyResponseUiModel(inboxReviewInsertReviewResponse.isSuccesss.toLongOrZero())
-    }
-
-    fun mapToUpdateReplyUiModel(
-        productrevUpdateSellerResponse:
-        ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse
-    ): UpdateReplyResponseUiModel {
-        return UpdateReplyResponseUiModel(
-            isSuccess = productrevUpdateSellerResponse.success,
-            feedbackId = productrevUpdateSellerResponse.data.feedbackID,
-            responseBy = productrevUpdateSellerResponse.data.responseBy,
-            shopId = productrevUpdateSellerResponse.data.shopID,
-            responseMessage = productrevUpdateSellerResponse.data.responseMessage
-        )
-    }
 
     fun mapToItemTemplateUiModel(
         templateList:

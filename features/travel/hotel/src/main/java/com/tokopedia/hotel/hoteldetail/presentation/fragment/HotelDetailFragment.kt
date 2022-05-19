@@ -73,6 +73,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.round
+import android.widget.LinearLayout
 
 /**
  * @author by furqan on 22/04/19
@@ -406,6 +407,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 setType(Typography.BODY_3)
                 setWeight(Typography.BOLD)
                 setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+                val params: LinearLayout.LayoutParams =
+                    LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                params.setMargins(IMAGE_COUNTER_ZERO, IMAGE_COUNTER_ZERO, getDimens(R.dimen.hotel_6dp), IMAGE_COUNTER_ZERO)
+                layoutParams = params
             }
             binding?.hotelRatingContainer?.addView(textView)
         }

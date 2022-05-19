@@ -2,6 +2,8 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionChildItem
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.ShopAdsDataView
+import com.tokopedia.topads.sdk.domain.model.CpmData
 
 fun SuggestionItem.convertToBaseSuggestion(
     searchTerm: String,
@@ -30,12 +32,13 @@ fun SuggestionItem.convertToBaseSuggestion(
         searchTerm = searchTerm,
         position = position,
         dimension90 = dimension90,
-        childItems = suggestionChildItems.convertToChildItems(searchTerm, dimension90),
+        childItems = suggestionChildItems.convertToChildItems(searchTerm, dimension90, trackingOption),
     )
 
 private fun List<SuggestionChildItem>.convertToChildItems(
     searchTerm: String,
     dimension90: String,
+    trackingOption: Int,
 ): List<BaseSuggestionDataView.ChildItem> =
     mapIndexed { index, item ->
         BaseSuggestionDataView.ChildItem(
@@ -46,6 +49,35 @@ private fun List<SuggestionChildItem>.convertToChildItems(
             title = item.title,
             searchTerm = searchTerm,
             dimension90 = dimension90,
-            position = index + 1
+            position = index + 1,
+            componentId = item.componentId,
+            trackingOption = trackingOption,
         )
     }
+
+fun SuggestionItem.convertToBaseSuggestionShopAds(
+    searchTerm: String,
+    position: Int,
+    dimension90: String,
+    cpmData: CpmData,
+): BaseSuggestionDataView =
+    BaseSuggestionDataView(
+        template = template,
+        type = TYPE_SHOP,
+        applink = cpmData.applinks,
+        title = cpmData.cpm.name,
+        subtitle = cpmData.cpm.cpmShop.location,
+        iconTitle = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+        iconSubtitle = iconSubtitle,
+        imageUrl = cpmData.cpm.cpmImage.fullEcs,
+        position = position,
+        dimension90 = dimension90,
+        searchTerm = searchTerm,
+        componentId = componentId,
+        trackingOption = trackingOption,
+        shopAdsDataView = ShopAdsDataView(
+            clickUrl = cpmData.adClickUrl,
+            impressionUrl = cpmData.cpm.cpmImage.fullUrl,
+            imageUrl = cpmData.cpm.cpmImage.fullEcs,
+        )
+    )

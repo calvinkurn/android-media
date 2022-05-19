@@ -19,6 +19,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -159,12 +160,10 @@ class PlayActivity : BaseActivity(),
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val newBundle = intent.extras
+        val newBundle = intent.extras ?: Bundle()
 
-        if (newBundle != null) {
-            newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
-            viewModel.setNewChannelParams(newBundle)
-        }
+        newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
+        viewModel.setNewChannelParams(newBundle)
     }
 
     override fun onEnterPiPMode() {
@@ -224,13 +223,15 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun inject() {
-        DaggerPlayComponent.builder()
-                .baseAppComponent(
-                        (applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(this))
-                .build()
-                .inject(this)
+        PlayInjector.get(this)
+            .inject(this)
+//        DaggerPlayComponent.builder()
+//                .baseAppComponent(
+//                        (applicationContext as BaseMainApplication).baseAppComponent
+//                )
+//                .playModule(PlayModule(this))
+//                .build()
+//                .inject(this)
     }
 
     private fun setupViewModel() {

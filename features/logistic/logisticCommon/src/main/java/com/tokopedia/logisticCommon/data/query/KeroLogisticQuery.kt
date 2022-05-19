@@ -171,6 +171,11 @@ object KeroLogisticQuery {
               tokonow {
                 shop_id
                 warehouse_id
+                warehouses {
+                    warehouse_id
+                    service_type
+                }
+                service_type
                 }
             }
             status
@@ -254,5 +259,22 @@ object KeroLogisticQuery {
             next_available
           }
         }
+    """.trimIndent()
+
+    val eligible_for_address_feature = """
+        query eligibleForAddressFeature(${'$'}feature_id: Int!, ${'$'}device: String!, ${'$'}device_version: String!){ 
+          KeroAddrIsEligibleForAddressFeature(feature_id:${'$'}feature_id, device:${'$'}device, device_version:${'$'}device_version) {
+            data {
+              eligible
+            }
+            kero_addr_error {
+              code
+              detail
+            }
+            status
+            server_process_time
+            config
+          }
+      }
     """.trimIndent()
 }

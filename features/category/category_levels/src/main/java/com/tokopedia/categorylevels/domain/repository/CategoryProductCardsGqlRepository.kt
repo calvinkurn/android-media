@@ -54,7 +54,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
     private fun createRequestParams(page: String, componentId: String, component: ComponentsItem?): GetRecommendationRequestParam {
         var queryParam =""
         component?.selectedFilters?.forEach {
-            queryParam = queryParam.plus("&${it.key}=${it.value}")
+            queryParam = queryParam.plus("&${it.key}=${it.value.replace("#", ",")}")
         }
         component?.selectedSort?.forEach {
             queryParam = queryParam.plus("&${it.key}=${it.value}")

@@ -11,7 +11,7 @@ interface ReadReviewItemListener {
             shopId: String,
             productId: String
     )
-    fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int, index: Int)
+    fun onLikeButtonClicked(reviewId: String, likeStatus: Int, index: Int)
     fun onShopReviewLikeButtonClicked(reviewId: String, shopId: String, productId: String, likeStatus: Int, index: Int)
     fun onItemImpressed(reviewId: String, position: Int, characterCount: Int, imageCount: Int)
 }

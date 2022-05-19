@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.analyticsdebugger.cassava.debugger.DebuggerListViewModel
-import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
+import com.tokopedia.analyticsdebugger.cassava.ui.debugger.DebuggerListViewModel
+import com.tokopedia.analyticsdebugger.cassava.ui.main.ValidatorViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

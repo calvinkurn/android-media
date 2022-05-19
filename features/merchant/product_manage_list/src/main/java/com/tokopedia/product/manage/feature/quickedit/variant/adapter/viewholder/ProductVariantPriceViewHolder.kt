@@ -5,6 +5,7 @@ import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -99,6 +100,7 @@ class ProductVariantPriceViewHolder(
 
     private fun setInputType() {
         binding?.textFieldPrice?.setInputType(InputType.TYPE_CLASS_NUMBER)
+        binding?.textFieldPrice?.textFieldInput?.imeOptions = EditorInfo.IME_NULL
     }
 
     private fun showMinPriceError() {

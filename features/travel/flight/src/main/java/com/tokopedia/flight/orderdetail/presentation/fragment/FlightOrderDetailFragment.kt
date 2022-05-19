@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
@@ -38,8 +39,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailData
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailErrorModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
-import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.flight.resend_eticket.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -54,8 +54,8 @@ import javax.inject.Inject
  * @author by furqan on 19/10/2020
  */
 class FlightOrderDetailFragment : BaseDaggerFragment(),
-        FlightOrderDetailJourneyView.Listener,
-        FlightOrderDetailHeaderStatusView.Listener {
+    FlightOrderDetailJourneyView.Listener,
+    FlightOrderDetailHeaderStatusView.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -95,7 +95,11 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             flightOrderDetailViewModel.fetchCrossSellData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentFlightOrderDetailBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -119,8 +123,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     var message = ""
                     try {
                         val gson = Gson()
-                        val itemType = object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
-                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(it.throwable.message, itemType)
+                        val itemType =
+                            object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
+                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(
+                            it.throwable.message,
+                            itemType
+                        )
                         title = errorData[0].title
                         message = errorData[0].message
                     } catch (error: Throwable) {
@@ -147,7 +155,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     navigateToWebview(E_TICKET_TITLE, it.data)
                 }
                 is Fail -> {
-                    showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), E_TICKET_TITLE.toLowerCase()))
+                    showSnackbarError(
+                        String.format(
+                            getString(R.string.flight_order_detail_failed_to_fetch_data),
+                            E_TICKET_TITLE.toLowerCase()
+                        )
+                    )
                 }
             }
         })
@@ -158,7 +171,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     navigateToWebview(INVOICE_TITLE, it.data)
                 }
                 is Fail -> {
-                    showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), INVOICE_TITLE.toLowerCase()))
+                    showSnackbarError(
+                        String.format(
+                            getString(R.string.flight_order_detail_failed_to_fetch_data),
+                            INVOICE_TITLE.toLowerCase()
+                        )
+                    )
                 }
             }
         })
@@ -176,7 +194,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_SEND_E_TICKET -> {
                 if (resultCode == Activity.RESULT_OK)
-                    showSnackbar(getString(com.tokopedia.flight.orderlist.R.string.resend_eticket_success))
+                    showSnackbar(getString(R.string.flight_resend_eticket_success))
             }
             REQUEST_CODE_CANCELLATION -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -189,8 +207,17 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     data?.let {
                         if (it.hasExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR) &&
-                                it.getBooleanExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR, false)) {
-                            showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), CANCELLATION_TITLE.toLowerCase()))
+                            it.getBooleanExtra(
+                                FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR,
+                                false
+                            )
+                        ) {
+                            showSnackbarError(
+                                String.format(
+                                    getString(R.string.flight_order_detail_failed_to_fetch_data),
+                                    CANCELLATION_TITLE.toLowerCase()
+                                )
+                            )
                         }
                     }
                 }
@@ -199,17 +226,22 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onPnrCopyClicked(pnr: String, isReturn: Boolean) {
-        copyToClipboard(if (isReturn) CLIP_LABEL_RETURN_BOOKING_CODE else CLIP_LABEL_DEPARTURE_BOOKING_CODE, pnr)
+        copyToClipboard(
+            if (isReturn) CLIP_LABEL_RETURN_BOOKING_CODE else CLIP_LABEL_DEPARTURE_BOOKING_CODE,
+            pnr
+        )
     }
 
     override fun onSendETicketClicked() {
         flightOrderDetailViewModel.trackSendETicketClicked()
         val bottomSheet = FlightOrderResendEmailBottomSheet.getInstance(
-                flightOrderDetailViewModel.getUserEmail(),
-                flightOrderDetailViewModel.orderId
+            flightOrderDetailViewModel.getUserEmail(),
+            flightOrderDetailViewModel.orderId
         )
         bottomSheet.setTargetFragment(this, REQUEST_CODE_SEND_E_TICKET)
-        bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        bottomSheet.setShowListener {
+            bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         bottomSheet.show(requireFragmentManager(), FlightOrderResendEmailBottomSheet.TAG)
     }
 
@@ -257,20 +289,20 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         /* Render Order Status */
         binding?.flightOrderDetailHeaderStatus?.listener = this
         binding?.flightOrderDetailHeaderStatus?.setData(
-                data.status,
-                data.statusString,
-                flightOrderDetailViewModel.orderId,
-                data.createTime,
-                data.payment.gatewayName,
-                data.payment.totalAmountStr
+            data.status,
+            data.statusString,
+            flightOrderDetailViewModel.orderId,
+            data.createTime,
+            data.payment.gatewayName,
+            data.payment.totalAmountStr
         )
         binding?.flightOrderDetailHeaderStatus?.buildView()
 
         /* Render Journey Ticket View */
         binding?.flightOrderDetailJourney?.listener = this
         binding?.flightOrderDetailJourney?.setData(
-                data.hasETicket,
-                data.journeys
+            data.hasETicket,
+            data.journeys
         )
         binding?.flightOrderDetailJourney?.buildView()
 
@@ -291,12 +323,13 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         /* Render Insurance View */
         if (data.insurances.isNotEmpty()) {
             binding?.flightOrderDetailInsurance?.visibility = View.VISIBLE
-            binding?.flightOrderDetailInsurance?.listener = object : FlightOrderDetailButtonsView.Listener {
-                override fun onTopButtonClicked() {}
+            binding?.flightOrderDetailInsurance?.listener =
+                object : FlightOrderDetailButtonsView.Listener {
+                    override fun onTopButtonClicked() {}
 
-                override fun onBottomButtonClicked() {}
+                    override fun onBottomButtonClicked() {}
 
-            }
+                }
 
             data.insurances.forEach {
                 when (it.id) {
@@ -306,21 +339,27 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             }
 
             binding?.flightOrderDetailInsurance?.setData(
-                    getString(R.string.flight_order_detail_insurance_title_label),
-                    FlightOrderDetailButtonModel(
-                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                            getString(R.string.flight_order_detail_insurance_trip_label),
-                            getString(R.string.flight_order_detail_insurance_trip_description),
-                            isTravelInsurance,
-                            false
+                getString(R.string.flight_order_detail_insurance_title_label),
+                FlightOrderDetailButtonModel(
+                    MethodChecker.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_flight_order_detail_insurance
                     ),
-                    FlightOrderDetailButtonModel(
-                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                            getString(R.string.flight_order_detail_insurance_cancel_label),
-                            getString(R.string.flight_order_detail_insurance_trip_description),
-                            isZeroCancellation,
-                            false
-                    )
+                    getString(R.string.flight_order_detail_insurance_trip_label),
+                    getString(R.string.flight_order_detail_insurance_trip_description),
+                    isTravelInsurance,
+                    false
+                ),
+                FlightOrderDetailButtonModel(
+                    MethodChecker.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_flight_order_detail_insurance
+                    ),
+                    getString(R.string.flight_order_detail_insurance_cancel_label),
+                    getString(R.string.flight_order_detail_insurance_trip_description),
+                    isZeroCancellation,
+                    false
+                )
             )
             binding?.flightOrderDetailInsurance?.buildView()
         } else {
@@ -328,44 +367,55 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
 
         /* Render Web Check In View */
-        val isWebCheckInButtonVisible: Pair<Boolean, String> = flightOrderDetailViewModel.isWebCheckInAvailable(data)
-        binding?.flightOrderDetailCheckIn?.listener = object : FlightOrderDetailButtonsView.Listener {
-            override fun onTopButtonClicked() {
-                flightOrderDetailViewModel.trackClickWebCheckIn()
-                context?.let {
-                    startActivity(FlightOrderDetailWebCheckInActivity
-                            .getIntent(it, flightOrderDetailViewModel.orderId))
+        val isWebCheckInButtonVisible: Pair<Boolean, String> =
+            flightOrderDetailViewModel.isWebCheckInAvailable(data)
+        binding?.flightOrderDetailCheckIn?.listener =
+            object : FlightOrderDetailButtonsView.Listener {
+                override fun onTopButtonClicked() {
+                    flightOrderDetailViewModel.trackClickWebCheckIn()
+                    context?.let {
+                        startActivity(
+                            FlightOrderDetailWebCheckInActivity
+                                .getIntent(it, flightOrderDetailViewModel.orderId)
+                        )
+                    }
                 }
-            }
 
-            override fun onBottomButtonClicked() {
-                flightOrderDetailViewModel.trackClickCancel()
-                flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
-            }
+                override fun onBottomButtonClicked() {
+                    flightOrderDetailViewModel.trackClickCancel()
+                    flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
+                }
 
-        }
+            }
         binding?.flightOrderDetailCheckIn?.setData(
-                getString(R.string.flight_order_detail_check_in_title_label),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_web_check_in),
-                        getString(R.string.flight_order_detail_check_in_label),
-                        isWebCheckInButtonVisible.second,
-                        true,
-                        isWebCheckInButtonVisible.first,
-                        isWebCheckInButtonVisible.first
+            getString(R.string.flight_order_detail_check_in_title_label),
+            FlightOrderDetailButtonModel(
+                MethodChecker.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_flight_order_detail_web_check_in
                 ),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
-                        getString(R.string.flight_label_cancel_ticket),
-                        getString(R.string.flight_order_detail_cancel_description),
-                        FlightOrderDetailStatusMapper.getStatusOrder(data.status) == FlightOrderDetailStatusMapper.SUCCESS,
-                        true
-                )
+                getString(R.string.flight_order_detail_check_in_label),
+                isWebCheckInButtonVisible.second,
+                true,
+                isWebCheckInButtonVisible.first,
+                isWebCheckInButtonVisible.first
+            ),
+            FlightOrderDetailButtonModel(
+                MethodChecker.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_flight_order_detail_cancellation
+                ),
+                getString(R.string.flight_label_cancel_ticket),
+                getString(R.string.flight_order_detail_cancel_description),
+                FlightOrderDetailStatusMapper.getStatusOrder(data.status) == FlightOrderDetailStatusMapper.SUCCESS,
+                true
+            )
         )
         binding?.flightOrderDetailCheckIn?.buildView()
 
         /* Render Contact Us */
-        binding?.tgFlightOrderContactUs?.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
+        binding?.tgFlightOrderContactUs?.text =
+            MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
         binding?.tgFlightOrderContactUs?.setOnClickListener {
             RouteManager.route(requireContext(), data.contactUsURL)
         }
@@ -377,7 +427,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         if (crossSellData.items.isNotEmpty()) {
             binding?.flightOrderDetailCrossSell?.visibility = View.VISIBLE
             binding?.flightOrderDetailCrossSell?.buildView(crossSellData)
-            binding?.flightOrderDetailCrossSell?.setListener(object : TravelCrossSellAdapter.OnItemClickListener {
+            binding?.flightOrderDetailCrossSell?.setListener(object :
+                TravelCrossSellAdapter.OnItemClickListener {
                 override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
                     RouteManager.route(context, item.uri)
                 }
@@ -390,7 +441,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun copyToClipboard(label: String, textToCopy: String) {
         context?.let {
-            val clipboardManager: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboardManager: ClipboardManager =
+                it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(label, textToCopy)
             clipboardManager.setPrimaryClip(clipData)
             showSnackbar(getString(R.string.flight_order_detail_success_copy_message, label))
@@ -399,11 +451,13 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun openDetailPaymentBottomSheet() {
         val bottomSheet = FlightOrderDetailPaymentDetailBottomSheet.getInstance(
-                flightOrderDetailViewModel.buildPaymentDetailData(),
-                flightOrderDetailViewModel.buildAmenitiesPaymentDetailData(),
-                flightOrderDetailViewModel.getTotalAmount()
+            flightOrderDetailViewModel.buildPaymentDetailData(),
+            flightOrderDetailViewModel.buildAmenitiesPaymentDetailData(),
+            flightOrderDetailViewModel.getTotalAmount()
         )
-        bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        bottomSheet.setShowListener {
+            bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         bottomSheet.show(requireFragmentManager(), FlightOrderDetailPaymentDetailBottomSheet.TAG)
     }
 
@@ -417,22 +471,31 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun navigateToCancellationDetailPage() {
         context?.let {
-            startActivity(FlightOrderCancellationListActivity.createIntent(it, flightOrderDetailViewModel.orderId))
+            startActivity(
+                FlightOrderCancellationListActivity.createIntent(
+                    it,
+                    flightOrderDetailViewModel.orderId
+                )
+            )
         }
     }
 
-    private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
-        val intent: Intent = if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION, true)) {
+    private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationResponseEntity>) {
+        val intent: Intent = if (remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION,
+                true
+            )
+        ) {
             FlightCancellationActivity.createIntent(
-                    requireContext(),
-                    flightOrderDetailViewModel.orderId,
-                    cancellationItems
+                requireContext(),
+                flightOrderDetailViewModel.orderId,
+                cancellationItems
             )
         } else {
             FlightCancellationPassengerActivity.createIntent(
-                    requireContext(),
-                    flightOrderDetailViewModel.orderId,
-                    cancellationItems
+                requireContext(),
+                flightOrderDetailViewModel.orderId,
+                cancellationItems
             )
         }
         startActivityForResult(intent, REQUEST_CODE_CANCELLATION)
@@ -448,11 +511,15 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun navigateToWebview(title: String, htmlContent: String) {
         context?.let {
-            startActivity(FlightOrderDetailBrowserActivity.getIntent(it,
+            startActivity(
+                FlightOrderDetailBrowserActivity.getIntent(
+                    it,
                     title,
                     flightOrderDetailViewModel.orderId,
                     htmlContent,
-                    flightOrderDetailViewModel.getOrderDetailStatus()))
+                    flightOrderDetailViewModel.getOrderDetailStatus()
+                )
+            )
         }
     }
 
@@ -496,15 +563,17 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         private const val CODE_TRAVEL_INSURANCE = "1"
         private const val CODE_ZERO_CANCELLATION_INSURANCE = "2"
 
-        fun createInstance(invoiceId: String,
-                           isCancellation: Boolean,
-                           isRequestCancellation: Boolean): FlightOrderDetailFragment =
-                FlightOrderDetailFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_INVOICE_ID, invoiceId)
-                        putBoolean(EXTRA_IS_CANCELLATION, isCancellation)
-                        putBoolean(EXTRA_REQUEST_CANCEL, isRequestCancellation)
-                    }
+        fun createInstance(
+            invoiceId: String,
+            isCancellation: Boolean,
+            isRequestCancellation: Boolean
+        ): FlightOrderDetailFragment =
+            FlightOrderDetailFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_INVOICE_ID, invoiceId)
+                    putBoolean(EXTRA_IS_CANCELLATION, isCancellation)
+                    putBoolean(EXTRA_REQUEST_CANCEL, isRequestCancellation)
                 }
+            }
     }
 }

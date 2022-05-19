@@ -5,7 +5,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
 data class DiscoveryResponse(
 
-        @SerializedName("components")
+        @SerializedName("components",alternate = ["component_data"])
         var components: MutableList<ComponentsItem>,
 
         @SerializedName("component")
@@ -24,6 +24,7 @@ data class DiscoveryResponse(
         val creativeName: String? = null
 
 ) {
-    lateinit var componentMap: MutableMap<String, ComponentsItem>
-    var cartMap : MutableMap<String,MiniCartItem>? = null
+        lateinit var componentMap: MutableMap<String, ComponentsItem>
+        var cartMap: MutableMap<String, MiniCartItem>? = null
+        var sectionMap: MutableMap<String, Int>? = null
 }

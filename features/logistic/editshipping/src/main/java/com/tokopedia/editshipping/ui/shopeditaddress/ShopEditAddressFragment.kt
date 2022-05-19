@@ -380,7 +380,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
 
-        LogisticUserConsentHelper().displayUserConsent(activity as Context, tvUserConsent, getString(R.string.save_changes))
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, tvUserConsent, getString(R.string.save_changes))
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->

@@ -55,6 +55,9 @@ class SuggestionFragment :
     var suggestionTracking: SuggestionTracking? = null
         @Inject set
 
+    override val className: String
+        get() = activity?.javaClass?.name ?: ""
+
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
         suggestionListener = this,
@@ -147,7 +150,7 @@ class SuggestionFragment :
         presenter?.onSuggestionItemClicked(item)
     }
 
-    override fun onChipImpressed(item: BaseSuggestionDataView) {
+    override fun onChipImpressed(item: BaseSuggestionDataView.ChildItem) {
         suggestionTracking?.eventImpressionSuggestion(item)
     }
 
@@ -303,13 +306,9 @@ class SuggestionFragment :
     override fun trackClickChip(
         eventLabel: String,
         dimension90: String,
-        baseSuggestionDataView: BaseSuggestionDataView,
+        childItem: BaseSuggestionDataView.ChildItem,
     ) {
-        suggestionTracking?.eventClickChipSuggestion(
-            eventLabel,
-            dimension90,
-            baseSuggestionDataView,
-        )
+        suggestionTracking?.eventClickChipSuggestion(childItem)
     }
 
     override fun trackEventImpressCurated(

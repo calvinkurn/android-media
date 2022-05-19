@@ -196,6 +196,7 @@
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_topchat_10"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/unify_space_12" />

@@ -19,6 +19,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Chat
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateRightBg
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.common.util.ViewUtil
 
 class StickerMessageViewHolder(
     itemView: View?,
@@ -114,7 +115,9 @@ class StickerMessageViewHolder(
                     }
                 }
             })
-            loader?.start()
+            if (ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
+                loader?.start()
+            }
         }
     }
 

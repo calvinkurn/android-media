@@ -133,7 +133,7 @@
       "event": "viewCheckoutIris",
       "eventCategory": "digital - checkout page",
       "eventAction": "view tick box auto debit",
-      "eventLabel": "enabled|disabled",
+      "eventLabel": "(enabled|disabled) - .+ - .+",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "sessionIris": ".+",

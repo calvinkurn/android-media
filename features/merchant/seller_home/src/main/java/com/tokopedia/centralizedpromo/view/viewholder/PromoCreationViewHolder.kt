@@ -16,6 +16,8 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     var onFreeShippingImpression: (() -> Unit)? = null
     var onFreeShippingClicked: (() -> Unit)? = null
+    var onProductCouponImpression: (() -> Unit)? = null
+    var onProductCouponClicked: (() -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -51,10 +53,16 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             }
 
             root.addOnImpressionListener(element.impressHolder) {
-                if (isFreeShippingPromo(element.title)) {
-                    onFreeShippingImpression?.invoke()
-                } else {
-                    CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                when {
+                    isFreeShippingPromo(element.title) -> {
+                        onFreeShippingImpression?.invoke()
+                    }
+                    isProductCouponPromo(element.title) -> {
+                        onProductCouponImpression?.invoke()
+                    }
+                    else -> {
+                        CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                    }
                 }
             }
 
@@ -73,14 +81,25 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     }
 
     private fun trackClickPromo(title: String) {
-        if (isFreeShippingPromo(title)) {
-            onFreeShippingClicked?.invoke()
-        } else {
-            CentralizedPromoTracking.sendClickPromoCreation(title)
+        when {
+            isFreeShippingPromo(title) -> {
+                onFreeShippingClicked?.invoke()
+            }
+            isProductCouponPromo(title) -> {
+                onProductCouponClicked?.invoke()
+            }
+            else -> {
+                CentralizedPromoTracking.sendClickPromoCreation(title)
+            }
         }
     }
 
     private fun isFreeShippingPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_free_shipping_title)
     }
+
+    private fun isProductCouponPromo(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
 }

@@ -8,7 +8,8 @@ interface ReviewPendingItemListener {
     fun onStarsClicked(reputationId: String, productId: String, rating: Int, inboxReviewId: String, seen: Boolean)
     fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain)
     fun onDismissOvoIncentiveTicker(subtitle: String)
-    fun onReviewCredibilityWidgetClicked()
+    fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int)
+    fun onReviewCredibilityWidgetImpressed(title: String, position: Int)
     fun shouldShowCoachMark(): Boolean
     fun updateCoachMark()
 }

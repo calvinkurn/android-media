@@ -1,8 +1,22 @@
 package com.tokopedia.review.feature.reading.presentation.viewmodel
 
+import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
-import com.tokopedia.review.common.data.ToggleProductReviewLike
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.Attachments
+import com.tokopedia.review.feature.reading.data.Product
+import com.tokopedia.review.feature.reading.data.ProductRating
+import com.tokopedia.review.feature.reading.data.ProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
+import com.tokopedia.review.feature.reading.data.ProductReviewList
+import com.tokopedia.review.feature.reading.data.ProductTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopReviewList
+import com.tokopedia.review.feature.reading.data.ShopRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ShopReview
+import com.tokopedia.review.feature.reading.data.ShopReviewList
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
@@ -324,12 +338,11 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     @Test
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected results`() {
         val reviewId = anyString()
-        val shopId = anyString()
         val likeStatus = 1
         val totalLike = 1
         val index = anyInt()
         val expectedResponse = ToggleLikeReviewResponse(
-            ToggleProductReviewLike(
+            ProductrevLikeReview(
                 likeStatus = likeStatus,
                 totalLike = 1
             )
@@ -338,7 +351,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onToggleLikeReviewSuccess_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
+        viewModel.toggleLikeReview(reviewId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewSuccessEquals(Success(expectedValue))
@@ -347,13 +360,11 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     @Test
     fun `when toggleLike shop review should call toggleLikeReviewUseCase and return expected results`() {
         val reviewId = anyString()
-        val shopId = anyString()
-        val productId = anyString()
         val likeStatus = 1
         val totalLike = 1
         val index = anyInt()
         val expectedResponse = ToggleLikeReviewResponse(
-                ToggleProductReviewLike(
+                ProductrevLikeReview(
                         likeStatus = likeStatus,
                         totalLike = 1
                 )
@@ -362,7 +373,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onToggleLikeReviewSuccess_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeShopReview(reviewId, shopId, productId, likeStatus, index)
+        viewModel.toggleLikeShopReview(reviewId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewSuccessEquals(Success(expectedValue))
@@ -371,14 +382,13 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     @Test
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected error`() {
         val reviewId = anyString()
-        val shopId = anyString()
         val likeStatus = anyInt()
         val index = anyInt()
         val expectedResponse = Throwable()
 
         onToggleLikeReviewFail_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
+        viewModel.toggleLikeReview(reviewId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewErrorEquals(Fail(expectedResponse))
@@ -387,15 +397,13 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     @Test
     fun `when toggleLike shop review should call toggleLikeReviewUseCase and return expected error`() {
         val reviewId = anyString()
-        val shopId = anyString()
-        val productId = anyString()
         val likeStatus = anyInt()
         val index = anyInt()
         val expectedResponse = Throwable()
 
         onToggleLikeReviewFail_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeShopReview(reviewId, shopId, productId, likeStatus, index)
+        viewModel.toggleLikeShopReview(reviewId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewErrorEquals(Fail(expectedResponse))

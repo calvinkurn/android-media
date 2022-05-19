@@ -12,13 +12,13 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
@@ -28,7 +28,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
+open class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
 
     companion object {
         const val APPLINK_PARAM_PRODUCT_ID = "productId"
@@ -124,7 +124,7 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
                 finish()
                 return
             }
-            RouteManager.route(this, Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(ReviewInboxConstants.PARAM_TAB, ReviewInboxConstants.SELLER_TAB).build().toString())
+            RouteManager.route(this, Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(ReviewApplinkConst.PARAM_TAB, ReviewApplinkConst.SELLER_TAB).build().toString())
             finish()
         }
     }

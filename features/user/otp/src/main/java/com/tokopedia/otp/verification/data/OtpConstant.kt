@@ -5,6 +5,9 @@ package com.tokopedia.otp.verification.domain.data
  * @created on 9/12/2019
  */
 
+const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
+const val TAG_AUTO_READ = "autoread"
+
 object OtpConstant {
 
     const val OTP_DATA_EXTRA = "otp-data-extra"
@@ -14,6 +17,7 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
+    const val PIN_V2_SALT = "c456bbc2c9c746ffaf67787d7c59945d"
     object OtpMode {
         const val SMS = "sms"
         const val WA = "whatsapp"

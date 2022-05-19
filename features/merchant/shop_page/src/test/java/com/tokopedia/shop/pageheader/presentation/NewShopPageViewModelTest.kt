@@ -39,6 +39,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 
@@ -84,6 +85,9 @@ class NewShopPageViewModelTest {
     lateinit var getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>
 
     @RelaxedMockK
+    lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
+
+    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -93,6 +97,7 @@ class NewShopPageViewModelTest {
     private lateinit var shopPageViewModel : NewShopPageViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val mockExtParam = "fs_widget%3D23600"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
 
@@ -112,6 +117,7 @@ class NewShopPageViewModelTest {
                 getShopPageHeaderLayoutUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
+                gqlGetShopOperationalHourStatusUseCase,
                 testCoroutineDispatcherProvider
         )
     }
@@ -157,7 +163,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 false,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -191,7 +198,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 false,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -209,7 +217,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 true,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -227,7 +236,8 @@ class NewShopPageViewModelTest {
                 "",
                 "",
                 true,
-                addressWidgetData
+                addressWidgetData,
+                mockExtParam
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }
@@ -504,23 +514,57 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } returns ShopInfo()
-        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        coEvery {
+            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
+        } returns ShopOperationalHourStatus()
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value is Success)
         assert(shopPageViewModel.shopPageShopShareData.value is Success)
 
-        shopPageViewModel.getShopInfoData("0", mockShopDomain, true)
+        shopPageViewModel.getShopShareAndOperationalHourStatusData("0", mockShopDomain, true)
         assert(shopPageViewModel.shopPageTickerData.value is Success)
         assert(shopPageViewModel.shopPageShopShareData.value is Success)
     }
 
     @Test
-    fun `check whether shopPageTickerData and shopPageShopShareData value is null if error when get data`() {
+    fun `check whether shopPageShopShareData value is null if error when get shopInfo data`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } throws Exception()
+        coEvery {
+            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageShopShareData.value == null)
+    }
+
+    @Test
+    fun `check whether shopPageTickerData value is null if error when get shopOperationalHourStatus data`() {
+        val mockShopId = "123"
+        val mockShopDomain = "mock domain"
+        coEvery {
+            gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
+        } returns ShopInfo()
+        coEvery {
+            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageViewModel.shopPageTickerData.value == null)
+    }
+
+    @Test
+    fun `check whether shopPageShopShareData and shopPageTickerData value is null if exception is not caught`() {
         val mockShopId = "123"
         val mockShopDomain = "mock domain"
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } throws Throwable()
-        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        coEvery {
+            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
+        } returns ShopOperationalHourStatus()
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value == null)
         assert(shopPageViewModel.shopPageShopShareData.value == null)
     }

@@ -88,8 +88,20 @@ class FirebaseDLWrapper {
 
             tokopediaDeeplink?.let {
                 RouteManager.route(activity, tokopediaDeeplink)
-                processUtmParams(tokopediaDeeplink, firebaseUrl) }
+                processUtmParams(getLinkToProcessUtm(activity, link), firebaseUrl) }
         }
+    }
+
+    private fun getLinkToProcessUtm(activity: Activity?, link: String) : String{
+        activity?.let { containerActivity ->
+            containerActivity.intent.data?.let { intentUri ->
+                if(intentUri.queryParameterNames.contains(LinkerConstants.UTM_SOURCE)
+                        && intentUri.queryParameterNames.contains(LinkerConstants.UTM_CAMPAIGN)){
+                    return intentUri.toString()
+                }
+            }
+        }
+        return link
     }
 
     private fun processUtmParams(link: String, firebaseUrl: Uri) {
@@ -277,6 +289,9 @@ class FirebaseDLWrapper {
             }
             LinkerData.PLAY_BROADCASTER.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = data.uri
+            }
+            LinkerData.PLAY_VIEWER.equals(data.type, ignoreCase = true) -> {
+                deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.id) //"play/" + data.getId();
             }
             LinkerData.MERCHANT_VOUCHER.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = data.deepLink

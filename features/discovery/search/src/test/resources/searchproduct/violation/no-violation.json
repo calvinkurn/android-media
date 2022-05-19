@@ -1,0 +1,56 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 0,
+      "totalDataText": "",
+      "defaultView": 1,
+      "responseCode": 1,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "0",
+      "componentId": "02.01.00.00"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=asdgasdfasdf",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [],
+      "violation": {
+        "headerText": "",
+        "descriptionText": "",
+        "imageURL": "",
+        "ctaURL": "",
+        "buttonText": "",
+        "buttonType": ""
+      }
+    }
+  }
+}

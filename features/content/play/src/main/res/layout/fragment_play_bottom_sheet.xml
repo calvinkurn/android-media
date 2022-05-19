@@ -19,4 +19,7 @@
         layout="@layout/view_play_interactive_leaderboard"
         />
 
+    <include
+        layout="@layout/view_shop_coupon_sheet"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

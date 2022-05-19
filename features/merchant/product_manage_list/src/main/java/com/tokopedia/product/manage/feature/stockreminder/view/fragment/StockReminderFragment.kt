@@ -282,6 +282,13 @@ class StockReminderFragment: BaseDaggerFragment() {
                     getStockReminder()
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -297,11 +304,20 @@ class StockReminderFragment: BaseDaggerFragment() {
                         getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR,
-                        getString(R.string.product_stock_reminder_toaster_action_text)
+                        getString(R.string.product_stock_reminder_toaster_action_text),
+                        clickListener = {
+                            createStockReminder()
+                        }
                     ).show()
                 }
-                Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                    throwable = stockReminderData.throwable,
+                    errorType =
+                    ProductManageListErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
@@ -317,10 +333,19 @@ class StockReminderFragment: BaseDaggerFragment() {
                         getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR,
-                        getString(R.string.product_stock_reminder_toaster_action_text)
+                        getString(R.string.product_stock_reminder_toaster_action_text),
+                        clickListener = {
+                            updateStockReminder()
+                        }
                     ).show()
-                    Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
                     ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = stockReminderData.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

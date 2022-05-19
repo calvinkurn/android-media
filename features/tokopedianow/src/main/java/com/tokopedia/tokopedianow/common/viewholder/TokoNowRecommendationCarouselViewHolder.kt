@@ -53,13 +53,15 @@ class TokoNowRecommendationCarouselViewHolder(
                 element.isFirstLoad = false
             }
         } else {
-            binding?.tokoNowSearchCategoryRecomCarousel?.bind(
-                carouselData = element.carouselData,
-                adapterPosition = adapterPosition,
-                basicListener = this,
-                tokonowListener = this,
-                scrollToPosition = scrollToPosition.orZero(),
-            )
+            if(element.carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
+                binding?.tokoNowSearchCategoryRecomCarousel?.bind(
+                    carouselData = element.carouselData,
+                    adapterPosition = adapterPosition,
+                    basicListener = this,
+                    tokonowListener = this,
+                    scrollToPosition = scrollToPosition.orZero()
+                )
+            }
             recommendationCarouselListener?.onBindRecommendationCarousel(
                 element,
                 adapterPosition
@@ -206,6 +208,9 @@ class TokoNowRecommendationCarouselViewHolder(
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
         binding?.tokoNowSearchCategoryRecomCarousel?.gone()
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     override fun onViewRecycled() {

@@ -11,15 +11,13 @@ import javax.inject.Inject
 class ToggleLikeReviewUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ToggleLikeReviewResponse>(graphqlRepository) {
 
     companion object {
-        const val PARAM_REVIEW_ID = "reviewID"
-        const val PARAM_SHOP_ID = "shopID"
-        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_FEEDBACK_ID = "feedbackID"
         const val PARAM_LIKE_STATUS = "likeStatus"
         const val TOGGLE_LIKE_REVIEW_MUTATION_CLASS_NAME = "ToggleLikeReviewMutation"
         const val TOGGLE_LIKE_REVIEW_MUTATION = """
-            mutation toogleLikeDislike(${'$'}reviewID: String, ${'$'}shopID: String, ${'$'}productID: String, ${'$'}likeStatus: Int) {
-              toggleProductReviewLikeV2(reviewID: ${'$'}reviewID, shopID: ${'$'}shopID, productID: ${'$'}productID, likeStatus: ${'$'}likeStatus) {
-                id
+            mutation toggleLikeDislike(${'$'}feedbackID: String!, ${'$'}likeStatus: Int!) {
+              productrevLikeReview(feedbackID: ${'$'}feedbackID, likeStatus: ${'$'}likeStatus) {
+                feedbackID
                 likeStatus
                 totalLike
                 totalDislike
@@ -35,11 +33,9 @@ class ToggleLikeReviewUseCase @Inject constructor(graphqlRepository: GraphqlRepo
 
     private val requestParams = RequestParams.create()
 
-    fun setParams(reviewId: String, shopId: String, productId: String, likeStatus: Int) {
+    fun setParams(reviewId: String, likeStatus: Int) {
         requestParams.apply {
-            putString(PARAM_REVIEW_ID, reviewId)
-            putString(PARAM_SHOP_ID, shopId)
-            putString(PARAM_PRODUCT_ID, productId)
+            putString(PARAM_FEEDBACK_ID, reviewId)
             putInt(PARAM_LIKE_STATUS, likeStatus)
         }
         setRequestParams(requestParams.parameters)

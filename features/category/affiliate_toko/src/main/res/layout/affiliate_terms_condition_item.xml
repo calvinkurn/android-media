@@ -4,12 +4,12 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:layout_marginStart="@dimen/dp_16"
         android:id="@+id/iconUnify"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
-        app:icon_name="INFORMATION"
+        app:srcCompat="@drawable/affiliate_circle_inactive"
         app:layout_constraintBottom_toBottomOf="@+id/rules_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rules_tv" />

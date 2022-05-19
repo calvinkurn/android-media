@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_16"
         android:id="@+id/head_top"
         android:layout_width="0dp"

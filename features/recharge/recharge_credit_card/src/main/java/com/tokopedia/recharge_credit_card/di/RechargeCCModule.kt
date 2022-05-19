@@ -3,8 +3,8 @@ package com.tokopedia.recharge_credit_card.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.authentication.HEADER_USER_AGENT
+import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.network.authentication.HEADER_USER_AGENT
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig

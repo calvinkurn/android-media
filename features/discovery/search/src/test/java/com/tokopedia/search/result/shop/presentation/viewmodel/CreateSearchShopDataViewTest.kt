@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.shouldBe
 import io.mockk.every

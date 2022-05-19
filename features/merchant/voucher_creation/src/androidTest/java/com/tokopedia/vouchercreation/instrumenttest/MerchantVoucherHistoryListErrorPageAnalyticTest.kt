@@ -10,7 +10,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchercreation.mock.MerchantVoucherHistoryListErrorMockModelConfig
-import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
+import com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before

@@ -1,0 +1,49 @@
+{
+  "productrevFeedbackDataPerProductV2": {
+    "aggregatedRating": [
+      {
+        "rating": 1,
+        "ratingCount": 5
+      },
+      {
+        "rating": 2,
+        "ratingCount": 3
+      },
+      {
+        "rating": 3,
+        "ratingCount": 2
+      },
+      {
+        "rating": 4,
+        "ratingCount": 3
+      },
+      {
+        "rating": 5,
+        "ratingCount": 2
+      }
+    ],
+    "reviewCount": 5,
+    "topics": [
+      {
+        "count": 5,
+        "formatted": "kualitas (5)",
+        "title": "kualitas"
+      },
+      {
+        "count": 1,
+        "formatted": "kemasan (1)",
+        "title": "kemasan"
+      },
+      {
+        "count": 1,
+        "formatted": "pelayanan (1)",
+        "title": "pelayanan"
+      },
+      {
+        "count": 1,
+        "formatted": "pengiriman (1)",
+        "title": "pengiriman"
+      }
+    ]
+  }
+}

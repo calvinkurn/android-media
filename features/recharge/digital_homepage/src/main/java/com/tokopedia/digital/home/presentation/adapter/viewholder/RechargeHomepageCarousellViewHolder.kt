@@ -7,7 +7,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
 import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCarousellAdapter
-import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsDecorator
+import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemProductCardsDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -38,9 +38,11 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
                     }
                     this.layoutManager = layoutManager
                     adapter = RechargeItemCarousellAdapter(section.items, listener)
-                    addItemDecoration(RechargeItemProductCardsDecorator(
+                    addItemDecoration(
+                        RechargeItemProductCardsDecorator(
                             PRODUCT_CARDS_SPACE_DP.dpToPx(displayMetrics)
-                    ))
+                    )
+                    )
                 }
                 root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)

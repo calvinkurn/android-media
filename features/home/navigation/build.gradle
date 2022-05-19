@@ -67,8 +67,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
@@ -95,6 +95,7 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.chips
     implementation project(rootProject.ext.features.homeWishlist)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"

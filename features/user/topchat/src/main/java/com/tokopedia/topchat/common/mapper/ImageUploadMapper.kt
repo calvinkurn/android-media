@@ -25,11 +25,12 @@ object ImageUploadMapper {
                 imageUrl = imageUploadUiModel.imageUrl?: "",
                 imageUrlThumbnail = imageUploadUiModel.imageUrlThumbnail?: "",
                 isRetry = imageUploadUiModel.isRetry,
-                parentReply = parentReply
+                parentReply = parentReply,
+                localId = imageUploadUiModel.localId
         )
     }
 
-    fun mapToImageUploadViewModel(imageUploadServiceModel: ImageUploadServiceModel): ImageUploadUiModel {
+    fun mapToImageUploadUiModel(imageUploadServiceModel: ImageUploadServiceModel): ImageUploadUiModel {
         val parentReply: ParentReply? = CommonUtil.fromJson(
             imageUploadServiceModel.parentReply, ParentReply::class.java
         )
@@ -51,6 +52,7 @@ object ImageUploadMapper {
             .withImageUrlThumbnail(imageUploadServiceModel.imageUrlThumbnail)
             .withIsRetry(imageUploadServiceModel.isRetry)
             .withParentReply(parentReply)
+            .withLocalId(imageUploadServiceModel.localId)
             .build()
     }
 }

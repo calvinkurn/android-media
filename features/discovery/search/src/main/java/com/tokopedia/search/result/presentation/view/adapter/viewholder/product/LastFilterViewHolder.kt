@@ -11,6 +11,7 @@ import com.tokopedia.search.databinding.SearchResultProductLastFilterViewHolderB
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.utils.view.binding.viewBinding
+import timber.log.Timber
 
 class LastFilterViewHolder(
     itemView: View,
@@ -46,7 +47,7 @@ class LastFilterViewHolder(
         try {
             background = drawable
         } catch (throwable: Throwable) {
-
+            Timber.w(throwable)
         }
     }
 

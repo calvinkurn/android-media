@@ -12,6 +12,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,11 +28,13 @@ class SearchProductUseCaseModule {
     fun provideSearchProductFirstPageUseCase(
             searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
             userSession: UserSessionInterface,
-            coroutineDispatchers: CoroutineDispatchers
+            coroutineDispatchers: CoroutineDispatchers,
+            topAdsIrisSession: TopAdsIrisSession
     ): UseCase<SearchProductModel> {
         val topAdsImageViewUseCase = TopAdsImageViewUseCase(
-                userSession.userId,
-                TopAdsRepository()
+            userSession.userId,
+            TopAdsRepository(),
+            topAdsIrisSession.getSessionId()
         )
         return SearchProductFirstPageGqlUseCase(
                 GraphqlUseCase(),

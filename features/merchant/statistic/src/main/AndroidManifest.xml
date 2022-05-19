@@ -6,7 +6,6 @@
             android:name=".view.activity.StatisticActivity"
             android:exported="false"
             android:label="@string/title_statistic"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

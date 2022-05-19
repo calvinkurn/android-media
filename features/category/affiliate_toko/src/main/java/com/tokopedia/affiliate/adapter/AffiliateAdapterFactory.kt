@@ -17,7 +17,8 @@ class AffiliateAdapterFactory(
         private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
         private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
         private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
-        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null,
+        private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null
 )
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -36,10 +37,17 @@ class AffiliateAdapterFactory(
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
+            AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
+            AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent,affiliateInfoClickInterfaces)
+            AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
+            AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
+            AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
+            AffiliateTrafficProductItemVH.LAYOUT -> AffiliateTrafficProductItemVH(parent)
+            AffiliateProductMetricVH.LAYOUT -> AffiliateProductMetricVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -104,11 +112,38 @@ class AffiliateAdapterFactory(
         return AffiliateStaggeredPromotionCardItemVH.LAYOUT
     }
 
+    override fun type(viewModel: AffiliateTransactionHistoryItemModel): Int {
+        return AffiliateTransactionHistoryItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommissionItemModel): Int {
+        return AffiliateCommissionDetailsItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommisionDividerItemModel): Int {
+        return AffiliateCommisionDivderItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommisionThickDividerItemModel): Int {
+        return AffiliateCommisionThickDivderItemVH.LAYOUT
+    }
+
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {
       return AffiliateNoPromoItemFoundVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDataPlatformShimmerModel): Int {
         return AffiliateDataCardShimmerItemVH.LAYOUT
+    }
+    override fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int {
+        return AffiliateWithdrawalTitleItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateTrafficCardModel): Int {
+       return AffiliateTrafficProductItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateProductCardMetricsModel): Int {
+       return AffiliateProductMetricVH.LAYOUT
     }
 }

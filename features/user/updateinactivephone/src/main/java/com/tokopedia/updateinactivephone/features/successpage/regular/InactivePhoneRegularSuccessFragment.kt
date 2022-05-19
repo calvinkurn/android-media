@@ -18,6 +18,8 @@ open class InactivePhoneRegularSuccessFragment : BaseInactivePhoneSuccessFragmen
         viewBinding?.tickerInactivePhoneNumber?.apply {
             setHtmlDescription(getString(R.string.text_success_ticker))
         }?.show()
+
+        setImageHeader(IMAGE_HEADER_URL_REGULAR)
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -53,6 +55,8 @@ open class InactivePhoneRegularSuccessFragment : BaseInactivePhoneSuccessFragmen
     }
 
     companion object {
+        private const val IMAGE_HEADER_URL_REGULAR = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_success.png"
+
         fun instance(bundle: Bundle): InactivePhoneRegularSuccessFragment {
             return InactivePhoneRegularSuccessFragment().apply {
                 arguments = bundle

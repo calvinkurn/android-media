@@ -1,4 +1,4 @@
-@file:Suppress("RedundantVisibilityModifier")
+@file:Suppress("RedundantVisibilityModifier", "UNCHECKED_CAST")
 
 package com.tokopedia.utils.view.binding.noreflection
 
@@ -16,7 +16,8 @@ interface ViewBindingProperty<in R : Any, T : ViewBinding?> : ReadWriteProperty<
 }
 
 open class LazyViewBindingProperty<in R : Any, T : ViewBinding>(
-        protected val viewBinder: (R) -> T
+        protected val viewBinder: (R) -> T,
+        private val onClear: T?.() -> Unit?
 ) : ViewBindingProperty<R, T> {
 
     protected var viewBinding: Any? = null
@@ -33,12 +34,14 @@ open class LazyViewBindingProperty<in R : Any, T : ViewBinding>(
     }
 
     @MainThread override fun clear() {
+        onClear.invoke(viewBinding as? T)
         viewBinding = null
     }
 }
 
 abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
-        private val viewBinder: (R) -> T?
+        private val viewBinder: (R) -> T?,
+        private val onClear: T?.() -> Unit?
 ) : ViewBindingProperty<R, T> {
 
     private var viewBinding: T? = null
@@ -54,7 +57,7 @@ abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
 
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.DESTROYED)) {
             this.viewBinding = viewBinding
-            lifecycle.addObserver(ClearViewBindingLifecycle())
+            lifecycle.addObserver(ClearViewBindingLifecycle(onClear))
         }
 
         return viewBinding
@@ -68,9 +71,12 @@ abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
         viewBinding = null
     }
 
-    private inner class ClearViewBindingLifecycle : DefaultLifecycleObserver {
-        @MainThread override fun onDestroy(owner: LifecycleOwner): Unit = clear()
+    private inner class ClearViewBindingLifecycle constructor(
+        val onClear: T?.() -> Unit?
+    ) : DefaultLifecycleObserver {
+        @MainThread override fun onDestroy(owner: LifecycleOwner) {
+            onClear.invoke(viewBinding)
+            clear()
+        }
     }
 }
-
-private const val TAG = "ViewBindingProperty"

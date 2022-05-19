@@ -39,4 +39,8 @@ class HomePageLoadTimeMonitoring {
         pltPerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pltPerformanceMonitoring?.stopMonitoring()
     }
+
+    fun stopPerformanceMonitoring() {
+        pltPerformanceMonitoring?.stopMonitoring()
+    }
 }

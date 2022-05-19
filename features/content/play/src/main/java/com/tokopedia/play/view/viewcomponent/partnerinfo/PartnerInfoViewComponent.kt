@@ -4,8 +4,9 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -13,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PartnerInfoViewComponent(
     container: ViewGroup,
-    listener: Listener,
+    private val listener: Listener,
 ) : ViewComponent(container, R.id.view_partner_info) {
 
     private val ivIcon: ImageUnify = findViewById(R.id.iv_icon)
@@ -22,38 +23,41 @@ class PartnerInfoViewComponent(
     private val btnFollow: UnifyButton = findViewById(R.id.btn_follow)
 
     init {
-        rootView.setOnClickListener {
-            listener.onPartnerNameClicked(this)
-        }
-
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
     }
 
-    fun setInfo(info: PlayPartnerUiState) {
+    fun setInfo(info: PlayPartnerInfo) {
         ivIcon.setImageUrl(info.iconUrl)
         if (info.badgeUrl.isNotBlank()) {
             ivBadge.setImageUrl(info.badgeUrl)
             ivBadge.show()
         } else ivBadge.hide()
         tvPartnerName.text = info.name
-        setFollowStatus(info.followStatus, info.isLoadingFollow)
+        setFollowStatus(info.status, info.isLoadingFollow)
+        setupListener(info.appLink)
     }
 
     private fun setFollowStatus(
         followStatus: PlayPartnerFollowStatus,
         isLoading: Boolean,
     ) {
-        if (followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing) {
+        if (followStatus is PlayPartnerFollowStatus.Followable && followStatus.followStatus == PartnerFollowableStatus.NotFollowed) {
             btnFollow.isLoading = isLoading
             btnFollow.isEnabled = !isLoading
             btnFollow.show()
         } else btnFollow.hide()
     }
 
+    private fun setupListener(applink: String){
+        rootView.setOnClickListener {
+            listener.onPartnerInfoClicked(this, applink)
+        }
+    }
+
     interface Listener {
-        fun onPartnerNameClicked(view: PartnerInfoViewComponent)
+        fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String)
         fun onFollowButtonClicked(view: PartnerInfoViewComponent)
     }
 

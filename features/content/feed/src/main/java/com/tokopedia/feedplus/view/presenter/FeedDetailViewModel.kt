@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedplus.data.pojo.Feed
 import com.tokopedia.feedplus.data.pojo.FeedQuery
 import com.tokopedia.feedplus.data.pojo.ProductFeedType
@@ -27,6 +29,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
 
     private var feedDetailLiveData: MutableLiveData<FeedDetailViewState> = MutableLiveData()
     private var pagingLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    var cursor: String = ""
 
     fun getPagingLiveData(): LiveData<Boolean> {
         return pagingLiveData
@@ -43,8 +46,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
             } else {
                 feedDetailLiveData.value = FeedDetailViewState.LoadingState(isLoading = true, loadingMore = true)
             }
-            val feedQuery = feedDetailRepository.fetchFeedDetail(detailId, page, userSession.userId?.toIntOrNull()
-                    ?: 0)
+            val feedQuery = feedDetailRepository.fetchFeedDetail(detailId,  cursor)
             handleDataForFeedDetail(feedQuery, page, shopId, activityId)
         }, onError =
         {
@@ -53,38 +55,31 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         })
     }
 
-    private fun handleDataForFeedDetail(feedQuery: FeedQuery, page: Int, shopId: String, activityId: String) {
+    private fun handleDataForFeedDetail(feedQuery: FeedXGQLResponse,page: Int,  shopId: String, activityId: String) {
+        cursor = feedQuery.data.nextCursor
         if (page == 1) {
             feedDetailLiveData.value = FeedDetailViewState.LoadingState(false, loadingMore = false)
-            if (!hasFeed(feedQuery)) {
+            if (!hasFeed(feedQuery.data)) {
                 feedDetailLiveData.value = FeedDetailViewState.SuccessWithNoData
                 return
             }
         } else {
             feedDetailLiveData.value = FeedDetailViewState.LoadingState(false, loadingMore = true)
-            if (!hasFeed(feedQuery)) {
+            if (!hasFeed(feedQuery.data)) {
                 pagingLiveData.value = false
                 return
             }
         }
 
-        val feedList = feedQuery.feed.data
-        val feedDetail = feedList.firstOrNull()
-        feedDetail?.let {
-            val headerViewModel = createFeedDetailHeaderModel(
-                    it.createTime,
-                    it.source.shop,
-                    it.content.statusActivity,
-                    it.id)
-            feedDetailLiveData.value = FeedDetailViewState.Success(headerViewModel,
-                    convertToFeedDetailModel(it, shopId, activityId),
-                    checkHasNextPage(feedQuery))
+        feedQuery.data.let {
+
+            feedDetailLiveData.value = FeedDetailViewState.Success(it.products,
+                    it.nextCursor)
         }
     }
 
-    private fun hasFeed(feedQuery: FeedQuery): Boolean {
-        return (feedQuery.feed != null && feedQuery.feed.data != null && feedQuery.feed.data.isNotEmpty()
-                && feedQuery.feed.data[0] != null && feedQuery.feed.data[0].content != null && feedQuery.feed.data[0].content.products != null && feedQuery.feed.data[0].content.products.isNotEmpty())
+    private fun hasFeed(feedQuery: FeedXGetActivityProductsResponse): Boolean {
+        return (feedQuery.products.isNotEmpty())
     }
 
     private fun checkHasNextPage(feedQuery: FeedQuery): Boolean {

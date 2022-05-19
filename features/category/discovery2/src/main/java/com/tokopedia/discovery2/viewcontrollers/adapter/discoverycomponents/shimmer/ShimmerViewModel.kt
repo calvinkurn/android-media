@@ -17,4 +17,6 @@ class ShimmerViewModel(application: Application, private val components: Compone
     }
 
     fun getTemplateType() = components.properties?.template ?: GRID
+
+    fun getCalendarLayout() = components.properties?.calendarLayout
 }

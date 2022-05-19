@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 data class BannerDataView(
-        val position: Int = -2,
+        val position: Int = DEFAULT_POSITION,
         val text: String = "",
         val applink: String = "",
         val imageUrl: String = "",
@@ -12,5 +12,9 @@ data class BannerDataView(
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
+    }
+
+    companion object{
+        private const val DEFAULT_POSITION = -2
     }
 }

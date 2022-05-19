@@ -25,9 +25,12 @@
     <string name="cotp_miscall_verification_desc">Ini kode verifikasimu, jangan kasih ke orang lain!</string>
     <string name="cotp_miscall_resend">Missed call ulang</string>
     <string name="cotp_miscall_use_other_method">ubah metode verifikasi</string>
-    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk? Missed call ulang atau ubah metode verifikasi.</string>
+    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk?\n Missed call ulang atau ubah metode verifikasi.</string>
     <string name="cotp_miscall_coundown_text"><![CDATA[Mohon tunggu <b> %d detik </b> untuk missed call ulang.]]></string>
-    
+
+    <string name="cotp_miscall_v2_verification_title">Kami akan segera missed call kamu</string>
+    <string name="cotp_miscall_v2_verification_desc">Tunggu teleponnya masuk, ya! Telepon ini nggak perlu diangkat.</string>
+
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="validation_title">Masukkan Kode Aktivasi</string>
     <string name="title_validation_otp">Aktivasi</string>

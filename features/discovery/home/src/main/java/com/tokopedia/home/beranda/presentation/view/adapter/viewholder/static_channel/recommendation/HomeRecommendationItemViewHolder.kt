@@ -74,8 +74,6 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
     }
 
     override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener, payloads: List<Any>) {
-        if (payloads.getOrNull(0) !is Boolean) return
-
         productCardView?.setThreeDotsOnClickListener {
             (listener as HomeRecommendationListener).onProductThreeDotsClick(element, adapterPosition)
         }

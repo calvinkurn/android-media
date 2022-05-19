@@ -66,6 +66,10 @@ class BalanceAdapter(
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
+    companion object {
+        var disableAnimation: Boolean = false
+    }
+
     @Suppress("TooGenericExceptionCaught")
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
@@ -127,7 +131,8 @@ class BalanceAdapter(
         private var home_tv_btn_action_balance: TextView = itemView.findViewById(R.id.home_tv_btn_action_balance)
         private var home_iv_logo_balance: ImageView? = itemView.findViewById<ImageView>(R.id.home_iv_logo_balance)
         private var home_tv_balance: TextView = itemView.findViewById(R.id.home_tv_balance)
-        private var home_container_action_balance: LinearLayout? = itemView.findViewById(R.id.home_container_action_balance)
+        private var home_container_action_balance: ConstraintLayout? = itemView.findViewById(R.id.home_container_action_balance)
+        private var home_tv_reserve_balance: Typography? = itemView.findViewById(R.id.home_tv_reserve_balance)
 
         fun bind(drawerItem: BalanceDrawerItemModel?,
                  listener: HomeCategoryListener?,
@@ -145,8 +150,13 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            home_iv_logo_shimmering?.show()
-            home_progress_bar_balance_layout?.show()
+            if (!disableAnimation) {
+                home_iv_logo_shimmering?.show()
+                home_progress_bar_balance_layout?.show()
+            } else {
+                home_iv_logo_shimmering?.gone()
+                home_progress_bar_balance_layout?.gone()
+            }
             home_tv_btn_action_balance?.show()
 
             animationJob?.cancel()
@@ -158,8 +168,10 @@ class BalanceAdapter(
                     home_tv_balance?.invisible()
                     home_tv_btn_action_balance?.invisible()
 
-                    home_iv_logo_shimmering?.show()
-                    home_progress_bar_balance_layout?.show()
+                    if (!disableAnimation) {
+                        home_iv_logo_shimmering?.show()
+                        home_progress_bar_balance_layout?.show()
+                    }
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
                     home_progress_bar_balance_layout?.gone()
@@ -172,6 +184,14 @@ class BalanceAdapter(
 
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
+
+                    if (element.reserveBalance.isNotEmpty()) {
+                        home_tv_reserve_balance?.visible()
+                        home_tv_reserve_balance?.text = element.reserveBalance
+                    } else {
+                        home_tv_reserve_balance?.gone()
+                    }
+
                     home_container_balance?.handleItemCLickType(
                             element = element,
                             tokopointsAction = {
@@ -251,17 +271,10 @@ class BalanceAdapter(
 
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -347,17 +360,10 @@ class BalanceAdapter(
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -366,7 +372,9 @@ class BalanceAdapter(
                     element?.alternateBalanceDrawerItem?.let {
                         this.element = element
                         this.alternateDrawerItem = it
-                        setDrawerItemWithAnimation()
+                        if (!disableAnimation) {
+                            setDrawerItemWithAnimation()
+                        }
                     }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
@@ -376,19 +384,19 @@ class BalanceAdapter(
                     renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
                     home_container_balance?.handleItemCLickType(
                             element = element,
-                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
-                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
+                            ovoWalletAction = {listener?.onRetryWalletApp()},
+                            rewardsAction = {listener?.onRetryMembership()},
+                            bboAction = {listener?.onRetryMembership()},
+                            tokopointsAction = {listener?.onRetryMembership()},
+                            walletAppAction = { listener?.onRetryWalletApp() }
                     )
                     home_tv_btn_action_balance?.handleItemCLickType(
                             element = element,
-                            ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
-                            rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
+                            ovoWalletAction = {listener?.onRetryWalletApp()},
+                            rewardsAction = {listener?.onRetryMembership()},
+                            bboAction = {listener?.onRetryMembership()},
+                            tokopointsAction = {listener?.onRetryMembership()},
+                            walletAppAction = { listener?.onRetryWalletApp() }
                     )
                 }
             }
@@ -406,7 +414,11 @@ class BalanceAdapter(
                         home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
                         home_iv_logo_balance?.invisible()
-                        home_iv_logo_shimmering?.visible()
+                        if (!disableAnimation) {
+                            home_iv_logo_shimmering?.visible()
+                        } else {
+                            home_iv_logo_shimmering?.gone()
+                        }
                     }
                 }
                 element?.iconImageUrl?.let {

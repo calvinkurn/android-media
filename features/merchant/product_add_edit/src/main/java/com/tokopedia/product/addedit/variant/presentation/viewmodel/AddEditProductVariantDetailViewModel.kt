@@ -19,6 +19,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.extension.getSelectionLevelOptionTitle
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
@@ -159,7 +161,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     private fun setDefaultPrimaryVariant() {
-        productInputModel.value?.variantInputModel?.products?.let { products ->
+        productInputModel.getValueOrDefault().variantInputModel.products.let { products ->
             val isPrimaryVariantExist = products.any {
                 it.isPrimary
             }
@@ -171,7 +173,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateProductInputModel() {
-        val products = productInputModel.value?.variantInputModel?.products.orEmpty()
+        val products = productInputModel.getValueOrDefault().variantInputModel.products
         var productPosition = 0
         inputLayoutModelMap.toSortedMap().forEach {
             val variantDetailInput = it.value
@@ -194,7 +196,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     private fun updateProductStatus(inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel>) {
         val isAllProductDeactivated = inputLayoutModelMap.all { !it.value.isActive }
-        productInputModel.value?.detailInputModel?.status = if (isAllProductDeactivated) {
+        productInputModel.getValueOrDefault().detailInputModel.status = if (isAllProductDeactivated) {
             ProductStatus.STATUS_INACTIVE
         } else {
             ProductStatus.STATUS_ACTIVE
@@ -207,7 +209,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             variantDetailInputMap[it.value.combination] = it.value.isActive
         }
 
-        productInputModel.value = productInputModel.value?.also {
+        productInputModel.value = productInputModel.getValueOrDefault().also {
             inputModel.selection.forEach { selectedCombination ->
                 // search product variant by comparing combination
                 val productVariant = it.variantInputModel.products
@@ -243,11 +245,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun updatePrimaryVariant(combination: List<Int>): Int {
         var updatedPosition = -1 // -1 for not found
-        val variantInputModels = productInputModel.value?.variantInputModel?.products
+        val variantInputModels = productInputModel.getValueOrDefault().variantInputModel.products
         var variantInputModelsIndex = 0
 
         inputLayoutModelMap.toSortedMap().forEach { variantDetailInputModel ->
-            variantInputModels?.getOrNull(variantInputModelsIndex)?.let {
+            variantInputModels.getOrNull(variantInputModelsIndex)?.let {
                 if (it.combination == combination) {
                     it.isPrimary = true
                     it.status = STATUS_ACTIVE_STRING
@@ -263,15 +265,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun getPrimaryVariantTitle(combination: List<Int>): String {
-        val selections = productInputModel.value?.variantInputModel?.selections ?: emptyList()
+        val selections = productInputModel.getValueOrDefault().variantInputModel.selections
         val level1OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION).orZero()
         val level2OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION).orZero()
+        val level1Title = selections.getSelectionLevelOptionTitle(VARIANT_VALUE_LEVEL_ONE_POSITION, level1OptionIndex)
+        val level2Title = selections.getSelectionLevelOptionTitle(VARIANT_VALUE_LEVEL_TWO_POSITION, level2OptionIndex)
 
-        val level1Title = selections
-                .getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.options?.getOrNull(level1OptionIndex)?.value.orEmpty()
-
-        val level2Title = selections
-                .getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.options?.getOrNull(level2OptionIndex)?.value.orEmpty()
         return "${level1Title}-${level2Title}"
     }
 
@@ -335,7 +334,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
             inputModel.isPriceError = true
-            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage() ?: ""
+            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage()
             updateInputPriceErrorStatusMap(adapterPosition, true)
 
             return inputModel
@@ -343,7 +342,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             inputModel.isPriceError = true
-            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage() ?: ""
+            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage()
             updateInputPriceErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -365,14 +364,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputModel.stock = stockInput
         if (stockInput.isEmpty()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage() ?: ""
+            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage()
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) ?: ""
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -391,7 +390,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateVariantPriceInput(priceInput: BigInteger): String {
         return when {
             priceInput < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductPriceErrorMessage().orEmpty()
+                provider.getMinLimitProductPriceErrorMessage()
             }
             else -> ""
         }
@@ -400,7 +399,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT).orEmpty()
+                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             }
             else -> ""
         }
@@ -423,7 +422,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             unitValueLabel: String,
             isSkuFieldVisible: Boolean
     ): VariantDetailInputLayoutModel{
-        val productVariants = productInputModel.value?.variantInputModel?.products.orEmpty()
+        val productVariants = productInputModel.getValueOrDefault().variantInputModel.products
         val productVariant = productVariants
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
         val priceString = productVariant.price.toString()

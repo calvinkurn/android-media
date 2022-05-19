@@ -15,6 +15,7 @@ private const val IDENTIFIER = "identifier"
 private const val VERSION = "version"
 private const val DEVICE = "device"
 private const val DEVICE_VALUE = "Android"
+private const val ACCEPT_SECTION = "accept_section"
 
 class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
@@ -34,10 +35,9 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
             val localCacheModel = it[USER_ADDRESS_KEY] as? LocalCacheModel
             val addMap: MutableMap<String, Any>? =
                 (Utils.addAddressQueryMapWithWareHouse(localCacheModel) as? MutableMap<String, Any>)
-            addMap?.let {
-                if (addMap.isNotEmpty())
-                    queryMap[Utils.FILTERS] = Utils.getQueryString(addMap)
-            }
+            val filterMap = addMap?: mutableMapOf()
+            filterMap[ACCEPT_SECTION] = true
+            queryMap[Utils.FILTERS] = Utils.getQueryString(filterMap)
         }
         return queryMap
     }

@@ -33,8 +33,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".payment.topup.view.OvoTopUpWebViewActivity"
-            android:label="@string/title_one_click_checkout_top_up_ovo"
+            android:name=".payment.topup.view.PaymentTopUpWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>

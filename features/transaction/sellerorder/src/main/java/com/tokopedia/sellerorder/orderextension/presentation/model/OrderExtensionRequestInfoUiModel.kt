@@ -13,7 +13,8 @@ data class OrderExtensionRequestInfoUiModel(
     var success: Boolean,
     var completed: Boolean,
     var refreshOnDismiss: Boolean,
-    var message: String
+    var message: String,
+    var throwable: Throwable?
 ) {
     private fun getCommentUiModelForOption(optionCode: Int): CommentUiModel? {
         return items.find {
@@ -61,7 +62,7 @@ data class OrderExtensionRequestInfoUiModel(
         val alignment: DescriptionAlignment = DescriptionAlignment.TEXT_ALIGNMENT_INHERIT,
         @ColorRes val fontColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
         val typographyType: DescriptionTextType = DescriptionTextType.BODY_3,
-        val description: CharSequence,
+        val description: StringComposer,
         override var show: Boolean = true,
         override var hideKeyboardOnClick: Boolean = true,
         override var requestFocus: Boolean = false
@@ -120,8 +121,8 @@ data class OrderExtensionRequestInfoUiModel(
         var optionCode: Int,
         var value: String = "",
         var error: Boolean = false,
-        var defaultMessage: String = "",
-        var showedMessage: String = "",
+        var defaultMessage: StringComposer = StringComposer { "" },
+        var showedMessage: StringComposer = StringComposer { "" },
         var hasFocus: Boolean = true,
         val errorCheckers: List<ErrorChecker> = emptyList(),
         override var show: Boolean,
@@ -161,7 +162,7 @@ data class OrderExtensionRequestInfoUiModel(
 
         data class ErrorChecker(
             val regex: String,
-            val errorMessage: String
+            val errorMessage: StringComposer
         ) {
             fun isError(value: String): Boolean {
                 return Regex(regex).containsMatchIn(value)
@@ -169,7 +170,7 @@ data class OrderExtensionRequestInfoUiModel(
         }
     }
 
-    class DescriptionShimmerUiModel(val width: Int) : BaseOrderExtensionRequestInfoItem {
+    class DescriptionShimmerUiModel(val width: DimenRes) : BaseOrderExtensionRequestInfoItem {
         override var show: Boolean = true
         override var hideKeyboardOnClick: Boolean = true
         override var requestFocus: Boolean = false

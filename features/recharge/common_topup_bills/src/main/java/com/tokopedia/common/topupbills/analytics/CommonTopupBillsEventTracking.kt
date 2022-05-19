@@ -13,6 +13,7 @@ interface CommonTopupBillsEventTracking {
             const val CHECKOUT = "checkout"
             const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
             const val DIGITAL_GENERAL_EVENT_IRIS = "digitalGeneralEventIris"
+            const val CLICK_DIGITAL = "clickDigital"
         }
     }
 
@@ -44,6 +45,9 @@ interface CommonTopupBillsEventTracking {
             const val FAVNUMBER_VIEW_DELETION_FAILED_TOASTER = "view deletion failed toaster"
             const val FAVNUMBER_IMPRESSION_FAV_NUMBER_AND_CONTACT = "impression fav number and contact"
             const val FAVNUMBER_CLICK_FAV_NUMBER_AND_CONTACT = "click fav number and contact"
+            const val FAVNUMBER_CLICK_DELETE_ON_KEBAB_MENU = "click delete number on kebab menu"
+            const val FAVNUMBER_CLICK_UBAH_NAMA_ON_KEBAB_MENU = "click ubah nama on kebab menu"
+            const val FAVNUMBER_CLICK_X_ON_KEBAB_MENU = "click x on ubah nama number"
         }
     }
 

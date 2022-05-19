@@ -12,7 +12,6 @@
         android:tag="@string/tag_home_nav_toolbar_recom_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top"
         android:minHeight="?actionBarSize"
         android:visibility="visible"
         app:contentInsetLeft="0dp"

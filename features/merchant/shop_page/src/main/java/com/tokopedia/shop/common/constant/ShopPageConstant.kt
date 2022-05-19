@@ -18,7 +18,6 @@ object ShopPageConstant {
     const val SHOP_SHARE_GQL_TRACKER_SOURCE = "shop-page"
     const val DEFAULT_VALUE_ETALASE_TYPE = 0 // It's only for apps or frontend identifier
     const val ATC_SUCCESS_VALUE = 1
-    const val HOME_V2_EXTRA = "HOME_V2"
     const val VALUE_INT_ONE = 1
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list

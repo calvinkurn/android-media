@@ -1,6 +1,8 @@
 package com.tokopedia.statistic.analytics
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -586,6 +588,113 @@ object StatisticTracker {
             category = TrackingConstant.STATISTIC_FIREWALL,
             label = "",
             userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendMultiLineGraphImpressionEvent(
+        page: StatisticPageUiModel,
+        element: MultiLineGraphWidgetUiModel
+    ) {
+        val isEmpty = element.data?.metrics?.all { it.isEmpty }.orFalse()
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.IMPRESSION_WIDGET_MULTI_TREND_LINE,
+            category = page.pageSource.replace("-", " "),
+            label = if (isEmpty) {
+                TrackingConstant.EMPTY
+            } else {
+                TrackingConstant.NOT_EMPTY
+            }
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTickerImpressionEvent(page: StatisticPageUiModel) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.IMPRESSION_LEARN_MORE,
+            category = page.pageSource.replace("-", " "),
+            label = ""
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTickerCtaClickEvent(page: StatisticPageUiModel) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_TICKER_CTA,
+            category = page.pageSource.replace("-", " "),
+            label = ""
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTrafficInsightImpressionCoachMarkEvent(pageSource: String, title: String) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.IMPRESSION_TRAFFIC_COACH_MARK,
+            category = pageSource.replace("-", " "),
+            label = title
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTrafficInsightCoachMarkCtaClickEvent(pageSource: String, title: String) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_TRAFFIC_COACH_MARK_CTA,
+            category = pageSource.replace("-", " "),
+            label = title
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendAnnouncementImpressionEvent(page: StatisticPageUiModel) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.IMPRESSION_TOP_ADS_CROSS_SELLING,
+            category = page.pageSource.replace("-", " "),
+            label = ""
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendAnnouncementCtaClickEvent(page: StatisticPageUiModel) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_TOP_ADS_CROSS_SELLING,
+            category = page.pageSource.replace("-", " "),
+            label = ""
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTooltipImpressionEvent(page: StatisticPageUiModel) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.IMPRESSION_EXPLANATION_TOOLTIP,
+            category = page.pageSource.replace("-", " "),
+            label = ""
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendShowTableTableFilterClickEvent(
+        page: StatisticPageUiModel,
+        element: TableWidgetUiModel
+    ) {
+        val isEmpty = element.data?.dataSet?.all { it.rows.isEmpty() }.orFalse()
+        val label = arrayOf(
+            element.data,
+            if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY,
+            element.title
+        ).joinToString(" - ")
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_TABLE_WIDGET_SORT,
+            category = page.pageSource.replace("-", " "),
+            label = label
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }

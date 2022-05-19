@@ -2,57 +2,25 @@ package com.tokopedia.product.addedit.variant.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.product.addedit.variant.data.constant.GetVariantCombinationQueryConstant
 import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetVariantCategoryCombinationUseCase @Inject constructor(
-        repository: GraphqlRepository) : GraphqlUseCase<GetVariantCategoryCombinationResponse>(repository) {
+        repository: GraphqlRepository
+) : GraphqlUseCase<GetVariantCategoryCombinationResponse>(repository) {
 
     companion object {
         private const val PARAM_CATEGORY_ID = "categoryID"
         private const val PARAM_PRODUCT_VARIANTS = "productVariants"
         private const val PARAM_TYPE = "type"
-        private val query =
-                """
-                query GetVariantCategoryCombination(${'$'}categoryID: Int!, ${'$'}productVariants: String, ${'$'}type: String!) {
-                  getVariantCategoryCombination(categoryID: ${'$'}categoryID, productVariants: ${'$'}productVariants, type: ${'$'}type) {
-                    header {
-                      processTime
-                      messages
-                      reason
-                      errorCode
-                    }
-                    data {
-                      categoryID
-                      variantIDCombinations
-                      variantDetails {
-                        VariantID
-                        HasUnit
-                        Identifier
-                        Name
-                        Status
-                        Units {
-                          VariantUnitID
-                          Status
-                          UnitName
-                          UnitShortName
-                          UnitValues {
-                            VariantUnitValueID
-                            Status
-                            Value
-                            EquivalentValueID
-                            EnglishValue
-                            Hex
-                            Icon
-                          }
-                        }
-                        IsPrimary
-                      }
-                    }
-                  }
-                }
-                """.trimIndent()
+        private val query = String.format(
+            GetVariantCombinationQueryConstant.BASE_QUERY,
+            GetVariantCombinationQueryConstant.OPERATION_PARAM_BY_CATEGORY,
+            GetVariantCombinationQueryConstant.QUERY_PARAM_BY_CATEGORY,
+            GetVariantCombinationQueryConstant.QUERY_DATA_BY_CATEGORY
+        ).trimIndent()
     }
 
     init {

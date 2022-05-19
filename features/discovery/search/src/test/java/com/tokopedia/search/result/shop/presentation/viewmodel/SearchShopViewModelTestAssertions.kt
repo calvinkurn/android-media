@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.discovery.common.State
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
@@ -19,23 +20,25 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = 
     }
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveCpmViewModel(0)
-    this.shouldHaveShopItemViewModel(1, lastIndex)
+    this.shouldHaveChooseAddressViewModel(0)
+    this.shouldHaveCpmViewModel(1)
+    this.shouldHaveShopItemViewModel(2, lastIndex)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveCpmViewModel(0)
-    this.shouldHaveShopItemViewModel(1, lastIndex)
+    this.shouldHaveChooseAddressViewModel(0)
+    this.shouldHaveCpmViewModel(1)
+    this.shouldHaveShopItemViewModel(2, lastIndex)
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel() {
@@ -43,7 +46,8 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpm
 
     this.shouldNotBeNull()
 
-    this.shouldHaveShopItemViewModel(0, lastIndex)
+    this.shouldHaveChooseAddressViewModel(0)
+    this.shouldHaveShopItemViewModel(1, lastIndex)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
@@ -71,6 +75,12 @@ private fun State<List<Visitable<*>>>?.shouldHaveLoadingMoreViewModel(loadingMor
     val data = this?.data as List<Visitable<*>>
 
     data[loadingMoreViewModelPosition].shouldBeInstanceOf<LoadingMoreModel>()
+}
+
+internal fun State<List<Visitable<*>>>?.shouldHaveChooseAddressViewModel(chooseAddressViewModelPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
+
+    data[chooseAddressViewModelPosition].shouldBeInstanceOf<ChooseAddressDataView>()
 }
 
 internal fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {

@@ -25,11 +25,6 @@ class DeleteRecentSearchUseCaseTestQuery(
      */
     override fun getGraphqlQuery(): String = """
         query DeleteRecentSearchQuery {
-            universe_initial_state_test {
-                ....
-                ....
-                ....
-            }
         }
     """
 

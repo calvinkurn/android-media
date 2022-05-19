@@ -73,7 +73,7 @@ interface SuggestionContract {
         fun trackClickChip(
             eventLabel: String,
             dimension90: String,
-            baseSuggestionDataView: BaseSuggestionDataView,
+            childItem: BaseSuggestionDataView.ChildItem,
         )
 
         fun trackEventImpressCurated(
@@ -94,6 +94,8 @@ interface SuggestionContract {
         fun finish()
 
         val chooseAddressData: LocalCacheModel?
+
+        val className: String
     }
 
     interface Presenter : CustomerPresenter<View> {

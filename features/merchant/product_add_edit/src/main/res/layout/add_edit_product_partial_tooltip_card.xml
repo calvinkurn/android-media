@@ -2,6 +2,7 @@
 <androidx.constraintlayout.motion.widget.MotionLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/motion_layout_tips"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layoutDescription="@xml/add_edit_product_partial_tooltip_card_scene">
@@ -11,7 +12,7 @@
         android:background="@drawable/yellow_y100_rounded_corner"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl7">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_tips_bulb"
@@ -24,12 +25,12 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_tips_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_11"
-            android:text="@string/preview_label_add_product_variant_tips"
+            android:text="@string/lorem"
             android:textColor="@color/Unify_N500"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />

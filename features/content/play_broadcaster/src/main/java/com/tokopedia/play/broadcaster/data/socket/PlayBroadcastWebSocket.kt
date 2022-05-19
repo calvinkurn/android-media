@@ -15,21 +15,14 @@ class PlayBroadcastWebSocket @Inject constructor(
 ) : PlayWebSocket by playWebSocket {
 
     fun connectSocket(channelId: String, gcToken: String) {
-        val wsBaseUrl = cacheHandler.getString(
-            KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
-            TokopediaUrl.getInstance().WS_PLAY
-        )
-        val wsFullUrl = buildString {
-            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId")
-            if (gcToken.isNotEmpty()) append("&token=$gcToken")
-        }
-
-        playWebSocket.connect(wsFullUrl)
+        playWebSocket.connect(channelId, gcToken, SOURCE_PLAY_BROADCASTER)
     }
 
     companion object {
         private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
+
+        private const val SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
 }

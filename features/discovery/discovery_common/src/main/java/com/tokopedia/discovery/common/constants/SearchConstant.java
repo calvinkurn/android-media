@@ -9,10 +9,6 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_PAGE = "search result page";
-    String SEARCH_RESULT_TRACE = "search_result_trace";
-    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
-    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
-    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
@@ -179,6 +175,7 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_VIDEO = "video";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
         String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
@@ -197,6 +194,7 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
+        String TYPE_SIZE_PERSO = "size_perso";
     }
 
     interface CustomDimension {

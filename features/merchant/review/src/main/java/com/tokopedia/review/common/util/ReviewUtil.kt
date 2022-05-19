@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -16,11 +17,11 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 import kotlin.math.round
 
 object ReviewUtil {
@@ -211,3 +212,35 @@ val List<SortItemUiModel>.getSortBy: String
     get() {
         return this.firstOrNull { it.isSelected }?.title.orEmpty()
     }
+
+fun String?.mapToUnifyButtonType(): Int {
+    return when (this) {
+        "TRANSACTION" -> UnifyButton.Type.TRANSACTION
+        "ALTERNATE" -> UnifyButton.Type.ALTERNATE
+        else -> UnifyButton.Type.MAIN
+    }
+}
+
+fun String?.mapToUnifyButtonVariant(): Int {
+    return when (this) {
+        "GHOST" -> UnifyButton.Variant.GHOST
+        "TEXT_ONLY" -> UnifyButton.Variant.TEXT_ONLY
+        else -> UnifyButton.Variant.FILLED
+    }
+}
+
+fun String?.mapToUnifyButtonSize(): Int {
+    return when (this) {
+        "LARGE" -> UnifyButton.Size.LARGE
+        "SMALL" -> UnifyButton.Size.SMALL
+        "MICRO" -> UnifyButton.Size.MICRO
+        else -> UnifyButton.Size.MEDIUM
+    }
+}
+
+fun Throwable?.getErrorMessage(context: Context?, defaultErrorMessage: String? = null): String {
+    return ErrorHandler.getErrorMessage(context, this).takeIf {
+        it.isNotBlank()
+    } ?: defaultErrorMessage ?: context?.getString(R.string.review_reading_connection_error)
+        .orEmpty()
+}

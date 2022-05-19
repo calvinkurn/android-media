@@ -21,7 +21,6 @@ class OnboardingMisscallViewBinding @Inject constructor() : BaseOtpViewBinding()
     override val layoutResId: Int = R.layout.fragment_miscall_onboarding
 
     var containerView: View? = null
-    var imgAnimation: LottieAnimationView? = null
     var img: ImageUnify? = null
     var title: Typography? = null
     var subtitle: Typography? = null
@@ -31,7 +30,6 @@ class OnboardingMisscallViewBinding @Inject constructor() : BaseOtpViewBinding()
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
                 containerView = findViewById(R.id.container)
-                imgAnimation = findViewById(R.id.img_animation_miscall_onboarding)
                 img = findViewById(R.id.img_miscall_onboarding)
                 title = findViewById(R.id.title)
                 subtitle = findViewById(R.id.subtitle)

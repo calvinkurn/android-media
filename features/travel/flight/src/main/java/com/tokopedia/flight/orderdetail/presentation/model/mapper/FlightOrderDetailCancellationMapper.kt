@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderdetail.presentation.model.mapper
 
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import javax.inject.Inject
 
 /**
@@ -9,11 +9,11 @@ import javax.inject.Inject
  */
 class FlightOrderDetailCancellationMapper @Inject constructor() {
 
-    fun transform(orderDetailJourneyList: List<FlightOrderDetailJourneyModel>): List<FlightCancellationJourney> {
-        val cancellationJourneyList = arrayListOf<FlightCancellationJourney>()
+    fun transform(orderDetailJourneyList: List<FlightOrderDetailJourneyModel>): List<FlightCancellationResponseEntity> {
+        val cancellationJourneyList = arrayListOf<FlightCancellationResponseEntity>()
 
         for (journey in orderDetailJourneyList) {
-            val cancellationJourney = FlightCancellationJourney()
+            val cancellationJourney = FlightCancellationResponseEntity()
             cancellationJourney.journeyId = journey.id.toString()
             cancellationJourney.departureTime = journey.departureTime
             cancellationJourney.departureCity = journey.departureCityName

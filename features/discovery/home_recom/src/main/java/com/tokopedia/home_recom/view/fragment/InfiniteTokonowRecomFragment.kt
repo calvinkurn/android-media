@@ -35,6 +35,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -222,7 +223,7 @@ class InfiniteTokonowRecomFragment :
             AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = recomItem.productId.toString(),
-                    pageSource = "tokonow",
+                    pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
                     startActivitResult = { data, _ ->

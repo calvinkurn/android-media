@@ -163,28 +163,28 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 deleteComment(adapterPosition)
                 var toBeDeleted = true
                 view?.let {
+                    val coroutineScope = CoroutineScope(Dispatchers.Main)
+                    coroutineScope.launch {
+                        if (activity != null && isAdded) {
+                            if (toBeDeleted)
+                                presenter.deleteComment(id, adapterPosition)
+                        }
+                    }
                     Toaster.toasterCustomCtaWidth =
-                        com.tokopedia.unifyprinciples.R.dimen.unify_space_96
+                            com.tokopedia.unifyprinciples.R.dimen.unify_space_96
                     Toaster.build(
-                        it,
-                        getString(R.string.kol_delete_1_comment),
-                        3000,
-                        Toaster.TYPE_NORMAL,
-                        getString(R.string.kol_delete_comment_ok)
+                            it,
+                            getString(R.string.kol_delete_1_comment),
+                            3000,
+                            Toaster.TYPE_NORMAL,
+                            getString(R.string.kol_delete_comment_ok)
                     ) {
                         feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
                         adapter?.clearList()
                         presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
                         toBeDeleted = false
                     }.show()
-                    val coroutineScope = CoroutineScope(Dispatchers.Main)
-                    coroutineScope.launch {
-                        delay(3000L)
-                        if (activity != null && isAdded) {
-                            if (toBeDeleted)
-                                presenter.deleteComment(id, adapterPosition)
-                        }
-                    }
+
                 }
             } else {
                 goToLogin()
@@ -379,7 +379,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
-        if (adapterPosition < adapter?.itemCount ?: 0) {
+        if (adapterPosition <= adapter?.itemCount ?: 0) {
             totalNewComment -= 1
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }

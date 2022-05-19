@@ -17,61 +17,112 @@
       },
       "coupon_sections": [
         {
+          "id" : "3",
           "title": "Promo yang belum bisa dipakai",
           "sub_title": "",
           "icon_url": "",
           "is_enabled": false,
-          "is_collapsed": true,
           "tags": [],
           "coupons": [],
+          "coupon_groups": [],
           "sub_sections": [
             {
+              "id" : "",
               "title": "Red Pomade",
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
               "is_enabled": false,
-              "is_collapsed": false,
               "tags": [],
+              "coupon_groups": [
+                {
+                  "id": 1,
+                  "count": 1
+                },
+                {
+                  "id": 2,
+                  "count": 1
+                }
+              ],
               "coupons": [
                 {
                   "code": "REDPW73ON9",
                   "title": "Promo Cashback REDPW73ON9",
                   "message": "Tambah Rp434.000 untuk pakai promo",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP915523-",
                   "coupon_app_link": "HCKCSCP915523-",
                   "unique_id": "",
                   "shop_id": 915523,
-                  "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
+                  "clashing_infos": [],
+                  "is_highlighted": false,
+                  "group_id": 1,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "coupon_info",
+                      "title": "ini kupon info <b>ini kupon info</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berlaku <b>hingga 1 jam lagi</b> yah",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus <b>pengguna baru</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    }
+                  ]
                 },
                 {
                   "code": "REDP1A5ZJR",
                   "title": "Promo Cashback REDP1A5ZJR",
                   "message": "Tambah Rp184.000 untuk pakai promo",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
                   "coupon_url": "HCKCSCP915523-",
                   "coupon_app_link": "HCKCSCP915523-",
                   "unique_id": "",
                   "shop_id": 915523,
-                  "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
+                  "clashing_infos": [],
+                  "is_highlighted": false,
+                  "group_id": 2,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "coupon_info",
+                      "title": "ini kupon info <b>ini kupon info</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berlaku <b>hingga 1 jam lagi</b> yah",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus <b>pengguna baru</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    }
+                  ]
                 }
               ]
             }
           ]
+        }
+      ],
+      "section_tabs": [
+        {
+          "id": "3",
+          "title": "Promo belum bisa dipakai"
         }
       ]
     }

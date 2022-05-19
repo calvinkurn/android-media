@@ -1,15 +1,15 @@
 package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.model.EmbraceBody
+import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
+import com.tokopedia.logger.model.newrelic.NewRelicBody
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
@@ -20,6 +20,7 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
 
+
 class LoggerRepository(
     private val logDao: LoggerDao,
     private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
@@ -28,7 +29,7 @@ class LoggerRepository(
     private val scalyrConfigs: List<ScalyrConfig>,
     private val newRelicConfig: NewRelicConfig,
     private val encrypt: ((String) -> (String))? = null,
-    private val decrypt: ((String) -> (String))? = null
+    val decrypt: ((String) -> (String))? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
@@ -73,6 +74,23 @@ class LoggerRepository(
         )
     }
 
+    //start region for view server logger in developer options
+    override suspend fun getLoggerList(
+        serverChannel: String,
+        limit: Int,
+        offset: Int
+    ): List<Logger> {
+        return if (serverChannel.isBlank()) logDao.getLoggerList(
+            limit,
+            offset
+        ) else logDao.getLoggerListFilter(serverChannel, limit, offset)
+    }
+
+    override suspend fun deleteAll() {
+        logDao.deleteAll()
+    }
+    //end region for view server logger in developer options
+
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
         val priorityScalyrIndex = priorityScalyr - 1
 
@@ -115,7 +133,7 @@ class LoggerRepository(
         }
     }
 
-    suspend fun sendScalyrLogToServer(
+    private suspend fun sendScalyrLogToServer(
         config: ScalyrConfig,
         logs: List<Logger>,
         scalyrEventList: List<ScalyrEvent>
@@ -129,7 +147,7 @@ class LoggerRepository(
 
     private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
-        val messageNewRelicList = mutableListOf<String>()
+        val messageNewRelicList = mutableListOf<NewRelicBody>()
         val messageEmbraceList = mutableListOf<EmbraceBody>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
@@ -162,13 +180,13 @@ class LoggerRepository(
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(addEventNewRelicSF(message))
+                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_SF_NEW_RELIC, jsonToMap(message)))
                 } else {
-                    messageNewRelicList.add(addEventNewRelic(message))
+                    messageNewRelicList.add(NewRelicBody(Constants.EVENT_ANDROID_NEW_RELIC, jsonToMap(message)))
                 }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
-                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
+                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
             }
         }
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
@@ -177,7 +195,7 @@ class LoggerRepository(
     private suspend fun sendNewRelicLogToServer(
         config: NewRelicConfig,
         logs: List<Logger>,
-        messageList: List<String>
+        messageList: List<NewRelicBody>
     ): Boolean {
         if (logs.isEmpty()) {
             return false
@@ -196,19 +214,6 @@ class LoggerRepository(
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
-    private fun addEventNewRelic(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
-        return gson.toString()
-    }
-
-    private fun addEventNewRelicSF(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
-        gson.remove(Constants.PRIORITY_LOG)
-        return gson.toString()
-    }
-
     fun truncate(str: String): String {
         return if (str.length > Constants.MAX_BUFFER) {
             str.substring(0, Constants.MAX_BUFFER)
@@ -217,7 +222,7 @@ class LoggerRepository(
         }
     }
 
-    private fun jsonToMapEmbrace(message: String): HashMap<String, Any> {
+    private fun jsonToMap(message: String): HashMap<String, Any> {
         return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 

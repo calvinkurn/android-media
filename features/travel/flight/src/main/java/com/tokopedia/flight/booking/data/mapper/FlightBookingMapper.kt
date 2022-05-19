@@ -7,7 +7,7 @@ import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
+import com.tokopedia.flight.detail.view.model.FlightStopOverModel
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
@@ -34,7 +34,10 @@ class FlightBookingMapper {
         const val AMENITY_LUGGAGE = 1
         const val AMENITY_MEAL = 2
 
-        fun mapToFlightCartView(flightCart: FlightCart, isRefreshCart: Boolean): FlightCartViewEntity {
+        fun mapToFlightCartView(
+            flightCart: FlightCart,
+            isRefreshCart: Boolean
+        ): FlightCartViewEntity {
             val journies: MutableList<FlightCartViewEntity.JourneySummary> = arrayListOf()
             for (item in flightCart.cartData.flight.journeys) {
 
@@ -47,7 +50,8 @@ class FlightBookingMapper {
                     for (includedItem in flightCart.included) {
                         if (route.airlineId.equals(includedItem.id, true)) {
                             if (airlineName.equals(includedItem.attributes.name, true)) break
-                            if (position == 0) newJourney.airlineLogo = includedItem.attributes.logo else {
+                            if (position == 0) newJourney.airlineLogo =
+                                includedItem.attributes.logo else {
                                 airlineName += " + "
                                 newJourney.isMultipleAirline = true
                             }
@@ -65,15 +69,27 @@ class FlightBookingMapper {
                     }
                 }
 
-                var departureDateString = item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.EEE_DD_MMM_YY)
-                departureDateString += String.format(" • %s-%s", item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.HH_MM),
-                        item.arrivalTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.HH_MM))
-                if (item.addDayArrival > 0) departureDateString += String.format(" (+%d hari)", item.addDayArrival)
+                var departureDateString =
+                    item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                        .toString(DateUtil.EEE_DD_MMM_YY)
+                departureDateString += String.format(
+                    " • %s-%s",
+                    item.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                        .toString(DateUtil.HH_MM),
+                    item.arrivalTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                        .toString(DateUtil.HH_MM)
+                )
+                if (item.addDayArrival > 0) departureDateString += String.format(
+                    " (+%d hari)",
+                    item.addDayArrival
+                )
 
                 newJourney.journeyId = item.id
                 newJourney.airline = airlineName
-                newJourney.routeName = String.format("%s (%s) → %s (%s)", departureCityName, item.departureAirportId,
-                        arrivalCityName, item.arrivalAirportId)
+                newJourney.routeName = String.format(
+                    "%s (%s) → %s (%s)", departureCityName, item.departureAirportId,
+                    arrivalCityName, item.arrivalAirportId
+                )
                 newJourney.isRefundable = item.routes[0].refundable
                 newJourney.transit = item.routes.size - 1
                 newJourney.date = departureDateString
@@ -98,8 +114,14 @@ class FlightBookingMapper {
             val now = Calendar.getInstance()
             now.add(Calendar.MINUTE, flightCart.meta.refreshTime)
 
-            return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions,
-                    luggageModels = luggageMetaModels, mealModels = mealMetaModels, orderDueTimeStamp = now.time, isRefreshCart = isRefreshCart)
+            return FlightCartViewEntity(
+                journeySummaries = journies,
+                insurances = flightCart.cartData.flight.insuranceOptions,
+                luggageModels = luggageMetaModels,
+                mealModels = mealMetaModels,
+                orderDueTimeStamp = now.time,
+                isRefreshCart = isRefreshCart
+            )
         }
 
         fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
@@ -107,7 +129,8 @@ class FlightBookingMapper {
             voucher.let {
                 if (it.autoApply.success) {
                     if (!(it.isCouponActive == DEFAULT_IS_COUPON_ZERO &&
-                                    it.autoApply.isCoupon == DEFAULT_IS_COUPON_ONE)) {
+                                it.autoApply.isCoupon == DEFAULT_IS_COUPON_ONE)
+                    ) {
                         promoData.typePromo = it.autoApply.isCoupon
                         promoData.promoCode = it.autoApply.code
                         promoData.description = it.autoApply.messageSuccess
@@ -120,7 +143,11 @@ class FlightBookingMapper {
             return FlightPromoViewEntity(voucher.enableVoucher, voucher.isCouponActive, promoData)
         }
 
-        fun mapToFlightPassengerEntity(adult: Int, child: Int, infant: Int): List<FlightBookingPassengerModel> {
+        fun mapToFlightPassengerEntity(
+            adult: Int,
+            child: Int,
+            infant: Int
+        ): List<FlightBookingPassengerModel> {
 
             var passengerNumber = 1
             val viewModels = arrayListOf<FlightBookingPassengerModel>()
@@ -178,7 +205,10 @@ class FlightBookingMapper {
             return viewModels
         }
 
-        private fun mapToFlightBookingAmenityViewModel(type: Int, item: FlightCart.AmenityItem?): FlightBookingAmenityModel? {
+        private fun mapToFlightBookingAmenityViewModel(
+            type: Int,
+            item: FlightCart.AmenityItem?
+        ): FlightBookingAmenityModel? {
             var model: FlightBookingAmenityModel? = null
             if (item != null) {
                 model = FlightBookingAmenityModel()
@@ -191,8 +221,10 @@ class FlightBookingMapper {
             return model
         }
 
-        fun mapToFlightDetail(flight: FlightCart.Flight, included: List<FlightCart.Included>,
-                              flightPriceModel: FlightPriceModel): List<FlightDetailModel> {
+        fun mapToFlightDetail(
+            flight: FlightCart.Flight, included: List<FlightCart.Included>,
+            flightPriceModel: FlightPriceModel
+        ): List<FlightDetailModel> {
 
             val list = listOf<FlightDetailModel>().toMutableList()
             for ((index, journey) in flight.journeys.withIndex()) {
@@ -212,7 +244,8 @@ class FlightBookingMapper {
                 }
 
                 flightDetailViewModel.totalTransit = journey.routes.size - 1
-                flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
+                flightDetailViewModel.isRefundable =
+                    if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
 
                 if (index == 0) {
                     flightPriceModel.departurePrice?.let {
@@ -241,11 +274,15 @@ class FlightBookingMapper {
                     }
                 }
 
-                flightDetailViewModel.totalNumeric = flightDetailViewModel.adultNumericPrice + flightDetailViewModel.childNumericPrice + flightDetailViewModel.infantNumericPrice
+                flightDetailViewModel.totalNumeric =
+                    flightDetailViewModel.adultNumericPrice + flightDetailViewModel.childNumericPrice + flightDetailViewModel.infantNumericPrice
                 flightDetailViewModel.countAdult = flight.adult
                 flightDetailViewModel.countChild = flight.child
                 flightDetailViewModel.countInfant = flight.infant
-                flightDetailViewModel.total = FlightCurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightDetailViewModel.totalNumeric)
+                flightDetailViewModel.total =
+                    FlightCurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
+                        flightDetailViewModel.totalNumeric
+                    )
                 flightDetailViewModel.departureTime = journey.departureTime
                 flightDetailViewModel.arrivalTime = journey.arrivalTime
                 flightDetailViewModel.airlineDataList = listOf()
@@ -297,12 +334,13 @@ class FlightBookingMapper {
             return list
         }
 
-        private fun transformToStopDetail(stopDetails: List<FlightCart.StopDetail>): List<FlightStopOverViewModel> {
-            val list = listOf<FlightStopOverViewModel>().toMutableList()
+        private fun transformToStopDetail(stopDetails: List<FlightCart.StopDetail>): List<FlightStopOverModel> {
+            val list = listOf<FlightStopOverModel>().toMutableList()
             for (stop in stopDetails) {
-                val stopDetail = FlightStopOverViewModel()
-                stopDetail.airportCode = stop.code
-                stopDetail.cityName = stop.city
+                val stopDetail = FlightStopOverModel(
+                    airportCode = stop.code,
+                    cityName = stop.city
+                )
                 list.add(stopDetail)
             }
             return list

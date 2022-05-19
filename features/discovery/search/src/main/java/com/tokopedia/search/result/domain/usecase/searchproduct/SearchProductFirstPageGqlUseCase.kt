@@ -10,11 +10,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -55,7 +55,9 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
-        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
+        val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
+                requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
+                HEADLINE_ITEM_VALUE_FIRST_PAGE, "0")
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
@@ -344,6 +346,7 @@ class SearchProductFirstPageGqlUseCase(
                                     productWishlistUrl
                                     productViewUrl
                                 }
+                                customvideo_url
                             }
                         }
                     }
@@ -364,7 +367,15 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            component_id
+                            filters {
+                              title
+                              key
+                              name
+                              value
+                            }
                         }
+                        tracking_option
                     }
                 }
             }

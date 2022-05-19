@@ -77,6 +77,142 @@ object TopChatAnalyticsKt {
         } else value.toString()
     }
 
+    fun eventTapAndHoldBubbleChat(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.TAP_AND_HOLD_BUBBLE,
+                label = replyId,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickMsgMenu(title: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_MSG_MENU,
+                label = title,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventConfirmDeleteMsg(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CONFIRM_DELETE_MSG,
+                label = replyId,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventClickCloseReplyBubblePreview(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CLOSE_REPLY_BUUBLE_PREVIEW,
+                label = replyId,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventCLickReplyBubble(childReplyId: String, parentReplyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_REPLY_BUBBLE,
+                label = "$childReplyId - $parentReplyId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventVoucherThumbnailClicked(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_SHOP_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventViewVoucher(sourceVoucher: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_VOUCHER_THUMBNAIL,
+                label = "$sourceVoucher - $voucherId",
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    private fun createGeneralEvent(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        businessUnit: String,
+        currentSite: String?,
+        userId: String? = null
+    ): Map<String, Any> {
+        val data = mutableMapOf(
+            TrackAppUtils.EVENT to event,
+            TrackAppUtils.EVENT_CATEGORY to category,
+            TrackAppUtils.EVENT_ACTION to action,
+            TrackAppUtils.EVENT_LABEL to label,
+            KEY_BUSINESS_UNIT to businessUnit
+        )
+        if (currentSite != null) {
+            data[KEY_CURRENT_SITE] = currentSite
+        }
+        if (userId != null) {
+            data[USER_ID] = userId
+        }
+        return data
+    }
+
+    object Event {
+        const val CHAT_DETAIL = "clickChatDetail"
+        const val CLICK_COMMUNICATION = "clickCommunication"
+        const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
+    }
+
+    object Category {
+        const val CHAT_DETAIL = "chat detail"
+    }
+
+    object Action {
+        const val TAP_AND_HOLD_BUBBLE = "tap and hold bubble chat"
+        const val CLICK_MSG_MENU = "click menu on atur pesan bottomsheet"
+        const val CLICK_CONFIRM_DELETE_MSG = "click confirm delete message"
+        const val CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard"
+        const val CLICK_REPLY_BUBBLE = "click view parent replied bubble chat"
+        const val CLICK_SHOP_VOUCHER_THUMBNAIL = "click shop voucher thumbnail"
+        const val VIEW_VOUCHER_THUMBNAIL = "view voucher thumbnail"
+    }
+
     //Event Name
     private const val ATC = "add_to_cart"
 
@@ -92,6 +228,7 @@ object TopChatAnalyticsKt {
     //Other
     private const val CURRENT_SITE = "topchat"
     private const val COMMUNICATION_MEDIA = "Communication & Media"
+    private const val CURRENT_SITE_TOKOPEDIA = "tokopediamarketplace"
 
     //General Keys
     private const val KEY_BUSINESS_UNIT = "businessUnit"

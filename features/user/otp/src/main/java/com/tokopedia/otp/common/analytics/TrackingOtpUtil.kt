@@ -11,7 +11,11 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
+import com.tokopedia.otp.verification.domain.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -25,6 +29,9 @@ import javax.inject.Inject
  */
 
 class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
+
+    private val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
+    private val isNewOtpMiscall = remoteConfig?.getString(ROLLANCE_KEY_MISCALL_OTP)?.contains(ROLLANCE_KEY_MISCALL_OTP) == true
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -617,10 +624,10 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
                 if (isSuccess) {
-                    "success"
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
                 } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
         ))
     }
 
@@ -630,10 +637,10 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
                 if (isSuccess) {
-                    "success"
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
                 } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
         ))
     }
 
@@ -642,10 +649,9 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                "click - ${otpData.otpType} - ${modeListData.modeText}"
+                getLabelWithOtpMethod(TrackerLabelType.CLICK, otpData, modeListData)
         ))
     }
-
 
     /* Auto Submit Tracker */
     fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
@@ -654,10 +660,34 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_AUTO_SUBMIT_OTP,
                 if (isSuccess) {
-                    "success"
+                    getLabelWithOtpMethod(TrackerLabelType.SUCCESS, otpData, modeListData)
                 } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    getLabelWithOtpMethod(TrackerLabelType.FAIL, otpData, modeListData, message)
+                }
+        ))
+    }
+
+    /* Auto Submit Silent Verif */
+    fun trackAutoSubmitSilentVerificationEvUrl(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_AUTO_SUBMIT_OTP,
+            if (isSuccess) { "success" } else { "fail - $message" }
+                    + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    + " - evURL - $correlationId"
+        ))
+    }
+
+    /* Auto Submit Silent Verif - Otp Validate */
+    fun trackAutoSubmitSilentVerificationOtpValidate(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, correlationId: String, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_AUTO_SUBMIT_OTP,
+            if (isSuccess) { "success" } else { "fail - $message" }
+                    + " - ${otpData.otpType} - ${modeListData.modeText}"
+                    + " - $correlationId"
         ))
     }
 
@@ -687,12 +717,12 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         analytics.sendGeneralEvent(map)
     }
 
-    fun trackSilentVerificationRequestSuccess(otpType: Int, modeName: String) {
+    fun trackSilentVerificationRequestSuccess(otpType: Int, modeName: String, correlationId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("success - %s - %s", otpType.toString(), modeName))
+                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -710,12 +740,12 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun trackSilentVerifTryAgainSuccess(otpType: Int, modeName: String) {
+    fun trackSilentVerifTryAgainSuccess(otpType: Int, modeName: String, correlationId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
                 Action.ACION_CLICK_TRY_AGAIN,
-                String.format("success - %s - %s", otpType.toString(), modeName))
+                String.format("success - %s - %s - %s", otpType.toString(), modeName, correlationId))
 
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -780,5 +810,44 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
             Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
             Label.LABEL_OTP_PAGE
         )
+    }
+
+    private fun getLabelWithOtpMethod(labelType: TrackerLabelType, otpData: OtpData, otpModeListData: ModeListData, message: String = ""): String {
+        val label = if (message.isNotEmpty()) {
+            "$labelType $message"
+        } else {
+            labelType.toString()
+        }
+
+        val tag = when(otpModeListData.modeText) {
+            OtpConstant.OtpMode.MISCALL -> {
+                if (isNewOtpMiscall) " - $TAG_AUTO_READ" else ""
+            }
+            else -> {
+                ""
+            }
+        }
+
+        return "$label - ${otpData.otpType} - ${otpModeListData.modeText}$tag"
+    }
+
+    private enum class TrackerLabelType {
+        SUCCESS,
+        FAIL,
+        CLICK;
+
+        override fun toString(): String {
+            return when(this) {
+                SUCCESS -> {
+                    Label.LABEL_SUCCESS
+                }
+                FAIL -> {
+                    Label.LABEL_FAILED
+                }
+                CLICK -> {
+                    Label.LABEL_CLICK
+                }
+            }
+        }
     }
 }

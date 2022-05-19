@@ -7,7 +7,6 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.work.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logger.utils.globalScopeLaunch
@@ -160,7 +159,7 @@ class RegisterPushNotificationWorker(
         private const val MAX_RUN_ATTEMPT = 3
 
         private val ERROR_HEADER = "${RegisterPushNotificationWorker::class.java.name} error on "
-        private const val TAG_SCALYR = "CRASH_REGISTER_PUSHNOTIF"
+        private const val TAG_REGISTER_PUSH_NOTIF = "CRASH_REGISTER_PUSHNOTIF"
         private const val MAX_LENGTH_ERROR = 1000
 
         private const val LOG_TYPE_SCHEDULE_WORKER = "scheduleWorker()"
@@ -182,7 +181,7 @@ class RegisterPushNotificationWorker(
         private fun runWorker(context: Context) {
             WorkManager.getInstance(context).enqueueUniqueWork(
                 WORKER_NAME,
-                ExistingWorkPolicy.REPLACE,
+                ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequestBuilder<RegisterPushNotificationWorker>()
                     .setConstraints(Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -192,26 +191,11 @@ class RegisterPushNotificationWorker(
         }
 
         private fun recordLog(type: String, message: String, throwable: Throwable) {
-            val logMessage = if (message.isEmpty()) type else "$type | $message"
-            sendLogToCrashlytics(logMessage, throwable)
-            ServerLogger.log(Priority.P2, TAG_SCALYR, mapOf(
+            ServerLogger.log(Priority.P2, TAG_REGISTER_PUSH_NOTIF, mapOf(
                 "type" to type,
-                "err" to throwable.toString().take(MAX_LENGTH_ERROR))
-            )
-        }
-
-        private fun sendLogToCrashlytics(message: String, throwable: Throwable) {
-            try {
-                val messageException = "$ERROR_HEADER $message : ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(
-                    RuntimeException(
-                        messageException,
-                        throwable
-                    )
-                )
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            }
+                "message" to message,
+                "err" to throwable.toString().take(MAX_LENGTH_ERROR)
+            ))
         }
     }
 

@@ -40,7 +40,7 @@
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
-    <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
+    <string name="success_to_report">Laporanmu sedang diproses. Tunggu email update-nya maks. 1x12 jam, ya.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="pdp_search_hint_tokonow">Cari "'"%s"'" di Tokopedia NOW!</string>
 
@@ -170,6 +170,7 @@
 
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
+    <string name="toaster_success_add_wishlist">Barang berhasil disimpan di Wishlist!</string>
     <string name="pdp_video_divider"> / </string>
 
     <string name="pdp_shipping_weight_checkout_label">Total ongkir akhir akan dihitung saat checkout.</string>
@@ -183,14 +184,11 @@
     <string name="pdp_shipping_choose_courier_label">Lihat Pilihan Kurir</string>
     <string name="pdp_shipping_other_courier_label">Kurir lainnya:</string>
     <string name="pdp_shipping_khusus_label">Khusus:</string>
+    <string name="pdp_shipping_dilayani_label">Dilayani oleh</string>
     <string name="pdp_shipping_failed_label">Ongkir gagal ditampilkan</string>
     <string name="pdp_shipping_success_change_address">Simulasi pengiriman disesuaikan dengan alamat yang kamu pilih.</string>
     <string name="pdp_tokocabang_label">TokoCabang</string>
     <string name="pdp_bold_html_builder"><![CDATA[<b>%1s</b>]]></string>
-
-
-    <string name="pdp_boe_coachmark_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
-    <string name="pdp_boe_coachmark_desc">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya!</string>
 
     <string name="pdp_pcs_builder">%1d pcs</string>
     <string name="pdp_total_stock_static">Jumlah Barang:</string>

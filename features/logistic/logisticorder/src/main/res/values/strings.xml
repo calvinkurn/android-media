@@ -33,6 +33,39 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="confirm_shipping_confirm_description">Biaya pergantian kurir sepenuhnya ditanggung Penjual</string>
     <string name="confirm_shipping_confirm_button">Konfirmasi</string>
     <string name="tracking_label_eta">Estimasi tiba</string>
+    <string name="label_kurir_rekomendasi">Kurir: %1$s</string>
 
-    <!--CONTENT DESC-->
+    <!--TIPPING GOJEK-->
+    <string name="driver_tipping_ticker">&lt;ul&gt; &lt;li&gt; %s </string>
+    <string name="driver_tipping_ticker_new">•\t%s\n•\t%s</string>
+    <string name="payment_value"><![CDATA[<b>%s %s</b>]]></string>
+    <string name="title_prepayment_tipping">Beri tip untuk driver</string>
+    <string name="button_tipping_payment">Pilih Pembayaran</string>
+
+    <string name="button_tipping_done">Mengerti</string>
+    <string name="tipping_success_payment_text">Tip kamu akan diberikan!</string>
+    <string name="tipping_success_to_gojek_text">Tip kamu sudah diberikan!</string>
+    <string name="tipping_result_desc"><![CDATA[Tip 100% ditransfer ke driver <b>setelah pesanan sampai</b>. Tip akan dikembalikan ke kamu jika pesanan batal]]></string>
+    <string name="minimum_tipping">Min. Rp1.000</string>
+    <string name="maksimum_tipping">Maks. Rp20.000</string>
+    <string name="detail_info_label">Detail Informasi</string>
+    <string name="resi_label">No. Resi</string>
+    <string name="invoice_label">No. Invoice</string>
+    <string name="phone_number_label">Nomor HP</string>
+    <string name="driver_name_label">Nama Driver</string>
+    <string name="license_label">Plat Nomor Kendaraan</string>
+    <string name="btn_tipping_success_text">Lihat Bukti</string>
+    <string name="btn_tipping_waiting_payment_text">Cek Status</string>
+    <string name="btn_tipping_refund_text">Lihat Saldo</string>
+    <string name="btn_tipping_open_text">Beri Tip</string>
+    <string name="driver_description_template">%1$s • %2$s</string>
+    <string name="info_driver_title">Driver bisa berganti\nsewaktu-waktu</string>
+    <string name="info_driver_detail">Jika driver berganti, tip akan diberikan\nke driver yang mengantar pesanan</string>
+    <string name="tipping_layout_description">Pilih atau tulis sendiri jumlah tip</string>
+    <string name="nominal_tip_label">Tulis Nominal Tip</string>
+    <string name="btn_tipping_text">Pilih Pembayaran</string>
+    <string name="nominal_tip_message">Rp1.000 - Rp.20.000</string>
+    <string name="btn_driver_info_text">Mengerti</string>
+    <string name="card_tipping_btn_default_text">Beri Tip</string>
+    <string name="last_driver_button">Hubungi</string>
 </resources>

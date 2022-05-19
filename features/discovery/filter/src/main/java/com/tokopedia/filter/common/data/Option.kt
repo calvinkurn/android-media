@@ -113,6 +113,9 @@ class Option(@SerializedName("name")
     val isMinMaxRangePriceOption: Boolean
         get() = key == KEY_PRICE_MIN_MAX_RANGE
 
+    val isMinOrMaxPriceOption: Boolean
+        get() = isMinPriceOption || isMaxPriceOption
+
     val isRatingOption: Boolean
         get() = key == KEY_RATING
 

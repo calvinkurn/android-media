@@ -17,12 +17,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -254,16 +254,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 selectedProduct[idx]
             }
 
-            // try catch to avoid ImageUnify crash on set image to product counter image
-            try {
-                if(productCounterChoosenImage?.context?.isValidGlideContext() == true) {
-                    ImageHandler.LoadImage(
-                            productCounterChoosenImage,
-                            item.productImageUrl
-                    )
-                }
-            } catch (e : Throwable) {}
-
+            productCounterChoosenImage?.loadImage(item.productImageUrl)
             productChoosenContainer?.visibility = View.VISIBLE
             productChoosenCounterText?.text = context?.resources?.getString(
                     R.string.chosen_product_counter_text,

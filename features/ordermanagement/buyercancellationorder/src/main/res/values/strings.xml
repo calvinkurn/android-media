@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">buyercancellationorder</string>
+
+    <string name="popup_selesai_cancel_btn">Kembali</string>
+    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+    <string name="see_all_placeholder">Lihat Semua Produk</string>
+    <string name="ask_1_placeholder">Mengapa kamu ingin membatalkan pesanan ini?</string>
+    <string name="ask_2_placeholder">Apa detail pembatalan dari pesanan ini?</string>
+    <string name="reason_placeholder">Pilih alasan</string>
+    <string name="ajukan_btn">Ajukan</string>
+    <string name="chat_penjual">Chat Penjual</string>
+    <string name="reason_cancel">Ingin mengubah pesanan</string>
+    <string name="show_bottomsheet">Show Bottomsheet</string>
+    <string name="tulis_alasan">Tulis alasan...</string>
+    <string name="ask_2_lainnya">Tulis detail pembatalan pesanan.</string>
+    <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
+    <string name="toaster_manual_max">Max 160 karakter</string>
+    <string name="toaster_manual_min">Min. 15 karakter</string>
+    <string name="salin_text">Salin</string>
+    <string name="image_desc">Image Description</string>
+    <string name="booking_code">TPR9QTMYE</string>
+
+    <string name="icon_placeholder">Icon</string>
+    <string name="error_message_buyer_request_cancel_reason_should_not_contains_special_chars">Hindari penggunaan karakter spesial (@#$%^*)</string>
+    <string name="min_char_reason_lainnya">Min. 15 karakter</string>
+    <string name="cancellation_no_connection_title">Koneksi internetmu terganggu!</string>
+    <string name="cancellation_no_connection_desc">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="cancellation_no_connection_btn">Coba Lagi</string>
+    <string name="buyer_fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
+    <string name="mengerti_button">Mengerti</string>
+    <string name="pusat_bantuan_button">Hubungi Pusat Bantuan</string>
+
+    <string name="buyer_ticker_info_selengkapnya">
+        <![CDATA[
+        <html>
+        <body>
+        <a href="#ticker_url"><strong style="color: green;">#ticker_label</strong></a>
+        </body>
+        </html>
+        ]]>
+    </string>
+    <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
+</resources>
