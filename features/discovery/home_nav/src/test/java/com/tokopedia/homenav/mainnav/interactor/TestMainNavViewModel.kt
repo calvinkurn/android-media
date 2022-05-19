@@ -19,9 +19,17 @@ import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.admin.AdminData
@@ -35,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -925,5 +934,137 @@ class TestMainNavViewModel {
         val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
         val homeNavMenuDataModel = homeNavExpandableDataModel.menus.find { it is HomeNavMenuDataModel } as HomeNavMenuDataModel
         Assert.assertNotNull(homeNavMenuDataModel)
+    }
+
+    @Test
+    fun `given using rollence variant when user not logged in should add empty state non logged in`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns false
+
+        viewModel = createViewModel(
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given not using rollence variant when user not logged in should add empty state non logged in`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn } returns false
+
+        viewModel = createViewModel(
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value)
+        assert(viewModel.mainNavLiveData.value?.dataList?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given success and not empty wishlistshould add wishlist model to visitable list`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { wishlistUseCase.executeOnBackground() } returns listOf(NavWishlistModel())
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getWishlistNavUseCase = wishlistUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel } == true)
+    }
+
+    @Test
+    fun `given success and not empty when favorite shop should add favorite shop model to visitable list`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(NavFavoriteShopModel())
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel } == true)
+    }
+
+    @Test
+    fun `given empty data when get wishlist should add empty state`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { wishlistUseCase.executeOnBackground() } returns emptyList()
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getWishlistNavUseCase = wishlistUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateWishlistDataModel } == true)
+    }
+
+    @Test
+    fun `given empty data when get favorite shop should add empty state`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns emptyList()
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateFavoriteShopDataModel } == true)
+    }
+
+    @Test
+    fun `given error when get wishlist should add error state`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val wishlistUseCase = mockk<GetWishlistNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { wishlistUseCase.executeOnBackground() } throws Exception()
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getWishlistNavUseCase = wishlistUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+    }
+
+    @Test
+    fun `given error when get favorite shop should add error state`() = runBlocking {
+        val userSession = mockk<UserSessionInterface>()
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        every { userSession.isLoggedIn } returns true
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws Exception()
+
+        viewModel = createViewModel(
+            userSession = userSession,
+            getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
     }
 }

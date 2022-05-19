@@ -14,8 +14,12 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
@@ -42,7 +46,9 @@ fun createViewModel (
         getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
         getShopInfoUseCase: GetShopInfoUseCase? = null,
         accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
-        getAffiliateUserUseCase: GetAffiliateUserUseCase? = null
+        getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
+        getFavoriteShopsNavUseCase: GetFavoriteShopsNavUseCase? = null,
+        getWishlistNavUseCase: GetWishlistNavUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -83,6 +89,14 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
     }
 
+    val getFavoriteShopUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf(NavFavoriteShopModel()) }
+    }
+
+    val getWishlistUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf(NavWishlistModel()) }
+    }
+
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
             clientMenuGenerator = clientMenuGeneratorMock,
@@ -94,7 +108,9 @@ fun createViewModel (
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
-            getAffiliateUserUseCase = getAffiliateUserUseCaseMock
+            getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
+            getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
+            getWishlistNavUseCase = getWishlistUseCaseMock
     )
 }
 
