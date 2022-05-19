@@ -71,7 +71,7 @@ class PlayInteractiveLeaderboardViewComponent(
         rvLeaderboard.adapter = leaderboardAdapter
 
         btnRefreshError.setOnClickListener {
-            btnRefreshError.isLoading = true
+            showBtnLoader(shouldShow = true)
             listener.onRefreshButtonClicked(this)
         }
 
@@ -96,7 +96,7 @@ class PlayInteractiveLeaderboardViewComponent(
     }
 
     fun setError() {
-        btnRefreshError.isLoading = false
+        showBtnLoader(shouldShow = false)
 
         errorView.show()
         rvLeaderboard.hide()
@@ -117,6 +117,11 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         show()
+    }
+
+    private fun showBtnLoader(shouldShow: Boolean){
+        btnRefreshError.isLoading = shouldShow
+        btnRefreshError.isClickable = !shouldShow
     }
 
     override fun show() {
