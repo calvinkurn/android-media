@@ -101,6 +101,16 @@
       ],
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on order status",
+      "eventCategory": "global menu",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

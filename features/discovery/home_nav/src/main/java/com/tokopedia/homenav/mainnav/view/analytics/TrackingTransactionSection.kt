@@ -108,7 +108,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     fun clickOnOrderStatus(userId: String, orderLabel: String) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
-                event = EVENT_CLICK_NAVIGATION_DRAWER,
+                event = Event.CLICK_HOMEPAGE,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = ACTION_CLICK_ON_ORDER_STATUS,
                 eventLabel = orderLabel
