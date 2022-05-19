@@ -15,20 +15,14 @@ open class GetBalanceAndPointUseCase @Inject constructor(
     dispatcher: CoroutineDispatcher
 ) : CoroutineUseCase<String, BalanceAndPointDataModel>(dispatcher) {
 
-    override fun graphqlQuery(): String {
-        return query
-    }
+    override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: String): BalanceAndPointDataModel {
-        val mapParams = getParams(params)
+        val mapParams = mapOf(
+            PARAM_PARTNER_CODE to partnerCode
+        )
         return repository.request(GetBalanceAndPointQuery(), mapParams)
     }
-
-    private fun getParams(
-        partnerCode: String
-    ): Map<String, Any> = mapOf(
-        PARAM_PARTNER_CODE to partnerCode
-    )
 
     companion object {
         private const val PARAM_PARTNER_CODE = "partnerCode"
