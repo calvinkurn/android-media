@@ -9,10 +9,9 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  * Created by Frenzel on 18/04/22
  */
 data class WishlistDataModel(
-        val wishlist: List<NavWishlistModel>,
-        val othersWishlistCount: Int = 0
+        val wishlist: List<NavWishlistModel>
 ): MainNavVisitable, ImpressHolder() {
-    override fun id(): Any = "oderList"
+    override fun id(): Any = "wishlist"
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean =
             visitable is WishlistDataModel &&

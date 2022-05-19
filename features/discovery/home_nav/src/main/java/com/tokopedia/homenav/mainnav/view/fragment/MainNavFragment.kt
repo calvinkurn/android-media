@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.MePageRollenceController
@@ -41,6 +42,8 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
@@ -53,6 +56,7 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -71,6 +75,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val OFFSET_TO_SHADOW = 100
         private const val REQUEST_REVIEW_PRODUCT = 999
         private const val COACHMARK_SAFE_DELAY = 200L
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
+        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val PDP_EXTRA_PRODUCT_ID = "product_id"
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -117,7 +125,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
 
         MePageRollenceController.fetchMePageRollenceValue()
-        viewModel.setIsMePageUsingRollenceVariant(MePageRollenceController.isMePageUsingRollenceVariant())
+        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
+        viewModel.setIsMePageUsingRollenceVariant(rollence)
 
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
@@ -160,6 +169,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
+                REQUEST_FROM_PDP -> {
+                    data?.let {
+                        val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
+                        val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                            false)
+                    }
+                }
                 REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
@@ -316,6 +332,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         RouteManager.route(context, homeNavTitleDataModel.applink)
     }
 
+    override fun onErrorWishlistClicked() {
+        viewModel.refreshWishlistData()
+    }
+
+    override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
+        goToPDP(wishlistModel.productId, position)
+        TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
+    }
+
+    override fun onErrorFavoriteShopClicked() {
+        viewModel.refreshFavoriteShopData()
+    }
+
+    override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
+        startActivity(intent)
+    }
+
     override fun showReviewProduct(uriReviewProduct: String) {
         val intent = RouteManager.getIntent(context, uriReviewProduct)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
@@ -387,6 +421,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun getSharedPreference(): SharedPreferences {
         return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+    }
+
+    private fun goToPDP(productId: String, position: Int) {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
     }
 }
 

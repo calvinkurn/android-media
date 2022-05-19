@@ -18,5 +18,8 @@ class ErrorWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
     }
 
     override fun bind(errorStateWishlistDataModel: ErrorStateWishlistDataModel) {
+        binding?.localloadErrorStateWishlist?.refreshBtn?.setOnClickListener {
+            mainNavListener.onErrorWishlistClicked()
+        }
     }
 }

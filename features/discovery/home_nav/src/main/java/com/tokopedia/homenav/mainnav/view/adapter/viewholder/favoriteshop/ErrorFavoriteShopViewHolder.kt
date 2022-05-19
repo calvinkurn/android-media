@@ -20,5 +20,8 @@ class ErrorFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
     }
 
     override fun bind(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel) {
+        binding?.localloadErrorStateFavoriteShop?.refreshBtn?.setOnClickListener {
+            mainNavListener.onErrorFavoriteShopClicked()
+        }
     }
 }

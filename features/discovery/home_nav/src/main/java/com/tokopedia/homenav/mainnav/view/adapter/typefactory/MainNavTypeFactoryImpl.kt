@@ -123,6 +123,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return EmptyFavoriteShopViewHolder.LAYOUT
     }
 
+    override fun type(emptyStateNonLoggedInDataModel: EmptyStateNonLoggedInDataModel): Int {
+        return EmptyNonLoggedInViewHolder.LAYOUT
+    }
+
     override fun type(visitable: HomeNavExpandableDataModel): Int {
         return HomeNavExpandableViewHolder.LAYOUT
     }
@@ -150,6 +154,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
             ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
             HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
+            EmptyNonLoggedInViewHolder.LAYOUT -> EmptyNonLoggedInViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

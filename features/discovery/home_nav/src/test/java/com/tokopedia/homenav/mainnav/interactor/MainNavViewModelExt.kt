@@ -14,6 +14,9 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
@@ -99,12 +102,12 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
     }
 
-    val getFavoriteShopsNavUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
-
+    val getFavoriteShopUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf(NavFavoriteShopModel()) }
     }
 
-    val getWishlistNavUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
-
+    val getWishlistUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf(NavWishlistModel()) }
     }
 
     val getReviewProductUseCaseMock = getOrUseDefault(getReviewProductUseCase) {
@@ -123,8 +126,8 @@ fun createViewModel (
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
-            getFavoriteShopsNavUseCase = getFavoriteShopsNavUseCaseMock,
-            getWishlistNavUseCase = getWishlistNavUseCaseMock,
+            getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
+            getWishlistNavUseCase = getWishlistUseCaseMock,
             getReviewProductUseCase = getReviewProductUseCaseMock
     )
 }

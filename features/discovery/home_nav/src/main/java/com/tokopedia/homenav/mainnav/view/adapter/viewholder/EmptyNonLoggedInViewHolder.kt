@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -9,27 +9,27 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderEmptyFavoriteShopBinding
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
+import com.tokopedia.homenav.databinding.HolderEmptyNonLoggedInBinding
+import com.tokopedia.homenav.mainnav.view.datamodel.EmptyStateNonLoggedInDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
-class EmptyFavoriteShopViewHolder(itemView: View): AbstractViewHolder<EmptyStateFavoriteShopDataModel>(itemView) {
-    private var binding: HolderEmptyFavoriteShopBinding? by viewBinding()
+class EmptyNonLoggedInViewHolder(itemView: View): AbstractViewHolder<EmptyStateNonLoggedInDataModel>(itemView) {
+    private var binding: HolderEmptyNonLoggedInBinding? by viewBinding()
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_empty_favorite_shop
+        val LAYOUT = R.layout.holder_empty_non_logged_in
         private const val EMPTY_IMAGE_LINK =
             "https://images.tokopedia.net/img/android/home/navigation/home_nav_empty_data.png"
     }
 
-    override fun bind(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel) {
-        binding?.cardEmptyFavoriteShop?.cardType = CardUnify2.TYPE_BORDER
-        val imageView = binding?.favoriteShopEmptyImage
-        val shimmer = binding?.favoriteShopEmptyImageShimmer
+    override fun bind(emptyStateNonLoggedInDataModel: EmptyStateNonLoggedInDataModel) {
+        val imageView = binding?.nonLoggedInEmptyImage
+        val shimmer = binding?.nonLoggedInEmptyImageShimmer
         imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
         Glide.with(itemView.context)
             .load(EMPTY_IMAGE_LINK)

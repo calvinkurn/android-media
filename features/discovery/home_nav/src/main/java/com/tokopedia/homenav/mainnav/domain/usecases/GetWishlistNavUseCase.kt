@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Category
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Wishlist
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
@@ -103,24 +104,28 @@ class GetWishlistNavUseCase @Inject constructor (
     }
 
     override suspend fun executeOnBackground(): List<NavWishlistModel> {
-        return try {
-            val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?:Wishlist())
-            val wishlistList = mutableListOf<NavWishlistModel>()
-            responseData.data.wishlistItems?.map {
-                wishlistList.add(NavWishlistModel(
-                    id = it.id,
-                    productName = it.name,
-                    imageUrl = it.imageUrl,
-                    priceFmt = it.priceFmt,
-                    originalPriceFmt = it.originalPriceFmt,
-                    discountPercentageFmt = it.discountPercentageFmt,
-                    cashback = it.cashback
-                ))
-            }
-            wishlistList
-        } catch (e: Throwable){
-            listOf()
+        val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?:Wishlist())
+        val wishlistList = mutableListOf<NavWishlistModel>()
+        responseData.data.wishlistItems?.map {
+            wishlistList.add(NavWishlistModel(
+                productId = it.productId.orEmpty(),
+                productName = it.name.orEmpty(),
+                imageUrl = it.imageUrl.orEmpty(),
+                priceFmt = it.priceFmt.orEmpty(),
+                originalPriceFmt = it.originalPriceFmt.orEmpty(),
+                discountPercentageFmt = it.discountPercentageFmt.orEmpty(),
+                cashback = it.cashback.orEmpty(),
+                category = it.category.orEmpty(),
+                categoryBreadcrumb = it.category?.generateCategoryBreadcrumb().orEmpty(),
+                wishlistId = it.wishlistId.orEmpty(),
+                variant = it.variant.orEmpty()
+            ))
         }
+        return wishlistList
+    }
+
+    private fun List<Category>.generateCategoryBreadcrumb() : String {
+        return this.joinToString(separator = " / ") { it.name.orEmpty() }
     }
 
     private fun setParams(page: Int = 1, limit: Int = 5) = RequestParams.create().apply {

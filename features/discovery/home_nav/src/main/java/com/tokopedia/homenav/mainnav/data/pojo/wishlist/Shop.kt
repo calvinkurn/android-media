@@ -30,5 +30,5 @@ data class Fulfillment(
     val isFulfillment: Boolean? = false,
     @SerializedName("text")
     @Expose
-    val text: String? = "",
+    val text: String? = ""
 )

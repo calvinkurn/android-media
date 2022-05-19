@@ -9,8 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  * Created by Frenzel on 18/04/22
  */
 data class FavoriteShopListDataModel(
-    val favoriteShops: List<NavFavoriteShopModel>,
-    val otherFavoriteShopsCount: Int = 0
+    val favoriteShops: List<NavFavoriteShopModel>
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = "favoriteShopList"
 

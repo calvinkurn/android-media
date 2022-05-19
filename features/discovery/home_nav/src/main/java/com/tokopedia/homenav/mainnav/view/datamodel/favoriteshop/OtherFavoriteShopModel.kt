@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  */
 
 data class OtherFavoriteShopModel(
-        val otherShopsCount: Int
+        val otherShopsCount: Int = 0
 ): FavoriteShopNavVisitable, ImpressHolder() {
     override fun type(factory: FavoriteShopTypeFactory): Int {
         return factory.type(this)

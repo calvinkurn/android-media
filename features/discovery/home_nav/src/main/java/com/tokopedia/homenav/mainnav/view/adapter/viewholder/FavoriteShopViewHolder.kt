@@ -13,6 +13,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.Favori
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.OtherFavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -28,6 +29,7 @@ class FavoriteShopViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_favorite_shop_list
+        private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
     }
 
     override fun bind(element: FavoriteShopListDataModel) {
@@ -48,8 +50,8 @@ class FavoriteShopViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
-        if (element.otherFavoriteShopsCount.isMoreThanZero()) {
-            visitableList.add(OtherTransactionModel(element.otherFavoriteShopsCount))
+        if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
+            visitableList.add(OtherFavoriteShopModel())
         }
         adapter.setVisitables(visitableList)
     }

@@ -1,11 +1,17 @@
 package com.tokopedia.homenav.mainnav.domain.model
 
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Category
+
 data class NavWishlistModel(
-    val id: String? = "",
-    val productName: String? = "",
-    val imageUrl: String? = "",
-    val priceFmt: String? = "",
-    val originalPriceFmt: String? = "",
-    val discountPercentageFmt: String? = "",
-    val cashback: String? = ""
+    val productId: String = "",
+    val productName: String = "",
+    val imageUrl: String = "",
+    val priceFmt: String = "",
+    val originalPriceFmt: String = "",
+    val discountPercentageFmt: String = "",
+    val cashback: String = "",
+    val category: List<Category> = listOf(),
+    val categoryBreadcrumb: String = "",
+    val variant: String = "",
+    val wishlistId: String = ""
 )

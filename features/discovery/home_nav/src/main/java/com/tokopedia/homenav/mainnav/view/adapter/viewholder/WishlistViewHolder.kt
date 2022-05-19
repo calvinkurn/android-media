@@ -29,6 +29,7 @@ class WishlistViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_wishlist_list
+        private const val MAX_WISHLIST_TO_SHOW = 5
     }
 
     override fun bind(element: WishlistDataModel) {
@@ -49,8 +50,8 @@ class WishlistViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.wishlist.map { WishlistModel(it) })
-        if (element.othersWishlistCount.isMoreThanZero()) {
-            visitableList.add(OtherWishlistModel(element.othersWishlistCount))
+        if(element.wishlist.size >= MAX_WISHLIST_TO_SHOW){
+            visitableList.add(OtherWishlistModel())
         }
         adapter.setVisitables(visitableList)
     }

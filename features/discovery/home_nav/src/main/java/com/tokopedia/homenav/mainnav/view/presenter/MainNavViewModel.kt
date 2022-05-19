@@ -255,7 +255,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         if (isMePageUsingRollenceVariant) {
-            this.add(SeparatorDataModel())
             allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
             this.add(allCategories)
             this.add(SeparatorDataModel())
@@ -553,7 +552,21 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getFavoriteShops() {
+    fun refreshFavoriteShopData() {
+        val favoriteShopPlaceHolder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateFavoriteShopDataModel || it.value is FavoriteShopListDataModel
+        }
+        favoriteShopPlaceHolder?.let {
+            updateWidget(ShimmerFavoriteShopDataModel(), favoriteShopPlaceHolder.index)
+        }
+        launchCatchError(coroutineContext, block = {
+            getFavoriteShops()
+        }) {
+
+        }
+    }
+
+    private suspend fun getFavoriteShops() {
         //find error state if available and change to shimmering
         val favoriteShopErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateFavoriteShopDataModel
@@ -565,9 +578,7 @@ class MainNavViewModel @Inject constructor(
             val favoriteShopList = getFavoriteShopsNavUseCase.get().executeOnBackground()
 
             if (favoriteShopList.isNotEmpty()) {
-                val othersFavoriteShopsCount = favoriteShopList.size - MAX_FAVORITE_SHOPS_TO_SHOW
-                val favoriteShopsToShow = favoriteShopList.take(ON_GOING_FAVORITE_SHOPS_TO_SHOW)
-                val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopsToShow, othersFavoriteShopsCount)
+                val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopList)
 
                 //find shimmering and change with result value
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
@@ -589,8 +600,21 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getWishlist() {
-        //find error state if available and change to shimmering
+    fun refreshWishlistData() {
+        val wishlistPlaceHolder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateWishlistDataModel || it.value is WishlistDataModel
+        }
+        wishlistPlaceHolder?.let {
+            updateWidget(ShimmerWishlistDataModel(), wishlistPlaceHolder.index)
+        }
+        launchCatchError(coroutineContext, block = {
+            getWishlist()
+        }) {
+
+        }
+    }
+
+    private suspend fun getWishlist() {
         val wishlistErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateWishlistDataModel
         }
@@ -601,12 +625,8 @@ class MainNavViewModel @Inject constructor(
             val wishlist = getWishlistNavUseCase.get().executeOnBackground()
 
             if (wishlist.isNotEmpty()) {
-//                val othersWishlistCount = wishlist.size - MAX_FAVORITE_SHOPS_TO_SHOW
-                val othersWishlistCount = 10 //temporary
-                val wishlistToShow = wishlist.take(ON_GOING_FAVORITE_SHOPS_TO_SHOW)
-                val wishlistModel = WishlistDataModel(wishlistToShow, othersWishlistCount)
+                val wishlistModel = WishlistDataModel(wishlist)
 
-//                find shimmering and change with result value
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                     updateWidget(wishlistModel, it)
                 }
@@ -617,7 +637,6 @@ class MainNavViewModel @Inject constructor(
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
-            //find shimmering and change with result value
             findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                 updateWidget(ErrorStateWishlistDataModel(), it)
             }
@@ -692,20 +711,19 @@ class MainNavViewModel @Inject constructor(
             var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
-                    SeparatorDataModel(),
+                        SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         InitialShimmerTransactionRevampDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                        ShimmerFavoriteShopDataModel()
+                        ShimmerFavoriteShopDataModel(),
+                        SeparatorDataModel()
                 )
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
+                        EmptyStateNonLoggedInDataModel()
                 )
             }
             return transactionDataList
