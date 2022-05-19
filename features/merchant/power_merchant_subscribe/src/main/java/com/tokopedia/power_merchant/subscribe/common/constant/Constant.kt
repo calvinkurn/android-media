@@ -86,5 +86,19 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
         const val IC_PM_PRO_UPGRADE_LEVEL =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
+        const val IC_PM_CASH_BACK =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
+        const val IC_PM_FLASH_SALE =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
+        const val IC_PM_FREE_DELIVERY =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_free_delivery.png"
+        const val IC_PM_PRODUCT_BUNDLING =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_product_bundling.png"
+        const val IC_PM_SPECIAL_RELEASE =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_special_release.png"
+        const val IC_PM_TOP_ADS =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_topads.png"
+        const val IMG_PM_REGISTRATION =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_registration_banner.png"
     }
 }

@@ -5,6 +5,6 @@ package com.tokopedia.gm.common.data.source.local.model
  */
 
 data class PMBenefitItemUiModel(
-    val resIcon: Int,
+    val iconUrl: String,
     val benefitDescription: String
 )
