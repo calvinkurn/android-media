@@ -8,12 +8,21 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 
 @Module
 class ShopFlashSaleModule {
+    @ShopFlashSaleScope
+    @Provides
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
+    @ShopFlashSaleScope
+    @Provides
+    fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
-
-
+    @ShopFlashSaleScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 }
