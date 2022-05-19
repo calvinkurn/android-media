@@ -1,24 +1,19 @@
 package com.tokopedia.digital_deals.view.presenter
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
-import com.tokopedia.digital_deals.view.model.Brand
-import com.tokopedia.digital_deals.view.model.Page
-import com.tokopedia.digital_deals.view.model.response.BrandDetailsResponse
+import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract
 import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
@@ -40,49 +35,112 @@ class DealCategoryAdapterPresenterTest {
         presenter = DealCategoryAdapterPresenter(postUpdateDealLikesUseCase)
     }
 
-//    @Test
-//    fun `Set Deal Like onNext contains liked event more than 0`() {
-////        val presenterSpyk = spyk(DealCategoryAdapterPresenter(postUpdateDealLikesUseCase), recordPrivateCalls = true)
-//        val contextMock = mockk<DealDetailsActivity>()
-//        mockkStatic(Utils::class)
-//
-//        val token = object : TypeToken<DataResponse<LikeUpdateResult?>?>() {}.type
-//        val restResponse = RestResponse(
-//            DataResponse<LikeUpdateResult>().apply {
-//                data = LikeUpdateResult().apply {
-//                    isLiked = true
-//                }
-//            },
-//            200,
-//            false
-//        )
-//
-//        every {
-//            presenter setProperty "userSession" value any<UserSessionInterface>()
-//        } propertyType UserSessionInterface::class answers {
-//            fieldValue = UserSession(contextMock).apply {
-//                setIsLogin(true)
-//            }
-//        }
-//
-//        every {
-//            Utils.getSingletonInstance().containsLikedEvent(any())
-//        } answers {
-//            2
-//        }
-//
-//        every {
-//            postUpdateDealLikesUseCase.execute(any())
-//        } answers {
-//            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
-//                mapOf(token to restResponse)
-//            )
-//        }
-//
-//        presenter.initialize()
-//        presenter.setDealLike(123, true, 123, 123)
-//
-//        verify { postUpdateDealLikesUseCase.setRequestParams(any()) }
-//        verify { postUpdateDealLikesUseCase.execute(any()) }
-//    }
+    @Test
+    fun `Set Deal Like onNext contains liked event more than 0 should removeLikedEvent`() {
+        val view = mockk<DealCategoryAdapterContract.View>(relaxed = true)
+        val userSessionMock = mockk<UserSession>(relaxed = true)
+        mockkStatic(Utils::class)
+
+        val token = object : TypeToken<DataResponse<LikeUpdateResult?>?>() {}.type
+        val restResponse = RestResponse(
+            DataResponse<LikeUpdateResult>().apply {
+                data = LikeUpdateResult().apply {
+                    isLiked = false
+                }
+            },
+            200,
+            false
+        )
+
+        every {
+            postUpdateDealLikesUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(token to restResponse)
+            )
+        }
+
+        every {
+            Utils.getSingletonInstance().containsLikedEvent(any())
+        } answers { 1 }
+        every {
+            Utils.getSingletonInstance().removeLikedEvent(any())
+        } just Runs
+
+        every { userSessionMock.isLoggedIn } answers { true }
+        every { userSessionMock.userId } answers { "123" }
+
+        presenter.attachView(view)
+        presenter.initialize(userSessionMock)
+
+        presenter.setDealLike(123, true, 123, 123)
+
+        verify { postUpdateDealLikesUseCase.setRequestParams(any()) }
+        verify { postUpdateDealLikesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Set Deal Like onNext contains liked event less than 0 should addLikedEvent`() {
+        val view = mockk<DealCategoryAdapterContract.View>(relaxed = true)
+        val userSessionMock = mockk<UserSession>(relaxed = true)
+        mockkStatic(Utils::class)
+
+        val token = object : TypeToken<DataResponse<LikeUpdateResult?>?>() {}.type
+        val restResponse = RestResponse(
+            DataResponse<LikeUpdateResult>().apply {
+                data = LikeUpdateResult().apply {
+                    isLiked = true
+                }
+            },
+            200,
+            false
+        )
+
+        every {
+            postUpdateDealLikesUseCase.execute(any())
+        } answers {
+            (firstArg() as Subscriber<Map<Type, RestResponse>>).onNext(
+                mapOf(token to restResponse)
+            )
+        }
+
+        every {
+            Utils.getSingletonInstance().containsLikedEvent(any())
+        } answers { 0 }
+        every {
+            Utils.getSingletonInstance().addLikedEvent(any(), any())
+        } just Runs
+
+        every { userSessionMock.isLoggedIn } answers { true }
+        every { userSessionMock.userId } answers { "123" }
+
+        presenter.attachView(view)
+        presenter.initialize(userSessionMock)
+
+        presenter.setDealLike(123, false, 123, 123)
+
+        verify { postUpdateDealLikesUseCase.setRequestParams(any()) }
+        verify { postUpdateDealLikesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Set Deal Like when userSession isLoggedIn false`() {
+        val view = mockk<DealCategoryAdapterContract.View>(relaxed = true)
+        every { view.showLoginSnackbar(any(), any()) } just Runs
+
+        presenter.attachView(view)
+        presenter.initialize() // using default initialize() function with isLoggedIn = false
+        presenter.setDealLike(123, false, 123, 123)
+
+        verify(exactly = 0) { postUpdateDealLikesUseCase.setRequestParams(any()) }
+        verify(exactly = 0) { postUpdateDealLikesUseCase.execute(any()) }
+        verify { view.showLoginSnackbar(any(), any()) }
+    }
+
+    @Test
+    fun `onDestroy should unsubscribe usecase`() {
+        presenter.onDestroy()
+
+        verify { postUpdateDealLikesUseCase.unsubscribe() }
+    }
 }
