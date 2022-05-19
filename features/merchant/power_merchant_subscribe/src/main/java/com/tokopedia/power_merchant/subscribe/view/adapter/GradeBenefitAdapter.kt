@@ -7,7 +7,6 @@ import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmGradeBenefitBinding
-import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -38,11 +37,7 @@ class GradeBenefitAdapter(
 
         fun bind(benefit: PMBenefitItemUiModel) = with(binding) {
             tvPmBenefitItem.text = benefit.benefitDescription.parseAsHtml()
-            try {
-                icPmBenefitItem.loadImage(benefit.resIcon)
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+            icPmBenefitItem.loadImage(benefit.iconUrl)
         }
     }
 }
