@@ -331,7 +331,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
                 discountedPrice < minDiscountPrice -> {
                     ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MIN
                 }
-                discountedPrice > averageSoldPrice -> {
+                discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
                     ShopDiscountManageProductDiscountErrorValidation.ERROR_R2_ABUSIVE
                 }
                 else -> {

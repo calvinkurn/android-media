@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
@@ -166,7 +167,7 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
                 discountedPrice < minDiscountPrice -> {
                     ERROR_PRICE_MIN
                 }
-                discountedPrice > averageSoldPrice -> {
+                discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
                     ERROR_R2_ABUSIVE
                 }
                 else -> {

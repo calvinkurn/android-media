@@ -218,6 +218,12 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isProductDiscounted: Boolean
     ): Int {
         return when {
+            isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
+                VALUE_ERROR
+            }
+            isR2AbusiveError(setupProductUiModel, isVariant) && isProductDiscounted -> {
+                R2_ABUSIVE_ERROR
+            }
             isAllAbusiveError(setupProductUiModel, isVariant) -> {
                 ALL_ABUSIVE_ERROR
             }
@@ -226,12 +232,6 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 isVariant
             ) -> {
                 PARTIAL_ABUSIVE_ERROR
-            }
-            isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
-                VALUE_ERROR
-            }
-            isR2AbusiveError(setupProductUiModel, isVariant) && isProductDiscounted -> {
-                R2_ABUSIVE_ERROR
             }
             else -> {
                 NO_ERROR
@@ -282,7 +282,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductValueError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.getListEnabledProductWarehouse().any {
+        return setupProductUiModel.getListEnabledProductWarehouse().filter { !it.abusiveRule }.any {
             it.discountedPercentage < 1 || it.discountedPercentage > 99
         }
     }
@@ -526,7 +526,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
-        val isAllProductDiscounted = allProductData.allCheckEmptyList {
+        val isAllProductDiscounted = allProductData.filter {
+            it.productStatus.errorType != ALL_ABUSIVE_ERROR
+        }.allCheckEmptyList {
             it.productStatus.isProductDiscounted
         }
         val isErrorTypeAllowed = checkAllowedProductErrorTypeToEnableButtonSubmit(allProductData)
@@ -537,7 +539,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>
     ): Boolean {
         return allProductData.none {
-            it.productStatus.errorType == ALL_ABUSIVE_ERROR || it.productStatus.errorType == VALUE_ERROR || it.productStatus.errorType == R2_ABUSIVE_ERROR
+            it.productStatus.errorType == VALUE_ERROR || it.productStatus.errorType == R2_ABUSIVE_ERROR
         }
     }
 
