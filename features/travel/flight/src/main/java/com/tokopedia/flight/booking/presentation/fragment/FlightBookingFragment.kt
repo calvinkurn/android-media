@@ -1150,22 +1150,26 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(
-                    activity,
-                    view,
-                    ErrorHandler.getErrorMessage(activity, null),
-                    getString(com.tokopedia.globalerror.R.string.error500Desc),
-                    getString(com.tokopedia.globalerror.R.string.error500Action),
-                    0
-                ) {
-                    NetworkErrorHelper.hideEmptyState(view)
-                    showLoadingDialog()
-                    action()
-                }
-                view?.let {
-                    val retryLayout = it.findViewById<LinearLayout>(R.id.main_retry)
-                    val ivIcon = retryLayout.findViewById<ImageView>(R.id.iv_icon)
-                    ivIcon.loadImage(getString(com.tokopedia.flight.R.string.flight_default_error_img_url))
+                try {
+                    NetworkErrorHelper.showEmptyState(
+                        activity,
+                        view,
+                        ErrorHandler.getErrorMessage(activity, null),
+                        getString(com.tokopedia.globalerror.R.string.error500Desc),
+                        getString(com.tokopedia.globalerror.R.string.error500Action),
+                        0
+                    ) {
+                        NetworkErrorHelper.hideEmptyState(view)
+                        showLoadingDialog()
+                        action()
+                    }
+                    view?.let {
+                        val retryLayout = it.findViewById<LinearLayout>(R.id.main_retry)
+                        val ivIcon = retryLayout.findViewById<ImageView>(R.id.iv_icon)
+                        ivIcon.loadImage(getString(com.tokopedia.flight.R.string.flight_default_error_img_url))
+                    }
+                }catch(t: Throwable) {
+                    t.printStackTrace()
                 }
             }
         }
