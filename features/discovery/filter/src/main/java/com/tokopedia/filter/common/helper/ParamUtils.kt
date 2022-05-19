@@ -44,10 +44,6 @@ private val nonFilterParameterKeyList = setOf(
     SearchApiConst.TYPO,
     SearchApiConst.PAGE,
 )
-private val postProcessingFilterKeys = setOf(
-    SearchApiConst.IS_FULFILLMENT,
-    SearchApiConst.GIFTING,
-)
 
 private val postProcessingFilter = mapOf(
     SearchApiConst.IS_FULFILLMENT to "true",
