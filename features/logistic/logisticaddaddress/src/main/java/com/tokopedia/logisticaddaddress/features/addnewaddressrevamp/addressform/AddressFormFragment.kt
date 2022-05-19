@@ -388,10 +388,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
+        setOnTouchLabelAddress()
+        setupRvLabelAlamatChips()
+        setTextListener()
         if (!isPositiveFlow) {
-            setOnTouchLabelAddress(ANA_NEGATIVE)
-            setupRvLabelAlamatChips()
-            setTextListener()
             showNegativeLayout()
             setupNegativePinpointCard()
             binding?.run {
@@ -421,9 +421,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 currentAlamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
             }
         } else {
-            setOnTouchLabelAddress(ANA_POSITIVE)
-            setupRvLabelAlamatChips()
-            setTextListener()
             binding?.run {
                 formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
                 showPositiveLayout()
@@ -476,10 +473,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         val addressDetail = if (data.addressDetailNotes.isEmpty()) data.address1 else data.addressDetailStreet
 
+        setOnTouchLabelAddress()
+        setupRvLabelAlamatChips()
+        setTextListener()
+
         if (!isPositiveFlow) {
-            setOnTouchLabelAddress(ANA_NEGATIVE)
-            setupRvLabelAlamatChips()
-            setTextListener()
             showNegativeLayout()
             setupNegativePinpointCard()
             binding?.run {
@@ -536,9 +534,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
         } else {
-            setOnTouchLabelAddress(ANA_POSITIVE)
-            setupRvLabelAlamatChips()
-            setTextListener()
             showPositiveLayout()
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
@@ -1065,7 +1060,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setOnTouchLabelAddress(type: String) {
+    private fun setOnTouchLabelAddress() {
         binding?.run {
             val field = if (isPositiveFlow) formAddress.etLabel else formAddressNegative.etLabel
             val rvChips = if (isPositiveFlow) formAddress.rvLabelAlamatChips else formAddressNegative.rvLabelAlamatChips
