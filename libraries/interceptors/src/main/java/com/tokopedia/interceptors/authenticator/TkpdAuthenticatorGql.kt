@@ -157,8 +157,8 @@ class TkpdAuthenticatorGql(
     }
 
     private fun trimToken(accessToken: String): String {
-        if(accessToken.isNotEmpty() && accessToken.length >= 10) {
-            return accessToken.takeLast(10)
+        if(accessToken.isNotEmpty() && accessToken.length >= TOKEN_MIN_LENGTH) {
+            return accessToken.takeLast(TOKEN_MIN_LENGTH)
         }
         return accessToken
     }
@@ -225,6 +225,8 @@ class TkpdAuthenticatorGql(
 
         const val LIMIT_STACKTRACE = 1000
         const val PATH_LENGTH_SUBSTRING = 150
+
+        const val TOKEN_MIN_LENGTH = 10
 
         fun formatThrowable(throwable: Throwable): String {
             return Log.getStackTraceString(throwable).take(LIMIT_STACKTRACE)
