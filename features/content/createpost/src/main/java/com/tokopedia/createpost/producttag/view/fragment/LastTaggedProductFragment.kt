@@ -93,7 +93,7 @@ class LastTaggedProductFragment @Inject constructor(
         }
 
         binding.clSearch.setOnClickListener {
-            RouteManager.route(requireContext(), getAutocompleteApplink(""))
+            viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
 

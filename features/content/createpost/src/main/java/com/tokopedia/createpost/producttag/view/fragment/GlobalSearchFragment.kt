@@ -87,16 +87,6 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
                 renderSearchBar(it.value.globalSearchProduct.param.query)
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                when(it) {
-                    is ProductTagUiEvent.OpenAutoCompletePage -> {
-                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
-                    }
-                }
-            }
-        }
     }
 
     private fun renderSearchBar(query: String) {

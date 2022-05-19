@@ -12,10 +12,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
@@ -140,6 +142,9 @@ class ProductTagParentFragment @Inject constructor(
                             childFragmentManager,
                             requireActivity().classLoader
                         ).showNow(childFragmentManager)
+                    }
+                    is ProductTagUiEvent.OpenAutoCompletePage -> {
+                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
                     }
                 }
             }
