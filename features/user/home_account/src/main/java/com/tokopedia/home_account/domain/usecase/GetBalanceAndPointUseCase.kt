@@ -19,7 +19,7 @@ class GetBalanceAndPointUseCase @Inject constructor(
 
     override suspend fun execute(params: String): BalanceAndPointDataModel {
         val mapParams = mapOf(
-            PARAM_PARTNER_CODE to partnerCode
+            PARAM_PARTNER_CODE to params
         )
         return repository.request(GetBalanceAndPointQuery(), mapParams)
     }
