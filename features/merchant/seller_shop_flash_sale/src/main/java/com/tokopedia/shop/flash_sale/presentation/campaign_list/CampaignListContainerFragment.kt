@@ -56,8 +56,10 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         setupView()
         observeTabsMeta()
         observeCampaigns()
+        observeCampaignAttribute()
         viewModel.getTabsMeta()
         viewModel.getCampaigns(10, 1, emptyList(), "", false)
+        viewModel.getCampaignAttribute(5, 2022)
     }
 
     private fun observeTabsMeta() {
@@ -79,6 +81,19 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
             when(result) {
                 is Success -> {
                     val campaigns = result.data
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun observeCampaignAttribute() {
+        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    val attribute = result.data
                 }
                 is Fail -> {
 
