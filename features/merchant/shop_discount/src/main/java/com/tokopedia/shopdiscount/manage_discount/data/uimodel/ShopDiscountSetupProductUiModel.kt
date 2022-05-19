@@ -117,6 +117,7 @@ data class ShopDiscountSetupProductUiModel(
                 const val VALUE_ERROR = 1
                 const val PARTIAL_ABUSIVE_ERROR = 2
                 const val ALL_ABUSIVE_ERROR = 3
+                const val R2_ABUSIVE_ERROR = 4
             }
         }
 

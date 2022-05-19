@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
@@ -14,6 +15,7 @@ import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiMode
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
@@ -157,12 +159,16 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
             val minDiscountPrice = getMinDiscountPrice()
             val maxDiscountPrice = getMaxDiscountPrice()
             val discountedPrice = it.slashPriceInfo.discountedPrice
+            val averageSoldPrice = it.listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
             val errorValidation = when {
                 discountedPrice > maxDiscountPrice -> {
                     ERROR_PRICE_MAX
                 }
                 discountedPrice < minDiscountPrice -> {
                     ERROR_PRICE_MIN
+                }
+                discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
+                    ERROR_R2_ABUSIVE
                 }
                 else -> {
                     NONE

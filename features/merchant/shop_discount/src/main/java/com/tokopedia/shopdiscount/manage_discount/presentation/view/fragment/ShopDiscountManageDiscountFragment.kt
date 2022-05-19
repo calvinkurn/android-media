@@ -268,6 +268,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         removeProduct(it.data.productId)
                         checkProductSize()
                         updateLabelBulkApply()
+                        configTickerAbusiveProducts()
+                        checkButtonSubmit()
                     }
                 }
                 is Fail -> {
@@ -409,8 +411,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun configTickerAbusiveProducts() {
         val totalAbusiveProduct = adapter.getTotalAbusiveProduct()
-        if (!totalAbusiveProduct.isZero()) {
-            tickerAbusiveProducts?.apply {
+        tickerAbusiveProducts?.apply {
+            if (!totalAbusiveProduct.isZero()) {
                 show()
                 setHtmlDescription(
                     String.format(
@@ -428,6 +430,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     }
 
                 })
+            } else {
+                hide()
             }
         }
     }

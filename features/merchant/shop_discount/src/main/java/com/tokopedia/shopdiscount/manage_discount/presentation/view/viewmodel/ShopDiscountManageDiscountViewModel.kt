@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -23,6 +24,7 @@ import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReser
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.R2_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
@@ -216,6 +218,12 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isProductDiscounted: Boolean
     ): Int {
         return when {
+            isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
+                VALUE_ERROR
+            }
+            isR2AbusiveError(setupProductUiModel, isVariant) && isProductDiscounted -> {
+                R2_ABUSIVE_ERROR
+            }
             isAllAbusiveError(setupProductUiModel, isVariant) -> {
                 ALL_ABUSIVE_ERROR
             }
@@ -225,12 +233,34 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             ) -> {
                 PARTIAL_ABUSIVE_ERROR
             }
-            isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
-                VALUE_ERROR
-            }
             else -> {
                 NO_ERROR
             }
+        }
+    }
+
+    private fun isR2AbusiveError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductUiModel.listProductVariant.filter {
+                it.variantStatus.isVariantEnabled == true
+            }.any {
+                checkProductR2AbusiveValueError(it)
+            }
+        } else {
+            checkProductR2AbusiveValueError(setupProductUiModel)
+        }
+    }
+
+    private fun checkProductR2AbusiveValueError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return setupProductUiModel.getListEnabledProductWarehouse().filter {
+            it.avgSoldPrice.isMoreThanZero()
+        }.any {
+            it.discountedPrice > it.avgSoldPrice
         }
     }
 
@@ -252,7 +282,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductValueError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.getListEnabledProductWarehouse().any {
+        return setupProductUiModel.getListEnabledProductWarehouse().filter { !it.abusiveRule }.any {
             it.discountedPercentage < 1 || it.discountedPercentage > 99
         }
     }
@@ -496,7 +526,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
-        val isAllProductDiscounted = allProductData.allCheckEmptyList {
+        val isAllProductDiscounted = allProductData.filter {
+            it.productStatus.errorType != ALL_ABUSIVE_ERROR
+        }.allCheckEmptyList {
             it.productStatus.isProductDiscounted
         }
         val isErrorTypeAllowed = checkAllowedProductErrorTypeToEnableButtonSubmit(allProductData)
@@ -507,7 +539,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>
     ): Boolean {
         return allProductData.none {
-            it.productStatus.errorType == ALL_ABUSIVE_ERROR || it.productStatus.errorType == VALUE_ERROR
+            it.productStatus.errorType == VALUE_ERROR || it.productStatus.errorType == R2_ABUSIVE_ERROR
         }
     }
 
