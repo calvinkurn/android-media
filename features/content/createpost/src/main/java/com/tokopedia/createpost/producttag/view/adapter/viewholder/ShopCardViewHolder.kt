@@ -114,13 +114,11 @@ internal class ShopCardViewHolder private constructor() {
                 if(item.hasFilterApplied) {
                     setTitle(context.getString(R.string.cc_global_search_shop_filter_not_found_title))
                     setDescription(context.getString(R.string.cc_global_search_shop_filter_not_found_desc))
-                    setPrimaryCTAText(context.getString(R.string.cc_reset_filter))
                     setOrientation(EmptyStateUnify.Orientation.VERTICAL)
                 }
                 else {
                     setTitle(context.getString(R.string.cc_global_search_shop_query_not_found_title))
                     setDescription(context.getString(R.string.cc_global_search_shop_query_not_found_desc))
-                    setPrimaryCTAText(context.getString(R.string.cc_check_your_keyword))
                     setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
                 }
             }

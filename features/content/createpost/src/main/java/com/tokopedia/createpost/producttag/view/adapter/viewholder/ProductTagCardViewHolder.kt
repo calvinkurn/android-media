@@ -151,21 +151,18 @@ internal class ProductTagCardViewHolder private constructor() {
             val context = itemView.context
             binding.emptyState.apply {
                 setImageUrl(context.getString(R.string.img_search_no_product))
+                setPrimaryCTAText("")
                 setSecondaryCTAText("")
-                setPrimaryCTAClickListener {
-                    item.onClicked()
-                }
+
 
                 if(item.hasFilterApplied) {
                     setTitle(context.getString(R.string.cc_global_search_product_filter_not_found_title))
                     setDescription(context.getString(R.string.cc_global_search_product_filter_not_found_desc))
-                    setPrimaryCTAText(context.getString(R.string.cc_reset_filter))
                     setOrientation(EmptyStateUnify.Orientation.VERTICAL)
                 }
                 else {
                     setTitle(context.getString(R.string.cc_global_search_product_query_not_found_title))
                     setDescription(context.getString(R.string.cc_global_search_product_query_not_found_desc))
-                    setPrimaryCTAText(context.getString(R.string.cc_check_your_keyword))
                     setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
                 }
             }
@@ -175,56 +172,6 @@ internal class ProductTagCardViewHolder private constructor() {
 
             fun create(parent: ViewGroup) = EmptyState(
                 ItemGlobalSearchEmptyStateListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-            )
-        }
-    }
-
-    internal class RecommendationTitle(
-        private val binding: ItemGlobalSearchRecommendationTitleListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        fun bind(item: ProductTagCardAdapter.Model.RecommendationTitle) {
-            binding.root.text = item.text
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = RecommendationTitle(
-                ItemGlobalSearchRecommendationTitleListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
-            )
-        }
-    }
-
-    internal class Divider(
-        binding: ItemGlobalSearchDividerListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = Divider(
-                ItemGlobalSearchDividerListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

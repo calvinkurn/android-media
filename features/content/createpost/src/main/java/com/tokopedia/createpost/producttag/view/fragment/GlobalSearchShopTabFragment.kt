@@ -258,7 +258,6 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
             })
             add(ShopCardAdapter.Model.Divider)
-            add(ShopCardAdapter.Model.RecommendationTitle(getString(R.string.cc_shop_recommendation_title)))
             addAll(recomShops.map { ShopCardAdapter.Model.Shop(shop = it) })
             if(hasNextPage) add(ShopCardAdapter.Model.Loading)
         }

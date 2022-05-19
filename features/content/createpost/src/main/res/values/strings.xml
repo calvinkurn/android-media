@@ -143,9 +143,4 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_global_search_shop_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="cc_global_search_shop_query_not_found_title">Nggak ada toko yang sesuai dari filter ini</string>
     <string name="cc_global_search_shop_query_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
-
-    <string name="cc_reset_filter">Reset Filter</string>
-    <string name="cc_check_your_keyword">Periksa Kata Kunci</string>
-    <string name="cc_product_recommendation_title">Produk rekomendasi</string>
-    <string name="cc_shop_recommendation_title">Toko rekomendasi</string>
 </resources>

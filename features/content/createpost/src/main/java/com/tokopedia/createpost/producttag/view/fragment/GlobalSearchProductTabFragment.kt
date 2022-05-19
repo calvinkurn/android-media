@@ -147,9 +147,11 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
         when(curr.state) {
             is PagedState.Loading -> {
+                binding.sortFilter.show()
                 updateAdapterData(curr, true)
             }
             is PagedState.Success -> {
+                binding.sortFilter.showWithCondition(curr.products.isNotEmpty() || (curr.products.isEmpty() && curr.param.hasFilterApplied()))
                 updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
@@ -190,41 +192,25 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
+    private fun updateAdapterData(currState: GlobalSearchProductUiState, hasNextPage: Boolean) {
         val finalProducts = buildList {
-            if(state.products.isEmpty() && !hasNextPage) {
-                if(state.param.hasFilterApplied()) {
-                    add(ProductTagCardAdapter.Model.EmptyState(true) {
-                        viewModel.submitAction(ProductTagAction.ResetProductFilter)
-                    })
-                    binding.sortFilter.show()
-                }
-                else {
-                    add(ProductTagCardAdapter.Model.EmptyState(false) {
-                        viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
-                    })
-                    add(ProductTagCardAdapter.Model.Divider)
-                    add(ProductTagCardAdapter.Model.RecommendationTitle(getString(R.string.cc_product_recommendation_title)))
-                    binding.sortFilter.hide()
-                }
-            }
-            else {
-                if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
-                if(state.ticker.text.isNotEmpty())
-                    add(
-                        ProductTagCardAdapter.Model.Ticker(
-                            text = state.ticker.text,
-                            onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
-                            onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
-                        )
+            if(currState.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion))
+            if(currState.ticker.text.isNotEmpty())
+                add(
+                    ProductTagCardAdapter.Model.Ticker(
+                        text = currState.ticker.text,
+                        onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
+                        onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
                     )
+                )
 
-                addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
+            if(currState.products.isEmpty() && currState.state is PagedState.Success)
+                add(ProductTagCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
+            else
+                addAll(currState.products.map { ProductTagCardAdapter.Model.Product(product = it) })
 
-                if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
 
-                binding.sortFilter.show()
-            }
+            if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
         }
 
         if(binding.rvGlobalSearchProduct.isComputingLayout.not())
