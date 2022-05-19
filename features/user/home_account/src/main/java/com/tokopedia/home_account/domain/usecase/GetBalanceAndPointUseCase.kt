@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 @GqlQuery("GetBalanceAndPointQuery", GetBalanceAndPointUseCase.query)
-open class GetBalanceAndPointUseCase @Inject constructor(
+class GetBalanceAndPointUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
 ) : CoroutineUseCase<String, BalanceAndPointDataModel>(dispatcher) {
