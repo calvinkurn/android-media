@@ -2,11 +2,8 @@ package com.tokopedia.review.feature.reviewlist.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
-import com.tokopedia.review.feature.reviewdetail.data.ProductReviewInitialDataResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.model.ProductRatingWrapperUiModel
@@ -73,7 +70,7 @@ class GetProductRatingOverallUseCase @Inject constructor(
                         Success(gqlResponse.getData<ProductRatingOverallResponse>(ProductRatingOverallResponse::class.java).getProductRatingOverallByShop)
             } else {
                 val error = gqlResponse.getError(ProductRatingOverallResponse::class.java).joinToString { it.message }
-                productRatingWrapperUiModel.productRatingOverall = Fail(Throwable(message = error))
+                productRatingWrapperUiModel.productRatingOverall = Fail(MessageErrorException(error))
             }
 
             if (gqlResponse.getError(ProductReviewListResponse::class.java)?.isNullOrEmpty() != true) {
@@ -81,10 +78,15 @@ class GetProductRatingOverallUseCase @Inject constructor(
                         Success(gqlResponse.getData<ProductReviewListResponse>(ProductReviewListResponse::class.java).productShopRatingAggregate)
             } else {
                 val error = gqlResponse.getError(ProductReviewListResponse::class.java).joinToString { it.message }
-                productRatingWrapperUiModel.reviewProductList = Fail(Throwable(message = error))
+                productRatingWrapperUiModel.reviewProductList = Fail(MessageErrorException(error))
             }
         } catch (e: Throwable) {
-
+            if (productRatingWrapperUiModel.productRatingOverall == null) {
+                productRatingWrapperUiModel.productRatingOverall = Fail(e)
+            }
+            if (productRatingWrapperUiModel.reviewProductList == null) {
+                productRatingWrapperUiModel.reviewProductList = Fail(e)
+            }
         }
 
         return productRatingWrapperUiModel
