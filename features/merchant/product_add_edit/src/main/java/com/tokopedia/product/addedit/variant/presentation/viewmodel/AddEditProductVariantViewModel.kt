@@ -639,6 +639,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         // reset to non variant product state if there is nothing selected
         if (selectedVariantDetails.isEmpty()) {
             removeVariant()
+        } else {
+            productInputModel.getValueOrDefault().variantInputModel.products = emptyList()
+            productInputModel.getValueOrDefault().variantInputModel.selections = emptyList()
         }
     }
 
