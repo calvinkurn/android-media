@@ -1,5 +1,6 @@
 package com.tokopedia.telemetry.network.usecase
 
+import android.util.Base64
 import android.util.Log
 import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.encryption.security.RSA
@@ -34,7 +35,7 @@ class TelemetryUseCase @Inject constructor(
         val query: String =
             """
             mutation subDvcTl(${'$'}input: SubDvcTlRequest!){
-              mutationSubDvcTl(input: ${'$'}input) {
+              subDvcTl(input: ${'$'}input) {
                 is_error
                 data {
                   error_message
@@ -67,16 +68,17 @@ class TelemetryUseCase @Inject constructor(
         Log.w("HENDRYTAG", "telemetry key $key")
         Log.w("HENDRYTAG", "telemetry secret key $secretKey")
         Log.w("HENDRYTAG", "telemetry json " + telemetrySection.toJson())
+
         val params: Map<String, Any?> = mutableMapOf(
             PARAM_INPUT to MutationSubDvcTlRequest(
                 telemetrySection.eventName + "-" + telemetrySection.eventNameEnd,
-                aesEncryptorGCM.encrypt(telemetrySection.toJson(), secretKey),
+                aesEncryptorGCM.encrypt(telemetrySection.toJson(), secretKey).replace("\n",""),
                 (telemetrySection.startTime / 1000L).toInt(),
                 (telemetrySection.endTime / 1000L).toInt(),
                 rsa.encrypt(
                     key, rsa.stringToPublicKey(publicKeyString),
                     Constants.RSA_OAEP_ALGORITHM
-                )
+                ).replace("\n","")
             )
         )
         useCase.setRequestParams(params)
