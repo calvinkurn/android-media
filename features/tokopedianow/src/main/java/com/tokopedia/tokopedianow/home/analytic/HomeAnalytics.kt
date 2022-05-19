@@ -47,8 +47,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BRAND
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CAMPAIGN_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CHANNEL_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_SLOT
@@ -61,6 +63,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_49
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_79
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_82
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_90
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ECOMMERCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_IMPRESSIONS
@@ -109,7 +112,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_RECOM_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
@@ -121,6 +123,7 @@ import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_3
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL
@@ -145,6 +148,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.ITEM_LIST_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.track.TrackApp
@@ -186,6 +190,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_ATC_PAST_PURCHASE = "click atc on past purchase widget"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART =
             "click add to cart on tokonow product recom homepage"
+        const val EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART =
+            "click add to cart on left carousel"
         const val EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL = "impression left carousel widget"
         const val EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL =
             "click left banner on left carousel widget"
@@ -222,7 +228,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     object VALUE {
         const val NAME_PROMOTION = "tokonow - p1 - promo"
-        const val PRODUCT_RECOM_PAGE_SOURCE = "tokonow homepage.tokonow homepage"
+        const val PRODUCT_PAGE_SOURCE = "tokonow homepage.tokonow homepage"
         const val LABEL_GROUP_HALAL = "Halal"
         const val WITH_HALAL_LABEL = "with halal label"
         const val WITHOUT_HALAL_LABEL = "without halal label"
@@ -449,6 +455,43 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             items = arrayListOf(item),
             productId = recommendationItem.productId.toString()
         )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
+    }
+
+    fun onClickLeftCarouselAddToCart(
+        quantity: String,
+        homeLeftCarouselProductCardUiModel: HomeLeftCarouselProductCardUiModel,
+        cartId: String
+    ) {
+        val item = productItemDataLayer(
+            index = "",
+            productId = homeLeftCarouselProductCardUiModel.id.toString(),
+            productName = homeLeftCarouselProductCardUiModel.productCardModel.productName,
+            price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }
+        ).apply {
+            putString(KEY_DIMENSION_40, "{'list': '/tokonow - mixleft - carousel - ${homeLeftCarouselProductCardUiModel.recommendationType} - ${homeLeftCarouselProductCardUiModel.channelPageName} - ${homeLeftCarouselProductCardUiModel.channelHeaderName}'}")
+            putString(KEY_DIMENSION_45, cartId)
+            putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
+            putString(KEY_QUANTITY, quantity)
+            putString(KEY_SHOP_ID, homeLeftCarouselProductCardUiModel.shopId)
+            putString(KEY_SHOP_NAME, homeLeftCarouselProductCardUiModel.shopName)
+            putString(KEY_SHOP_TYPE, "")
+            putString(KEY_CATEGORY_ID, homeLeftCarouselProductCardUiModel.categoryId)
+        }
+
+        val dataLayer = getEcommerceDataLayer(
+            event = EVENT_ADD_TO_CART,
+            action = EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = "${homeLeftCarouselProductCardUiModel.channelId} - ${homeLeftCarouselProductCardUiModel.channelHeaderName} - ${homeLeftCarouselProductCardUiModel.warehouseId}",
+            items = arrayListOf(item),
+            productId = homeLeftCarouselProductCardUiModel.id.toString(),
+            pageSource = ""
+        ).apply {
+            putString(KEY_CAMPAIGN_CODE, homeLeftCarouselProductCardUiModel.campaignCode)
+            putString(KEY_CHANNEL_ID, homeLeftCarouselProductCardUiModel.channelId)
+            putString(KEY_WAREHOUSE_ID, homeLeftCarouselProductCardUiModel.warehouseId)
+        }
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
@@ -1266,7 +1309,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         category: String,
         label: String = "",
         items: ArrayList<Bundle>,
-        productId: String = ""
+        productId: String = "",
+        pageSource: String = PRODUCT_PAGE_SOURCE,
     ): Bundle {
         return Bundle().apply {
             putString(TrackAppUtils.EVENT, event)
@@ -1275,11 +1319,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(TrackAppUtils.EVENT_LABEL, label)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_PAGE_SOURCE, PRODUCT_RECOM_PAGE_SOURCE)
             putString(KEY_USER_ID, userSession.userId)
             putParcelableArrayList(KEY_ITEMS, items)
             if (productId.isNotBlank()) {
                 putString(KEY_PRODUCT_ID, productId)
+            }
+            if (pageSource.isNotBlank()) {
+                putString(KEY_PAGE_SOURCE, pageSource)
             }
         }
     }
@@ -1340,7 +1386,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         productVariant: String = ""
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_INDEX, index)
+            if (index.isNotBlank()) {
+                putString(KEY_INDEX, index)
+            }
             putString(KEY_ITEM_BRAND, productBrand)
             putString(KEY_ITEM_CATEGORY, productCategory)
             putString(KEY_ITEM_ID, productId)

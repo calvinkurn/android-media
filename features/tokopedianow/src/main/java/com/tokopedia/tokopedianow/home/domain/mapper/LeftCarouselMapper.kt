@@ -44,12 +44,16 @@ object LeftCarouselMapper {
                     categoryId = it.categoryId,
                     parentProductId = it.parentProductId,
                     shopId = it.shopId,
-                    productCardModel = mapToProductCardModel(it, miniCartData),
+                    shopName = it.shop.shopName,
                     appLink = it.applink,
                     channelId = channelModel.id,
                     channelHeaderName = channelModel.channelHeader.name,
                     channelPageName = channelModel.pageName,
-                    channelType = channelModel.type
+                    channelType = channelModel.type,
+                    recommendationType = it.recommendationType,
+                    warehouseId = it.warehouseId,
+                    campaignCode = it.campaignCode,
+                    productCardModel = mapToProductCardModel(it, miniCartData)
                 )
             )
         }

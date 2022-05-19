@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
@@ -87,6 +88,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -757,10 +760,10 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String,
         cartId: String
     ) {
-        if(type == REPURCHASE_PRODUCT) {
-            trackRepurchaseAddToCart(productId, quantity, cartId)
-        } else if (type ==  PRODUCT_RECOM) {
-            trackRecentProductRecomAddToCart(productId, quantity, cartId)
+        when (type) {
+            REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
+            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
+            MIX_LEFT_CAROUSEL -> trackLeftCarouselAddToCart(productId, quantity, cartId)
         }
     }
 
@@ -805,6 +808,25 @@ class TokoNowHomeViewModel @Inject constructor(
             val position = recomItemList.indexOf(product)
 
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
+            _homeAddToCartTracker.postValue(data)
+        }
+    }
+
+    private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
+        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }
+        val repurchase = homeItem?.layout as? HomeLeftCarouselUiModel
+        val productList = repurchase?.productList.orEmpty()
+        val product = productList.firstOrNull {
+            if (it is HomeLeftCarouselProductCardUiModel) {
+                it.id == productId
+            } else {
+                false
+            }
+        }
+
+        product?.let {
+            val position = productList.indexOf(it)
+            val data = HomeAddToCartTracker(position, quantity,cartId, it)
             _homeAddToCartTracker.postValue(data)
         }
     }

@@ -11,11 +11,15 @@ data class HomeLeftCarouselProductCardUiModel(
     var categoryId: String = "",
     var parentProductId: String = "0",
     var shopId: String = "0",
+    var shopName: String = "",
     var appLink: String = "",
     var channelId: String = "",
     var channelHeaderName: String = "",
     var channelPageName: String = "",
     var channelType: String = "",
+    var recommendationType: String = "",
+    var warehouseId: String = "",
+    var campaignCode: String = "",
     val productCardModel: ProductCardModel
 ): Visitable<HomeLeftCarouselProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: HomeLeftCarouselProductCardTypeFactory): Int {
