@@ -30,10 +30,12 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       reviewText
                       reviewTimeFormatted
                       attachmentsURL {
+                        attachmentID
                         fullSize
                         thumbnail
                       }
                       video {
+                        attachmentID
                         url
                       }
                       editable

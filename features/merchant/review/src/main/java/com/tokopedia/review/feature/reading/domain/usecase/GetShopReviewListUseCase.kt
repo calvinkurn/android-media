@@ -47,10 +47,12 @@ class GetShopReviewListUseCase @Inject constructor(
                     replyText
                     replyTime
                     attachments{
+                      attachmentID
                       thumbnailURL
                       fullsizeURL
                     }
                     videoAttachments {
+                      attachmentID
                       videoUrl
                     }
                     state {
