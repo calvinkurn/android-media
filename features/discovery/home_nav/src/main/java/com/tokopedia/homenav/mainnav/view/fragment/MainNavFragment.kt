@@ -336,8 +336,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
-        TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
         goToPDP(wishlistModel.productId, position)
+        TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
     }
 
     override fun onErrorFavoriteShopClicked() {
@@ -418,7 +418,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun goToPDP(productId: String, position: Int) {
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }

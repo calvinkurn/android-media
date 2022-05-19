@@ -3,6 +3,8 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderOtherWishlistBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
@@ -26,6 +28,7 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
         binding?.cardViewAllWishlist?.titleView?.gone()
 
         itemView.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.FAVORITE)
             TrackingTransactionSection.clickOnWishlistViewAll()
         }
     }

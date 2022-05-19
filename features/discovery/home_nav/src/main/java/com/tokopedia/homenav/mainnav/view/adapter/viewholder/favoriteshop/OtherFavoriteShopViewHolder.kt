@@ -3,6 +3,8 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderOtherFavoriteShopBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
@@ -25,6 +27,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
         binding?.cardViewAllFavshop?.titleView?.gone()
 
         itemView.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
             TrackingTransactionSection.clickOnFavoriteShopViewAll()
         }
     }
