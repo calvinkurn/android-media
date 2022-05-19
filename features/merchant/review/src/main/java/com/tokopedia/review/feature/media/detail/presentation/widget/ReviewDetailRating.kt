@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.media.detail.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.databinding.WidgetReviewDetailRatingBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -20,12 +19,7 @@ class ReviewDetailRating @JvmOverloads constructor(
     )
 
     private fun IconUnify.updateStar(active: Boolean) {
-        val color = if (active) {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300)
-        } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
-        }
-        setImage(IconUnify.STAR_FILLED, color, color, color, color)
+        isEnabled = active
     }
 
     fun setRating(rating: Int) {
