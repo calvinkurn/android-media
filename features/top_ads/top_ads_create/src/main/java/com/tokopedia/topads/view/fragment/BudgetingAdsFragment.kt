@@ -22,6 +22,7 @@ import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DEFAULT_NEW_KEYWORD_VALUE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -474,7 +475,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         if (stepperModel?.selectedKeywordStage?.isNotEmpty() == true) {
             stepperModel?.selectedKeywordStage?.forEach {
                 if (it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword
+                    it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(
