@@ -41,13 +41,13 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -324,9 +324,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 ivBrandLogo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent detailsIntent = new Intent(getContext(), BrandDetailsActivity.class);
-                        detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, dealDetail.getBrand());
-                        getActivity().startActivity(detailsIntent);
+                        String url = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE+"?"+dealDetail.getBrand().getSeoUrl();
+                        RouteManager.route(getContext(), url);
                     }
                 });
             }

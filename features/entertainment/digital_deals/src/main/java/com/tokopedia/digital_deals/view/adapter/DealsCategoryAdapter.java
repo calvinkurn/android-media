@@ -24,8 +24,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
-import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
@@ -589,9 +589,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                 }
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.cv_brand) {
-                Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
-                detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
-                context.startActivity(detailsIntent);
+                String url = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE+"?"+categoryItems.get(getIndex()).getBrand().getSeoUrl();
+                RouteManager.route(context, url);
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
@@ -711,9 +710,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Override
         public void onClick(View v) {
             if (v.getId() == com.tokopedia.digital_deals.R.id.cv_brand) {
-                Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
-                detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
-                context.startActivity(detailsIntent);
+                String url = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE+"?"+categoryItems.get(getIndex()).getBrand().getSeoUrl();
+                RouteManager.route(context, url);
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());

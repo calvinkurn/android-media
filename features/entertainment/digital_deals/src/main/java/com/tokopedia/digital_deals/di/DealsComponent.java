@@ -4,7 +4,6 @@ package com.tokopedia.digital_deals.di;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
@@ -35,8 +34,6 @@ public interface DealsComponent {
     void inject(CheckoutHomeFragment fragment);
 
     void inject(DealsCategoryAdapter dealsCategoryAdapter);
-
-    void inject(BrandDetailsFragment fragment);
 
     void inject(TncBottomSheetFragment fragment);
 }
