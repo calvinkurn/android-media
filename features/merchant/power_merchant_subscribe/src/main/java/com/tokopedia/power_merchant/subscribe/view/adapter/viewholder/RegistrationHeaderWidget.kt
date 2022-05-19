@@ -54,10 +54,10 @@ class RegistrationHeaderWidget(
 
             if (!isEligiblePM) {
                 val shopInfo = element.shopInfo
+                val isPartlyEligibleKycTrue = shopInfo.isKyc && ((!shopInfo.isNewSeller && !shopInfo.isEligibleShopScore()) || (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))
+                val isFullyNotEligible = !shopInfo.isKyc && ((!shopInfo.isNewSeller && !shopInfo.isEligibleShopScore()) || (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))
                 when {
-                    (shopInfo.isKyc && (!shopInfo.isEligibleShopScore() ||
-                            (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))) ||
-                            !(element.shopInfo.isKyc && element.shopInfo.isEligibleShopScore()) -> {
+                    isPartlyEligibleKycTrue || isFullyNotEligible -> {
                         horLinePmHeader.visible()
                         tvPmHeaderEligibleFor.visible()
                         tvPmHeaderEligibleFor.text = root.context.getString(
@@ -96,10 +96,6 @@ class RegistrationHeaderWidget(
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
         return element.registrationTerms.all { it.isChecked }
-    }
-
-    private fun isPartlyEligible(element: WidgetRegistrationHeaderUiModel): Boolean {
-        return element.registrationTerms.count { it.isChecked } == Int.ONE
     }
 
     private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) =
