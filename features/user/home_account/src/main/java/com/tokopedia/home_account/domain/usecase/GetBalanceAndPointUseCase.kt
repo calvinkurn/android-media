@@ -30,7 +30,7 @@ class GetBalanceAndPointUseCase @Inject constructor(
         private const val partnerCode = "\$partnerCode"
 
         const val query: String = """
-            query wallet_app_get_account_balance($partnerCode: String!){
+            query walletappGetAccountBalance($partnerCode: String!){
                 walletappGetAccountBalance(partnerCode:$partnerCode){
                     id
                     icon
