@@ -61,22 +61,18 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
     }
 
     override suspend fun executeOnBackground(): List<NavFavoriteShopModel> {
-        return try {
-            val responseData = Success(graphqlUseCase.executeOnBackground().favoriteShops?:FavoriteShops())
-            val favoriteShopList = mutableListOf<NavFavoriteShopModel>()
-            responseData.data.shops?.map {
-                favoriteShopList.add(NavFavoriteShopModel(
-                    id = it.id.orEmpty(),
-                    name = it.name.orEmpty(),
-                    imageUrl = it.imageUrl.orEmpty(),
-                    location = it.location.orEmpty(),
-                    badgeImageUrl = it.badge?.firstOrNull()?.imageUrl.orEmpty()
-                ))
-            }
-            favoriteShopList
-        } catch (e: Throwable){
-            listOf()
+        val responseData = Success(graphqlUseCase.executeOnBackground().favoriteShops?:FavoriteShops())
+        val favoriteShopList = mutableListOf<NavFavoriteShopModel>()
+        responseData.data.shops?.map {
+            favoriteShopList.add(NavFavoriteShopModel(
+                id = it.id.orEmpty(),
+                name = it.name.orEmpty(),
+                imageUrl = it.imageUrl.orEmpty(),
+                location = it.location.orEmpty(),
+                badgeImageUrl = it.badge?.firstOrNull()?.imageUrl.orEmpty()
+            ))
         }
+        return favoriteShopList
     }
 
     private fun setParams(page: Int = 1, itemsPerPage: Int = 5) = RequestParams.create().apply {

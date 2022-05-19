@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -127,7 +125,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
 
         MePageRollenceController.fetchMePageRollenceValue()
-        viewModel.setIsMePageUsingRollenceVariant(MePageRollenceController.isMePageUsingRollenceVariant())
+        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
+        viewModel.setIsMePageUsingRollenceVariant(rollence)
 
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)

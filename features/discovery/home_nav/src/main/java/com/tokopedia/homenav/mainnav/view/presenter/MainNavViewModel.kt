@@ -250,7 +250,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         if (isMePageUsingRollenceVariant) {
-            this.add(SeparatorDataModel())
             allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
             this.add(allCategories)
             this.add(SeparatorDataModel())
@@ -683,20 +682,19 @@ class MainNavViewModel @Inject constructor(
             var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
-                    SeparatorDataModel(),
+                        SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         InitialShimmerTransactionRevampDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                        ShimmerFavoriteShopDataModel()
+                        ShimmerFavoriteShopDataModel(),
+                        SeparatorDataModel()
                 )
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
+                        EmptyStateNonLoggedInDataModel()
                 )
             }
             return transactionDataList

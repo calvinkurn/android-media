@@ -99,7 +99,15 @@
 
     <string name="error_state_wishlist_title">Gagal memuat wishlist</string>
     <string name="error_state_wishlist_description">Klik ikon sebelah untuk coba lagi</string>
+    <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
+<!--    <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon &#128154;, nanti akan muncul disini</string>-->
 
     <string name="error_state_favorite_shop_title">Gagal memuat toko yang di-follow</string>
     <string name="error_state_favorite_shop_description">Klik ikon sebelah untuk coba lagi</string>
+    <string name="empty_state_favorite_shop">Follow toko yang kamu suka biar dapat info produk &amp; promo terbaru!</string>
+    <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
+    <string name="content_desc_image_empty_favorite_shop">image empty favorite shop</string>
+    <string name="content_desc_image_favorite_shop">image favorite shop</string>
+    <string name="content_desc_image_wishlist">image wishlist</string>
+    <string name="content_desc_image_shop_badge">image shop badge</string>
 </resources>
