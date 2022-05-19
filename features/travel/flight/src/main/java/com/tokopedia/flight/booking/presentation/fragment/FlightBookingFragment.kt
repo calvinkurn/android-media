@@ -9,6 +9,8 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
@@ -61,6 +63,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -1153,11 +1156,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     ErrorHandler.getErrorMessage(activity, null),
                     getString(com.tokopedia.globalerror.R.string.error500Desc),
                     getString(com.tokopedia.globalerror.R.string.error500Action),
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+                    0
                 ) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
+                }
+                view?.let {
+                    val retryLayout = it.findViewById<LinearLayout>(R.id.main_retry)
+                    val ivIcon = retryLayout.findViewById<ImageView>(R.id.iv_icon)
+                    ivIcon.loadImage(getString(com.tokopedia.flight.R.string.flight_default_error_img_url))
                 }
             }
         }
