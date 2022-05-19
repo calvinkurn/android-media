@@ -19,6 +19,8 @@ class ProductTagCardAdapter(
             .addDelegate(ProductTagCardAdapterDelegate.Ticker())
             .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
+            .addDelegate(ProductTagCardAdapterDelegate.EmptyState())
+            .addDelegate(ProductTagCardAdapterDelegate.RecommendationTitle())
     }
 
     override fun onBindViewHolder(
@@ -59,14 +61,10 @@ class ProductTagCardAdapter(
 
         object Loading: Model
 
-        data class GlobalError(
-            val type: Type,
-            val onClicked: (Type) -> Unit,
-        ) : Model {
-            enum class Type {
-                NORMAL, FILTER_APPLIED,
-            }
-        }
+        data class EmptyState(
+            val hasFilterApplied: Boolean,
+            val onClicked: () -> Unit,
+        ) : Model
 
         data class RecommendationTitle(
             val text: String,

@@ -77,7 +77,7 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.clSearch.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickSearchBar)
+            viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
 

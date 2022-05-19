@@ -10,6 +10,7 @@ import com.tokopedia.createpost.createpost.databinding.*
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -135,8 +136,8 @@ internal class ProductTagCardViewHolder private constructor() {
         }
     }
 
-    internal class GlobalError(
-        private val binding: ItemGlobalSearchErrorListBinding,
+    internal class EmptyState(
+        private val binding: ItemGlobalSearchEmptyStateListBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -146,37 +147,34 @@ internal class ProductTagCardViewHolder private constructor() {
             }
         }
 
-        fun bind(item: ProductTagCardAdapter.Model.GlobalError) {
+        fun bind(item: ProductTagCardAdapter.Model.EmptyState) {
             val context = itemView.context
-            binding.globalError.apply {
-                errorIllustration.loadImage(context.getString(R.string.img_search_no_product))
-                errorAction.visible()
-                errorSecondaryAction.gone()
-                errorAction.setOnClickListener {
-                    item.onClicked(item.type)
+            binding.emptyState.apply {
+                setImageUrl(context.getString(R.string.img_search_no_product))
+                setSecondaryCTAText("")
+                setPrimaryCTAClickListener {
+                    item.onClicked()
                 }
 
-                when(item.type) {
-                    ProductTagCardAdapter.Model.GlobalError.Type.NORMAL -> {
-                        errorTitle.text = context.getString(R.string.cc_global_search_product_query_not_found_title)
-                        errorDescription.text = context.getString(R.string.cc_global_search_product_query_not_found_desc)
-
-                        errorAction.text = context.getString(R.string.cc_check_your_keyword)
-                    }
-                    ProductTagCardAdapter.Model.GlobalError.Type.FILTER_APPLIED -> {
-                        errorTitle.text = context.getString(R.string.cc_global_search_product_filter_not_found_title)
-                        errorDescription.text = context.getString(R.string.cc_global_search_product_filter_not_found_desc)
-
-                        errorAction.text = context.getString(R.string.cc_reset_filter)
-                    }
+                if(item.hasFilterApplied) {
+                    setTitle(context.getString(R.string.cc_global_search_product_filter_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_product_filter_not_found_desc))
+                    setPrimaryCTAText(context.getString(R.string.cc_reset_filter))
+                    setOrientation(EmptyStateUnify.Orientation.VERTICAL)
+                }
+                else {
+                    setTitle(context.getString(R.string.cc_global_search_product_query_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_product_query_not_found_desc))
+                    setPrimaryCTAText(context.getString(R.string.cc_check_your_keyword))
+                    setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
                 }
             }
         }
 
         companion object {
 
-            fun create(parent: ViewGroup) = GlobalError(
-                ItemGlobalSearchErrorListBinding.inflate(
+            fun create(parent: ViewGroup) = EmptyState(
+                ItemGlobalSearchEmptyStateListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

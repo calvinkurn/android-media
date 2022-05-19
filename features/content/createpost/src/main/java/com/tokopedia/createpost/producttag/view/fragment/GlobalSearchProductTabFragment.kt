@@ -143,26 +143,42 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
         fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
             val finalProducts = buildList {
-                if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
-                if(state.ticker.text.isNotEmpty())
-                    add(
-                        ProductTagCardAdapter.Model.Ticker(
-                            text = state.ticker.text,
-                            onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
-                            onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
+                if(curr.products.isEmpty() && !hasNextPage) {
+                    if(curr.param.hasFilterApplied()) {
+                        add(ProductTagCardAdapter.Model.EmptyState(true) {
+                            viewModel.submitAction(ProductTagAction.ResetProductFilter)
+                        })
+                        binding.sortFilter.show()
+                    }
+                    else {
+                        add(ProductTagCardAdapter.Model.EmptyState(false) {
+                            viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+                        })
+                        add(ProductTagCardAdapter.Model.RecommendationTitle(getString(R.string.cc_product_recommendation_title)))
+                        binding.sortFilter.hide()
+                    }
+                }
+                else {
+                    if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
+                    if(state.ticker.text.isNotEmpty())
+                        add(
+                            ProductTagCardAdapter.Model.Ticker(
+                                text = state.ticker.text,
+                                onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
+                                onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
+                            )
                         )
-                    )
 
-                addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
+                    addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
 
-                if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
+                    if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
+
+                    binding.sortFilter.show()
+                }
             }
 
             if(binding.rvGlobalSearchProduct.isComputingLayout.not())
                 adapter.setItemsAndAnimateChanges(finalProducts)
-
-            binding.rvGlobalSearchProduct.show()
-            binding.globalError.hide()
         }
 
         if(prev?.products == curr.products &&
@@ -175,17 +191,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                 updateAdapterData(curr, true)
             }
             is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
-                    if(viewModel.hasProductSearchFilterApplied) {
-                        showFilterNoData()
-                    }
-                    else {
-                        /** TODO: handle this */
-                        binding.rvGlobalSearchProduct.show()
-                        binding.globalError.hide()
-                    }
-                }
-                else updateAdapterData(curr, curr.state.hasNextPage)
+                updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
                 updateAdapterData(curr,false)
@@ -221,24 +227,6 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                 viewModel.submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
             }
             indicatorCounter = curr.param.getFilterCount()
-            show()
-        }
-    }
-
-    private fun showFilterNoData() {
-        binding.rvGlobalSearchProduct.hide()
-        binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_search_no_product))
-            errorTitle.text = getString(R.string.cc_global_search_product_filter_not_found_title)
-            errorDescription.text = getString(R.string.cc_global_search_product_filter_not_found_desc)
-
-            errorAction.text = getString(R.string.cc_reset_filter)
-            errorAction.visible()
-            errorSecondaryAction.gone()
-            errorAction.setOnClickListener {
-                viewModel.submitAction(ProductTagAction.ResetProductFilter)
-            }
-            show()
         }
     }
 

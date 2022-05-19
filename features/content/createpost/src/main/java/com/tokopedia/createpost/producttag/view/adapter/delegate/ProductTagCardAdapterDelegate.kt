@@ -103,15 +103,15 @@ internal class ProductTagCardAdapterDelegate private constructor() {
         }
     }
 
-    internal class GlobalError: TypedAdapterDelegate<
-            ProductTagCardAdapter.Model.GlobalError,
+    internal class EmptyState: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.EmptyState,
             ProductTagCardAdapter.Model,
-            ProductTagCardViewHolder.GlobalError>(
+            ProductTagCardViewHolder.EmptyState>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
-            item: ProductTagCardAdapter.Model.GlobalError,
-            holder: ProductTagCardViewHolder.GlobalError
+            item: ProductTagCardAdapter.Model.EmptyState,
+            holder: ProductTagCardViewHolder.EmptyState
         ) {
             holder.bind(item)
         }
@@ -119,8 +119,8 @@ internal class ProductTagCardAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): ProductTagCardViewHolder.GlobalError {
-            return ProductTagCardViewHolder.GlobalError.create(
+        ): ProductTagCardViewHolder.EmptyState {
+            return ProductTagCardViewHolder.EmptyState.create(
                 parent
             )
         }

@@ -71,14 +71,6 @@ class ProductTagViewModel @AssistedInject constructor(
     val selectedShop: ShopUiModel
         get() = _shopProduct.value.shop
 
-    val hasProductSearchFilterApplied: Boolean
-        get() {
-            val currState = _globalSearchProduct.value
-            return currState.quickFilters.firstOrNull {
-                currState.param.isParamFound(it.key, it.value)
-            } != null
-        }
-
     val hasShopSearchFilterApplied: Boolean
         get() {
             val currState = _globalSearchShop.value
@@ -213,7 +205,7 @@ class ProductTagViewModel @AssistedInject constructor(
         when(action) {
             is ProductTagAction.BackPressed -> handleBackPressed()
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
-            ProductTagAction.ClickSearchBar -> handleClickSearchBar()
+            ProductTagAction.OpenAutoCompletePage -> handleOpenAutoCompletePage()
 
             is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
@@ -272,7 +264,7 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickSearchBar() {
+    private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
             _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
         }

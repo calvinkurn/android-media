@@ -11,7 +11,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 sealed interface ProductTagAction {
     object BackPressed: ProductTagAction
     object ClickBreadcrumb: ProductTagAction
-    object ClickSearchBar: ProductTagAction
+    object OpenAutoCompletePage: ProductTagAction
 
     data class SetDataFromAutoComplete(val source: ProductTagSource, val query: String, val shopId: String): ProductTagAction
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
