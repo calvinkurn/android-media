@@ -10,10 +10,11 @@ data class LastTaggedProductUiModel(
 ) {
 
     companion object {
-        val Empty = LastTaggedProductUiModel(
-            products = emptyList(),
-            nextCursor = "",
-            state = PagedState.Unknown,
-        )
+        val Empty: LastTaggedProductUiModel
+            get() = LastTaggedProductUiModel(
+                products = emptyList(),
+                nextCursor = "",
+                state = PagedState.Unknown,
+            )
     }
 }

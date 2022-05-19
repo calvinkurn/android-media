@@ -12,12 +12,13 @@ data class LastPurchasedProductUiModel(
 ) {
 
     companion object {
-        val Empty = LastPurchasedProductUiModel(
-            products = emptyList(),
-            nextCursor = "",
-            state = PagedState.Unknown,
-            coachmark = "",
-            isCoachmarkShown = false,
-        )
+        val Empty: LastPurchasedProductUiModel
+            get() = LastPurchasedProductUiModel(
+                products = emptyList(),
+                nextCursor = "",
+                state = PagedState.Unknown,
+                coachmark = "",
+                isCoachmarkShown = false,
+            )
     }
 }

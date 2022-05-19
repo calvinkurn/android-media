@@ -66,10 +66,14 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(viewModel.myShopStateUnknown)
-            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
         setupView()
         setupObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(viewModel.myShopStateUnknown)
+            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
     }
 
     override fun onDestroyView() {

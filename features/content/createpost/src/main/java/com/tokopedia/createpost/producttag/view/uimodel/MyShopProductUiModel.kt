@@ -11,11 +11,12 @@ data class MyShopProductUiModel(
 ) {
 
     companion object {
-        val Empty = MyShopProductUiModel(
-            products = emptyList(),
-            nextCursor = 0,
-            state = PagedState.Unknown,
-            param = SearchParamUiModel.Empty
-        )
+        val Empty: MyShopProductUiModel
+            get() = MyShopProductUiModel(
+                products = emptyList(),
+                nextCursor = 0,
+                state = PagedState.Unknown,
+                param = SearchParamUiModel.Empty
+            )
     }
 }

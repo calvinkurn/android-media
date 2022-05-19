@@ -25,7 +25,9 @@ data class GlobalSearchProductUiModel(
                 sortFilters = DynamicFilterModel(),
                 nextCursor = 0,
                 state = PagedState.Unknown,
-                param = SearchParamUiModel.Empty,
+                param = SearchParamUiModel.Empty.apply {
+                   query = "pokemon"
+                },
                 suggestion = "",
                 ticker = TickerUiModel()
             )
