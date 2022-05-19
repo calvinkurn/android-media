@@ -434,7 +434,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReview.buyerPhotosCount
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
                     buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
@@ -445,7 +445,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReview.buyerPhotosCount
+                    buyerPhotosCount = it.imageReview.buyerMediaCount
                     buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }

@@ -368,9 +368,9 @@ object DynamicProductDetailMapper {
 
     fun generateImageReview(reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewImage {
         return ReviewImage(
-                buyerPhotosCount = reviewImage.detail?.mediaCount.toIntOrZero(),
-                reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
-                staticSocialProofText = reviewImage.detail?.mediaTitle ?: ""
+            buyerMediaCount = reviewImage.detail?.mediaCount.toIntOrZero(),
+            reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
+            staticSocialProofText = reviewImage.detail?.mediaTitle ?: ""
         )
     }
 
