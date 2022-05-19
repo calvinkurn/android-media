@@ -91,7 +91,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
                             it.quizBottomSheetUiState.quizChoiceDetailState
                         )
                     }
-                    QuizDetailStateUiModel.Unknown -> dismiss()
+                    QuizDetailStateUiModel.Unknown -> {
+                        if (isVisible)
+                            dismiss()
+                    }
                 }
             }
         }
