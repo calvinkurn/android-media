@@ -94,17 +94,7 @@ class ErrorLoadViewModelTest {
         Assert.assertEquals(viewModel.syncData.value, true)
     }
 
-    @Test
-    fun `reloadComponentData when getVoucherUseCase returns true for MerchantVoucherList and noOfPagesLoaded is 1 but no data was available`() {
-//        Todo:: Add UT cases.
-//        coEvery { componentsItem.noOfPagesLoaded } returns 1
-//        coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-//        coEvery { viewModel.merchantVoucherUseCase.getVoucherUseCase(any(), any()) } returns true
-//        viewModel.reloadComponentData()
-//
-//        Assert.assertEquals(viewModel.syncData.value, true)
 
-    }
 
     @Test
     fun `reloadComponentData when getProductCardsUseCase returns true for ProductCardCarousel and noOfPagesLoaded is 1`() {
