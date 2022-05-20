@@ -1,7 +1,6 @@
 package com.tokopedia.videoTabComponent.view
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -50,7 +49,7 @@ import javax.inject.Inject
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
     PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
 
-    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_play_feed) }
+    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_feed_play) }
     private val swipeToRefresh by lazy { rvWidget?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
 
     private lateinit var adapter: VideoTabAdapter
@@ -126,7 +125,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_play_feed, container, false)
+        return inflater.inflate(R.layout.fragment_feed_play, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
