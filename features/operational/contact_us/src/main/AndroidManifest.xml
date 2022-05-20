@@ -47,17 +47,17 @@
             android:label="@string/contact_us_inbox"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
+<!--            <intent-filter>-->
+<!--                <action android:name="com.tokopedia.internal.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_customercare"
-                    android:path="@string/path_inbox_list" />
-            </intent-filter>
+<!--                <data-->
+<!--                    android:scheme="@string/internal_scheme"-->
+<!--                    android:host="@string/host_customercare"-->
+<!--                    android:path="@string/path_inbox_list" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".inboxticket2.view.activity.InboxDetailActivity"
