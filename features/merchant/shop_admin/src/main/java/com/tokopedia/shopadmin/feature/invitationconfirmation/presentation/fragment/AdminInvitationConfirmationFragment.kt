@@ -233,6 +233,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             }
             AdminStatus.REJECT -> inflateInvitationRejected()
             AdminStatus.EXPIRED -> inflateInvitationExpired()
+            else -> activity?.finish()
         }
     }
 

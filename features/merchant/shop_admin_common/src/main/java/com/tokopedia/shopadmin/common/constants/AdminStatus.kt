@@ -5,8 +5,8 @@ package com.tokopedia.shopadmin.common.constants
 annotation class AdminStatus {
     companion object {
         const val ACTIVE = "1"
-        const val WAITING_CONFIRMATION = "2"
-        const val REJECT = "3"
-        const val EXPIRED = "4"
+        const val WAITING_CONFIRMATION = "8"
+        const val REJECT = "9"
+        const val EXPIRED = "10"
     }
 }

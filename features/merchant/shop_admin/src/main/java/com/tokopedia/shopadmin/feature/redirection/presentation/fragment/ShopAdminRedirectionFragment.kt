@@ -37,6 +37,10 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         )
     }
 
+    private val fromParam by lazy {
+        arguments?.getString(ShopAdminDeepLinkMapper.FROM_PARAM).orEmpty()
+    }
+
     private var binding by autoClearedNullable<FragmentShopAdminRedirectionBinding>()
 
     override fun getScreenName(): String = ""
@@ -88,13 +92,21 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun redirectionShopAdmin(adminTypeUiModel: AdminTypeUiModel) {
         if (GlobalConfig.isSellerApp()) {
-            redirectShopAdminInSA(adminTypeUiModel)
+            when (fromParam) {
+                ShopAdminDeepLinkMapper.LANDING_SHOP_CREATION -> {
+                    redirectShopAdminInSAFromLandingShop(adminTypeUiModel)
+                }
+                ShopAdminDeepLinkMapper.PHONE_SHOP_CREATION -> {
+                    redirectShopAdminInSAFromPhoneShop(adminTypeUiModel)
+                }
+                else -> activity?.finish()
+            }
         } else {
             redirectShopAdminMA(adminTypeUiModel)
         }
     }
 
-    private fun redirectShopAdminInSA(adminTypeUiModel: AdminTypeUiModel) {
+    private fun redirectShopAdminInSAFromLandingShop(adminTypeUiModel: AdminTypeUiModel) {
         val appLink =
             if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()) {
                 if (adminTypeUiModel.isShopAdmin) {
@@ -108,6 +120,28 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
                 }
             } else {
                 ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+            }
+
+        val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    private fun redirectShopAdminInSAFromPhoneShop(adminTypeUiModel: AdminTypeUiModel) {
+        val appLink =
+            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()) {
+                if (adminTypeUiModel.isShopAdmin) {
+                    if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
+                        ApplinkConstInternalSellerapp.SELLER_HOME
+                    } else {
+                        ApplinkConstInternalMarketplace.ADMIN_INVITATION
+                    }
+                } else {
+                    ""
+                }
+            } else {
+                ""
             }
 
         val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
@@ -133,8 +167,14 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(): ShopAdminRedirectionFragment {
-            return ShopAdminRedirectionFragment()
+        fun newInstance(bundle: Bundle?): ShopAdminRedirectionFragment {
+            return if (bundle == null) {
+                ShopAdminRedirectionFragment()
+            } else {
+                ShopAdminRedirectionFragment().apply {
+                    arguments = bundle
+                }
+            }
         }
 
         private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"

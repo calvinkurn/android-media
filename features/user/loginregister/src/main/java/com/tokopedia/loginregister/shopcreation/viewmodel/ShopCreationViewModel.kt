@@ -27,7 +27,6 @@ import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
-import com.tokopedia.shopadmin.common.domain.usecase.GetAdminTypeUseCaseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +47,6 @@ open class ShopCreationViewModel @Inject constructor(
     private val updateUserProfileUseCase: UpdateUserProfileUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val shopInfoUseCase: ShopInfoUseCase,
-    private val getAdminTypeUseCaseCase: GetAdminTypeUseCaseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -132,8 +130,8 @@ open class ShopCreationViewModel @Inject constructor(
     fun registerCheck(phone: String) {
         launchCatchError(block = {
             val params = RegisterCheckParam(id = phone)
-            val registerCheckResult = registerCheckUseCase(params)
-            registerCheckResult.data.let {
+            val result = registerCheckUseCase(params)
+            result.data.let {
                 _registerCheckResponse.value = when {
                     it.errors.isNotEmpty() && it.errors[0].isNotEmpty() -> {
                         Fail(MessageErrorException(it.errors[0]))

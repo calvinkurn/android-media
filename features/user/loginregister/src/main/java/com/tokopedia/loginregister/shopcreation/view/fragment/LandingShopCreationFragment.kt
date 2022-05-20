@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
-import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper.REQUEST_CODE_SHOP_ADMIN_REDIRECTION
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
@@ -127,8 +126,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     REQUEST_CODE_NAME_SHOP_CREATION -> {
                         shopCreationViewModel.getUserInfo()
                     }
-                    REQUEST_CODE_SHOP_ADMIN_REDIRECTION -> {
-                        setActionAfterAdminRedirection(data)
+                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_LANDING_SHOP -> {
+                        setActionAfterAdminRedirectionFromLandingShop(data)
+                    }
+                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_PHONE_SHOP -> {
+                        setActionAfterAdminRedirectionFromPhoneShop(data)
                     }
                 }
             }
@@ -178,7 +180,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         buttonOpenShop.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
             if (userSession.userId != DEFAULT_SHOP_ID_NOT_OPEN && userSession.userId.isNotEmpty()) {
-                goToShopAdminRedirection()
+                goToAdminRedirectionFromLandingShopCreation()
             } else {
                 showLoading()
                 goToPhoneShopCreation()
@@ -186,16 +188,39 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun setActionAfterAdminRedirection(intent: Intent?) {
+    private fun setActionAfterAdminRedirectionFromLandingShop(intent: Intent?) {
         val appLink = intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN).orEmpty()
-        if (appLink.isNotEmpty()) {
-            setActionAfterSuccessAdminRedirection(appLink)
+        val errorMessage = intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN).orEmpty()
+        if (appLink.isNotEmpty() && errorMessage.isEmpty()) {
+            setActionAfterSuccessAdminRedirectionFromLandingShop(appLink)
         } else {
-            showToasterAfterFailAdminRedirection(intent)
+            showToasterAfterFailAdminRedirection(errorMessage)
         }
     }
 
-    private fun setActionAfterSuccessAdminRedirection(appLink: String) {
+    private fun setActionAfterAdminRedirectionFromPhoneShop(intent: Intent?) {
+        val appLink =
+            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN).orEmpty()
+        val errorMessage =
+            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN)
+                .orEmpty()
+
+        if (appLink.isNotEmpty()) {
+            RouteManager.route(context, appLink)
+        } else {
+            if (errorMessage.isNotEmpty()) {
+                showToasterAfterFailAdminRedirection(errorMessage)
+            } else {
+                saveFirstInstallTime()
+                if (userSession.hasShop())
+                    shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
+                else goToShopName()
+            }
+        }
+    }
+
+
+    private fun setActionAfterSuccessAdminRedirectionFromLandingShop(appLink: String) {
         if (appLink == ApplinkConstInternalGlobal.PHONE_SHOP_CREATION) {
             showLoading()
             if (userSession.isLoggedIn) {
@@ -208,10 +233,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun showToasterAfterFailAdminRedirection(intent: Intent?) {
-        val errorMessage =
-            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN)
-        if (errorMessage?.isNotEmpty() == true) {
+    private fun showToasterAfterFailAdminRedirection(errorMessage: String) {
+        if (errorMessage.isNotEmpty()) {
             view?.let {
                 Toaster.build(
                     it,
@@ -292,10 +315,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         ) {
             goToNameShopCreation()
         } else {
-            saveFirstInstallTime()
-            if (userSession.hasShop())
-                shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
-            else goToShopName()
+            goToAdminRedirectionFromPhoneShopCreation()
         }
     }
 
@@ -340,10 +360,20 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
-    private fun goToShopAdminRedirection() {
+    private fun goToAdminRedirectionFromLandingShopCreation() {
         val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION)
-        startActivityForResult(intent, REQUEST_CODE_SHOP_ADMIN_REDIRECTION)
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION).apply {
+                putExtra(ShopAdminDeepLinkMapper.FROM_PARAM, ShopAdminDeepLinkMapper.LANDING_SHOP_CREATION)
+            }
+        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_LANDING_SHOP)
+    }
+
+    private fun goToAdminRedirectionFromPhoneShopCreation() {
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION).apply {
+                putExtra(ShopAdminDeepLinkMapper.FROM_PARAM, ShopAdminDeepLinkMapper.PHONE_SHOP_CREATION)
+            }
+        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_PHONE_SHOP)
     }
 
     private fun goToPhoneShopCreation() {
