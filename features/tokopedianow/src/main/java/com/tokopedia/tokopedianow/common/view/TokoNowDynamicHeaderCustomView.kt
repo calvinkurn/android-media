@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.FrameLayout
-import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -28,7 +25,7 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
     private var tpSubtitle: Typography? = null
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_dynamic_header_custom_view, this)
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_dynamic_header_custom_view, this)
         this.itemView = view
     }
 
