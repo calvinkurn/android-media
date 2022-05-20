@@ -77,47 +77,47 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
 
     fun clickBuyAgainButton(orderId: String, shopId: String, foodItems: List<FoodItemUiModel>) {
         val itemBundle = Bundle().apply {
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
-//                setValueOrDefault("")
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
-//                setValueOrDefault(data.cartId)
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
-//                setValueOrDefault("")
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY,
-//                setValueOrDefault("")
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
-//                setValueOrDefault(data.productId.toString())
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
-//                setValueOrDefault(product.name)
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
-//                setValueOrDefault("")
-//            )
-//            putDouble(AddToCartExternalAnalytics.EE_PARAM_PRICE, product.price)
-//            putInt(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, product.minOrder)
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
-//                setValueOrDefault(data.shopId.toString())
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME,
-//                setValueOrDefault(product.shop.name)
-//            )
-//            putString(
-//                AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, setValueOrDefault("")
-//            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
+                setValueOrDefault(data.cartId)
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_CATEGORY,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
+                ""
+            )
+            putDouble(AddToCartExternalAnalytics.EE_PARAM_PRICE, "")
+            putInt(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, "")
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_NAME,
+                ""
+            )
+            putString(
+                AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, ""
+            )
         }
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.ADD_TO_CART)
