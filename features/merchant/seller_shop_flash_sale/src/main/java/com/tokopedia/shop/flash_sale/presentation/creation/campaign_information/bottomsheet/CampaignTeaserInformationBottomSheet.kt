@@ -1,4 +1,4 @@
-package com.tokopedia.common.bottomsheet
+package com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.bottomsheet
 
 import android.content.Context
 import android.graphics.Color
