@@ -576,6 +576,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             }
         }
 
+        toggleEnquiryButton()
         if (dataList.isNotEmpty()) adapter.renderList(dataList)
     }
 
