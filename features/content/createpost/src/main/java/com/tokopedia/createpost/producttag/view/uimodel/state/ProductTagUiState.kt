@@ -68,7 +68,6 @@ data class GlobalSearchShopUiState(
 data class ShopProductUiState(
     val shop: ShopUiModel,
     val products: List<ProductUiModel>,
-    val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
 ) {

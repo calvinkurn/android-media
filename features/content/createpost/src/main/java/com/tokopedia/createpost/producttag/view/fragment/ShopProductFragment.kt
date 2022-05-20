@@ -90,15 +90,15 @@ class ShopProductFragment : BaseProductTagChildFragment() {
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
-                viewModel.submitAction(ProductTagAction.SearchShopProduct(query))
+                submitQuery(query)
 
-                textView.apply {
-                    clearFocus()
-                    hideKeyboard()
-                }
                 true
             }
             else false
+        }
+
+        binding.sbShopProduct.clearListener = {
+            submitQuery("")
         }
     }
 
@@ -150,6 +150,15 @@ class ShopProductFragment : BaseProductTagChildFragment() {
                 ).show()
             }
             else -> {}
+        }
+    }
+
+    private fun submitQuery(query: String) {
+        viewModel.submitAction(ProductTagAction.SearchShopProduct(query))
+
+        binding.sbShopProduct.searchBarTextField.apply {
+            clearFocus()
+            hideKeyboard()
         }
     }
 

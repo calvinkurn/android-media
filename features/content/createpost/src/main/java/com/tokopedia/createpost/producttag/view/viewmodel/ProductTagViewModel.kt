@@ -159,7 +159,6 @@ class ProductTagViewModel @AssistedInject constructor(
         ShopProductUiState(
             shop = it.shop,
             products = it.products,
-            nextCursor = it.nextCursor,
             state = it.state,
             param = it.param,
         )
@@ -687,7 +686,6 @@ class ProductTagViewModel @AssistedInject constructor(
             _shopProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
-                    nextCursor = nextCursor,
                     param = newParam,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
@@ -704,6 +702,8 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSearchShopProduct(query: String) {
+        if(_shopProduct.value.param.query == query) return
+
         _shopProduct.setValue { ShopProductUiModel.Empty.copy(
                 shop = shop,
                 param = param.copy().apply { this.query = query }
