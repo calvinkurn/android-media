@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.logisticCommon.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticCommon.data.entity.address.db.Province;
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,13 +16,26 @@ public interface AddressRepository {
 
     void addAddress(@NonNull Map<String, String> params, @NonNull AddAddressListener listener);
 
-    void editAddress(@NonNull Map<String, String> params, @NonNull AddAddressListener listener);
+    void editAddress(@NonNull Map<String, String> params, @NonNull EditAddressListener listener);
 
     void unsubscribe();
 
     interface AddAddressListener {
 
         void onSuccess(String address_id);
+
+        void onTimeout();
+
+        void onError(String error);
+
+        void onNullData();
+
+        void onNoNetworkConnection();
+    }
+
+    interface EditAddressListener {
+
+        void onSuccess(OldEditAddressResponseData response);
 
         void onTimeout();
 

@@ -109,6 +109,8 @@ internal class FloatingWindowService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
+        showNotification()
+
         when (intent.getStringExtra(INTENT_COMMAND)) {
             INTENT_COMMAND_START -> {
                 FloatingWindow.getInstance(applicationContext).attachView()
@@ -118,8 +120,6 @@ internal class FloatingWindowService : Service() {
                 return START_NOT_STICKY
             }
         }
-
-        showNotification()
 
         return START_STICKY
     }

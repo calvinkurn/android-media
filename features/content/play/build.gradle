@@ -99,6 +99,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerCastExt
 
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
+
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
@@ -106,9 +108,12 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler

@@ -15,6 +15,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -25,6 +26,7 @@ import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.keys.Keys;
@@ -76,6 +78,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
+    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
+    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -92,7 +96,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
-        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp_ramadhan;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
@@ -129,6 +133,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         Loader.init(this);
         setEmbraceUserId();
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -268,6 +273,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
     }
 
     @Override

@@ -101,6 +101,9 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
         return null;
     }
 
+    @Override
+    public void hideMainToolbar(){}
+
     private FragmentManager.OnBackStackChangedListener getListener() {
         FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {

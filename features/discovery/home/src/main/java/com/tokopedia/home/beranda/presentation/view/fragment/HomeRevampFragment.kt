@@ -1628,6 +1628,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this,
             SpecialReleaseComponentCallback(context, this),
             MerchantVoucherComponentCallback(this),
+            CueWidgetComponentCallback(this),
             CategoryWidgetV2Callback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

@@ -27,7 +27,6 @@
     <dimen name="setting_balance_height">40dp</dimen>
     <dimen name="setting_zero_dp">0dp</dimen>
     <dimen name="setting_status_padding_top">15dp</dimen>
-    <dimen name="setting_status_padding_bottom">14dp</dimen>
     <dimen name="setting_card_height">45dp</dimen>
     <dimen name="setting_shop_badge_border_margin">2dp</dimen>
     <dimen name="setting_shop_info_height">60dp</dimen>

@@ -3,14 +3,14 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class ShopShowcasePickerViewModel @Inject constructor(
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
-        private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
+        private val getProductListUseCase: GetProductListUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -29,9 +29,9 @@ class ShopShowcasePickerViewModel @Inject constructor(
     val getListSellerShopShowcaseResponse: LiveData<Result<ShopShowcaseListSellerResponse>>
         get() = _getListSellerShopShowcaseResponse
 
-    private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
-    val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
-        get() = _getShopProductResponse
+    private val _shopTotalProduct = MutableLiveData<Result<Int>>()
+    val shopTotalProduct: LiveData<Result<Int>>
+        get() = _shopTotalProduct
 
     private val _createShopShowcase = MutableLiveData<Result<AddShopShowcaseResponse>>()
     val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
@@ -53,26 +53,17 @@ class ShopShowcasePickerViewModel @Inject constructor(
         }
     }
 
-    fun getTotalProduct(shopId: String, page: Int, perPage: Int,
-                        sortId: Int, etalase: String, search: String) {
+    fun getTotalProducts(shopId: String, filter: GetProductListFilter) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                val paramInput = mapOf(
-                        "page" to page,
-                        "fkeyword" to search,
-                        "perPage" to perPage,
-                        "fmenu" to etalase,
-                        "sort" to sortId
-                )
-
-                getShopShowcaseTotalProductUseCase.params = GetShopShowcaseTotalProductUseCase.createRequestParam(shopId, paramInput)
-                val shopProductData = getShopShowcaseTotalProductUseCase.executeOnBackground()
-                shopProductData.let {
-                    _getShopProductResponse.postValue(Success(it))
+                getProductListUseCase.params = GetProductListUseCase.createRequestParams(shopId, filter)
+                val productListResponse = getProductListUseCase.executeOnBackground()
+                productListResponse.let { productList ->
+                    _shopTotalProduct.postValue(Success(productList.size))
                 }
             }
         }) {
-            _getShopProductResponse.value = Fail(it)
+            _shopTotalProduct.value = Fail(it)
         }
     }
 

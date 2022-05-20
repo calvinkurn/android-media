@@ -149,13 +149,17 @@ class PlayBroadcastSetupBottomSheet :
                     override fun getProductList(): List<ProductUiModel> {
                         return mDataSource?.getProductList().orEmpty()
                     }
+
+                    override fun getChannelId(): String {
+                        return mDataSource?.getChannelId().orEmpty()
+                    }
                 })
             }
         }
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     fun setDataSource(dataSource: DataSource?) {
@@ -203,7 +207,7 @@ class PlayBroadcastSetupBottomSheet :
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(
-                PlayCoverSetupFragment::class.java
+            PlayCoverSetupFragment::class.java
         )
     }
 
@@ -228,6 +232,7 @@ class PlayBroadcastSetupBottomSheet :
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getChannelId(): String
     }
 
     interface Listener {

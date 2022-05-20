@@ -22,7 +22,7 @@ class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<Fintech
 
 
     override fun getNewFragment(): Fragment? = null
-    lateinit var bundle: Bundle
+     var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +41,12 @@ class ActivationBottomSheetActivity : BaseSimpleActivity(), HasComponent<Fintech
     }
 
     private fun openChooseBankBottomSheet() {
-
-        GopayLinkBenefitBottomSheet().showBottomSheet(supportFragmentManager, bundle)
-            .setOnDismissListener {
-                finish()
-            }
+        bundle?.let {
+            GopayLinkBenefitBottomSheet().showBottomSheet(supportFragmentManager, it)
+                .setOnDismissListener {
+                    finish()
+                }
+        }
     }
 
     override fun getComponent() = fintechWidgetComponent
