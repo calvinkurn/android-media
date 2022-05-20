@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.di.ChatbotModule
@@ -21,8 +23,10 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.bottom_sheet_go_to_help.view.*
 import javax.inject.Inject
 
@@ -33,6 +37,9 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
 
     lateinit var viewModel : ChatbotViewModel
 
+    val URL_HELP = getInstance().WEB + "help?utm_source=android"
+
+    val bottomSheetPage = BottomSheetUnify()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,16 +88,19 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
         content: String,
         contentList: List<String>
     ) {
-        val bottomSheetPage = BottomSheetUnify()
+
         val viewBottomSheetPage =
             View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
                 this.text_title.text = title
                 this.text_subtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
                 this.text_list_header.text = content
+                this.btn_tokopedia_care.setOnClickListener {
+                    goToHelpPage()
+                }
+
                 this.content_list.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
                 val adapter = ContactUsMigrationAdapter()
                 setList(contentList,adapter)
-
                 this.content_list.adapter = adapter
 
             }
@@ -102,6 +112,11 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
         supportFragmentManager?.let {
             bottomSheetPage.show(it, "TAG")
         }
+    }
+
+    private fun goToHelpPage() {
+        RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, URL_HELP)
+        finish()
     }
 
     private fun setList(contentList: List<String>, adapter: ContactUsMigrationAdapter) {
