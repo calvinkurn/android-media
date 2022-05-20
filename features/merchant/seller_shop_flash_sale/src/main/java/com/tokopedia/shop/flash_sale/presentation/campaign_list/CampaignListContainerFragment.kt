@@ -13,6 +13,7 @@ import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class CampaignListContainerFragment: BaseDaggerFragment() {
@@ -57,9 +58,15 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         observeTabsMeta()
         observeCampaigns()
         observeCampaignAttribute()
+        observeCampaignCreation()
         viewModel.getTabsMeta()
         viewModel.getCampaigns(10, 1, emptyList(), "", false)
         viewModel.getCampaignAttribute(5, 2022)
+        viewModel.createCampaign(
+            "campaign-test",
+            GregorianCalendar(2022, 6, 10, 13, 0, 0).time,
+            GregorianCalendar(2022, 6, 15, 13, 0, 0).time
+        )
     }
 
     private fun observeTabsMeta() {
@@ -101,6 +108,20 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
             }
         }
     }
+
+    private fun observeCampaignCreation() {
+        viewModel.campaignCreation.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    val creationResult = result.data
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
     private fun setupView() {
 
     }
