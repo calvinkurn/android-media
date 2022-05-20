@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial.game
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -46,6 +47,7 @@ class QuizOptionDetailViewComponent(
     private val emptyParticipantView: ConstraintLayout = findViewById(R.id.cl_participant_empty)
     private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
     private val ivSheetBack: ImageView = findViewById(R.id.iv_sheet_back)
+    private val placeholder: View = findViewById(R.id.participant_placeholder)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -75,20 +77,29 @@ class QuizOptionDetailViewComponent(
 
     fun setData(choiceDetail: QuizChoiceDetailUiModel) {
         errorView.hide()
+        placeholder.hide()
         choiceAdapter.setItemsAndAnimateChanges(listOf(choiceDetail.choice))
         winnerAdapter.setItemsAndAnimateChanges(choiceDetail.winners)
         participantAdapter.setItemsAndAnimateChanges(choiceDetail.participants)
+        rvChoice.show()
+        rvWinner.show()
+        rvParticipant.show()
         emptyParticipantView.showWithCondition(choiceDetail.participants.isEmpty())
     }
 
     fun setError() {
+        placeholder.hide()
         errorView.show()
         rvWinner.hide()
     }
 
     fun setLoading() {
+        placeholder.show()
         errorView.hide()
         rvWinner.hide()
+        rvChoice.hide()
+        rvParticipant.hide()
+        emptyParticipantView.hide()
     }
 
     fun setTitle(title: String) {

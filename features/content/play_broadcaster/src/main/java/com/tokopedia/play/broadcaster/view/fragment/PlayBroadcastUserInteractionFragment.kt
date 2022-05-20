@@ -1052,7 +1052,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             childFragmentManager,
             requireContext().classLoader)
         playQuizDetailBottomSheet.arguments = Bundle().apply {
-            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString())
+            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString().lowercase())
         }
         playQuizDetailBottomSheet.show(childFragmentManager)
     }

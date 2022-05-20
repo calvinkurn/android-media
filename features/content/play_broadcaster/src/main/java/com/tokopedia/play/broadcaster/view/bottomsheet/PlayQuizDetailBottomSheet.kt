@@ -73,8 +73,8 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         }
         if (sheetType.isNotBlank()){
             when (sheetType){
-                Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
-                Type.LEADERBOARD.toString() -> setupLeaderBoard()
+                Type.QUIZ_DETAIL.toString().lowercase() -> setupQuizDetail()
+                Type.LEADERBOARD.toString().lowercase() -> setupLeaderBoard()
             }
             observeQuizDetail()
         }
@@ -135,7 +135,9 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
 
     private fun showLoadingChoiceDetail() {
-
+        leaderboardSheetView.hide()
+        choiceDetailSheetView.setLoading()
+        choiceDetailSheetView.show()
     }
 
     private fun showChoiceDetail(dataUiModel: QuizChoiceDetailUiModel) {
