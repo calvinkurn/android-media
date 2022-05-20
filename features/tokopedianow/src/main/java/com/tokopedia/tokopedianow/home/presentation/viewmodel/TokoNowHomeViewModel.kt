@@ -813,21 +813,22 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }
-        val repurchase = homeItem?.layout as? HomeLeftCarouselUiModel
-        val productList = repurchase?.productList.orEmpty()
-        val product = productList.firstOrNull {
-            if (it is HomeLeftCarouselProductCardUiModel) {
-                it.id == productId
-            } else {
-                false
+        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }?.apply {
+            val repurchase = layout as HomeLeftCarouselUiModel
+            val productList = repurchase.productList
+            val product = productList.firstOrNull {
+                if (it is HomeLeftCarouselProductCardUiModel) {
+                    it.id == productId
+                } else {
+                    false
+                }
             }
-        }
 
-        product?.let {
-            val position = productList.indexOf(it)
-            val data = HomeAddToCartTracker(position, quantity,cartId, it)
-            _homeAddToCartTracker.postValue(data)
+            product?.let {
+                val position = productList.indexOf(it)
+                val data = HomeAddToCartTracker(position, quantity,cartId, it)
+                _homeAddToCartTracker.postValue(data)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
@@ -16,5 +17,13 @@ data class HomeLeftCarouselUiModel(
 ): HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun hashCode(): Int {
+        return id.toIntSafely()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (other as? HomeLeftCarouselUiModel)?.id == id
     }
 }

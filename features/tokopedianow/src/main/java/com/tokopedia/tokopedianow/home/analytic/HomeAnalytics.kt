@@ -464,7 +464,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         cartId: String
     ) {
         val item = productItemDataLayer(
-            index = "",
             productId = homeLeftCarouselProductCardUiModel.id.toString(),
             productName = homeLeftCarouselProductCardUiModel.productCardModel.productName,
             price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }
@@ -1377,10 +1376,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     private fun productItemDataLayer(
-        index: String,
-        productId: String,
-        productName: String,
-        price: String,
+        index: String = "",
+        productId: String = "",
+        productName: String = "",
+        price: String = "",
         productBrand: String = "",
         productCategory: String = "",
         productVariant: String = ""

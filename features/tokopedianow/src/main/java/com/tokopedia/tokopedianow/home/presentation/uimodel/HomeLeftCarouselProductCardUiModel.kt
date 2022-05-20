@@ -9,7 +9,7 @@ data class HomeLeftCarouselProductCardUiModel(
     var id: String? = null,
     var brandId: String = "",
     var categoryId: String = "",
-    var parentProductId: String = "0",
+    var parentProductId: String = "",
     var shopId: String = "0",
     var shopName: String = "",
     var appLink: String = "",
