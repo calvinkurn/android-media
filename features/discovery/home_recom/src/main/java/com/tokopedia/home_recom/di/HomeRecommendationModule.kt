@@ -56,6 +56,12 @@ class HomeRecommendationModule {
 
     @Provides
     @HomeRecommendationScope
+    fun provideGetTopadsIsAdsUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>) : GetTopadsIsAdsUseCase {
+        return GetTopadsIsAdsUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TopadsIsAdsQuery>)
+    }
+
+    @Provides
+    @HomeRecommendationScope
     fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetPrimaryProductUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
