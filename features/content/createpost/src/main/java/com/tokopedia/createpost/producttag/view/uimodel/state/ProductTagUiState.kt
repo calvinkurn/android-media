@@ -37,7 +37,6 @@ data class LastPurchasedProductUiState(
 
 data class MyShopProductUiState(
     val products: List<ProductUiModel>,
-    val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
 ) {
