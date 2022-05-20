@@ -102,6 +102,11 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         binding.rvGlobalSearchProduct.addItemDecoration(ProductTagItemDecoration(requireContext()))
         binding.rvGlobalSearchProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
         binding.rvGlobalSearchProduct.adapter = adapter
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = true
+            viewModel.submitAction(ProductTagAction.SwipeRefreshGlobalSearchProduct)
+        }
     }
 
     private fun setupObserver() {
@@ -147,14 +152,15 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
         when(curr.state) {
             is PagedState.Loading -> {
-                binding.sortFilter.show()
-                updateAdapterData(curr, true)
+                updateAdapterData(curr, !binding.swipeRefresh.isRefreshing)
             }
             is PagedState.Success -> {
+                binding.swipeRefresh.isRefreshing = false
                 binding.sortFilter.showWithCondition(curr.products.isNotEmpty() || (curr.products.isEmpty() && curr.param.hasFilterApplied()))
                 updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
+                binding.swipeRefresh.isRefreshing = false
                 updateAdapterData(curr,false)
 
                 Toaster.build(
@@ -192,7 +198,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun updateAdapterData(currState: GlobalSearchProductUiState, hasNextPage: Boolean) {
+    private fun updateAdapterData(currState: GlobalSearchProductUiState, showLoading: Boolean) {
         val finalProducts = buildList {
             if(currState.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion))
             if(currState.ticker.text.isNotEmpty())
@@ -210,7 +216,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                 addAll(currState.products.map { ProductTagCardAdapter.Model.Product(product = it) })
 
 
-            if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
+            if(showLoading) add(ProductTagCardAdapter.Model.Loading)
         }
 
         if(binding.rvGlobalSearchProduct.isComputingLayout.not())

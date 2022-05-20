@@ -247,6 +247,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.OpenProductSortFilterBottomSheet -> handleOpenProductSortFilterBottomSheet()
             is ProductTagAction.RequestProductFilterProductCount -> handleRequestProductFilterProductCount(action.selectedSortFilter)
             is ProductTagAction.ApplyProductSortFilter -> handleApplyProductSortFilter(action.selectedSortFilter)
+            ProductTagAction.SwipeRefreshGlobalSearchProduct -> handleSwipeRefreshGlobalSearchProduct()
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -611,6 +612,15 @@ class ProductTagViewModel @AssistedInject constructor(
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleSwipeRefreshGlobalSearchProduct() {
+        val newParam = _globalSearchProduct.value.param.apply { resetPagination() }
         _globalSearchProduct.setValue {
             GlobalSearchProductUiModel.Empty.copy(param = newParam)
         }
