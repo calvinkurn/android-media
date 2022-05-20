@@ -152,7 +152,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
     private fun initLoading(view: View) {
         Glide.with(view)
                 .asGif()
-                .load(R.drawable.ic_loading_indeterminate)
+                .load(com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
                 .into(ivLoading)
     }
 

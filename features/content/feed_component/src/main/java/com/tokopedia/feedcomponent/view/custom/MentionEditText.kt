@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import kotlin.math.max
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by jegul on 2019-08-05.
@@ -23,7 +24,7 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
     companion object {
         @ColorInt
         fun getMentionColor(context: Context): Int {
-            return ContextCompat.getColor(context, R.color.Unify_G500)
+            return ContextCompat.getColor(context, unifyR.color.Unify_G500)
         }
     }
 

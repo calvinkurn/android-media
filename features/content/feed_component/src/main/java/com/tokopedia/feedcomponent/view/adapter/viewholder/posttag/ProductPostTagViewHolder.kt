@@ -28,6 +28,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.min
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyR
 
 private const val RAD_20f = 20f
 private const val RAD_30f = 30f
@@ -77,7 +78,7 @@ class ProductPostTagViewHolder(val mainView: View,
                 if (text.isEmpty()) text = getString(R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) R.color.Unify_N200 else com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        if (isCTADisabled) unifyR.color.Unify_N200 else unifyR.color.Unify_N0
                 ))
             }
         } else btnBuy.gone()
