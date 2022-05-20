@@ -971,7 +971,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
-            _quizDetailState.value = QuizDetailStateUiModel.Success(quizDetailUiModel)
+            _quizDetailState.value = QuizDetailStateUiModel.Success(listOf(playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel)))
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
         }
@@ -1002,6 +1002,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    fun getLeaderboardWithSlots() {
+        _quizDetailState.value = QuizDetailStateUiModel.Loading
+        viewModelScope.launchCatchError(block = {
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
+        }) {
+            _quizDetailState.value = QuizDetailStateUiModel.Error
+        }
+    }
 
     private fun handleEditPinnedMessage() {
         _pinnedMessage.setValue {
@@ -1339,7 +1348,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheet)
             }
         }) { err ->
-            _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailError(err))
+            _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheetError(err))
         }
     }
 

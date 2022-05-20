@@ -718,6 +718,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
+                    is PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
                     is PlayBroadcastEvent.CreateInteractive.Success -> {
                         analytic.onStartInteractive(
                             channelId = parentViewModel.channelId,
@@ -1031,9 +1032,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openQuizDetailSheet() {
+        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.QUIZ_DETAIL)
+    }
+
+    private fun openLeaderboardSheet() {
+        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.LEADERBOARD)
+    }
+
+    private fun openInteractiveBottomSheet(type: PlayQuizDetailBottomSheet.Type) {
         val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader)
+        playQuizDetailBottomSheet.arguments = Bundle().apply {
+            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString())
+        }
         playQuizDetailBottomSheet.show(childFragmentManager)
     }
 

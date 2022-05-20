@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.ui.leaderboard
 
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -77,6 +78,18 @@ class PlayInteractiveLeaderboardViewComponent(
         registerAdapterObserver()
         rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        rvLeaderboard.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> // Disallow NestedScrollView to intercept touch events.
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP ->   // Allow NestedScrollView to intercept touch events.
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+            }
+
+            // Handle RecyclerView touch events.
+            v.onTouchEvent(event)
+            true
+        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {

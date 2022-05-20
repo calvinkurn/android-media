@@ -92,6 +92,7 @@
 
             <include
                 layout="@layout/view_play_participant_empty"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
