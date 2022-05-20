@@ -11,6 +11,8 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -35,6 +37,9 @@ class HomeLeftCarouselViewHolder (
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
     companion object {
+        const val IMAGE_TRANSLATION_X = "image_translation_x"
+        const val IMAGE_ALPHA = "image_alpha"
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel
     }
@@ -124,6 +129,16 @@ class HomeLeftCarouselViewHolder (
         setHeightRecyclerView()
         rvProduct?.adapter = adapter
         submitList(element)
+
+        launch {
+            try {
+                val productCardModels = element.productList.filterIsInstance<HomeLeftCarouselProductCardUiModel>()
+                rvProduct?.setHeightBasedOnProductCardMaxHeight(productCardModelList = productCardModels.map { it.productCardModel })
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
     }
 
     private fun submitList(element: HomeLeftCarouselUiModel) {
@@ -158,6 +173,12 @@ class HomeLeftCarouselViewHolder (
         launch {
             val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
             tokoNowView?.saveScrollState(adapterPosition, scrollState)
+
+            val mapParallaxState = mapOf(
+                IMAGE_TRANSLATION_X to ivParallaxImage?.translationX.orZero(),
+                IMAGE_ALPHA to (ivParallaxImage?.alpha ?: 1f)
+            )
+            tokoNowView?.saveParallaxState(mapParallaxState)
         }
     }
 
@@ -165,6 +186,9 @@ class HomeLeftCarouselViewHolder (
         launch {
             val scrollState = tokoNowView?.getScrollState(adapterPosition)
             rvProduct?.layoutManager?.onRestoreInstanceState(scrollState)
+
+            ivParallaxImage?.translationX = tokoNowView?.getParallaxState()?.get(IMAGE_TRANSLATION_X).orZero()
+            ivParallaxImage?.alpha = tokoNowView?.getParallaxState()?.get(IMAGE_ALPHA) ?: 1f
         }
     }
 
@@ -191,6 +215,20 @@ class HomeLeftCarouselViewHolder (
 
     private fun setupBackgroundColor(backgroundColorArray: ArrayList<String>) {
         viewParallaxBackground?.setGradientBackground(backgroundColorArray)
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+        productCardModelList: List<ProductCardModel>) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
+        val productCardWidth = binding?.root?.context?.resources?.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth.orZero())
     }
 
     interface HomeLeftCarouselListener {
