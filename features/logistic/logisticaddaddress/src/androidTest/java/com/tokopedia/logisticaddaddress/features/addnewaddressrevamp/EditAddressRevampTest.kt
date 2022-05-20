@@ -42,6 +42,7 @@ class EditAddressRevampTest {
             addMockResponse(GET_DISTRICT_KEY, getRawString(context, R.raw.get_district_tokopedia_tower), FIND_BY_CONTAINS)
             addMockResponse(GET_ADDRESS_KEY, getRawString(context, R.raw.address_detail), FIND_BY_CONTAINS)
             addMockResponse(PINPOINT_VALIDATION_KEY, getRawString(context, R.raw.pinpoint_validation), FIND_BY_CONTAINS)
+            addMockResponse(EDIT_ADDRESS_KEY, getRawString(context, R.raw.editaddress_success_response), FIND_BY_CONTAINS)
         }
     }
 
@@ -73,6 +74,7 @@ class EditAddressRevampTest {
         const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
         const val GET_DISTRICT_KEY = "KeroPlacesGetDistrict"
         const val PINPOINT_VALIDATION_KEY = "pinpoint_validation"
+        const val EDIT_ADDRESS_KEY = "kero_edit_address"
         const val GET_ADDRESS_KEY = "kero_get_address"
     }
 }
