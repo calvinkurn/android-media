@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
     android:layout_width="320dp"
     android:layout_height="130dp">
 
@@ -9,11 +10,11 @@
         android:layout_height="match_parent">
 
         <View
-            android:id="@+id/view_green"
+            android:id="@+id/view_status"
             android:layout_width="4dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_coupon_list_item"
+            android:background="@drawable/tm_bg_coupon_status"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,11 +23,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Kupon Aktif"
             android:textColor="@color/Unify_GN500"
-            app:layout_constraintBottom_toBottomOf="@id/view_green"
-            app:layout_constraintStart_toEndOf="@id/view_green"
-            app:layout_constraintTop_toTopOf="@id/view_green"
+            app:layout_constraintBottom_toBottomOf="@id/view_status"
+            app:layout_constraintStart_toEndOf="@id/view_status"
+            app:layout_constraintTop_toTopOf="@id/view_status"
             app:typographyType="heading_6" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -34,17 +34,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:text="17 Jan 2020 - 17 Jul 2020"
             android:textColor="#31353B"
-            app:layout_constraintBottom_toBottomOf="@id/view_green"
+            app:layout_constraintBottom_toBottomOf="@id/view_status"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/view_green"
+            app:layout_constraintTop_toTopOf="@id/view_status"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_coupon"
             android:layout_width="44dp"
             android:layout_height="44dp"
+            android:src="@drawable/ic_tm_member_grey"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@id/tv_coupon_state"
             app:layout_constraintTop_toBottomOf="@id/tv_coupon_state" />
@@ -54,20 +54,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Cashback 20% hingga Rp100.000"
             android:textColor="#212121"
+            app:layout_constraintEnd_toEndOf="@id/tv_date"
             app:layout_constraintStart_toEndOf="@id/iv_coupon"
             app:layout_constraintTop_toTopOf="@id/iv_coupon"
             app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_vip"
+            android:id="@+id/tv_membership"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:background="@drawable/bg_coupon_membership"
+            android:background="@drawable/tm_bg_coupon_membership"
             android:padding="4dp"
-            android:text="VIP"
             android:textColor="#FF7F17"
             app:layout_constraintBottom_toBottomOf="@id/iv_coupon"
             app:layout_constraintStart_toStartOf="@id/tv_coupon_title"
@@ -83,7 +82,7 @@
             android:layout_marginBottom="16dp"
             android:text="Kuota:"
             android:textColor="#6D7588"
-            app:layout_constraintStart_toStartOf="@id/tv_vip"
+            app:layout_constraintStart_toStartOf="@id/tv_membership"
             app:layout_constraintTop_toBottomOf="@id/iv_coupon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="small" />
@@ -93,7 +92,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="90/100"
             android:textColor="#212121"
             app:layout_constraintBottom_toBottomOf="@+id/tv_quota_static"
             app:layout_constraintStart_toEndOf="@+id/tv_quota_static"

@@ -26,6 +26,16 @@ const val ACTIVE_OLDER = 4
 const val ENDED = 5
 const val CANCELED = 6
 
+const val COUPON_DELETED = -1
+const val COUPON_PROCESSING = 0
+const val COUPON_NOT_STARTED = 1
+const val COUPON_ON_GOING = 2
+const val COUPON_ENDED = 3
+const val COUPON_STOPPED = 4
+
+const val COUPON_MEMBER = 1
+const val COUPON_VIP = 2
+
 const val LOADED: Int = 1
 const val REFRESH: Int = 0
 

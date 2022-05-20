@@ -1,0 +1,97 @@
+package com.tokopedia.tokomember_seller_dashboard.view.viewholder
+
+import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_NOT_STARTED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ON_GOING
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
+
+class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
+
+    private lateinit var tvCouponState: Typography
+    lateinit var tvDate: Typography
+    lateinit var tvCouponTitle: Typography
+    lateinit var tvMembership: Typography
+    lateinit var tvQuota: Typography
+    lateinit var viewStatus: View
+    lateinit var optionMenu: IconUnify
+    lateinit var ivCoupon: ImageUnify
+
+    @SuppressLint("ResourcePackage")
+    fun bind(item: VouchersItem, programActions: ProgramActions) {
+
+        viewStatus = itemView.findViewById(R.id.view_status)
+        tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
+        tvDate = itemView.findViewById(R.id.tv_date)
+        tvCouponTitle = itemView.findViewById(R.id.tv_coupon_title)
+        tvMembership = itemView.findViewById(R.id.tv_membership)
+        tvQuota = itemView.findViewById(R.id.tv_quota)
+        optionMenu = itemView.findViewById(R.id.icon_options)
+        ivCoupon = itemView.findViewById(R.id.iv_coupon)
+
+        tvDate.text = "${item.voucherStartTime?.let { ProgramUpdateMapper.setDate(it) }} - ${item.voucherFinishTime?.let { ProgramUpdateMapper.setDate(it) }}"
+        tvCouponTitle.text = item.voucherName
+        when(item.minimumTierLevel){
+            COUPON_VIP ->{
+                tvMembership.text = "VIP"
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN500)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN100))
+            }
+            COUPON_MEMBER ->{
+                tvMembership.text = "Premium"
+                tvMembership.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN600)))
+                tvMembership.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN100))
+            }
+        }
+        tvQuota.text = "${item.voucherQuota}/${item.remainingQuota}"
+        itemView.setOnClickListener {
+
+        }
+
+        when(item.voucherStatus){
+            COUPON_DELETED ->{
+            }
+            COUPON_PROCESSING ->{
+            }
+            COUPON_NOT_STARTED ->{
+//                optionMenu.setOnClickListener {
+//                    item.voucherId?.toInt()?.let { it1 ->
+//                        TokomemberOptionsMenuBottomsheet.show(Gson().toJson(item.actions), shopId,
+//                            it1, fragmentManager, programActions)
+//                    }
+//                }
+                tvCouponState.text = "Belum Aktif"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+            }
+            COUPON_ON_GOING ->{
+                ivCoupon.loadImage(R.drawable.ic_tm_member_golden)
+                tvCouponState.text = "Kupon Aktif"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+            }
+            COUPON_ENDED or COUPON_STOPPED ->{
+                tvCouponState.text = "Berakhir"
+                tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
+                viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+            }
+        }
+    }
+}
