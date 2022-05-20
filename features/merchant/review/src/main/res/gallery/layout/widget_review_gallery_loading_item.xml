@@ -9,13 +9,15 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_12">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/review_gallery_image_shimmering"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:custom_color="@color/Unify_N50"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/review_gallery_image_load_error"
@@ -44,18 +46,17 @@
             app:layout_constraintTop_toBottomOf="@id/review_loading_item_barrier"
             app:srcCompat="@drawable/review_ic_rating_star_zero" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/review_gallery_product_variant_name"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl6"
-            android:textColor="@color/Unify_N700_68"
-            app:custom_color="@color/Unify_N50"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/review_gallery_rating_shimmering"
-            app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_shimmering"
-            app:typographyType="body_3" />
+            app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_shimmering" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

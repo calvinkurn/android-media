@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ec_grid_layout1" />
 
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/Unify_N75"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/ec_grid_layout2" />
 
     <include
@@ -41,12 +41,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ec_divider1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/Unify_N75"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion2" />
 
     <include
@@ -56,12 +57,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ec_divider2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider3"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/Unify_N75"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion3" />
 
     <include
@@ -71,12 +73,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ec_divider3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider4"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/Unify_N75"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion4" />
 
     <include
@@ -86,12 +89,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ec_divider4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_divider5"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/Unify_N75"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion5" />
 
     <include
