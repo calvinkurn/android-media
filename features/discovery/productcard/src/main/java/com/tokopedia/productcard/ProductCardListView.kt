@@ -22,6 +22,9 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -115,6 +118,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val spaceCampaignBestSeller: Space? by lazy(NONE) {
         findViewById(R.id.spaceCampaignBestSeller)
     }
+    private val remoteConfig : RemoteConfig by lazy(NONE) {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     constructor(context: Context): super(context) {
         init()
@@ -186,7 +192,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
+        interactionRemoteConfigCondition(
+            remoteConfigInteractionEnabled = {
+                cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
+            },
+            remoteConfigInteractionDisabled = {
+                cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+            }
+        )
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -322,5 +335,17 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         super.setOnLongClickListener(l)
+    }
+
+    private fun interactionRemoteConfigCondition(
+        remoteConfigInteractionEnabled: () -> Unit,
+        remoteConfigInteractionDisabled: () -> Unit
+    ) {
+        val enableInteraction = remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
+        if (enableInteraction) {
+            remoteConfigInteractionEnabled.invoke()
+        } else {
+            remoteConfigInteractionDisabled.invoke()
+        }
     }
 }
