@@ -55,7 +55,7 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
             }
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(setParams(1,5).parameters)
+        graphqlUseCase.setRequestParams(setParams().parameters)
         graphqlUseCase.setTypeClass(FavoriteShopData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
@@ -75,7 +75,10 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
         return favoriteShopList
     }
 
-    private fun setParams(page: Int = 1, itemsPerPage: Int = 5) = RequestParams.create().apply {
+    private fun setParams(
+        page: Int = PARAM_PAGE_VALUE,
+        itemsPerPage: Int = PARAM_ITEMS_PER_PAGE_VALUE
+    ) = RequestParams.create().apply {
         parameters.clear()
         putInt(PARAM_PAGE, page)
         putInt(PARAM_ITEMS_PER_PAGE, itemsPerPage)
@@ -85,5 +88,7 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
     companion object{
         private const val PARAM_PAGE = "page"
         private const val PARAM_ITEMS_PER_PAGE = "per_page"
+        private const val PARAM_PAGE_VALUE = 1
+        private const val PARAM_ITEMS_PER_PAGE_VALUE = 5
     }
 }

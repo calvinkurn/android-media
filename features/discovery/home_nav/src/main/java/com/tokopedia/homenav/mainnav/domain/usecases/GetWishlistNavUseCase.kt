@@ -128,7 +128,10 @@ class GetWishlistNavUseCase @Inject constructor (
         return this.joinToString(separator = " / ") { it.name.orEmpty() }
     }
 
-    private fun setParams(page: Int = 1, limit: Int = 5) = RequestParams.create().apply {
+    private fun setParams(
+        page: Int = PARAM_PAGE_VALUE,
+        limit: Int = PARAM_LIMIT_VALUE
+    ) = RequestParams.create().apply {
         parameters.clear()
 
         putInt(PARAM_PAGE, page)
@@ -138,5 +141,7 @@ class GetWishlistNavUseCase @Inject constructor (
     companion object{
         private const val PARAM_PAGE = "page"
         private const val PARAM_LIMIT = "limit"
+        private const val PARAM_PAGE_VALUE = 1
+        private const val PARAM_LIMIT_VALUE = 5
     }
 }
