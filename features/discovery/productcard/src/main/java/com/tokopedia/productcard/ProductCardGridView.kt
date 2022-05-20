@@ -267,4 +267,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         super.setOnClickListener(l)
         cardViewProductCard?.setOnClickListener(l)
     }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(l)
+        cardViewProductCard?.setOnLongClickListener(l)
+    }
 }

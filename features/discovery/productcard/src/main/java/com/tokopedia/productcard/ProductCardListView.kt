@@ -291,6 +291,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cardViewProductCard?.setOnClickListener(l)
     }
 
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(l)
+        cardViewProductCard?.setOnLongClickListener(l)
+    }
+
     /**
      * Special cases for specific pages
      * */
