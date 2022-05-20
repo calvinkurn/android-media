@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.BottomSheetSortBinding
 import com.tokopedia.createpost.producttag.view.adapter.SortAdapter
+import com.tokopedia.createpost.producttag.view.decoration.SortItemDecoration
 import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
@@ -67,6 +68,7 @@ class SortBottomSheet @Inject constructor() : BottomSheetUnify() {
         }
 
         binding.rvSortProduct.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSortProduct.addItemDecoration(SortItemDecoration(requireContext()))
         binding.rvSortProduct.adapter = adapter
 
         adapter.setItemsAndAnimateChanges(mSortList)

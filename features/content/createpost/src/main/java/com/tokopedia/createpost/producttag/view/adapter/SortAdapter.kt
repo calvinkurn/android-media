@@ -49,8 +49,8 @@ internal class SortAdapter(
         }
     }
 
-    private class ViewHolder(
-        private val binding: ItemSortListBinding,
+    class ViewHolder(
+        internal val binding: ItemSortListBinding,
         private val onSelected: (SortUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
