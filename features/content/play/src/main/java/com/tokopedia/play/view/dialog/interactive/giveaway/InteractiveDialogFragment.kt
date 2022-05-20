@@ -53,7 +53,7 @@ class InteractiveDialogFragment @Inject constructor(
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowImpressed(view: InteractiveFollowView) {
-            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveId = viewModel.interactiveData.id)
+            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveType = viewModel.interactiveData)
         }
 
         override fun onFollowClicked(view: InteractiveFollowView) {

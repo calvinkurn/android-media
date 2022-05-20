@@ -4,8 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
@@ -29,17 +28,11 @@ class InteractiveFollowView : ConstraintLayout {
 
     private var mListener: Listener? = null
 
-    private val trackingField = ImpressHolder()
-
     init {
         binding.btnFollow.setOnClickListener {
             mListener?.onFollowClicked(this)
         }
         binding.headerView.isEditable = false
-
-        binding.btnFollow.addOnImpressionListener(trackingField) {
-            mListener?.onFollowImpressed(this)
-        }
     }
 
     fun getHeader(): GameHeaderView {
@@ -65,6 +58,8 @@ class InteractiveFollowView : ConstraintLayout {
 
     fun setListener(listener: Listener?) {
         mListener = listener
+
+        if(binding.btnFollow.isVisible) mListener?.onFollowImpressed(this)
     }
 
     override fun onDetachedFromWindow() {

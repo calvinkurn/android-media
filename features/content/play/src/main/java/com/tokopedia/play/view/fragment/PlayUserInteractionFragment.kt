@@ -1457,8 +1457,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveFinishView?.hide()
                 }
             }
-            if(interactiveActiveView?.isShown() == false)
-                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
         }
     }
 
@@ -1513,6 +1511,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
+                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id)
             }
             InteractiveUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
@@ -1550,6 +1549,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) {
             interactiveResultView?.show()
+            if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
             analytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
         }
         else interactiveResultView?.hide()

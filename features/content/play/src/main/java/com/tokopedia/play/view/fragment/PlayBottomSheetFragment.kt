@@ -53,6 +53,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -243,6 +244,13 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
         analytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+    }
+
+    override fun onLeaderBoardImpressed(
+        view: PlayInteractiveLeaderboardViewComponent,
+        leaderboard: PlayLeaderboardUiModel
+    ) {
+        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
     }
 
     /**
