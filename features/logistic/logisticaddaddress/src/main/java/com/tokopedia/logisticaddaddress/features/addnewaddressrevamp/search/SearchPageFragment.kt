@@ -168,7 +168,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 bottomSheetLocUndefined?.dismiss()
                 if (allPermissionsGranted()) {
                     binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-                    Handler().postDelayed({ getLocation() }, 1000)
+                    Handler().postDelayed({ getLocation() }, GPS_DELAY)
                 }
             }
         } else {
@@ -399,7 +399,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val mLocationSettingsRequest = builder.build()
         builder.setAlwaysShow(true)
@@ -574,6 +574,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         private const val REQUEST_CODE_PERMISSION = 9876
 
         private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+        private const val GPS_DELAY = 1000L
         private const val DEFAULT_LONG = 0.0
         private const val DEFAULT_LAT = 0.0
 

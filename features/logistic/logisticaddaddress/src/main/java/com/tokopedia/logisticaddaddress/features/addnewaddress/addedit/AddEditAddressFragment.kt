@@ -80,7 +80,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
-    private val MINIMUM_CHARACTER = 9
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
@@ -535,7 +534,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             field += "no ponsel"
         }
 
-        if (et_phone?.text?.length ?: 0 < MINIMUM_CHARACTER) {
+        if (et_phone?.text?.length ?: 0 < MIN_CHAR_DEFAULT) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "

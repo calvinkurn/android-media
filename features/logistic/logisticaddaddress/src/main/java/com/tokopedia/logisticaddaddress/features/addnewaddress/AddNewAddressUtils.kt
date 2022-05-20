@@ -15,8 +15,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
@@ -35,6 +36,7 @@ object AddNewAddressUtils {
     private const val MAX_LINES = 5
     private const val LOCATION_REQUEST_INTERVAL = 10000L
     private const val COORDINATE_THRESHOLD = 0.00001
+    private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -100,7 +102,7 @@ object AddNewAddressUtils {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         return locationRequest
     }
 

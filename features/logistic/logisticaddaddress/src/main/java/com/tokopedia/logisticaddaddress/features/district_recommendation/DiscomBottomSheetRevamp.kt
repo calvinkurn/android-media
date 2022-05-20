@@ -585,8 +585,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 10 * 1000
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val mLocationSettingsRequest = builder.build()
         builder.setAlwaysShow(true)
@@ -644,6 +644,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
         private const val MIN_TEXT_LENGTH = 4
         private const val DELAY_MILIS: Long = 200
+        private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
 
     }
 }

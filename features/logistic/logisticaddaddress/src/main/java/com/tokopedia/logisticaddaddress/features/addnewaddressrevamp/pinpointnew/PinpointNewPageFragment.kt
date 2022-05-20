@@ -205,7 +205,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 bottomSheetLocUndefined?.dismiss()
                 if (allPermissionsGranted()) {
                     showLoading()
-                    Handler().postDelayed({ getLocation() }, 1000)
+                    Handler().postDelayed({ getLocation() }, GPS_DELAY)
                 }
             }
         }
@@ -707,7 +707,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
-        locationRequest.fastestInterval = 2 * 1000
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val mLocationSettingsRequest = builder.build()
         builder.setAlwaysShow(true)
@@ -975,6 +975,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         private const val ZOOM_LEVEL = 16f
         private const val MAP_BOUNDARY_STROKE_WIDTH = 3F
         private const val LOCATION_REQUEST_INTERVAL = 10000L
+        private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
+        private const val GPS_DELAY = 1000L
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
