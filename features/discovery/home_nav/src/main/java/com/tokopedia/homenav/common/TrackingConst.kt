@@ -10,5 +10,5 @@ object TrackingConst {
     const val DEFAULT_EMPTY = ""
     const val DEFAULT_BANNER = 0
 
-    const val DEFAULT_PAGE_SOURCE = "pageSource:home side nav;"
+    const val DEFAULT_PAGE_SOURCE = "pageSource:global menu;"
 }
