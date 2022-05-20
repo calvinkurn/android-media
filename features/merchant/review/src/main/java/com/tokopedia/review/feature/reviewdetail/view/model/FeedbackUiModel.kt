@@ -26,19 +26,7 @@ data class FeedbackUiModel(
     var badRatingReason: String = "",
     var badRatingDisclaimer: String = ""
 ) : BaseSellerReviewDetail, Parcelable {
-
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
-    @Parcelize
-    data class ImageAttachment(
-        var thumbnailURL: String? = "",
-        var fullSizeURL: String? = ""
-    ) : Parcelable
-
-    @Parcelize
-    data class VideoAttachment(
-        var videoUrl: String? = ""
-    ) : Parcelable
 }
