@@ -37,9 +37,10 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
 
     lateinit var viewModel : ChatbotViewModel
 
-    val URL_HELP = getInstance().WEB + "help?utm_source=android"
+    private val URL_HELP = getInstance().WEB + "help?utm_source=android"
+    private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare2"
 
-    val bottomSheetPage = BottomSheetUnify()
+    private val bottomSheetPage = BottomSheetUnify()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +62,8 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
         })
     }
 
-    //Check onDetach whether to close the connection to viewModel
-
     private fun handleGQLError(throwable: Throwable) {
-
+        goToContactUs()
     }
 
     private fun handleSuccess(data: InboxTicketListResponse) {
@@ -78,7 +77,7 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
             showBottomSheet(title,subtitle,content,contentList)
         }
         else{
-
+            goToContactUs()
         }
     }
 
@@ -109,9 +108,17 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
             setChild(viewBottomSheetPage)
             showKnob = false
         }
+        bottomSheetPage.setCloseClickListener {
+            goToContactUs()
+        }
         supportFragmentManager?.let {
             bottomSheetPage.show(it, "TAG")
         }
+    }
+
+    private fun goToContactUs() {
+        RouteManager.route(this, CONTACT_US_APPLINK)
+        finish()
     }
 
     private fun goToHelpPage() {
