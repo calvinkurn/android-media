@@ -87,7 +87,7 @@ class ProductTagViewModel @AssistedInject constructor(
         get() = _shopProduct.value.shop
 
     val myShopSortList: List<SortUiModel>
-        get() = _myShopProduct.value.sorts.map {
+        get() = _myShopSort.value.map {
             it.copy(isSelected = _myShopProduct.value.param.isParamFound(it.key, it.value))
         }
 
@@ -101,6 +101,8 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
     private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
     private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
+
+    private val _myShopSort = MutableStateFlow<List<SortUiModel>>(emptyList())
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -130,12 +132,15 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
-    private val _myShopProductUiState = _myShopProduct.map {
+
+    private val _myShopProductUiState = combine(
+        _myShopProduct, _myShopSort,
+    ) { myShopProduct, myShopSort ->
         MyShopProductUiState(
-            products = it.products,
-            sorts = it.sorts,
-            state = it.state,
-            param = it.param,
+            products = myShopProduct.products,
+            sorts = myShopSort,
+            state = myShopProduct.state,
+            param = myShopProduct.param,
         )
     }
 
@@ -428,23 +433,23 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleSearchMyShopProduct(query: String) {
         if(_myShopProduct.value.param.query == query) return
 
-        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
-                param = initParam(query)
-            )
+        val newParam = _myShopProduct.value.param.apply {
+            resetPagination()
+            this.query = query
         }
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam ) }
+
         handleLoadMyShopProduct()
     }
 
     private fun handleOpenMyShopSortBottomSheet() {
         viewModelScope.launchCatchError(block = {
-            val currState = _myShopProduct.value
+            if(_myShopSort.value.isEmpty()) {
+                val query = _myShopProduct.value.param.query
+                val param = initParam(query).apply {
+                    source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
+                }
 
-            val query = currState.param.query
-            val param = initParam(query).apply {
-                source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
-            }
-
-            if(currState.sorts.isEmpty()) {
                 repo.getSortFilter(param).data.sort
                     .map { item ->
                         SortUiModel(
@@ -453,9 +458,7 @@ class ProductTagViewModel @AssistedInject constructor(
                             value = item.value,
                             isSelected = false,
                         )
-                    }.also {
-                        _myShopProduct.setValue { copy(sorts = it) }
-                    }
+                    }.also { _myShopSort.setValue { it } }
             }
 
             _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet)
@@ -475,7 +478,7 @@ class ProductTagViewModel @AssistedInject constructor(
             addParam(selectedSort.key, selectedSort.value)
         }
 
-        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam, sorts = sorts) }
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam) }
 
         handleLoadMyShopProduct()
     }

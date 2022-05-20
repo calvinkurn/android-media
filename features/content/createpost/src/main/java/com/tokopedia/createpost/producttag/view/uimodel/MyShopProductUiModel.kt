@@ -5,7 +5,6 @@ package com.tokopedia.createpost.producttag.view.uimodel
  */
 data class MyShopProductUiModel(
     val products: List<ProductUiModel>,
-    val sorts: List<SortUiModel>,
     val state: PagedState,
     val param: SearchParamUiModel,
 ) {
@@ -14,9 +13,8 @@ data class MyShopProductUiModel(
         val Empty: MyShopProductUiModel
             get() = MyShopProductUiModel(
                 products = emptyList(),
-                sorts = emptyList(),
                 state = PagedState.Unknown,
-                param = SearchParamUiModel.Empty
+                param = SearchParamUiModel.Empty,
             )
     }
 }
