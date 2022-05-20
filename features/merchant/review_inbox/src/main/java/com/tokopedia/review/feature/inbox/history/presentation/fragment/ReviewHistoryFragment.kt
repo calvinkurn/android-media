@@ -278,7 +278,7 @@ class ReviewHistoryFragment :
                 shopID = "",
                 isProductReview = true,
                 isFromGallery = false,
-                mediaPosition = position + 1,
+                mediaPosition = position.inc(),
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
                     reviewMediaThumbnailUiModel

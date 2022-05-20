@@ -562,7 +562,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 shopID = viewModel.getShopId(),
                 isProductReview = true,
                 isFromGallery = false,
-                mediaPosition = position + 1,
+                mediaPosition = position.inc(),
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
                     reviewMediaThumbnailUiModel

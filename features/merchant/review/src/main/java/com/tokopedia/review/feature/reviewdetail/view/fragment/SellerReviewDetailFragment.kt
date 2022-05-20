@@ -734,7 +734,7 @@ class SellerReviewDetailFragment :
                 shopID = "",
                 isProductReview = true,
                 isFromGallery = false,
-                mediaPosition = position + 1,
+                mediaPosition = position.inc(),
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = mapReviewMediaData(reviewMediaThumbnailUiModel)
             ).run { startActivity(this) }

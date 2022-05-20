@@ -1193,7 +1193,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
                 isProductReview = true,
                 isFromGallery = false,
-                mediaPosition = position + 1,
+                mediaPosition = position.inc(),
                 showSeeMore = detailedMediaResult.hasNext,
                 preloadedDetailedReviewMediaResult = detailedMediaResult
             ).let { startActivity(it) }

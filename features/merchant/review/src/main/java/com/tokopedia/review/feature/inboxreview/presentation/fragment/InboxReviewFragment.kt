@@ -300,7 +300,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 shopID = "",
                 isProductReview = true,
                 isFromGallery = false,
-                mediaPosition = position + 1,
+                mediaPosition = position.inc(),
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = preloadedReviewMediaData
             ).run { startActivity(this) }
