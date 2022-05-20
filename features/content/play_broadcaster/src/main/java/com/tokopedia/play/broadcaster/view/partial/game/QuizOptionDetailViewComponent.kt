@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial.game
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,6 +18,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.leaderboard.adapter.PlayBroadcastGameParticipantAdapter
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -46,7 +48,8 @@ class QuizOptionDetailViewComponent(
     private val emptyParticipantView: ConstraintLayout = findViewById(R.id.cl_participant_empty)
     private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
     private val ivSheetBack: ImageView = findViewById(R.id.iv_sheet_back)
-
+    private val placeholder: View = findViewById(R.id.participant_placeholder)
+    private val tvEmptyParticipant: TextView = findViewById(R.id.tv_participant_empty_message)
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
@@ -70,25 +73,43 @@ class QuizOptionDetailViewComponent(
         rvParticipant.adapter = participantAdapter
         rvParticipant.layoutManager = GridLayoutManager(container.context, 2)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
     }
 
-    fun setData(choiceDetail: QuizChoiceDetailUiModel) {
+    fun setData(choiceDetail: QuizChoiceDetailUiModel, ongoing: Boolean) {
         errorView.hide()
+        placeholder.hide()
         choiceAdapter.setItemsAndAnimateChanges(listOf(choiceDetail.choice))
         winnerAdapter.setItemsAndAnimateChanges(choiceDetail.winners)
         participantAdapter.setItemsAndAnimateChanges(choiceDetail.participants)
+        rvChoice.show()
+        rvWinner.show()
+        rvParticipant.show()
         emptyParticipantView.showWithCondition(choiceDetail.participants.isEmpty())
+        if (ongoing)
+            tvEmptyParticipant.text = getString(R.string.play_bro_ongoing_bottomsheet_empty_participant_message)
+        else {
+            if ((choiceDetail.choice.type as PlayQuizOptionState.Participant).isCorrect)
+                tvEmptyParticipant.text = getString(R.string.play_bro_finished_bottomsheet_option_right_empty)
+            else
+                tvEmptyParticipant.text = getString(R.string.play_bro_finished_bottomsheet_option_empty)
+        }
     }
 
     fun setError() {
+        placeholder.hide()
         errorView.show()
         rvWinner.hide()
+        rvChoice.hide()
+        rvParticipant.hide()
     }
 
     fun setLoading() {
+        placeholder.show()
         errorView.hide()
         rvWinner.hide()
+        rvChoice.hide()
+        rvParticipant.hide()
+        emptyParticipantView.hide()
     }
 
     fun setTitle(title: String) {

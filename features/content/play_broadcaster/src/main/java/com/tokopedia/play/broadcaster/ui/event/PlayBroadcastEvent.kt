@@ -18,7 +18,10 @@ sealed interface PlayBroadcastEvent {
     ) : PlayBroadcastEvent
 
     object ShowQuizDetailBottomSheet : PlayBroadcastEvent
-    data class ShowQuizDetailError(val error: Throwable) : PlayBroadcastEvent
+    data class ShowQuizDetailBottomSheetError(val error: Throwable) : PlayBroadcastEvent
+
+    object ShowLeaderboardBottomSheet : PlayBroadcastEvent
+    data class ShowLeaderboardBottomSheetError(val error: Throwable) : PlayBroadcastEvent
 
     sealed interface CreateInteractive : PlayBroadcastEvent {
         data class Success(val durationInMs: Long) : CreateInteractive

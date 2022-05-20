@@ -158,7 +158,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_reward"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_empty"
         tools:itemCount="2"
         tools:listitem="@layout/item_quiz_choice"
         tools:visibility="visible" />

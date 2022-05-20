@@ -291,4 +291,8 @@
     <!-- Ongoing bottomsheet -->
     <string name="play_bro_ongoing_bottomsheet_title">Respon quiz</string>
     <string name="play_bro_ongoing_bottomsheet_empty_participant_message">Belum ada respon. Ajak penonton untuk ikut quiz, yuk</string>
+
+    <!-- leaderboard bottomsheet -->
+    <string name="play_bro_finished_bottomsheet_option_right_empty">Gak ada yang pilih jawaban ini</string>
+    <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
 </resources>

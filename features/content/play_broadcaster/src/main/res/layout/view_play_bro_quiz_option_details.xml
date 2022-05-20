@@ -92,6 +92,7 @@
 
             <include
                 layout="@layout/view_play_participant_empty"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -106,5 +107,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_header"
         />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_header"
+        android:id="@+id/participant_placeholder"
+        layout="@layout/view_play_participant_placeholder"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

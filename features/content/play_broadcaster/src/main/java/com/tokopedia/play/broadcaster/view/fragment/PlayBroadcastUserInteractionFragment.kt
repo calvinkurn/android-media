@@ -61,6 +61,7 @@ import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialo
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -126,10 +127,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
         override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-            parentViewModel.submitAction(PlayBroadcastAction.OngoingWidgetClicked)
+            parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
         }
     }) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
+
+    private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
+        override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+            parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
+        }
+    }) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val productTagView by viewComponent {
@@ -718,6 +725,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
+                    is PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
                     is PlayBroadcastEvent.CreateInteractive.Success -> {
                         analytic.onStartInteractive(
                             channelId = parentViewModel.channelId,
@@ -876,6 +884,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
+                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -902,6 +911,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
+                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -1031,9 +1041,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openQuizDetailSheet() {
+        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.QUIZ_DETAIL)
+    }
+
+    private fun openLeaderboardSheet() {
+        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.LEADERBOARD)
+    }
+
+    private fun openInteractiveBottomSheet(type: PlayQuizDetailBottomSheet.Type) {
         val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader)
+        playQuizDetailBottomSheet.arguments = Bundle().apply {
+            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString().lowercase())
+        }
         playQuizDetailBottomSheet.show(childFragmentManager)
     }
 
