@@ -52,16 +52,24 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
 
     private fun setupImage(couponItem: MyCoupon?){
         try {
+            val layoutParams: ViewGroup.LayoutParams = myCouponImage.layoutParams
             if(myCouponItemViewModel.getCouponListSize() == 1){
                 defaultDesign = DESIGN_1
+                layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
+                        / defaultDesign).toInt()
+                val aspectRatio = 3 / 1
+                layoutParams.height = (layoutParams.width / aspectRatio)
+                myCouponImage.layoutParams = layoutParams
+                myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
             }
-            val layoutParams: ViewGroup.LayoutParams = myCouponImage.layoutParams
-            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
-                    / defaultDesign).toInt()
+            else{
+                layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
+                        / defaultDesign).toInt()
                 val aspectRatio = 2 / 1
                 layoutParams.height = (layoutParams.width / aspectRatio)
-            myCouponImage.layoutParams = layoutParams
-            myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
+                myCouponImage.layoutParams = layoutParams
+                myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
+            }
         } catch (exception: NumberFormatException) {
             exception.printStackTrace()
         }
