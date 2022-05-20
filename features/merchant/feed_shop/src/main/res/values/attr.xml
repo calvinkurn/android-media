@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShopPageLabelView">
+        <attr name="shop_lv_image" format="reference" />
+        <attr name="shop_lv_image_width" format="dimension" />
+        <attr name="shop_lv_image_height" format="dimension" />
+        <attr name="shop_lv_image_margin_right" format="dimension" />
+        <attr name="shop_lv_title" format="string" />
+        <attr name="shop_lv_badge" format="string" />
+        <attr name="shop_lv_title_text_size" format="dimension" />
+        <attr name="shop_lv_title_color" format="color" />
+        <attr name="shop_lv_title_min_width" format="dimension" />
+        <attr name="shop_lv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="shop_lv_sub_title" format="string" />
+        <attr name="shop_lv_sub_title_text_size" format="dimension" />
+        <attr name="shop_lv_sub_title_color" format="color" />
+        <attr name="shop_lv_content" format="string" />
+        <attr name="shop_lv_content_color" format="color" />
+        <attr name="shop_lv_content_text_size" format="dimension" />
+        <attr name="shop_lv_content_max_lines" format="integer" />
+        <attr name="shop_lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <!-- value from 0 to 1 -->
+        <attr name="shop_lv_content_max_width_percentage" format="float" />
+        <attr name="shop_lv_show_arrow" format="boolean"/>
+    </declare-styleable>
+</resources>
