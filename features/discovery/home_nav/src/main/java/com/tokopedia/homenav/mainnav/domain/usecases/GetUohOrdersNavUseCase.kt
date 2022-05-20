@@ -15,6 +15,13 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetUohOrdersNavUseCase (
         private val graphqlUseCase: GraphqlUseCase<UohData>
 ): UseCase<List<NavProductOrder>>(){
+
+    private var isMePageUsingRollenceVariant = false
+
+    fun setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant: Boolean) {
+        this.isMePageUsingRollenceVariant = isMePageUsingRollenceVariant
+    }
+
     init {
         val query = """
             query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
@@ -23,6 +30,7 @@ class GetUohOrdersNavUseCase (
                           orderUUID
                           status
                           metadata {
+                            ${if (isMePageUsingRollenceVariant) "queryParams" else ""}
                             detailURL {
                               appURL
                             }
@@ -64,6 +72,11 @@ class GetUohOrdersNavUseCase (
                 if (it.metadata?.products?.isNotEmpty() == true) {
                     val product = it.metadata.products[0]
                     val additionalProductCount = it.metadata.products.size-1
+                    val estimatedArrival = it.metadata.queryParams?.substringAfter(
+                        SUBSTRING_AFTER_ESTIMATED_ARRIVAL
+                    )?.substringBefore(
+                        SUBSTRING_BEFORE_ESTIMATED_ARRIVAL
+                    ) ?: ""
                     navProductList.add(NavProductOrder(
                             statusText = it.metadata.status?.label?:"",
                             statusTextColor = it.metadata.status?.textColor?:"",
@@ -71,7 +84,8 @@ class GetUohOrdersNavUseCase (
                             additionalProductCount = additionalProductCount,
                             imageUrl = product.imageURL?:"",
                             id = it.orderUUID?:"",
-                            applink = it.metadata.detailURL?.appURL?:""
+                            applink = it.metadata.detailURL?.appURL?:"",
+                            estimatedArrival = estimatedArrival
                     ))
                 }
             }
@@ -88,5 +102,7 @@ class GetUohOrdersNavUseCase (
     companion object{
         private const val PARAM_INPUT = "input"
         private const val VERTICAL_CATEGORY = "marketplace,tokonow,mp_pym,mp_pym_tokonow"
+        private const val SUBSTRING_AFTER_ESTIMATED_ARRIVAL = "estimated_arrival_text\":\""
+        private const val SUBSTRING_BEFORE_ESTIMATED_ARRIVAL = "\""
     }
 }

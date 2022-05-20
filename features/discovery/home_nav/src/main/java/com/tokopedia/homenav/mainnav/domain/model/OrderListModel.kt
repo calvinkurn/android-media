@@ -15,7 +15,8 @@ data class NavProductOrder(
         val descriptionTextColor: String = "",
         val imageUrl: String = "",
         val additionalProductCount: Int = 0,
-        val applink: String = ""
+        val applink: String = "",
+        val estimatedArrival: String = ""
 )
 
 data class NavPaymentOrder(
