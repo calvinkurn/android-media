@@ -83,7 +83,8 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
-                setValueOrDefault(data.cartId)
+//                setValueOrDefault(data.cartId)
+                ""
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_BRAND,
@@ -95,18 +96,20 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
+//                setValueOrDefault(data.productId.toString())
                 ""
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
+//                setValueOrDefault(product.name)
                 ""
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_VARIANT,
                 ""
             )
-            putDouble(AddToCartExternalAnalytics.EE_PARAM_PRICE, "")
-            putInt(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, "")
+            putString(AddToCartExternalAnalytics.EE_PARAM_PRICE, "")
+            putString(AddToCartExternalAnalytics.EE_PARAM_QUANTITY, "")
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_SHOP_ID,
                 ""
