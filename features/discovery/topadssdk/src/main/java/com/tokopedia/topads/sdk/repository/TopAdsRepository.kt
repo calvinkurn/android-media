@@ -16,7 +16,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
-const val KEY_IRIS_SESSION_ID = "iris_session_id"
+private const val KEY_IRIS_SESSION_ID = "iris_session_id"
 private const val DISPLAY_BANNER_PARAMS = "displayBannnerParams"
 private const val TOP_ADS_BANNER_QUERY =
     """query topadsDisplayBannerAdsV3(${'$'}displayBannnerParams: String) {
