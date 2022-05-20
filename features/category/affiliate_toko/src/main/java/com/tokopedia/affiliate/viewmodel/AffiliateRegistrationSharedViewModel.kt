@@ -49,6 +49,9 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
     }
 
     private fun onGetResult(response: AffiliateValidateUserData) {
+        if(response.validateAffiliateUserStatus.data?.isSystemDown == true){
+            userLoginPageLiveData.value = UserAction.SystemDown
+        }
         if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == false){
             userLoginPageLiveData.value = UserAction.SignUpAction
         }
@@ -109,5 +112,6 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
         object NaigateToPortFolio : UserAction()
         object NaigateToTermsAndFragment : UserAction()
         object RegistrationSucces : UserAction()
+        object SystemDown : UserAction()
     }
 }

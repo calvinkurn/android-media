@@ -26,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -210,6 +211,12 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.SignUpAction -> {
                     setSignupData()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.SystemDown -> {
+                    hideAllView()
+                    view?.findViewById<TouchViewPager>(R.id.affiliate_login_view_pager)?.hide()
+                    view?.findViewById<PageControl>(R.id.affiliate_login_page_control)?.hide()
+                    view?.findViewById<GlobalError>(R.id.login_error)?.show()
                 }
                 else -> {}
             }
