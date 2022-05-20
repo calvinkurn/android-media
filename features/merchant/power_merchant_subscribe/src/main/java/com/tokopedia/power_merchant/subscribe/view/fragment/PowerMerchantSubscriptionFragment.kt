@@ -203,6 +203,8 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun showServiceFeeByCategory() {
+        if (childFragmentManager.isStateSaved) return
+
         val bottomSheet = PMFeeServiceBottomSheet.createInstance()
         bottomSheet.show(childFragmentManager)
     }
@@ -622,10 +624,12 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         if (!isAutoExtendEnabled) {
-            widgets.add(WidgetCancelDeactivationSubmissionUiModel(
-                getExpiredTimeFmt(),
-                deactivatedStatusName
-            ))
+            widgets.add(
+                WidgetCancelDeactivationSubmissionUiModel(
+                    getExpiredTimeFmt(),
+                    deactivatedStatusName
+                )
+            )
         }
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)

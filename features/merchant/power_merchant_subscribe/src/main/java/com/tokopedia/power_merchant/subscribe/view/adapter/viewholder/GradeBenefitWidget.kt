@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -98,7 +99,7 @@ class GradeBenefitWidget(
                         }
                     }
 
-                    powerMerchantTracking.sendEventClickTabPowerMerchantPro(element.shopScore.toString())
+                    sendTrackerOnTabSelected(element.benefitPages, tabLayout.selectedTabPosition)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -112,6 +113,11 @@ class GradeBenefitWidget(
                 }
             }
         }
+    }
+
+    private fun sendTrackerOnTabSelected(pages: List<PMGradeWithBenefitsUiModel>, position: Int) {
+        val tabLabel = pages.getOrNull(position)?.tabLabel.orEmpty()
+        powerMerchantTracking.sendEventClickTabPowerMerchantPro(tabLabel)
     }
 
     private fun setUnifyTabIconColorFilter(view: View?, saturation: Float) {
