@@ -9,6 +9,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.test.R
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -17,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@CassavaTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class EditAddressRevampTest {
