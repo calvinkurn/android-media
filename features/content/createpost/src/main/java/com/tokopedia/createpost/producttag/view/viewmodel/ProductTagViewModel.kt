@@ -298,7 +298,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
             submitAction(ProductTagAction.SelectProductTagSource(source))
         }) {
-            _uiEvent.emit(ProductTagUiEvent.ShowError(it) { })
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
+            })
         }
     }
 

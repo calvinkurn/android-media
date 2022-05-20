@@ -36,6 +36,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -164,6 +165,16 @@ class ProductTagParentFragment @Inject constructor(
                     }
                     is ProductTagUiEvent.OpenAutoCompletePage -> {
                         RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
+                    }
+                    is ProductTagUiEvent.ShowError -> {
+                        Toaster.build(
+                            binding.root,
+                            text = getString(R.string.default_request_error_unknown),
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_LONG,
+                            actionText = if(it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
+                            clickListener = { view -> it.action?.invoke() }
+                        ).show()
                     }
                 }
             }

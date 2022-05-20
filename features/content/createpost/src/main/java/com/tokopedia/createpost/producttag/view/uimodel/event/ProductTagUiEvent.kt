@@ -10,7 +10,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
  * Created By : Jonathan Darwin on April 27, 2022
  */
 sealed interface ProductTagUiEvent {
-    data class ShowError(val throwable: Throwable, val action: () -> Unit): ProductTagUiEvent
+    data class ShowError(val throwable: Throwable, val action: (() -> Unit)? = null): ProductTagUiEvent
 
     data class ProductSelected(val product: ProductUiModel): ProductTagUiEvent
     object ShowSourceBottomSheet: ProductTagUiEvent
