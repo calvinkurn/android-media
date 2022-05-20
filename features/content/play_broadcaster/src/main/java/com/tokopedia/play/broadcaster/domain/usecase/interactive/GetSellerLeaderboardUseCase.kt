@@ -29,7 +29,7 @@ class GetSellerLeaderboardUseCase @Inject constructor(
         private const val PARAM_CHANNEL_ID = "channelID"
         const val QUERY_NAME = "GetSellerLeaderboardUseCaseQuery"
         const val QUERY = """
-            query getLeaderboardViewer(${"$${PARAM_CHANNEL_ID}"}: String!){
+            query getLeaderboardSeller(${"$${PARAM_CHANNEL_ID}"}: String!){
               playInteractiveSellerGetLeaderboardWithSlot(req:{
                 channelID: ${"$${PARAM_CHANNEL_ID}"}
               }){

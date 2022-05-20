@@ -74,6 +74,9 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         if (leaderboard.choices.isEmpty()) hideQuiz() else showQuiz(leaderboard)
         if (leaderboard.reward.isBlank()) hideReward() else showReward(leaderboard)
         if (leaderboard.endsIn == 0) hideTimer() else showTimer(leaderboard.endsIn.toLong())
+
+        tvOtherParticipant.text = leaderboard.otherParticipantText
+        if (leaderboard.otherParticipantText.isNotBlank()) tvOtherParticipant.show() else tvOtherParticipant.hide()
     }
 
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel) {
@@ -95,12 +98,8 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     }
 
     private fun showParticipant(leaderboard: PlayLeaderboardUiModel) {
-        tvOtherParticipant.text = leaderboard.otherParticipantText
-
         winnerAdapter.setItems(leaderboard.winners)
         winnerAdapter.notifyDataSetChanged()
-
-        if (leaderboard.otherParticipant > 0) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()
         tvEmpty.hide()
     }

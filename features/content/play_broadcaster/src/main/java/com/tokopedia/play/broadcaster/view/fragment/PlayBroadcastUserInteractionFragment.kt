@@ -884,6 +884,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
+                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
