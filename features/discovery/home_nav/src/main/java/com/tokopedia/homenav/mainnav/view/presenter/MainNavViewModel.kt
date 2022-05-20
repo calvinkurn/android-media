@@ -27,8 +27,16 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLI
 import com.tokopedia.homenav.common.util.Event
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
+import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
+import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
+import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
