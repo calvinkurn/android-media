@@ -85,13 +85,14 @@ data class SearchParamUiModel(
     }
 
     fun isParamFound(key: String, value: Any): Boolean {
-        if(this.value.containsKey(key)) {
-            if(this.value[key] is String) {
-                val split = this.value[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR)
+        val map = this.value
+        if(map.containsKey(key)) {
+            if(map[key] is String) {
+                val split = map[key].toString().split(DEFAULT_MULTIPLE_PARAM_SEPARATOR)
                 return split.firstOrNull { it == value } != null
             }
 
-            return value == this.value[key]
+            return value == map[key]
         }
 
         return false

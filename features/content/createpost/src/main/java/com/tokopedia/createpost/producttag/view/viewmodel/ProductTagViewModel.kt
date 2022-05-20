@@ -20,6 +20,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -229,6 +230,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
             is ProductTagAction.SearchMyShopProduct -> handleSearchMyShopProduct(action.query)
             ProductTagAction.OpenMyShopSortBottomSheet -> handleOpenMyShopSortBottomSheet()
+            is ProductTagAction.ApplyMyShopSort -> handleApplyMyShopSort(action.selectedSort)
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
@@ -440,7 +442,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
             }
 
-            val sorts = if(currState.sorts.isEmpty()) {
+            if(currState.sorts.isEmpty()) {
                 repo.getSortFilter(param).data.sort
                     .map { item ->
                         SortUiModel(
@@ -452,7 +454,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     }.also {
                         _myShopProduct.setValue { copy(sorts = it) }
                     }
-            } else currState.sorts
+            }
 
             _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet)
         }) {
@@ -460,6 +462,20 @@ class ProductTagViewModel @AssistedInject constructor(
                 submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
             })
         }
+    }
+
+    private fun handleApplyMyShopSort(selectedSort: SortUiModel) {
+        val currState = _myShopProduct.value
+        if(currState.param.isParamFound(selectedSort.key, selectedSort.value)) return
+
+        val query = currState.param.query
+        val newParam = initParam(query).apply {
+            addParam(selectedSort.key, selectedSort.value)
+        }
+
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam, sorts = sorts) }
+
+        handleLoadMyShopProduct()
     }
 
     private fun handleLoadGlobalSearchProduct() {

@@ -65,6 +65,7 @@ class SortBottomSheet @Inject constructor() : BottomSheetUnify() {
             mSortList.firstOrNull { it.isSelected }?.let { sort ->
                 mListener?.onSortSelected(sort)
             }
+            dismiss()
         }
 
         binding.rvSortProduct.layoutManager = LinearLayoutManager(requireContext())

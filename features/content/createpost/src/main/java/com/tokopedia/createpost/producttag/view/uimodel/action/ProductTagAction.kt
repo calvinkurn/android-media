@@ -1,9 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel.action
 
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -27,6 +24,7 @@ sealed interface ProductTagAction {
     object LoadMyShopProduct: ProductTagAction
     data class SearchMyShopProduct(val query: String): ProductTagAction
     object OpenMyShopSortBottomSheet: ProductTagAction
+    data class ApplyMyShopSort(val selectedSort: SortUiModel): ProductTagAction
 
     /** Global Search Product */
     object LoadGlobalSearchProduct: ProductTagAction

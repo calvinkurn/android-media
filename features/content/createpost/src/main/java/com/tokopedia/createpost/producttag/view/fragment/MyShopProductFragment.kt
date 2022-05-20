@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +82,7 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
             is SortBottomSheet -> {
                 childFragment.setListener(object : SortBottomSheet.Listener {
                     override fun onSortSelected(sort: SortUiModel) {
-                        /** TODO: handle this */
+                        viewModel.submitAction(ProductTagAction.ApplyMyShopSort(sort))
                     }
                 })
 
@@ -197,7 +198,14 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
     }
 
     private fun renderChip(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
-        /** TODO: gonna do dis */
+        if(prev?.param == curr.param) return
+
+        val selectedSort = curr.sorts.firstOrNull {
+            curr.param.isParamFound(it.key, it.value)
+        }
+
+        binding.chipSort.chipText = selectedSort?.text ?: getString(R.string.cc_product_tag_sort_label)
+        binding.chipSort.chipType = if(selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
     }
 
     private fun submitQuery(query: String) {
