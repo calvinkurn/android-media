@@ -38,18 +38,18 @@ class GetShopInfoByIDUseCase @Inject constructor(
                 $KEY_SHOP_IDS: ${"$$KEY_SHOP_IDS"}, 
                 $KEY_FIELDS: ${"$$KEY_FIELDS"}, 
                 $KEY_SOURCE: ${"$$KEY_SOURCE"}
-              ) {
+              }) {
                 result {
-                    shopCore {
-                        shopID
-                        name
-                    }
-                    goldOS {
-                        badge
-                        isGold
-                        isGoldBadge
-                        isOfficial
-                    }
+                  shopCore {
+                    shopID
+                    name
+                  }
+                  goldOS {
+                    badge
+                    isGold
+                    isGoldBadge
+                    isOfficial
+                  }
                 }
               }
             }

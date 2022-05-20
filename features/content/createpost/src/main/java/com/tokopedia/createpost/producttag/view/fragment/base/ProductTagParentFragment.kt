@@ -123,6 +123,10 @@ class ProductTagParentFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
         }
 
+        binding.icCcProductTagChevron1.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+        }
+
         showBreadcrumb(viewModel.isUser)
         showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }
@@ -191,7 +195,7 @@ class ProductTagParentFragment @Inject constructor(
             }
             else if(firstSource == ProductTagSource.Shop) {
                 binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
-                binding.icCcProductTagShopBadge1.show()
+                binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
                 binding.imgCcProductTagShopBadge1.hide()
             }
             else {
@@ -317,7 +321,6 @@ class ProductTagParentFragment @Inject constructor(
 
     fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
-        viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
     }
 
     fun onBackPressed() {

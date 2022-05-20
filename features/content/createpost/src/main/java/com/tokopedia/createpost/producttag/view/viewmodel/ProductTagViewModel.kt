@@ -284,7 +284,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     }
                 }
                 ProductTagSource.Shop -> {
-                    val shop = getShopInfo(shopId)
+                    val shop = repo.getShopInfoByID(listOf(shopId.toInt()))
                     _shopProduct.setValue {
                         ShopProductUiModel.Empty.copy(
                             shop = shop,
@@ -294,7 +294,11 @@ class ProductTagViewModel @AssistedInject constructor(
                 }
                 else -> {}
             }
-        }) { }
+
+            submitAction(ProductTagAction.SelectProductTagSource(source))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) { })
+        }
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
@@ -713,25 +717,6 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     /** Util */
-    private suspend fun getShopInfo(shopId: String): ShopUiModel {
-        /** TODO: gonna hit GQL from shop_page || ask BE to modify the applink and provide shopName and shopBadge.
-         * iOS team get it from SuggestionData which we can't use bcs the autocomplete module
-         * forces us to use applink,
-         * the other ways is consume the shopInfo from ace_search_product, but if the product is not found,
-         * we can't get the shopInfo and will leave the breadcrumb empty :(
-         * */
-        return ShopUiModel(
-            shopId = shopId,
-            shopName = "Testing saja",
-            shopImage = "",
-            shopLocation = "",
-            shopGoldShop = 1,
-            shopStatus = 1,
-            isOfficial = true,
-            isPMPro = true,
-        )
-    }
-
     private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
