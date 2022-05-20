@@ -4,7 +4,7 @@
 
     <application android:label="@string/app_name">
         <activity
-            android:name=".view.activity.ChatbotInboxBSActivity"
+            android:name=".view.activity.ContactUsMigrationActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false"
             >

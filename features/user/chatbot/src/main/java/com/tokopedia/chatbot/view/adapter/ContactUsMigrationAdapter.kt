@@ -14,7 +14,7 @@ class ContactUsMigrationAdapter :
     val list = mutableListOf<String>()
 
     inner class ContactUsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val contentTitle: Typography? =
+        private val contentTitle: Typography? =
             itemView.findViewById(R.id.content_text)
 
         fun bind(item: String) {

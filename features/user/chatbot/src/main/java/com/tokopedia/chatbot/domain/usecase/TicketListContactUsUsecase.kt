@@ -26,15 +26,12 @@ class TicketListContactUsUsecase @Inject constructor(
         return mapOf(
             USERID to userSession.userId,
             PAGE to page,
-            STATUS to status,
-//            RATING to rating
+            STATUS to status
         )
     }
 
     companion object {
         const val STATUS = "status"
-        const val READ = "read"
-        const val RATING = "rating"
         private const val USERID = "userID"
         private const val PAGE = "page"
         const val page = 1

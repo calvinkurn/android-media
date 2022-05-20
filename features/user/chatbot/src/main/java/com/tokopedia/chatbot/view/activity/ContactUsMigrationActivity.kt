@@ -30,7 +30,7 @@ import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.bottom_sheet_go_to_help.view.*
 import javax.inject.Inject
 
-class ChatbotInboxBSActivity : BaseSimpleActivity() {
+class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     @Inject
     lateinit var viewModelFactory : ViewModelProvider.Factory
@@ -112,7 +112,7 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
             goToContactUs()
         }
         supportFragmentManager?.let {
-            bottomSheetPage.show(it, "TAG")
+            bottomSheetPage.show(it, "")
         }
     }
 
@@ -151,7 +151,6 @@ class ChatbotInboxBSActivity : BaseSimpleActivity() {
 
         chatbotComponent.inject(this)
     }
-
 
     override fun getNewFragment(): Fragment? = null
 }

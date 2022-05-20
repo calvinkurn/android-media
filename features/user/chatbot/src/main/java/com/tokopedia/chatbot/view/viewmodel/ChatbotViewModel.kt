@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class ChatbotViewModel @Inject constructor(
     private val ticketListContactUsUseCase : TicketListContactUsUsecase,
-    private val dispatcher: CoroutineDispatchers,
+    dispatcher: CoroutineDispatchers,
 ) : BaseViewModel(dispatcher.main) {
 
     private val _ticketList = MutableLiveData<Result<InboxTicketListResponse>>()
@@ -34,6 +34,4 @@ class ChatbotViewModel @Inject constructor(
             }
         )
     }
-
-
 }

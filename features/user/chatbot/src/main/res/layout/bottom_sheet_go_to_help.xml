@@ -17,7 +17,6 @@
         app:typographyType="heading_2"
         tools:text="Pesan Bantuan akan dialihkan ke Tokopedia Care" />
 
-
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card_view_subtitle"
         android:layout_width="match_parent"
@@ -41,7 +40,6 @@
                 android:layout_marginLeft="@dimen/unify_space_12"
                 app:srcCompat="@drawable/ic_warning">
 
-
             </com.tokopedia.unifycomponents.ImageUnify>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -56,8 +54,6 @@
             </com.tokopedia.unifyprinciples.Typography>
 
         </LinearLayout>
-
-
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
@@ -89,8 +85,7 @@
         android:id="@+id/content_list"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/text_list_header"
-        tools:listitem="@layout/listitem_contact_us_migration"
-        />
+        tools:listitem="@layout/listitem_contact_us_migration" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_tokopedia_care"
@@ -102,6 +97,5 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
