@@ -9,12 +9,12 @@
     >
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_labels"
+        android:id="@+id/rv_play_slot_tab_sample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_play_slot_tab_card"
+        tools:listitem="@layout/item_play_slot_tab_card_sample"
         />
 
 </FrameLayout>
