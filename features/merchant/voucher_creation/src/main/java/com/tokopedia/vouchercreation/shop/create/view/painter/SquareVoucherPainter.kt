@@ -44,7 +44,7 @@ class SquareVoucherPainter(private val context: Context,
         private const val BOTTOM_INFO_X = 0.34f
         private const val PROMO_CODE_Y = 0.87f
         private const val PROMO_PERIOD_Y = 0.93f
-
+        private const val MARGIN_TOP_MULTIPLIER = 0.035
         private const val DASH = "-"
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
@@ -143,8 +143,7 @@ class SquareVoucherPainter(private val context: Context,
     private val bottomInfoX = bitmapWidth * BOTTOM_INFO_X
     private val promoCodeY = bitmapHeight * PROMO_CODE_Y
     private val promoPeriodY = bitmapHeight * PROMO_PERIOD_Y
-    private val marginTopMultiplier = 0.035
-    private val valueMarginTop = (bitmapHeight * marginTopMultiplier).toInt()
+    private val valueMarginTop = (bitmapHeight * MARGIN_TOP_MULTIPLIER).toInt()
 
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
