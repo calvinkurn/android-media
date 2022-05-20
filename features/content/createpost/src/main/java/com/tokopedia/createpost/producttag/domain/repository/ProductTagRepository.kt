@@ -42,4 +42,8 @@ interface ProductTagRepository {
     suspend fun getSortFilterProductCount(
         param: SearchParamUiModel,
     ) : String
+
+    suspend fun getShopInfoByID(
+        shopIds: List<Int>,
+    ) : ShopUiModel
 }

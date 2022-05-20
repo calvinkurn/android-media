@@ -164,4 +164,16 @@ class ProductTagUiModelMapper @Inject constructor() {
     fun mapSortFilterProductCount(response: GetSortFilterProductCountResponse): String {
         return response.wrapper.countText
     }
+
+    fun mapShopInfo(response: GetShopInfoByIDResponse): ShopUiModel {
+        val shopInfo = response.wrapper.result.firstOrNull() ?: return ShopUiModel()
+
+        return ShopUiModel(
+            shopId = shopInfo.shopCore.shopID,
+            shopName = shopInfo.shopCore.name,
+            shopGoldShop = shopInfo.goldOS.isGold,
+            isOfficial = shopInfo.goldOS.isOfficial == 1,
+            isPMPro = shopInfo.goldOS.isGoldBadge == 1,
+        )
+    }
 }

@@ -22,6 +22,7 @@ class ProductTagRepositoryImpl @Inject constructor(
     private val feedQuickFilterUseCase: FeedQuickFilterUseCase,
     private val getSortFilterUseCase: GetSortFilterUseCase,
     private val getSortFilterProductCountUseCase: GetSortFilterProductCountUseCase,
+    private val getShopInfoByIDUseCase: GetShopInfoByIDUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -127,6 +128,18 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapSortFilterProductCount(response)
+        }
+    }
+
+    override suspend fun getShopInfoByID(shopIds: List<Int>): ShopUiModel {
+        return withContext(dispatchers.io) {
+            val response = getShopInfoByIDUseCase.apply {
+                setRequestParams(GetShopInfoByIDUseCase.createParams(
+                    shopIds = shopIds,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapShopInfo(response)
         }
     }
 }
