@@ -1868,7 +1868,6 @@ class PlayViewModel @AssistedInject constructor(
             _uiEvent.emit(
                 ShowErrorEvent(it)
             )
-            _uiEvent.emit(QuizAnsweredEvent)
         }
     }
 
