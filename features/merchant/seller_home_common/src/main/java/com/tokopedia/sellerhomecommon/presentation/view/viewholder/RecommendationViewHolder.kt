@@ -183,7 +183,7 @@ class RecommendationViewHolder(
                 tickerShcRecommendation.setHtmlDescription(ticker.text)
                 tickerShcRecommendation.tickerType = when (ticker.type) {
                     RecommendationTickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
-                    RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                    RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_ANNOUNCEMENT
                     RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
                     else -> Ticker.TYPE_ANNOUNCEMENT
                 }
