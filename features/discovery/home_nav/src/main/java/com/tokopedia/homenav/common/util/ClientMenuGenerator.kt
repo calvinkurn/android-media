@@ -3,6 +3,7 @@ package com.tokopedia.homenav.common.util
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
@@ -85,6 +86,11 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                     IDENTIFIER_TITLE_FAVORITE_SHOP,
                     IDENTIFIER_TITLE_ORDER_HISTORY -> IconUnify.CHEVRON_RIGHT
                     else -> null
+                },
+                applink = when(identifier){
+                    IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.NEW_WISHLIST
+                    IDENTIFIER_TITLE_FAVORITE_SHOP -> ApplinkConst.FAVORITE
+                    else -> ""
                 }
         )
     }

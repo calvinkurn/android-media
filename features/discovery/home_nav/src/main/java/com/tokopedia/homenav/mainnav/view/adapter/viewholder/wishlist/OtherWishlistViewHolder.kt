@@ -28,7 +28,7 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
         binding?.cardViewAllWishlist?.titleView?.gone()
 
         itemView.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.FAVORITE)
+            RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
             TrackingTransactionSection.clickOnWishlistViewAll()
         }
     }

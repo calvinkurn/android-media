@@ -27,7 +27,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
         binding?.cardViewAllFavshop?.titleView?.gone()
 
         itemView.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+            RouteManager.route(context, ApplinkConst.FAVORITE)
             TrackingTransactionSection.clickOnFavoriteShopViewAll()
         }
     }
