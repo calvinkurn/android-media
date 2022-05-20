@@ -15,7 +15,6 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.thank_pdp_digital_recommendation.view.*
 import javax.inject.Inject
 
 class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
@@ -28,6 +27,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     @Inject
     lateinit var userSession: dagger.Lazy<UserSessionInterface>
+
+    private lateinit var viewDigitalRecommendation: DigitalRecommendationWidget
 
     fun getLayout() = R.layout.thank_pdp_digital_recommendation
 
@@ -54,7 +55,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
     private fun initUI() {
-        LayoutInflater.from(context).inflate(getLayout(), this, true)
+        val view = LayoutInflater.from(context).inflate(getLayout(), this, true)
+        viewDigitalRecommendation = view.findViewById(R.id.recharge_digital_recommendation)
     }
 
     override fun loadRecommendation(
@@ -62,7 +64,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         pgCategoryIds: List<Int>,
         pageType: DigitalRecommendationPage
     ) {
-        with(view_digital_recommendation){
+        with(viewDigitalRecommendation){
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
