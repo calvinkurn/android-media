@@ -65,7 +65,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         val page_name = "\$page_name"
 
         """
-            query GetTopAdsIsAds($productId: String!, $productKey: String!, $shopDomain: String!, $src: String!, $device: String!, $q: String!, $url_param: String!, $page_name: String!) {
+            query topAdsGetDynamicSlotting($productId: String!, $productKey: String!, $shopDomain: String!, $src: String!, $device: String!, $q: String!, $url_param: String!, $page_name: String!) {
               topAdsGetDynamicSlotting(product_id: $productId, product_key: $productKey, shop_domain: $shopDomain, src: $src, device: $device, q: $q, url_param: $url_param, page_name: $page_name) {
                 data {
                   product_click_url
@@ -101,7 +101,8 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         params.parameters.clear()
 
         var urlParamWithIris = urlParam
-        if (urlParamWithIris.isNotBlank()) urlParamWithIris += irisSession.getSessionId()
+        if (urlParamWithIris.isNotBlank())
+            urlParamWithIris += "&iris_session_id=${irisSession.getSessionId()}"
 
         params.putString(PARAM_PRODUCT_ID, productId)
         params.putString(PARAM_PRODUCT_KEY, productKey)
@@ -109,7 +110,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         params.putString(PARAM_SRC, src)
         params.putString(PARAM_DEVICE, device)
         params.putString(PARAM_Q, q)
-        params.putString(PARAM_URL_PARAM, urlParam)
+        params.putString(PARAM_URL_PARAM, urlParamWithIris)
         params.putString(PARAM_PAGE_NAME, pageName)
     }
 }
