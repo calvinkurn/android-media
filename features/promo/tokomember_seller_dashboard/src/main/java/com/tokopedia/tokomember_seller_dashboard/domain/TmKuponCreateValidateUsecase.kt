@@ -3,7 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.model.SellerData
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmVoucherValidationPartialResponse
 import javax.inject.Inject
 
@@ -14,6 +14,7 @@ class TmKuponCreateValidateUsecase @Inject constructor(graphqlRepository: Graphq
     fun getPartialValidateData(
         success: (TmVoucherValidationPartialResponse) -> Unit,
         onFail: (Throwable) -> Unit,
+        tmCouponValidateRequest: TmCouponValidateRequest,
     ) {
         this.setTypeClass(TmVoucherValidationPartialResponse::class.java)
         this.setGraphqlQuery(TmPartialValidateKupon.GQL_QUERY)

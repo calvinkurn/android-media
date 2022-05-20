@@ -72,8 +72,7 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK ) {
             inflateFragment()
-        }
-        if (requestCode == REQUEST_FROM_TP_NOTIFICATION) {
+        } else if (requestCode == REQUEST_FROM_TP_NOTIFICATION) {
             fragment?.onActivityResult(requestCode,requestCode,data)
         }
         else finish()
