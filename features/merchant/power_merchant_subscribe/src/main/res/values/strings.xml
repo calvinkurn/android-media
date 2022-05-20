@@ -210,4 +210,5 @@
     <string name="pm_grade_benefit_ticker_pm_pro_not_eligible">Raih Level %1$d untuk mendapatkan paket keuntungan PM PRO %2$s, ya.</string>
     <string name="pm_eligible_pm_grade"><![CDATA[Memenuhi syarat <b>%1$s.</b>]]></string>
     <string name="pm_registration_term_header">Penuhi syarat di atas untuk bisa bergabung, ya.</string>
+    <string name="pm_submit_activation_success">Hore! Kamu berhasil gabung di program Power Merchant.</string>
 </resources>
