@@ -976,26 +976,11 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.isEmpty() == true)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateNonLoggedInDataModel } == true)
     }
 
     @Test
-    fun `given not using rollence variant when user not logged in should add empty state non logged in`() = runBlocking {
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns false
-
-        viewModel = createViewModel(
-            userSession = userSession
-        )
-        viewModel.setIsMePageUsingRollenceVariant(true)
-
-        Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        assert(viewModel.mainNavLiveData.value?.dataList?.isEmpty() == true)
-    }
-
-    @Test
-    fun `given success and not empty wishlistshould add wishlist model to visitable list`() = runBlocking {
+    fun `given success and not empty wishlist should add wishlist model to visitable list`() = runBlocking {
         val userSession = mockk<UserSessionInterface>()
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
