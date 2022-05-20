@@ -22,6 +22,7 @@
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/layout_lvl1"
+        app:loader_corner_radius="4dp"
         app:layout_constraintBottom_toBottomOf="@id/review_gallery_rating_star_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_star_loading"
         app:layout_constraintTop_toTopOf="@id/review_gallery_rating_star_loading"
@@ -34,6 +35,7 @@
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginBottom="@dimen/layout_lvl1"
+        app:loader_corner_radius="4dp"
         app:layout_constraintBottom_toTopOf="@id/review_gallery_rating_and_review_count_loading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
@@ -45,6 +47,7 @@
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl7"
+        app:loader_corner_radius="4dp"
         app:layout_constraintBottom_toBottomOf="@id/review_gallery_rating_loading"
         app:layout_constraintEnd_toEndOf="@id/review_gallery_satisfaction_rate_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
@@ -58,6 +61,7 @@
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl5"
+        app:loader_corner_radius="4dp"
         app:layout_constraintEnd_toEndOf="@id/review_gallery_rating_and_review_count_loading"
         app:layout_constraintStart_toEndOf="@id/review_gallery_rating_loading"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_and_review_count_loading"
@@ -69,8 +73,6 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl3"
         android:background="@color/Unify_N75"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_loading" />
 
     <androidx.constraintlayout.widget.Guideline

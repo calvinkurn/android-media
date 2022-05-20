@@ -62,7 +62,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setCustomContentView(remoteView)
                 .setSmallIcon(R.drawable.ic_alpha)
-                .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                .setColor(ContextCompat.getColor(context, R.color.holo_red_dms))
 
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
     }
@@ -77,7 +77,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
             layoutWrapper.gravity = Gravity.CENTER_HORIZONTAL
             val tv = TextView(activity)
             tv.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, getStatusBarHeight(activity))
-            layoutWrapper.setBackgroundColor(ContextCompat.getColor(activity, android.R.color.holo_red_dark))
+            layoutWrapper.setBackgroundColor(ContextCompat.getColor(activity, R.color.holo_red_dms))
             tv.text = activity.resources.getString(R.string.tokopedia_alpha)
             tv.setTextColor(Color.BLACK)
             tv.gravity = Gravity.CENTER
