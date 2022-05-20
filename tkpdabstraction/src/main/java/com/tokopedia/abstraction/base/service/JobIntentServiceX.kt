@@ -24,7 +24,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT < 26) {
+        if (Build.VERSION.SDK_INT < ANDROID_O_SDK) {
             val app = applicationContext
             val pm = app.getSystemService(Context.POWER_SERVICE) as PowerManager
             val tag = javaClass.name + ":running"
@@ -49,7 +49,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "onStartCommand $intent, $flags, $startId")
 
-        if (Build.VERSION.SDK_INT < 26) {
+        if (Build.VERSION.SDK_INT < ANDROID_O_SDK) {
             // Release the starting wake lock
             synchronized(mStartingWakeLockLock) {
                 mStartingWakeLock?.also {
@@ -64,7 +64,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
 
             if (intent != null) {
                 mRunningIntentCount += 1
-                mRunningWakeLock?.acquire(60 * 1000L)
+                mRunningWakeLock?.acquire(TIMEOUT_1)
 
                 try {
                     mExecutor.execute(OldIntentRunnable(this, mHandler, intent, startId))
@@ -100,7 +100,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
             jobOld?.stopRequested?.set(true)
 
             val jobNew =
-                if (Build.VERSION.SDK_INT >= 26) NewJobRunnable(this, mHandler, params)
+                if (Build.VERSION.SDK_INT >= ANDROID_O_SDK) NewJobRunnable(this, mHandler, params)
                 else null
 
             if (jobNew != null) {
@@ -183,7 +183,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
         val stopRequested = AtomicBoolean(false)
     }
 
-    @TargetApi(26)
+    @TargetApi(ANDROID_O_SDK)
     private class NewJobRunnable(val service: JobIntentServiceX,
                                  val handler: Handler,
                                  val params: JobParameters) : JobRunnable(), Runnable {
@@ -229,7 +229,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
                     mStartingWakeLock = wl
                 }
 
-                wl?.acquire(15 * 1000L)
+                wl?.acquire(TIMEOUT_2)
             }
 
             // Start the service
@@ -240,7 +240,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
         }
     }
 
-    @TargetApi(26)
+    @TargetApi(ANDROID_O_SDK)
     private class EnqueueCompatNew : EnqueueCompat() {
         override fun enqueueWork(context: Context, cn: ComponentName, jobId: Int, intent: Intent) {
             val app = context.applicationContext
@@ -266,7 +266,7 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
         }
 
         private fun makeEnqueueCompat(): EnqueueCompat {
-            return if (Build.VERSION.SDK_INT >= 26) EnqueueCompatNew()
+            return if (Build.VERSION.SDK_INT >= ANDROID_O_SDK) EnqueueCompatNew()
             else EnqueueCompatOld()
         }
 
@@ -274,7 +274,9 @@ abstract class JobIntentServiceX(val mExecutor: Executor) : JobService() {
 
         private const val WHAT_OLD_INTENT_RUNNABLE_DONE = 0
         private const val WHAT_NEW_JOB_RUNNABLE_DONE = 1
-
+        private const val ANDROID_O_SDK = 26
+        private const val TIMEOUT_1 = 60 * 1000L
+        private const val TIMEOUT_2 = 15 * 1000L
         private val mStartingWakeLockLock = Any()
         private var mStartingWakeLock: PowerManager.WakeLock? = null
     }
