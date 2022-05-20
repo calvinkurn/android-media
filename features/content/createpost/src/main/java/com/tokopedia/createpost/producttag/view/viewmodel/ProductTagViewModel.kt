@@ -87,7 +87,9 @@ class ProductTagViewModel @AssistedInject constructor(
         get() = _shopProduct.value.shop
 
     val myShopSortList: List<SortUiModel>
-        get() = _myShopProduct.value.sorts
+        get() = _myShopProduct.value.sorts.map {
+            it.copy(isSelected = _myShopProduct.value.param.isParamFound(it.key, it.value))
+        }
 
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
