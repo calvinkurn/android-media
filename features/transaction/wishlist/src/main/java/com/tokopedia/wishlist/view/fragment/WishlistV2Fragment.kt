@@ -582,8 +582,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
+        listBulkDelete.clear()
+        listExcludedBulkDelete.clear()
+        if (isBulkDeleteShow) setDefaultLabelDeleteButton()
         doRefresh()
-        refreshLayout()
         rvScrollListener.resetState()
     }
 
@@ -1262,24 +1264,32 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.setCheckbox(position, isChecked)
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
-            binding?.run {
-                containerDelete.visible()
-                deleteButton.apply {
-                    isEnabled = true
-                    if (listBulkDelete.isNotEmpty()) {
-                        text = getString(Rv2.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
-                        setOnClickListener {
-                            showPopupBulkDeleteConfirmation(listBulkDelete.size)
-                        }
+            setLabelDeleteButton()
+        } else {
+            setDefaultLabelDeleteButton()
+        }
+    }
+
+    private fun setLabelDeleteButton() {
+        binding?.run {
+            containerDelete.visible()
+            deleteButton.apply {
+                isEnabled = true
+                if (listBulkDelete.isNotEmpty()) {
+                    text = getString(Rv2.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
+                    setOnClickListener {
+                        showPopupBulkDeleteConfirmation(listBulkDelete.size)
                     }
                 }
             }
-        } else {
-            binding?.run {
-                containerDelete.visible()
-                deleteButton.isEnabled = false
-                deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text)
-            }
+        }
+    }
+
+    private fun setDefaultLabelDeleteButton() {
+        binding?.run {
+            containerDelete.visible()
+            deleteButton.isEnabled = false
+            deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text)
         }
     }
 
@@ -1389,18 +1399,29 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 wishlistV2StickyCountManageLabel.wishlistDivider.gone()
                 wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.gone()
                 containerDelete.visible()
-                deleteButton.isEnabled = isAutoDeletion
-                val deleteButtonLabel = if (isAutoDeletion) getString(Rv2.string.wishlist_v2_delete_text_counter, countRemovableAutomaticDelete) else getString(Rv2.string.wishlist_v2_delete_text)
-                deleteButton.text = deleteButtonLabel
+                deleteButton.apply {
+                    isEnabled = isAutoDeletion
+                    text = if (isAutoDeletion) getString(Rv2.string.wishlist_v2_delete_text_counter, countRemovableAutomaticDelete) else getString(Rv2.string.wishlist_v2_delete_text)
+                    if (isAutoDeletion) {
+                        setOnClickListener {
+                            bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
+                            showPopupBulkDeleteConfirmation(countRemovableAutomaticDelete)
+                        }
+                    }
+                }
             }
         } else {
-            setSwipeRefreshLayout()
-            wishlistV2Adapter.hideCheckbox()
-            binding?.run {
-                containerDelete.gone()
-                clWishlistHeader.visible()
-                wishlistV2StickyCountManageLabel.wishlistDivider.visible()
-                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
+            if (isAutoDeletion) {
+                doResetFilter()
+            } else {
+                setSwipeRefreshLayout()
+                wishlistV2Adapter.hideCheckbox()
+                binding?.run {
+                    containerDelete.gone()
+                    clWishlistHeader.visible()
+                    wishlistV2StickyCountManageLabel.wishlistDivider.visible()
+                    wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
+                }
             }
         }
     }
@@ -1442,7 +1463,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun doRefresh() {
         onLoadMore = false
         isFetchRecommendation = false
-        isBulkDeleteShow = false
+        // isBulkDeleteShow = false
         currPage = 1
         currRecommendationListPage = 1
         loadWishlistV2()
