@@ -27,7 +27,5 @@ object ApplinkConstInternalLogistic {
     val ADD_ADDRESS_V3 = "$INTERNAL_LOGISTIC/addaddress/v3/"
 
     const val TNC_WEBVIEW = "$INTERNAL_LOGISTIC/logistictnc"
-
-    const val PROOF_OF_DELIVERY = "$INTERNAL_LOGISTIC/shipping/pod/{orderId}"
-
+    
 }

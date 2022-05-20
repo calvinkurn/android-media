@@ -244,6 +244,7 @@ public interface ApplinkConst {
     String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+    String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";

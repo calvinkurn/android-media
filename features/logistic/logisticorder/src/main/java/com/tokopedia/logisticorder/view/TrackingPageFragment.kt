@@ -507,8 +507,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     //POD: navigate to pod activity
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
-
-        val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
+        val appLink = Uri.parse(ApplinkConst.ORDER_POD).buildUpon()
             .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
             .appendQueryParameter(PodConstant.QUERY_DESCRIPTION, description)
             .build()

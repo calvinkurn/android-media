@@ -5,8 +5,8 @@ package com.tokopedia.logisticCommon.data.constant
  */
 object PodConstant {
 
-    const val QUERY_DESCRIPTION = "query_description"
-    const val QUERY_IMAGE_ID = "query_image_id"
+    const val QUERY_DESCRIPTION = "description"
+    const val QUERY_IMAGE_ID = "image_id"
 
     const val REQUEST_POD = 22222
 

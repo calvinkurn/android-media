@@ -11,13 +11,12 @@ import timber.log.Timber
  * Created by irpan on 28/04/22.
  *
  * POD = Proof Of Delivery
- *  called this activity
- *  - Tracking
- *  - Buyer Detail Order
- *  -
+ *  applink tokopedia://shipping/pod/{order_id}?image_id={image_id}&description={description}
+ *
+ *  Please use ApplinkConst.ORDER_POD
  */
-class ProofOfDeliveryActivity : BaseSimpleActivity() {
 
+class ProofOfDeliveryActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         var fragment: ProofOfDeliveryFragment? = null
