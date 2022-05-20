@@ -302,14 +302,14 @@ class CreateReviewViewModel @Inject constructor(
         if (isEditMode) {
             originalImages = CreateReviewImageMapper.removeImageFromList(image, originalImages)
         }
-        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(mediaData)
+        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThan(mediaData, MAX_IMAGE_COUNT)
         return mediaData
     }
 
     fun removeVideo(): MutableList<Any> {
         mediaData.removeAll { it is CreateReviewMediaUiModel.Video }
         originalVideos.clear()
-        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(mediaData)
+        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThan(mediaData, MAX_IMAGE_COUNT)
         return mediaData
     }
 

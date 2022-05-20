@@ -12,13 +12,13 @@ import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.Medi
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.AdapterUiState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryUiState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.ViewPagerUiState
-import com.tokopedia.reviewcommon.extension.getSavedState
-import com.tokopedia.reviewcommon.extension.isMoreThanZero
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
+import com.tokopedia.reviewcommon.extension.getSavedState
+import com.tokopedia.reviewcommon.extension.isMoreThanZero
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +36,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
 
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+        private const val VIEW_PAGER_FREEZE_DURATION = 500L
         const val SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE = "savedStateMediaAdapterUiState"
         const val SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE = "savedStateMediaViewPagerUiState"
     }
@@ -69,7 +70,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         initialValue = null
     )
 
-    private val enableViewPagerTimer = object: CountDownTimer(500L, 500L) {
+    private val enableViewPagerTimer = object: CountDownTimer(VIEW_PAGER_FREEZE_DURATION, VIEW_PAGER_FREEZE_DURATION) {
         override fun onTick(millisUntilFinished: Long) {
             // noop
         }

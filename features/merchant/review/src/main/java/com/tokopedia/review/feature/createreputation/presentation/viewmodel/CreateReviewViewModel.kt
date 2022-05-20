@@ -121,6 +121,8 @@ class CreateReviewViewModel @Inject constructor(
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val MAX_MEDIA_COUNT = 5
         private const val GOOD_RATING_THRESHOLD = 2
+        private const val UPLOADED_ALL_MEDIA_POEM_EXPIRY_DURATION = 3
+        private const val UPLOADED_MEDIA_POEM_EXPIRY_DURATION = 5
         private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
         private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
@@ -632,7 +634,7 @@ class CreateReviewViewModel @Inject constructor(
                     uploadingMedia.uri to R.string.review_form_waiting_upload_poem
                 } else {
                     val timeDiffMillis = System.currentTimeMillis() - lastFinishedUploadMedia.finishUploadTimestamp
-                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > 5) {
+                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > UPLOADED_MEDIA_POEM_EXPIRY_DURATION) {
                         uploadingMedia.uri to R.string.review_form_waiting_upload_poem
                     } else {
                         uploadingMedia.uri to R.string.review_form_on_progress_upload_poem
@@ -643,7 +645,7 @@ class CreateReviewViewModel @Inject constructor(
             } else {
                 filteredMediaItems.lastOrNull()?.let { lastMediaItem ->
                     val timeDiffMillis = System.currentTimeMillis() - lastMediaItem.finishUploadTimestamp
-                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > 3 || lastMediaItem.uri != poem.value.first) {
+                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > UPLOADED_ALL_MEDIA_POEM_EXPIRY_DURATION || lastMediaItem.uri != poem.value.first) {
                         poem.value.first to Int.ZERO
                     } else {
                         poem.value.first to R.string.review_form_success_upload_poem

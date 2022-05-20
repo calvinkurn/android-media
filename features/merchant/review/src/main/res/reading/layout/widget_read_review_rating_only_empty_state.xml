@@ -18,7 +18,8 @@
         android:progressDrawable="@drawable/review_reading_rating_only_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnifyComponentUsage" />
 
     <FrameLayout
         android:layout_width="@dimen/layout_lvl0"

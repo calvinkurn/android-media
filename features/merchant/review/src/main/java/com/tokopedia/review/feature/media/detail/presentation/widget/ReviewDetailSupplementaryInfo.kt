@@ -31,6 +31,10 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseReviewDetailCustomView<WidgetReviewDetailSupplementaryInfoBinding>(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val REVIEW_DETAIL_MAX_LINES_COLLAPSED = 3
+    }
+
     override val binding = WidgetReviewDetailSupplementaryInfoBinding.inflate(
         LayoutInflater.from(context),
         this,
@@ -50,15 +54,15 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
                 binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.layout?.run {
                     val lines = lineCount
                     val currentText = text
-                    val nonEllipsizedTextLength = getLineEnd(lines - 1)
-                    val ellipsisCount = getEllipsisCount(lines - 1)
+                    val nonEllipsizedTextLength = getLineEnd(lines.dec())
+                    val ellipsisCount = getEllipsisCount(lines.dec())
                     val isEllipsized = ellipsisCount.isMoreThanZero()
                     if (isEllipsized) {
                         val seeMoreText = HtmlLinkHelper(
                             context,
                             context.getString(R.string.review_media_common_see_more)
                         ).spannedString ?: ""
-                        val seeMoreTextLength = seeMoreText.length * 15 / 10 // since see more text is a link, it might be wider so we add some error correction
+                        val seeMoreTextLength = seeMoreText.length
                         val concatenatedNonEllipsizedText = SpannableStringBuilder().apply {
                             append(currentText.take((nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength).coerceAtLeast(Int.ZERO)))
                             append(seeMoreText)
@@ -120,7 +124,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
             Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
         val maxLines = when(source) {
-            Source.REVIEW_DETAIL_FRAGMENT -> 3
+            Source.REVIEW_DETAIL_FRAGMENT -> REVIEW_DETAIL_MAX_LINES_COLLAPSED
             Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> Int.MAX_VALUE
         }
         tvReviewDetailReviewText.run {

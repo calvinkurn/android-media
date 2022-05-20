@@ -12,6 +12,15 @@ class ReviewDetailRating @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val RATING_ONE = 1
+        private const val RATING_TWO = 2
+        private const val RATING_THREE = 3
+        private const val RATING_FOUR = 4
+        private const val RATING_FIVE = 5
+    }
+
     private val binding = WidgetReviewDetailRatingBinding.inflate(
         LayoutInflater.from(context),
         this,
@@ -24,11 +33,11 @@ class ReviewDetailRating @JvmOverloads constructor(
 
     fun setRating(rating: Int) {
         with(binding) {
-            icReviewDetailRatingOne.updateStar(rating >= 1)
-            icReviewDetailRatingTwo.updateStar(rating >= 2)
-            icReviewDetailRatingThree.updateStar(rating >= 3)
-            icReviewDetailRatingFour.updateStar(rating >= 4)
-            icReviewDetailRatingFive.updateStar(rating >= 5)
+            icReviewDetailRatingOne.updateStar(rating >= RATING_ONE)
+            icReviewDetailRatingTwo.updateStar(rating >= RATING_TWO)
+            icReviewDetailRatingThree.updateStar(rating >= RATING_THREE)
+            icReviewDetailRatingFour.updateStar(rating >= RATING_FOUR)
+            icReviewDetailRatingFive.updateStar(rating >= RATING_FIVE)
         }
     }
 }

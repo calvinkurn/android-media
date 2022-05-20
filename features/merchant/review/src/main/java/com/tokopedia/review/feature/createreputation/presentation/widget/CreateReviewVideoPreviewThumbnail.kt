@@ -29,6 +29,7 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
 
     companion object {
         private const val TRANSITION_DURATION = 300L
+        private const val MIN_NON_LEADING_ZERO_DURATION = 10
     }
 
     override val binding = WidgetCreateReviewMediaPreviewVideoThumbnailBinding.inflate(
@@ -124,10 +125,10 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
         if (minute.isMoreThanZero() || second.isMoreThanZero()) {
             tvCreateReviewVideoPreviewDuration.run {
                 text = buildString {
-                    append(if (minute < 10) "0" else "")
+                    append(if (minute < MIN_NON_LEADING_ZERO_DURATION) "0" else "")
                     append(minute)
                     append(":")
-                    append(if (second < 10) "0" else "")
+                    append(if (second < MIN_NON_LEADING_ZERO_DURATION) "0" else "")
                     append(second)
                 }
                 show()

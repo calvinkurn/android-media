@@ -10,15 +10,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.databinding.PartialWidgetReviewDetailBasicInfoBinding
 import com.tokopedia.review.databinding.WidgetReviewDetailBasicInfoBinding
-import com.tokopedia.reviewcommon.extension.generateHapticFeedback
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailBasicInfoUiModel
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ReviewDetailBasicInfoUiState
+import com.tokopedia.reviewcommon.extension.generateHapticFeedback
 
 class ReviewDetailBasicInfo @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseReviewDetailCustomView<WidgetReviewDetailBasicInfoBinding>(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val EXPANDED_X_ROTATION = 0f
+        private const val COLLAPSED_X_ROTATION = 180f
+    }
 
     override val binding = WidgetReviewDetailBasicInfoBinding.inflate(
         LayoutInflater.from(context),
@@ -131,7 +136,7 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
         source: Source
     ) {
         icReviewDetailToggleExpandButton.run {
-            rotationX = if (expanded) 0f else 180f
+            rotationX = if (expanded) EXPANDED_X_ROTATION else COLLAPSED_X_ROTATION
             showWithCondition(source == Source.REVIEW_DETAIL_FRAGMENT)
         }
     }

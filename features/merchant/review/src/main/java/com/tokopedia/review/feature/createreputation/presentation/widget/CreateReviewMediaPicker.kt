@@ -34,6 +34,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     companion object {
         private const val TRANSITION_DURATION = 300L
         const val MAX_MEDIA_COUNT = 5
+        private const val MEDIA_SPAN_SIZE_SMALL = 1
+        private const val MEDIA_SPAN_SIZE_BIG = MAX_MEDIA_COUNT
     }
 
     private val mediaPickerListener = MediaPickerListener()
@@ -144,8 +146,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
                 return when(adapter.getItemViewType(position)) {
                     CreateReviewMediaPreviewImageViewHolder.LAYOUT,
                     CreateReviewMediaPreviewVideoViewHolder.LAYOUT,
-                    CreateReviewMediaPickerAddSmallViewHolder.LAYOUT -> 1
-                    else -> 5
+                    CreateReviewMediaPickerAddSmallViewHolder.LAYOUT -> MEDIA_SPAN_SIZE_SMALL
+                    else -> MEDIA_SPAN_SIZE_BIG
                 }
             }
         }
