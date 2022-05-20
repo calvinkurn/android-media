@@ -268,7 +268,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
         trackingBuilder.appendCustomKeyValue(ItemList.KEY, LIST_WISHLIST)
-        val promotions = convertFavoriteShopTracking(position, favoriteShopModel.name, favoriteShopModel.id)
+        val promotions = convertFavoriteShopTracking(position, favoriteShopModel.id)
         trackingBuilder.appendCustomKeyValue(Promotion.KEY, promotions)
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
