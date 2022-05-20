@@ -36,7 +36,7 @@ class TransactionListViewHolder(itemView: View,
 
     private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
         if (element.isMePageUsingRollenceVariant) {
-            val productCardHeight = 84f.toDpInt()
+            val productCardHeight = 80f.toDpInt()
 
             val carouselLayoutParams = this.layoutParams
             carouselLayoutParams?.height = productCardHeight
