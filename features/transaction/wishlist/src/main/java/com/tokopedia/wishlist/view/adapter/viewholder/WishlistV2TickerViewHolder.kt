@@ -17,8 +17,8 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
 class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: WishlistV2TypeLayoutData, hasClosed: Boolean) {
-        if (hasClosed) {
+    fun bind(item: WishlistV2TypeLayoutData, hasClosed: Boolean, isShowCheckbox: Boolean) {
+        if (isShowCheckbox || hasClosed) {
             binding.root.gone()
             val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
                 height = 0
@@ -26,19 +26,19 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
             }
             binding.root.layoutParams = params
         } else {
-            binding.run {
-                wishlistv2TickerMaxQty.apply {
-                    if (item.dataObject is WishlistV2TickerCleanerData) {
-                        val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                            height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            width = ViewGroup.LayoutParams.WRAP_CONTENT
-                            isFullSpan = true
-                        }
-                        binding.root.layoutParams = params
+            if (item.dataObject is WishlistV2TickerCleanerData) {
+                binding.root.visible()
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    isFullSpan = true
+                }
+                binding.root.layoutParams = params
 
+                binding.run {
+                    wishlistv2TickerMaxQty.apply {
                         val tickerData = item.dataObject.tickerCleanerData
                         val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
-                        binding.root.visible()
                         when (tickerData.type) {
                             WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
                                 tickerType = Ticker.TYPE_ANNOUNCEMENT

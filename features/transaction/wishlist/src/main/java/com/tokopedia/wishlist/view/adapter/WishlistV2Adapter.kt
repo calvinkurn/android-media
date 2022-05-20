@@ -237,7 +237,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked)
+                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked, isShowCheckbox)
                 }
                 TYPE_DELETION_PROGRESS_WIDGET -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
