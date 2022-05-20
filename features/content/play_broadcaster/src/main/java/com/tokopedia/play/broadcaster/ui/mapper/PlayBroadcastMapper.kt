@@ -4,6 +4,7 @@ import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
@@ -121,4 +122,6 @@ interface PlayBroadcastMapper {
         response: GetInteractiveQuizChoiceDetailResponse,
         choiceIndex: Int
     ): QuizChoiceDetailUiModel
+
+    fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel>
 }

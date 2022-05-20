@@ -405,7 +405,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
             PlayBroadcastAction.QuizEnded -> handleQuizEnded()
             is PlayBroadcastAction.ClickQuizChoiceOption -> handleChoiceDetail(event.choice)
-            is PlayBroadcastAction.LoadMoreCurrentChoiceParticipant -> handleLoadMoreParticipant()
+            PlayBroadcastAction.LoadMoreCurrentChoiceParticipant -> handleLoadMoreParticipant()
+            PlayBroadcastAction.ClickGameResultWidget -> handleClickGameResultWidget()
 
             /**
              * Giveaway
@@ -415,7 +416,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.CreateGiveaway -> handleCreateGiveaway(
                 event.title, event.durationInMs
             )
-            is PlayBroadcastAction.OngoingWidgetClicked -> handleOngoingWidgetClicked()
+            is PlayBroadcastAction.ClickOngoingWidget -> handleClickOngoingWidget()
             PlayBroadcastAction.ClickBackOnChoiceDetail -> handleBackClickOnChoiceDetail()
             PlayBroadcastAction.DismissQuizDetailBottomSheet -> handleCloseQuizDetailBottomSheet()
             PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
@@ -1282,6 +1283,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
                 interactive
             }
+            delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            //TODO("Get Leaderboard")
+
+            _interactive.value = InteractiveUiModel.Unknown
         }) {
             _interactive.value = InteractiveUiModel.Unknown
         }
@@ -1342,13 +1347,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleOngoingWidgetClicked() {
+    private fun handleClickOngoingWidget() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             if (uiState.value.interactive is InteractiveUiModel.Quiz) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheet)
             }
         }) { err ->
             _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheetError(err))
+        }
+    }
+
+    private fun handleClickGameResultWidget() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            _uiEvent.emit(PlayBroadcastEvent.ShowLeaderboardBottomSheet)
+        }) { err ->
+            _uiEvent.emit(PlayBroadcastEvent.ShowLeaderboardBottomSheetError(err))
         }
     }
 

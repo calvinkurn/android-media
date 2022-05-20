@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
 /**
  * Created by meyta.taliti on 09/12/21.
@@ -38,4 +39,6 @@ interface PlayBroadcastInteractiveRepository {
         choiceId: String,
         cursor: String,
     ): QuizChoiceDetailUiModel
+
+    suspend fun getSellerLeaderboardWithSlot(channelId: String): List<PlayLeaderboardUiModel>
 }

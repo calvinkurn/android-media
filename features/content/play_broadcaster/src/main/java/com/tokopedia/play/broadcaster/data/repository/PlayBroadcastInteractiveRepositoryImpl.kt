@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.GetInteractiveQuizChoiceDetailsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.GetInteractiveQuizDetailsUseCase
@@ -18,6 +19,7 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
     private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
+    private val getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val getInteractiveQuizDetailsUseCase: GetInteractiveQuizDetailsUseCase,
     private val getInteractiveQuizChoiceDetailsUseCase: GetInteractiveQuizChoiceDetailsUseCase,
     private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
@@ -117,4 +120,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
 
             return@withContext mapper.mapChoiceDetail(response, choiceIndex)
         }
+
+    override suspend fun getSellerLeaderboardWithSlot(
+        channelId: String
+    ): List<PlayLeaderboardUiModel> = withContext(dispatchers.io) {
+        val response = getSellerLeaderboardUseCase.apply {
+            setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
+        }.executeOnBackground()
+
+        return@withContext mapper.mapLeaderBoardWithSlot(response)
+    }
 }

@@ -61,6 +61,7 @@ import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialo
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -126,10 +127,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
         override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-            parentViewModel.submitAction(PlayBroadcastAction.OngoingWidgetClicked)
+            parentViewModel.submitAction(PlayBroadcastAction.ClickOngoingWidget)
         }
     }) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
+
+    private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
+        override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+            parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
+        }
+    }) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val productTagView by viewComponent {
@@ -903,6 +910,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
+                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()

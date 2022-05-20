@@ -17,34 +17,33 @@ data class GetInteractiveQuizChoiceDetailResponse(
         val winners: List<Winner> = emptyList(),
         @SerializedName("participants")
         val participants: List<Participant> = emptyList(),
-    ) {
-        data class Choice(
-            @SerializedName("id")
-            val id: String = "",
-            @SerializedName("text")
-            val text: String = "",
-            @SerializedName("isCorrectAnswer")
-            val isCorrectAnswer: Boolean = false,
-            @SerializedName("participantCount")
-            val participantCount: Int = 0,
-        )
+    )
+    data class Choice(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("isCorrectAnswer")
+        val isCorrectAnswer: Boolean = false,
+        @SerializedName("participantCount")
+        val participantCount: Int = 0,
+    )
 
-        data class Winner(
-            @SerializedName("id")
-            val id: String = "",
-            @SerializedName("firstName")
-            val firstName: String = "",
-            @SerializedName("imageURL")
-            val imageURL: String = "",
-        )
+    data class Winner(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("firstName")
+        val firstName: String = "",
+        @SerializedName("imageURL")
+        val imageURL: String = "",
+    )
 
-        data class Participant(
-            @SerializedName("id")
-            val id: String = "",
-            @SerializedName("firstName")
-            val firstName: String = "",
-            @SerializedName("imageURL")
-            val imageURL: String = "",
-        )
-    }
+    data class Participant(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("firstName")
+        val firstName: String = "",
+        @SerializedName("imageURL")
+        val imageURL: String = "",
+    )
 }

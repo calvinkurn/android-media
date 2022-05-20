@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
@@ -35,10 +36,7 @@ import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
-import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -509,8 +507,54 @@ class PlayBroadcastUiMapper(
         }
     }
 
+    override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
+        return response.data.slots.map { slot ->
+            PlayLeaderboardUiModel(
+                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question,
+                winners = slot.winner.mapIndexed { index, winner ->
+                    PlayWinnerUiModel(
+                        rank = index+1,
+                        id = winner.userID,
+                        name = winner.userName,
+                        imageUrl = winner.imageUrl,
+                        allowChat = { false },
+                        topChatMessage = ""
+                    )
+                },
+                choices = slot.choices.mapIndexed { index, choice ->
+                QuizChoicesUiModel(
+                    index = index,
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        alphabet = generateAlphabetChoices(index),
+                        isCorrect = choice.isCorrectAnswer,
+                        count = choice.participantCount.toString(),
+                        showArrow = true
+                    )
+                )
+            },
+                otherParticipantText = slot.otherParticipantCountText,
+                otherParticipant = slot.otherParticipantCount.toLong(),
+                reward = slot.reward,
+                leaderBoardType = getLeaderboardType(slot.type)
+                )
+        }
+    }
+
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
     private val arrayOfChoices = ('A'..'D').toList()
+
+    /***
+     * Change to typename to make sure
+     */
+    private fun getLeaderboardType(leaderboardsResponse: String): LeadeboardType {
+        return when(leaderboardsResponse){
+            "PlayInteractiveSellerLeaderboardGiveaway" -> LeadeboardType.Giveaway
+            "PlayInteractiveSellerLeaderboardQuiz" -> LeadeboardType.Quiz
+            else -> LeadeboardType.Unknown
+        }
+    }
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"

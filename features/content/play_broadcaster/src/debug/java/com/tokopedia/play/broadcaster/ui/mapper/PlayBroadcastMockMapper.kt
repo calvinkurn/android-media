@@ -9,6 +9,7 @@ import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
@@ -398,6 +399,52 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     )
                 },
             )
+        }
+    }
+
+    override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
+        return response.data.slots.map { slot ->
+            PlayLeaderboardUiModel(
+                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question,
+                winners = slot.winner.mapIndexed { index, winner ->
+                    PlayWinnerUiModel(
+                        rank = index+1,
+                        id = winner.userID,
+                        name = winner.userName,
+                        imageUrl = winner.imageUrl,
+                        allowChat = { false },
+                        topChatMessage = ""
+                    )
+                },
+                choices = slot.choices.mapIndexed { index, choice ->
+                    QuizChoicesUiModel(
+                        index = index,
+                        id = choice.id,
+                        text = choice.text,
+                        type = PlayQuizOptionState.Participant(
+                            alphabet = generateAlphabetChoices(index),
+                            isCorrect = choice.isCorrectAnswer,
+                            count = choice.participantCount.toString(),
+                            showArrow = true
+                        )
+                    )
+                },
+                otherParticipantText = slot.otherParticipantCountText,
+                otherParticipant = slot.otherParticipantCount.toLong(),
+                reward = slot.reward,
+                leaderBoardType = getLeaderboardType(slot.type)
+            )
+        }
+    }
+
+    /***
+     * Change to typename to make sure
+     */
+    private fun getLeaderboardType(leaderboardsResponse: String): LeadeboardType {
+        return when(leaderboardsResponse){
+            "PlayInteractiveSellerLeaderboardGiveaway" -> LeadeboardType.Giveaway
+            "PlayInteractiveSellerLeaderboardQuiz" -> LeadeboardType.Quiz
+            else -> LeadeboardType.Unknown
         }
     }
 
