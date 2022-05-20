@@ -31,8 +31,8 @@ import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetai
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
-import com.tokopedia.review.feature.reviewreply.view.viewholder.ReviewReplyFeedbackImageViewHolder
 import com.tokopedia.review.stub.reviewdetail.view.activity.SellerReviewDetailActivityStub
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.viewholder.ReviewMediaImageThumbnailViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -216,12 +216,12 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
             firstView(
                 Matchers.allOf(
                     isDescendantOfA(withId(R.id.rvRatingDetail)),
-                    withId(R.id.rvItemAttachmentFeedback),
+                    withId(R.id.rv_review_media_thumbnail),
                     isDisplayed()
                 )
             )
         ).perform(
-            RecyclerViewActions.actionOnItemAtPosition<ReviewReplyFeedbackImageViewHolder>(
+            RecyclerViewActions.actionOnItemAtPosition<ReviewMediaImageThumbnailViewHolder>(
                 0,
                 click()
             )

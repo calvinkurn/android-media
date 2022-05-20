@@ -1,17 +1,16 @@
 package com.tokopedia.review.analytics.seller.reviewreply
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.CassavaTestFixture
 import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.common.Utils
-import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewResponse
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyTemplateListResponse
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.stub.reviewreply.view.activity.SellerReviewReplyActivityStub
@@ -58,12 +57,6 @@ class SellerReviewReplyCassavaTest : CassavaTestFixture() {
     private val mockFeedbackUiModel: FeedbackUiModel by lazy {
         InboxReviewMapper.mapFeedbackInboxToFeedbackUiModel(mockFeedbackItem)
     }
-    private val cacheManager: SaveInstanceCacheManager by lazy {
-        SaveInstanceCacheManager(context = context, generateObjectId = true).apply {
-            put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, mockFeedbackUiModel)
-            put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, mockProductReplyUiModel)
-        }
-    }
 
     override fun setup() {
         super.setup()
@@ -71,9 +64,10 @@ class SellerReviewReplyCassavaTest : CassavaTestFixture() {
         mockResponses()
         val intent = SellerReviewReplyActivityStub.createIntent(
             context,
-            cacheManager.id.orEmpty(),
             userSession.shopId,
-            mockFeedbackItem.replyText.isBlank()
+            mockFeedbackItem.replyText.isBlank(),
+            mockProductReplyUiModel,
+            mockFeedbackUiModel
         )
         activityRule.launchActivity(intent)
     }
