@@ -50,7 +50,7 @@ import javax.inject.Inject
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
     PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
 
-    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_widget_sample_feed) }
+    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_play_feed) }
     private val swipeToRefresh by lazy { rvWidget?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
 
     private lateinit var adapter: VideoTabAdapter
@@ -126,7 +126,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_play_widget_sample_feed, container, false)
+        return inflater.inflate(R.layout.fragment_play_feed, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
