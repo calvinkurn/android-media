@@ -105,6 +105,9 @@ class FlightPassengerInfoValidator @Inject constructor() {
     }
 
     companion object {
+        const val MIN_PASSPORT_NUMBER = 6
+        const val MAX_PASSPORT_NUMBER = 10
+
         private const val MAX_PASSENGER_FIRST_NAME_LENGTH = 30
         private const val MAX_PASSENGER_LAST_NAME_LENGTH = 18
         private const val MIN_PASSENGER_LAST_NAME = 2

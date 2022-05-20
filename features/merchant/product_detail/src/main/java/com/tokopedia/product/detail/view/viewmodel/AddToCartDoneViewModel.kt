@@ -13,7 +13,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -60,14 +61,14 @@ class AddToCartDoneViewModel @Inject constructor(
         }
     }
 
-    private fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
+    private suspend fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
         try {
-            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+            val requestParams = GetRecommendationRequestParam(
                     pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
                     pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
                     productIds = arrayListOf(productId)
-            )).toBlocking()
-            return data.first()?: emptyList()
+            )
+            return getRecommendationUseCase.getData(requestParams)
         } catch (e: Throwable) {
             Timber.d(e)
             throw e

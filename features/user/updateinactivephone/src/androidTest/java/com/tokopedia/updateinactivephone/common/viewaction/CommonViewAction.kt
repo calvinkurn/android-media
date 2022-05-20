@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.updateinactivephone.common.viewmatcher.withRecyclerView
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 
 fun isDisplayed(resId: Int) {
     onView(withId(resId))
@@ -42,8 +43,8 @@ fun clickOnButton(resId: Int) {
         .perform(click())
 }
 
-fun clickOnButtonWithText(textButton: String) {
-    onView(withText(textButton))
+fun clickOnButtonWithTextAndId(textButton: String, resId: Int) {
+    onView(allOf(withText(textButton), withId(resId)))
         .check(matches(isDisplayed()))
         .perform(click())
 }
@@ -78,22 +79,4 @@ fun setText(resId: Int, text: String) {
 fun simulateOnBackPressed() {
     Thread.sleep(2000)
     Espresso.pressBackUnconditionally()
-}
-
-
-fun clickChildViewWithId(id: Int): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View>? {
-            return null
-        }
-
-        override fun getDescription(): String {
-            return "Click on a child view with specified id."
-        }
-
-        override fun perform(uiController: UiController?, view: View) {
-            val v: View = view.findViewById(id)
-            v.performClick()
-        }
-    }
 }

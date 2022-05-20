@@ -265,7 +265,8 @@ class InspirationCarouselViewHolder(
                         imageUrl = it.imageUrl,
                 ) },
                 shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges()
+                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+                isTopAds = isOrganicAds,
         )
     }
 

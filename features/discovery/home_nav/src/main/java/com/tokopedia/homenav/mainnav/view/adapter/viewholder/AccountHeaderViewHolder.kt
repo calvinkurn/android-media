@@ -1,38 +1,34 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
-import android.content.Context
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller.SellerAdapter
 import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.view.adapter.typefactory.SellerTypeFactoryImpl
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller.SellerSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
-import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,37 +47,29 @@ class AccountHeaderViewHolder(itemView: View,
     private lateinit var layoutNonLogin: ConstraintLayout
     private lateinit var layoutLoginHeader: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
+    private var adapter: SellerAdapter? = null
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
-        const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
-        private const val GREETINGS_0_2 = "Selamat tidur~"
-        private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
-        private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
-        private const val GREETINGS_10_14 =  "Udah makan siang?"
-        private const val GREETINGS_15_17 = "Selamat sore! Ngopi, kuy?"
-        private const val GREETINGS_18_23 = "Jangan lupa makan malam~"
-        private const val GREETINGS_DEFAULT = "Hai Toppers"
+        private const val GREETINGS_5_10 = "Pagi! Udah sarapan?"
+        private const val GREETINGS_10_16 =  "Semangat jalani hari ini!"
+        private const val GREETINGS_16_21 =  "Nyantai sambil belanja, yuk~"
+        private const val GREETINGS_22_5 =  " Lagi cari apa nih kamu?"
 
-        private const val HOURS_0 = 0
-        private const val HOURS_2 = 2
-        private const val HOURS_3 = 3
-        private const val HOURS_4 = 4
         private const val HOURS_5 = 5
         private const val HOURS_9 = 9
         private const val HOURS_10 = 10
-        private const val HOURS_14 = 14
         private const val HOURS_15 = 15
-        private const val HOURS_17 = 17
-        private const val HOURS_18 = 18
-        private const val HOURS_23 = 23
+        private const val HOURS_16 = 16
+        private const val HOURS_21 = 21
 
         private const val ANIMATION_DURATION_MS: Long = 300
         private const val GREETINGS_DELAY = 1000L
 
         private const val DEFAULT_BALANCE_VALUE = "Rp0"
         private const val DEFAULT_BALANCE_POINTS_VALUE = "0 Coins"
+        private const val TOTAL_GRID_SELLER = 2
     }
 
     override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
@@ -120,6 +108,7 @@ class AccountHeaderViewHolder(itemView: View,
         layoutLogin.visibility = View.VISIBLE
         val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
         val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrEmoji: Typography = layoutLoginHeader.findViewById(R.id.usr_emoji)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
@@ -129,15 +118,9 @@ class AccountHeaderViewHolder(itemView: View,
         val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
         val usrSaldoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_saldo_badge_shimmer)
         val usrOvoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_ovo_badge_shimmer)
+
         //shop
-        val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
-        val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
-        val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
-        val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
-        val btnTryAgainShopInfo: CardView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
-        val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
-        val arrowRight : IconUnify = layoutLogin.findViewById(R.id.image_arrow_right)
-        val containerShop : ConstraintLayout = layoutLogin.findViewById(R.id.container_shop)
+        val recyclerSeller : RecyclerView = layoutLogin.findViewById(R.id.recycler_seller)
 
         val sectionSaldo: View = layoutLoginHeader.findViewById(R.id.section_header_saldo)
         val sectionWallet: View = layoutLoginHeader.findViewById(R.id.section_header_wallet)
@@ -159,10 +142,7 @@ class AccountHeaderViewHolder(itemView: View,
         /**
          * Reset button state for error handling
          */
-        btnTryAgainShopInfo.gone()
         btnTryAgain.gone()
-        shimmerShopInfo.gone()
-        shimmerTryAgainShopInfo.gone()
 
         if (
             !element.isCacheData && (element.profileDataModel.isGetUserNameError ||
@@ -176,8 +156,6 @@ class AccountHeaderViewHolder(itemView: View,
          * Button for error handling
          */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
-
-        btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
 
         /**
          * Set user profile data
@@ -193,9 +171,10 @@ class AccountHeaderViewHolder(itemView: View,
                     tvName,
                     getCurrentGreetings(),
                     profileData.userName,
-                    usrBadge,
-                    getCurrentGreetingsIconStringUrl(),
-                    element.profileMembershipDataModel.badge
+                    usrEmoji,
+                    getCurrentGreetingsIconStringEmoji(),
+                    element.profileMembershipDataModel.badge,
+                    usrBadge
                 )
             }
         }
@@ -323,74 +302,39 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         /**
-         * Handling seller info value
+         * Handling seller and affiliate info value
          */
-        element.profileSellerDataModel.let { profileSeller ->
-            if (profileSeller.isGetShopLoading) {
-                tvShopInfo.gone()
-                tvShopTitle.gone()
-                btnTryAgainShopInfo.gone()
-                tvShopNotif.gone()
-                arrowRight.gone()
-                shimmerShopInfo.visible()
-                shimmerTryAgainShopInfo.visible()
-            } else if (profileSeller.isGetShopError) {
-                btnTryAgainShopInfo.visible()
-                tvShopInfo.visible()
-                tvShopTitle.gone()
-                shimmerShopInfo.gone()
-                shimmerTryAgainShopInfo.gone()
-                tvShopNotif.gone()
-                arrowRight.gone()
-                tvShopInfo.text = getString(R.string.error_state_shop_info)
-            } else if (!profileSeller.isGetShopError) {
-                btnTryAgainShopInfo.gone()
-                shimmerShopInfo.gone()
-                shimmerTryAgainShopInfo.gone()
-                tvShopInfo.visible()
-                tvShopTitle.visible()
-                tvShopNotif.visible()
-                arrowRight.visible()
+        setSellerAndAffiliate(element, recyclerSeller)
+    }
 
-                val shopTitle: String
-                val shopInfo: CharSequence
-                if (!profileSeller.hasShop){
-                    shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                } else {
-                    shopTitle = ""
-                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                }
-                tvShopTitle.run {
-                    visible()
-                    text = shopTitle
-                }
-                tvShopInfo.run {
-                    visible()
-                    text = shopInfo
-                }
-                containerShop.setOnClickListener {
-                    shopClicked(profileSeller, it.context)
-                }
-                tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                tvShopInfo.setWeight(Typography.BOLD)
-                if (profileSeller.shopOrderCount > 0) {
-                    tvShopNotif.visible()
-                    tvShopNotif.setNotification(profileSeller.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
-                } else {
-                    tvShopNotif.gone()
-                }
-            }
+    private fun valuateRecyclerViewDecoration(recyclerSeller: RecyclerView) {
+        if (recyclerSeller.itemDecorationCount == 0) recyclerSeller.addItemDecoration(
+            SellerSpacingDecoration()
+        )
+        val layoutManager = GridLayoutManager(itemView.context, TOTAL_GRID_SELLER)
+        recyclerSeller.layoutManager = layoutManager
+    }
+
+    private fun setPositionSellerAndAffiliate(
+        element: AccountHeaderDataModel,
+        listSellers: MutableList<Visitable<*>>
+    ) {
+        if (element.profileAffiliateDataModel.isRegister && !element.profileSellerDataModel.hasShop && !element.profileSellerDataModel.isGetShopError) {
+            listSellers.add(element.profileAffiliateDataModel)
+            listSellers.add(element.profileSellerDataModel)
+        } else {
+            listSellers.add(element.profileSellerDataModel)
+            listSellers.add(element.profileAffiliateDataModel)
         }
     }
 
-    private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
-        if (profileSeller.hasShop)
-            onShopClicked(profileSeller.canGoToSellerAccount)
-        else {
-            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
-        }
+    private fun setSellerAndAffiliate(element: AccountHeaderDataModel, recyclerSeller: RecyclerView) {
+        val listSellers = mutableListOf<Visitable<*>>()
+        setPositionSellerAndAffiliate(element, listSellers)
+        valuateRecyclerViewDecoration(recyclerSeller)
+        val typeFactoryImpl = SellerTypeFactoryImpl(mainNavListener)
+        adapter = SellerAdapter(listSellers, typeFactoryImpl)
+        recyclerSeller.adapter = adapter
     }
 
     private fun renderNonLoginState() {
@@ -411,54 +355,51 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getCurrentGreetings() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> GREETINGS_0_2
-            in HOURS_3..HOURS_4 -> GREETINGS_3_4
-            in HOURS_5..HOURS_9 -> GREETINGS_5_9
-            in HOURS_10..HOURS_14 -> GREETINGS_10_14
-            in HOURS_15..HOURS_17 -> GREETINGS_15_17
-            in HOURS_18..HOURS_23 -> GREETINGS_18_23
-            else -> GREETINGS_DEFAULT
+            in HOURS_5..HOURS_9 -> GREETINGS_5_10
+            in HOURS_10..HOURS_15 -> GREETINGS_10_16
+            in HOURS_16..HOURS_21 -> GREETINGS_16_21
+            else -> GREETINGS_22_5
         }
     }
 
-    private fun getCurrentGreetingsIconStringUrl() : String {
+    private fun getCurrentGreetingsIconStringEmoji() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in HOURS_0..HOURS_2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
-            in HOURS_3..HOURS_4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
-            in HOURS_5..HOURS_9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
-            in HOURS_10..HOURS_14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
-            in HOURS_15..HOURS_17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
-            in HOURS_18..HOURS_23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
-            else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
-        }
-    }
-
-    private fun onShopClicked(canGoToSellerMenu: Boolean) {
-        TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        if (canGoToSellerMenu) {
-            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
-        } else {
-            LocationAdminDialog(itemView.context).show()
+            in HOURS_5..HOURS_9 -> "\uD83C\uDF5E"
+            in HOURS_10..HOURS_15 -> "\uD83D\uDE4C"
+            in HOURS_16..HOURS_21 -> "\uD83D\uDECD️"
+            else -> "\uD83E\uDD14"
         }
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
+    private fun configureNameAndBadgeSwitcher(
+        tvName: Typography,
+        greetingString: String,
+        nameString: String,
+        tvBadge: Typography,
+        badgeEmojiString: String,
+        badgeUrl: String,
+        imgBadge: ImageUnify
+    ) {
         if (needToSwitchText) {
             tvName.text = greetingString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeGreetingsUrl)
+            tvBadge.visible()
+            imgBadge.invisible()
+            tvBadge.text = badgeEmojiString
             launch {
                 delay(GREETINGS_DELAY)
+                tvBadge.invisible()
+                imgBadge.visible()
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
-                ivBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
+                imgBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)
             }
         } else {
             tvName.text = nameString
-            ivBadge.visible()
-            ivBadge.loadImage(badgeUrl)
+            tvBadge.invisible()
+            imgBadge.visible()
+            imgBadge.loadImage(badgeUrl)
         }
     }
 

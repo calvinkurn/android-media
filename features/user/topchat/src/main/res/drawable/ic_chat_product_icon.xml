@@ -1,10 +1,3 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="16dp"
-    android:height="16dp"
-    android:viewportWidth="16"
-    android:viewportHeight="16">
-  <path
-      android:pathData="M14,4.9998H2V3.9998C2,3.2638 2.5973,2.6665 3.3333,2.6665H12.6667C13.4027,2.6665 14,3.2638 14,3.9998V4.9998ZM2.6667,5.9998H13.3333V11.9998C13.3333,12.7358 12.736,13.3332 12,13.3332H4C3.264,13.3332 2.6667,12.7358 2.6667,11.9998V5.9998ZM6.5,8.1665H9.5C9.776,8.1665 10,7.9425 10,7.6665C10,7.3905 9.776,7.1665 9.5,7.1665H6.5C6.224,7.1665 6,7.3905 6,7.6665C6,7.9425 6.224,8.1665 6.5,8.1665Z"
-      android:fillColor="@color/Unify_N400"
-      android:fillType="evenOdd"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="16dp" android:height="16dp" android:viewportWidth="16" android:viewportHeight="16">
+    <path android:pathData="M14 5H2V4c0-0.736 0.597-1.333 1.333-1.333h9.334C13.403 2.667 14 3.264 14 4v1zM2.667 6h10.666v6c0 0.736-0.597 1.333-1.333 1.333H4c-0.736 0-1.333-0.597-1.333-1.333V6zM6.5 8.166h3c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5s0.224 0.5 0.5 0.5z" android:fillColor="@color/Unify_N400" android:fillType="evenOdd"/>
 </vector>

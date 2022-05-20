@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:paddingLeft="@dimen/unify_space_16"
+    android:paddingRight="@dimen/unify_space_16"
+    android:layout_marginBottom="@dimen/unify_space_24"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/fragmentProfileItemTitle"
+        android:layout_weight="0.3"
+        android:layout_marginEnd="@dimen/unify_space_32"
+        android:layout_width="0dp"
+        app:use_gradient="true"
+        app:corners="24"
+        android:layout_height="wrap_content"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/fragmentProfileItemValue"
+        android:layout_weight="0.7"
+        android:maxLines="1"
+        app:use_gradient="true"
+        android:layout_width="0dp"
+        app:corners="24"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
