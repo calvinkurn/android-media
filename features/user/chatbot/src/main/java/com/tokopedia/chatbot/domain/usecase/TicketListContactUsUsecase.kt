@@ -11,7 +11,7 @@ class TicketListContactUsUsecase @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
-    suspend fun getChatbotUploadPolicy(): GraphqlResponse {
+    suspend fun getTicketList(): GraphqlResponse {
         val gql = MultiRequestGraphqlUseCase()
         val request = GraphqlRequest(
             requestQuery,

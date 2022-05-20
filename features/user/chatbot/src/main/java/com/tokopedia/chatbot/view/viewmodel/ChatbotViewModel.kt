@@ -25,7 +25,7 @@ class ChatbotViewModel @Inject constructor(
     fun getTicketList(){
         launchCatchError(
             block = {
-                val response = ticketListContactUsUseCase.getChatbotUploadPolicy()
+                val response = ticketListContactUsUseCase.getTicketList()
                 val ticketList = response.getData<InboxTicketListResponse>(InboxTicketListResponse::class.java)
                 _ticketList.value = Success(ticketList)
             },

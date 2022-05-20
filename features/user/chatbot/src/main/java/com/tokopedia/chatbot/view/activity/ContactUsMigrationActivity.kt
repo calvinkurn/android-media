@@ -1,10 +1,7 @@
 package com.tokopedia.chatbot.view.activity
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.StyleSpan
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -26,7 +23,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.bottom_sheet_go_to_help.view.*
 import javax.inject.Inject
 
@@ -44,7 +40,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chatbot_inbox_bsactivity)
+        setContentView(R.layout.activity_chatbot_inbox_migration)
 
         initInjector()
         initViewModel()
@@ -127,13 +123,10 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun setList(contentList: List<String>, adapter: ContactUsMigrationAdapter) {
-        var newList = mutableListOf<String>()
+        var newList = mutableListOf<Pair<Int,String>>()
 
         contentList.forEachIndexed{ index, content ->
-            val spannableString = SpannableString("${index+1}. ")
-            spannableString.setSpan(StyleSpan(Typeface.BOLD),0,3,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val data = spannableString.toString() + content
-            newList.add(data)
+            newList.add(Pair(index+1,content))
         }
 
         adapter.setList(newList)
