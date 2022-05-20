@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/master_prod_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/shimmer_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prod_image_shimmer"
+                android:layout_width="@dimen/dp_104"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prod_label_shimmer"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/disco_dp_20"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/prod_image_shimmer"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prod_line1_shimmer"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/disco_dp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/prod_image_shimmer"
+                app:layout_constraintTop_toBottomOf="@+id/prod_label_shimmer"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prod_line2_shimmer"
+                android:layout_width="@dimen/dp_88"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/disco_dp_20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/prod_image_shimmer"
+                app:layout_constraintTop_toBottomOf="@+id/prod_line1_shimmer"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/prod_line3_shimmer"
+                android:layout_width="@dimen/unify_space_64"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/disco_dp_20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/prod_image_shimmer"
+                app:layout_constraintTop_toBottomOf="@+id/prod_line2_shimmer"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+
+                android:id="@+id/prod_line4_shimmer"
+                android:layout_width="@dimen/disco_dp_112"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/disco_dp_20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/prod_image_shimmer"
+                app:layout_constraintTop_toBottomOf="@+id/prod_line3_shimmer"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/three_dot_shimmer"
+                android:layout_width="@dimen/dp_34"
+                android:layout_height="@dimen/disco_dp_20"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prod_image_shimmer"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/three_dot_atc_shimmer"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/disco_dp_20"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/three_dot_shimmer"
+                app:layout_constraintTop_toBottomOf="@+id/prod_image_shimmer"
+                app:loader_type="rect" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <FrameLayout
+        android:id="@+id/master_prod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/viewEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
+import com.tokopedia.thankyou_native.data.mapper.StoreItemKey
 import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.query.GQL_GYRO_RECOMMENDATION
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,11 +57,11 @@ class GyroEngineRequestUseCase @Inject constructor(
         Gson().toJson(
             FeatureEngineRequest(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                FeatureEngineRequestParameters(
-                    true.toString(), thanksPageData.amount.toString(),
-                    mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                    isDonation(thanksPageData).toString(), userSession.userId
-                ),
+                FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
+                        mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
+                        isDonation(thanksPageData).toString(), userSession.userId,
+                        isMarketplace(thanksPageData).toString(), isGoldMerchant(thanksPageData).toString(),
+                        isOfficialStore(thanksPageData).toString()),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )
@@ -97,6 +98,21 @@ class GyroEngineRequestUseCase @Inject constructor(
         }
         return false
     }
+
+    private fun isMarketplace(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.MARKETPLACE || it.storeType == StoreItemKey.MARKETPLACE_ALTERNATE
+        }
+
+    private fun isGoldMerchant(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.GOLD_MERCHANT || it.storeType == StoreItemKey.GOLD_MERCHANT_ALTERNATE
+        }
+
+    private fun isOfficialStore(thanksPageData: ThanksPageData) =
+        thanksPageData.shopOrder.any {
+            it.storeType == StoreItemKey.OFFICIAL_STORE || it.storeType == StoreItemKey.OFFICIAL_STORE_ALTERNATE
+        }
 
     companion object {
         const val PARAM_REQUEST = "request"

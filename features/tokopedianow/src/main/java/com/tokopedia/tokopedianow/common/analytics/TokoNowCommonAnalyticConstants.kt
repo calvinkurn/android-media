@@ -15,6 +15,8 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
         const val EVENT_CLICK_PG = "clickPG"
+        const val EVENT_VIEW_GROWTH_IRIS = "viewGrowthIris"
+        const val EVENT_CLICK_GROWTH = "clickGrowth"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_CAMPAIGN_CODE = "campaignCode"
         const val EVENT_WAREHOUSE_ID = "warehouseId"
@@ -73,6 +75,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PRODUCTS = "products"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_WAREHOUSE_ID = "warehouseId"
+        const val KEY_CHANNEL_ID = "channelId"
+        const val KEY_CAMPAIGN_CODE = "campaignCode"
     }
 
     object VALUE {

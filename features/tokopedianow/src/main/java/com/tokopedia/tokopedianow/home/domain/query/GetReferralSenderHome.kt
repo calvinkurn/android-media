@@ -11,7 +11,14 @@ object GetReferralSenderHome {
                 message
                 reason
             }
+            reward {
+                maxReward
+            }
             sharingMetadata {
+                ogImage
+                ogTitle
+                ogDescription
+                textDescription
                 sharingURL
             }
           }

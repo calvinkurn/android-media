@@ -14,8 +14,55 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
@@ -25,11 +72,14 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -64,7 +114,7 @@ class SellerHomeViewModelTest {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getTickerUseCase: GetTickerUseCase
+    lateinit var getTickerUseCase: GetSellerHomeTickerUseCase
 
     @RelaxedMockK
     lateinit var getLayoutUseCase: GetLayoutUseCase
@@ -191,12 +241,8 @@ class SellerHomeViewModelTest {
     @Test
     fun `get ticker should success`() = runBlocking {
         val tickerList = listOf(TickerItemUiModel())
-        val pageName = "seller"
-
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
-
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } returns tickerList
 
         viewModel.getTicker()
@@ -204,21 +250,100 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         Assertions.assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
+    fun `get ticker when cache enabled then fetch from cache should success result`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheResult = listOf(TickerItemUiModel())
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    cacheResult
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Success(cacheResult)
+            viewModel.homeTicker.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get ticker when cache enabled then throw exception should return remote exception`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheException = Exception("from cache")
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    throw cacheException
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Fail(networkException)
+            viewModel.homeTicker.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
     fun `should failed when get tickers then throws exception`() = runBlocking {
         val throwable = RuntimeException("")
-        val pageName = "seller"
-
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } throws throwable
 
         viewModel.getTicker()
@@ -226,7 +351,7 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         assert(viewModel.homeTicker.value is Fail)
@@ -2718,12 +2843,6 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
-    }
-
-    private fun verifyGetTickerResultFlowCalled() {
-        coVerify {
-            getTickerUseCase.getResultFlow()
-        }
     }
 
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
