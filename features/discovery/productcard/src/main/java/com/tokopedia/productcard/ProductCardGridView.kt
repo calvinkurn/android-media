@@ -181,7 +181,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         cartExtension.setProductModel(productCardModel)
-        cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         video.setVideoURL(productCardModel.customVideoURL)
 
         cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
@@ -266,5 +265,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setOnClickListener(l: OnClickListener?) {
         super.setOnClickListener(l)
         cardViewProductCard?.setOnClickListener(l)
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(l)
     }
 }
