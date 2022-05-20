@@ -63,6 +63,7 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
                 myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
             }
             else{
+                defaultDesign = DESIGN_2
                 layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
                         / defaultDesign).toInt()
                 val aspectRatio = 2 / 1
