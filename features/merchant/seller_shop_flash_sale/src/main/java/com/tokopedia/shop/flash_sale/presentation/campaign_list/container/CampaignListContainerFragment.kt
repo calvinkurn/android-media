@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.seller_shop_flash_sale.databinding.FragmentCampaignListBinding
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,7 +27,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
 
     }
 
-    private var binding by autoClearedNullable<FragmentCampaignListBinding>()
+    private var binding by autoClearedNullable<SsfsFragmentCampaignListContainerBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -48,7 +48,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCampaignListBinding.inflate(inflater, container, false)
+        binding = SsfsFragmentCampaignListContainerBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

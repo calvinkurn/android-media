@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.shop.flash_sale.di.module.ShopFlashSaleModule
 import com.tokopedia.shop.flash_sale.di.module.ShopFlashSaleViewModelModule
 import com.tokopedia.shop.flash_sale.di.scope.ShopFlashSaleScope
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListActivity
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListContainerFragment
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListFragment
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListActivity
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 import com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationActivity
 import com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationFragment
 import dagger.Component

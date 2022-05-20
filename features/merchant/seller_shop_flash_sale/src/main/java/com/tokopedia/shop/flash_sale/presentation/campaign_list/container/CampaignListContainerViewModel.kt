@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

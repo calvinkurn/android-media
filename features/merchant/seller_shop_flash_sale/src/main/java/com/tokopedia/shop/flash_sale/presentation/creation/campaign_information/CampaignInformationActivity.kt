@@ -20,7 +20,7 @@ class CampaignInformationActivity: BaseSimpleActivity() {
     }
 
 
-    override fun getLayoutRes() = R.layout.activity_campaign_information
+    override fun getLayoutRes() = R.layout.ssfs_activity_campaign_information
     override fun getNewFragment() = CampaignInformationFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
@@ -35,6 +35,6 @@ class CampaignInformationActivity: BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-        setContentView(R.layout.activity_campaign_information)
+        setContentView(R.layout.ssfs_activity_campaign_information)
     }
 }
