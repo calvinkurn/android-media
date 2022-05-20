@@ -49,6 +49,10 @@ class RechargeOrderDetailViewModel @Inject constructor(
     val emoneyVoidResponse: LiveData<Result<RechargeEmoneyVoidResponse>>
         get() = _emoneyVoidResponse
 
+    fun resetOrderDetailData() {
+        _orderDetailData.value = null
+    }
+
     fun fetchData(requestParams: RechargeOrderDetailRequest) {
         launchCatchError(block = {
             val orderDetailValue = orderDetailUseCase.execute(requestParams)

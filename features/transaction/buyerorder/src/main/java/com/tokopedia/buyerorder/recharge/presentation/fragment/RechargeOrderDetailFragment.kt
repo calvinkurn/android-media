@@ -344,6 +344,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (result.data.isNeedRefresh) {
                         result.data.isNeedRefresh = false
+                        rechargeViewModel.resetOrderDetailData()
                         activity?.recreate()
                     }
                 }

@@ -380,4 +380,13 @@ class RechargeOrderDetailViewModelTest {
         assertEquals(topAdsData, bestSellerDataModel)
     }
 
+    @Test
+    fun onResetOrderDetailData() {
+        // when
+        viewModel.resetOrderDetailData()
+
+        // then
+        assert(viewModel.orderDetailData.value == null)
+    }
+
 }
