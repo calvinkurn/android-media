@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 
 class CampaignListActivity: BaseSimpleActivity() {
 
@@ -22,7 +21,7 @@ class CampaignListActivity: BaseSimpleActivity() {
 
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_list
-    override fun getNewFragment() = CampaignListFragment.newInstance()
+    override fun getNewFragment() = CampaignListContainerFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {

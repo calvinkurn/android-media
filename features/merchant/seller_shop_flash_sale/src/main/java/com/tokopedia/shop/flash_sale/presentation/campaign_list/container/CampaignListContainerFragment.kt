@@ -64,8 +64,8 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         viewModel.getCampaignAttribute(5, 2022)
         viewModel.createCampaign(
             "campaign-test",
-            GregorianCalendar(2022, 6, 10, 13, 0, 0).time,
-            GregorianCalendar(2022, 6, 15, 13, 0, 0).time
+            GregorianCalendar(2022, 7, 10, 13, 0, 0).time,
+            GregorianCalendar(2022, 7, 15, 13, 0, 0).time
         )
     }
 
