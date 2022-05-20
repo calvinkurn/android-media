@@ -41,7 +41,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         const val PARAM_Q = "q"
         const val PARAM_URL_PARAM = "url_param"
         const val PARAM_PAGE_NAME = "page_name"
-
+        const val IRIS_SESSION_ID = "iris_session_id"
         const val DEFAULT_DEVICE = "android"
         const val DEFAULT_SRC = "recom_landing_page"
         const val DEFAULT_PAGE_NAME_GOOGLE = "im_google"
@@ -102,7 +102,7 @@ class GetTopadsIsAdsUseCase @Inject constructor(
 
         var urlParamWithIris = urlParam
         if (urlParamWithIris.isNotBlank())
-            urlParamWithIris += "&iris_session_id=${irisSession.getSessionId()}"
+            urlParamWithIris += "&${IRIS_SESSION_ID}=${irisSession.getSessionId()}"
 
         params.putString(PARAM_PRODUCT_ID, productId)
         params.putString(PARAM_PRODUCT_KEY, productKey)
