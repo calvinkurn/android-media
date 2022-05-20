@@ -469,7 +469,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productName = homeLeftCarouselProductCardUiModel.productCardModel.productName,
             price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }
         ).apply {
-            putString(KEY_DIMENSION_40, "{'list': '/tokonow - mixleft - carousel - ${homeLeftCarouselProductCardUiModel.recommendationType} - ${homeLeftCarouselProductCardUiModel.channelPageName} - ${homeLeftCarouselProductCardUiModel.channelHeaderName}'}")
+            putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${homeLeftCarouselProductCardUiModel.recommendationType} - ${homeLeftCarouselProductCardUiModel.channelPageName} - ${homeLeftCarouselProductCardUiModel.channelHeaderName}'}")
             putString(KEY_DIMENSION_45, cartId)
             putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
             putString(KEY_QUANTITY, quantity)

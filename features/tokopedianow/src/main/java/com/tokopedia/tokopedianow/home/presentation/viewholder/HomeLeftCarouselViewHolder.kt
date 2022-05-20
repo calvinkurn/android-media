@@ -129,7 +129,14 @@ class HomeLeftCarouselViewHolder (
         setHeightRecyclerView()
         rvProduct?.adapter = adapter
         submitList(element)
+        setHeightProductCard(element)
+    }
 
+    private fun submitList(element: HomeLeftCarouselUiModel) {
+        adapter.submitList(element.productList)
+    }
+
+    private fun setHeightProductCard(element: HomeLeftCarouselUiModel) {
         launch {
             try {
                 val productCardModels = element.productList.filterIsInstance<HomeLeftCarouselProductCardUiModel>()
@@ -139,10 +146,6 @@ class HomeLeftCarouselViewHolder (
                 throwable.printStackTrace()
             }
         }
-    }
-
-    private fun submitList(element: HomeLeftCarouselUiModel) {
-        adapter.submitList(element.productList)
     }
 
     private fun calculateParallaxImage(dx: Int) {
