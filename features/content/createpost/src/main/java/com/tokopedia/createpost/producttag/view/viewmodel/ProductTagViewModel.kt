@@ -20,6 +20,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.user.session.UserSessionInterface
@@ -471,9 +472,21 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleTickerClicked() {
-        if(_globalSearchProduct.value.ticker.query.isEmpty()) return
+        val tickerParam = _globalSearchProduct.value.ticker.query
+        if(tickerParam.isEmpty()) return
 
-        /** TODO: refresh global search && apply additional param from query */
+        val query = _globalSearchProduct.value.param.query
+        val newParam = initParam(query).apply {
+            tickerParam.toMapParam().forEach {
+                addParam(it.key, it.value)
+            }
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleCloseTicker() {
