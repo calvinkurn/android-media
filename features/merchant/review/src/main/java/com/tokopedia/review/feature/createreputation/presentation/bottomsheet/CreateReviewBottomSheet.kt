@@ -140,6 +140,13 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         setupDismissBehavior()
     }
 
+    override fun onPause() {
+        super.onPause()
+        bottomSheetHandler.dismissOvoIncentiveBottomSheet()
+        bottomSheetHandler.dismissCreateReviewTextAreaBottomSheet()
+        bottomSheetHandler.dismissCreateReviewPostSubmitBottomSheet()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activityResultHandler.handleResult(requestCode, resultCode, data)
     }
