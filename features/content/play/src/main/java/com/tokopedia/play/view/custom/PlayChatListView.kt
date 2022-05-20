@@ -53,7 +53,10 @@ class PlayChatListView : ConstraintLayout {
         adapterObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 csDownView.showIndicatorRed(rvChatList.canScrollDown)
-                if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
+//                if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
+//                    scrollToLatest()
+//                }
+                if (!csDownView.isVisible || chatAdapter.currentList.lastOrNull()?.isSelfMessage == true) {
                     scrollToLatest()
                 }
             }
@@ -65,6 +68,11 @@ class PlayChatListView : ConstraintLayout {
                     if (isChatPositionBeyondOffset(recyclerView)) csDownView.show()
                     else csDownView.hide()
                 } else if (recyclerView.scrollState != RecyclerView.SCROLL_STATE_SETTLING) {
+                    /**
+                     * TODO("If this is deleted, when scrolling to the latest from any position,
+                     *  the indicator will show, but if this is kept, the indicator will be hide when
+                     *  user is at the top of the chat list and suddenly the topmost is cleared")
+                     */
                     csDownView.apply { showIndicatorRed(false) }.hide()
                 } else if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
                     if (!recyclerView.canScrollDown) csDownView.hide()
@@ -94,11 +102,11 @@ class PlayChatListView : ConstraintLayout {
     }
 
     fun showNewChat(chat: PlayChatUiModel) {
-        chatAdapter.addChat(chat)
+//        chatAdapter.addChat(chat)
     }
 
     fun setChatList(chatList: List<PlayChatUiModel>) {
-        chatAdapter.setChatList(chatList)
+        chatAdapter.submitList(chatList)
     }
 
     fun setTopMask(height: Float, animate: Boolean) {

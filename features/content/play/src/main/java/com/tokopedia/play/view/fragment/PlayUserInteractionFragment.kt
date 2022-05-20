@@ -651,13 +651,15 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeChannelInfo()
-        observeNewChat()
-        observeChatList()
+//        observeNewChat()
+//        observeChatList()
         observePinnedMessage()
         observeBottomInsetsState()
 
         observeUiState()
         observeUiEvent()
+
+        observeChats()
 
         observeLoggedInInteractionEvent()
         observeCastState()
@@ -741,19 +743,27 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeNewChat() {
-        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
-            chatListView?.showNewChat(it)
-        })
-    }
+//    private fun observeNewChat() {
+//        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
+//            chatListView?.showNewChat(it)
+//        })
+//    }
 
-    private fun observeChatList() {
-        playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
-            override fun onChanged(chatList: List<PlayChatUiModel>) {
-                playViewModel.observableChatList.removeObserver(this)
-                chatListView?.setChatList(chatList)
+//    private fun observeChatList() {
+//        playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
+//            override fun onChanged(chatList: List<PlayChatUiModel>) {
+//                playViewModel.observableChatList.removeObserver(this)
+//                chatListView?.setChatList(chatList)
+//            }
+//        })
+//    }
+
+    private fun observeChats() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.chats.collectLatest {
+                chatListView?.setChatList(it)
             }
-        })
+        }
     }
 
     private fun observePinnedMessage() {

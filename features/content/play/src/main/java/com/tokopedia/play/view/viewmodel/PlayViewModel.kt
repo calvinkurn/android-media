@@ -116,10 +116,10 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-    val observableNewChat: LiveData<Event<PlayChatUiModel>>
-        get() = _observableNewChat
-    val observableChatList: LiveData<out List<PlayChatUiModel>>
-        get() = _observableChatList
+//    val observableNewChat: LiveData<Event<PlayChatUiModel>>
+//        get() = _observableNewChat
+//    val observableChatList: LiveData<out List<PlayChatUiModel>>
+//        get() = _observableChatList
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
     val observablePinnedMessage: LiveData<PinnedMessageUiModel>
@@ -308,6 +308,11 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
+    private val _chats = MutableStateFlow(emptyList<PlayChatUiModel>())
+
+    val chats: Flow<List<PlayChatUiModel>>
+        get() = _chats
+
     val videoOrientation: VideoOrientation
         get() {
             val videoStream = _observableVideoMeta.value?.videoStream
@@ -412,17 +417,17 @@ class PlayViewModel @AssistedInject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
+//    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
-    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
-        addSource(_observableChatList) { chatList ->
-            chatList.lastOrNull()?.let { value = Event(it) }
-        }
-    }
+//    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
+//        addSource(_observableChatList) { chatList ->
+//            chatList.lastOrNull()?.let { value = Event(it) }
+//        }
+//    }
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
@@ -524,7 +529,7 @@ class PlayViewModel @AssistedInject constructor(
 
         stateHandler.observeForever(stateHandlerObserver)
 
-        _observableChatList.value = mutableListOf()
+//        _observableChatList.value = mutableListOf()
 
         viewModelScope.launch {
             interactiveFlow.collect(::onReceivedInteractiveAction)
@@ -946,6 +951,22 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
+
+        viewModelScope.launch {
+            var index = 0
+            while(isActive && index < 100) {
+                delay(30)
+                setNewChat(
+                    PlayChatUiModel(
+                        message = index++.toString(),
+                        isSelfMessage = true,
+                        name = "Halo",
+                        messageId = "",
+                        userId = "123"
+                    )
+                )
+            }
+        }
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1120,15 +1141,16 @@ class PlayViewModel @AssistedInject constructor(
                 playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
         )
         setNewChat(
-                playUiModelMapper.mapChat(
-                        PlayChat(
-                                message = cleanMessage,
-                                user = PlayChat.UserData(
-                                        id = userSession.userId,
-                                        name = userSession.name,
-                                        image = userSession.profilePicture)
-                        )
+            playUiModelMapper.mapChat(
+                PlayChat(
+                    message = cleanMessage,
+                    user = PlayChat.UserData(
+                        id = userSession.userId,
+                        name = userSession.name,
+                        image = userSession.profilePicture
+                    )
                 )
+            )
         )
     }
 
@@ -1331,9 +1353,12 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        val currentChatList = _observableChatList.value ?: mutableListOf()
-        currentChatList.add(chat)
-        _observableChatList.value = currentChatList
+//        val currentChatList = _observableChatList.value ?: mutableListOf()
+//        currentChatList.add(chat)
+//        _observableChatList.value = currentChatList
+        _chats.update {
+            it.takeLast(30) + chat
+        }
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
