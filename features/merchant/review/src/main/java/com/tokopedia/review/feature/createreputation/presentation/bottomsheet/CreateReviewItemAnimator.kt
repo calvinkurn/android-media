@@ -9,6 +9,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewholder.Bas
 class CreateReviewItemAnimator: DefaultItemAnimator() {
 
     companion object {
+        private const val ANIMATION_DURATION = 300L
         const val ANIM_TYPE_SHOWING = "showing"
         const val ANIM_TYPE_HIDING = "hiding"
         const val ANIM_TYPE_ADDING = "adding"
@@ -16,10 +17,10 @@ class CreateReviewItemAnimator: DefaultItemAnimator() {
 
     init {
         supportsChangeAnimations = supportsChangeAnimations
-        removeDuration = 300L
-        moveDuration = 300L
-        changeDuration = 300L
-        addDuration = 300L
+        removeDuration = ANIMATION_DURATION
+        moveDuration = ANIMATION_DURATION
+        changeDuration = ANIMATION_DURATION
+        addDuration = ANIMATION_DURATION
     }
 
     private val pendingAnim = arrayListOf<AnimInfo>()
@@ -98,7 +99,7 @@ class CreateReviewItemAnimator: DefaultItemAnimator() {
                 layoutParamsCopy.height = Int.ZERO
                 layoutParams = layoutParamsCopy
             }
-            holder.binding.root.alpha = 0f
+            holder.binding.root.alpha = Float.ZERO
             pendingAnim.add(AnimInfo(holder, ANIM_TYPE_ADDING))
             dispatchAddStarting(holder)
             return true
