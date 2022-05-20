@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingHorizontal="4dp"
+    android:paddingHorizontal="6dp"
     android:paddingTop="8dp">
 
     <com.tokopedia.unifycomponents.CardUnify2
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
-                android:textColor="@color/Unify_NN0"
+                android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
                 app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
                 app:layout_constraintHorizontal_bias="1"
@@ -132,15 +132,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_create_review_video_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/ic_create_review_video_remove_content_description"
         android:elevation="8dp"
         android:translationX="6dp"
         android:translationY="-6dp"
         app:layout_constraintEnd_toEndOf="@id/container_create_review_video_preview"
         app:layout_constraintTop_toTopOf="@id/container_create_review_video_preview"
-        app:srcCompat="@drawable/ic_remove_image" />
+        app:srcCompat="@drawable/ic_remove_image"
+        app:unify_image_type="circle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
