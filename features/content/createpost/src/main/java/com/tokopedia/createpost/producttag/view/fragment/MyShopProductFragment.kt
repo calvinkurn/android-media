@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +15,11 @@ import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBind
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
+import com.tokopedia.createpost.producttag.view.bottomsheet.SortBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.MyShopProductUiState
@@ -72,6 +75,21 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         setupObserver()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is SortBottomSheet -> {
+                childFragment.setListener(object : SortBottomSheet.Listener {
+                    override fun onSortSelected(sort: SortUiModel) {
+                        /** TODO: handle this */
+                    }
+                })
+
+                childFragment.setData(viewModel.myShopSortList)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if(viewModel.myShopStateUnknown)
@@ -124,8 +142,11 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
-                    is ProductTagUiEvent.OpenMyShopSortBottomSheet -> {
-                        /** TODO: open bottom sheet */
+                    ProductTagUiEvent.OpenMyShopSortBottomSheet -> {
+                        SortBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showNow(childFragmentManager)
                     }
                 }
             }

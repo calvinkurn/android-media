@@ -85,6 +85,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val selectedShop: ShopUiModel
         get() = _shopProduct.value.shop
 
+    val myShopSortList: List<SortUiModel>
+        get() = _myShopProduct.value.sorts
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))
@@ -438,12 +441,20 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             val sorts = if(currState.sorts.isEmpty()) {
-                repo.getSortFilter(param).also {
-                    _myShopProduct.setValue { copy(sorts = it) }
-                }
+                repo.getSortFilter(param).data.sort
+                    .map { item ->
+                        SortUiModel(
+                            text = item.name,
+                            key = item.key,
+                            value = item.value,
+                            isSelected = false,
+                        )
+                    }.also {
+                        _myShopProduct.setValue { copy(sorts = it) }
+                    }
             } else currState.sorts
 
-            _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet(currState.param, sorts))
+            _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet)
         }) {
             _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
                 submitAction(ProductTagAction.OpenMyShopSortBottomSheet)

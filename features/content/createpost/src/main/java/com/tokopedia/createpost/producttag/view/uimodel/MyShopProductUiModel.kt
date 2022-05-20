@@ -1,13 +1,11 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
-import com.tokopedia.filter.common.data.DynamicFilterModel
-
 /**
  * Created By : Jonathan Darwin on May 09, 2022
  */
 data class MyShopProductUiModel(
     val products: List<ProductUiModel>,
-    val sorts: DynamicFilterModel,
+    val sorts: List<SortUiModel>,
     val state: PagedState,
     val param: SearchParamUiModel,
 ) {
@@ -16,7 +14,7 @@ data class MyShopProductUiModel(
         val Empty: MyShopProductUiModel
             get() = MyShopProductUiModel(
                 products = emptyList(),
-                sorts = DynamicFilterModel(),
+                sorts = emptyList(),
                 state = PagedState.Unknown,
                 param = SearchParamUiModel.Empty
             )
