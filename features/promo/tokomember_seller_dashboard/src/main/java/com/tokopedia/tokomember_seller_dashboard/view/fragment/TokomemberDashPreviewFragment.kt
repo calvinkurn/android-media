@@ -62,15 +62,18 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tokomemberCardPreviewLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner,{
+
             when(it){
-                is Success -> {
+                is Success ->{
+                    //Open Dashboard
                 }
                 is Fail -> {
-
+                    //handleError
                 }
             }
         })
+
     }
 
     private fun renderHeader() {

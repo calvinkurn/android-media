@@ -4,22 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.*
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardPreviewRequestParams
-import com.tokopedia.tokomember_seller_dashboard.model.CardData
-import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
-import com.tokopedia.tokomember_seller_dashboard.model.PreviewData
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
+import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
@@ -38,6 +28,10 @@ class TokomemberDashCreateViewModel @Inject constructor(
     private val tokomemberDashPreviewUsecase: TokomemberDashPreviewUsecase,
     private val tokomemberDashGetProgramFormUsecase: TokomemberDashGetProgramFormUsecase,
     private val tokomemberDashUpdateProgramUsecase: TokomemberDashUpdateProgramUsecase,
+    private val tmKuponCreateValidateUsecase: TmKuponCreateValidateUsecase,
+    private val tmKuponCreateUsecase:TmKuponCreateUsecase,
+    private val tmKuponProgramValidateUsecase: TmKuponProgramValidateUsecase,
+    private val tmKuponInitialUsecase:TmKuponInitialUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -58,10 +52,21 @@ class TokomemberDashCreateViewModel @Inject constructor(
     val tokomemberCardModifyLiveData: LiveData<TokoLiveDataResult<MembershipCreateEditCard>> =
         _tokomemberCardModifyLiveData
 
-    //remove
-    private val _tokomemberCardPreviewLiveData = MutableLiveData<Result<PreviewData>>()
-    val tokomemberCardPreviewLiveData: LiveData<Result<PreviewData>> =
-        _tokomemberCardPreviewLiveData
+    private val _tmCouponPreValidateLiveData = MutableLiveData<Result<TmVoucherValidationPartialResponse>>()
+    val tmCouponPreValidateLiveData: LiveData<Result<TmVoucherValidationPartialResponse>> =
+        _tmCouponPreValidateLiveData
+
+    private val _tmCouponCreateLiveData = MutableLiveData<Result<TmKuponCreateMVResponse>>()
+    val tmCouponCreateLiveData: LiveData<Result<TmKuponCreateMVResponse>> =
+        _tmCouponCreateLiveData
+
+    private val _tmProgramValidateLiveData = MutableLiveData<Result<MemberShipValidateResponse>>()
+    val tmProgramValidateLiveData: LiveData<Result<MemberShipValidateResponse>> =
+        _tmProgramValidateLiveData
+
+    private val _tmCouponInitialLiveData = MutableLiveData<Result<TmCouponInitialResponse>>()
+    val tmCouponInitialLiveData: LiveData<Result<TmCouponInitialResponse>> =
+        _tmCouponInitialLiveData
 
     private val _tokomemberProgramResultLiveData = MutableLiveData<Result<ProgramDetailData>>()
     val tokomemberProgramResultLiveData: LiveData<Result<ProgramDetailData>> = _tokomemberProgramResultLiveData
@@ -134,13 +139,40 @@ class TokomemberDashCreateViewModel @Inject constructor(
         },tmCardModifyInput)
     }
 
-    fun getPreviewData(tmCardPreviewRequestParams: TmCardPreviewRequestParams){
-        tokomemberDashPreviewUsecase.cancelJobs()
-        tokomemberDashPreviewUsecase.getPreviewData( {
-            _tokomemberCardPreviewLiveData.postValue(Success(it))
+    fun createCoupon(tmCouponCreateRequest: TmCouponCreateRequest){
+        tmKuponCreateUsecase.cancelJobs()
+        tmKuponCreateUsecase.createKupon( {
+            _tmCouponCreateLiveData.postValue(Success(it))
         }, {
-            _tokomemberCardPreviewLiveData.postValue(Fail(it))
-        },tmCardPreviewRequestParams)
+            _tmCouponCreateLiveData.postValue(Fail(it))
+        },tmCouponCreateRequest)
+    }
+
+    fun getInitialCouponData(){
+        tmKuponInitialUsecase.cancelJobs()
+        tmKuponInitialUsecase.getInitialCoupon( {
+            _tmCouponInitialLiveData.postValue(Success(it))
+        }, {
+            _tmCouponInitialLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun validateProgram(){
+        tmKuponProgramValidateUsecase.cancelJobs()
+        tmKuponProgramValidateUsecase.getMembershipValidateInfo( {
+            _tmProgramValidateLiveData.postValue(Success(it))
+        }, {
+            _tmProgramValidateLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun preValidateCoupon(tmCouponValidateRequest: TmCouponValidateRequest){
+        tmKuponCreateValidateUsecase.cancelJobs()
+        tmKuponCreateValidateUsecase.getPartialValidateData( {
+            _tmCouponPreValidateLiveData.postValue(Success(it))
+        }, {
+            _tmCouponPreValidateLiveData.postValue(Fail(it))
+        },tmCouponValidateRequest)
     }
 
     override fun onCleared() {

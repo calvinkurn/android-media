@@ -3,6 +3,11 @@ package com.tokopedia.tokomember_common_widget.util
 import androidx.annotation.IntDef
 import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.LEFT_ANIMATION
 import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.RIGHT_ANIMATION
+import com.tokopedia.tokomember_common_widget.util.CashbackType.Companion.IDR
+import com.tokopedia.tokomember_common_widget.util.CashbackType.Companion.PERCENTAGE
+import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.CASHBACK
+import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.DISCOUNT
+import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.SHIPPING
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
@@ -53,6 +58,25 @@ annotation class ProgramScreenType {
         const val PROGRAM = 1
         const val COUPON = 2
         const val PREVIEW = 3
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(SHIPPING, DISCOUNT, CASHBACK)
+annotation class CouponType {
+    companion object {
+        const val SHIPPING = 0
+        const val DISCOUNT = 1
+        const val CASHBACK = 2
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(IDR, PERCENTAGE)
+annotation class CashbackType {
+    companion object {
+        const val IDR = 0
+        const val PERCENTAGE = 1
     }
 }
 

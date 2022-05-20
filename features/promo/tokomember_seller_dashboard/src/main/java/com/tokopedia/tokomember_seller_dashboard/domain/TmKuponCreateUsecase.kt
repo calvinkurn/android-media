@@ -3,7 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.model.SellerData
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
 import javax.inject.Inject
 
@@ -14,6 +14,7 @@ class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
     fun createKupon(
         success: (TmKuponCreateMVResponse) -> Unit,
         onFail: (Throwable) -> Unit,
+        tmCouponCreateRequest: TmCouponCreateRequest,
     ) {
         this.setTypeClass(TmKuponCreateMVResponse::class.java)
         this.setGraphqlQuery(TmKuponCreate.GQL_QUERY)

@@ -53,6 +53,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCr
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import java.util.*
@@ -305,68 +306,61 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
-        textFieldTranskPremium.editText.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString()
-                        .toIntOrZero() >= programThreshold?.maxThresholdLevel1 ?: 0
-                ) {
-                    tickerInfo.show()
-                    textFieldTranskPremium.isInputError = true
-                    textFieldTranskPremium.setMessage("Maks ${programThreshold?.maxThresholdLevel1}")
-                } else if (s.toString()
-                        .toIntOrZero() <= programThreshold?.maxThresholdLevel1 ?: 0
-                ) {
-                    tickerInfo.hide()
-                    textFieldTranskPremium.isInputError = false
-                    textFieldTranskPremium.setMessage("")
+        textFieldTranskPremium.editText.run {
+            this.addTextChangedListener(object : NumberTextWatcher(this@run){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    if (number >= programThreshold?.maxThresholdLevel1 ?: 0
+                    ) {
+                        tickerInfo.show()
+                        textFieldTranskPremium.isInputError = true
+                        textFieldTranskPremium.setMessage("Maks ${programThreshold?.maxThresholdLevel1}")
+                    } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0
+                    ) {
+                        tickerInfo.hide()
+                        textFieldTranskPremium.isInputError = false
+                        textFieldTranskPremium.setMessage("")
+                    }
+                    else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && number>= textFieldTranskVip.editText.text.toString().toIntOrZero()
+                    ) {
+                        tickerInfo.show()
+                        textFieldTranskPremium.isInputError = true
+                        textFieldTranskPremium.setMessage("Tidak boleh melebihi level VIP (Level 2)")
+                    }
+                    else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && number<= textFieldTranskVip.editText.text.toString().toIntOrZero()
+                    ) {
+                        tickerInfo.hide()
+                        textFieldTranskPremium.isInputError = false
+                        textFieldTranskPremium.setMessage("")
+                    }
                 }
-                else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && s.toString()
-                        .toIntOrZero() >= textFieldTranskVip.editText.text.toString().toIntOrZero()
-                ) {
-                    tickerInfo.show()
-                    textFieldTranskPremium.isInputError = true
-                    textFieldTranskPremium.setMessage("Tidak boleh melebihi level VIP (Level 2)")
-                }
-                else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && s.toString()
-                        .toIntOrZero() <= textFieldTranskVip.editText.text.toString().toIntOrZero()
-                ) {
-                    tickerInfo.hide()
-                    textFieldTranskPremium.isInputError = false
-                    textFieldTranskPremium.setMessage("")
-                }
-            }
-        })
+            })
+            requestFocus()
+        }
     }
 
     private fun addVipTransactionTextListener(programThreshold: ProgramThreshold?) {
-        textFieldTranskVip.editText.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                when {
-                    s.toString()
-                        .toIntOrZero() >= programThreshold?.maxThresholdLevel2 ?: 0 -> {
-                        textFieldTranskVip.isInputError = true
-                        textFieldTranskVip.setMessage("Maks ${programThreshold?.maxThresholdLevel2}")
-                    }
-                    s.toString()
-                        .toIntOrZero() <= programThreshold?.minThresholdLevel2 ?: 0 -> {
-                        textFieldTranskVip.isInputError = true
-                        textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel2}")
-                    }
-                    else -> {
-                        textFieldTranskVip.isInputError = false
-                        textFieldTranskVip.setMessage("")
+        textFieldTranskVip.editText.run {
+            this.addTextChangedListener(object : NumberTextWatcher(textFieldTranskVip.editText) {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    when {
+                        number>= programThreshold?.maxThresholdLevel2 ?: 0 -> {
+                            textFieldTranskVip.isInputError = true
+                            textFieldTranskVip.setMessage("Maks ${programThreshold?.maxThresholdLevel2}")
+                        }
+                        number <= programThreshold?.minThresholdLevel2 ?: 0 -> {
+                            textFieldTranskVip.isInputError = true
+                            textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel2}")
+                        }
+                        else -> {
+                            textFieldTranskVip.isInputError = false
+                            textFieldTranskVip.setMessage("")
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?){

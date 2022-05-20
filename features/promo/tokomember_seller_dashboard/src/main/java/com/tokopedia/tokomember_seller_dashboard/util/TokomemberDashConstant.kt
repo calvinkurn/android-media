@@ -47,3 +47,11 @@ const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi
 const val ERROR_CREATING_CTA = "Coba Lagi"
 const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 
+const val COUPON_CASHBACK = "cashback"
+const val COUPON_SHIPPING = "shipping"
+
+const val CASHBACK_IDR = "idr"
+const val CASHBACK_PERCENTAGE = "percent"
+
+const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui " + "<br>" +
+        "syarat & ketentuan TokoMember."
