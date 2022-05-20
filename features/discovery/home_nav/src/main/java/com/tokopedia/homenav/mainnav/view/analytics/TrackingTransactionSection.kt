@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import android.os.Bundle
 import com.tokopedia.homenav.common.TrackingConst.CATEGORY_GLOBAL_MENU
+import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BANNER
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BUSINESS_UNIT
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_EMPTY
@@ -313,7 +314,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 eventLabel = DEFAULT_EMPTY,
                 promotions = listOf(Promotion(
                         creative = DEFAULT_EMPTY,
-                        id = PROMOTION_ID_FORMAT.format(element.bannerId, element.reputationId, element.productId),
+                        id = PROMOTION_ID_FORMAT.format(DEFAULT_BANNER, element.reputationId, element.productId),
                         name = PROMOTION_NAME_FORMAT.format(GLOBAL_MENU, REVIEW_CARD),
                         creativeUrl = DEFAULT_EMPTY,
                         position = positionCard
@@ -358,7 +359,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             Promotion.ITEM_ID,
             String.format(
                 PROMOTION_ID_FORMAT,
-                element.bannerId,
+                DEFAULT_BANNER,
                 element.reputationId,
                 element.productId
             )
@@ -398,7 +399,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
         promotion.putString(
             Promotion.ITEM_ID,
             PROMOTION_ID_FORMAT.format(
-                element.bannerId,
+                DEFAULT_BANNER,
                 element.reputationId,
                 element.productId
             )
