@@ -62,6 +62,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 }
 
 project.ext {
