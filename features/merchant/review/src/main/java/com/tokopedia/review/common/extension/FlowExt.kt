@@ -2,7 +2,7 @@ package com.tokopedia.review.common.extension
 
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, R> combine(
     flow: Flow<T1>, flow2: Flow<T2>, flow3: Flow<T3>, flow4: Flow<T4>, flow5: Flow<T5>,
     flow6: Flow<T6>, transform: suspend (T1, T2, T3, T4, T5, T6) -> R
@@ -14,7 +14,7 @@ fun <T1, T2, T3, T4, T5, T6, R> combine(
     )
 }
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     flow: Flow<T1>, flow2: Flow<T2>, flow3: Flow<T3>, flow4: Flow<T4>, flow5: Flow<T5>,
     flow6: Flow<T6>, flow7: Flow<T7>, transform: suspend (T1, T2, T3, T4, T5, T6, T7) -> R
@@ -27,7 +27,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     )
 }
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> combine(
     flow: Flow<T1>, flow2: Flow<T2>, flow3: Flow<T3>, flow4: Flow<T4>, flow5: Flow<T5>,
     flow6: Flow<T6>, flow7: Flow<T7>, flow8: Flow<T8>, flow9: Flow<T9>, flow10: Flow<T10>,
