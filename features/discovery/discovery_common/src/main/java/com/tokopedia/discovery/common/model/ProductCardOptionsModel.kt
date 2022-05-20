@@ -14,6 +14,7 @@ data class ProductCardOptionsModel(
         var productId: String = "",
         var isTopAds: Boolean = false,
         var topAdsWishlistUrl: String = "",
+        var topAdsClickUrl: String = "",
         var isRecommendation: Boolean = false,
         var productPosition: Int = 0,
         var screenName: String = "",
@@ -76,6 +77,7 @@ data class ProductCardOptionsModel(
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
             parcel.readString() ?: "",
@@ -100,6 +102,7 @@ data class ProductCardOptionsModel(
         parcel.writeString(productId)
         parcel.writeByte(if (isTopAds) 1 else 0)
         parcel.writeString(topAdsWishlistUrl)
+        parcel.writeString(topAdsClickUrl)
         parcel.writeByte(if (isRecommendation) 1 else 0)
         parcel.writeInt(productPosition)
         parcel.writeString(screenName)

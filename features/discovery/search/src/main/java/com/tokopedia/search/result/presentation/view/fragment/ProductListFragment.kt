@@ -1813,6 +1813,7 @@ class ProductListFragment: BaseDaggerFragment(),
         productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT
         productCardOptionsModel.isTopAds = item.isOrganicAds
         productCardOptionsModel.topAdsWishlistUrl = item.topAdsWishlistUrl
+        productCardOptionsModel.topAdsClickUrl = item.topAdsClickUrl
 
         return productCardOptionsModel
     }

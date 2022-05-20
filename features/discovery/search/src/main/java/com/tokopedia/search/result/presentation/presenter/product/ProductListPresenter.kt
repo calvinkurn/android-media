@@ -1966,6 +1966,7 @@ class ProductListPresenter @Inject constructor(
         productCardOptionsModel.productId = item.productID
         productCardOptionsModel.isTopAds = item.isTopAds || item.isOrganicAds
         productCardOptionsModel.topAdsWishlistUrl = item.topadsWishlistUrl ?: ""
+        productCardOptionsModel.topAdsClickUrl = item.topadsClickUrl ?: ""
         productCardOptionsModel.isRecommendation = false
         productCardOptionsModel.screenName = SearchEventTracking.Category.SEARCH_RESULT
         productCardOptionsModel.seeSimilarProductEvent = SearchTracking.EVENT_CLICK_SEARCH_RESULT
