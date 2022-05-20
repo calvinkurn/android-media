@@ -101,21 +101,6 @@ class SharedEditHeadlineViewModelTest {
         assertEquals(expected, err)
     }
 
-    /*@Test
-    fun `getBidInfoDetail - bidinfousecase succes test`() {
-        mockkConstructor(TopadsBidInfo.DataItem::class)
-
-        every { anyConstructed<TopadsBidInfo.DataItem>().maxBid } returns "4"
-        every { anyConstructed<TopadsBidInfo.DataItem>().minBid } returns "14"
-        val result: ResponseBidInfo.Result = mockk(relaxed = true)
-        every { result.topadsBidInfo.data } returns listOf(TopadsBidInfo.DataItem())
-        every { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            lambda<(ResponseBidInfo.Result) -> Unit>().invoke(result)
-        }
-        baseInvokeBidInfoDefault()
-        assertTrue(viewModel.getEditHeadlineAdLiveData().value != null)
-    }
-*/
     @Test
     fun `getBidInfoDetail - bidinfousecase exception test`() {
         every { bidInfoUseCase.executeQuerySafeMode(any(), captureLambda()) } answers {
