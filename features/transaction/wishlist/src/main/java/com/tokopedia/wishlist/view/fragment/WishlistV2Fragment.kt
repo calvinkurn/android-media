@@ -654,7 +654,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             setSwipeRefreshLayout()
 
                         } else {
-                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                            var errorMessage = context?.getString(Rv2.string.wishlist_v2_common_error_msg)
+                            if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage = bulkDeleteWishlistV2.message
+                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }
