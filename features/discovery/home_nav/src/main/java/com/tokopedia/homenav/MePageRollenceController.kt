@@ -8,7 +8,7 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object MePageRollenceController {
 
-    const val ME_PAGE_OLD = ""
+    private const val ME_PAGE_OLD = ""
     private var rollenceMePageValue: String = ""
 
     fun fetchMePageRollenceValue() {
@@ -20,7 +20,7 @@ object MePageRollenceController {
     }
 
     private fun getRollenceValueMePage(): String {
-        return if (rollenceMePageValue.isNotEmpty()) rollenceMePageValue else ME_PAGE_OLD
+        return rollenceMePageValue.ifEmpty { ME_PAGE_OLD }
     }
 
     fun isMePageUsingRollenceVariant(): Boolean {
