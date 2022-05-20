@@ -103,6 +103,11 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     private fun setupView() {
         binding.rvGlobalSearchShop.layoutManager = LinearLayoutManager(requireContext())
         binding.rvGlobalSearchShop.adapter = adapter
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = true
+            viewModel.submitAction(ProductTagAction.SwipeRefreshGlobalSearchShop)
+        }
     }
 
     private fun setupObserver() {
@@ -146,14 +151,15 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
         when(curr.state) {
             is PagedState.Loading -> {
-                binding.sortFilter.show()
-                updateAdapterData(curr, true)
+                updateAdapterData(curr, !binding.swipeRefresh.isRefreshing)
             }
             is PagedState.Success -> {
+                binding.swipeRefresh.isRefreshing = false
                 binding.sortFilter.showWithCondition(curr.shops.isNotEmpty() || (curr.shops.isEmpty() && curr.param.hasFilterApplied()))
                 updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
+                binding.swipeRefresh.isRefreshing = false
                 updateAdapterData(curr, false)
 
                 Toaster.build(
@@ -191,14 +197,14 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun updateAdapterData(currState: GlobalSearchShopUiState, hasNextPage: Boolean) {
+    private fun updateAdapterData(currState: GlobalSearchShopUiState, showLoading: Boolean) {
         val finalShops = buildList {
             if(currState.shops.isEmpty() && currState.state is PagedState.Success)
                 add(ShopCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
             else
                 addAll(currState.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
 
-            if(hasNextPage) add(ShopCardAdapter.Model.Loading)
+            if(showLoading) add(ShopCardAdapter.Model.Loading)
         }
 
         if(binding.rvGlobalSearchShop.isComputingLayout.not())
