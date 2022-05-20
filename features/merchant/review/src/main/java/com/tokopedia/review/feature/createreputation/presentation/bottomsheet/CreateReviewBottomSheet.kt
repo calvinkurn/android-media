@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -26,6 +25,8 @@ import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.review.R
 import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
+import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.databinding.BottomsheetCreateReviewBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
@@ -63,18 +64,11 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
+class CreateReviewBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TEXT_AREA_MAX_MIN_LINE = 4
         private const val MAX_VIDEO_COUNT = 1
@@ -93,17 +87,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = dispatchers.main + SupervisorJob()
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatchers
 
     private var binding by viewBinding(BottomsheetCreateReviewBinding::bind)
     private var isUserInitiateDismiss: Boolean = false
@@ -142,7 +130,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         clearContentPadding = true
         binding = BottomsheetCreateReviewBinding.inflate(inflater).also { setChild(it.root) }
         uiStateHandler.initUiState(savedInstanceState)
-        uiStateHandler.collectUiStates()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -151,16 +138,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         setupLayout()
         setupListeners()
         setupDismissBehavior()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        uiStateHandler.collectUiStates()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        uiStateHandler.cancelUiStateCollectors()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -654,39 +631,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     private inner class UiStateHandler {
 
-        private var createReviewBottomSheetUiStateCollectorJob: Job? = null
-        private var productCardUiStateCollectorJob: Job? = null
-        private var ratingUiStateCollectorJob: Job? = null
-        private var tickerUiStateCollectorJob: Job? = null
-        private var textAreaTitleUiStateCollectorJob: Job? = null
-        private var badRatingCategoriesUiStateCollectorJob: Job? = null
-        private var textAreaUiStateCollectorJob: Job? = null
-        private var templateUiStateCollectorJob: Job? = null
-        private var mediaPickerUiStateCollectorJob: Job? = null
-        private var anonymousUiStateCollectorJob: Job? = null
-        private var progressBarUiStateCollectorJob: Job? = null
-        private var submitButtonUiStateCollectorJob: Job? = null
-        private var incentiveBottomSheetUiStateCollectorJob: Job? = null
-        private var textAreaBottomSheetUiStateCollectorJob: Job? = null
-        private var postSubmitBottomSheetUiStateCollectorJob: Job? = null
-        private var toasterQueueCollectorJob: Job? = null
-
-        fun initUiState(savedInstanceState: Bundle?) {
-            if (savedInstanceState == null) {
-                viewModel.setRating(getRatingFromArgument())
-                viewModel.setProductId(getProductIdFromArgument())
-                viewModel.setReputationId(getReputationIdFromArgument())
-                viewModel.setUtmSource(getUtmSourceFromArgument())
-            } else {
-                viewModel.restoreUiState(savedInstanceState)
-            }
-        }
-
-        fun saveUiState(outState: Bundle) {
-            viewModel.saveUiState(outState)
-        }
-
-        fun collectUiStates() {
+        private fun initUiStateCollector() {
             collectCreateReviewBottomSheet()
             collectProductCardUiState()
             collectRatingUiState()
@@ -705,228 +650,160 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             collectToasterQueue()
         }
 
-        fun cancelUiStateCollectors() {
-            createReviewBottomSheetUiStateCollectorJob?.cancel()
-            productCardUiStateCollectorJob?.cancel()
-            ratingUiStateCollectorJob?.cancel()
-            tickerUiStateCollectorJob?.cancel()
-            textAreaTitleUiStateCollectorJob?.cancel()
-            badRatingCategoriesUiStateCollectorJob?.cancel()
-            textAreaUiStateCollectorJob?.cancel()
-            templateUiStateCollectorJob?.cancel()
-            mediaPickerUiStateCollectorJob?.cancel()
-            anonymousUiStateCollectorJob?.cancel()
-            progressBarUiStateCollectorJob?.cancel()
-            submitButtonUiStateCollectorJob?.cancel()
-            incentiveBottomSheetUiStateCollectorJob?.cancel()
-            textAreaBottomSheetUiStateCollectorJob?.cancel()
-            postSubmitBottomSheetUiStateCollectorJob?.cancel()
-            toasterQueueCollectorJob?.cancel()
+        fun initUiState(savedInstanceState: Bundle?) {
+            if (savedInstanceState == null) {
+                viewModel.setRating(getRatingFromArgument())
+                viewModel.setProductId(getProductIdFromArgument())
+                viewModel.setReputationId(getReputationIdFromArgument())
+                viewModel.setUtmSource(getUtmSourceFromArgument())
+            } else {
+                viewModel.restoreUiState(savedInstanceState)
+            }
+            initUiStateCollector()
+        }
+
+        fun saveUiState(outState: Bundle) {
+            viewModel.saveUiState(outState)
         }
 
         private fun collectCreateReviewBottomSheet() {
-            createReviewBottomSheetUiStateCollectorJob = createReviewBottomSheetUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.createReviewBottomSheetUiState.collectLatest {
-                    if (it is CreateReviewBottomSheetUiState.ShouldDismiss) {
-                        context?.let { context ->
-                            finishIfRoot(
-                                it.success,
-                                it.message.getStringValue(context),
-                                it.feedbackId
-                            )
-                        }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.createReviewBottomSheetUiState) {
+                if (it is CreateReviewBottomSheetUiState.ShouldDismiss) {
+                    context?.let { context ->
+                        finishIfRoot(
+                            it.success,
+                            it.message.getStringValue(context),
+                            it.feedbackId
+                        )
                     }
                 }
             }
         }
 
         private fun collectProductCardUiState() {
-            productCardUiStateCollectorJob = productCardUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.productCardUiState.collectLatest {
-                    binding?.reviewFormProductCard?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.productCardUiState) {
+                binding?.reviewFormProductCard?.updateUi(it)
             }
         }
 
         private fun collectRatingUiState() {
-            ratingUiStateCollectorJob = ratingUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.ratingUiState.collectLatest {
-                    binding?.reviewFormRating?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.ratingUiState) {
+                binding?.reviewFormRating?.updateUi(it)
             }
         }
 
         private fun collectTickerUiState() {
-            tickerUiStateCollectorJob = tickerUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.tickerUiState.collectLatest {
-                    binding?.reviewFormTicker?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.tickerUiState) {
+                binding?.reviewFormTicker?.updateUi(it)
             }
         }
 
         private fun collectTextAreaTitleUiState() {
-            textAreaTitleUiStateCollectorJob = textAreaTitleUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.textAreaTitleUiState.collectLatest {
-                    binding?.reviewFormTextAreaTitle?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaTitleUiState) {
+                binding?.reviewFormTextAreaTitle?.updateUi(it)
             }
         }
 
         private fun collectBadRatingCategoriesUiState() {
-            badRatingCategoriesUiStateCollectorJob = badRatingCategoriesUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.badRatingCategoriesUiState.collectLatest {
-                    binding?.reviewFormBadRatingCategories?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.badRatingCategoriesUiState) {
+                binding?.reviewFormBadRatingCategories?.updateUi(it)
             }
         }
 
         private fun collectTextAreaUiState() {
-            textAreaUiStateCollectorJob = textAreaUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.textAreaUiState.collectLatest {
-                    binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaUiState) {
+                binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
             }
         }
 
         private fun collectTemplateUiState() {
-            templateUiStateCollectorJob = templateUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.templateUiState.collectLatest {
-                    binding?.reviewFormTemplates?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.templateUiState) {
+                binding?.reviewFormTemplates?.updateUi(it)
             }
         }
 
         private fun collectMediaPickerUiState() {
-            mediaPickerUiStateCollectorJob = mediaPickerUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.mediaPickerUiState.collectLatest {
-                    binding?.reviewFormMediaPicker?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.mediaPickerUiState) {
+                binding?.reviewFormMediaPicker?.updateUi(it)
             }
         }
 
         private fun collectAnonymousUiState() {
-            anonymousUiStateCollectorJob = anonymousUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.anonymousUiState.collectLatest {
-                    binding?.reviewFormAnonymous?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousUiState) {
+                binding?.reviewFormAnonymous?.updateUi(it)
             }
         }
 
         private fun collectProgressBarUiState() {
-            progressBarUiStateCollectorJob = progressBarUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.progressBarUiState.collectLatest {
-                    binding?.reviewFormProgressBarWidget?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.progressBarUiState) {
+                binding?.reviewFormProgressBarWidget?.updateUi(it)
             }
         }
 
         private fun collectSubmitButtonUiState() {
-            submitButtonUiStateCollectorJob = submitButtonUiStateCollectorJob?.takeIf {
-                !it.isCompleted
-            } ?: launch {
-                viewModel.submitButtonUiState.collectLatest {
-                    binding?.reviewFormSubmitButton?.updateUi(it)
-                }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.submitButtonUiState) {
+                binding?.reviewFormSubmitButton?.updateUi(it)
             }
         }
 
         private fun collectIncentiveBottomSheetUiState() {
-            incentiveBottomSheetUiStateCollectorJob =
-                incentiveBottomSheetUiStateCollectorJob?.takeIf {
-                    !it.isCompleted
-                } ?: launch {
-                    viewModel.incentiveBottomSheetUiState.collectLatest {
-                        if (it is CreateReviewIncentiveBottomSheetUiState.Showing) {
-                            bottomSheetHandler.showOvoIncentiveBottomSheet(it.data)
-                        } else {
-                            bottomSheetHandler.dismissOvoIncentiveBottomSheet()
-                        }
-                    }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.incentiveBottomSheetUiState) {
+                if (it is CreateReviewIncentiveBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showOvoIncentiveBottomSheet(it.data)
+                } else {
+                    bottomSheetHandler.dismissOvoIncentiveBottomSheet()
                 }
+            }
         }
 
         private fun collectTextAreaBottomSheetUiState() {
-            textAreaBottomSheetUiStateCollectorJob =
-                textAreaBottomSheetUiStateCollectorJob?.takeIf {
-                    !it.isCompleted
-                } ?: launch {
-                    viewModel.textAreaBottomSheetUiState.collectLatest {
-                        if (it is CreateReviewTextAreaBottomSheetUiState.Showing) {
-                            bottomSheetHandler.showCreateReviewTextAreaBottomSheet()
-                        } else {
-                            bottomSheetHandler.dismissCreateReviewTextAreaBottomSheet()
-                        }
-                    }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaBottomSheetUiState) {
+                if (it is CreateReviewTextAreaBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showCreateReviewTextAreaBottomSheet()
+                } else {
+                    bottomSheetHandler.dismissCreateReviewTextAreaBottomSheet()
                 }
+            }
         }
 
         private fun collectPostSubmitBottomSheetUiState() {
-            postSubmitBottomSheetUiStateCollectorJob =
-                postSubmitBottomSheetUiStateCollectorJob?.takeIf {
-                    !it.isCompleted
-                } ?: launch {
-                    viewModel.postSubmitBottomSheetUiState.collectLatest {
-                        when (it) {
-                            is PostSubmitUiState.ShowThankYouBottomSheet -> {
-                                bottomSheetHandler.showCreateReviewPostSubmitBottomSheet(it.data)
-                            }
-                            is PostSubmitUiState.Hidden -> {
-                                bottomSheetHandler.dismissCreateReviewPostSubmitBottomSheet()
-                            }
-                            is PostSubmitUiState.ShowThankYouToaster -> {
-                                showThankYouToaster(it.data)
-                            }
-                        }
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.postSubmitBottomSheetUiState) {
+                when (it) {
+                    is PostSubmitUiState.ShowThankYouBottomSheet -> {
+                        bottomSheetHandler.showCreateReviewPostSubmitBottomSheet(it.data)
+                    }
+                    is PostSubmitUiState.Hidden -> {
+                        bottomSheetHandler.dismissCreateReviewPostSubmitBottomSheet()
+                    }
+                    is PostSubmitUiState.ShowThankYouToaster -> {
+                        showThankYouToaster(it.data)
                     }
                 }
+            }
         }
 
         private fun collectToasterQueue() {
-            toasterQueueCollectorJob = toasterQueueCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-                viewModel.toasterQueue.collect {
-                    suspendCoroutine { cont ->
-                        binding?.root?.let { view ->
-                            Toaster.build(
-                                view,
-                                it.message.getStringValueWithDefaultParam(view.context),
-                                it.duration,
-                                it.type,
-                                it.actionText.getStringValue(view.context)
-                            ) {}.run {
-                                anchorView = binding?.reviewFormProgressBarDivider
-                                addCallback(object: Snackbar.Callback() {
-                                    override fun onDismissed(
-                                        transientBottomBar: Snackbar?,
-                                        event: Int
-                                    ) {
-                                        removeCallback(this)
-                                        cont.resume(Unit)
-                                    }
-                                })
-                                show()
-                            }
+            viewLifecycleOwner.collectWhenResumed(viewModel.toasterQueue) {
+                suspendCoroutine { cont ->
+                    binding?.root?.let { view ->
+                        Toaster.build(
+                            view,
+                            it.message.getStringValueWithDefaultParam(view.context),
+                            it.duration,
+                            it.type,
+                            it.actionText.getStringValue(view.context)
+                        ) {}.run {
+                            anchorView = binding?.reviewFormProgressBarDivider
+                            addCallback(object: Snackbar.Callback() {
+                                override fun onDismissed(
+                                    transientBottomBar: Snackbar?,
+                                    event: Int
+                                ) {
+                                    removeCallback(this)
+                                    cont.resume(Unit)
+                                }
+                            })
+                            show()
                         }
                     }
                 }
