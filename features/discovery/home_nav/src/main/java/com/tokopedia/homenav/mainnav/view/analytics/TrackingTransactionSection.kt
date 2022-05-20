@@ -37,8 +37,6 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val STAR_RATING = "star rating"
     private const val PRODUCT_CARD = "product card"
     private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
-
-    // Tracker for Global Menu Revamp (Me Page)
     private const val DIMENSION_125 = "dimension125"
     private const val DIMENSION_40 = "dimension40"
     private const val LIST_WISHLIST = "/global_menu - wishlist_card"
@@ -49,6 +47,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val IMPRESSION_ON_FAVORITE_SHOP_CARD = "impression on favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
+    private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -252,8 +251,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             UserId.KEY, userId,
             Promotion.KEY, convertFavoriteShopTracking(
                 index = position+1,
-                name = favoriteShopModel.name,
-                itemId = favoriteShopModel.id
+                shopId = favoriteShopModel.id
             )
         ) as HashMap<String, Any>
     }
@@ -290,14 +288,13 @@ object TrackingTransactionSection: BaseTrackerConst() {
 
     private fun convertFavoriteShopTracking(
         index: Int,
-        name: String,
-        itemId: String
+        shopId: String
     ) : List<Map<String, Any>> {
         return listOf(
             DataLayer.mapOf(
-                Promotion.CREATIVE_NAME, name,
+                Promotion.CREATIVE_NAME, Value.EMPTY,
                 Promotion.CREATIVE_SLOT, index,
-                Items.ITEM_ID, itemId,
+                Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(shopId),
                 Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP
             )
         )
