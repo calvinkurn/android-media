@@ -19,27 +19,24 @@ class CreateReviewMediaPreviewVideoViewHolder(
     }
 
     private val binding = ItemCreateReviewMediaPreviewVideoBinding.bind(view)
-    private var element: CreateReviewMediaUiModel.Video? = null
 
     init {
         binding.layoutCreateReviewVideoPreview.setListener(this)
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Video) {
-        this.element = element
         binding.layoutCreateReviewVideoPreview.bind(element)
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Video, payloads: MutableList<Any>) {
-        this.element = element
-        binding.layoutCreateReviewVideoPreview.bind(payloads)
+        binding.layoutCreateReviewVideoPreview.bind(element, payloads)
     }
 
     override fun onVideoPreviewThumbnailClicked() {
         listener.onAddMediaClicked()
     }
 
-    override fun onRemoveMediaClicked() {
-        element?.let { listener.onRemoveMediaClicked(it) }
+    override fun onRemoveMediaClicked(element: CreateReviewMediaUiModel.Video) {
+        listener.onRemoveMediaClicked(element)
     }
 }

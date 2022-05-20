@@ -17,14 +17,12 @@ class VideoReviewViewHolder(
     }
 
     private val binding = ItemVideoChooserReviewBinding.bind(view)
-    private var element: CreateReviewMediaUiModel.Video? = null
 
     init {
         binding.layoutCreateReviewVideoPreview.setListener(this)
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Video) {
-        this.element = element
         binding.layoutCreateReviewVideoPreview.bind(element)
     }
 
@@ -32,8 +30,8 @@ class VideoReviewViewHolder(
         listener.onAddMediaClicked()
     }
 
-    override fun onRemoveMediaClicked() {
-        element?.let { listener.onRemoveVideoClicked(it) }
+    override fun onRemoveMediaClicked(element: CreateReviewMediaUiModel.Video) {
+        listener.onRemoveVideoClicked(element)
     }
 
     interface Listener {

@@ -15,12 +15,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.visita
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     context: Context,
@@ -30,7 +25,7 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     context,
     attrs,
     defStyleAttr
-), CoroutineScope, ReviewVideoPlayerListener {
+), ReviewVideoPlayerListener {
 
     companion object {
         private const val TRANSITION_DURATION = 300L
@@ -43,7 +38,6 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     )
 
     private val transitionHandler = TransitionHandler()
-    private val supervisorJob = SupervisorJob()
     private val reviewVideoPlayer = ReviewVideoPlayer(
         context = context,
         minBufferDuration = 50,
@@ -53,15 +47,9 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     )
     private var listener: Listener? = null
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + supervisorJob
-
     init {
         binding.root.setOnClickListener {
             listener?.onVideoPreviewThumbnailClicked()
-        }
-        binding.icCreateReviewVideoRemove.setOnClickListener {
-            listener?.onRemoveMediaClicked()
         }
     }
 
@@ -97,19 +85,20 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     }
 
     fun bind(element: CreateReviewMediaUiModel.Video) {
-        supervisorJob.cancelChildren()
         with(binding) {
             setupVideoThumbnail(element.uri)
             setupVideoState(element.state)
+            setupRemoveIconClickListener(element)
         }
     }
 
-    fun bind(payloads: MutableList<Any>) {
+    fun bind(element: CreateReviewMediaUiModel.Video, payloads: MutableList<Any>) {
         payloads.firstOrNull().let {
             if (it is Bundle) {
                 applyVideoStateChange(it)
             }
         }
+        binding.setupRemoveIconClickListener(element)
     }
 
     fun setListener(newListener: Listener) {
@@ -147,6 +136,12 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
             tvCreateReviewVideoPreviewDuration.gone()
         }
         loaderCreateReviewVideoPreviewDuration.gone()
+    }
+
+    private fun WidgetCreateReviewMediaPreviewVideoThumbnailBinding.setupRemoveIconClickListener(element: CreateReviewMediaUiModel.Video) {
+        icCreateReviewVideoRemove.setOnClickListener {
+            listener?.onRemoveMediaClicked(element)
+        }
     }
 
     private fun setupVideoState(state: CreateReviewMediaUiModel.State) {
@@ -210,6 +205,6 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
 
     interface Listener {
         fun onVideoPreviewThumbnailClicked()
-        fun onRemoveMediaClicked()
+        fun onRemoveMediaClicked(element: CreateReviewMediaUiModel.Video)
     }
 }

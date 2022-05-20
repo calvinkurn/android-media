@@ -25,36 +25,38 @@ class CreateReviewMediaPreviewImageViewHolder(
 
     private val binding = ItemCreateReviewMediaPreviewImageBinding.bind(view)
     private val transitionHandler = TransitionHandler()
-    private var element: CreateReviewMediaUiModel.Image? = null
 
     init {
         binding.root.setOnClickListener {
             listener.onAddMediaClicked()
         }
-        binding.icCreateReviewImageRemove.setOnClickListener {
-            element?.let { listener.onRemoveMediaClicked(it) }
-        }
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Image) {
-        this.element = element
         with(binding) {
             setupImageThumbnail(element.uri)
             setupImageState(element.state)
+            setupRemoveIconClickListener(element)
         }
     }
 
     override fun bind(element: CreateReviewMediaUiModel.Image, payloads: MutableList<Any>) {
-        this.element = element
         payloads.firstOrNull().let {
             if (it is Bundle) {
                 applyImageStateChange(it)
             }
         }
+        binding.setupRemoveIconClickListener(element)
     }
 
     private fun ItemCreateReviewMediaPreviewImageBinding.setupImageThumbnail(uri: String) {
         ivCreateReviewImagePreviewThumbnail.urlSrc = uri
+    }
+
+    private fun ItemCreateReviewMediaPreviewImageBinding.setupRemoveIconClickListener(element: CreateReviewMediaUiModel.Image) {
+        icCreateReviewImageRemove.setOnClickListener {
+            listener.onRemoveMediaClicked(element)
+        }
     }
 
     private fun setupImageState(state: CreateReviewMediaUiModel.State) {
