@@ -72,11 +72,13 @@ class GetUohOrdersNavUseCase (
                 if (it.metadata?.products?.isNotEmpty() == true) {
                     val product = it.metadata.products[0]
                     val additionalProductCount = it.metadata.products.size-1
-                    val estimatedArrival = it.metadata.queryParams?.substringAfter(
-                        SUBSTRING_AFTER_ESTIMATED_ARRIVAL
-                    )?.substringBefore(
-                        SUBSTRING_BEFORE_ESTIMATED_ARRIVAL
-                    ) ?: ""
+                    val statusOrder = it.status?: ""
+                    val estimatedArrival =
+                        if (statusOrder == IN_PROCESS || statusOrder == SENDING || statusOrder == PROCESSING) it.metadata.queryParams?.substringAfter(
+                            SUBSTRING_AFTER_ESTIMATED_ARRIVAL
+                        )?.substringBefore(
+                            SUBSTRING_BEFORE_ESTIMATED_ARRIVAL
+                        ) ?: "" else ""
                     navProductList.add(NavProductOrder(
                             statusText = it.metadata.status?.label?:"",
                             statusTextColor = it.metadata.status?.textColor?:"",
@@ -104,5 +106,8 @@ class GetUohOrdersNavUseCase (
         private const val VERTICAL_CATEGORY = "marketplace,tokonow,mp_pym,mp_pym_tokonow"
         private const val SUBSTRING_AFTER_ESTIMATED_ARRIVAL = "estimated_arrival_text\":\""
         private const val SUBSTRING_BEFORE_ESTIMATED_ARRIVAL = "\""
+        private const val IN_PROCESS = "Dalam Proses"
+        private const val PROCESSING = "diproses"
+        private const val SENDING = "dikirim"
     }
 }
