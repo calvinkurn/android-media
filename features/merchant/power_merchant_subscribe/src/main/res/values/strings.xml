@@ -74,7 +74,7 @@
     <string name="pm_description_kyc_verified_new_seller">Verifikasi data diri dengan KTP</string>
     <string name="pm_description_kyc_verified_before_30_first_monday">Data dirimu sudah terverifikasi</string>
     <string name="pm_description_kyc_not_verified_directly_pm">Gabung sekarang untuk bisa diverifikasi! Jika berhasil, tokomu akan jadi Power Merchant.</string>
-    <string name="pm_description_kyc_not_verified">Gabung sekarang untuk bisa diverifikasi! Jika berhasil, tokomu akan jadi Power Merchant. Verifikasi</string>
+    <string name="pm_description_kyc_not_verified"><![CDATA[Gabung sekarang untuk bisa diverifikasi! Jika berhasil, tokomu akan jadi Power Merchant. <br>Verifikasi]]></string>
     <string name="pm_description_kyc_verification_waiting">Verifikasi data diri akan diproses dalam waktu \n1x24 jam dan hasilnya akan dikirim ke e-mail kamu, ya.</string>
     <string name="pm_description_kyc_verification_failed"><![CDATA[Tenang, kamu masih bisa verifikasi ulang, kok! <br>Verifikasi Ulang]]></string>
     <string name="pm_description_kyc_verification_failed_directly_pm">Tenang, kamu masih bisa verifikasi ulang \ndan jika berhasil, tokomu langsung jadi Power Merchant!</string>
