@@ -16,13 +16,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -43,7 +48,20 @@ import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_KOTA_KECAMATAN
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_NEGATIVE_FULL_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_POSTAL_CODE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.GPS_REQUEST
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
@@ -56,7 +74,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -815,11 +832,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
         } else {
             currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
+            val saveAddress = saveAddressMapper.map(data, zipCodes, saveAddressDataModel)
+            viewModel.setAddress(saveAddress)
+            updateGetDistrictBottomSheet(saveAddress)
         }
-
-        val saveAddress = saveAddressMapper.map(data, zipCodes, saveAddressDataModel)
-        viewModel.setAddress(saveAddress)
-        updateGetDistrictBottomSheet(saveAddress)
     }
 
     private fun showOutOfReachBottomSheet() {
