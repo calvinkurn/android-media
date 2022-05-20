@@ -16,7 +16,7 @@
             android:name="com.tokopedia.shop.flash_sale.presentation.creation.campaign_rule.CampaignRuleActivity"
             android:exported="false" />
         <activity
-            android:name="com.tokopedia.shop.flash_sale.presentation.campaign_list.CampaignListActivity"
+            android:name="com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:label="Flash Sale Toko"

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
 
 import android.content.Context
 import android.content.Intent
@@ -21,7 +21,7 @@ class CampaignListActivity: BaseSimpleActivity() {
 
 
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_list
-    override fun getNewFragment() = CampaignListFragment.newInstance()
+    override fun getNewFragment() = CampaignListContainerFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {
