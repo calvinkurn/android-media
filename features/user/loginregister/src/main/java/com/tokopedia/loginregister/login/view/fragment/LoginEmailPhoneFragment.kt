@@ -195,6 +195,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var sharedPrefs: SharedPreferences? = null
 
     private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
+    private var isUsingRollenceNeedHelp = false
+    private var passOnStop = false
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -210,6 +212,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.let {
             analytics.trackScreen(it, screenName)
         }
+        if (passOnStop){
+            isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+            setUpRollenceNeedHelpView()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        passOnStop = true
     }
 
     override fun onResume() {
@@ -290,6 +301,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         refreshRolloutVariant()
     }
 
@@ -350,7 +362,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
-        initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
 
@@ -671,18 +682,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 registerAnalytics.trackClickBottomSignUpButton()
                 goToRegisterInitial(source)
             }
-
-            val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
-            forgotPassword?.text = setUpForgotPasswordTitle()
-            forgotPassword?.setOnClickListener {
-                if (isUsingInactivePhoneNumber()) {
-                    needHelpAnalytics.trackPageClickButuhBantuan()
-                    showNeedHelpBottomSheet()
-                } else {
-                    analytics.trackClickForgotPassword()
-                    goToForgotPassword()
-                }
-            }
+            setUpRollenceNeedHelpView()
         }
 
         showLoadingDiscover()
@@ -691,15 +691,35 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun setUpRollenceNeedHelpView(){
+        val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+        forgotPassword?.text = setUpForgotPasswordTitle()
+        forgotPassword?.setOnClickListener {
+            if (isUsingRollenceNeedHelp) {
+                needHelpAnalytics.trackPageClickButuhBantuan()
+                showNeedHelpBottomSheet()
+            } else {
+                analytics.trackClickForgotPassword()
+                goToForgotPassword()
+            }
+        }
+
+        if (isUsingRollenceNeedHelp) {
+            callTokopediaCare?.hide()
+        } else {
+            initKeyboardListener(view)
+        }
+    }
+
     private fun initKeyboardListener(view: View?) {
         view?.run {
             com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    callTokopediaCare?.hide()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.hide()
                 }
 
                 override fun onKeyboardHide() {
-                    callTokopediaCare?.show()
+                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show()
                 }
             })
         }
@@ -805,14 +825,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setUpForgotPasswordTitle(): String?{
         return context?.getString(
-            if (isUsingInactivePhoneNumber())
+            if (isUsingRollenceNeedHelp)
                 R.string.loginregister_need_help
             else
                 R.string.title_forgot_password
         )
     }
 
-    private fun isUsingInactivePhoneNumber(): Boolean {
+    private fun isUsingRollenceNeedHelp(): Boolean {
         val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
             ""
