@@ -46,6 +46,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_BANNER = "click widget banner"
     const val IMPRESSION_WIDGET_BANNER = "impression widget banner"
     const val SEE_MORE = "see more"
+    const val HYPERLINK = "hyperlink"
     const val CLICK_NOTIFICATION = "click notification"
     const val CLICK_HOME = "click home"
     const val CLICK_PRODUCT = "click product"

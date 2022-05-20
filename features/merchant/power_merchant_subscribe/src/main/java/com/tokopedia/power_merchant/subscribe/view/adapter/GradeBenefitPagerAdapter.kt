@@ -57,7 +57,7 @@ class GradeBenefitPagerAdapter(
                     showTargetAchievement()
                 }
             } else {
-                if (page is PMGradeWithBenefitsUiModel.PMProAdvance) {
+                if (page is PMGradeWithBenefitsUiModel.PMProAdvance && data.currentShopLevel <= PMConstant.ShopLevel.TWO) {
                     showTargetAchievement()
                 } else {
                     showTickerBasedOnLevel(page)

@@ -2,7 +2,6 @@ package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant.Url.PM_FEE_SERVICE
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmFeeServiceBinding
@@ -30,18 +29,17 @@ class PMFeeServiceBottomSheet :
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_fee_service
 
     override fun setupView() = binding?.run {
-        val title =
-            context?.getString(com.tokopedia.power_merchant.subscribe.R.string.pm_fee_service_category)
-                ?: String.EMPTY
+        val title = context?.getString(R.string.pm_fee_service_category).orEmpty()
         setTitle(title)
         setupWebView()
     }
 
     fun show(fm: FragmentManager) {
+        if (fm.isStateSaved && isVisible) return
         show(fm, TAG)
     }
 
-    private fun setupWebView(){
+    private fun setupWebView() {
         childFragmentManager.beginTransaction()
             .replace(R.id.frameFeeServiceFragment, webViewPage)
             .commit()

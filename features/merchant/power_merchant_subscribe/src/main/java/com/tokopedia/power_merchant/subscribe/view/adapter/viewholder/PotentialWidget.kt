@@ -7,7 +7,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmPotentialBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.PotentialAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
@@ -20,7 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class PotentialWidget(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetPotentialUiModel>(itemView) {
 
     companion object {
@@ -34,21 +35,15 @@ class PotentialWidget(
         binding?.run {
             setupRecyclerView()
 
-            if (element.isNewSeller) {
-                tvPmPotentialDescription.text = root.context.getString(
-                    R.string.pm_registration_potential_description_new_seller,
-                    Constant.POWER_MERCHANT_CHARGING
-                ).parseAsHtml()
-            } else {
-                tvPmPotentialDescription.text = root.context.getString(
-                    R.string.pm_registration_potential_description
-                ).parseAsHtml()
-            }
+            tvPmPotentialDescription.text = root.context.getString(
+                R.string.pm_registration_potential_description
+            ).parseAsHtml()
 
             tvPmPotentialCtaCategory.text = root.context.getString(
                 R.string.pm_service_fee_by_category
             ).parseAsHtml()
             tvPmPotentialCtaCategory.setOnClickListener {
+                powerMerchantTracking.sendEventClickSeeCategory(element.shopScore.toString())
                 listener.showServiceFeeByCategory()
             }
 

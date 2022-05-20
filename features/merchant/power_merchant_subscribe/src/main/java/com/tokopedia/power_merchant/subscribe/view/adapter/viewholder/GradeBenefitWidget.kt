@@ -5,16 +5,19 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
@@ -28,7 +31,8 @@ import timber.log.Timber
 
 class GradeBenefitWidget(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
 
     companion object {
@@ -37,6 +41,7 @@ class GradeBenefitWidget(
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
     }
 
+    private var highestHeight = Int.ZERO
     private val binding: WidgetPmGradeBenefitBinding? by viewBinding()
 
     override fun bind(element: WidgetGradeBenefitUiModel) {
@@ -48,6 +53,7 @@ class GradeBenefitWidget(
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
+            powerMerchantTracking.sendEventClickLearnMorePM(element.shopScore.toString())
             RouteManager.route(root.context, element.ctaAppLink)
         }
     }
@@ -92,6 +98,8 @@ class GradeBenefitWidget(
                             setUnifyTabIconColorFilter(view?.customView, SATURATION_INACTIVE)
                         }
                     }
+
+                    sendTrackerOnTabSelected(element.benefitPages, tabLayout.selectedTabPosition)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -105,6 +113,11 @@ class GradeBenefitWidget(
                 }
             }
         }
+    }
+
+    private fun sendTrackerOnTabSelected(pages: List<PMGradeWithBenefitsUiModel>, position: Int) {
+        val tabLabel = pages.getOrNull(position)?.tabLabel.orEmpty()
+        powerMerchantTracking.sendEventClickTabPowerMerchantPro(tabLabel)
     }
 
     private fun setUnifyTabIconColorFilter(view: View?, saturation: Float) {
@@ -142,8 +155,37 @@ class GradeBenefitWidget(
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         selectTab(mLayoutManager)
                     }
+                    val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (position != RecyclerView.NO_POSITION && element.benefitPages.size > Int.ONE) {
+                        mLayoutManager.findViewByPosition(position)?.let { view ->
+                            refreshTableHeight(view)
+                        }
+                    }
                 }
             })
+        }
+    }
+
+    private fun refreshTableHeight(view: View) {
+        view.post {
+            binding?.run {
+                val wMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                val hMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+                view.measure(wMeasureSpec, hMeasureSpec)
+
+                if (rvPmGradeBenefitPager.layoutParams?.height != view.measuredHeight) {
+                    rvPmGradeBenefitPager.layoutParams =
+                        (rvPmGradeBenefitPager.layoutParams as? ConstraintLayout.LayoutParams)
+                            ?.also { lp ->
+                                if (view.measuredHeight > highestHeight) {
+                                    highestHeight = view.measuredHeight
+                                    lp.height = view.measuredHeight
+                                }
+                            }
+                }
+            }
         }
     }
 

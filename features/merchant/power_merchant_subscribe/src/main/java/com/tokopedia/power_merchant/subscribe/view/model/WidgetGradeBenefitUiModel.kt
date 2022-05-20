@@ -14,7 +14,8 @@ class WidgetGradeBenefitUiModel(
     val isEligiblePm: Boolean,
     val isEligiblePmPro: Boolean,
     val benefitPages: List<PMGradeWithBenefitsUiModel>,
-    val ctaAppLink: String
+    val ctaAppLink: String,
+    val shopScore:Int
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
