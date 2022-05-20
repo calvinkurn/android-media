@@ -1,14 +1,13 @@
 package com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.bottomsheet
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.BulletSpan
 import android.view.View
 import com.tokopedia.seller_shop_flash_sale.R
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.shop.flash_sale.common.extension.setBulletSpan
 
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -32,10 +31,13 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
 
     private var campaignTeaserInfoPoint1: Typography? = null
     private var campaignTeaserInfoPoint2: Typography? = null
+
+    @SuppressLint("ResourcePackage")
     private val campaignTeaserInfoPoint1Text =
-        SpannableString("Calon pembeli dapat melihat preview produk campaign mendatang dan mengaktifkan pengingat campaign.")
+        SpannableString(getString(R.string.campaign_teaser_info_point_1))
+    @SuppressLint("ResourcePackage")
     private val campaignTeaserInfoPoint2text =
-        SpannableString("Pembelian di luar jadwal campaign akan dikenakan harga normal.")
+        SpannableString(getString(R.string.campaign_teaser_info_point_2))
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
@@ -47,8 +49,9 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
         show(fragmentManager, TAG)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setupView(view: View) {
-        setTitle("Informasi Teaser Campaign")
+        setTitle(getString(R.string.campaign_teaser_info_title))
 
         campaignTeaserInfoPoint1 = view.findViewById(R.id.tg_point_1_campaign_info)
         campaignTeaserInfoPoint2 = view.findViewById(R.id.tg_point_2_campaign_info)
@@ -56,18 +59,8 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupContent() {
-        campaignTeaserInfoPoint1Text.setSpan(
-            BulletSpan(16, Color.BLACK),
-            0,
-            0,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        campaignTeaserInfoPoint2text.setSpan(
-            BulletSpan(16, Color.BLACK),
-            0,
-            0,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        campaignTeaserInfoPoint1Text.setBulletSpan()
+        campaignTeaserInfoPoint2text.setBulletSpan()
 
         campaignTeaserInfoPoint1?.run {
             text = campaignTeaserInfoPoint1Text
