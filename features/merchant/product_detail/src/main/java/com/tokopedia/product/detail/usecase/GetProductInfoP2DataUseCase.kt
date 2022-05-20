@@ -129,6 +129,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 name
                 tagLine
                 url
+                ownerID
               }
               shopLastActive
               location
@@ -502,6 +503,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
+            navBar {
+              name
+              items {
+                title
+                componentName
+              }
+            }
           }
     }""".trimIndent()
     }
@@ -574,6 +582,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating
             p2UiData.ticker = ticker
+            p2UiData.navBar = navBar
         }
         return p2UiData
     }

@@ -56,9 +56,9 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             if (it.cta.cta_type == REDIRECT_TOKO_ENV) {
                 isWebUrl = false
             } else {
-                if (it.gatewayDetail?.how_toUse?.notes?.size != 0)
-                    noteData = it.gatewayDetail?.how_toUse?.notes?.get(0) ?: ""
-                it.gatewayDetail?.how_toUse?.let { howToUseDetail ->
+                if (it.gatewayDetail?.howToUse?.notes?.size != 0)
+                    noteData = it.gatewayDetail?.howToUse?.notes?.get(0) ?: ""
+                it.gatewayDetail?.howToUse?.let { howToUseDetail ->
                     listOfSteps = howToUseDetail.steps as ArrayList<String>
                 }
                 titleText =
