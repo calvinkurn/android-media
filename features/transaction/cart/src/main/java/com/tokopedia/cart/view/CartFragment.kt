@@ -2040,34 +2040,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 forceExpand = true
             }
         }
-
-        val isUsingWishlistV2 = context?.let {
-            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
-        }
-
-        if (isUsingWishlistV2 == true) {
-            dPresenter.processAddToWishlistV2(productId, cartId, object: WishlistV2ActionListener {
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-                    view?.let { v ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
-                    }
-                }
-
-                override fun onSuccessAddWishlist(
-                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                    productId: String
-                ) {
-                    onAddCartToWishlistV2Success(result, productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
-                }
-
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
-                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
-
-            })
-        } else {
-            dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
-        }
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
