@@ -142,7 +142,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     private fun showChoiceDetail(dataUiModel: QuizChoiceDetailUiModel) {
         leaderboardSheetView.hide()
-        choiceDetailSheetView.setData(dataUiModel)
+        choiceDetailSheetView.setData(dataUiModel, isOngoingBottomsheet())
         choiceDetailSheetView.show()
 
     }
@@ -202,6 +202,8 @@ class PlayQuizDetailBottomSheet @Inject constructor(
             ) as PlayQuizDetailBottomSheet
         }
     }
+
+    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString().lowercase()
 
     enum class Type {
         LEADERBOARD,
