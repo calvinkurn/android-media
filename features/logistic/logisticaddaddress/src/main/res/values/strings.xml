@@ -212,8 +212,8 @@
     <string name="field_label_alamat">label alamat</string>
     <string name="field_catatan_kurir">catatan untuk kurir</string>
     <string name="field_alamat">alamat lengkap</string>
-    <string name="field_nama_penerima">nama penerima</string>
-    <string name="field_nomor_hp">nomor hp</string>
+    <string name="field_nama_penerima">Nama Penerima</string>
+    <string name="field_nomor_hp">Nomor Hp</string>
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
     <string name="change_pinpoint_positive_text">Ubah</string>

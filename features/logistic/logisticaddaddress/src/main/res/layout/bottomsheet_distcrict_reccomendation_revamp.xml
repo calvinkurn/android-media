@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="@dimen/dp_100"
+            android:layout_marginBottom="100dp"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
@@ -33,7 +33,7 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_32"
+                android:layout_marginTop="32dp"
                 app:text_field_label="Kode Pos"
                 app:text_field_message="@string/kodepos_helper"
                 app:text_field_input_type="number"/>
