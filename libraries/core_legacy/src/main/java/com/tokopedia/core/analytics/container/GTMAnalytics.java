@@ -1022,8 +1022,8 @@ public class GTMAnalytics extends ContextAnalytics {
                         Authenticated.KEY_USER_FULLNAME, userSession.getName(),
                         Authenticated.KEY_USER_ID, userSession.getGTMLoginID(),
                         Authenticated.KEY_SHOP_ID, userSession.getShopId(),
-                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
-                        Authenticated.KEY_USER_EMAIL, userSession.getEmail()
+                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none")
+//                        Authenticated.KEY_USER_EMAIL, userSession.getEmail()
                 ),
                 Authenticated.ANDROID_ID, userSession.getAndroidId(),
                 Authenticated.ADS_ID, userSession.getAdsId(),
