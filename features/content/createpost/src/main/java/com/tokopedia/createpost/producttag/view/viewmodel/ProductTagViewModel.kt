@@ -437,7 +437,7 @@ class ProductTagViewModel @AssistedInject constructor(
             resetPagination()
             this.query = query
         }
-        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam ) }
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam) }
 
         handleLoadMyShopProduct()
     }

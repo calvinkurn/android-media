@@ -127,8 +127,8 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         }
 
         binding.chipSort.apply {
-            setChevronClickListener { viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet) }
-            setOnClickListener { viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet) }
+            setChevronClickListener { submitActionOpenSortBottomSheet() }
+            setOnClickListener { submitActionOpenSortBottomSheet() }
         }
     }
 
@@ -200,21 +200,20 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
     private fun renderChip(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
         if(prev?.param == curr.param) return
 
-        val selectedSort = curr.sorts.firstOrNull {
-            curr.param.isParamFound(it.key, it.value)
-        }
+        val selectedSort = viewModel.myShopSortList.firstOrNull{ it.isSelected }
 
         binding.chipSort.chipText = selectedSort?.text ?: getString(R.string.cc_product_tag_sort_label)
         binding.chipSort.chipType = if(selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
     }
 
     private fun submitQuery(query: String) {
+        clearSearchFocus()
         viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
+    }
 
-        binding.sbShopProduct.searchBarTextField.apply {
-            clearFocus()
-            hideKeyboard()
-        }
+    private fun submitActionOpenSortBottomSheet() {
+        clearSearchFocus()
+        viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
     }
 
     private fun showEmptyState(hasFilter: Boolean) {
@@ -228,6 +227,14 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
                 else R.string.cc_no_my_shop_product_desc
             )
             show()
+        }
+    }
+
+
+    private fun clearSearchFocus() {
+        binding.sbShopProduct.searchBarTextField.apply {
+            clearFocus()
+            hideKeyboard()
         }
     }
 
