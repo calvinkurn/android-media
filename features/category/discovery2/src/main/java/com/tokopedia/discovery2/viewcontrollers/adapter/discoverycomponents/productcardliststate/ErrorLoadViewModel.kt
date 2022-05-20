@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,6 +28,9 @@ class ErrorLoadViewModel(val application: Application,
     @Inject
     lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
 
+    @Inject
+    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -43,6 +47,11 @@ class ErrorLoadViewModel(val application: Application,
                                 components.parentComponentId,
                                 components.pageEndPoint
                             )
+                        ComponentNames.BannerInfinite.componentName ->
+                            bannerInfiniteUseCase.loadFirstPageComponents(
+                                    components.id,
+                                    components.pageEndPoint
+                            )
                         else ->
                             productCardUseCase.loadFirstPageComponents(
                                 components.parentComponentId,
@@ -56,6 +65,11 @@ class ErrorLoadViewModel(val application: Application,
                                 merchantVoucherUseCase.getVoucherUseCase(
                                     components.id,
                                     components.pageEndPoint
+                                )
+                            ComponentNames.BannerInfinite.componentName ->
+                                bannerInfiniteUseCase.getBannerUseCase(
+                                        components.id,
+                                        components.pageEndPoint
                                 )
                             else ->
                                 productCardUseCase.getProductCardsUseCase(

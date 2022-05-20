@@ -6,19 +6,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topads.credit.history.data.extensions.formatedDate
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.dashboard.R
-import kotlinx.android.synthetic.main.item_credit_history.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory>(view) {
 
+    private val txtAmount: Typography? = view.findViewById(R.id.txt_amount)
+    private val txtTitle: Typography? = view.findViewById(R.id.txt_title)
+    private val txtDate: Typography? = view.findViewById(R.id.txt_date)
+
     override fun bind(element: CreditHistory) {
         with(itemView) {
-            txt_date.text = element.formatedDate
-            txt_amount.text = ("${if (element.isReduction) "-" else "+"} ${element.amountFmt}")
+            txtDate?.text = element.formatedDate
+            txtAmount?.text = ("${if (element.isReduction) "-" else "+"} ${element.amountFmt}")
             if (!element.isReduction)
-                txt_amount.setTextColor(ContextCompat.getColor(context, com.tokopedia.topads.common.R.color.topads_common_green_tab))
+                txtAmount?.setTextColor(ContextCompat.getColor(context,
+                    com.tokopedia.topads.common.R.color.topads_common_green_tab))
             else
-                txt_amount.setTextColor(ContextCompat.getColor(context, com.tokopedia.topads.common.R.color.topads_heading_color))
-            txt_title.text = element.description
+                txtAmount?.setTextColor(ContextCompat.getColor(context,
+                    com.tokopedia.topads.common.R.color.topads_heading_color))
+            txtTitle?.text = element.description
         }
     }
 

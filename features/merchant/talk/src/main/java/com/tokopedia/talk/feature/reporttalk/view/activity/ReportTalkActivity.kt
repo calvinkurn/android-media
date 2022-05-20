@@ -15,7 +15,6 @@ import com.tokopedia.talk.feature.reporttalk.view.fragment.ReportTalkFragment
  * @author by nisie on 8/30/18.
  */
 class ReportTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
@@ -63,5 +62,4 @@ class ReportTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
-
 }
