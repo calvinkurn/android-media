@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.liveDataExtension.SingleLiveEventData
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 class AffiliateRegistrationSharedViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
-    private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase
+    private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
 ) : BaseViewModel() {
 
     private var userActionLiveData = SingleLiveEventData<UserAction>()
@@ -24,6 +27,7 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
     private var progressBar = MutableLiveData<Boolean>()
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     var isFieldError = MutableLiveData<Boolean>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
@@ -46,7 +50,7 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
 
     private fun onGetResult(response: AffiliateValidateUserData) {
         if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == false){
-            userActionLiveData.value = UserAction.SignUpAction
+            userLoginPageLiveData.value = UserAction.SignUpAction
         }
         else if(response.validateAffiliateUserStatus.data?.isEligible == false){
             userLoginPageLiveData.value = UserAction.FraudAction
@@ -81,6 +85,16 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
         userActionLiveData.value = UserAction.RegistrationSucces
     }
 
+    fun getAnnouncementInformation() {
+        launchCatchError(block = {
+            affiliateAnnouncement.value =
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getUserAction(): SingleLiveEventData<UserAction> = userActionLiveData
     fun getLoginScreenAction(): SingleLiveEventData<UserAction> = userLoginPageLiveData
     fun getErrorMessage(): LiveData<Throwable> = errorMessage

@@ -14,52 +14,10 @@ class AffiliateAnnouncementUseCase @Inject constructor(
         return HashMap()
     }
     suspend fun getAffiliateAnnouncement(): AffiliateAnnouncementDataV2 {
-        return Gson().fromJson("{\n" +
-                "    \"getAffiliateAnnouncementV2\": {\n" +
-                "      \"Data\": {\n" +
-                "        \"Status\": 1,\n" +
-                "        \"TickerType\": \"warning\",\n" +
-                "        \"TickerData\": [\n" +
-                "          {\n" +
-                "            \"AnnouncementTitle\": \"Saldo Affiliate kamu ditahan sementara\",\n" +
-                "            \"AnnouncementDescription\": \"Kamu juga tidak bisa tarik saldo karena akunmu terdeteksi bermasalah.\",\n" +
-                "            \"CtaText\": \"Pelajari Selengkapnya\",\n" +
-                "            \"CtaLink\": {\n" +
-                "              \"IosURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"AndroidURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"DesktopURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"MobileURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\"\n" +
-                "            }\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"AnnouncementTitle\": \"Segera cek e-mail kamu, ya\",\n" +
-                "            \"AnnouncementDescription\": \"Kami telah mengirim e-mail untuk bantu perbaiki akun Tokopedia Affiliate kamu.\",\n" +
-                "            \"CtaText\": \"Cek E-mail\",\n" +
-                "            \"CtaLink\": {\n" +
-                "              \"IosURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"AndroidURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"DesktopURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\",\n" +
-                "              \"MobileURL\": \"https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate\"\n" +
-                "            }\n" +
-                "          }\n" +
-                "        ],\n" +
-                "        \"Error\": {\n" +
-                "          \"Message\": \"\",\n" +
-                "          \"CtaText\": \"\",\n" +
-                "          \"CtaLink\": {\n" +
-                "            \"IosURL\": \"\",\n" +
-                "            \"AndroidURL\": \"\",\n" +
-                "            \"DesktopURL\": \"\",\n" +
-                "            \"MobileURL\": \"\"\n" +
-                "          }\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }",AffiliateAnnouncementDataV2::class.java)
-//        return repository.getGQLData(
-//            GQL_Affiliate_Announcement,
-//            AffiliateAnnouncementData::class.java,
-//            createRequestParams()
-//        )
+        return repository.getGQLData(
+            GQL_Affiliate_Announcement,
+            AffiliateAnnouncementDataV2::class.java,
+            createRequestParams()
+        )
     }
 }

@@ -16,28 +16,11 @@ class AffiliateValidateUserStatusUseCase @Inject constructor(
     }
 
     suspend fun validateUserStatus(email: String): AffiliateValidateUserData {
-        return Gson().fromJson("{\n" +
-                "    \"validateAffiliateUserStatus\": {\n" +
-                "      \"Data\": {\n" +
-                "        \"Status\": 1,\n" +
-                "        \"IsEligible\": true,\n" +
-                "        \"IsReviewed\": false,\n" +
-                "        \"IsRegistered\": true,\n" +
-                "        \"IsSystemDown\": true,\n" +
-                "        \"Error\": {\n" +
-                "          \"ErrorType\": 0,\n" +
-                "          \"Message\": \"\",\n" +
-                "          \"CtaText\": \"\",\n" +
-                "          \"CtaLink\": {\n" +
-                "            \"DesktopURL\": \"\",\n" +
-                "            \"MobileURL\": \"\",\n" +
-                "            \"AndroidURL\": \"\",\n" +
-                "            \"IosURL\": \"\"\n" +
-                "          }\n" +
-                "        }\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }",AffiliateValidateUserData::class.java)
+        return repository.getGQLData(
+            GQL_Affiliate_Validate,
+            AffiliateValidateUserData::class.java,
+            createRequestParams(email)
+        )
     }
 
     companion object {

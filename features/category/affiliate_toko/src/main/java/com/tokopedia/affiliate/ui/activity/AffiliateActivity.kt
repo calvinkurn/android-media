@@ -280,7 +280,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
+                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 showAffiliatePortal()
             } else{
                 showLoginPortal()
