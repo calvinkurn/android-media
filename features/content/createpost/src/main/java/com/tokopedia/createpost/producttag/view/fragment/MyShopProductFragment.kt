@@ -18,6 +18,7 @@ import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChil
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.MyShopProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -25,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -104,12 +106,28 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         binding.sbShopProduct.clearListener = {
             submitQuery("")
         }
+
+        binding.chipSort.apply {
+            setChevronClickListener { viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet) }
+            setOnClickListener { viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet) }
+        }
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderMyShopProducts(it.prevValue?.myShopProduct, it.value.myShopProduct)
+                renderChip(it.prevValue?.myShopProduct, it.value.myShopProduct)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    is ProductTagUiEvent.OpenMyShopSortBottomSheet -> {
+                        /** TODO: open bottom sheet */
+                    }
+                }
             }
         }
     }
@@ -155,6 +173,10 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
             }
             else -> {}
         }
+    }
+
+    private fun renderChip(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
+        /** TODO: gonna do dis */
     }
 
     private fun submitQuery(query: String) {

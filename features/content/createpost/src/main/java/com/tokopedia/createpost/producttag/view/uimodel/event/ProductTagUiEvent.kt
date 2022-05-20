@@ -14,9 +14,12 @@ sealed interface ProductTagUiEvent {
 
     data class ProductSelected(val product: ProductUiModel): ProductTagUiEvent
     object ShowSourceBottomSheet: ProductTagUiEvent
+
     data class OpenAutoCompletePage(val query: String): ProductTagUiEvent
     data class OpenProductSortFilterBottomSheet(val param: SearchParamUiModel, val data: DynamicFilterModel): ProductTagUiEvent
     data class OpenShopSortFilterBottomSheet(val param: SearchParamUiModel, val data: DynamicFilterModel): ProductTagUiEvent
+    data class OpenMyShopSortBottomSheet(val param: SearchParamUiModel, val data: DynamicFilterModel): ProductTagUiEvent
+
     data class SetProductFilterProductCount(val result: NetworkResult<String>): ProductTagUiEvent
     data class SetShopFilterProductCount(val result: NetworkResult<String>): ProductTagUiEvent
 }

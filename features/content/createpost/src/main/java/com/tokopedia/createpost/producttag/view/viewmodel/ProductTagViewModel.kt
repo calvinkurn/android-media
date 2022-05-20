@@ -127,6 +127,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _myShopProductUiState = _myShopProduct.map {
         MyShopProductUiState(
             products = it.products,
+            sorts = it.sorts,
             state = it.state,
             param = it.param,
         )
@@ -224,6 +225,7 @@ class ProductTagViewModel @AssistedInject constructor(
             /** My Shop Product */
             ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
             is ProductTagAction.SearchMyShopProduct -> handleSearchMyShopProduct(action.query)
+            ProductTagAction.OpenMyShopSortBottomSheet -> handleOpenMyShopSortBottomSheet()
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
@@ -424,6 +426,29 @@ class ProductTagViewModel @AssistedInject constructor(
             )
         }
         handleLoadMyShopProduct()
+    }
+
+    private fun handleOpenMyShopSortBottomSheet() {
+        viewModelScope.launchCatchError(block = {
+            val currState = _myShopProduct.value
+
+            val query = currState.param.query
+            val param = initParam(query).apply {
+                source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
+            }
+
+            val sorts = if(currState.sorts.isEmpty()) {
+                repo.getSortFilter(param).also {
+                    _myShopProduct.setValue { copy(sorts = it) }
+                }
+            } else currState.sorts
+
+            _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet(currState.param, sorts))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+            })
+        }
     }
 
     private fun handleLoadGlobalSearchProduct() {
