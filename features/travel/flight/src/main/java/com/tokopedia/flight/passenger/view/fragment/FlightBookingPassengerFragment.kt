@@ -360,11 +360,17 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             )
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
-            binding?.rvPassengerTitle?.setItem(
-                ArrayList(Arrays.asList(*entries)),
-                initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(
+            var initialSelectedPosition =
+                if (passengerModel.passengerTitle != null && passengerModel.passengerTitle.isNotEmpty()) getPassengerTitleId(
                     passengerModel.passengerTitle
                 ) - 1 else null
+            if (initialSelectedPosition != null && initialSelectedPosition > TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT) {
+                initialSelectedPosition = TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT
+            }
+
+            binding?.rvPassengerTitle?.setItem(
+                ArrayList(Arrays.asList(*entries)),
+                initialSelectedItemPos = initialSelectedPosition
             )
         }
         if (isDomestic && isMandatoryIdentificationNumber && passengerModel.identificationNumber.isNotEmpty()) {
@@ -382,7 +388,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerTitle.equals(
                 FlightPassengerTitle.NYONYA.salutation,
                 true
-            ) -> if (itemCount > 2) binding?.rvPassengerTitle?.selectChipByPosition(1)
+            ) -> binding?.rvPassengerTitle?.selectChipByPosition(1)
             passengerTitle.equals(
                 FlightPassengerTitle.NONA.salutation,
                 true
@@ -1273,6 +1279,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         private const val DEFAULT_LAST_HOUR_IN_DAY = 23
         private const val DEFAULT_LAST_MIN_IN_DAY = 59
         private const val DEFAULT_LAST_SEC_IN_DAY = 59
+
+        private const val TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT = 1
 
         fun newInstance(
             depatureId: String,
