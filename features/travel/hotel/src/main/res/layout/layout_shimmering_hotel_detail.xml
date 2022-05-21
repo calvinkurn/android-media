@@ -2,49 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_160dp"
-        android:layout_marginBottom="@dimen/spacing_lvl1" />
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/hotel_76dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/hotel_76dp"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/hotel_76dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
     </LinearLayout>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/hotel_160dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2" />
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1" />
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
     <View
         android:layout_width="match_parent"
@@ -52,23 +65,29 @@
         android:layout_marginTop="@dimen/layout_lvl4"
         android:background="@color/Unify_N50" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_100dp"
-        android:layout_margin="@dimen/layout_lvl2" />
+        android:layout_margin="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2" />
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl2" />
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
 </LinearLayout>

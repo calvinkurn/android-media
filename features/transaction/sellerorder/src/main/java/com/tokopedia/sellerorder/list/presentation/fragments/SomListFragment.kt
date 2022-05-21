@@ -918,7 +918,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun setDefaultSortByValue() {
-        if (somListSortFilterTab?.isSortByAppliedManually() != true) {
+        if (somListSortFilterTab?.isSortByAppliedManually() == true) {
+            somListSortFilterTab?.getSelectedSort()?.let { selectedSort ->
+                viewModel.setSortOrderBy(selectedSort)
+            }
+        } else {
             if (tabActive == KEY_CONFIRM_SHIPPING) {
                 viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
             } else {

@@ -453,7 +453,17 @@
           "destination_activity": "com.tokopedia.unifyorderhistory.view.activity.UohListActivity", 
           "deeplink": "tokopedia-android-internal://order/unified", 
           "deeplink_variable": "ApplinkConstInternalOrder.UNIFY_ORDER"
-     },
+     }, 
+     {
+          "destination_activity": "com.tokopedia.kyc.view.activity.StartUpgradeToOvoActivity", 
+          "deeplink": "tokopedia-android-internal://ovo/upgrade", 
+          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity", 
+          "deeplink": "tokopedia-android-internal://ovo/upgradestatus", 
+          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE_STATUS"
+     }, 
      {
           "destination_activity": "com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity", 
           "deeplink": "tokopedia-android-internal://now/home", 

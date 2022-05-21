@@ -57,27 +57,35 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/typo_correction">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/unify_space_12" />
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl5"
-            android:layout_marginBottom="@dimen/unify_space_12" />
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl8"
-            android:layout_marginBottom="@dimen/unify_space_12" />
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/layout_lvl9" />
+            android:layout_marginEnd="@dimen/layout_lvl9"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

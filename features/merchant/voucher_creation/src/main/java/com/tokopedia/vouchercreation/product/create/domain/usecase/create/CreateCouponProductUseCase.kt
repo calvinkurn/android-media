@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase.create
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
@@ -110,7 +111,7 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             if (data.merchantPromotionCreateMV.data.status != STATUS_SUCCESS) {
                 throw MessageErrorException(data.merchantPromotionCreateMV.message)
             } else {
-                return data.merchantPromotionCreateMV.data.voucherId
+                return data.merchantPromotionCreateMV.data.voucherId.toIntOrZero()
             }
         } else {
             throw MessageErrorException(error.joinToString(", ") {

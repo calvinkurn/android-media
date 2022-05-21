@@ -290,8 +290,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun validateAndStartLive() {
-        if(viewModel.isCoverAvailable()) startCountDown()
+    private fun requireCover(ifCoverSet: () -> Unit) {
+        if(viewModel.isCoverAvailable()) ifCoverSet()
         else {
             val errorMessage = getString(R.string.play_bro_cover_empty_error)
             toaster.showError(
@@ -300,6 +300,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             )
             showCoverForm(true)
         }
+    }
+
+    private fun validateAndStartLive() {
+        requireCover { startCountDown() }
     }
 
     private fun setupObserver() {
@@ -435,7 +439,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        showScheduleBottomSheet()
+                        requireCover { showScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
