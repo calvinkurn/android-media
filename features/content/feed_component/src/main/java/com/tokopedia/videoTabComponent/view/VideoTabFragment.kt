@@ -66,8 +66,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         const val TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 0L
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
 
-
-
+        private const val THRESHOLD_SCROLL_ZERO = 0
+        private const val THRESHOLD_SCROLL_TEN = 10
+        private const val THRESHOLD_SCROLL_MINUS_TEN = -10
 
 
         @JvmStatic
@@ -354,16 +355,16 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
                 rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
-                if (dy > 0) {
+                if (dy > THRESHOLD_SCROLL_ZERO) {
                     // Scrolling up
                         isScrollingUp = true
-                    if (dy > 10)
+                    if (dy > THRESHOLD_SCROLL_TEN)
                     rvWidget?.setHeaderViewVisibility(false)
 
                 } else {
                     // Scrolling down
                         isScrollingUp = false
-                    if (dy < -10)
+                    if (dy < THRESHOLD_SCROLL_MINUS_TEN)
                     rvWidget?.setHeaderViewVisibility(true)
 
                 }

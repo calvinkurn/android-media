@@ -1,14 +1,12 @@
 package com.tokopedia.feedcomponent.view.custom
 
 import android.content.Context
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.widget.MultiAutoCompleteTextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
-import com.tokopedia.feedcomponent.R
+import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import kotlin.math.max
@@ -22,6 +20,9 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
     companion object {
+
+        private const val THRESHOLD = 3
+
         @ColorInt
         fun getMentionColor(context: Context): Int {
             return ContextCompat.getColor(context, unifyR.color.Unify_G500)
@@ -114,7 +115,7 @@ class MentionEditText : AppCompatMultiAutoCompleteTextView {
     }
 
     init {
-        threshold = 3
+        threshold = THRESHOLD
         addTextChangedListener(textWatcher)
         setTokenizer(MentionTokenizer())
     }
