@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.BaseChatUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.ImageUploadUiModel
@@ -13,6 +14,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
@@ -190,8 +192,14 @@ class TopchatImageUploadViewHolder(
         } else {
             setVisibility(progressBarSendImage, View.GONE)
         }
-        element.imageUrl?.let {
-            attachmentUnify?.loadSecureImage(it, userSession)
+        if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
+            element.imageUrl?.let {
+                attachmentUnify?.loadSecureImage(it, userSession)
+            }
+        } else {
+            element.imageUrl?.let {
+                attachmentUnify?.loadImage(it)
+            }
         }
     }
 

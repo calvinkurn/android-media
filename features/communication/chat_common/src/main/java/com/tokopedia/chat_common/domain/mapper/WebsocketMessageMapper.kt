@@ -55,17 +55,12 @@ open class WebsocketMessageMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ImageUploadAttributes::class.java
         )
-
-        val imageUrl = if (attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
-            pojoAttribute.imageUrlSecure
-        } else {
-            pojoAttribute.imageUrl
-        }
-
         return ImageUploadUiModel.Builder()
             .withResponseFromWs(pojo)
-            .withImageUrl(imageUrl)
+            .withAttachmentType(attachmentType)
+            .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .withImageSecureUrl(pojoAttribute.imageUrlSecure)
             .build()
     }
 

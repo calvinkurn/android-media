@@ -155,17 +155,12 @@ open class GetExistingChatMapper @Inject constructor() {
             chatItemPojoByDateByTime.attachment.attributes,
             ImageUploadAttributes::class.java
         )
-
-        val imageUrl = if (attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
-            pojoAttribute.imageUrlSecure
-        } else {
-            pojoAttribute.imageUrl
-        }
-
         return ImageUploadUiModel.Builder()
+            .withAttachmentType(attachmentType)
             .withResponseFromGQL(chatItemPojoByDateByTime)
-            .withImageUrl(imageUrl)
+            .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .withImageSecureUrl(pojoAttribute.imageUrlSecure)
             .build()
     }
 
