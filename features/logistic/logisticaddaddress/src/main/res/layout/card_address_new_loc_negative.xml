@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/unify_space_16"
+    android:layout_marginTop="16dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,9 +15,9 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_location"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_22"
-            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintTop_toTopOf="@id/address_district"
             app:layout_constraintBottom_toBottomOf="@id/address_district"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -27,9 +27,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:layout_marginBottom="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="12dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ic_location"
@@ -42,12 +42,27 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="@dimen/unify_space_24"
+            android:layout_marginEnd="24dp"
             app:layout_constraintTop_toTopOf="@id/address_district"
             app:layout_constraintBottom_toBottomOf="@id/address_district"
             app:layout_constraintEnd_toEndOf="parent"
             app:icon_name="CHEVRON_RIGHT"
             tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@id/address_district"
+            app:layout_constraintBottom_toBottomOf="@id/address_district"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_6"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:text="@string/change_pinpoint_negative_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
