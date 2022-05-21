@@ -832,17 +832,6 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
 
-                getWidgetBenefitPackageView()?.let { widgetBenefitPackageView ->
-                    add(
-                        CoachMark2Item(
-                            widgetBenefitPackageView,
-                            getString(R.string.pm_pro_new_seller_title_coachmark_2),
-                            getString(R.string.pm_pro_new_seller_desc_coachmark_2),
-                            position = CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-
                 getCheckStatusPMProView()?.let { statusPMProView ->
                     add(
                         CoachMark2Item(
@@ -857,9 +846,6 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun getWidgetBenefitPackageView(): View? {
-        return getViewHolder<WidgetExpandableUiModel>()?.findViewById(R.id.viewPmProBenefitSection)
-    }
 
     private fun getWidgetDividerView(): View? {
         return getViewHolder<WidgetDividerUiModel>()

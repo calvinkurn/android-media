@@ -34,15 +34,9 @@ class ExpandableWidget(
 
     override fun bind(element: WidgetExpandableUiModel) {
         binding?.run {
-            if (element.isPmPro()) {
-                viewPmProBenefitSection.visible()
-            } else {
-                viewPmProBenefitSection.gone()
-            }
             viewPmBenefitSection.setOnExpandedChanged(true)
             setupExpandableItem(element)
             setupPmSection()
-            setupPmProSection(element)
             setupInfoIncreaseBenefit(element.grade?.gradeName?:PMConstant.ShopGrade.PM)
 
 
@@ -65,13 +59,6 @@ class ExpandableWidget(
     private fun setupPmSection() = binding?.run {
         viewPmBenefitSection.setOnClickListener {
             handleExpandableView()
-        }
-    }
-
-    private fun setupPmProSection(element: WidgetExpandableUiModel) = binding?.run {
-        viewPmProBenefitSection.show(element)
-        viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
-            listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
         }
     }
 
