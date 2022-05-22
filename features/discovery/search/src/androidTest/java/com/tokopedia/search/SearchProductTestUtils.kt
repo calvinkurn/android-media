@@ -163,7 +163,7 @@ internal fun createRecommendationListener(): RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
-        override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean, actionListener: WishlistV2ActionListener) {}
+        override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }
 
