@@ -36,6 +36,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="8dp" />
 
+    <!--ignored because we need no padding and 0px radius card-->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewVariantMain"
         android:layout_width="match_parent"

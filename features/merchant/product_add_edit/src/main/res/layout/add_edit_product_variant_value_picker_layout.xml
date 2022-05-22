@@ -54,6 +54,7 @@
 
     </ScrollView>
 
+    <!--ignored because we need no padding and 0px radius card-->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSaveBtn"
         android:layout_width="match_parent"

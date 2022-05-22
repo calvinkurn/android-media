@@ -22,6 +22,7 @@
         android:paddingEnd="@dimen/layout_lvl0"
         app:layout_constraintTop_toBottomOf="@+id/dividerTitle" />
 
+    <!--ignored because we need no padding and 0px radius card-->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewVariantMain"
         android:layout_width="match_parent"
