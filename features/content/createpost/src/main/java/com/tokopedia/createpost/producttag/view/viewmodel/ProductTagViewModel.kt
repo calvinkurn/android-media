@@ -63,7 +63,7 @@ class ProductTagViewModel @AssistedInject constructor(
         get() = authorType == AUTHOR_SELLER
 
     val isShowCoachmarkGlobalTag: Boolean
-        get() = sharedPref.isFirstGlobalTag()
+        get() = sharedPref.isFirstGlobalTag() && isUser
 
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value

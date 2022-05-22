@@ -316,7 +316,7 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun showCoachmarkGlobalTag(isShow: Boolean) {
-        if(isShow && binding.tvCcProductTagProductSource.visibility == View.VISIBLE) {
+        if(isShow) {
             coachmark = CoachMark2(activity as Context)
 
             coachmark?.showCoachMark(arrayListOf(
