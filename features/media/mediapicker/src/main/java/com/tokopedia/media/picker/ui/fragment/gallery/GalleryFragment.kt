@@ -45,7 +45,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private var listener: PickerActivityListener? = null
 
     private val adapter by lazy {
-        GalleryAdapter(emptyList(), ::selectMedia)
+        GalleryAdapter(emptyList(), ::selectedMedia)
     }
 
     private val viewModel by lazy {
@@ -214,55 +214,74 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.lstMedia?.adapter = adapter
     }
 
-    private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
+    private fun isImageFileValid(media: MediaUiModel): Boolean {
+        if (listener?.isMaxImageResolution(media) == true) {
+            listener?.onShowImageMaxResToast()
+            return false
+        }
+
+        if (listener?.isMinImageResolution(media) == true) {
+            listener?.onShowImageMinResToast()
+            return false
+        }
+
+        if (listener?.isMaxImageSize(media) == true) {
+            listener?.onShowImageMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
+    private fun isVideoFileValid(media: MediaUiModel): Boolean {
+        if (listener?.hasVideoLimitReached() == true) {
+            listener?.onShowVideoLimitReachedGalleryToast()
+            return false
+        }
+
+        if (listener?.isMinVideoDuration(media) == true) {
+            listener?.onShowVideoMinDurationToast()
+            return false
+        }
+
+        if (listener?.isMaxVideoDuration(media) == true) {
+            listener?.onShowVideoMaxDurationToast()
+            return false
+        }
+
+        if (listener?.isMaxVideoSize(media) == true) {
+            listener?.onShowVideoMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
+    private fun isSingleSelectionModeOnList(): Boolean {
+        return !param.get().isMultipleSelectionType()
+                && (listener?.mediaSelected()?.isNotEmpty() == true
+                || adapter.selectedMedias.isNotEmpty())
+    }
+
+    private fun selectedMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
+        // media file validation
+        if (!isSelected && media.isVideo()) {
+            isVideoFileValid(media)
+        } else if (!isSelected && !media.isVideo()) {
+            isImageFileValid(media)
+        }
+
+        // selection mode validation
         if (param.get().isMultipleSelectionType()) {
-            if (!isSelected && media.isVideo()) {
-                // video validation
-                if (listener?.hasVideoLimitReached() == true) {
-                    listener?.onShowVideoLimitReachedGalleryToast()
-                    return false
-                }
-
-                if (listener?.isMinVideoDuration(media) == true) {
-                    listener?.onShowVideoMinDurationToast()
-                    return false
-                }
-
-                if(listener?.isMaxVideoDuration(media) == true){
-                    listener?.onShowVideoMaxDurationToast()
-                    return false
-                }
-
-                if (listener?.isMaxVideoSize(media) == true) {
-                    listener?.onShowVideoMaxFileSizeToast()
-                    return false
-                }
-            } else if (!isSelected && !media.isVideo()) {
-                // image validation
-                if (listener?.isMaxImageResolution(media) == true) {
-                    listener?.onShowImageMaxResToast()
-                    return false
-                }
-
-                if (listener?.isMinImageResolution(media) == true) {
-                    listener?.onShowImageMinResToast()
-                    return false
-                }
-
-                if (listener?.isMaxImageSize(media) == true) {
-                    listener?.onShowImageMaxFileSizeToast()
-                    return false
-                }
-            }
-
             if (!isSelected && listener?.hasMediaLimitReached() == true) {
                 listener?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType() && (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
+        } else if (isSingleSelectionModeOnList()) {
             adapter.removeAllSelectedSingleClick()
         }
 
+        // publish the state and send tracking
         if (!isSelected) {
             stateOnAddPublished(media)
             galleryAnalytics.selectGalleryItem()
