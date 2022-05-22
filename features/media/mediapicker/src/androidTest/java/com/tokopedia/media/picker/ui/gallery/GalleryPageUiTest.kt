@@ -1,18 +1,11 @@
 package com.tokopedia.media.picker.ui.gallery
 
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
-import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.ui.core.GalleryPageTest
-import com.tokopedia.picker.common.PageSource
-import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.exp
 
 @UiTest
 class GalleryPageUiTest : GalleryPageTest() {
@@ -26,8 +19,8 @@ class GalleryPageUiTest : GalleryPageTest() {
 
     private val interceptor = TestPickerInterceptor()
 
-    private val imageFiles = mockImageFiles()
-    private val videoFile = mockVideoFiles()
+    override val isMultipleSelectionMode: Boolean
+        get() = true
 
     override fun setUp() {
         super.setUp()
@@ -35,49 +28,60 @@ class GalleryPageUiTest : GalleryPageTest() {
     }
 
     @Test
+    fun should_be_able_to_show_empty_state() {
+        // Given
+        interceptor.mockMedia(listOf())
+
+        // When
+        startGalleryPage()
+
+        // Then
+        Asserts.assertEmptyStateDisplayed()
+    }
+
+    @Test
     fun should_be_able_to_show_media_list() {
         // Given
-        val imageAndVideo = imageFiles.plus(videoFile)
-        interceptor.mockMedia(imageAndVideo)
+        interceptor.mockMedia(imageAndVideoFiles)
 
         // When
         startGalleryPage()
 
         // Then
         Asserts.assertRecyclerViewDisplayed()
-        Asserts.assertMediaItemListSize(imageAndVideo.size)
+        Asserts.assertMediaItemListSize(imageAndVideoFiles.size)
     }
 
     @Test
     fun should_be_able_to_show_media_list_image_only() {
         // Given
-        interceptor.mockMedia(imageFiles)
+        interceptor.mockMedia(mockImageFiles())
 
         // When
         startGalleryPage()
 
         // Then
         Asserts.assertRecyclerViewDisplayed()
-        Asserts.assertMediaItemListSize(imageFiles.size)
+        Asserts.assertMediaItemListSize(mockImageFiles().size)
     }
 
     @Test
     fun should_be_able_to_show_media_list_video_only() {
         // Given
-        interceptor.mockMedia(videoFile)
+        interceptor.mockMedia(mockVideoFiles())
 
         // When
         startGalleryPage()
 
         // Then
         Asserts.assertRecyclerViewDisplayed()
-        Asserts.assertMediaItemListSize(videoFile.size)
+        Asserts.assertMediaItemListSize(mockVideoFiles().size)
     }
 
     @Test
-    fun should_be_able_to_click_continue_button_when_particular_item_of_gallery_is_selected() {
+    fun should_be_able_to_click_continue_button_when_first_item_is_selected() {
         // Given
-        interceptor.mockMedia(imageFiles)
+        interceptor.mockMedia(mockImageFiles())
 
         // When
         startGalleryPage {
@@ -88,190 +92,6 @@ class GalleryPageUiTest : GalleryPageTest() {
 
         // Then
         Asserts.assertContinueButtonIsVisible()
-    }
-
-    @Test
-    fun should_be_able_to_single_selection_mode() {
-        // Given
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            singleSelectionMode()
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Thread.sleep(2000)
-
-        intended(hasComponent(TestPreviewActivity::class.java.name))
-    }
-
-    @Test
-    fun should_be_able_to_add_multiple_selection_on_drawer() {
-        // Given
-        val expectedItemsCount = 2
-
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            minImageResolution(0)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-        Robot.clickRecyclerViewItemAt(1)
-
-        // Then
-        Asserts.assertDrawerItemListSize(expectedItemsCount)
-    }
-
-    @Test
-    fun should_be_able_to_remove_item_on_drawer() {
-        // Given
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            minImageResolution(0)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-        Robot.removeFirstItemOnDrawer()
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_min_image_dimen() {
-        // Given
-        val minImageDimen = 3000
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            minImageResolution(minImageDimen)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_max_image_dimen() {
-        // Given
-        val maxImageDimen = 0
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            maxImageResolution(maxImageDimen)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_max_image_file_size() {
-        // Given
-        val imageFileSize = 0L
-        interceptor.mockMedia(imageFiles)
-
-        // When
-        startGalleryPage {
-            maxImageFileSize(imageFileSize)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_reach_video_limit_selection() {
-        // Given
-        val maxVideoItem = 0
-        interceptor.mockMedia(videoFile)
-
-        // When
-        startGalleryPage {
-            maxVideoItem(maxVideoItem)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_min_video_duration() {
-        // Given
-        val minVideoDuration = 30_000
-        interceptor.mockMedia(videoFile)
-
-        // When
-        startGalleryPage {
-            minVideoDuration(minVideoDuration)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_max_video_duration() {
-        // Given
-        val maxVideoDuration = 0L
-        interceptor.mockMedia(videoFile)
-
-        // When
-        startGalleryPage {
-            maxVideoDuration(maxVideoDuration)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    @Test
-    fun should_be_show_toaster_when_selected_item_lower_max_video_file_size() {
-        // Given
-        val maxVideoFileSize = 0L
-        interceptor.mockMedia(videoFile)
-
-        // When
-        startGalleryPage {
-            maxVideoFileSize(maxVideoFileSize)
-        }
-
-        Robot.clickRecyclerViewItemAt(0)
-
-        // Then
-        Asserts.assertDrawerItemListSize(0)
-    }
-
-    private fun startGalleryPage(param: PickerParam.() -> Unit = {}) {
-        val pickerParam = PickerParam()
-            .apply(param)
-            .also {
-                it.pageSource(PageSource.CreatePost) // sample
-                it.pageType(PageType.GALLERY)
-            }
-
-        startPickerActivity(pickerParam)
     }
 
 }
