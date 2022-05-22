@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -59,6 +60,7 @@
         android:id="@+id/cardSaveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:ignore="UnifyComponentUsage"
         app:cardElevation="@dimen/layout_lvl2">
 
         <com.tokopedia.unifycomponents.UnifyButton
