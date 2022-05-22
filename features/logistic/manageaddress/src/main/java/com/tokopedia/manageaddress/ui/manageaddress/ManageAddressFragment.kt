@@ -28,6 +28,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -80,6 +81,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var manageAddressListener: ManageAddressListener? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var _selectedAddressItem: RecipientAddressModel? = null
+    private var editedChosenAddress: RecipientAddressModel? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -90,6 +92,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
     private var isFromEditAddress: Boolean? = false
+    var isFromEditChosenAddress: Boolean? = null
     private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
 
@@ -142,6 +145,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
+            isFromEditChosenAddress = data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
             performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
@@ -264,6 +268,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                                 postalCode = data.postalCode
                             }
                             _selectedAddressItem = newRecipientAddressModel
+                            if (isFromEditChosenAddress == true) {
+                                editedChosenAddress = newRecipientAddressModel
+                            }
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
@@ -353,6 +360,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
         })
+
+        observeRemovedAddress()
+
+    }
+
+    private fun observeRemovedAddress(){
+        viewModel.resultRemovedAddress.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is ManageAddressState.Success ->
+                    Toaster.build(requireView(),getString(R.string.toaster_remove_address_success) , Toaster.TYPE_NORMAL).show()
+                else -> {
+                    //no-op
+                }
+            }
+        })
     }
 
     private fun initScrollListener() {
@@ -409,7 +431,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initSearchView() {
-        binding?.searchInputView?.run { 
+        binding?.searchInputView?.run {
             searchBarTextField.setOnClickListener {
                 searchBarTextField.isCursorVisible = true
                 openSoftKeyboard()
@@ -428,7 +450,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch("", null)
             }
 
-            searchBarPlaceholder = "Cari Alamat"   
+            searchBarPlaceholder = "Cari Alamat"
         }
     }
 
@@ -593,7 +615,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             addressList.gone()
             emptyStateManageAddress.root.gone()
             globalError.visible()
-            emptySearch.gone()   
+            emptySearch.gone()
         }
     }
 
@@ -625,21 +647,22 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
     }
 
-    private fun setChosenAddress() {
+    private fun setChosenAddress(isClickBackButton: Boolean = false) {
+        val addressData = if (isClickBackButton) editedChosenAddress else _selectedAddressItem
         if (isStayOnPageState == false) {
             if (isLocalization == true) {
                 val resultIntent = Intent().apply {
-                    putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                    putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, addressData)
                 }
                 activity?.let {
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
             } else {
-                _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
+                addressData?.let { viewModel.setStateChosenAddress(it) }
             }
         } else if (isFromCheckoutChangeAddress == true) {
-            _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
+            addressData?.let { viewModel.setStateChosenAddress(it) }
         }
     }
 
@@ -686,6 +709,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         } else {
             binding?.btnChooseAddress?.isEnabled = false
         }
+    }
+
+    fun setAddressDataOnBackButton() {
+        setChosenAddress(true)
     }
 
 }

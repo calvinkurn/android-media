@@ -115,6 +115,7 @@ import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDele
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchLogger
+import com.tokopedia.search.utils.SmallGridSpanCount
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -169,7 +170,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
-        private const val DEFAULT_SPAN_COUNT = 2
         private const val ON_BOARDING_DELAY_MS: Long = 200
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
@@ -194,6 +194,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var smallGridSpanCount: SmallGridSpanCount
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -360,8 +363,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initLayoutManager() {
         staggeredGridLayoutManager = StaggeredGridLayoutManager(
-                DEFAULT_SPAN_COUNT,
-                StaggeredGridLayoutManager.VERTICAL
+            smallGridSpanCount(),
+            StaggeredGridLayoutManager.VERTICAL
         ).apply {
             gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         }
@@ -586,7 +589,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 productListAdapter.changeListView()
             }
             SearchConstant.ViewType.SMALL_GRID -> {
-                staggeredGridLayoutManager?.spanCount = 2
+                staggeredGridLayoutManager?.spanCount = smallGridSpanCount()
                 productListAdapter.changeDoubleGridView()
             }
             SearchConstant.ViewType.BIG_GRID -> {
@@ -1180,7 +1183,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int) {
         if (!userVisibleHint) return
 
-        staggeredGridLayoutManager?.spanCount = 2
+        staggeredGridLayoutManager?.spanCount = smallGridSpanCount()
         productListAdapter?.changeSearchNavigationDoubleGridView(position)
     }
 

@@ -7,10 +7,7 @@ import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.data.request.GenerateImageParams
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import com.tokopedia.vouchercreation.product.create.domain.entity.ImageRatio
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GenerateImageUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
@@ -57,6 +54,7 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val topProducts = topProductsDeferred.await()
 
         val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+        val warehouseId = topProducts.data.firstOrNull()?.warehouses?.firstOrNull()?.id.orEmpty()
 
         val generateImageDeferred = scope.async {
             generateImage(
@@ -102,38 +100,26 @@ class CreateCouponFacadeUseCase @Inject constructor(
         val portraitImageUrl = generatePortraitImage.await()
 
         val createCouponDeferred = scope.async {
-            createCoupon(
+            val useCaseParam = CreateCouponUseCaseParam(
                 couponInformation,
                 couponSettings,
                 allProducts,
                 coupon.token,
                 imageUrl,
                 squareImageUrl,
-                portraitImageUrl
+                portraitImageUrl,
+                warehouseId
             )
+            createCoupon(useCaseParam)
         }
 
         return createCouponDeferred.await()
     }
 
     private suspend fun createCoupon(
-        couponInformation: CouponInformation,
-        couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>,
-        token: String,
-        imageUrl: String,
-        imageSquare:String,
-        imagePortrait:String
+        useCaseParam: CreateCouponUseCaseParam
     ): Int {
-        val params = createCouponProductUseCase.createRequestParam(
-            couponInformation,
-            couponSettings,
-            couponProducts,
-            token,
-            imageUrl,
-            imageSquare,
-            imagePortrait
-        )
+        val params = createCouponProductUseCase.createRequestParam(useCaseParam)
         createCouponProductUseCase.params = params
         return createCouponProductUseCase.executeOnBackground()
     }

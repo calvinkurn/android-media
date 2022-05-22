@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel

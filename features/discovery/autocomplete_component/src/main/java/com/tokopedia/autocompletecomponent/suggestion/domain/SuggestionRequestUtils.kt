@@ -99,6 +99,9 @@ object SuggestionRequestUtils {
                         badges {
                             image_url
                         }
+                        shop {
+                            location
+                        }
                     }
                 }
             }
