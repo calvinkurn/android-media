@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -18,26 +17,27 @@ import java.io.OutputStream
 object ImageGenerator {
 
     private const val DEFAULT_SIZE = 400
-    private const val IMAGES_FILE_COUNT = 5
+    private const val IMAGES_FILES_COUNT = 5
 
-    fun generateImages(context: Context) {
-        (0 until IMAGES_FILE_COUNT)
+    fun getFiles(context: Context): List<File> {
+        val files = mutableListOf<File>()
+        (0 until IMAGES_FILES_COUNT)
             .map { fileName(it) }
             .forEachIndexed { index, path ->
                 val dir = context.externalCacheDir
                 val file = File(dir, path)
 
-                if (file.exists().not()) file.createNewFile()
+                if (file.exists().not()) {
+                    file.createNewFile()
+                }
 
                 generateBitmapFile(file, index.toString())
                 addImageToGallery(context.contentResolver, file)
-        }
-    }
 
-    fun getFiles(context: Context): List<File> {
-        return (0 until IMAGES_FILE_COUNT).map {
-            File(context.externalCacheDir, fileName(it))
+                files.add(file)
         }
+
+        return files
     }
 
     private fun fileName(num: Int): String {

@@ -10,12 +10,6 @@ object VideoGenerator {
         "test_mp_videos.mp4"
     )
 
-    fun generateVideos(context: Context): List<File> {
-        return mockVideoFileNameList.map {
-            streamToFile(context, it)
-        }
-    }
-
     fun getFiles(context: Context): List<File> {
         return mockVideoFileNameList.map {
             File(context.externalCacheDir, it)

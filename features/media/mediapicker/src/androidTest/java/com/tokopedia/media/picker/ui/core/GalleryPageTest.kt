@@ -1,6 +1,5 @@
 package com.tokopedia.media.picker.ui.core
 
-import android.net.Uri
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -13,31 +12,50 @@ import com.tokopedia.media.picker.helper.utils.ImageGenerator
 import com.tokopedia.media.picker.helper.utils.VideoGenerator
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
-open class GalleryPageTest : PickerTest() {
+abstract class GalleryPageTest : PickerTest() {
 
-    override fun createAndAppendUri(builder: Uri.Builder) {}
+    protected abstract val isMultipleSelectionMode: Boolean
+
+    protected val imageAndVideoFiles = mockImageFiles()
+        .plus(mockVideoFiles())
 
     fun mockImageFiles(): List<Media> {
-        val files = ImageGenerator.getFiles(context)
-        var mockMediaId = 0L
-
-        return files.map {
-            mockMediaId++
-
-            Media(mockMediaId, it.name, it.path)
-        }
+        return ImageGenerator
+            .getFiles(context)
+            .mapIndexed { index, file ->
+                Media(index.toLong(), file.name, file.path)
+            }
     }
 
     fun mockVideoFiles(): List<Media> {
-        val videoFile = VideoGenerator.getFiles(context)
-        val mockMediaId = Long.MAX_VALUE
+        return VideoGenerator
+            .getFiles(context)
+            .map {
+                Media(Long.MAX_VALUE, it.name, it.path)
+            }
+    }
 
-        return videoFile.map {
-            Media(mockMediaId, it.name, it.path)
-        }
+    protected open fun startGalleryPage(param: PickerParam.() -> Unit = {}) {
+        val pickerParam = PickerParam()
+            .apply(param)
+            .also {
+                it.pageSource(PageSource.CreatePost) // sample
+                it.pageType(PageType.GALLERY)
+
+                if (isMultipleSelectionMode) {
+                    it.multipleSelectionMode()
+                } else {
+                    it.singleSelectionMode()
+                }
+            }
+
+        startPickerActivity(pickerParam)
     }
 
     object Robot {
@@ -62,15 +80,26 @@ open class GalleryPageTest : PickerTest() {
     }
 
     object Asserts {
-        fun assertToasterIsShownWithText(text: String) {
+        fun assertTextDisplayedWith(text: String) {
+            // set waiting for 500ms before assertion
+            Thread.sleep(500)
+
             onView(
-                withId(R.id.snackbar_txt)
-            ).check(matches(withText(text)))
+                withText(text)
+            ).check(
+                matches(withEffectiveVisibility(Visibility.VISIBLE))
+            )
         }
 
         fun assertRecyclerViewDisplayed() {
             onView(
                 withId(R.id.lst_media)
+            ).check(matches(isDisplayed()))
+        }
+
+        fun assertEmptyStateDisplayed() {
+            onView(
+                withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
 
