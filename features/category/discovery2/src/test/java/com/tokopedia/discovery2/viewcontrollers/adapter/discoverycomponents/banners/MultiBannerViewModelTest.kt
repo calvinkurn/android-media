@@ -140,7 +140,7 @@ class MultiBannerViewModelTest {
     fun `test for onAttachToViewHolder`() {
         viewModel.bannerUseCase = bannerUseCase
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } returns true
 
         val list = ArrayList<ComponentsItem>()
         coEvery { componentsItem.getComponentsItem() } returns list

@@ -56,6 +56,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -121,6 +122,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var gcmHandler: GCMHandler
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
+    private var lastDetachedItemPosition : Int = 0
+    private var lastAttachItemPosition : Int = 0
+    private var isUserScrolledList = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
@@ -133,6 +138,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
         const val MORE_CATALOG_WIDGET_INDEX = 3
+        const val MINIMUM_SCROLL_FOR_ANIMATION = 15
 
         @JvmStatic
         fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
@@ -214,6 +220,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             layoutManager = getLinearLayoutManager()
             setHasFixedSize(true)
             adapter = productNavListAdapter
+            if(viewModel.lastSeenProductPosition != 0){
+                scrollToPosition(viewModel.lastSeenProductPosition)
+            }
         }
     }
 
@@ -224,6 +233,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         loadMoreTriggerListener?.let {
             product_recyclerview.addOnScrollListener(it)
         }
+        product_recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!isUserScrolledList){
+                    if(dy > MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
+                        isUserScrolledList = true
+                    }
+                }
+            }
+        })
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
@@ -322,7 +341,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         })
     }
 
-    private fun setHeaderCount(totalProductsCount : String){
+    private fun setHeaderCount(totalProductsCount : Int){
         if(CatalogConstant.ZERO_VALUE == totalProductsCount) {
             headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
             showNoDataScreen(true)
@@ -504,6 +523,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         )
     }
 
+    override fun setLastDetachedItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastDetachedItemPosition = adapterPosition
+    }
+
+    override fun setLastAttachItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastAttachItemPosition = adapterPosition
+    }
+
     /*********************************   WishList  ******************************/
 
     override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
@@ -663,6 +692,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+        if(isUserScrolledList)
+            viewModel.lastSeenProductPosition = (lastAttachItemPosition + lastDetachedItemPosition)/2
         productNavListAdapter?.onPause()
     }
 

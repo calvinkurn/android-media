@@ -30,7 +30,6 @@
         android:id="@+id/voucherTargetItemTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
@@ -39,16 +38,15 @@
         app:layout_constraintTop_toTopOf="@id/voucherTargetItemIcon"
         tools:text="Publik"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/voucherTargetItemDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_create_target_description_margin_top"
         android:layout_marginEnd="@dimen/mvc_create_target_description_margin_right"
-        android:layout_marginRight="@dimen/mvc_create_target_description_margin_right"
         android:maxLines="3"
+        app:typographyType="body_3"
         android:textColor="@color/Neutral_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
         android:lineSpacingExtra="@dimen/mvc_create_target_description_line_spacing"
         app:layout_constraintStart_toStartOf="@id/voucherTargetItemTitle"
         app:layout_constraintEnd_toStartOf="@id/voucherTargetItemRadioButton"
