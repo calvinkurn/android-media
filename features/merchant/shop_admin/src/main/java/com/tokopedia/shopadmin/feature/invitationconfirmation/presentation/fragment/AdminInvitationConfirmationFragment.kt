@@ -107,12 +107,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == InvitationConfirmationNavigator.REQUEST_LOGIN) {
-            if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == InvitationConfirmationNavigator.REQUEST_LOGIN) {
                 checkAfterLogin()
-            }
-        } else if (requestCode == InvitationConfirmationNavigator.REQUEST_OTP) {
-            if (resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == InvitationConfirmationNavigator.REQUEST_OTP) {
                 showLoadingConfirmationCta()
                 invitationConfirmationParam.setOtpToken(
                     data?.getStringExtra(
@@ -145,10 +143,12 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.message.isNotEmpty()) {
                 setError(true)
                 setMessage(validateAdminEmailUiModel.message)
+                textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                 setAccessAcceptedBtnDisabled()
             } else if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.existsUser) {
                 setError(true)
                 setMessage(getString(R.string.error_message_email_has_been_registered))
+                textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                 setAccessAcceptedBtnDisabled()
             } else {
                 setError(false)
