@@ -18,6 +18,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
+import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
 import com.tokopedia.createpost.producttag.util.AUTHOR_USER
 import com.tokopedia.createpost.producttag.util.extension.currentSource
@@ -48,6 +49,7 @@ import javax.inject.Inject
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
+    private val analytic: ContentProductTagAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -96,6 +98,7 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
+                            analytic.clickProductTagSource(source)
                             viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
@@ -121,11 +124,11 @@ class ProductTagParentFragment @Inject constructor(
         }
 
         binding.tvCcProductTagProductSource.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+            clickBreadcrumb()
         }
 
         binding.icCcProductTagChevron1.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+            clickBreadcrumb()
         }
 
         showBreadcrumb(viewModel.isUser)
@@ -297,6 +300,11 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun getStringArgument(key: String): String {
         return arguments?.getString(key) ?: ""
+    }
+
+    private fun clickBreadcrumb() {
+        analytic.clickBreadcrumb()
+        viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
     }
 
     private fun showBreadcrumb(isShow: Boolean) {

@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
+import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
@@ -28,7 +30,9 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragment() {
+class LastTaggedProductFragment @Inject constructor(
+    private val analytic: ContentProductTagAnalytic,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastTaggedProductFragment"
 
@@ -88,6 +92,7 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
         }
 
         binding.clSearch.setOnClickListener {
+            analytic.clickSearchBar(ProductTagSource.LastTagProduct)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }

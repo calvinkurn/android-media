@@ -9,6 +9,7 @@ import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_CATEGORY
 import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_LABEL
 import com.tokopedia.createpost.producttag.analytic.KEY_SESSION_IRIS
 import com.tokopedia.createpost.producttag.analytic.VAL_CURRENT_SITE
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,12 +26,12 @@ class ProductTagAnalyticImpl @Inject constructor(
         sendClickEvent("click - product tagging source list")
     }
 
-    override fun clickProductTagSource(source: String) {
-        sendClickEvent("click - product tagging source", source)
+    override fun clickProductTagSource(source: ProductTagSource) {
+        sendClickEvent("click - product tagging source", source.labelAnalytic)
     }
 
     override fun impressProductCard(
-        source: String,
+        source: ProductTagSource,
         shopId: String,
         productId: String,
         products: List<ProductUiModel>,
@@ -40,7 +41,7 @@ class ProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun clickProductCard(
-        source: String,
+        source: ProductTagSource,
         shopId: String,
         productId: String,
         products: List<ProductUiModel>,
@@ -49,8 +50,8 @@ class ProductTagAnalyticImpl @Inject constructor(
         /** TODO("Not yet implemented") */
     }
 
-    override fun clickSearchBar(source: String) {
-        sendClickEvent("click - search bar", source)
+    override fun clickSearchBar(source: ProductTagSource) {
+        sendClickEvent("click - search bar", source.labelAnalytic)
     }
 
     override fun clickLastSearch() {
@@ -73,8 +74,8 @@ class ProductTagAnalyticImpl @Inject constructor(
         sendClickEvent("click - tab", tabName)
     }
 
-    override fun clickBackButton(source: String) {
-        sendClickEvent("click - back on product tagging", source)
+    override fun clickBackButton(source: ProductTagSource) {
+        sendClickEvent("click - back on product tagging", source.labelAnalytic)
     }
 
     override fun impressShopCard() {

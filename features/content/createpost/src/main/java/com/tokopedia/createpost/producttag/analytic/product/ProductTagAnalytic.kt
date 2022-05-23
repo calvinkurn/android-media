@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.analytic.product
 
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
 /**
@@ -9,10 +10,10 @@ interface ProductTagAnalytic {
 
     fun clickBreadcrumb()
 
-    fun clickProductTagSource(source: String)
+    fun clickProductTagSource(source: ProductTagSource)
 
     fun impressProductCard(
-        source: String,
+        source: ProductTagSource,
         shopId: String,
         productId: String,
         products: List<ProductUiModel>,
@@ -20,14 +21,14 @@ interface ProductTagAnalytic {
     ) /** TODO: later */
 
     fun clickProductCard(
-        source: String,
+        source: ProductTagSource,
         shopId: String,
         productId: String,
         products: List<ProductUiModel>,
         isGlobalSearch: Boolean
     ) /** TODO: later */
 
-    fun clickSearchBar(source: String)
+    fun clickSearchBar(source: ProductTagSource)
 
     fun clickLastSearch()
 
@@ -39,7 +40,7 @@ interface ProductTagAnalytic {
 
     fun clickGlobalSearchTab(tabName: String)
 
-    fun clickBackButton(source: String)
+    fun clickBackButton(source: ProductTagSource)
 
     fun impressShopCard() /** TODO: later */
 
