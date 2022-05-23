@@ -11,7 +11,7 @@ class ShimmeringWishlistViewHolder (itemView: View)
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_nav_shimmer_favorite_shop_data
+        val LAYOUT = R.layout.holder_nav_shimmer_transaction_data_revamp
     }
 
     override fun bind(element: ShimmerFavoriteShopDataModel) {

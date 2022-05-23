@@ -17,7 +17,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
     private var binding: HolderOtherFavoriteShopBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_other_favorite_shop
+        val LAYOUT = R.layout.holder_nav_shimmer_transaction_data_revamp
     }
 
     override fun bind(otherFavoriteShopModel: OtherFavoriteShopModel) {
