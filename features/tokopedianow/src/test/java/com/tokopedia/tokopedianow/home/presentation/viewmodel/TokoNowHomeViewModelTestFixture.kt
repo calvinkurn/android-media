@@ -195,6 +195,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getHomeReferralUseCase.execute(slug) }
     }
 
+    protected fun verifyGetReferralSenderHomeUseCaseNotCalled(slug: String) {
+        coVerify(exactly = 0) { getHomeReferralUseCase.execute(slug) }
+    }
+
     protected fun verifyGetHomeLayoutDataUseCaseCalled(
         localCacheModel: LocalCacheModel = LocalCacheModel(),
         times: Int = 1
