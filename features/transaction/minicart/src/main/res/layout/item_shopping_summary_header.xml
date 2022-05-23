@@ -10,8 +10,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_shop_badge"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:scaleType="fitCenter"
         app:unify_image_corner_radius="0"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/tp_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         app:layout_constraintStart_toEndOf="@id/iu_shop_badge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iu_shop_badge"
