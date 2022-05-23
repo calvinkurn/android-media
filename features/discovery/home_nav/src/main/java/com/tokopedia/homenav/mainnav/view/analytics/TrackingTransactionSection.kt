@@ -256,7 +256,6 @@ object TrackingTransactionSection: BaseTrackerConst() {
             }
         )
         bundle.putParcelableArrayList(Promotion.KEY, promotions)
-
         getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
     }
 

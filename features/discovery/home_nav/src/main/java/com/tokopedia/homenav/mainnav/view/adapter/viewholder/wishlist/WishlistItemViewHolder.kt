@@ -28,8 +28,6 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
     }
 
     override fun bind(wishlistModel: WishlistModel) {
-        val context = itemView.context
-
         itemView.addOnImpressionListener(wishlistModel) {
             mainNavListener.putEEToTrackingQueue(
                 TrackingTransactionSection.getImpressionOnWishlist(
