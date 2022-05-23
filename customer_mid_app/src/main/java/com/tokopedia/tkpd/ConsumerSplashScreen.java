@@ -10,7 +10,6 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -21,7 +20,6 @@ import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.installreferral.InstallReferrerInterface;
-import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
@@ -31,8 +29,6 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -156,7 +152,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
-                initializationNewRelic();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -167,15 +162,6 @@ public class ConsumerSplashScreen extends SplashScreen {
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this, true);
-    }
-
-    private void initializationNewRelic() {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                .start(this.getApplication());
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            NewRelic.setUserId(userSession.getUserId());
-        }
     }
 
     private void syncFcmToken() {
