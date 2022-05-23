@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
@@ -14,9 +15,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderS
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.OtherFavoriteShopModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -30,6 +29,7 @@ class FavoriteShopViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_favorite_shop_list
         private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
+        private const val MAX_CARD_HEIGHT = 80f
     }
 
     override fun bind(element: FavoriteShopListDataModel) {
@@ -52,7 +52,16 @@ class FavoriteShopViewHolder(itemView: View,
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
         if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
             visitableList.add(OtherFavoriteShopModel())
+            binding?.favoriteShopRv?.setHeightBasedOnCardMaxHeight()
         }
         adapter.setVisitables(visitableList)
+    }
+
+    private fun RecyclerView.setHeightBasedOnCardMaxHeight() {
+        val productCardHeight = MAX_CARD_HEIGHT.toDpInt()
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
     }
 }

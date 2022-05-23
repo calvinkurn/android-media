@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,6 +23,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
 
     override fun bind(otherFavoriteShopModel: OtherFavoriteShopModel) {
         val context = itemView.context
+        setForegroundClickViewAllCard()
         binding?.cardViewAllFavshop?.setCta(context.getString(R.string.global_view_all))
         binding?.cardViewAllFavshop?.descriptionView?.gone()
         binding?.cardViewAllFavshop?.titleView?.gone()
@@ -30,5 +32,11 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
             TrackingTransactionSection.clickOnFavoriteShopViewAll()
             RouteManager.route(context, ApplinkConst.FAVORITE)
         }
+    }
+
+    private fun setForegroundClickViewAllCard() {
+        val outValue = TypedValue()
+        itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+        binding?.cardViewAllFavshop?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
     }
 }

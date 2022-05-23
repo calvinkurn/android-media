@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,6 +24,7 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
 
     override fun bind(otherWishlistModel: OtherWishlistModel) {
         val context = itemView.context
+        setForegroundClickViewAllCard()
         binding?.cardViewAllWishlist?.setCta(context.getString(R.string.global_view_all))
         binding?.cardViewAllWishlist?.descriptionView?.gone()
         binding?.cardViewAllWishlist?.titleView?.gone()
@@ -31,5 +33,11 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
             TrackingTransactionSection.clickOnWishlistViewAll()
             RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
         }
+    }
+
+    private fun setForegroundClickViewAllCard() {
+        val outValue = TypedValue()
+        itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+        binding?.cardViewAllWishlist?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
     }
 }
