@@ -20,7 +20,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  */
 class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
 
-    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_play_widget_sample) }
 
     private lateinit var adapter: PlayWidgetSampleCommonAdapter
 

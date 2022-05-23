@@ -75,6 +75,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PRODUCTS = "products"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val KEY_WAREHOUSE_ID = "warehouseId"
+        const val KEY_CHANNEL_ID = "channelId"
+        const val KEY_CAMPAIGN_CODE = "campaignCode"
     }
 
     object VALUE {

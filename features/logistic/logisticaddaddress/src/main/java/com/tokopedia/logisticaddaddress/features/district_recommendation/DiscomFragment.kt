@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
@@ -49,7 +48,6 @@ PopularCityAdapter.ActionListener {
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var isLocalization: Boolean? = null
-    private val REQUEST_LOCATION: Int = 288
     private var hasRequestedLocation: Boolean = false
 
     private var binding by autoCleared<FragmentDistrictRecommendationBinding>()
@@ -407,7 +405,7 @@ PopularCityAdapter.ActionListener {
         }
     }
 
-    override fun showToasterError() {
+    override fun showToasterError(message: String) {
         val toaster = Toaster
         view?.let { v ->
             toaster.build(v, getString(R.string.toaster_failed_get_district), Toaster.LENGTH_SHORT,

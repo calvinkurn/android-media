@@ -1606,7 +1606,8 @@ object DynamicProductDetailTracking {
                         "product status:${productInfo?.basic?.status?.toLowerCase()};" + "shop status:${shopInfo?.statusInfo?.shopStatus};",
                         productInfo?.getFinalStock(),
                         trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                        lcaWarehouseId
+                        lcaWarehouseId,
+                        shopInfo?.shopCore?.ownerId
                 )
     }
 

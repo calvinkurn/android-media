@@ -72,8 +72,6 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

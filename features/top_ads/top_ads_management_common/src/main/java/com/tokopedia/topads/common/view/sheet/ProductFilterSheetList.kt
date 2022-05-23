@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapter
@@ -14,17 +15,25 @@ import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemVie
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_edit_select_fragment_product_list_sheet_filter.*
 
-class ProductFilterSheetList: BottomSheetUnify() {
+class ProductFilterSheetList : BottomSheetUnify() {
 
-    var elementList =  mutableListOf<EtalaseViewModel>()
+    private var recyclerView : RecyclerView ?= null
+
+    var elementList = mutableListOf<EtalaseViewModel>()
     private var adapter: EtalaseAdapter? = null
-    private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result = ResponseEtalase.Data.ShopShowcasesByShopID.Result()
+    private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result =
+        ResponseEtalase.Data.ShopShowcasesByShopID.Result()
     var onItemClick: ((ResponseEtalase.Data.ShopShowcasesByShopID.Result) -> Unit)? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var contentView = View.inflate(context, R.layout.topads_edit_select_fragment_product_list_sheet_filter, null)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val contentView = View.inflate(context,
+            R.layout.topads_edit_select_fragment_product_list_sheet_filter, null)
+        recyclerView = contentView.findViewById(R.id.recyclerView)
         setChild(contentView)
         setTitle(getString(R.string.filter))
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -36,20 +45,21 @@ class ProductFilterSheetList: BottomSheetUnify() {
     }
 
     private fun initView() {
-        if(elementList.isEmpty()) {
+        if (elementList.isEmpty()) {
             elementList = mutableListOf<EtalaseViewModel>(
-                    EtalaseShimerViewModel(),
-                    EtalaseShimerViewModel(),
-                    EtalaseShimerViewModel(),
-                    EtalaseShimerViewModel(),
-                    EtalaseShimerViewModel(),
-                    EtalaseShimerViewModel()
+                EtalaseShimerViewModel(),
+                EtalaseShimerViewModel(),
+                EtalaseShimerViewModel(),
+                EtalaseShimerViewModel(),
+                EtalaseShimerViewModel(),
+                EtalaseShimerViewModel()
             )
         }
         adapter = EtalaseAdapter(EtalaseAdapterTypeFactoryImpl(this::onItemClick), elementList)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        recyclerView.adapter = adapter
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.addItemDecoration(DividerItemDecoration(context,
+            DividerItemDecoration.VERTICAL))
+        recyclerView?.adapter = adapter
     }
 
     fun updateData(data: MutableList<EtalaseViewModel>) {
@@ -62,9 +72,11 @@ class ProductFilterSheetList: BottomSheetUnify() {
     }
 
     private fun onItemClick(pos: Int) {
-        adapter?.items?.forEachIndexed { index, result -> if(result is EtalaseItemViewModel) result.checked = index == pos }
-        var item = adapter?.items?.get(pos)
-        if(item is EtalaseItemViewModel) {
+        adapter?.items?.forEachIndexed { index, result ->
+            if (result is EtalaseItemViewModel) result.checked = index == pos
+        }
+        val item = adapter?.items?.get(pos)
+        if (item is EtalaseItemViewModel) {
             selectedItem = item.result
             onItemClick?.invoke(selectedItem)
         }
