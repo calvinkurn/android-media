@@ -52,6 +52,7 @@ import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -705,7 +706,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
+    private fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
         setInteractiveId(interactive.id)
         setActiveInteractiveTitle(interactive.title)
         when (interactive) {
@@ -715,29 +716,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
+    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
 
         if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            //TODO("Get leaderboard")
-//            val channelId = mChannelData?.id ?: return
-//
-//            try {
-//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-//                setLeaderboardBadgeState(interactiveLeaderboard)
-//
-//                _interactive.update {
-//                    it.copy(interactive = InteractiveUiModel.Unknown)
-//                }
-//            } catch (e: Throwable) {}
+            showInteractiveGameResultWidget()
         }
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
         if (quiz.status == InteractiveUiModel.Quiz.Status.Finished){
-            //TODO("Get leaderboard")
+            showInteractiveGameResultWidget()
+        }
+    }
+
+    private fun showInteractiveGameResultWidget() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
+        }) { err ->
+
         }
     }
 
@@ -866,6 +864,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 val currentInteractive = interactiveMapper.mapGiveaway(
                     result,
                     TimeUnit.SECONDS.toMillis(result.waitingDuration.toLong())
+                )
+                handleActiveInteractiveFromNetwork(currentInteractive)
+            }
+            is QuizResponse -> {
+                val currentInteractive = interactiveMapper.mapQuiz(
+                    result,
+                    TimeUnit.SECONDS.toMillis(result.waitingDuration)
                 )
                 handleActiveInteractiveFromNetwork(currentInteractive)
             }
@@ -1264,11 +1269,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 newInteractive
             }
 
-            delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            //TODO("Get Leaderboard")
-
+            if (interactive.waitingDuration > 0)
+                delay(interactive.waitingDuration)
+            else
+                delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            showInteractiveGameResultWidget()
             _interactive.value = InteractiveUiModel.Unknown
-
         }) {
             _interactive.value = InteractiveUiModel.Unknown
         }
@@ -1276,16 +1282,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatcher.computation, block = {
-            _interactive.update {
+            val interactive = _interactive.getAndUpdate {
                 if (it !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
                 val interactive = it.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
                 )
                 interactive
             }
-            delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            //TODO("Get Leaderboard")
-
+            if (interactive.waitingDuration > 0)
+                delay(interactive.waitingDuration)
+            else
+                delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            showInteractiveGameResultWidget()
             _interactive.value = InteractiveUiModel.Unknown
         }) {
             _interactive.value = InteractiveUiModel.Unknown

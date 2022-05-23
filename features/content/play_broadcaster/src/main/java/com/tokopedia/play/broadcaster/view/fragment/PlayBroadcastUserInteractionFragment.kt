@@ -48,7 +48,6 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -734,6 +733,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             durationInMs = event.durationInMs,
                         )
                     }
+                    is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget()
                     else -> {}
                 }
             }
@@ -884,7 +884,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
-                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -911,7 +910,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
-                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -972,6 +970,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun showInteractiveGameResultWidget() {
+        interactiveGameResultViewComponent?.show()
+    }
+
     private fun isPinnedFormVisible(): Boolean {
         val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
         return formView != null && formView.visibility == View.VISIBLE
@@ -1029,16 +1031,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         fragment.show(childFragmentManager)
     }
 
-    private fun openInteractiveLeaderboardSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val leaderBoardBottomSheet = fragmentFactory.instantiate(
-            requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
-        leaderBoardBottomSheet.arguments = Bundle().apply {
-            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
-        }
-        leaderBoardBottomSheet.show(childFragmentManager)
-    }
+//    @Deprecated("migrate to slot based leaderboard")
+//    private fun openInteractiveLeaderboardSheet() {
+//        val fragmentFactory = childFragmentManager.fragmentFactory
+//        val leaderBoardBottomSheet = fragmentFactory.instantiate(
+//            requireContext().classLoader,
+//            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+//        leaderBoardBottomSheet.arguments = Bundle().apply {
+//            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
+//        }
+//        leaderBoardBottomSheet.show(childFragmentManager)
+//    }
 
     private fun openQuizDetailSheet() {
         openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.QUIZ_DETAIL)
