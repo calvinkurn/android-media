@@ -27,6 +27,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -47,12 +50,15 @@ abstract class BaseCartTest {
     var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase = mockk()
     var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addWishListUseCase: AddWishListUseCase = mockk()
+    var addToWishListV2UseCase: AddToWishlistV2UseCase = mockk()
     var removeWishListUseCase: RemoveWishListUseCase = mockk()
+    var deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk()
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
     var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase = mockk()
     var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistUseCase: GetWishlistUseCase = mockk()
+    var getWishlistV2UseCase: GetWishlistV2UseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
     var addToCartUseCase: AddToCartUseCase = mockk()
     var addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
@@ -72,9 +78,9 @@ abstract class BaseCartTest {
     fun setUp() {
         cartListPresenter = CartListPresenter(getCartRevampV3UseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
-                addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
+                addToWishListV2UseCase, addCartToWishlistUseCase, removeWishListUseCase, deleteWishlistV2UseCase,
+                updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                getWishlistUseCase, getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
                 validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
                 boAffordabilityUseCase, TestSchedulers, coroutineTestDispatchers

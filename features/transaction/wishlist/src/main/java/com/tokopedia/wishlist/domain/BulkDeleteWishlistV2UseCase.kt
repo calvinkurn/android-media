@@ -30,7 +30,7 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
         additionalParams: WishlistV2BulkRemoveAdditionalParams
     ): MutableMap<String, Any> {
         val params = mutableMapOf(
-            WishlistV2Consts.PRODUCT_IDs to productId,
+            WishlistV2Consts.PRODUCT_ID to productId,
             WishlistV2Consts.USER_ID to userId,
             WishlistV2Consts.MODE to mode)
 
@@ -42,8 +42,8 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
 
     companion object {
         val QUERY = """
-            mutation WishlistBulkRemoveV2(${'$'}productIDs: [SuperInteger], ${'$'}userID: SuperInteger) {
-                    wishlist_bulk_remove_v2(productID: ${'$'}productIDs, userID: ${'$'}userID) {
+            mutation WishlistBulkRemoveV2(${'$'}productID: [SuperInteger], ${'$'}userID: SuperInteger, ${'$'}mode: Int, ${'$'}additionalParameters: AddParams) {
+                    wishlist_bulk_remove_v2(productID: ${'$'}productID, userID: ${'$'}userID, mode: ${'$'}mode, additionalParameters: ${'$'}additionalParameters) {
                     id
                     success
                     message
