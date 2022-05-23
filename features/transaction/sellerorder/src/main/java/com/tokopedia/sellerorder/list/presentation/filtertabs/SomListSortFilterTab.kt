@@ -160,6 +160,13 @@ class SomListSortFilterTab(
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
     fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
+    fun getSelectedSort(): Long? {
+        return this.somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_SORT
+        }?.somFilterData?.find {
+            it.isSelected
+        }?.id
+    }
 
     fun getSelectedFilterKeys() = somFilterUiModelList.filter { it.nameFilter != SomConsts.FILTER_STATUS_ORDER }
             .map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()

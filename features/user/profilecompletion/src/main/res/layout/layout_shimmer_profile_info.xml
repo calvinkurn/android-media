@@ -18,21 +18,20 @@
         android:layout_marginTop="@dimen/unify_space_16"
         app:cardCornerRadius="42dp">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="84dp"
             android:layout_height="84dp"
-            app:use_gradient="true"
-            app:unify_image_type="circle" />
+            app:loader_type="rect" />
     </androidx.cardview.widget.CardView>
 
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_change_photo"
         android:layout_width="117dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
-        app:use_gradient="true"
-        app:corners="24"
+        app:loader_type="rect"
+        app:loader_corner_radius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmer_photo_profile"/>
@@ -48,15 +47,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmer_change_photo" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_profile_info_title"
         android:layout_width="130dp"
-        app:use_gradient="true"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider1"
-        app:corners="24"
+        app:loader_type="rect"
+        app:loader_corner_radius="24dp"
         android:layout_height="wrap_content"/>
 
     <include
@@ -94,15 +93,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmer_bio" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_personal_info_title"
         android:layout_width="130dp"
-        app:use_gradient="true"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider2"
-        app:corners="24"
+        app:loader_type="rect"
+        app:loader_corner_radius="24dp"
         android:layout_height="wrap_content"/>
 
     <include

@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
@@ -31,6 +30,7 @@ import com.tokopedia.profilecompletion.common.ProfileCompletionUtils.removeError
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -65,7 +65,8 @@ open class AddPinFragment : BaseDaggerFragment() {
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
     private var validateToken: String = ""
-    private var pin = ""
+
+    private var initialPin = ""
 
     private var inputPin: PinUnify? = null
     private var methodIcon: ImageUnify? = null
@@ -81,6 +82,10 @@ open class AddPinFragment : BaseDaggerFragment() {
 	methodIcon = view.findViewById(R.id.method_icon)
 	mainView = view.findViewById(R.id.container)
 	return view
+    }
+
+    private fun isCreatePinV2(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(CREATE_PIN_ROLLENCE, "").isNotEmpty()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +108,9 @@ open class AddPinFragment : BaseDaggerFragment() {
 	    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 		if (s?.length == PIN_LENGTH) {
 		    if (isConfirmPin) {
-			if (s.toString() == pin) {
+			if (s.toString() == initialPin) {
+			    initialPin = s.toString()
+
 			    if (isSkipOtp) {
 				addChangePinViewModel.checkSkipOtpPin(validateToken)
 			    } else {
@@ -152,7 +159,14 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun initObserver() {
 	addChangePinViewModel.addPinResponse.observe(viewLifecycleOwner, Observer {
 	    when (it) {
-		is Success -> onSuccessAddPin(it.data)
+		is Success -> onSuccessAddPin(it.data.success)
+		is Fail -> onErrorAddPin(it.throwable)
+	    }
+	})
+
+	addChangePinViewModel.mutatePin.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessAddPin(it.data.success)
 		is Fail -> onErrorAddPin(it.throwable)
 	    }
 	})
@@ -191,9 +205,9 @@ open class AddPinFragment : BaseDaggerFragment() {
 	startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
-    open fun onSuccessAddPin(addChangePinData: AddChangePinData) {
+    open fun onSuccessAddPin(isSuccess: Boolean) {
 	dismissLoading()
-	if (addChangePinData.success) {
+	if (isSuccess) {
 	    trackingPinUtil.trackSuccessInputConfirmationPin()
 	    val intent =
 		RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
@@ -224,7 +238,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun onSuccessSkipOtp(skipOtpPinData: SkipOtpPinData) {
 	if (skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()) {
 	    showLoading()
-	    addChangePinViewModel.addPin(skipOtpPinData.validateToken)
+	    addPinMediator(skipOtpPinData.validateToken)
 	} else {
 	    goToVerificationActivity()
 	}
@@ -265,7 +279,7 @@ open class AddPinFragment : BaseDaggerFragment() {
 		val uuid = this.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
 		if (uuid.isNotEmpty()) {
 		    showLoading()
-		    addChangePinViewModel.addPin(uuid)
+		    addPinMediator(uuid)
 		}
 	    }
 	} else {
@@ -279,7 +293,7 @@ open class AddPinFragment : BaseDaggerFragment() {
 	inputPin?.pinDescription = getString(R.string.desc_create_pin)
 	inputPin?.pinMessage = getString(R.string.message_create_pin)
 	isConfirmPin = false
-	pin = ""
+	initialPin = ""
     }
 
     private fun displayConfirmPin() {
@@ -287,8 +301,8 @@ open class AddPinFragment : BaseDaggerFragment() {
 	inputPin?.pinTitle = getString(R.string.confirm_create_pin)
 	inputPin?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
 	isConfirmPin = true
-	if (inputPin?.pinTextField?.text.toString().isNotEmpty()) pin =
-	    inputPin?.pinTextField?.text.toString()
+	if (inputPin?.pinTextField?.text.toString().isNotEmpty())
+	    initialPin = inputPin?.pinTextField?.text.toString()
 	inputPin?.value = ""
 	inputPin?.pinMessage = ""
     }
@@ -351,10 +365,15 @@ open class AddPinFragment : BaseDaggerFragment() {
 	addChangePinViewModel.flush()
     }
 
+    private fun addPinMediator(validateToken: String) {
+	addChangePinViewModel.addPin(validateToken)
+    }
+
     companion object {
 
 	const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
 	const val OTP_TYPE_PHONE_VERIFICATION = 124
+	const val CREATE_PIN_ROLLENCE = "pdh_crt_and"
 
 	const val PIN_LENGTH = 6
 	fun createInstance(bundle: Bundle): AddPinFragment {

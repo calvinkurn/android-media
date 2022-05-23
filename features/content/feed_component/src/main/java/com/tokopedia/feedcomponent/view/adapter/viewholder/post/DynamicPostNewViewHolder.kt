@@ -20,7 +20,8 @@ import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
+import com.tokopedia.unifyprinciples.R as unifyR
+
 
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 private const val BROADCAST_FEED = "BROADCAST_FEED"
@@ -88,10 +89,10 @@ open class DynamicPostNewViewHolder(
             imagePostListener
         )
         postDynamicView.setMargin(
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12)
         )
 
         receiver = object : BroadcastReceiver() {

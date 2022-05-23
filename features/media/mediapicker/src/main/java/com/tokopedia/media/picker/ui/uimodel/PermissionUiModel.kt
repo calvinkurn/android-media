@@ -26,17 +26,20 @@ data class PermissionUiModel(
             RECORD_AUDIO
         )
 
-        fun get(@PageType page: Int, isImageModeOnly: Boolean): List<PermissionUiModel> {
+        fun getOrCreate(
+            @PageType page: Int,
+            isVideoModeOnly: Boolean
+        ): List<PermissionUiModel> {
             return when (page) {
                 PageType.CAMERA -> {
-                    if (isImageModeOnly) {
-                        listOf(camera())
-                    } else {
+                    if (isVideoModeOnly) {
                         listOf(camera(), microphone())
+                    } else {
+                        listOf(camera())
                     }
                 }
                 PageType.GALLERY -> listOf(storage())
-                else -> listOf(storage(), camera(), microphone())
+                else -> listOf(camera(), microphone(), storage())
             }
         }
     }
