@@ -532,7 +532,6 @@ class MainNavViewModel @Inject constructor(
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
-            e.printStackTrace()
         }
     }
 
@@ -574,7 +573,6 @@ class MainNavViewModel @Inject constructor(
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
-            e.printStackTrace()
         }
     }
 
