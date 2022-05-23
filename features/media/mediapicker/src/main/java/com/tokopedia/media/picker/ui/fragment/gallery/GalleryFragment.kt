@@ -266,9 +266,13 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun selectedMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
         // media file validation
         if (!isSelected && media.isVideo()) {
-            isVideoFileValid(media)
+            if (!isVideoFileValid(media)) {
+                return false
+            }
         } else if (!isSelected && !media.isVideo()) {
-            isImageFileValid(media)
+            if (!isImageFileValid(media)) {
+                return false
+            }
         }
 
         // selection mode validation
