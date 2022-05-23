@@ -79,8 +79,8 @@ class FeedToolBarAnalytics @Inject constructor() {
                 EVENT_NAME, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
                 EVENT_ACTION, CLICK_FEED_TAB,
-                USER_ID to userId,
-                EVENT_LABEL, label,
+                USER_ID , userId,
+                EVENT_LABEL, label ,
                 EVENT_BUSINESSUNIT, CONTENT,
                 EVENT_CURRENTSITE, MARKETPLACE
             )
