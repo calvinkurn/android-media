@@ -70,14 +70,11 @@ object ServerResponseDataTypeDetector {
         if(attribute != null) {
             val type = getRequiredTypes(attribute)
             if (type.isNotEmpty() and !isRequiredType(type, elements.type)) {
-                var message = if (type.size > 1) "${type[0]} or ${type[1]}" else type[0]
-                message = message.replace(TYPE_STRING_WRAPPER, TYPE_STRING)
-                message = message.replace(TYPE_DOUBLE_WRAPPER, TYPE_DOUBLE)
                 context.report(
                         WRONG_DATA_TYPE,
                         annotation,
                         context.getLocation(annotation),
-                        "Please use data type as ${message} for variable $attribute"
+                        "Please use data type as ${type.joinToString(" or ")} for variable $attribute"
                 )
             }
         }
@@ -86,8 +83,8 @@ object ServerResponseDataTypeDetector {
 
     fun getRequiredTypes(attribute: String): List<String> {
         return (checkIsKeys(IdTypeLongMap, attribute).values.toList()
-                + checkIsKeys(IdTypeStringMap, attribute).values.toList()
                 + checkIsKeys(IdTypeJavaLongMap, attribute).values.toList()
+                + checkIsKeys(IdTypeStringMap, attribute).values.toList()
                 + checkIsKeys(priceTypeDoubleMap, attribute).values.toList()
                 + checkIsKeys(priceTypeJavaDoubleMap, attribute).values.toList()
                 + checkIsKeys(priceTypeStringMap, attribute).values.toList())
