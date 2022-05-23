@@ -288,7 +288,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         remoteConfigInteractionEnabled: () -> Unit,
         remoteConfigInteractionDisabled: () -> Unit
     ) {
-        val enableInteraction = remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, false)
+        val enableInteraction = remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
         if (enableInteraction) {
             remoteConfigInteractionEnabled.invoke()
         } else {
