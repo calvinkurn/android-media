@@ -33,6 +33,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
@@ -52,6 +53,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
     var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
 
@@ -322,6 +326,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             }
 
             setOnAccountClickListener {
+                feedAccountAnalytic.clickAccountInfo()
                 FeedAccountTypeBottomSheet
                     .getFragment(supportFragmentManager, classLoader)
                     .showNow(supportFragmentManager)
