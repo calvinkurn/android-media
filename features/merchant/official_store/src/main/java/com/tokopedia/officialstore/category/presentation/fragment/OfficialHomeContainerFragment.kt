@@ -362,6 +362,7 @@ class OfficialHomeContainerFragment
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
+        loadingCategoryLayout?.visible()
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)

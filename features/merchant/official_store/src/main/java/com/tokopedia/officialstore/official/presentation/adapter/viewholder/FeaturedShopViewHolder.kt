@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter.OnItemClickListener
@@ -28,6 +29,7 @@ class FeaturedShopViewHolder(
     }
 
     fun bind(shop: Shop) {
+        imageLoading?.visible()
         imageView?.let {
             Glide.with(it.context)
                     .load(shop.imageUrl)
