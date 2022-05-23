@@ -23,7 +23,7 @@ class ShoppingSummaryHeaderViewHolder(private val viewBinding: ItemShoppingSumma
 
     private fun renderShopIcon(element: ShoppingSummaryHeaderUiModel) {
         with(viewBinding) {
-            iuImageFulfill.let {
+            iuShopBadge.let {
                 if (element.iconUrl.isNotBlank()) {
                     it.loadImage(element.iconUrl)
                 }

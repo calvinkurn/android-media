@@ -5,18 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="12dp">
+    android:layout_marginTop="12dp"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_price_total_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/text_price_total_value"
         app:typographyType="paragraph_3"
+        android:textColor="@color/Unify_NN950"
         tools:text="Total Harga (10) Barang" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,6 +28,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/text_price_total_title"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
         tools:text="Rp10.000.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

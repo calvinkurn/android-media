@@ -35,23 +35,22 @@ class ShoppingSummaryBottomSheet @Inject constructor() {
 
         val viewBinding =
             LayoutBottomsheetShoppingSummaryBinding.inflate(LayoutInflater.from(context))
-        initializeRecyclerView(viewBinding)
-        renderShoppingSummaryList(viewBinding)
+        initializeRecyclerView(viewBinding, getShoppingSummaryList())
 
         bottomSheet?.setChild(viewBinding.root)
         bottomSheet?.show(fragmentManager, FRAGMENT_GENERAL_SUMMARY_TRANSACTION_TAG)
     }
 
-    private fun initializeRecyclerView(viewBinding: LayoutBottomsheetShoppingSummaryBinding) {
+    private fun initializeRecyclerView(viewBinding: LayoutBottomsheetShoppingSummaryBinding, data: ArrayList<Visitable<*>>) {
         with(viewBinding) {
             val adapterTypeFactory = ShoppingSummaryAdapterTypeFactory()
-            adapter = ShoppingSummaryAdapter(adapterTypeFactory)
+            adapter = ShoppingSummaryAdapter(data, adapterTypeFactory)
             rvShoppingSummaryList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
             rvShoppingSummaryList.adapter = adapter
         }
     }
 
-    private fun renderShoppingSummaryList(viewBinding: LayoutBottomsheetShoppingSummaryBinding) {
+    private fun getShoppingSummaryList(): ArrayList<Visitable<*>> {
         val dummyItems = arrayListOf<Visitable<*>>()
         dummyItems.add(ShoppingSummaryHeaderUiModel("", "Shop Store", "Jakarta Selatan"))
         dummyItems.add(ShoppingSummaryProductUiModel("1 x Sepatu Basket Nike Air Jordan", "Rp5.500.000.000"))
@@ -90,6 +89,6 @@ class ShoppingSummaryBottomSheet @Inject constructor() {
 
         dummyItems.add(ShoppingSummaryTotalTransactionUiModel("Total Harga (12 Barang)", "<b>Rp5.500.000.000</b>"))
 
-        adapter?.updateList(dummyItems)
+        return dummyItems
     }
 }

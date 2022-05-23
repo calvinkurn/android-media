@@ -9,7 +9,7 @@
     android:layout_marginTop="12dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_image_fulfill"
+        android:id="@+id/iu_shop_badge"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:scaleType="fitCenter"
@@ -22,11 +22,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintStart_toEndOf="@id/iu_image_fulfill"
+        app:layout_constraintStart_toEndOf="@id/iu_shop_badge"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iu_image_fulfill"
+        app:layout_constraintTop_toTopOf="@id/iu_shop_badge"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
         tools:text="Shop Store" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,8 +37,9 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iu_image_fulfill"
+        app:layout_constraintTop_toBottomOf="@id/iu_shop_badge"
         app:typographyType="small"
+        android:textColor="@color/Unify_NN600"
         tools:text="Jakarta Selatan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
