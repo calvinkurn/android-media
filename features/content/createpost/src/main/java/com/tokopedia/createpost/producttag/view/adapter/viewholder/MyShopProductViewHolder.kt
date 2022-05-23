@@ -19,7 +19,7 @@ internal class MyShopProductViewHolder private constructor() {
 
     internal class Product(
         private val binding: ItemMyShopProductListBinding,
-        private val onSelected: (ProductUiModel) -> Unit,
+        private val onSelected: (ProductUiModel, Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.Product) {
@@ -42,14 +42,14 @@ internal class MyShopProductViewHolder private constructor() {
                 binding.llDiscount.visibility = View.GONE
             }
 
-            binding.root.setOnClickListener { onSelected(item.product) }
+            binding.root.setOnClickListener { onSelected(item.product, adapterPosition) }
         }
 
         companion object {
 
             fun create(
                 parent: ViewGroup,
-                onSelected: (ProductUiModel) -> Unit
+                onSelected: (ProductUiModel, Int) -> Unit
             ) = Product(
                 binding = ItemMyShopProductListBinding.inflate(
                     LayoutInflater.from(parent.context),

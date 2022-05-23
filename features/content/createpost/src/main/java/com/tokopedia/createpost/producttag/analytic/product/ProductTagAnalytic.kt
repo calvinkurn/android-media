@@ -24,7 +24,7 @@ interface ProductTagAnalytic {
         source: ProductTagSource,
         product: Pair<ProductUiModel, Int>,
         isGlobalSearch: Boolean
-    ) /** TODO: later */
+    )
 
     fun clickSearchBar(source: ProductTagSource)
 

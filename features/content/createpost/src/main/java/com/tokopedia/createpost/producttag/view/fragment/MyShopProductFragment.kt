@@ -52,7 +52,14 @@ class MyShopProductFragment @Inject constructor(
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: MyShopProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         MyShopProductAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
+            onSelected = { product, position ->
+                analytic.clickProductCard(
+                    viewModel.selectedTagSource,
+                    Pair(product, position),
+                    false
+                )
+                viewModel.submitAction(ProductTagAction.ProductSelected(product))
+            },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadMyShopProduct) }
         )
     }

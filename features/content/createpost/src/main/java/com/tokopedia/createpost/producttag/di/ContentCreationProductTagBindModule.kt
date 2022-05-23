@@ -11,8 +11,7 @@ import com.tokopedia.createpost.producttag.data.ProductTagRepositoryImpl
 import com.tokopedia.createpost.producttag.di.key.FragmentKey
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
-import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
-import com.tokopedia.createpost.producttag.view.fragment.MyShopProductFragment
+import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.producttag.view.fragment.factory.ProductTagFragmentFactory
 import dagger.Binds
@@ -41,13 +40,28 @@ abstract class ContentCreationProductTagBindModule {
 
     @Binds
     @IntoMap
+    @FragmentKey(LastTaggedProductFragment::class)
+    abstract fun bindLastTaggedProductFragment(fragment: LastTaggedProductFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(LastPurchasedProductFragment::class)
+    abstract fun bindLastPurchasedProductFragment(fragment: LastPurchasedProductFragment): Fragment
+
+    @Binds
+    @IntoMap
     @FragmentKey(MyShopProductFragment::class)
     abstract fun bindMyShopProductFragment(fragment: MyShopProductFragment): Fragment
 
     @Binds
     @IntoMap
-    @FragmentKey(LastTaggedProductFragment::class)
-    abstract fun bindLastTaggedProductFragment(fragment: LastTaggedProductFragment): Fragment
+    @FragmentKey(GlobalSearchFragment::class)
+    abstract fun bindGlobalSearchFragment(fragment: GlobalSearchFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(GlobalSearchProductTabFragment::class)
+    abstract fun bindGlobalSearchProductTabFragment(fragment: GlobalSearchProductTabFragment): Fragment
 
     /** Repository */
     @Binds

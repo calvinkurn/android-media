@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastPurchasedProductBinding
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.isNetworkError
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
@@ -23,11 +24,14 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastPurchasedProductFragment : BaseProductTagChildFragment() {
+class LastPurchasedProductFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastPurchasedProductFragment"
 
@@ -39,6 +43,11 @@ class LastPurchasedProductFragment : BaseProductTagChildFragment() {
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
+                analytic.clickProductCard(
+                    viewModel.selectedTagSource,
+                    Pair(product, position),
+                    false
+                )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
              },
             onLoading = { /** do nothing */ }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchProductTabBinding
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecoration
@@ -27,11 +28,14 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import com.tokopedia.filter.common.helper.getSortFilterCount
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
  */
-class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
+class GlobalSearchProductTabFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchProductTabFragment"
 
@@ -43,6 +47,11 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
+                analytic.clickProductCard(
+                    viewModel.selectedTagSource,
+                    Pair(product, position),
+                    true
+                )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) },

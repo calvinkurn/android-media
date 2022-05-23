@@ -52,7 +52,7 @@ class ProductTagAnalyticImpl @Inject constructor(
             EventModel(
                 event = "productClick",
                 category = "content feed post creation - product tagging",
-                action = "click - entry point product card",
+                action = if(isGlobalSearch) "click - product card" else "click - entry point product card",
                 label = "${source.labelAnalytic} - {shop_id} - ${product.first.id}" /** TODO: shopId? */
             ),
             hashMapOf(

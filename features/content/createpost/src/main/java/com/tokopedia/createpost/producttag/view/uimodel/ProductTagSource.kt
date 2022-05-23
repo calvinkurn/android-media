@@ -6,10 +6,10 @@ package com.tokopedia.createpost.producttag.view.uimodel
 enum class ProductTagSource(val tag: String, val labelAnalytic: String) {
     GlobalSearch("global_search", "tokopedia"),
     Wishlist("wishlist", "wishlist"),
-    MyShop("own_shop", ""),
+    MyShop("own_shop", "toko saya"),
     LastPurchase("last_purchase", "terakhir dibeli"),
     LastTagProduct("last_tag_product", "tokopedia"),
-    Shop("shop", "toko saya"),
+    Shop("shop", "toko"),
     Unknown("", "");
 
     companion object {
