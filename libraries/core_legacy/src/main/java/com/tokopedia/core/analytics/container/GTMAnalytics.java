@@ -62,6 +62,7 @@ import timber.log.Timber;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.CHECKOUT_STEP;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_NAME;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLOT;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
@@ -1189,20 +1190,47 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
+            mappingToGA4(fa, eventName, bundle);
+            logV5(context, eventName, bundle);
+            trackEmbraceBreadcrumb(eventName, bundle);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // https://firebase.google.com/docs/analytics/measure-ecommerce
+    private void mappingToGA4(FirebaseAnalytics fa, String eventName, Bundle bundle) {
+        try {
             switch (eventName) {
                 // https://tokopedia.atlassian.net/browse/AN-36119
                 case FirebaseAnalytics.Event.VIEW_ITEM:
                     Object promotions = bundle.get("promotions");
                     if (promotions != null) {
                         List promotionList = (List) promotions;
-                        if (promotionList.size() > 0) {
-                            Bundle bundlePromotion = ((Bundle) promotionList.get(0));
-                            bundle.putString(FirebaseAnalytics.Param.PROMOTION_ID, bundlePromotion.getString(ITEM_ID));
-                            bundle.putString(FirebaseAnalytics.Param.PROMOTION_NAME, bundlePromotion.getString(ITEM_NAME));
-                            bundle.putString(FirebaseAnalytics.Param.CREATIVE_NAME, bundlePromotion.getString(CREATIVE_NAME));
-                            bundle.putString(FirebaseAnalytics.Param.CREATIVE_SLOT, bundlePromotion.getString(CREATIVE_SLOT));
-                            fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
+                        ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
+                        for (int i = 0, size = promotionList.size(); i < size; i++) {
+                            Bundle bundlePromotion = ((Bundle) promotionList.get(i));
+                            String itemId = bundlePromotion.getString(ITEM_ID);
+                            if (itemId != null) {
+                                bundle.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
+                            }
+                            String itemName = bundlePromotion.getString(ITEM_NAME);
+                            if (itemName != null) {
+                                bundle.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                            }
+                            String creativeName = bundlePromotion.getString(CREATIVE_NAME);
+                            if (creativeName != null) {
+                                bundle.putString(FirebaseAnalytics.Param.CREATIVE_NAME, creativeName);
+                            }
+                            String creativeSlot = bundlePromotion.getString(CREATIVE_SLOT);
+                            if (creativeSlot != null) {
+                                bundle.putString(FirebaseAnalytics.Param.CREATIVE_SLOT, creativeSlot);
+                            }
+                            promotionsGA4.add(bundlePromotion);
                         }
+                        Bundle ecommerceBundleGA4 = new Bundle();
+                        ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
+                        fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
                     }
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
@@ -1237,10 +1265,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     fa.logEvent(FirebaseAnalytics.Event.PURCHASE, bundle);
                     break;
             }
-            logV5(context, eventName, bundle);
-            trackEmbraceBreadcrumb(eventName, bundle);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
