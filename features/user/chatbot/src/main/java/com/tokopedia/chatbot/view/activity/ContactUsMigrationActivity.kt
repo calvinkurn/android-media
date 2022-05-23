@@ -104,6 +104,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
                 textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
                 textListHeader.text = content
                 buttonTokopediaCare.setOnClickListener {
+                    chatbotAnalytics.get().eventOnClickTokopediaCare()
                     goToHelpPage()
                 }
                 contentListRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
@@ -127,7 +128,6 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun goToContactUs() {
-        chatbotAnalytics.get().eventOnClickTokopediaCare()
         RouteManager.route(this, CONTACT_US_APPLINK)
         finish()
     }

@@ -26,8 +26,8 @@ class ChatbotAnalytics @Inject constructor(
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
-        const val BUSINESS_UNIT_CX = ""
-        const val CURRENT_SITE_CX = ""
+        const val BUSINESS_UNIT_CX = "Customer Excellence"
+        const val CURRENT_SITE_CX = "tokopediamarketplace"
     }
 
     private fun getTracker(): Analytics {
