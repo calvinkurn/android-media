@@ -45,6 +45,8 @@ interface ProductTagAnalytic {
 
     fun clickShopCard()
 
+    fun clickSearchBarOnShop()
+
     fun clickProductCardOnShop(
         product: ProductUiModel,
         position: Int,

@@ -94,6 +94,10 @@ class ShopProductFragment @Inject constructor(
             errorSecondaryAction.gone()
         }
 
+        binding.sbShopProduct.setOnClickListener {
+            analytic.clickSearchBarOnShop()
+        }
+
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()

@@ -115,6 +115,10 @@ class ProductTagAnalyticImpl @Inject constructor(
         /** TODO("Not yet implemented") */
     }
 
+    override fun clickSearchBarOnShop() {
+        sendClickEvent("click - search bar on toko")
+    }
+
     override fun clickProductCardOnShop(
         product: ProductUiModel,
         position: Int
