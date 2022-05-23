@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchBinding
 import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
@@ -86,13 +87,20 @@ class GlobalSearchFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
 
-        binding.tabItemProduct.setOnClickListener {
-            analytic.clickGlobalSearchTab("barang")
-        }
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) { }
 
-        binding.tabItemShop.setOnClickListener {
-            analytic.clickGlobalSearchTab("toko")
-        }
+            override fun onPageSelected(position: Int) {
+                if(position == 0) analytic.clickGlobalSearchTab("barang")
+                else analytic.clickGlobalSearchTab("toko")
+            }
+
+            override fun onPageScrollStateChanged(state: Int) { }
+        })
     }
 
     private fun setupObserver() {
