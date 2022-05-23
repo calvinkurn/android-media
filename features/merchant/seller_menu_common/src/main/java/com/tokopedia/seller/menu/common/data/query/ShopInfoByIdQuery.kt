@@ -45,6 +45,11 @@ object ShopInfoByIdQuery: GqlQueryInterface {
                     tagLine
                     url
                   }
+                  statusInfo {
+                    statusTitle
+                    statusMessage
+                    tickerType
+                  }                  
                 }
               }
             }

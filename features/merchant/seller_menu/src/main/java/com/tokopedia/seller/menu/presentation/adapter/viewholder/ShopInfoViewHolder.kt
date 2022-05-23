@@ -31,6 +31,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -56,6 +57,8 @@ class ShopInfoViewHolder(
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
+        private const val TICKER_TYPE_WARNING = "warning"
+        private const val TICKER_TYPE_DANGER = "danger"
     }
 
     private val context by lazy { itemView.context }
@@ -113,8 +116,33 @@ class ShopInfoViewHolder(
                     }
                 }
                 showShopScore(uiModel)
+                showTicker(uiModel.shopInfo.shopStatusUiModel
+                    ?.userShopInfoWrapper?.userShopInfoUiModel?.statusInfoUiModel)
             }
         }
+    }
+
+    private fun showTicker(statusInfoUiModel: UserShopInfoWrapper.UserShopInfoUiModel.StatusInfoUiModel?) {
+        binding.successTickerShopInfoLayout.run {
+            val title = statusInfoUiModel?.statusTitle.orEmpty()
+            val message = statusInfoUiModel?.statusMessage.orEmpty()
+
+            if (title.isNotEmpty() && message.isNotEmpty()){
+                tickerShopInfo.tickerTitle= title
+                tickerShopInfo.setTextDescription(message)
+                val tickerType: Int = when (statusInfoUiModel?.tickerType) {
+                    TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
+                    TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_ANNOUNCEMENT
+                }
+                tickerShopInfo.tickerType = tickerType
+                tickerShopInfo.show()
+            }else{
+                tickerShopInfo.hide()
+            }
+
+        }
+
     }
 
     private fun setDotVisibility(shopFollowers: Long) {
