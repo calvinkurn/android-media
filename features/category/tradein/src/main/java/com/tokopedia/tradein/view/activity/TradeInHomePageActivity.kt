@@ -129,7 +129,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 } else {
                     goToCheckoutActivity(
                         ShipmentFormRequest.BundleBuilder()
-                        .deviceId(viewModel.imei)
+                        .deviceId(viewModel.deviceId)
                         .build()
                         .bundle)
                 }

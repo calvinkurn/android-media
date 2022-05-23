@@ -52,6 +52,9 @@ class TradeInHomePageVM @Inject constructor(
     val userId: String
         get() = userSession.userId
 
+    val deviceId: String
+        get() = userSession.deviceId
+
     private var laku6TradeIn: Laku6TradeIn? = null
     var imei: String = ""
     var isDiagnosed: Boolean = false
