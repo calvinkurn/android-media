@@ -356,15 +356,21 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 ArrayList(Arrays.asList(*entries)),
                 initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(
                     passengerModel.passengerTitle
-                ) - 1 else null
+                ) - PLUS_ONE else null
             )
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
+            var initialSelectedPosition =
+                if (passengerModel.passengerTitle != null && passengerModel.passengerTitle.isNotEmpty()) getPassengerTitleId(
+                    passengerModel.passengerTitle
+                ) - PLUS_ONE else null
+            if (initialSelectedPosition != null && initialSelectedPosition > TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT) {
+                initialSelectedPosition = TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT
+            }
+
             binding?.rvPassengerTitle?.setItem(
                 ArrayList(Arrays.asList(*entries)),
-                initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(
-                    passengerModel.passengerTitle
-                ) - 1 else null
+                initialSelectedItemPos = initialSelectedPosition
             )
         }
         if (isDomestic && isMandatoryIdentificationNumber && passengerModel.identificationNumber.isNotEmpty()) {
@@ -373,22 +379,26 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
-        val itemCount = binding?.rvPassengerTitle?.adapter?.itemCount ?: 0;
+        val itemCount = binding?.rvPassengerTitle?.adapter?.itemCount ?: 0
         when {
             passengerTitle.equals(
                 FlightPassengerTitle.TUAN.salutation,
                 true
-            ) -> binding?.rvPassengerTitle?.selectChipByPosition(0)
+            ) -> binding?.rvPassengerTitle?.selectChipByPosition(TITLE_TUAN_POSITION)
             passengerTitle.equals(
                 FlightPassengerTitle.NYONYA.salutation,
                 true
-            ) -> if (itemCount > 2) binding?.rvPassengerTitle?.selectChipByPosition(1)
+            ) -> binding?.rvPassengerTitle?.selectChipByPosition(TITLE_NYONYA_POSITION)
             passengerTitle.equals(
                 FlightPassengerTitle.NONA.salutation,
                 true
             ) -> {
-                if (itemCount > 2) binding?.rvPassengerTitle?.selectChipByPosition(2)
-                else binding?.rvPassengerTitle?.selectChipByPosition(1)
+                if (itemCount > TITLE_COUNT_FOR_CHILD_AND_INFANT) binding?.rvPassengerTitle?.selectChipByPosition(
+                    TITLE_NONE_POSITION
+                )
+                else binding?.rvPassengerTitle?.selectChipByPosition(
+                    TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT
+                )
             }
             else -> binding?.rvPassengerTitle?.onResetChip()
         }
@@ -1273,6 +1283,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         private const val DEFAULT_LAST_HOUR_IN_DAY = 23
         private const val DEFAULT_LAST_MIN_IN_DAY = 59
         private const val DEFAULT_LAST_SEC_IN_DAY = 59
+
+        private const val TITLE_TUAN_POSITION = 0
+        private const val TITLE_NYONYA_POSITION = 1
+        private const val TITLE_NONE_POSITION = 2
+        private const val TITLE_NONA_POSITION_FOR_CHILD_AND_INFANT = 1
+        private const val TITLE_COUNT_FOR_CHILD_AND_INFANT = 2
 
         fun newInstance(
             depatureId: String,
