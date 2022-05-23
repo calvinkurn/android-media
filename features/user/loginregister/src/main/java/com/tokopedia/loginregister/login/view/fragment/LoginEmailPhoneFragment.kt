@@ -774,6 +774,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         callTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // https://stackoverflow.com/questions/28539216/
+        callTokopediaCare?.movementMethod = null
+        callTokopediaCare?.text = ""
+    }
+
     private fun onChangeButtonClicked() {
         analytics.trackChangeButtonClicked()
 
