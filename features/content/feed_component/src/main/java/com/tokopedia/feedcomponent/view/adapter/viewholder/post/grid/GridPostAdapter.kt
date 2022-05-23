@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_grid.view.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by milhamj on 07/12/18.
@@ -201,12 +202,12 @@ class GridPostAdapter(private val contentPosition: Int,
         private fun setImageMargins(listSize: Int) {
             if (listSize == 1) {
                 itemView.productLayout.setMargin(0, 0, 0, 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
             } else {
-                itemView.productLayout.setMargin(itemView.getDimens(R.dimen.dp_2), 0, itemView.getDimens(R.dimen.dp_2), 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
+                itemView.productLayout.setMargin(itemView.getDimens(unifyR.dimen.spacing_lvl1), 0, itemView.getDimens(unifyR.dimen.spacing_lvl1), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
             }
         }
     }

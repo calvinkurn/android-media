@@ -39,6 +39,7 @@ import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.RESULT_INTENT_REVIEW_REPLY
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
 import com.tokopedia.review.databinding.FragmentInboxReviewBinding
@@ -407,7 +408,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onSuccessGetFeedbackInboxReview(it.data)
                 }
                 is Fail -> {
-                    onErrorGetInboxReviewData()
+                    onErrorGetInboxReviewData(it.throwable)
                 }
             }
         }
@@ -425,7 +426,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     }
                 }
                 is Fail -> {
-                    onErrorGetInboxReviewData()
+                    onErrorGetInboxReviewData(it.throwable)
                 }
             }
         }
@@ -510,22 +511,32 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetInboxReviewData() {
-        feedbackInboxList?.clear()
+    private fun onErrorGetInboxReviewData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
-        if (feedbackInboxList?.isEmpty() == true) {
+        if (feedbackInboxList.isNullOrEmpty()) {
             inboxReviewAdapter.clearAllElements()
-            inboxReviewAdapter.addInboxFeedbackError()
+            inboxReviewAdapter.addInboxFeedbackError(throwable)
         } else {
-            onErrorLoadMoreToaster(getString(R.string.error_message_load_more_review_product), getString(R.string.action_retry_toaster_review_product))
+            onErrorLoadMoreToaster(
+                throwable.getErrorMessage(
+                    context,
+                    getString(R.string.error_message_load_more_review_product)
+                ), getString(R.string.action_retry_toaster_review_product)
+            )
         }
     }
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = {
-                loadInitialData()
-            })
+            Toaster.build(
+                it,
+                message,
+                duration = Toaster.LENGTH_INDEFINITE,
+                actionText = action,
+                type = Toaster.TYPE_ERROR,
+                clickListener = {
+                    loadInitialData()
+                }).show()
         }
     }
 

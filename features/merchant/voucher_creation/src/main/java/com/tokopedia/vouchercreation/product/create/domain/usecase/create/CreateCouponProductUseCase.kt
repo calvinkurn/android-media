@@ -105,7 +105,7 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             if (data.merchantPromotionCreateMV.data.status != STATUS_SUCCESS) {
                 throw MessageErrorException(data.merchantPromotionCreateMV.message)
             } else {
-                return data.merchantPromotionCreateMV.data.voucherId
+                return data.merchantPromotionCreateMV.data.voucherId.toIntOrZero()
             }
         } else {
             throw MessageErrorException(error.joinToString(", ") {
