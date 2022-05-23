@@ -19,9 +19,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 13, 2022
  */
-class FeedAccountTypeBottomSheet @Inject constructor(
-    private val analytic: FeedAccountTypeAnalytic,
-) : BottomSheetUnify() {
+class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
     private var _binding: BottomSheetFeedAccountTypeBinding? = null
     private val binding: BottomSheetFeedAccountTypeBinding
@@ -30,7 +28,7 @@ class FeedAccountTypeBottomSheet @Inject constructor(
     private val adapter: FeedAccountTypeAdapter by lazy {
         FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
             override fun onClick(item: FeedAccountUiModel) {
-                analytic.clickAccountTypeItem(
+                mAnalytic?.clickAccountTypeItem(
                     when {
                         item.isShop -> "shop"
                         item.isUser -> "user"
@@ -43,9 +41,9 @@ class FeedAccountTypeBottomSheet @Inject constructor(
         })
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
+    private var mAnalytic: FeedAccountTypeAnalytic? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +92,10 @@ class FeedAccountTypeBottomSheet @Inject constructor(
         if(isAdded) adapter.updateData(mFeedAccountList)
 
         return this
+    }
+
+    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
+        mAnalytic = analytic
     }
 
     companion object {

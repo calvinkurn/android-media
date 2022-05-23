@@ -72,6 +72,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         when(fragment) {
             is FeedAccountTypeBottomSheet -> {
                 fragment.setData(mFeedAccountList)
+                fragment.setAnalytic(feedAccountAnalytic)
                 fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
                         if(feedAccount.type != selectedFeedAccount.type && feedAccount.isShop) {

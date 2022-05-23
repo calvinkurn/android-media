@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.cameraview.size.AspectRatio
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.*
 import com.tokopedia.imagepicker_insta.LiveDataResult
@@ -26,6 +27,7 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
@@ -54,6 +56,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
@@ -85,7 +88,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     val coachMarkItem = ArrayList<CoachMark2Item>()
     private  lateinit var coachMark: CoachMark2
 
+    @Inject
+    lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectFragment()
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
@@ -95,6 +102,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is FeedAccountTypeBottomSheet -> {
+                childFragment.setAnalytic(feedAccountAnalytic)
                 childFragment.setData(viewModel.feedAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
@@ -163,10 +171,21 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
+    private fun injectFragment() {
+        DaggerImagePickerComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .build().inject(this)
+    }
+
     private fun initDagger() {
         if (context is AppCompatActivity) {
             viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
-            val component = DaggerImagePickerComponent.builder().build()
+            val component = DaggerImagePickerComponent.builder()
+                .baseAppComponent(
+                    (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                ).build()
             component.inject(viewModel)
         }
     }
@@ -309,9 +328,15 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openFeedAccountBottomSheet(){
-        FeedAccountTypeBottomSheet
-            .getFragment(childFragmentManager, requireActivity().classLoader)
-            .showNow(childFragmentManager)
+        try {
+            feedAccountAnalytic.clickAccountInfo()
+            FeedAccountTypeBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        }
+        catch (e: Exception) {
+
+        }
     }
 
     private fun showFabCoachMark() {
