@@ -1497,6 +1497,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check reschedule pickup applink then should return tokopedia internal reschedule pickup in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/reschedulepickup?order_id=1234567890"
+        val appLink = "${ApplinkConst.SELLER_ORDER_RESCHEDULE}?order_id=1234567890"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check saldo appLink then should return tokopedia internal saldo in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/saldo"
         assertEqualsDeepLinkMapper(ApplinkConst.SALDO, expectedDeepLink)
