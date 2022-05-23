@@ -15,11 +15,7 @@ import androidx.annotation.StringDef
     TokoNowLayoutType.LEGO_6_IMAGE,
     TokoNowLayoutType.PRODUCT_RECOM,
     TokoNowLayoutType.REPURCHASE_PRODUCT,
-    TokoNowLayoutType.EDUCATIONAL_INFORMATION,
-    TokoNowLayoutType.SHARING_EDUCATION,
-    TokoNowLayoutType.SHARING_REFERRAL,
-    TokoNowLayoutType.MAIN_QUEST,
-    TokoNowLayoutType.MIX_LEFT_CAROUSEL
+    TokoNowLayoutType.MAIN_QUEST
 )
 annotation class TokoNowLayoutType {
     companion object {
