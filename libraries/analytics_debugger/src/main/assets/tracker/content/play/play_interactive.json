@@ -96,26 +96,6 @@
     },
     {
       "event": "viewContentIris",
-      "eventAction": "view - follow quiz popup",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickContent",
-      "eventAction": "click - follow quiz popup",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "viewContentIris",
       "eventAction": "view - quiz leaderboard bottomsheet",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
