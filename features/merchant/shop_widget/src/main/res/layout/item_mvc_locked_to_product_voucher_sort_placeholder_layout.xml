@@ -9,28 +9,31 @@
     android:paddingEnd="16dp"
     android:paddingBottom="8dp">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_mvc"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sort"
         android:layout_width="112dp"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_mvc" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_total_product"
         android:layout_width="140dp"
         android:layout_height="20dp"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@id/shimmer_sort"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/shimmer_sort"
