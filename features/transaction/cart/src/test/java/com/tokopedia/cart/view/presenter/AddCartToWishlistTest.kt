@@ -19,7 +19,8 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
 
         val addToCartWishlistData = AddCartToWishlistData().apply {
-            isSuccess = true
+            status = "OK"
+            success = 1
             message = "success"
         }
 
@@ -45,7 +46,8 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
 
         val addToCartWishlistData = AddCartToWishlistData().apply {
-            isSuccess = false
+            status = "ERROR"
+            success = 0
             message = "failed"
         }
 
