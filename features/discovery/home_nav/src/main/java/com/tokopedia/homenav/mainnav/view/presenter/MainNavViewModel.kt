@@ -32,8 +32,6 @@ import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
-import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
@@ -62,7 +60,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
@@ -241,7 +238,7 @@ class MainNavViewModel @Inject constructor(
             //update cached data with cloud data
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
-            onlyForLoggedInUser { getOngoingTransactionRevamp() }
+            onlyForLoggedInUser { getOnGoingTransaction() }
             if(isMePageUsingRollenceVariant){
                 onlyForLoggedInUser { getFavoriteShops() }
                 onlyForLoggedInUser { getWishlist() }
@@ -457,7 +454,7 @@ class MainNavViewModel @Inject constructor(
             updateWidget(getInitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
         }
         launchCatchError(coroutineContext, block = {
-            getOngoingTransactionRevamp()
+            getOnGoingTransaction()
         }) {
 
         }
@@ -492,13 +489,13 @@ class MainNavViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getOngoingTransactionRevamp() {
+    private suspend fun getOnGoingTransactionRevamp() {
         //find error state if available and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateOngoingTransactionModel
         }
         transactionErrorState?.let {
-            updateWidget(getInitialShimmerTransactionDataModel(), it.index)
+            updateWidget(InitialShimmerTransactionRevampDataModel(), it.index)
         }
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
@@ -519,43 +516,72 @@ class MainNavViewModel @Inject constructor(
                 )
 
                 //find shimmering and change with result value
-                if (isMePageUsingRollenceVariant) {
-                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                        updateWidget(transactionListItemViewModel, it)
-                    }
-                }
-                else {
-                    findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                        updateWidget(transactionListItemViewModel, it)
-                    }
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(transactionListItemViewModel, it)
                 }
             } else {
                 val emptyTransaction = TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant)
-                if (isMePageUsingRollenceVariant) {
-                    findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                        updateWidget(emptyTransaction, it)
-                    }
-                }
-                else {
-                    deleteWidget(InitialShimmerTransactionDataModel())
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                    updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
-            if (isMePageUsingRollenceVariant) {
-                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                    updateWidget(ErrorStateOngoingTransactionModel(), it)
-                }
-            }
-            else {
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                    updateWidget(ErrorStateOngoingTransactionModel(), it)
-                }
+            findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
         }
+    }
+
+    private suspend fun getOnGoingTransactionOld() {
+        //find error state if available and change to shimmering
+        val transactionErrorState = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateOngoingTransactionModel
+        }
+        transactionErrorState?.let {
+            updateWidget(InitialShimmerTransactionDataModel(), it.index)
+        }
+        try {
+            val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
+            getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant)
+            val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
+            val reviewList = listOf<NavReviewOrder>()
+
+            if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
+                val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
+
+                val (paymentListToShow, orderListToShow, reviewListToShow) = getOrderHistory(paymentList, orderList, reviewList)
+
+                val transactionListItemViewModel = TransactionListItemDataModel(
+                    NavOrderListModel(orderListToShow, paymentListToShow, reviewListToShow),
+                    othersTransactionCount,
+                    isMePageUsingRollenceVariant
+                )
+
+                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                    updateWidget(transactionListItemViewModel, it)
+                }
+            } else {
+                deleteWidget(InitialShimmerTransactionDataModel())
+            }
+            onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
+        } catch (e: Exception) {
+            //find shimmering and change with result value
+            findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                updateWidget(ErrorStateOngoingTransactionModel(), it)
+            }
+            onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
+            e.printStackTrace()
+        }
+    }
+
+    private suspend fun getOnGoingTransaction() {
+        if (isMePageUsingRollenceVariant)
+            getOnGoingTransactionRevamp()
+        else getOnGoingTransactionOld()
     }
 
     fun refreshFavoriteShopData() {
