@@ -15,35 +15,35 @@ interface ProductTagRepository {
         authorType: String,
         cursor: String,
         limit: Int,
-    ) : PagedDataUiModel<ProductUiModel>
+    ): PagedDataUiModel<ProductUiModel>
 
     suspend fun getLastPurchasedProducts(
         cursor: String,
         limit: Int,
-    ) : LastPurchasedProductUiModel
+    ): LastPurchasedProductUiModel
 
     suspend fun searchAceProducts(
         param: SearchParamUiModel,
-    ) : PagedGlobalSearchProductResponse
+    ): PagedGlobalSearchProductResponse
 
     suspend fun searchAceShops(
         param: SearchParamUiModel,
-    ) : PagedGlobalSearchShopResponse
+    ): PagedGlobalSearchShopResponse
 
     suspend fun getQuickFilter(
         query: String,
         extraParams: String,
-    ) : List<QuickFilterUiModel>
+    ): List<QuickFilterUiModel>
 
     suspend fun getSortFilter(
         param: SearchParamUiModel,
-    ) : DynamicFilterModel
+    ): DynamicFilterModel
 
     suspend fun getSortFilterProductCount(
         param: SearchParamUiModel,
-    ) : String
+    ): String
 
     suspend fun getShopInfoByID(
         shopIds: List<Int>,
-    ) : ShopUiModel
+    ): ShopUiModel
 }
