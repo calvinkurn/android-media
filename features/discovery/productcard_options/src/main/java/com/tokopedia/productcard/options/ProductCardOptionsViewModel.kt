@@ -228,28 +228,18 @@ internal class ProductCardOptionsViewModel(
         if (productCardOptionsModel?.isTopAds == true) {
             addWishlistTopAds()
         }
-        else {
-            addWishlistNonTopAdsV2()
-        }
+        addWishlistNonTopAdsV2()
     }
 
     private fun addWishlistTopAds() {
         topAdsWishlistUseCase.execute(
                 createAddWishlistTopAdsRequestParams(),
-                createAddWishlistTopAdsSubscriber()
+                null
         )
     }
 
     private fun createAddWishlistTopAdsRequestParams() = RequestParams.create().also {
         it.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, productCardOptionsModel?.topAdsClickUrl)
-    }
-
-    private fun createAddWishlistTopAdsSubscriber() = object: Subscriber<Boolean>() {
-        override fun onNext(t: Boolean?) { }
-
-        override fun onError(e: Throwable?) { }
-
-        override fun onCompleted() { }
     }
 
     private fun addWishlistNonTopAdsV2() {
