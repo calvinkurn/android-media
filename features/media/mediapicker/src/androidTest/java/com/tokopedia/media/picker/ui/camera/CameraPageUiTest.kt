@@ -42,7 +42,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
 
         // Then
         Assert.assertCaptureImage()
@@ -72,7 +72,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_open_image_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickLanjutButton()
 
         // Then
@@ -115,7 +115,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_open_preview_activity_onThumbnailClicker() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickPreviewThumbnail()
 
         // Then
