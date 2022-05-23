@@ -137,7 +137,6 @@
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 app:tickerType="announcement"
-                app:closeButtonVisibility="gone"
                 android:visibility="gone"
                 android:id="@+id/affiliate_announcement_ticker"
                 android:layout_width="match_parent"

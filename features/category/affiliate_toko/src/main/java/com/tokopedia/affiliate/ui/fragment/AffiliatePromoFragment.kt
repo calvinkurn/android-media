@@ -393,7 +393,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
 
     override fun onUserRegistered() {
         affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
-        affiliatePromoViewModel.getAnnouncementInformation()
     }
 }
 

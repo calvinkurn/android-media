@@ -52,7 +52,7 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
         if(response.validateAffiliateUserStatus.data?.isSystemDown == true){
             userLoginPageLiveData.value = UserAction.SystemDown
         }
-        if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == false){
+        else if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == false){
             userLoginPageLiveData.value = UserAction.SignUpAction
         }
         else if(response.validateAffiliateUserStatus.data?.isEligible == false){

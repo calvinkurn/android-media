@@ -13,7 +13,6 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
@@ -37,7 +36,6 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -216,7 +214,13 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                     hideAllView()
                     view?.findViewById<TouchViewPager>(R.id.affiliate_login_view_pager)?.hide()
                     view?.findViewById<PageControl>(R.id.affiliate_login_page_control)?.hide()
-                    view?.findViewById<GlobalError>(R.id.login_error)?.show()
+                    view?.findViewById<GlobalError>(R.id.login_error)?.run {
+                        show()
+                        setButtonFull(true)
+                        errorAction.show()
+                        errorAction.text = "Ke Home"
+                    }
+
                 }
                 else -> {}
             }

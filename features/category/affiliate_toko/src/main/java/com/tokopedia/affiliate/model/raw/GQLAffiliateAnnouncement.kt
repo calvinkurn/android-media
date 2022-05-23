@@ -1,8 +1,9 @@
 package com.tokopedia.affiliate.model.raw
 
 val GQL_Affiliate_Announcement: String = """query getAffiliateAnnouncementV2(){
-    Data{
-      Status
+    getAffiliateAnnouncementV2(){
+        Data{
+        Status
       TickerType
       TickerData {
         AnnouncementTitle
@@ -26,4 +27,5 @@ val GQL_Affiliate_Announcement: String = """query getAffiliateAnnouncementV2(){
         }
       }
     }
-  }""".trimIndent()
+  }
+}""".trimIndent()
