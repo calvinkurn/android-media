@@ -598,7 +598,6 @@ class CreateReviewViewModel @Inject constructor(
         isGoodRating: Boolean,
         reviewTemplates: ReviewTemplateRequestSuccessState
     ): CreateReviewTemplateUiState {
-        val currentTemplates = templateUiState.value.templates
         val templates = if (canRenderForm) {
             getReviewTemplatesToShow(reviewTemplates, isGoodRating)
         } else {
@@ -606,7 +605,6 @@ class CreateReviewViewModel @Inject constructor(
         }
         return when {
             templates.isEmpty() -> CreateReviewTemplateUiState.Hidden(emptyList())
-            currentTemplates != templates -> CreateReviewTemplateUiState.Changing(templates)
             else -> CreateReviewTemplateUiState.Showing(templates)
         }
     }

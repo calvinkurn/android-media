@@ -7,5 +7,4 @@ sealed interface CreateReviewTemplateUiState {
     object Loading : CreateReviewTemplateUiState { override val templates: List<CreateReviewTemplateItemUiModel> = emptyList() }
     data class Showing(override val templates: List<CreateReviewTemplateItemUiModel>) : CreateReviewTemplateUiState
     data class Hidden(override val templates: List<CreateReviewTemplateItemUiModel>) : CreateReviewTemplateUiState
-    data class Changing(override val templates: List<CreateReviewTemplateItemUiModel>) : CreateReviewTemplateUiState
 }

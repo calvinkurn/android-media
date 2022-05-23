@@ -63,10 +63,6 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
     fun updateUi(uiState: CreateReviewTemplateUiState) {
         when (uiState) {
-            is CreateReviewTemplateUiState.Changing -> {
-                showTemplate(uiState.templates)
-                animateShow()
-            }
             is CreateReviewTemplateUiState.Loading -> {
                 showLoading()
                 animateShow()

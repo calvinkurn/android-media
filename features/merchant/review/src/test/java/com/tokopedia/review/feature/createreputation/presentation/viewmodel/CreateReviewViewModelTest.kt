@@ -351,12 +351,10 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        assertInstanceOf<CreateReviewTemplateUiState.Changing>(
-            viewModel.templateUiState.first { it is CreateReviewTemplateUiState.Changing }
+        assertInstanceOf<CreateReviewTemplateUiState.Loading>(
+            viewModel.templateUiState.first { it is CreateReviewTemplateUiState.Loading }
         )
-        viewModel.setReviewTemplatesAnimating(true)
-        viewModel.setReviewTemplatesAnimating(false)
+        setInitialData()
         assertInstanceOf<CreateReviewTemplateUiState.Showing>(
             viewModel.templateUiState.first { it is CreateReviewTemplateUiState.Showing }
         )
