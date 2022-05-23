@@ -736,7 +736,9 @@ class SellerReviewDetailFragment :
                 isFromGallery = false,
                 mediaPosition = position.inc(),
                 showSeeMore = false,
-                preloadedDetailedReviewMediaResult = mapReviewMediaData(reviewMediaThumbnailUiModel)
+                preloadedDetailedReviewMediaResult = SellerReviewProductDetailMapper.mapReviewMediaData(
+                    reviewMediaThumbnailUiModel
+                )
             ).run { startActivity(this) }
         }
     }
@@ -841,20 +843,6 @@ class SellerReviewDetailFragment :
 
     private fun initSharedPrefs() {
         sharedPreference = SellerReviewDetailPreference(context)
-    }
-
-    private fun mapReviewMediaData(
-        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
-    ): ProductrevGetReviewMedia {
-        return ProductrevGetReviewMedia(
-            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
-            detail = Detail(
-                reviewDetail = listOf(),
-                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
-                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
-                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
-            )
-        )
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {

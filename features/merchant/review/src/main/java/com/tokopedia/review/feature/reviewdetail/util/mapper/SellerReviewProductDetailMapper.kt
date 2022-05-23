@@ -16,6 +16,8 @@ import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
@@ -267,4 +269,17 @@ object SellerReviewProductDetailMapper {
         return list
     }
 
+    fun mapReviewMediaData(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+    ): ProductrevGetReviewMedia {
+        return ProductrevGetReviewMedia(
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
+            detail = Detail(
+                reviewDetail = listOf(),
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
+            )
+        )
+    }
 }
