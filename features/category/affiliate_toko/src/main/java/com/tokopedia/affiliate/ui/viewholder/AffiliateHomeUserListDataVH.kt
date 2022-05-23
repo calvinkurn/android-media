@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.ui.viewholder
 
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,7 +34,7 @@ class AffiliateHomeUserListDataVH(
     }
 
     private fun initClickListener(element: AffiliateUserPerformanceListModel?) {
-        itemView.setOnClickListener {
+        itemView.findViewById<RelativeLayout>(R.id.cta_container).setOnClickListener {
             onPerformaGridClick?.onInfoClick(element?.data?.metricTitle,element?.data?.tooltip?.description,element?.data?.tooltip?.metrics,element?.data?.metricType,element?.data?.tooltip?.ticker)
         }
     }
