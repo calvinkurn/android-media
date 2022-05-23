@@ -34,7 +34,7 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
             WishlistV2Consts.USER_ID to userId,
             WishlistV2Consts.MODE to mode)
 
-        if (additionalParams.excludedProductIds.isNotEmpty()) {
+        if (mode == 2) {
             params[WishlistV2Consts.ADDITIONAL_PARAMS] = additionalParams
         }
         return params

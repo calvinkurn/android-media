@@ -225,7 +225,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
-        if (isVisibleToUser && isAutoRefreshEnabled()) {
+        if (isVisibleToUser) {
             turnOffBulkDeleteMode()
             doResetFilter()
             binding?.run {
@@ -240,6 +240,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
         observingAtc()
+        observingCountDeletion()
     }
 
     private fun observingWishlistV2() {
@@ -251,7 +252,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     result.data.let { wishlistV2 ->
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
 
-                        if (wishlistV2.showDeleteProgress) observingCountDeletion()
+                        if (wishlistV2.showDeleteProgress) wishlistViewModel.getCountDeletionWishlistV2()
 
                         if (wishlistV2.totalData <= 0) {
                             if (wishlistV2.sortFilters.isEmpty() && wishlistV2.items.isEmpty()) {
@@ -637,6 +638,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Success -> {
                     result.data.let { bulkDeleteWishlistV2 ->
                         if (bulkDeleteWishlistV2.success) {
+                            wishlistViewModel.getCountDeletionWishlistV2()
+
                             val listId = bulkDeleteWishlistV2.id.replace("[", "").replace("]", "").split(",").toList()
                             var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) {
@@ -1442,6 +1445,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
+            bulkDeleteAdditionalParams.totalOverlimitItems = count.toLong()
             doBulkDelete()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
@@ -1454,7 +1458,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun doBulkDelete() {
         wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId, bulkDeleteMode, bulkDeleteAdditionalParams)
-        wishlistViewModel.getCountDeletionWishlistV2()
         WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
     }
 
