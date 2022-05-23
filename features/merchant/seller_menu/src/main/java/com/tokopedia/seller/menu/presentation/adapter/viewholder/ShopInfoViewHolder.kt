@@ -32,6 +32,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -129,13 +130,22 @@ class ShopInfoViewHolder(
 
             if (title.isNotEmpty() && message.isNotEmpty()){
                 tickerShopInfo.tickerTitle= title
-                tickerShopInfo.setTextDescription(message)
+                tickerShopInfo.setTextDescription(message.parseAsHtml())
                 val tickerType: Int = when (statusInfoUiModel?.tickerType) {
                     TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
                     TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
                     else -> Ticker.TYPE_ANNOUNCEMENT
                 }
                 tickerShopInfo.tickerType = tickerType
+                tickerShopInfo.setDescriptionClickEvent(object : TickerCallback{
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, linkUrl.toString())
+
+                    }
+                    override fun onDismiss() {
+                    }
+
+                })
                 tickerShopInfo.show()
             }else{
                 tickerShopInfo.hide()
