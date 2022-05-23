@@ -16,6 +16,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -40,6 +42,12 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
+
+    @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
@@ -47,8 +55,8 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
 
     private val viewModel by lazy {
         AddToCartDoneViewModel(userSessionInterface, addWishListUseCase,
-                removeWishListUseCase, getRecommendationUseCase,
-                addToCartUseCase, CoroutineTestDispatchersProvider)
+                removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase,
+                getRecommendationUseCase, addToCartUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

@@ -7,6 +7,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
@@ -27,8 +29,14 @@ class ImagePreviewPdpViewModelTest : BaseProductViewModelTest() {
     @RelaxedMockK
     lateinit var removeWishListUseCase: RemoveWishListUseCase
 
+    @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
+
     private val viewModel by lazy {
-        ImagePreviewPdpViewModel(userSessionInterface, addWishListUseCase, removeWishListUseCase, CoroutineTestDispatchersProvider)
+        ImagePreviewPdpViewModel(userSessionInterface, addWishListUseCase, removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
