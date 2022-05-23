@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.otaliastudios.cameraview.*
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraView
+import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -31,7 +33,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import timber.log.Timber
 import java.io.File
-import java.nio.file.Files
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -411,10 +412,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         const val PARAM_VIEW_MODE_FACE = 2
         private const val DEFAULT_ONE_MEGABYTE: Long = 1024
         private const val MAX_FILE_SIZE = 15360
-        fun createInstance(viewMode: Int): Fragment {
+        fun createInstance(viewMode: Int, projectId: Int): Fragment {
             val fragment = UserIdentificationCameraFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_VIEW_MODE, viewMode)
+            bundle.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
             fragment.arguments = bundle
             return fragment
         }

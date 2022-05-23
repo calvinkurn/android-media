@@ -98,7 +98,7 @@ object PMRegistrationBenefitHelper {
                 getProductBundlingBenefit(context, Constant.PM_PRO_ADV_PRODUCT_BUNDLING),
                 getFreeDeliveryBenefit(context),
                 PMBenefitItemUiModel(
-                    resIcon = R.drawable.ic_pm_flash_sale,
+                    iconUrl = Constant.Image.IC_PM_FLASH_SALE,
                     benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
                 ),
                 getRewardBenefit(context)
@@ -121,7 +121,7 @@ object PMRegistrationBenefitHelper {
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING),
                 PMBenefitItemUiModel(
-                    resIcon = R.drawable.ic_pm_free_delivery,
+                    iconUrl = Constant.Image.IC_PM_FREE_DELIVERY,
                     benefitDescription = context.getString(
                         R.string.pm_benefit_free_delivery_pm,
                         Constant.PM_FREE_DELIVERY
@@ -133,21 +133,21 @@ object PMRegistrationBenefitHelper {
 
     private fun getRewardBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_cash_back,
+            iconUrl = Constant.Image.IC_PM_CASH_BACK,
             benefitDescription = context.getString(R.string.pm_benefit_reward)
         )
     }
 
     private fun getFlashSaleBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_flash_sale,
+            iconUrl = Constant.Image.IC_PM_FLASH_SALE,
             benefitDescription = context.getString(R.string.pm_benefit_flash_sale_and_discount)
         )
     }
 
     private fun getFreeDeliveryBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_free_delivery,
+            iconUrl = Constant.Image.IC_PM_FREE_DELIVERY,
             benefitDescription = context.getString(
                 R.string.pm_benefit_free_delivery_pm_pro,
                 Constant.PM_PRO_FREE_DELIVERY
@@ -157,14 +157,14 @@ object PMRegistrationBenefitHelper {
 
     private fun getProductBundlingBenefit(context: Context, quota: Int): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_product_bundling,
+            iconUrl = Constant.Image.IC_PM_PRODUCT_BUNDLING,
             benefitDescription = context.getString(R.string.pm_benefit_product_bundling, quota)
         )
     }
 
     private fun getSpecialReleaseBenefit(context: Context, quota: Int): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_special_release,
+            iconUrl = Constant.Image.IC_PM_SPECIAL_RELEASE,
             benefitDescription = context.getString(
                 R.string.pm_benefit_special_release,
                 quota
@@ -178,7 +178,7 @@ object PMRegistrationBenefitHelper {
         broadcastChat: String
     ): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_topads,
+            iconUrl = Constant.Image.IC_PM_TOP_ADS,
             benefitDescription = context.getString(
                 R.string.pm_benefit_top_ads, topAdsCredit, broadcastChat
             )

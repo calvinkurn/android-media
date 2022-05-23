@@ -6,6 +6,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitInfoUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
 import com.tokopedia.gm.common.domain.usecase.GetShopLevelUseCase
+import com.tokopedia.gm.common.presentation.model.ShopLevelUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -215,4 +216,43 @@ class PowerMerchantSubscriptionViewModelTest {
 
             viewModel.pmCancelDeactivationStatus.verifyErrorEquals(expected)
         }
+
+    @Test
+    fun `when get shop level info widget then should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val mock = ShopLevelUiModel()
+
+            coEvery {
+                getShopLevelUseCase.execute(any())
+            } returns mock
+
+            viewModel.getShopLevelInfo()
+
+            coVerify {
+                getShopLevelUseCase.execute(any())
+            }
+
+            val expected = Success(mock)
+            viewModel.shopLevelInfo.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get shop level info widget then should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val error = Throwable()
+            coEvery {
+                getShopLevelUseCase.execute(any())
+            } throws error
+
+            viewModel.getShopLevelInfo()
+
+            coVerify {
+                getShopLevelUseCase.execute(any())
+            }
+
+            val expected = Fail(error)
+            viewModel.shopLevelInfo.verifyErrorEquals(expected)
+        }
+    }
 }

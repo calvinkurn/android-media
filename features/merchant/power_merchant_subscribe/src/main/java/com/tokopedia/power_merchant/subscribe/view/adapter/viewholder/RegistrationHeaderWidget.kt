@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -53,11 +53,10 @@ class RegistrationHeaderWidget(
             tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
 
             if (!isEligiblePM) {
-                val shopInfo = element.shopInfo
+                val isFistTermNotEligible = !element.registrationTerms
+                    .firstOrNull()?.isChecked.orFalse()
                 when {
-                    (shopInfo.isKyc && (!shopInfo.isEligibleShopScore() ||
-                            (shopInfo.isNewSeller && !shopInfo.hasActiveProduct))) ||
-                            !(element.shopInfo.isKyc && element.shopInfo.isEligibleShopScore()) -> {
+                    isFistTermNotEligible -> {
                         horLinePmHeader.visible()
                         tvPmHeaderEligibleFor.visible()
                         tvPmHeaderEligibleFor.text = root.context.getString(
@@ -83,6 +82,7 @@ class RegistrationHeaderWidget(
                 .parseAsHtml()
             tvPmHeaderEligibleFor.gravity = Gravity.START
             tvPmHeaderEligiblePMDetail.setOnClickListener {
+                powerMerchantTracking.sendEventClickDetailTermPM(element.shopInfo.shopScore.toString())
                 listener.onMoreDetailPMEligibilityClicked()
             }
         }
@@ -96,10 +96,6 @@ class RegistrationHeaderWidget(
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
         return element.registrationTerms.all { it.isChecked }
-    }
-
-    private fun isPartlyEligible(element: WidgetRegistrationHeaderUiModel): Boolean {
-        return element.registrationTerms.count { it.isChecked } == Int.ONE
     }
 
     private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) =

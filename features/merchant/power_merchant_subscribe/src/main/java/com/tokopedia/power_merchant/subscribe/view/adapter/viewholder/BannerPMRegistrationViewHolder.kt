@@ -31,11 +31,7 @@ class BannerPMRegistrationViewHolder(
     private fun loadImageResource() {
         binding?.run {
             imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM)
-            try {
-                imgPmHeaderImage.loadImage(R.drawable.img_pm_registration_banner)
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+            imgPmHeaderImage.loadImage(Constant.Image.IMG_PM_REGISTRATION)
         }
     }
 }

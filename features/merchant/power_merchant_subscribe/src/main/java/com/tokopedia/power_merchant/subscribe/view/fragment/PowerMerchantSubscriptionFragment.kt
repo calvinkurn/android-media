@@ -193,6 +193,8 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun showServiceFeeByCategory() {
+        if (childFragmentManager.isStateSaved) return
+
         val bottomSheet = PMFeeServiceBottomSheet.createInstance()
         bottomSheet.show(childFragmentManager)
     }
@@ -515,14 +517,14 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         view?.rootView?.let {
-            val actionText = getString(R.string.pm_oke)
-
             it.post {
-                Toaster.toasterCustomBottomHeight =
-                    it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+                val message = getString(R.string.pm_submit_activation_success)
+                Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl5
+                )
                 Toaster.build(
-                    it, data.message, Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL, actionText
+                    it, message, Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
                 ).show()
             }
 
@@ -612,10 +614,12 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         if (!isAutoExtendEnabled) {
-            widgets.add(WidgetCancelDeactivationSubmissionUiModel(
-                getExpiredTimeFmt(),
-                deactivatedStatusName
-            ))
+            widgets.add(
+                WidgetCancelDeactivationSubmissionUiModel(
+                    getExpiredTimeFmt(),
+                    deactivatedStatusName
+                )
+            )
         }
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)

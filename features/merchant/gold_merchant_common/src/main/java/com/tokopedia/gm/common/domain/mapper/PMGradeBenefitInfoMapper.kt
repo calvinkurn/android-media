@@ -1,8 +1,14 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.data.source.cloud.model.*
-import com.tokopedia.gm.common.data.source.local.model.*
+import com.tokopedia.gm.common.data.source.cloud.model.CurrentPmGradeModel
+import com.tokopedia.gm.common.data.source.cloud.model.NextPMGradeModel
+import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitInfoModel
+import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitModel
+import com.tokopedia.gm.common.data.source.local.model.PMCurrentGradeUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMNextGradeUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 

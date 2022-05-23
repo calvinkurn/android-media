@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderBackdrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgPmHeaderBackdrop"
-        tools:src="@drawable/img_pm_registration_banner" />
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmHeaderDesc"

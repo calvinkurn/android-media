@@ -93,16 +93,18 @@ class ShopHomeAdapter(
         refreshSticky()
     }
 
-    fun setProductListData(productList: List<ShopHomeProductUiModel>) {
+    fun setProductListData(productList: List<ShopHomeProductUiModel>, isOwner: Boolean) {
         val newList = getNewVisitableItems()
         productListViewModel.addAll(productList)
+        newList.remove(ShopHomeProductListEmptyUiModel(isOwner))
         newList.addAll(productList)
         submitList(newList)
     }
 
     fun setProductListEmptyState(isOwner: Boolean) {
         val newList = getNewVisitableItems()
-        newList.add(ShopHomeProductListEmptyUiModel(isOwner))
+        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner)))
+            newList.add(ShopHomeProductListEmptyUiModel(isOwner))
         submitList(newList)
     }
 

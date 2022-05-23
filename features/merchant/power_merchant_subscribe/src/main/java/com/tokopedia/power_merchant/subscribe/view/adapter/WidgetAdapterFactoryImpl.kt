@@ -64,7 +64,11 @@ class WidgetAdapterFactoryImpl(
                 parent,
                 widgetListener
             )
-            GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent, widgetListener)
+            GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(
+                parent,
+                widgetListener,
+                powerMerchantTracking
+            )
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(
                 parent,
@@ -80,7 +84,11 @@ class WidgetAdapterFactoryImpl(
                 widgetListener,
                 powerMerchantTracking
             )
-            PotentialWidget.RES_LAYOUT -> PotentialWidget(parent, widgetListener)
+            PotentialWidget.RES_LAYOUT -> PotentialWidget(
+                parent,
+                widgetListener,
+                powerMerchantTracking
+            )
             SingleCtaWidget.RES_LAYOUT -> SingleCtaWidget(parent)
             DividerWidget.RES_LAYOUT -> DividerWidget(parent)
             TickerWidget.RES_LAYOUT -> TickerWidget(parent, widgetListener)

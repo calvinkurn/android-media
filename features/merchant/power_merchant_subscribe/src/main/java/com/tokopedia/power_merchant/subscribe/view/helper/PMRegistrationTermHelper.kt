@@ -189,7 +189,6 @@ object PMRegistrationTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): RegistrationTermUiModel.ActiveProduct {
-        val isNewSeller = shopInfo.isNewSeller
         val shopScoreResIcon: Int = if (shopInfo.hasActiveProduct) {
             R.drawable.ic_pm_checked
         } else {
@@ -203,18 +202,10 @@ object PMRegistrationTermHelper {
 
         if (shopInfo.hasActiveProduct) {
             title = context.getString(R.string.pm_already_have_one_active_product)
-            description = if (isNewSeller) {
-                context.getString(R.string.pm_label_already_have_one_active_product_new_seller)
-            } else {
-                context.getString(R.string.pm_label_already_have_one_active_product)
-            }
+            description = context.getString(R.string.pm_label_already_have_one_active_product_new_seller)
         } else {
             title = context.getString(R.string.pm_have_not_one_active_product_yet)
-            description = if (shopInfo.isNewSeller) {
-                context.getString(R.string.pm_label_have_not_one_active_product_yet_new_seller)
-            } else {
-                context.getString(R.string.pm_label_have_not_one_active_product_yet)
-            }
+            description = context.getString(R.string.pm_label_have_not_one_active_product_yet_new_seller)
             ctaText = context.getString(R.string.pm_add_product)
             ctaAppLink = ApplinkConst.SellerApp.PRODUCT_ADD
         }
@@ -281,15 +272,9 @@ object PMRegistrationTermHelper {
             isKycNotVerified -> {
                 title = context.getString(R.string.pm_kyc_not_verified)
                 when {
-                    !shopInfo.isNewSeller && isEligibleShopScore -> {
+                    (!shopInfo.isNewSeller && isEligibleShopScore) || (shopInfo.isNewSeller && !shopInfo.hasActiveProduct) -> {
                         description =
-                            context.getString(R.string.pm_description_kyc_not_verified_existing_seller)
-                        ctaText = context.getString(R.string.pm_verify_data_clickable)
-                        ctaAppLink = kycAppLink
-                    }
-                    shopInfo.isNewSeller && !shopInfo.hasActiveProduct -> {
-                        description =
-                            context.getString(R.string.pm_description_kyc_not_verified_new_seller)
+                            context.getString(R.string.pm_description_kyc_not_verified)
                         ctaText = context.getString(R.string.pm_verify_data_clickable)
                         ctaAppLink = kycAppLink
                     }
