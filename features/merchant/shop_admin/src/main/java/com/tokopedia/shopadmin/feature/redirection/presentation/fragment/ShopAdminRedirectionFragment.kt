@@ -90,7 +90,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         if (GlobalConfig.isSellerApp()) {
             redirectShopAdminInSA(adminTypeUiModel)
         } else {
-            redirectShopAdminMA(adminTypeUiModel)
+            redirectShopAdminInMA(adminTypeUiModel)
         }
     }
 
@@ -116,7 +116,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
                 && adminTypeUiModel.isShopAdmin
     }
 
-    private fun redirectShopAdminMA(adminTypeUiModel: AdminTypeUiModel) {
+    private fun redirectShopAdminInMA(adminTypeUiModel: AdminTypeUiModel) {
         val appLink = if (isShopAdminMA(adminTypeUiModel)) {
             ApplinkConstInternalMarketplace.ADMIN_INVITATION
         } else {
