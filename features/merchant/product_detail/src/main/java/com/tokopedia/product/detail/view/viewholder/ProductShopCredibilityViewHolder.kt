@@ -69,6 +69,7 @@ class ProductShopCredibilityViewHolder(
                     element.shopName,
                     element.shopWarehouseCount,
                     element.shopWarehouseApplink,
+                    componentTracker,
                     binding)
 
             setupLastActive(element.shopLastActive, this)
@@ -101,10 +102,12 @@ class ProductShopCredibilityViewHolder(
                                   shopName: String,
                                   shopWarehouseCount: String,
                                   shopWarehouseApplink: String,
+                                  componentTracker: ComponentTrackDataModel,
                                   binding: ViewShopCredibilityBinding) = with(binding) {
         val shopLocationBuilder = if (shopWarehouseCount.isNotEmpty()) {
             icShopCredibilityLocation.show()
             icShopCredibilityLocation.setOnClickListener {
+                listener.onShopMultilocClicked(componentTracker)
                 listener.goToApplink(shopWarehouseApplink)
             }
             "$shopLocation $shopWarehouseCount"
