@@ -1206,7 +1206,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     }
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
-                    String eventCategory = bundle.getString("eventCategory");
+                    String eventCategory = bundle.getString(KEY_CATEGORY);
                     if (eventCategory != null && eventCategory.contains("search result")) {
                         // https://tokopedia.atlassian.net/browse/AN-36131
                         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, bundle.getString(ITEM_LIST));
