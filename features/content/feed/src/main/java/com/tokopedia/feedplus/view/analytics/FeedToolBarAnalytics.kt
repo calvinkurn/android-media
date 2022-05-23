@@ -69,20 +69,21 @@ class FeedToolBarAnalytics @Inject constructor() {
         )
     }
     fun clickOnVideoTabOnFeedPage(position: Int, userId: String) {
+        val label = when (position) {
+            0 -> EventLabel.UPDATE
+            1 -> EventLabel.EXPLORE
+            else -> EventLabel.VIDEO
+        }
         getTracker().sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT_NAME, CLICK_HOMEPAGE,
                 EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
                 EVENT_ACTION, CLICK_FEED_TAB,
                 USER_ID to userId,
-                EVENT_LABEL, when (position) {
-                    0 -> EventLabel.UPDATE
-                    1 -> EventLabel.EXPLORE
-                    else -> EventLabel.VIDEO
-                },
-                        EVENT_BUSINESSUNIT, CONTENT,
-                        EVENT_CURRENTSITE, MARKETPLACE
-                )
+                EVENT_LABEL, label,
+                EVENT_BUSINESSUNIT, CONTENT,
+                EVENT_CURRENTSITE, MARKETPLACE
+            )
         )
     }
     fun userVisitsFeed(isLoggedInStatus: String, userID: String) {
