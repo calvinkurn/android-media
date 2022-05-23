@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
 import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
+import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
@@ -36,12 +37,14 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class MyShopProductFragment @Inject constructor(
     private val analytic: ContentProductTagAnalytic,
+    private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "MyShopProductFragment"
@@ -65,6 +68,17 @@ class MyShopProductFragment @Inject constructor(
             onLoading = { viewModel.submitAction(ProductTagAction.LoadMyShopProduct) }
         )
     }
+    private val layoutManager: StaggeredGridLayoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            impressProduct()
+        }
+    }
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +100,7 @@ class MyShopProductFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAnalytic()
         setupView()
         setupObserver()
     }
@@ -111,13 +126,27 @@ class MyShopProductFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendProductImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvMyShopProduct.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(
+            viewModel.selectedTagSource,
+            false,
+        )
+    }
+
     private fun setupView() {
-        binding.rvMyShopProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+        binding.rvMyShopProduct.addOnScrollListener(scrollListener)
+        binding.rvMyShopProduct.layoutManager = layoutManager
         binding.rvMyShopProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -187,6 +216,7 @@ class MyShopProductFragment @Inject constructor(
 
             binding.rvMyShopProduct.show()
             binding.globalError.hide()
+            impressProduct()
         }
 
         if(prev?.products == curr.products && prev.state == curr.state) return
@@ -251,12 +281,35 @@ class MyShopProductFragment @Inject constructor(
         }
     }
 
-
     private fun clearSearchFocus() {
         binding.sbShopProduct.searchBarTextField.apply {
             clearFocus()
             hideKeyboard()
         }
+    }
+
+    private fun impressProduct(): List<Pair<ProductUiModel, Int>> {
+        val products = adapter.getItems()
+        if (products.isNotEmpty()) {
+            val startPositionArray = layoutManager.findFirstCompletelyVisibleItemPositions(null)
+            val endPositionArray = layoutManager.findLastVisibleItemPositions(null)
+
+            val startPosition = startPositionArray[0]
+            val endPosition = max(endPositionArray[0], endPositionArray[1])
+
+            if (startPosition > -1 && endPosition < products.size) {
+                val productImpression = products.slice(startPosition..endPosition)
+                    .filterIsInstance<MyShopProductAdapter.Model.Product>()
+                    .mapIndexed { index, item ->
+                        Pair(item.product, startPosition + index)
+                    }
+
+                if(productImpression.isNotEmpty())
+                    impressionCoordinator.saveProductImpress(productImpression)
+            }
+        }
+
+        return emptyList()
     }
 
     companion object {

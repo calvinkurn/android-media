@@ -44,7 +44,31 @@ class ProductTagAnalyticImpl @Inject constructor(
         products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
     ) {
-        /** TODO("Not yet implemented") */
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "productView",
+                category = "content feed post creation - product tagging",
+                action = if(isGlobalSearch) "impression - product card" else "impression - entry point product card",
+                label = "${source.labelAnalytic} - {shop_id} - {product_id}" /** TODO: shopId? */
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to products.map {
+                        convertProductToHashMapWithList(it.first, it.second).also { productHash ->
+                            productHash["list"] = "/feed - creation tagging page"
+                        }
+                    }
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_ITEM_LIST to "/feed - creation tagging page",
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
     }
 
     override fun clickProductCard(
@@ -194,7 +218,7 @@ class ProductTagAnalyticImpl @Inject constructor(
             "brand" to "",
             "category" to "",
             "variant" to "",
-            "position" to position
+            "position" to position,
         )
     }
 

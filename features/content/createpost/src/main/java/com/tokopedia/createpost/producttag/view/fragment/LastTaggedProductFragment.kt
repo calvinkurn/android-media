@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
+import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -32,6 +33,7 @@ import javax.inject.Inject
  */
 class LastTaggedProductFragment @Inject constructor(
     private val analytic: ContentProductTagAnalytic,
+    private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastTaggedProductFragment"
@@ -78,6 +80,8 @@ class LastTaggedProductFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         if(viewModel.lastTaggedProductStateUnknown)
             viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct)
+
+        setupAnalytic()
         setupView()
         setupObserver()
     }
@@ -85,6 +89,13 @@ class LastTaggedProductFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(
+            viewModel.selectedTagSource,
+            false,
+        )
     }
 
     private fun setupView() {

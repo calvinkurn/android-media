@@ -19,7 +19,7 @@ interface ProductTagAnalytic {
         productId: String,
         products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
-    ) /** TODO: later */
+    )
 
     fun clickProductCard(
         source: ProductTagSource,
