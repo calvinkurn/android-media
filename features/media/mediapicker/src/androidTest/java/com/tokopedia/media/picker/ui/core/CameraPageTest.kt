@@ -15,20 +15,19 @@ import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
 import okhttp3.internal.notify
-import okhttp3.internal.wait
 
 
 open class CameraPageTest : PickerTest() {
     override fun createAndAppendUri(builder: Uri.Builder) {}
 
     object Robot {
-        fun clickCaptureButton() {
+        fun clickCapturePhoto() {
             synchronized(this){
                 onView(
                     withId(R.id.btn_take_camera)
                 ).perform(click())
 
-                wait()
+                threadPause()
             }
         }
 
@@ -39,23 +38,25 @@ open class CameraPageTest : PickerTest() {
         }
 
         fun clickPreviewThumbnail() {
-            Thread.sleep(5000)
             onView(
                 withId(R.id.img_thumbnail)
             ).perform(click())
         }
 
         fun clickLanjutButton() {
-            Thread.sleep(5000)
             onView(
                 withId(R.id.btn_done)
             ).perform(click())
         }
 
         fun clickCloseButton() {
-            onView(
-                withId(R.id.btn_action)
-            ).perform(click())
+            synchronized(this){
+                onView(
+                    withId(R.id.btn_action)
+                ).perform(click())
+
+                threadPause()
+            }
         }
 
         fun clickFlashButton(): Pair<Int, Int>? {
@@ -84,10 +85,14 @@ open class CameraPageTest : PickerTest() {
         }
 
         fun clickCaptureVideo(duration: Long) {
-            onView(
-                withId(R.id.btn_take_camera)
-            ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
-            Thread.sleep(duration)
+            synchronized(this){
+                onView(
+                    withId(R.id.btn_take_camera)
+                ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
+                Thread.sleep(duration)
+
+                threadPause()
+            }
         }
 
         fun clickGalleryTab() {
@@ -106,15 +111,18 @@ open class CameraPageTest : PickerTest() {
 
         fun resumeThread() {
             synchronized(this){
-                Thread.sleep(1000)
+                Thread.sleep(THUMBNAIL_LOADED_DELAY)
                 notify()
             }
+        }
+
+        private fun threadPause() {
+            (this as Object).wait(TIMEOUT_DURATION)
         }
     }
 
     object Assert {
         fun assertCaptureImage() {
-            Thread.sleep(2000)
             onView(
                 withId(R.id.img_thumbnail)
             ).check(matches(isDisplayed()))
@@ -127,12 +135,10 @@ open class CameraPageTest : PickerTest() {
         }
 
         fun verifyOpenPreviewActivity() {
-            Thread.sleep(3000)
             intended(hasComponent(TestPreviewActivity::class.java.name))
         }
 
         fun assertActivityDestroy(pickerTest: PickerTest) {
-            Thread.sleep(2000)
             assert(pickerTest.activityTestRule.activity.isDestroyed)
         }
 
@@ -141,5 +147,10 @@ open class CameraPageTest : PickerTest() {
                 withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
+    }
+
+    companion object{
+        const val TIMEOUT_DURATION = 5000L
+        const val THUMBNAIL_LOADED_DELAY = 1000L
     }
 }
