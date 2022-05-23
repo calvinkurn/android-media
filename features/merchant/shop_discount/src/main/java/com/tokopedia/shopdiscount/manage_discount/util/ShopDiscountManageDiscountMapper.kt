@@ -166,7 +166,11 @@ object ShopDiscountManageDiscountMapper {
     ): List<DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct> {
         val listRequest: MutableList<DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct> =
             mutableListOf()
-        listProductData.forEach { setupProductData ->
+        listProductData.filter {
+            it.listProductWarehouse.none { listProdWarehouse ->
+                listProdWarehouse.abusiveRule
+            }
+        }.forEach { setupProductData ->
             if (setupProductData.productStatus.isVariant) {
                 val listProductVariantRequest =
                     setupProductData.listProductVariant.filter {

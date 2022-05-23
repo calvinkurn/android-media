@@ -129,12 +129,19 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariantEnabled: Boolean?,
         mode: String
     ): Boolean {
-        return isVariantEnabled ?: when (mode) {
-            ShopDiscountManageDiscountMode.UPDATE -> {
-                !isHasAbusiveRule
+        return when {
+            isHasAbusiveRule -> {
+                false
             }
             else -> {
-                false
+                isVariantEnabled ?: when (mode) {
+                    ShopDiscountManageDiscountMode.UPDATE -> {
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }
         }
     }
@@ -518,9 +525,6 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 it.discountedPrice = discountedPrice
                 it.discountedPercentage = discountedPercentage
                 it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
-            }
-            if(isVariant){
-                productToBeUpdated.variantStatus.isVariantEnabled = true
             }
         }
     }
