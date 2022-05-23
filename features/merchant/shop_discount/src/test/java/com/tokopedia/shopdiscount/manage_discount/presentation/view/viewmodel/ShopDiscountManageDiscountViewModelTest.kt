@@ -202,7 +202,8 @@ class ShopDiscountManageDiscountViewModelTest {
             endDate = endDate,
             discountAmount = discountAmount,
             discountType = discountType,
-            maxPurchaseQuantity = 1
+            maxPurchaseQuantity = 1,
+            isUsingCustomPeriod = false
         )
     }
 
