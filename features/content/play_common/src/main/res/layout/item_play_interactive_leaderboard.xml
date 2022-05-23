@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_dp_12"
         android:gravity="start"
         android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl2"
