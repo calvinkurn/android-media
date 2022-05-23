@@ -1432,11 +1432,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun newShowPartialFailedAcceptOrderDialog(
-        failedCount: Int,
-        unprocessed: Int,
-        orderCount: Int
-    ) {
+    private fun newShowPartialFailedAcceptOrderDialog(failedCount: Int, unprocessed: Int, orderCount: Int) {
         bulkAcceptOrderDialog?.run {
             setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_failed, failedCount))
             setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_failed, failedCount, unprocessed))
@@ -2873,24 +2869,24 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 binding?.rvSomList?.post {
                     somListLayoutManager?.findViewByPosition(firstNewOrderPosition)
                         ?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
-                            if (getVisiblePercent(it) == 0) {
-                                CoachMarkPreference.setShown(
-                                    it.context,
-                                    SHARED_PREF_NEW_SOM_LIST_COACH_MARK,
-                                    true
-                                )
-                                binding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
-                                binding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
-                                currentNewOrderWithCoachMark = firstNewOrderPosition
-                                shouldShowCoachMark = false
-                                val coachMarkItems = createCoachMarkItems(it)
-                                coachMark?.isDismissed = false
-                                coachMark?.showCoachMark(
-                                    step = coachMarkItems,
-                                    index = coachMarkIndexToShow
-                                )
-                            }
+                        if (getVisiblePercent(it) == 0) {
+                            CoachMarkPreference.setShown(
+                                it.context,
+                                SHARED_PREF_NEW_SOM_LIST_COACH_MARK,
+                                true
+                            )
+                            binding?.rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
+                            binding?.rvSomList?.addOnScrollListener(recyclerViewScrollListener)
+                            currentNewOrderWithCoachMark = firstNewOrderPosition
+                            shouldShowCoachMark = false
+                            val coachMarkItems = createCoachMarkItems(it)
+                            coachMark?.isDismissed = false
+                            coachMark?.showCoachMark(
+                                step = coachMarkItems,
+                                index = coachMarkIndexToShow
+                            )
                         }
+                    }
                 }
             }
         }
@@ -3219,8 +3215,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     protected open fun shouldShowFilterCoachMark() = binding?.scrollViewErrorState?.isVisible == false &&
-                shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
-                binding?.sortFilterSomList?.isVisible == true && binding?.rvSomList != null
+            shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
+            binding?.sortFilterSomList?.isVisible == true && binding?.rvSomList != null
 
     protected open fun shouldShowWaitingPaymentCoachMark(waitingPaymentOrderListCountResult: Result<WaitingPaymentCounter>?) =
         binding?.scrollViewErrorState?.isVisible == false && shouldShowCoachMark && binding?.rvSomList != null &&
