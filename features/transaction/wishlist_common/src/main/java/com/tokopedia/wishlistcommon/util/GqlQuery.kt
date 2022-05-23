@@ -149,6 +149,8 @@ package com.tokopedia.wishlistcommon.util
                   successfully_removed_items
                   message
                   ticker_color
+                  success
+                  toaster_message
                 }
               }
             }"""

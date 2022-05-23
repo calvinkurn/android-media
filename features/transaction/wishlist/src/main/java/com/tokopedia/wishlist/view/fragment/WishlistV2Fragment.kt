@@ -681,35 +681,42 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun observingCountDeletion() {
         if (wishlistV2Adapter.getCountData() > 0) {
-            var totalRemoved = 0
-
             wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
                         handler.post(object: Runnable{
                             override fun run() {
                                 if (result.data.status == OK) {
-                                    totalRemoved += result.data.data.totalItems
-
-                                    if (totalRemoved == result.data.data.successfullyRemovedItems) {
-                                        finishDeletionWidget()
-                                    } else {
-                                        handler.postDelayed(this, 1000)
-                                        wishlistViewModel.getCountDeletionWishlistV2()
-                                        if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
-                                            wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
-                                            wishlistV2Adapter.updateDeletionWidget(result.data.data)
-                                            wishlistV2Adapter.notifyItemChanged(0)
+                                    val data = result.data.data
+                                    if (data.success) {
+                                        if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
+                                            finishDeletionWidget()
+                                            doRefresh()
                                         } else {
-                                            wishlistV2Adapter.addDeletionProgressWidget(result.data.data)
+                                            handler.postDelayed(this, 1000)
+                                            wishlistViewModel.getCountDeletionWishlistV2()
+                                            if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
+                                                wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
+                                                wishlistV2Adapter.updateDeletionWidget(result.data.data)
+                                                wishlistV2Adapter.notifyItemChanged(0)
+                                            } else {
+                                                wishlistV2Adapter.addDeletionProgressWidget(result.data.data)
+                                            }
                                         }
+                                    } else {
+                                        showToaster(data.toasterMessage, "", Toaster.TYPE_ERROR)
+                                    }
+                                } else {
+                                    if (result.data.errorMessage.isNotEmpty()) {
+                                        showToaster(result.data.errorMessage[0], "", Toaster.TYPE_ERROR)
                                     }
                                 }
                             }
                         })
                     }
                     is Fail -> {
-                        // confirm how to handle if count deletion return fail
+                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
+                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
                     }
                 }
             }

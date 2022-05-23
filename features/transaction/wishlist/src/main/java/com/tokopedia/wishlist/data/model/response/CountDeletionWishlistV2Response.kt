@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CountDeletionWishlistV2Response(
         @SerializedName("error_message")
-        val errorMessage: String = "",
+        val errorMessage: List<String> = emptyList(),
 
         @SerializedName("status")
         val status: String = "",
@@ -23,6 +23,12 @@ data class CountDeletionWishlistV2Response(
         val message: String = "",
 
         @SerializedName("ticker_color")
-        val tickerColor: String = ""
+        val tickerColor: String = "",
+
+        @SerializedName("success")
+        val success: Boolean = false,
+
+        @SerializedName("toaster_message")
+        val toasterMessage: String = ""
     )
 }
