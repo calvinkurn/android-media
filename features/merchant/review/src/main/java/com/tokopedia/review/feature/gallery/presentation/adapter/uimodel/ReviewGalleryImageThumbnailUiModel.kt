@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.uimodel
 
+import android.net.Uri
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
@@ -27,5 +28,13 @@ data class ReviewGalleryImageThumbnailUiModel(
 ) : ReviewGalleryMediaThumbnailUiModel {
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getMediaName(): String {
+        return if (mediaUrl.isNotBlank()) {
+            Uri.parse(mediaUrl).lastPathSegment.orEmpty()
+        } else {
+            Uri.parse(thumbnailUrl).lastPathSegment.orEmpty()
+        }
     }
 }

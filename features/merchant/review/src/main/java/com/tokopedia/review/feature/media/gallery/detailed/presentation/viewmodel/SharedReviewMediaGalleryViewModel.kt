@@ -9,11 +9,9 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.TOASTER_KEY_ERROR_GET_REVIEW_MEDIA
@@ -21,6 +19,8 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
+import com.tokopedia.reviewcommon.extension.getSavedState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
@@ -64,6 +64,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         const val INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE = 1
     }
 
+    private val _pageSource = MutableStateFlow(ReviewMediaGalleryRouter.PageSource.REVIEW)
     private val _productID = MutableStateFlow(UNINITIALIZED_PRODUCT_ID_VALUE)
     private val _shopID = MutableStateFlow(UNINITIALIZED_SHOP_ID_VALUE)
     private val _isProductReview = MutableStateFlow(false)
@@ -334,6 +335,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
             ProductrevGetReviewMedia::class.java,
             _detailedReviewMediaResult.value
         ) ?: _detailedReviewMediaResult.value
+        _pageSource.value = cacheManager.get(
+            ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE,
+            ReviewMediaGalleryRouter.PageSource::class.java,
+            _pageSource.value
+        ) ?: _pageSource.value
         _productID.value = cacheManager.getString(
             ReviewMediaGalleryRouter.EXTRAS_PRODUCT_ID,
             _productID.value
@@ -422,5 +428,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun hasSuccessToggleLikeStatus(): Boolean {
         return _hasSuccessToggleLikeStatus.value
+    }
+
+    fun getPageSource(): ReviewMediaGalleryRouter.PageSource {
+        return _pageSource.value
     }
 }

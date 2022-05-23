@@ -147,6 +147,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onImageImpressed(imageUri: String) {
         galleryAdapter.getImageByUri(imageUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressImage(
+                sharedReviewMediaGalleryViewModel.getPageSource(),
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 sharedReviewMediaGalleryViewModel.getProductId(),
                 media.getAttachmentID(),

@@ -17,4 +17,6 @@ object ReviewGalleryTrackingConstants {
     const val EVENT_LABEL_CLICK_SEE_ALL = "product_id:%s;"
     const val EVENT_LABEL_VIEW_THUMBNAIL = "count_attachment:%s;"
     const val EVENT_LABEL_CLICK_THUMBNAIL = "feedback_id:%s;attachment_id:%s;"
+
+    const val ITEM_NAME_TRACK_MEDIA_IMPRESSION = "media_type:%s;video_id:%s;media_filename:%s;"
 }

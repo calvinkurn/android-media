@@ -128,6 +128,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         context.run {
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = productID,
                 shopID = "",
                 isProductReview = true,

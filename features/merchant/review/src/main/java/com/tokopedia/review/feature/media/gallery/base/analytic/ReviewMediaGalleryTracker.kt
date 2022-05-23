@@ -10,6 +10,7 @@ import com.tokopedia.reviewcommon.extension.appendShopId
 import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.reviewcommon.extension.queueEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -75,6 +76,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
 
     // row 22
     fun trackImpressImage(
+        pageSource: ReviewMediaGalleryRouter.PageSource,
         imageCount: Long,
         productId: String,
         attachmentId: String,
@@ -84,8 +86,16 @@ class ReviewMediaGalleryTracker @Inject constructor(
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewMediaGalleryTrackerConstant.EVENT_NAME_PROMO_VIEW,
-            AnalyticConstant.EVENT_CATEGORY,
-            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
+            if (pageSource == ReviewMediaGalleryRouter.PageSource.REVIEW) {
+                ReviewMediaGalleryTrackerConstant.EVENT_CATEGORY_REVIEW_GALLERY
+            } else {
+                AnalyticConstant.EVENT_CATEGORY
+            },
+            if (pageSource == ReviewMediaGalleryRouter.PageSource.REVIEW) {
+                ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE_FROM_REVIEW_GALLERY
+            } else {
+                ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE
+            },
             String.format(ReviewMediaGalleryTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
         ).appendUserId(userId)
             .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)

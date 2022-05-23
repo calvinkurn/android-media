@@ -592,13 +592,22 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
+                pageSource = if (isProductReview) {
+                    ReviewMediaGalleryRouter.PageSource.REVIEW
+                } else {
+                    ReviewMediaGalleryRouter.PageSource.REVIEW
+                },
                 productID = viewModel.getProductId(),
                 shopID = viewModel.getShopId(),
                 isProductReview = isProductReview,
                 isFromGallery = false,
                 mediaPosition = positionClicked.plus(1),
                 showSeeMore = false,
-                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(productReview, reviewMediaThumbnailUiModel, shopId)
+                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(
+                    productReview,
+                    reviewMediaThumbnailUiModel,
+                    shopId
+                )
             ).let {
                 startActivityForResult(it, GALLERY_ACTIVITY_CODE)
             }

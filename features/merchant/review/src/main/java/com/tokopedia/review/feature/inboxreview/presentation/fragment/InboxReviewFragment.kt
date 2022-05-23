@@ -296,6 +296,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         context?.run {
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = this,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = productId,
                 shopID = "",
                 isProductReview = true,

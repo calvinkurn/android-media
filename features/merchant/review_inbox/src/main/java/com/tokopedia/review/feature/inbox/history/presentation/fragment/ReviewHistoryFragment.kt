@@ -274,6 +274,7 @@ class ReviewHistoryFragment :
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = productID,
                 shopID = "",
                 isProductReview = true,

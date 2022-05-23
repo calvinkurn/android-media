@@ -730,6 +730,7 @@ class SellerReviewDetailFragment :
             )
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = this,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = productID,
                 shopID = "",
                 isProductReview = true,

@@ -558,6 +558,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = productID,
                 shopID = viewModel.getShopId(),
                 isProductReview = true,

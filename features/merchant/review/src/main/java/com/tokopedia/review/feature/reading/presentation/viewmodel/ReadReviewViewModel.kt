@@ -197,13 +197,18 @@ class ReadReviewViewModel @Inject constructor(
         return shopReview.videoAttachments.map {
             ReviewMediaVideoThumbnailUiModel(
                 uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                    attachmentID = it.attachmentID,
+                    reviewID = shopReview.reviewID,
                     url = it.videoUrl
                 )
             )
         }.plus(shopReview.imageAttachments.map {
             ReviewMediaImageThumbnailUiModel(
                 uiState = ReviewMediaImageThumbnailUiState.Showing(
-                    thumbnailUrl = it.thumbnailURL
+                    attachmentID = it.attachmentID,
+                    reviewID = shopReview.reviewID,
+                    thumbnailUrl = it.thumbnailURL,
+                    fullSizeUrl = it.fullsizeURL
                 )
             )
         })

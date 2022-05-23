@@ -17,7 +17,9 @@ class ReviewGalleryTracking @Inject constructor(
         productId: String,
         attachmentId: String,
         mediaNumber: Int,
-        mediaName: String
+        mediaType: String,
+        mediaName: String,
+        videoId: String,
     ) {
         val payload = hashMapOf<String, Any>(
             TrackAppUtils.EVENT to ReviewTrackingConstant.EVENT_PROMO_VIEW,
@@ -38,7 +40,10 @@ class ReviewGalleryTracking @Inject constructor(
                             ReviewTrackingConstant.KEY_CREATIVE_NAME to "",
                             ReviewTrackingConstant.KEY_CREATIVE_SLOT to mediaNumber,
                             ReviewTrackingConstant.KEY_ITEM_ID to attachmentId,
-                            ReviewTrackingConstant.KEY_ITEM_NAME to mediaName
+                            ReviewTrackingConstant.KEY_ITEM_NAME to String.format(
+                                ReviewGalleryTrackingConstants.ITEM_NAME_TRACK_MEDIA_IMPRESSION,
+                                mediaType, videoId, mediaName
+                            )
                         )
                     )
                 )
@@ -139,18 +144,20 @@ class ReviewGalleryTracking @Inject constructor(
         mediaCount: Int,
         productId: String,
         attachmentId: String,
-        mediaNumber: Int
+        mediaNumber: Int,
+        mediaName: String
     ) {
-        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "image")
+        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "image", mediaName, "")
     }
 
     fun trackVideoImpression(
         mediaCount: Int,
         productId: String,
         attachmentId: String,
-        mediaNumber: Int
+        mediaNumber: Int,
+        videoId: String
     ) {
-        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "video")
+        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "video", "", videoId)
     }
 
     fun sendQueuedTrackers() {

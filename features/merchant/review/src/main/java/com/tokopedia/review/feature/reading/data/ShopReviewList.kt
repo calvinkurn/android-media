@@ -94,6 +94,9 @@ data class ProductVariant (
 )
 
 data class ImageAttachments (
+        @SerializedName("attachmentID")
+        @Expose
+        val attachmentID: String = "",
         @SerializedName("thumbnailURL")
         @Expose
         val thumbnailURL : String = "",
@@ -103,6 +106,9 @@ data class ImageAttachments (
 )
 
 data class VideoAttachments (
+        @SerializedName("attachmentID")
+        @Expose
+        val attachmentID: String = "",
         @SerializedName("videoUrl")
         @Expose
         val videoUrl : String = ""

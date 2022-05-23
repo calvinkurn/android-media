@@ -1189,6 +1189,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ?: ComponentTrackDataModel(), reviewID)
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = it,
+                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
                 productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
                 shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
                 isProductReview = true,

@@ -254,7 +254,8 @@ class ReviewGalleryFragment :
             viewModel.getMediaCount(),
             viewModel.getProductId(),
             element.attachmentId,
-            element.mediaNumber
+            element.mediaNumber,
+            element.getMediaName()
         )
     }
 
@@ -263,7 +264,8 @@ class ReviewGalleryFragment :
             viewModel.getMediaCount(),
             viewModel.getProductId(),
             element.attachmentId,
-            element.mediaNumber
+            element.mediaNumber,
+            element.getVideoId()
         )
     }
 
@@ -485,6 +487,7 @@ class ReviewGalleryFragment :
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
         ReviewMediaGalleryRouter.routeToReviewMediaGallery(
             context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
             productID = viewModel.getProductId(),
             shopID = viewModel.getShopId(),
             isProductReview = true,

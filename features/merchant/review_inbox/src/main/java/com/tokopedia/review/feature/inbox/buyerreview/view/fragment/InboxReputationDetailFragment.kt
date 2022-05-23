@@ -334,6 +334,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     override fun goToPreviewImage(position: Int, preloadedDetailedReviewMedia: ProductrevGetReviewMedia) {
         ReviewMediaGalleryRouter.routeToReviewMediaGallery(
             context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
             productID = "",
             shopID = "",
             isProductReview = false,
