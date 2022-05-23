@@ -173,8 +173,10 @@ class VariantDetailFieldsViewHolder(
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
 
             // show weight coachmark
-            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark)
+            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark){
                 showCoachmark()
+                displayWeightCoachmark = false
+            }
         }
     }
 

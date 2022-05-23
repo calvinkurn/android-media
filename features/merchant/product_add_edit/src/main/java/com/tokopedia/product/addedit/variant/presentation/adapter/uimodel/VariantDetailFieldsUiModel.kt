@@ -6,7 +6,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInp
 
 class VariantDetailFieldsUiModel(
     val variantDetailInputLayoutModel: VariantDetailInputLayoutModel,
-    val displayWeightCoachmark: Boolean = false
+    var displayWeightCoachmark: Boolean = false
 ): Visitable<VariantDetailInputTypeFactory> {
     override fun type(inputTypeFactory: VariantDetailInputTypeFactory): Int {
         return inputTypeFactory.type(this)
