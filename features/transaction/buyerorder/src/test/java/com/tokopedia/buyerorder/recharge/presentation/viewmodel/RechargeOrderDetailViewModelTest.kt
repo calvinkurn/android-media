@@ -313,6 +313,16 @@ class RechargeOrderDetailViewModelTest {
         } coAnswers {
             Fail(Throwable())
         }
+        coEvery {
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
+        } coAnswers {
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
+        }
 
         // when
         viewModel.fetchData(RechargeOrderDetailRequest("", ""))
