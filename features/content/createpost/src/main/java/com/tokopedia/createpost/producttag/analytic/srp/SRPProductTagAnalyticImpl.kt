@@ -38,7 +38,7 @@ class SRPProductTagAnalyticImpl @Inject constructor(
                     KEY_SRP_KEYWORD to keyword,
                     KEY_SRP_PAGE_SOURCE to "feed.${navSource.text}.local_search.$srpPageId",
                     KEY_SRP_RELATED_KEYWORD to "$prevKeyword - none",
-                    KEY_CURRENT_SITE to "", /** TODO: current site? */
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                     KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                     KEY_SRP_SEARCH_FILTER to "", /** TODO: search filter? */
                 )
