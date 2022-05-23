@@ -19,14 +19,14 @@ class InputOldPhoneNumberViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _formState = MutableLiveData<PhoneFormState>()
-    val formState get() = _formState
+    val formState: LiveData<PhoneFormState> get() = _formState
     private val phoneFormState = PhoneFormState()
 
     private val _statusPhoneNumber = MutableLiveData<Pair<Result<String>, String>>()
-    val statusPhoneNumber get() = _statusPhoneNumber
+    val statusPhoneNumber: LiveData<Pair<Result<String>, String>> get() = _statusPhoneNumber
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading get() = _isLoading
+    val isLoading: LiveData(Boolean) get() = _isLoading
 
     private fun validationNumber(number: String): Boolean {
         when {
