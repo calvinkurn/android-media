@@ -10,8 +10,7 @@ import com.tokopedia.picker.common.types.PageType
 import org.junit.Rule
 import org.junit.Test
 
-class CameraPageUiTest : CameraPageTest() {
-
+class CameraVideoOnlyUiTest : CameraPageTest() {
     @get:Rule
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         android.Manifest.permission.CAMERA,
@@ -31,18 +30,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.swipeLeftCameraMode()
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
-
-        // Then
-        Assert.assertCaptureImage()
-    }
-
-    @Test
-    fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
-        // When
-        startCameraPage()
-        Robot.clickCaptureButton()
 
         // Then
         Assert.assertCaptureImage()
@@ -69,18 +57,7 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @Test
-    fun should_open_image_preview_activity_onLanjutClicked() {
-        // When
-        startCameraPage()
-        Robot.clickCaptureButton()
-        Robot.clickLanjutButton()
-
-        // Then
-        Assert.verifyOpenPreviewActivity()
-    }
-
-    @Test
-    fun should_open_video_preview_activity_onLanjutClicked() {
+    fun should_open_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
         Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
@@ -102,20 +79,10 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @Test
-    fun should_open_gallery_fragment_onGalleryTabClicked() {
+    fun should_open_preview_activity_onThumbnailClicked() {
         // When
         startCameraPage()
-        Robot.clickGalleryTab()
-
-        // Then
-        Assert.assertGalleryFragment()
-    }
-
-    @Test
-    fun should_open_preview_activity_onThumbnailClicker() {
-        // When
-        startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
         Robot.clickPreviewThumbnail()
 
         // Then
@@ -123,12 +90,12 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     private fun startCameraPage(param: PickerParam.() -> Unit = {}) {
-        val pickerParam: PickerParam = PickerParam()
+        val pickerParam = PickerParam()
             .apply(param)
             .also {
                 it.pageSource(PageSource.Feed)
-                it.pageType(PageType.COMMON)
-                it.modeType(ModeType.COMMON)
+                it.pageType(PageType.CAMERA)
+                it.modeType(ModeType.VIDEO_ONLY)
                 it.minVideoDuration(VIDEO_MIN_DURATION)
             }
 
@@ -136,7 +103,7 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     private companion object {
-        private const val CAPTURED_VIDEO_DURATION = 2000L
+        private const val CAPTURED_VIDEO_DURATION = 4000L
         private const val VIDEO_MIN_DURATION = 1000
     }
 }

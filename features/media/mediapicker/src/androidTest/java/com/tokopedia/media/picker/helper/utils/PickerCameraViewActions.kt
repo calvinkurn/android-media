@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.helper.utils
 
+import android.os.Handler
 import android.view.View
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -39,6 +40,26 @@ object PickerCameraViewActions {
 
             override fun perform(uiController: UiController?, view: View?) {
                 setCameraRef(view as CameraView)
+            }
+        }
+    }
+
+    fun getRecordVideoViewAction(duration: Long): ViewAction{
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return ViewMatchers.isAssignableFrom(View::class.java)
+            }
+
+            override fun getDescription(): String {
+                return "get camera view reference"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.performClick()
+
+                Handler().postDelayed({
+                    view?.performClick()
+                },duration)
             }
         }
     }
