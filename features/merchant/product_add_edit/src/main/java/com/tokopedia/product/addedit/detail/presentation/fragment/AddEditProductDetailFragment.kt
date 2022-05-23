@@ -1487,7 +1487,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             updateAddNewWholeSalePriceButtonVisibility()
         }
         // product whole sale checked change listener
-        productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
+        productWholeSaleSwitch?.setOnClickListener {
+            val isChecked = productWholeSaleSwitch?.isChecked.orFalse()
             viewModel.isWholeSalePriceActivated.value = isChecked
 
             if (isChecked) {
