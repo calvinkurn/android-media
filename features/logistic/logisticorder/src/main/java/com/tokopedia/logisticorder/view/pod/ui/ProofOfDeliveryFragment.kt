@@ -15,6 +15,7 @@ import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.DEFAULT_OS_
 import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.IMAGE_LARGE_SIZE
 import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.getDeliveryImage
 import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
+import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.FragmentProofOfDeliveryBinding
 import com.tokopedia.logisticorder.view.pod.data.ProofOfDeliveryModel
 import com.tokopedia.logisticorder.view.pod.di.DaggerProofOfDeliveryComponent
@@ -34,15 +35,9 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_DESCRIPTION = "ARGUMENTS_DESCRIPTION"
 
-        fun createFragment(
-            orderId: Long?,
-            imageId: String?,
-            description: String?
-        ): ProofOfDeliveryFragment {
-
+        fun createFragment(orderId: Long?, imageId: String?, description: String?): ProofOfDeliveryFragment {
             return ProofOfDeliveryFragment().apply {
                 if (orderId != null) {
-
                     arguments = Bundle().apply {
                         putString(ARGUMENTS_IMAGE_ID, imageId)
                         putLong(ARGUMENTS_ORDER_ID, orderId)
@@ -125,7 +120,13 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
             userSession.deviceId
         )
 
-        binding?.imgProof?.loadImagePod(requireContext(), userSession.accessToken, url)
+        binding?.imgProof?.loadImagePod(
+            requireContext(),
+            userSession.accessToken,
+            url,
+            requireContext().getDrawable(R.drawable.ic_image_error),
+            requireContext().getDrawable(R.drawable.ic_image_error)
+        )
 
     }
 
