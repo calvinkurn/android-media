@@ -164,81 +164,58 @@ object TrackingTransactionSection: BaseTrackerConst() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             ItemList.KEY, LIST_WISHLIST,
-            Items.KEY, convertWishlistTracking(
-                index = position+1,
-                wishlistId = wishlistModel.wishlistId,
-                brand = Value.NONE_OTHER,
-                category = wishlistModel.categoryBreadcrumb,
-                productId = wishlistModel.productId,
-                productName = wishlistModel.productName,
-                productVariant = wishlistModel.variant,
-                price = wishlistModel.priceFmt
+            Items.KEY, listOf(
+                DataLayer.mapOf(
+                    DIMENSION_125, wishlistModel.wishlistId,
+                    DIMENSION_40, LIST_WISHLIST,
+                    Items.INDEX, position+1,
+                    Items.ITEM_BRAND, Value.NONE_OTHER,
+                    Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb,
+                    Items.ITEM_ID, wishlistModel.productId,
+                    Items.ITEM_NAME, wishlistModel.productName,
+                    Items.ITEM_VARIANT, wishlistModel.variant,
+                    Items.PRICE, wishlistModel.priceFmt
+                )
             )
         ) as HashMap<String, Any>
     }
 
     fun clickOnWishlistItem(userId: String, wishlistModel: NavWishlistModel, position: Int) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.PRODUCT_CLICK,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_WISHLIST_CARD,
-            eventLabel = Label.FORMAT_2_ITEMS.format(wishlistModel.wishlistId, wishlistModel.productId)
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_CARD)
+        bundle.putString(Label.KEY, Label.FORMAT_2_ITEMS.format(wishlistModel.wishlistId, wishlistModel.productId))
+        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
+        bundle.putString(UserId.KEY, userId)
+        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        bundle.putString(ItemList.KEY, LIST_WISHLIST)
+        val items = arrayListOf(
+            Bundle().apply {
+                putString(DIMENSION_125, wishlistModel.wishlistId)
+                putString(DIMENSION_40, LIST_WISHLIST)
+                putString(Items.INDEX, (position+1).toString())
+                putString(Items.ITEM_BRAND, Value.NONE_OTHER)
+                putString(Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb)
+                putString(Items.ITEM_ID, wishlistModel.productId)
+                putString(Items.ITEM_NAME, wishlistModel.productName)
+                putString(Items.ITEM_VARIANT, wishlistModel.variant)
+                putString(Items.PRICE, wishlistModel.priceFmt)
+            }
         )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        trackingBuilder.appendCustomKeyValue(ItemList.KEY, LIST_WISHLIST)
-        val items = convertWishlistTracking(
-            index = position+1,
-            wishlistId = wishlistModel.wishlistId,
-            brand = Value.NONE_OTHER,
-            category = wishlistModel.categoryBreadcrumb,
-            productId = wishlistModel.productId,
-            productName = wishlistModel.productName,
-            productVariant = wishlistModel.variant,
-            price = wishlistModel.priceFmt
-        )
-        trackingBuilder.appendCustomKeyValue(Items.KEY, items)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
+        bundle.putParcelableArrayList(Items.KEY, items)
+        getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
     }
 
     fun clickOnWishlistViewAll() {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.CLICK_HOMEPAGE,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_WISHLIST_VIEW_ALL,
-            eventLabel = Label.NONE
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    private fun convertWishlistTracking(
-        index: Int,
-        wishlistId: String,
-        brand: String,
-        category: String,
-        productId: String,
-        productName: String,
-        productVariant: String,
-        price: String
-    ) : List<Map<String, Any>> {
-        return listOf(
-            DataLayer.mapOf(
-                DIMENSION_125, wishlistId,
-                DIMENSION_40, LIST_WISHLIST,
-                Items.INDEX, index+1,
-                Items.ITEM_BRAND, brand,
-                Items.ITEM_CATEGORY, category,
-                Items.ITEM_ID, productId,
-                Items.ITEM_NAME, productName,
-                Items.ITEM_VARIANT, productVariant,
-                Items.PRICE, price
-            )
-        )
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_WISHLIST_VIEW_ALL)
+        bundle.putString(Label.KEY, Label.NONE)
+        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
+        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 
     fun getImpressionOnFavoriteShop(userId: String, position: Int, favoriteShopModel: NavFavoriteShopModel): HashMap<String, Any> {
@@ -250,55 +227,47 @@ object TrackingTransactionSection: BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
-            Promotion.KEY, convertFavoriteShopTracking(
-                index = position+1,
-                shopId = favoriteShopModel.id
+            Promotion.KEY, listOf(
+                DataLayer.mapOf(
+                    Promotion.CREATIVE_NAME, Value.EMPTY,
+                    Promotion.CREATIVE_SLOT, position+1,
+                    Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id),
+                    Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP
+                )
             )
         ) as HashMap<String, Any>
     }
 
     fun clickOnFavoriteShopItem(userId: String, favoriteShopModel: NavFavoriteShopModel, position: Int) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.PROMO_CLICK,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_FAVORITE_SHOP_CARD,
-            eventLabel = favoriteShopModel.id
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_FAVORITE_SHOP_CARD)
+        bundle.putString(Label.KEY, favoriteShopModel.id)
+        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
+        bundle.putString(UserId.KEY, userId)
+        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        val promotions = arrayListOf(
+            Bundle().apply {
+                putString(Promotion.CREATIVE_NAME, Value.EMPTY)
+                putString(Promotion.CREATIVE_SLOT, (position+1).toString())
+                putString(Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id))
+                putString(Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP)
+            }
         )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendUserId(userId)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        trackingBuilder.appendCustomKeyValue(ItemList.KEY, LIST_WISHLIST)
-        val promotions = convertFavoriteShopTracking(position, favoriteShopModel.id)
-        trackingBuilder.appendCustomKeyValue(Promotion.KEY, promotions)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
+        bundle.putParcelableArrayList(Promotion.KEY, promotions)
+        getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
     }
 
     fun clickOnFavoriteShopViewAll() {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.CLICK_HOMEPAGE,
-            eventCategory = CATEGORY_GLOBAL_MENU,
-            eventAction = ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL,
-            eventLabel = Label.NONE
-        )
-        trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
-        trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
-        getTracker().sendGeneralEvent(trackingBuilder.build())
-    }
-
-    private fun convertFavoriteShopTracking(
-        index: Int,
-        shopId: String
-    ) : List<Map<String, Any>> {
-        return listOf(
-            DataLayer.mapOf(
-                Promotion.CREATIVE_NAME, Value.EMPTY,
-                Promotion.CREATIVE_SLOT, index,
-                Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(shopId),
-                Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP
-            )
-        )
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Category.KEY, CATEGORY_GLOBAL_MENU)
+        bundle.putString(Action.KEY, ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL)
+        bundle.putString(Label.KEY, Label.NONE)
+        bundle.putString(CurrentSite.KEY, DEFAULT_CURRENT_SITE)
+        bundle.putString(BusinessUnit.KEY, DEFAULT_BUSINESS_UNIT)
+        getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 
     fun getImpressionOnReviewProduct(position: Int, userId: String, element: NavReviewOrder) : HashMap<String, Any>  {

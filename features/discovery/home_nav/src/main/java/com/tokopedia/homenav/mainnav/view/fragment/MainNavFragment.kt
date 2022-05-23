@@ -337,8 +337,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
-        goToPDP(wishlistModel.productId, position)
         TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
+        goToPDP(wishlistModel.productId, position)
     }
 
     override fun onErrorFavoriteShopClicked() {
@@ -346,6 +346,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
+        TrackingTransactionSection.clickOnFavoriteShopItem(
+            userId = getUserId(),
+            position = position,
+            favoriteShopModel = favoriteShopModel
+        )
         val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
         startActivity(intent)
     }

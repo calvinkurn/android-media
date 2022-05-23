@@ -35,7 +35,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

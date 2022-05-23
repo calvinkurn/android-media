@@ -17,7 +17,7 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
     private var binding: HolderOtherFavoriteShopBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_nav_shimmer_transaction_data_revamp
+        val LAYOUT = R.layout.holder_other_favorite_shop
     }
 
     override fun bind(otherFavoriteShopModel: OtherFavoriteShopModel) {
@@ -27,8 +27,8 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
         binding?.cardViewAllFavshop?.titleView?.gone()
 
         itemView.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.FAVORITE)
             TrackingTransactionSection.clickOnFavoriteShopViewAll()
+            RouteManager.route(context, ApplinkConst.FAVORITE)
         }
     }
 }

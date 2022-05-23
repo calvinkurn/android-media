@@ -121,4 +121,8 @@
     <string name="deals_label_copy">Salin</string>
     <string name="deals_label_copied">Tersalin</string>
     <string name="deals_msg_copy">Kode voucher telah disalin</string>
+    <string name="dialog_void_emoney_title">Yakin mau batalkan transaksi?</string>
+    <string name="dialog_void_emoney_description"><![CDATA[Proses pembatalan membutuhkan waktu <strong>paling lambat 2x24 jam</strong>. Dana akan dikembalikan ke metode pembayaran yang kamu pilih.]]></string>
+    <string name="dialog_void_emoney_primary_cta_label">Ya, Batalkan</string>
+    <string name="dialog_void_emoney_secondary_cta_label">Kembali</string>
 </resources>
