@@ -2,19 +2,23 @@ package com.tokopedia.digital_deals
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.digital_deals.data.*
+import com.tokopedia.digital_deals.data.DealCheckoutGeneral
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstant
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstantNoPromo
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralNoPromo
+import com.tokopedia.digital_deals.data.DealsCheckoutInstantResponse
+import com.tokopedia.digital_deals.data.DealsCheckoutResponse
+import com.tokopedia.digital_deals.data.DealsVerifyResponse
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
-import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +35,9 @@ class DealsCheckoutViewModelTest {
     private lateinit var mockDealsVerifyInstantResponse: DealsVerifyResponse
     private lateinit var mockDealsVerifyGeneralResponse: DealsVerifyResponse
     private lateinit var mockDealsCheckoutGeneralRequest: DealCheckoutGeneral
+    private lateinit var mockDealsCheckoutGeneralRequestNoPromo: DealCheckoutGeneralNoPromo
     private lateinit var mockDealsCheckoutGeneralInstantRequest: DealCheckoutGeneralInstant
+    private lateinit var mockDealsCheckoutGeneralInstantRequestNoPromo: DealCheckoutGeneralInstantNoPromo
     private lateinit var mockDealsCheckoutGeneralResponse: DealsCheckoutResponse
     private lateinit var mockDealsCheckoutGeneralInstantResponse: DealsCheckoutInstantResponse
     private lateinit var mockDealsDetailInstant: DealsDetailsResponse
@@ -68,9 +74,19 @@ class DealsCheckoutViewModelTest {
                 DealCheckoutGeneral::class.java
         )
 
+        mockDealsCheckoutGeneralRequestNoPromo = Gson().fromJson(
+            DealsJsonMapper.getJson("deals_checkout_general_no_promo_request.json"),
+            DealCheckoutGeneralNoPromo::class.java
+        )
+
         mockDealsCheckoutGeneralInstantRequest = Gson().fromJson(
                 DealsJsonMapper.getJson("deals_checkout_instant_request.json"),
                 DealCheckoutGeneralInstant::class.java
+        )
+
+        mockDealsCheckoutGeneralInstantRequestNoPromo = Gson().fromJson(
+            DealsJsonMapper.getJson("deals_checkout_instant_no_promo_request.json"),
+            DealCheckoutGeneralInstantNoPromo::class.java
         )
 
         mockDealsCheckoutGeneralResponse = Gson().fromJson(
@@ -108,6 +124,24 @@ class DealsCheckoutViewModelTest {
     }
 
     @Test
+    fun mapCheckoutData_successMapCheckoutGeneralRequestNoPromo(){
+        //when
+        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify)
+
+        //then
+        assertEquals(mockDealsCheckoutGeneralRequestNoPromo, actual)
+    }
+
+    @Test
+    fun mapCheckoutData_successMapCheckoutInstantRequestNoPromo(){
+        //when
+        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify)
+
+        //then
+        assertEquals(mockDealsCheckoutGeneralInstantRequestNoPromo, actual)
+    }
+
+    @Test
     fun mapCheckoutData_successMapCheckoutInstantRequest_DataTypeNull(){
         //when
         mockDealsDetailInstant.checkoutDataType = null
@@ -118,6 +152,15 @@ class DealsCheckoutViewModelTest {
     }
 
     @Test
+    fun mapCheckoutData_successMapCheckoutInstantRequestNoPromo_DataTypeNull(){
+        //when
+        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify)
+
+        //then
+        assertEquals(mockDealsCheckoutGeneralInstantRequestNoPromo, actual)
+    }
+
+    @Test
     fun mapCheckoutData_successMapCheckoutGeneralRequest_DataTypeNull(){
         //when
         mockDealsDetailGeneral.checkoutDataType = null
@@ -125,6 +168,16 @@ class DealsCheckoutViewModelTest {
 
         //then
         assertEquals(mockDealsCheckoutGeneralRequest, actual)
+    }
+
+    @Test
+    fun mapCheckoutData_successMapCheckoutGeneralRequestNoPromo_DataTypeNull(){
+        //when
+        mockDealsDetailInstant.checkoutDataType = null
+        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify)
+
+        //then
+        assertEquals(mockDealsCheckoutGeneralRequestNoPromo, actual)
     }
 
 
@@ -145,6 +198,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.dealsCheckoutResponse.value
         assertEquals(mockDealsCheckoutGeneralResponse, actualData)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -168,6 +223,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.errorGeneralValue.value
         assertEquals(actualData?.message, message)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -188,6 +245,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.dealsCheckoutInstantResponse.value
         assertEquals(mockDealsCheckoutGeneralInstantResponse, actualData)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -211,6 +270,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.errorGeneralValue.value
         assertEquals(actualData?.message, message)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 }
