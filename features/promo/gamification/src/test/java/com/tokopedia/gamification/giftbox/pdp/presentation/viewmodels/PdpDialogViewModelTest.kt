@@ -201,7 +201,7 @@ class PdpDialogViewModelTest {
     fun removeFromWishlist(){
         prepareViewModel()
         val model = RecommendationItem(productId = 1)
-        val wishlistCallback: (((Boolean, Throwable?) -> Unit)) = mockk()
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         val userId = "1"
         val responseData = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
         val result = mockk<DeleteWishlistV2Response>()
@@ -214,7 +214,7 @@ class PdpDialogViewModelTest {
             firstArg<(DeleteWishlistV2Response) -> Unit>().invoke(result)
         }
 
-        viewModel.removeFromWishlistV2(model,wishlistCallback)
+        viewModel.removeFromWishlistV2(model,mockListener)
 
         verify { deleteWishlistObserver.onChanged(Success(response)) }
     }

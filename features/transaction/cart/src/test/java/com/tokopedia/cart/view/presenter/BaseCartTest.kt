@@ -87,6 +87,8 @@ abstract class BaseCartTest {
         )
         every { addWishListUseCase.unsubscribe() } just Runs
         every { removeWishListUseCase.unsubscribe() } just Runs
+        every { addToWishListV2UseCase.cancelJobs() } just Runs
+        every { deleteWishlistV2UseCase.cancelJobs() } just Runs
         cartListPresenter.attachView(view)
     }
 
