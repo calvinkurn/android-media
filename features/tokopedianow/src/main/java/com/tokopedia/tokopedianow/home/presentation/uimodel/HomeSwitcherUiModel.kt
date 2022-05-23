@@ -17,13 +17,13 @@ sealed class HomeSwitcherUiModel(
         return typeFactory.type(this)
     }
 
-    class Home15mSwitcher: HomeSwitcherUiModel(
-        R.string.tokopedianow_15m_switcher_title,
-        R.string.tokopedianow_15m_switcher_subtitle,
-        R.drawable.tokopedianow_ic_15m
+    class Home20mSwitcher: HomeSwitcherUiModel(
+        R.string.tokopedianow_20m_switcher_title,
+        R.string.tokopedianow_20m_switcher_subtitle,
+        R.drawable.tokopedianow_ic_20m
     ) {
         override fun equals(other: Any?): Boolean {
-            return (other as? Home15mSwitcher)?.visitableId == visitableId
+            return (other as? Home20mSwitcher)?.visitableId == visitableId
         }
 
         override fun hashCode(): Int {

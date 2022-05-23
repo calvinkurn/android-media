@@ -239,9 +239,6 @@ public interface ApplinkConst {
 
     String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
-    String HOST_OVOUPGRADE = "ovoupgrade";
-    String OVOUPGRADE = "tokopedia://ovoupgrade";
-    String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
@@ -262,6 +259,7 @@ public interface ApplinkConst {
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String TOKOPEDIA_CARE_HELP = "tokopedia://webview?url=https://www.tokopedia.com/help/seller";
 
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
@@ -354,7 +352,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -427,6 +425,8 @@ public interface ApplinkConst {
 
     String SHARING_HOST = "sharing";
     String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
+
+    String WEB_HOST = "www.tokopedia.com";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
