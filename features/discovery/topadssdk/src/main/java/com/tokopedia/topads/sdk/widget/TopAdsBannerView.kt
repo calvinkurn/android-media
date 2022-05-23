@@ -622,7 +622,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     }
 
-    fun displayAdsWithProductShimmer(cpmModel: CpmModel?, showProductShimmer: Boolean = false, index: Int) {
+    fun displayAdsWithProductShimmer(cpmModel: CpmModel?, showProductShimmer: Boolean = false, index: Int = 0) {
         this.showProductShimmer = showProductShimmer
         displayAds(cpmModel, index)
     }
