@@ -11,6 +11,7 @@ import com.tokopedia.createpost.producttag.analytic.KEY_SESSION_IRIS
 import com.tokopedia.createpost.producttag.analytic.VAL_CURRENT_SITE
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -111,8 +112,31 @@ class ProductTagAnalyticImpl @Inject constructor(
         /** TODO("Not yet implemented") */
     }
 
-    override fun clickShopCard() {
-        /** TODO("Not yet implemented") */
+    override fun clickShopCard(
+        shop: ShopUiModel,
+        position: Int,
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "promoClick",
+                category = "content feed post creation - product tagging",
+                action = "click - toko product tagging search result",
+                label = shop.shopId
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "promoClick" to hashMapOf(
+                        "promotions" to listOf(convertToPromotion(shop, position))
+                    )
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
     }
 
     override fun clickSearchBarOnShop() {
@@ -171,6 +195,15 @@ class ProductTagAnalyticImpl @Inject constructor(
             "category" to "",
             "variant" to "",
             "position" to position
+        )
+    }
+
+    private fun convertToPromotion(shop: ShopUiModel, position: Int): HashMap<String, Any> {
+        return hashMapOf(
+            "creative" to shop.shopImage,
+            "position" to position,
+            "id" to shop.shopId,
+            "name" to "/feed content creation - toko tab search result",
         )
     }
 }

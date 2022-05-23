@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.analytic.product
 
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
 /**
  * Created By : Jonathan Darwin on May 23, 2022
@@ -43,7 +44,10 @@ interface ProductTagAnalytic {
 
     fun impressShopCard() /** TODO: later */
 
-    fun clickShopCard()
+    fun clickShopCard(
+        shop: ShopUiModel,
+        position: Int,
+    )
 
     fun clickSearchBarOnShop()
 

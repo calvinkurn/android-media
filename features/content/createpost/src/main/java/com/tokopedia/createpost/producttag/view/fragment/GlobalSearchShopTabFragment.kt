@@ -45,7 +45,10 @@ class GlobalSearchShopTabFragment @Inject constructor(
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: ShopCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ShopCardAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ShopSelected(it)) },
+            onSelected = { shop, position ->
+                analytic.clickShopCard(shop, position + 1)
+                viewModel.submitAction(ProductTagAction.ShopSelected(shop))
+            },
             onLoading = {
                 viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop)
             }
