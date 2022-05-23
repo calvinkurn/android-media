@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.bsinfo
+package com.tokopedia.product.detail.bseducational
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.detail.bseducational.data.EducationalButtons

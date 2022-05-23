@@ -27,6 +27,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

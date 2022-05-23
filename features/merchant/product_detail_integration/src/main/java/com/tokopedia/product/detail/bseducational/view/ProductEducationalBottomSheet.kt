@@ -20,8 +20,10 @@ import com.tokopedia.product.detail.bseducational.data.ProductEducationalRespons
 import com.tokopedia.product.detail.bseducational.di.DaggerProductEducationalComponent
 import com.tokopedia.product.detail.bseducational.di.ProductEducationalComponent
 import com.tokopedia.product.detail.bseducational.di.ProductEducationalModule
+import com.tokopedia.product.detail.bseducational.tracker.ProductEducationalTracker
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.goToWebView
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
@@ -29,6 +31,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ProductEducationalBottomSheet : BottomSheetUnify() {
@@ -39,6 +42,12 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ProductEducationalViewModel::class.java)
@@ -51,12 +60,18 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     private var infoTxt: Typography? = null
     private var infoBtn1: UnifyButton? = null
     private var infoBtn2: UnifyButton? = null
-    private var typeParam: String = ""
     private var errorViewStub: ViewStub? = null
     private var btnError: UnifyButton? = null
+    private var viewImpressed: Boolean = false
 
-    fun show(type: String, fragmentManager: FragmentManager) {
-        typeParam = type
+    private var typeParam: String = ""
+    private var productId: String = ""
+    private var shopId: String = ""
+
+    fun show(typeParam: String, productId: String, shopId: String, fragmentManager: FragmentManager) {
+        this.typeParam = typeParam
+        this.productId = productId
+        this.shopId = shopId
         show(fragmentManager, EDUCATIONAL_SHEET_TAG)
     }
 
@@ -80,6 +95,13 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         super.onDismiss(dialog)
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
+    }
+
     private fun observeData() {
         viewModel.educationalData.observe(viewLifecycleOwner) {
             btnError?.isClickable = true
@@ -91,11 +113,48 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
                     contentContainer?.show()
                     shimmerContainer?.hide()
                     renderSuccessData(it.data.response)
+                    trackImpression(it.data.response)
+                    setXButtonListener(it.data.response, ProductEducationalTracker.CLOSE_BUTTON)
                 }
                 is Fail -> {
                     onEducationalError()
                 }
             }
+        }
+    }
+
+    private fun setXButtonListener(response: ProductEducationalResponse, button: String) {
+        setCloseClickListener {
+            trackClick(button, response)
+            dismiss()
+        }
+    }
+
+    private fun trackClick(button: String, response: ProductEducationalResponse) {
+        ProductEducationalTracker.onCloseOrButtonClicked(
+                typeFlag = typeParam,
+                button = button,
+                eduTitle = response.title,
+                eduDesc = response.description,
+                shopId = shopId,
+                productId = productId,
+                userId = userSession.userId ?: ""
+        )
+    }
+
+    private fun trackImpression(response: ProductEducationalResponse) {
+        if (!viewImpressed) {
+            viewImpressed = true
+            ProductEducationalTracker.onImpressView(
+                    trackingQueue = trackingQueue,
+                    typeFlag = typeParam,
+                    eduTitle = response.title,
+                    eduDesc = response.description,
+                    productId = productId,
+                    shopId = shopId,
+                    userId = userSession.userId ?: "",
+                    position = 0
+            )
         }
     }
 
@@ -133,6 +192,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
             infoBtn1?.generateTheme(value.buttonColor)
             infoBtn1?.text = value.buttonTitle
             infoBtn1?.setOnClickListener {
+                trackClick(ProductEducationalTracker.OK_BUTTON, data)
                 goToApplinkOrWebView(value.buttonApplink, value.buttonWebLink)
             }
             infoBtn1?.show()
