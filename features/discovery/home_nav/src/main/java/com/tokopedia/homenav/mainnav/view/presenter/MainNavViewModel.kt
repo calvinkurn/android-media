@@ -454,7 +454,7 @@ class MainNavViewModel @Inject constructor(
             it.value is ErrorStateOngoingTransactionModel || it.value is TransactionListItemDataModel
         }
         transactionPlaceHolder?.let {
-            updateWidget(InitialShimmerTransactionRevampDataModel(), transactionPlaceHolder.index)
+            updateWidget(getInitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
         }
         launchCatchError(coroutineContext, block = {
             getOngoingTransactionRevamp()
@@ -538,9 +538,6 @@ class MainNavViewModel @Inject constructor(
                 }
                 else {
                     deleteWidget(InitialShimmerTransactionDataModel())
-                }
-                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
-                    updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
