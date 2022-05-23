@@ -14,16 +14,22 @@ import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
+import okhttp3.internal.notify
+import okhttp3.internal.wait
+
 
 open class CameraPageTest : PickerTest() {
-
     override fun createAndAppendUri(builder: Uri.Builder) {}
 
     object Robot {
         fun clickCaptureButton() {
-            onView(
-                withId(R.id.btn_take_camera)
-            ).perform(click())
+            synchronized(this){
+                onView(
+                    withId(R.id.btn_take_camera)
+                ).perform(click())
+
+                wait()
+            }
         }
 
         fun clickFlipCameraButton() {
@@ -96,6 +102,13 @@ open class CameraPageTest : PickerTest() {
             onView(
                 withId(R.id.lst_camera_mode)
             ).perform(swipeLeft())
+        }
+
+        fun resumeThread() {
+            synchronized(this){
+                Thread.sleep(1000)
+                notify()
+            }
         }
     }
 
