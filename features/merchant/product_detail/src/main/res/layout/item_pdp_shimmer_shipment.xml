@@ -6,73 +6,77 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/txt_pdp_shimmer_shipment_1"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
+        app:layout_constraintWidth_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:width_weight="0.7" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/txt_pdp_shimmer_shipment_2"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
+        app:layout_constraintWidth_percent="0.65"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shimmer_shipment_1"
-        app:width_weight="0.65" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shimmer_shipment_1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/txt_pdp_shimmer_shipment_3"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginTop="8dp"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
+        app:layout_constraintWidth_percent="0.45"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shimmer_shipment_2"
-        app:width_weight="0.45" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shimmer_shipment_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/label_pdp_shimmer_shipment_1"
         android:layout_width="120dp"
         android:layout_height="16dp"
         android:layout_marginTop="12dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shimmer_shipment_3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/label_pdp_shimmer_shipment_2"
         android:layout_width="60dp"
         android:layout_height="16dp"
         android:layout_marginStart="4dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_1"
         app:layout_constraintStart_toEndOf="@+id/label_pdp_shimmer_shipment_1"
         app:layout_constraintTop_toTopOf="@+id/label_pdp_shimmer_shipment_1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/label_pdp_shimmer_shipment_3"
         android:layout_width="60dp"
         android:layout_height="16dp"
         android:layout_marginStart="4dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_2"
         app:layout_constraintStart_toEndOf="@+id/label_pdp_shimmer_shipment_2"
         app:layout_constraintTop_toTopOf="@+id/label_pdp_shimmer_shipment_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/label_pdp_shimmer_shipment_4"
         android:layout_width="60dp"
         android:layout_height="16dp"
         android:layout_marginStart="4dp"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/label_pdp_shimmer_shipment_3"
         app:layout_constraintStart_toEndOf="@+id/label_pdp_shimmer_shipment_3"
         app:layout_constraintTop_toTopOf="@+id/label_pdp_shimmer_shipment_3" />

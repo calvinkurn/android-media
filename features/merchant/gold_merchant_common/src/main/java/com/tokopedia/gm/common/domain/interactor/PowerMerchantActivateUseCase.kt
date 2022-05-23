@@ -59,14 +59,12 @@ class PowerMerchantActivateUseCase @Inject constructor(
         """.trimIndent()
 
         private const val CURRENT_SHOP_TIER = "current_shop_tier"
-        private const val NEXT_SHOP_TIER = "next_shop_tier"
         private const val SOURCE = "source"
 
-        fun createActivationParam(currentShopTier: Int, nextShopTierType: Int, source: String): RequestParams {
+        fun createActivationParam(currentShopTier: Int, source: String): RequestParams {
             return RequestParams.create().apply {
                 putString(SOURCE, source)
                 putInt(CURRENT_SHOP_TIER, currentShopTier)
-                putInt(NEXT_SHOP_TIER, nextShopTierType)
             }
         }
     }
