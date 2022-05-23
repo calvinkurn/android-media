@@ -20,12 +20,13 @@
         app:search_bar_show_icon="false"
         app:layout_constraintTop_toTopOf="parent"
         />
-    
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerSearchBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl7"
-        app:corners="16"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
         />

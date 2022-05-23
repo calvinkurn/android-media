@@ -1,7 +1,6 @@
 package com.tokopedia.videoTabComponent.view
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -50,8 +49,8 @@ import javax.inject.Inject
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
     PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
 
-    private val rvWidget by lazy { view?.findViewById<FeedPlayStickyHeaderRecyclerView>(R.id.rv_widget_sample_feed) }
-    private val swipeToRefresh by lazy { rvWidget?.findViewById<SwipeToRefresh>(R.id.video_tab_swipe_refresh_layout) }
+    private var rvWidget: FeedPlayStickyHeaderRecyclerView? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
 
     private lateinit var adapter: VideoTabAdapter
     private val playFeedVideoTabViewModel: PlayFeedVideoTabViewModel by lazy {
@@ -67,8 +66,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         const val TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW = 0L
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
 
-
-
+        private const val THRESHOLD_SCROLL_ZERO = 0
+        private const val THRESHOLD_SCROLL_TEN = 10
+        private const val THRESHOLD_SCROLL_MINUS_TEN = -10
 
 
         @JvmStatic
@@ -126,7 +126,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_play_widget_sample_feed, container, false)
+        return inflater.inflate(R.layout.fragment_feed_play, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -194,9 +194,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rvWidget = view.findViewById(R.id.rv_feed_play)
+        swipeToRefresh = rvWidget?.findViewById(R.id.video_tab_swipe_refresh_layout)
+
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
@@ -256,6 +259,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessPlayTabDataFromChipClick(
         playDataResponse: PlayGetContentSlotResponse
     ) {
+        if (adapter.slotPosition == null)
+            adapter.updateSlotPosition()
+        adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
         val mappedData = FeedPlayVideoTabMapper.map(
@@ -330,9 +336,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     //click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
         playWidgetAnalyticsListenerImp.filterCategory = item.label
-        callAPiOnTabCLick(item)
+        if (rvWidget?.isStickyRecyclerViewIsEnabled() == true)
+            adapter.updateSlotTabViewHolderState()
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
-        adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
+        callAPiOnTabCLick(item)
     }
 
     override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
@@ -348,16 +355,16 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
                 rvWidget?.setShouldShowStickyHeaderValue(false, TIME_NO_DELAY_TO_SHOW_STICKY_HEADER_TAB_VIEW)
-                if (dy > 0) {
+                if (dy > THRESHOLD_SCROLL_ZERO) {
                     // Scrolling up
                         isScrollingUp = true
-                    if (dy > 10)
+                    if (dy > THRESHOLD_SCROLL_TEN)
                     rvWidget?.setHeaderViewVisibility(false)
 
                 } else {
                     // Scrolling down
                         isScrollingUp = false
-                    if (dy < -10)
+                    if (dy < THRESHOLD_SCROLL_MINUS_TEN)
                     rvWidget?.setHeaderViewVisibility(true)
 
                 }
@@ -372,13 +379,13 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                     val l = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     if (rvWidget?.getViewHolderAtPosition(l) != null && rvWidget?.getViewHolderAtPosition(l) is PlayFeedWidgetViewHolder.Large) {
                         val vh = rvWidget?.getViewHolderAtPosition(l) as PlayFeedWidgetViewHolder.Large
-                        val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+                        val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                         recyclerViewLargeWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
 
                     }
                     if (rvWidget?.getViewHolderAtPosition(f) != null && rvWidget?.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
                         val vh = rvWidget?.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
-                        val recyclerViewJumboWidget = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+                        val recyclerViewJumboWidget = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                         recyclerViewJumboWidget?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(it) }
 
                     }
@@ -394,7 +401,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
             if (it.getViewHolderAtPosition(f) != null && it.getViewHolderAtPosition(f) is PlayFeedWidgetViewHolder.Jumbo) {
                 val vh = it.getViewHolderAtPosition(f) as PlayFeedWidgetViewHolder.Jumbo
-                val recyclerView = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
+                val recyclerView = vh.itemView.findViewById<RecyclerView>(com.tokopedia.play.widget.R.id.play_widget_recycler_view)
                 recyclerView?.let { playWidgetCoordinator.configureAutoplayForLargeAndJumboWidget(recyclerView) }
 
             }

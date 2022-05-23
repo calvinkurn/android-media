@@ -307,6 +307,10 @@ object CatalogDetailAnalytics {
             const val DESCRIPTION_WIDGET_IMPRESSION = "impression description"
             const val COMPARISON_WIDGET_IMPRESSION = "impression comparison widget"
             const val REVIEW_WIDGET_IMPRESSION = "impression review widget"
+
+            const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
+            const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
+
         }
     }
 

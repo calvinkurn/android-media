@@ -4,8 +4,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        app:corners="16"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:id="@+id/banner_first"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -16,8 +17,9 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        app:corners="16"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/banner_first"
         app:layout_constraintWidth_percent="0.75"
@@ -27,8 +29,9 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        app:corners="16"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -39,8 +42,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/banner_first" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        app:corners="16"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
