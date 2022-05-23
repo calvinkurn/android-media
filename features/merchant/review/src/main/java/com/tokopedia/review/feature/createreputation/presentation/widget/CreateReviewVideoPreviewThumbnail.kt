@@ -33,9 +33,9 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     }
 
     override val binding = WidgetCreateReviewMediaPreviewVideoThumbnailBinding.inflate(
-        /* inflater = */ LayoutInflater.from(context),
-        /* parent = */ this,
-        /* attachToParent = */ true
+        LayoutInflater.from(context),
+        this,
+        true
     )
 
     private val transitionHandler = TransitionHandler()

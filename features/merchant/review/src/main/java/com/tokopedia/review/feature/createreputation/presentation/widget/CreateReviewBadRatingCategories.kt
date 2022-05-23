@@ -31,9 +31,9 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
     private val adapter = CreateReviewBadRatingCategoryAdapter(typeFactory)
 
     override val binding = WidgetCreateReviewBadRatingCategoriesBinding.inflate(
-        /* inflater = */ LayoutInflater.from(context),
-        /* parent = */ this,
-        /* attachToParent = */ true
+        LayoutInflater.from(context),
+        this,
+        true
     )
 
     init {
