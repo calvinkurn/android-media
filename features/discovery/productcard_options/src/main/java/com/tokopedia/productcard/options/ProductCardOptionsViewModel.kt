@@ -220,35 +220,47 @@ internal class ProductCardOptionsViewModel(
     private fun addWishlist(wishListActionListener: WishListActionListener) {
         if (productCardOptionsModel?.isTopAds == true) {
             addWishlistTopAds()
+        } else {
+            addWishlistNonTopAds(wishListActionListener)
         }
-        addWishlistNonTopAds(wishListActionListener)
     }
 
     private fun addWishlistV2() {
-        if (productCardOptionsModel?.isTopAds == true) {
-            addWishlistTopAds()
-        }
-        addWishlistNonTopAdsV2()
-    }
-
-    private fun addWishlistTopAds() {
-        topAdsWishlistUseCase.execute(
-                createAddWishlistTopAdsRequestParams(),
-                null
-        )
-    }
-
-    private fun createAddWishlistTopAdsRequestParams() = RequestParams.create().also {
-        it.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, productCardOptionsModel?.topAdsClickUrl)
-    }
-
-    private fun addWishlistNonTopAdsV2() {
         try {
             tryAddWishlistV2()
         }
         catch(throwable: Throwable) {
             catchAddWishlistError(throwable)
         }
+    }
+
+    private fun addWishlistTopAds() {
+        topAdsWishlistUseCase.execute(
+                createAddWishlistTopAdsRequestParams(),
+                createAddWishlistTopAdsSubscriber()
+        )
+    }
+
+    private fun hitWishlistClickUrl() {
+        topAdsWishlistUseCase.execute(
+            createAddWishlistTopAdsClickRequestParams(), null
+        )
+    }
+
+    private fun createAddWishlistTopAdsRequestParams() = RequestParams.create().also {
+        it.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, productCardOptionsModel?.topAdsWishlistUrl)
+    }
+
+    private fun createAddWishlistTopAdsClickRequestParams() = RequestParams.create().also {
+        it.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, productCardOptionsModel?.topAdsClickUrl)
+    }
+
+    private fun createAddWishlistTopAdsSubscriber() = object: Subscriber<Boolean>() {
+        override fun onNext(t: Boolean?) = onSuccessAddWishlist()
+
+        override fun onError(e: Throwable?) = catchAddWishlistError(e)
+
+        override fun onCompleted() { }
     }
 
     private fun addWishlistNonTopAds(wishListActionListener: WishListActionListener) {
@@ -270,6 +282,7 @@ internal class ProductCardOptionsViewModel(
         addToWishlistV2UseCase.execute(
             onSuccess = { result ->
                 if (result is Success) {
+                    hitWishlistClickUrl()
                     onSuccessAddWishlistV2(result.data)
                 } },
             onError = {
