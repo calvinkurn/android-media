@@ -148,6 +148,7 @@ class HomeLeftCarouselViewHolder (
         }
     }
 
+    @Suppress("MagicNumber")
     private fun calculateParallaxImage(dx: Int) {
         launch {
             layoutManager?.apply {
