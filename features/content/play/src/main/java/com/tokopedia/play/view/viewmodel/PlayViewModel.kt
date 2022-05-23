@@ -1862,7 +1862,7 @@ class PlayViewModel @AssistedInject constructor(
             repo.setJoined(interactiveId)
 
             updateQuizOptionUi(selectedId = option.id, correctId = response)
-            _uiEvent.emit(QuizAnsweredEvent)
+            _uiEvent.emit(QuizAnsweredEvent(option.id == response))
         }) {
             setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
