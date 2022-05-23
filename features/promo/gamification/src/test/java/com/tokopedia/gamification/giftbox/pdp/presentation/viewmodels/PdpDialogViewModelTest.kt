@@ -20,6 +20,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import junit.framework.Assert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -150,14 +151,14 @@ class PdpDialogViewModelTest {
     @Test
     fun addToWishlistTestForNonTopAds() {
         prepareViewModel()
-        val recommendationItem: RecommendationItem = RecommendationItem(productId = 1)
-        val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
+        val recommendationItem = RecommendationItem(productId = 1)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         val userId = "1"
         every { userSessionInterface.userId } returns userId
         coEvery {
             addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
             addToWishlistV2UseCase.executeOnBackground() }
-        viewModel.addToWishlist(recommendationItem, callback)
+        viewModel.addToWishlistV2(recommendationItem, mockListener)
         coVerify {
             addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
             addToWishlistV2UseCase.executeOnBackground()}
@@ -213,7 +214,7 @@ class PdpDialogViewModelTest {
             firstArg<(DeleteWishlistV2Response) -> Unit>().invoke(result)
         }
 
-        viewModel.removeFromWishlist(model,wishlistCallback)
+        viewModel.removeFromWishlistV2(model,wishlistCallback)
 
         verify { deleteWishlistObserver.onChanged(Success(response)) }
     }
