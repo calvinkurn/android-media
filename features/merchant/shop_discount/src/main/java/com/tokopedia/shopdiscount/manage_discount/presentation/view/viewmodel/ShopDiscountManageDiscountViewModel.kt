@@ -512,7 +512,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 discountedPrice = (100 - discountedPercentage) * minOriginalPrice / 100
             }
         }
-        listProductToBeUpdated.forEach { productToBeUpdated ->
+        listProductToBeUpdated.filter {
+            it.listProductWarehouse.none {productWarehouse -> productWarehouse.abusiveRule }
+        }.forEach { productToBeUpdated ->
             when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                     productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
