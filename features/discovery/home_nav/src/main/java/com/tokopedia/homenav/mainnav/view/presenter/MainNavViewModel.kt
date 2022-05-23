@@ -493,7 +493,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getOngoingTransactionRevamp() {
-        //find error state if availabxle and change to shimmering
+        //find error state if available and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateOngoingTransactionModel
         }

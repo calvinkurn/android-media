@@ -329,6 +329,7 @@ class TestMainNavViewModel {
         every { userSession.hasShop() } returns true
 
         coEvery { userSession.isShopOwner } returns true
+        coEvery { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -359,6 +360,7 @@ class TestMainNavViewModel {
         val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         val userSession = mockk<UserSessionInterface>()
 
+        every { getUohOrdersNavUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { userSession.isShopOwner } returns true
@@ -426,12 +428,13 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn() } returns true
+        every { getNavOrderUseCase.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE) }.answers {  }
         coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
         viewModel = createViewModel(
             getPaymentOrdersNavUseCase = getPaymentUseCase,
             getUohOrdersNavUseCase = getNavOrderUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
         viewModel.refreshTransactionListData()
 
 
