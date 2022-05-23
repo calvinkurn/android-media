@@ -9,7 +9,7 @@
       "eventLabel": "",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:home side nav;",
+      "pageSource": "pageSource:global menu;",
       "promotions": [
         {
           "creative_name": "",
@@ -29,7 +29,7 @@
       "eventLabel": "star rating - .* - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:home side nav;",
+      "pageSource": "pageSource:global menu;",
       "promotions": [
         {
           "creative_name": "star rating_.*",
@@ -60,7 +60,7 @@
       "eventLabel": "product card - .* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:home side nav;",
+      "pageSource": "pageSource:global menu;",
       "promotions": [
         {
           "creative_name": "product card_.*",

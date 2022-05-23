@@ -502,6 +502,7 @@ class MainNavViewModel @Inject constructor(
         }
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
+            getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant)
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
             val reviewList = if (isMePageUsingRollenceVariant) getReviewProductUseCase.get()
                 .executeOnBackground() else listOf()

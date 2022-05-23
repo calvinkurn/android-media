@@ -77,7 +77,7 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         }
 
         //description
-        binding?.orderProductDescription?.text = productRevampModel.navProductModel.descriptionText
+        binding?.orderProductDescription?.text = productRevampModel.navProductModel.estimatedArrival
         if (productRevampModel.navProductModel.descriptionTextColor.isNotEmpty()) {
             binding?.orderProductDescription?.setTextColor(
                    Color.parseColor(productRevampModel.navProductModel.descriptionTextColor)
