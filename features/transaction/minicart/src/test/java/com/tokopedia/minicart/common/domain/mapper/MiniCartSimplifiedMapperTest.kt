@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
+import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.Data
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
@@ -90,6 +91,51 @@ class MiniCartSimplifiedMapperTest {
                 MiniCartItemKey("1", type = MiniCartItemType.PARENT) to MiniCartItem.MiniCartItemParentProduct(parentId = "1", totalQuantity = 3, products = mapOf(
                         MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2", productParentId = "1", quantity = 1),
                         MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(productId = "3", productParentId = "1", quantity = 2)
+                )),
+        ), miniCartSimplifiedData.miniCartItems)
+    }
+
+    @Test
+    fun `WHEN map mini cart data with bundle THEN should return bundle`() {
+        // GIVEN
+        val data = MiniCartData(
+                data = Data(
+                        availableSection = AvailableSection(
+                                availableGroup = listOf(
+                                        AvailableGroup(
+                                                cartDetails = listOf(
+                                                        CartDetail(
+                                                                bundleDetail = BundleDetail(
+                                                                        bundleId = "123",
+                                                                        bundleQty = 1
+                                                                ),
+                                                                products = listOf(
+                                                                        Product(
+                                                                                productId = "2",
+                                                                                productQuantity = 1
+                                                                        ),
+                                                                        Product(
+                                                                                productId = "3",
+                                                                                productQuantity = 1
+                                                                        ),
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+        )
+
+        // WHEN
+        val miniCartSimplifiedData = mapper.mapMiniCartSimplifiedData(data)
+
+        // THEN
+        assertEquals(1, miniCartSimplifiedData.miniCartItems.size)
+        assertEquals(mapOf(
+                MiniCartItemKey("123", type = MiniCartItemType.BUNDLE) to MiniCartItem.MiniCartItemBundle(bundleId = "123", bundleQuantity = 1, bundleLabelQuantity = 1, bundleMultiplier = 1, products = mapOf(
+                        MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2", quantity = 1),
+                        MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(productId = "3", quantity = 1)
                 )),
         ), miniCartSimplifiedData.miniCartItems)
     }
