@@ -1,14 +1,10 @@
 package com.tokopedia.media.picker.helper.utils
 
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.net.Uri
-import android.provider.MediaStore
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -27,12 +23,8 @@ object ImageGenerator {
                 val dir = context.externalCacheDir
                 val file = File(dir, path)
 
-                if (file.exists().not()) {
-                    file.createNewFile()
-                }
-
+                if (file.exists().not()) file.createNewFile()
                 generateBitmapFile(file, index.toString())
-                addImageToGallery(context.contentResolver, file)
 
                 files.add(file)
         }
@@ -43,18 +35,6 @@ object ImageGenerator {
     private fun fileName(num: Int): String {
         val numberFormat = num.toString().padStart(5, '0')
         return "test_mp_images_${numberFormat}.jpg"
-    }
-
-    private fun addImageToGallery(cr: ContentResolver, imageFile: File): Uri? {
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.TITLE, imageFile.name)
-            put(MediaStore.Images.Media.DISPLAY_NAME, imageFile.name)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
-            put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-            put(MediaStore.Images.Media.DATA, imageFile.path)
-        }
-        return cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
     @Throws(IOException::class)
