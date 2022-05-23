@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="@string/pm_get_exclusive_benefit_of_being_pm_pro" />
+        android:text="@string/pm_get_exclusive_benefit_of_being_pm_pro"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmUpgradePmProDesc"
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.power_merchant.subscribe.view.viewcomponent.TermHeaderView
+            <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PmActiveTermHeaderView
                 android:id="@+id/viewPmUpgradeTermSection"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                tools:text="@string/pm_pro_upgrade_not_eligible_description" />
+                android:text="@string/pm_pro_upgrade_description" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmUpgradeBenefits"
@@ -173,6 +173,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardPmUpgradeBenefits"
         app:typographyType="body_3"
+        android:visibility="gone"
         tools:text="@string/pm_pro_upgrade_tnc_description" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -184,6 +185,7 @@
         android:layout_marginEnd="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:text="@string/pm_upgrade_to_pm_pro"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPmProTncDescription" />

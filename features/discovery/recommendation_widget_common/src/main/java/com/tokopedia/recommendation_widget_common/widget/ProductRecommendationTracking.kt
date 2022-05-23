@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget
 
+import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -18,9 +19,12 @@ object ProductRecommendationTracking : BaseTrackerConst() {
     const val EVENT_ACTION_CLICK_SEE_MORE_COMPARISON = "click - see more comparison%s"
 
     const val EVENT_LABEL_PRODUCT = "%s - %s"
+    const val EVENT_LABEL_CLICK_SEE_ALL = "%s - %s - %s"
 
-    const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
+    const val EVENT_LIST_PRODUCT = "/product - %s%s - rekomendasi untuk anda - %s%s - %s - %s"
     const val EVENT_TOKONOW_LIST_PRODUCT = "/%s - tokonow - rekomendasi untuk anda - %s"
+
+    const val COMPARISON_WIDGET = "comparison widget"
 
     fun getImpressionProductTracking(
         recommendationItem: RecommendationItem,
@@ -58,7 +62,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
                         widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -82,7 +87,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         userId: String = "",
         eventAction: String? = null,
         listValue: String? = null,
-        eventCategory: String? = null
+        eventCategory: String? = null,
+        widgetType: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder =
             BaseTrackerBuilder()
@@ -103,8 +109,9 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recomPageName = recommendationItem.pageName,
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
-                        widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        widgetType = widgetType.ifBlank { recommendationItem.type },
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -123,25 +130,26 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         recomTitle: String,
         pageName: String,
         userId: String
-    ): HashMap<String, Any> {
-        val trackerBuilder = BaseTrackerBuilder()
-            .constructBasicGeneralClick(
-                event = eventClick,
-                eventCategory = eventCategory,
-                eventAction = String.format(
-                    EVENT_ACTION_CLICK_SEE_MORE_COMPARISON,
-                    if (isLoggedIn) "" else VALUE_NON_LOGIN
-                ),
-                eventLabel = String.format(
-                    EVENT_LABEL_PRODUCT,
-                    recomTitle,
-                    pageName
-                )
-            )
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-        return trackerBuilder.build() as HashMap<String, Any>
+    ): Pair<Bundle, String> {
+        val bundle = Bundle()
+        val eventAction = String.format(
+            EVENT_ACTION_CLICK_SEE_MORE_COMPARISON,
+            if (isLoggedIn) "" else VALUE_NON_LOGIN
+        )
+        val eventLabel = String.format(
+            EVENT_LABEL_CLICK_SEE_ALL,
+            recomTitle,
+            pageName,
+            COMPARISON_WIDGET
+        )
+        bundle.putString(Event.KEY, eventClick)
+        bundle.putString(Category.KEY, eventCategory)
+        bundle.putString(Action.KEY, eventAction)
+        bundle.putString(Label.KEY, eventLabel)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
+        return Pair(bundle, eventClick)
     }
 
     fun getAddToCartClickProductTracking(
@@ -183,7 +191,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
                         widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -200,11 +209,13 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         recommendationType: String,
         isTopads: Boolean,
         widgetType: String,
-        anchorProductId: String
+        anchorProductId: String,
+        isLoggedIn: Boolean
     ): String {
         return String.format(
             EVENT_LIST_PRODUCT,
             recomPageName,
+            if (widgetType == COMPARISON_WIDGET && !isLoggedIn) VALUE_NON_LOGIN else "",
             recommendationType,
             if (isTopads) VALUE_IS_TOPADS else "",
             widgetType,

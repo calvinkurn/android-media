@@ -9,6 +9,7 @@
 /features/content/profile/              				@tokopedia/android-minionlance-dev
 /features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
+/features/merchant/feed_shop/                           @tokopedia/android-minionlance-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-miniondarth-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
@@ -384,6 +385,7 @@
 /customer_mid_app/                                      @tokopedia/android-core-dev
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
+/build.gradle                                            @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionyoda-dev

@@ -38,8 +38,8 @@ class ReminderMessageViewModel @Inject constructor(
     private val products = MutableLiveData<ProductrevGetReminderList>()
     fun getProducts(): LiveData<ProductrevGetReminderList> = products
 
-    private val error = MutableLiveData<String>()
-    fun getError(): LiveData<String> = error
+    private val error = MutableLiveData<Throwable>()
+    fun getError(): LiveData<Throwable> = error
 
     fun fetchReminderCounter() {
         launchCatchError(block = {
@@ -49,7 +49,7 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadEstimation = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it.message)
+            error.postValue(it)
             isLoadEstimation = false
             checkFetchStatus()
         })
@@ -63,7 +63,7 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadTemplate = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it.message)
+            error.postValue(it)
             isLoadTemplate = false
             checkFetchStatus()
         })
@@ -78,7 +78,7 @@ class ReminderMessageViewModel @Inject constructor(
             isLoadProducts = false
             checkFetchStatus()
         }, onError = {
-            error.postValue(it.message)
+            error.postValue(it)
             isLoadProducts = false
             checkFetchStatus()
         })
@@ -89,7 +89,7 @@ class ReminderMessageViewModel @Inject constructor(
             productrevSendReminderUseCase.setParams(template ?: "")
             val responseWrapper = productrevSendReminderUseCase.executeOnBackground()
             responseWrapper.productrevSendReminder
-        }, onError = { error.postValue(it.message) })
+        }, onError = { error.postValue(it) })
     }
 
     private fun checkFetchStatus() {

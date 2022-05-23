@@ -49,8 +49,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.internal.ApplinkConstInternalOvo
-import com.tokopedia.applink.internal.ApplinkConstInternalOvo.STATUS
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -489,12 +487,7 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.IMAGE_PICKER_V2) { _, _, deeplink, _ -> DeeplinkMapperImagePicker.getImagePickerV2Deeplink(deeplink) },
             DLP(DLPLogic { _, uri, _ -> DeeplinkMapperFintech.isHomeCreditRegister(uri) },
                 targetDeeplink = { _, uri, _, _ -> DeeplinkMapperFintech.getRegisteredNavigationForHomeCreditRegister(uri) }),
-            DLP.host(ApplinkConst.HOST_OVOUPGRADE) { _, _, _, _ -> ApplinkConstInternalOvo.OVO_UPGRADE },
-            DLP.matchPattern(ApplinkConst.OVOUPGRADE_STATUS, targetDeeplink = { _, _, _, idList ->
-                UriUtil.buildUriAppendParam(
-                    ApplinkConstInternalOvo.OVO_UPGRADE_STATUS,
-                    mapOf(STATUS to idList?.getOrNull(0), ApplinkConstInternalOvo.MESSAGE to idList?.getOrNull(1)))
-            }),
+
             DLP.host(ApplinkConst.HOST_PLAY_NOTIF_VIDEO) { _, _, _, _ -> ApplinkConstInternalGlobal.YOUTUBE_VIDEO },
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},

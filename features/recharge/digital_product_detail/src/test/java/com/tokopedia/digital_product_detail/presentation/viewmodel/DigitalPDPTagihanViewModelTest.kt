@@ -56,7 +56,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData(false)
+        val response = dataFactory.getFavoriteNumberData(true)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
@@ -65,7 +65,6 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
         verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
-        verifyGetFavoriteNumberPrefillEmpty()
     }
 
     @Test
