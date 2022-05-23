@@ -12,6 +12,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_SEND_RATING_OPTION = "click - kirim rating on pop up"
     const val EVENT_ACTION_CLICK_STAY_OPTION = "click - tetap disini on pop up"
     const val EVENT_ACTION_CLICK_SUBMIT = "click - kirim ulasan produk"
+    const val EVENT_ACTION_CLICK_SUBMIT_ERROR = "click - kirim ulasan produk - error"
     const val EVENT_ACTION_CLICK_TEMPLATE = "click - review template"
     const val EVENT_ACTION_DISMISS_FORM = "click - dismiss create review form"
     const val EVENT_ACTION_VIEW_DIALOG = "view - pop up %s"
@@ -53,6 +54,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
     const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
     const val EVENT_LABEL_OPEN_MEDIA_PICKER = "%s - %s - %s;"
+    const val EVENT_LABEL_CLICK_SUBMIT_ERROR = "error_message : %s - order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %s"
 
     const val SCREEN_NAME = "/create-review-form"
     const val SCREEN_NAME_BOTTOM_SHEET = "create-review-form"
@@ -82,5 +84,6 @@ object CreateReviewTrackingConstants {
 
     const val EVENT_KEY_EE_PROMOTIONS = "promotions"
 
+    const val EVENT_NAME_CLICK_PG = "clickPG"
     const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
 }

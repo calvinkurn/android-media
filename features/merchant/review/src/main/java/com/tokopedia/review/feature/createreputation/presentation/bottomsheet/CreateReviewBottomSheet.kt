@@ -19,6 +19,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -48,6 +49,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
+import com.tokopedia.review.feature.createreputation.presentation.viewmodel.SubmitReviewRequestErrorState
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymous
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewMediaPicker
@@ -655,6 +657,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             collectTextAreaBottomSheetUiState()
             collectPostSubmitBottomSheetUiState()
             collectToasterQueue()
+            collectSubmitReviewResult()
         }
 
         fun initUiState(savedInstanceState: Bundle?) {
@@ -813,6 +816,34 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                             show()
                         }
                     }
+                }
+            }
+        }
+
+        private fun collectSubmitReviewResult() {
+            viewLifecycleOwner.collectWhenResumed(viewModel.submitReviewResult) {
+                if (it is SubmitReviewRequestErrorState) {
+                    CreateReviewTracking.trackErrorSubmitReview(
+                        userId = viewModel.getUserId(),
+                        errorMessage = getString(
+                            R.string.review_create_fail_toaster,
+                            ErrorHandler.getErrorMessagePair(
+                                null,
+                                it.throwable,
+                                ErrorHandler.Builder()
+                            ).second
+                        ),
+                        orderId = viewModel.getOrderId(),
+                        productId = viewModel.getProductId(),
+                        rating = viewModel.getRating(),
+                        hasReviewText = viewModel.isReviewTextEmpty().not(),
+                        reviewTextLength = viewModel.getReviewMessageLength(),
+                        mediaCount = viewModel.getNumberOfMedia(),
+                        anonymous = viewModel.isAnonymous(),
+                        hasIncentive = viewModel.hasIncentive(),
+                        hasTemplate = viewModel.hasTemplate(),
+                        templateUsedCount = viewModel.templateUsedCount()
+                    )
                 }
             }
         }
