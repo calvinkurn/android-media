@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class UpdateCouponRequestParams(
-    @SuppressLint("Invalid Data Type")
+    @SuppressLint("Invalid Data Type") // GQL still using number type
     @SerializedName("voucher_id")
     @Expose
     val voucherId: Long = 0,
@@ -81,5 +81,9 @@ class UpdateCouponRequestParams(
     val productIds: String = "",
     @SerializedName("product_ids_csv_url")
     @Expose
-    val productIdsCsvUrl: String = ""
+    val productIdsCsvUrl: String = "",
+    @SuppressLint("Invalid Data Type") // GQL still using number type
+    @SerializedName("warehouse_id")
+    @Expose
+    val warehouseId: Long = 0
 )
