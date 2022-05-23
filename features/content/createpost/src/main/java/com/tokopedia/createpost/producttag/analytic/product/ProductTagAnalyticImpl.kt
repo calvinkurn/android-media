@@ -63,7 +63,6 @@ class ProductTagAnalyticImpl @Inject constructor(
             ),
             hashMapOf(
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
-                KEY_ITEM_LIST to "/feed - creation tagging page",
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userSession.userId,
                 KEY_BUSINESS_UNIT to VAL_CONTENT
