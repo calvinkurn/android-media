@@ -68,13 +68,14 @@ class FeedToolBarAnalytics @Inject constructor() {
             )
         )
     }
-    fun clickOnVideoTabOnFeedPage(position: Int) {
+    fun clickOnVideoTabOnFeedPage(position: Int, userId: String) {
         getTracker().sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, CLICK_HOMEPAGE,
-                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                        EVENT_ACTION, CLICK_FEED_TAB,
-                        EVENT_LABEL, when (position) {
+            DataLayer.mapOf(
+                EVENT_NAME, CLICK_HOMEPAGE,
+                EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                EVENT_ACTION, CLICK_FEED_TAB,
+                USER_ID to userId,
+                EVENT_LABEL, when (position) {
                     0 -> EventLabel.UPDATE
                     1 -> EventLabel.EXPLORE
                     else -> EventLabel.VIDEO
@@ -93,7 +94,7 @@ class FeedToolBarAnalytics @Inject constructor() {
             IS_LOGGED_IN to isLoggedInStatus,
             SCREEN_NAME to "/feed"
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(OPEN_SCREEN, generalData)
 
     }
      fun createAnalyticsForOpenScreen(
@@ -101,19 +102,20 @@ class FeedToolBarAnalytics @Inject constructor() {
             isLoggedInStatus: String,
             userId: String
     ) {
+         val screenName = when (position) {
+             0 -> SCREEN_NAME_UPDATE
+             1 -> SCREEN_NAME_EXPLORE
+             else -> SCREEN_NAME_VIDEO
+         }
         val generalData = mapOf(
                 TrackAppUtils.EVENT to OPEN_SCREEN,
                 EVENT_BUSINESSUNIT to CONTENT,
                 EVENT_CURRENTSITE to MARKETPLACE,
                 USER_ID to userId,
                 IS_LOGGED_IN to isLoggedInStatus,
-                SCREEN_NAME to when (position) {
-                    0 -> SCREEN_NAME_UPDATE
-                    1 -> SCREEN_NAME_EXPLORE
-                    else -> SCREEN_NAME_VIDEO
-                }
+                SCREEN_NAME to screenName
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
     }
 }

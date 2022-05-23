@@ -562,7 +562,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position, userSession.userId)
                 toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
 
                 updateFeedUpdateVisibility(position)
