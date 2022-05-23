@@ -89,6 +89,8 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTI
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.view.TokoNowView
@@ -1170,6 +1172,17 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         onRefreshLayout()
+
+        showSwitchServiceTypeToaster(data.serviceType)
+    }
+
+    private fun showSwitchServiceTypeToaster(serviceType: String) {
+        getServiceTypeRes(key = SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID, serviceType = serviceType)?.apply {
+            showToaster(
+                message = getString(this),
+                type = TYPE_NORMAL
+            )
+        }
     }
 
     private fun setupTokoNowShareData(referral: HomeReferralDataModel) {

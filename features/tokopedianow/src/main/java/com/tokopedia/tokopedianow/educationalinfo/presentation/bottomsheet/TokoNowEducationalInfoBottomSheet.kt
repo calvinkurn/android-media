@@ -14,7 +14,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOM_SHEET_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_STOCK_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -61,9 +62,11 @@ class TokoNowEducationalInfoBottomSheet :
             binding?.apply {
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
-                setTimeText(ChooseAddressUtils.getLocalizingAddressData(context).service_type, boldColor)
+                val localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
 
-                tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
+                setTimeText(localAddressData.service_type, boldColor)
+                setStockText(localAddressData.service_type, boldColor)
+
                 tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
 
                 convertStringToLink(tpTwentyFourHours, context, R.string.tokopedianow_home_educational_information_twenty_four_hours_bottomsheet)
@@ -77,8 +80,14 @@ class TokoNowEducationalInfoBottomSheet :
     }
 
     private fun setTimeText(serviceType: String, boldColor: String) {
-        getServiceTypeRes(EDU_BOTTOM_SHEET_RESOURCE_ID, serviceType)?.let {
+        getServiceTypeRes(EDU_BOTTOMSHEET_DURATION_RESOURCE_ID, serviceType)?.let {
             binding?.tpTime?.text = MethodChecker.fromHtml(getString(it, boldColor))
+        }
+    }
+
+    private fun setStockText(serviceType: String, boldColor: String) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_STOCK_RESOURCE_ID, serviceType)?.let {
+            binding?.tpStockAvailable?.text = MethodChecker.fromHtml(getString(it, boldColor))
         }
     }
 
