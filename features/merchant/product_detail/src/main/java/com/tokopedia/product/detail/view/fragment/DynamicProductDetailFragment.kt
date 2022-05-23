@@ -817,36 +817,53 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        when (componentTrackDataModel.componentName) {
-            ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(
+        val purchaseProtectionUrl = if (componentTrackDataModel.componentName
+                == ProductDetailConstant.PRODUCT_PROTECTION) {
+            getPurchaseProtectionUrl()
+        } else {
+            ""
+        }
+
+        DynamicProductDetailTracking.Impression
+                .eventImpressionComponent(
+                        trackingQueue = trackingQueue,
+                        componentTrackDataModel = componentTrackDataModel,
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        componentName = "",
+                        purchaseProtectionUrl = purchaseProtectionUrl,
+                        userId = viewModel.userId,
+                        lcaWarehouseId = getLcaWarehouseId()
+                )
+
+    }
+
+    override fun onShopCredibilityImpressed(countLocation: String,
+                                            componentTrackDataModel: ComponentTrackDataModel) {
+        if (countLocation.isNotEmpty()) {
+            DynamicProductDetailTracking.Impression
+                    .eventImpressionShopMultilocation(
                             trackingQueue = trackingQueue,
                             componentTrackDataModel = componentTrackDataModel,
                             productInfo = viewModel.getDynamicProductInfoP1,
-                            componentName = getPPTitleName(),
-                            purchaseProtectionUrl = getPurchaseProtectionUrl(),
+                            shopCountLocation = countLocation,
                             userId = viewModel.userId,
-                            lcaWarehouseId = getLcaWarehouseId())
-            ProductDetailConstant.STOCK_ASSURANCE ->
-                DynamicProductDetailTracking.Impression.eventOneLinerImpression(
+                            lcaWarehouseId = getLcaWarehouseId()
+                    )
+        }
+
+        onImpressComponent(componentTrackDataModel)
+    }
+
+    override fun onOneLinersImpressed(componentTrackDataModel: ComponentTrackDataModel) {
+        //Impression using custom field, a bit different with onImpressComponent
+        DynamicProductDetailTracking.Impression
+                .eventOneLinerImpression(
                         trackingQueue = trackingQueue,
                         componentTrackDataModel = componentTrackDataModel,
                         productInfo = viewModel.getDynamicProductInfoP1,
                         userId = viewModel.userId,
                         lcaWarehouseId = getLcaWarehouseId()
                 )
-            else -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(
-                            trackingQueue = trackingQueue,
-                            componentTrackDataModel = componentTrackDataModel,
-                            productInfo = viewModel.getDynamicProductInfoP1,
-                            componentName = "",
-                            purchaseProtectionUrl = "",
-                            userId = viewModel.userId,
-                            lcaWarehouseId = getLcaWarehouseId()
-                    )
-
-        }
     }
 
     /**

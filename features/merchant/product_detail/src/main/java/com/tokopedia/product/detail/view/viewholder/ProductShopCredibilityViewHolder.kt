@@ -92,7 +92,7 @@ class ProductShopCredibilityViewHolder(
             setupTicker(element.tickerDataResponse, componentTracker, this)
 
             view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(componentTracker)
+                listener.onShopCredibilityImpressed(element.shopWarehouseCount, componentTracker)
             }
         }
     }

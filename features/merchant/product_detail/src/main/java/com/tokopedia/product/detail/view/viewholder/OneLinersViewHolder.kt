@@ -49,7 +49,7 @@ class OneLinersViewHolder(
         val applink = content.applink
         view.apply {
             addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
+                listener.onOneLinersImpressed(getComponentTrackData(element))
             }
             if (applink.isNotBlank()) {
                 setOnClickListener { listener.goToApplink(applink) }
