@@ -8,7 +8,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  */
 interface ProductTagAnalytic {
 
-    fun clickBreadcrumb()
+    fun clickBreadcrumb(isOnShop: Boolean)
 
     fun clickProductTagSource(source: ProductTagSource)
 

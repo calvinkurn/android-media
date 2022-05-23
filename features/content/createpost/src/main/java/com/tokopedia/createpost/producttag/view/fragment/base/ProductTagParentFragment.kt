@@ -304,7 +304,7 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun clickBreadcrumb() {
-        analytic.clickBreadcrumb()
+        analytic.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
         viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
     }
 

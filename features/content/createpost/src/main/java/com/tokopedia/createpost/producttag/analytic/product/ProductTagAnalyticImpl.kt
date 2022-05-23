@@ -25,8 +25,11 @@ class ProductTagAnalyticImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
 ) : ProductTagAnalytic {
 
-    override fun clickBreadcrumb() {
-        sendClickEvent("click - product tagging source list")
+    override fun clickBreadcrumb(isOnShop: Boolean) {
+        sendClickEvent(
+            if(isOnShop) "click - product tagging source list on toko"
+            else "click - product tagging source list"
+        )
     }
 
     override fun clickProductTagSource(source: ProductTagSource) {
