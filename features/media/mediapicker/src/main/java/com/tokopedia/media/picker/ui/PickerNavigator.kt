@@ -78,6 +78,17 @@ class PickerNavigator constructor(
         }
     }
 
+    fun removePermissionFragment() {
+        val transaction = fm.beginTransaction()
+        val fragment = fm.findFragmentByTag(PermissionFragment::class.java.canonicalName)
+
+        if (fragment != null && fragment.isAdded) {
+            transaction.remove(fragment)
+        }
+
+        transaction.commit()
+    }
+
     fun cleanUp() {
         val transaction = fm.beginTransaction()
         fm.fragments.forEach {
