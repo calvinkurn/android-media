@@ -30,6 +30,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatStreams
 import com.tokopedia.play.util.setValue
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceData
@@ -304,10 +305,10 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val _chats = MutableStateFlow(emptyList<PlayChatUiModel>())
+    private val chatStreams = ChatStreams(viewModelScope, dispatchers)
 
     val chats: Flow<List<PlayChatUiModel>>
-        get() = _chats
+        get() = chatStreams.chats
 
     val videoOrientation: VideoOrientation
         get() {
@@ -939,22 +940,22 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
 
         updateChannelInfo(channelData)
-
-        viewModelScope.launch {
-            var index = 0
-            while(isActive && index < 100) {
-                delay(30)
-                setNewChat(
-                    PlayChatUiModel(
-                        message = index++.toString(),
-                        isSelfMessage = true,
-                        name = "Halo",
-                        messageId = "",
-                        userId = "123"
-                    )
-                )
-            }
-        }
+//
+//        viewModelScope.launch {
+//            var index = 0
+//            while(isActive && index < 100) {
+//                delay(30)
+//                setNewChat(
+//                    PlayChatUiModel(
+//                        message = index++.toString(),
+//                        isSelfMessage = false,
+//                        name = "Halo",
+//                        messageId = "",
+//                        userId = "123"
+//                    )
+//                )
+//            }
+//        }
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1341,9 +1342,7 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-        _chats.update {
-            it.takeLast(30) + chat
-        }
+        chatStreams.addChat(chat)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {

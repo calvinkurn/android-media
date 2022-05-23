@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -74,7 +73,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -88,7 +86,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -651,8 +648,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeChannelInfo()
-//        observeNewChat()
-//        observeChatList()
         observePinnedMessage()
         observeBottomInsetsState()
 
@@ -742,21 +737,6 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged()
         })
     }
-
-//    private fun observeNewChat() {
-//        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
-//            chatListView?.showNewChat(it)
-//        })
-//    }
-
-//    private fun observeChatList() {
-//        playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
-//            override fun onChanged(chatList: List<PlayChatUiModel>) {
-//                playViewModel.observableChatList.removeObserver(this)
-//                chatListView?.setChatList(chatList)
-//            }
-//        })
-//    }
 
     private fun observeChats() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
