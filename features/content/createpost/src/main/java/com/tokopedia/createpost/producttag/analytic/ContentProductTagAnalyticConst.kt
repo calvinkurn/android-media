@@ -19,4 +19,5 @@ internal const val KEY_SRP_RELATED_KEYWORD = "relatedKeyword"
 internal const val KEY_SRP_SEARCH_FILTER = "searchFilter"
 
 internal const val VAL_PHYSICAL_GOODS = "physical goods"
+internal const val VAL_CONTENT = "content"
 internal const val VAL_CURRENT_SITE = "tokopediamarketplace"
