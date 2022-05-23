@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.reschedule_pickup.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleTimeOptionModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveReschedulePickupResponse
 import com.tokopedia.sellerorder.reschedule_pickup.domain.GetReschedulePickupUseCase
 import com.tokopedia.sellerorder.reschedule_pickup.domain.SaveReschedulePickupUseCase
@@ -87,7 +88,7 @@ class ReschedulePickupViewModelTest {
             //given
             coEvery { saveReschedulePickupUseCase.execute(any()) } returns SaveReschedulePickupResponse.Data()
             //when
-            reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", "18:00", "reason")
+            reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", RescheduleTimeOptionModel(), "reason")
             // then
             assert(reschedulePickupViewModel.saveRescheduleDetail.value is Success)
         }
@@ -98,7 +99,7 @@ class ReschedulePickupViewModelTest {
             //given
             coEvery { saveReschedulePickupUseCase.execute(any()) } throws defaultThrowable
             //when
-            reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", "18:00", "reason")
+            reschedulePickupViewModel.saveReschedule("12345", "2022-02-02", RescheduleTimeOptionModel(), "reason")
             // then
             assert(reschedulePickupViewModel.saveRescheduleDetail.value is Fail)
         }
