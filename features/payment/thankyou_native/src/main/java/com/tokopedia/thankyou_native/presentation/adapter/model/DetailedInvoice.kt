@@ -91,15 +91,21 @@ data class ShopInvoice(
         val discountOnShippingStr: String?,
         val shippingInsurancePriceStr: String?,
         val shippingAddress: String?,
-        val orderLevelAddOn: ArrayList<AddOnItem>
+        val orderLevelAddOn: OrderLevelAddOn
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
+data class OrderLevelAddOn(
+    val addOnSectionDescription: String?,
+    val addOnList: ArrayList<AddOnItem>
+)
+
 data class OrderedItem(
         val itemName: String,
+        val itemVariant: String?,
         val itemCount: Int?,
         val itemPrice: String,
         val itemTotalPriceStr: String,

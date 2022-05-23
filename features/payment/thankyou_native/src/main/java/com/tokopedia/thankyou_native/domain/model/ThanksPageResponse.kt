@@ -213,6 +213,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("add_ons_section_description")
+        val addOnSectionDescription: String?,
         @SerializedName("addon_item")
         val addOnItemList : ArrayList<AddOnItem>,
         @SerializedName("bundle_group_data")
@@ -297,6 +299,8 @@ data class PurchaseItem(
         val productId: String,
         @SerializedName("product_name")
         val productName: String,
+        @SerializedName("product_variant")
+        val productVariant: String,
         @SerializedName("product_brand")
         val productBrand: String,
         @SuppressLint("Invalid Data Type")
