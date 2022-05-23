@@ -126,11 +126,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     REQUEST_CODE_NAME_SHOP_CREATION -> {
                         shopCreationViewModel.getUserInfo()
                     }
-                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_LANDING_SHOP -> {
-                        setActionAfterAdminRedirectionFromLandingShop(data)
-                    }
-                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_PHONE_SHOP -> {
-                        setActionAfterAdminRedirectionFromPhoneShop(data)
+                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION -> {
+                        setActionAfterAdminRedirection(data)
                     }
                 }
             }
@@ -180,7 +177,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         buttonOpenShop.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
             if (userSession.userId != DEFAULT_SHOP_ID_NOT_OPEN && userSession.userId.isNotEmpty()) {
-                goToAdminRedirectionFromLandingShopCreation()
+                goToShopAdminRedirection()
             } else {
                 showLoading()
                 goToPhoneShopCreation()
@@ -188,39 +185,16 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun setActionAfterAdminRedirectionFromLandingShop(intent: Intent?) {
+    private fun setActionAfterAdminRedirection(intent: Intent?) {
         val appLink = intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN).orEmpty()
-        val errorMessage = intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN).orEmpty()
-        if (appLink.isNotEmpty() && errorMessage.isEmpty()) {
-            setActionAfterSuccessAdminRedirectionFromLandingShop(appLink)
-        } else {
-            showToasterAfterFailAdminRedirection(errorMessage)
-        }
-    }
-
-    private fun setActionAfterAdminRedirectionFromPhoneShop(intent: Intent?) {
-        val appLink =
-            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN).orEmpty()
-        val errorMessage =
-            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN)
-                .orEmpty()
-
         if (appLink.isNotEmpty()) {
-            RouteManager.route(context, appLink)
+            setActionAfterSuccessAdminRedirection(appLink)
         } else {
-            if (errorMessage.isNotEmpty()) {
-                showToasterAfterFailAdminRedirection(errorMessage)
-            } else {
-                saveFirstInstallTime()
-                if (userSession.hasShop())
-                    shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
-                else goToShopName()
-            }
+            showToasterAfterFailAdminRedirection(intent)
         }
     }
 
-
-    private fun setActionAfterSuccessAdminRedirectionFromLandingShop(appLink: String) {
+    private fun setActionAfterSuccessAdminRedirection(appLink: String) {
         if (appLink == ApplinkConstInternalGlobal.PHONE_SHOP_CREATION) {
             showLoading()
             if (userSession.isLoggedIn) {
@@ -233,8 +207,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun showToasterAfterFailAdminRedirection(errorMessage: String) {
-        if (errorMessage.isNotEmpty()) {
+    private fun showToasterAfterFailAdminRedirection(intent: Intent?) {
+        val errorMessage =
+            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN)
+        if (errorMessage?.isNotEmpty() == true) {
             view?.let {
                 Toaster.build(
                     it,
@@ -315,7 +291,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         ) {
             goToNameShopCreation()
         } else {
-            goToAdminRedirectionFromPhoneShopCreation()
+            saveFirstInstallTime()
+            if (userSession.hasShop())
+                shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
+            else goToShopName()
         }
     }
 
@@ -360,20 +339,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
-    private fun goToAdminRedirectionFromLandingShopCreation() {
+    private fun goToShopAdminRedirection() {
         val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION).apply {
-                putExtra(ShopAdminDeepLinkMapper.FROM_PARAM, ShopAdminDeepLinkMapper.LANDING_SHOP_CREATION)
-            }
-        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_LANDING_SHOP)
-    }
-
-    private fun goToAdminRedirectionFromPhoneShopCreation() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION).apply {
-                putExtra(ShopAdminDeepLinkMapper.FROM_PARAM, ShopAdminDeepLinkMapper.PHONE_SHOP_CREATION)
-            }
-        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION_FROM_PHONE_SHOP)
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION)
+        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION)
     }
 
     private fun goToPhoneShopCreation() {

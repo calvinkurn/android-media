@@ -37,10 +37,6 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         )
     }
 
-    private val fromParam by lazy {
-        arguments?.getString(ShopAdminDeepLinkMapper.FROM_PARAM).orEmpty()
-    }
-
     private var binding by autoClearedNullable<FragmentShopAdminRedirectionBinding>()
 
     override fun getScreenName(): String = ""
@@ -92,35 +88,22 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun redirectionShopAdmin(adminTypeUiModel: AdminTypeUiModel) {
         if (GlobalConfig.isSellerApp()) {
-            when (fromParam) {
-                ShopAdminDeepLinkMapper.LANDING_SHOP_CREATION -> {
-                    redirectShopAdminInSAFromLandingShop(adminTypeUiModel)
-                }
-                ShopAdminDeepLinkMapper.PHONE_SHOP_CREATION -> {
-                    redirectShopAdminInSAFromPhoneShop(adminTypeUiModel)
-                }
-                else -> activity?.finish()
-            }
+            redirectShopAdminInSA(adminTypeUiModel)
         } else {
             redirectShopAdminMA(adminTypeUiModel)
         }
     }
 
-    private fun redirectShopAdminInSAFromLandingShop(adminTypeUiModel: AdminTypeUiModel) {
-        val appLink =
-            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()) {
-                if (adminTypeUiModel.isShopAdmin) {
-                    if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
-                        ApplinkConstInternalSellerapp.SELLER_HOME
-                    } else {
-                        ApplinkConstInternalMarketplace.ADMIN_INVITATION
-                    }
-                } else {
-                    ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
-                }
+    private fun redirectShopAdminInSA(adminTypeUiModel: AdminTypeUiModel) {
+        val appLink = if (isShopAdminInSA(adminTypeUiModel)) {
+            if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
+                ApplinkConstInternalSellerapp.SELLER_HOME
             } else {
-                ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+                ApplinkConstInternalMarketplace.ADMIN_INVITATION
             }
+        } else {
+            ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+        }
 
         val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
         intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
@@ -128,33 +111,13 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun redirectShopAdminInSAFromPhoneShop(adminTypeUiModel: AdminTypeUiModel) {
-        val appLink =
-            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()) {
-                if (adminTypeUiModel.isShopAdmin) {
-                    if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
-                        ApplinkConstInternalSellerapp.SELLER_HOME
-                    } else {
-                        ApplinkConstInternalMarketplace.ADMIN_INVITATION
-                    }
-                } else {
-                    ""
-                }
-            } else {
-                ""
-            }
-
-        val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
-        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+    private fun isShopAdminInSA(adminTypeUiModel: AdminTypeUiModel): Boolean {
+        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotEmpty()
+                && adminTypeUiModel.isShopAdmin
     }
 
     private fun redirectShopAdminMA(adminTypeUiModel: AdminTypeUiModel) {
-        val appLink = if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
-            adminTypeUiModel.shopID.isNotEmpty() &&
-            adminTypeUiModel.status != AdminStatus.ACTIVE
-        ) {
+        val appLink = if (isShopAdminMA(adminTypeUiModel)) {
             ApplinkConstInternalMarketplace.ADMIN_INVITATION
         } else {
             ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
@@ -166,15 +129,15 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
+    private fun isShopAdminMA(adminTypeUiModel: AdminTypeUiModel): Boolean {
+        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
+                adminTypeUiModel.shopID.isNotEmpty() &&
+                adminTypeUiModel.status != AdminStatus.ACTIVE
+    }
+
     companion object {
-        fun newInstance(bundle: Bundle?): ShopAdminRedirectionFragment {
-            return if (bundle == null) {
-                ShopAdminRedirectionFragment()
-            } else {
-                ShopAdminRedirectionFragment().apply {
-                    arguments = bundle
-                }
-            }
+        fun newInstance(): ShopAdminRedirectionFragment {
+            return ShopAdminRedirectionFragment()
         }
 
         private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"
