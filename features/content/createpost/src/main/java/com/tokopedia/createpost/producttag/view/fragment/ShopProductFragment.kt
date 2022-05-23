@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -94,8 +95,11 @@ class ShopProductFragment @Inject constructor(
             errorSecondaryAction.gone()
         }
 
-        binding.sbShopProduct.setOnClickListener {
-            analytic.clickSearchBarOnShop()
+        binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
+            if(motionEvent.action == MotionEvent.ACTION_UP) {
+                analytic.clickSearchBar(viewModel.selectedTagSource)
+            }
+            false
         }
 
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
