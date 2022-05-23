@@ -526,6 +526,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 it.discountedPercentage = discountedPercentage
                 it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
             }
+            if(isVariant){
+                productToBeUpdated.variantStatus.isVariantEnabled = true
+            }
         }
     }
 
