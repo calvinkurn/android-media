@@ -90,6 +90,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 applink = when(identifier){
                     IDENTIFIER_TITLE_WISHLIST -> ApplinkConst.NEW_WISHLIST
                     IDENTIFIER_TITLE_FAVORITE_SHOP -> ApplinkConst.FAVORITE
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> ApplinkConst.PURCHASE_ORDER
                     else -> ""
                 }
         )
