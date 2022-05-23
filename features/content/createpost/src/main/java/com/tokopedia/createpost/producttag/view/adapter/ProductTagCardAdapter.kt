@@ -9,7 +9,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagCardAdapter(
-    onSelected: (ProductUiModel) -> Unit,
+    onSelected: (ProductUiModel, Int) -> Unit,
     private val onLoading: () -> Unit,
 ) : BaseDiffUtilAdapter<ProductTagCardAdapter.Model>() {
 

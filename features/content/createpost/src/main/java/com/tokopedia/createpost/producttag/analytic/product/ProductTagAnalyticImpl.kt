@@ -12,6 +12,8 @@ import com.tokopedia.createpost.producttag.analytic.VAL_CURRENT_SITE
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on May 23, 2022
  */
 class ProductTagAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue,
 ) : ProductTagAnalytic {
 
     override fun clickBreadcrumb() {
@@ -34,7 +37,7 @@ class ProductTagAnalyticImpl @Inject constructor(
         source: ProductTagSource,
         shopId: String,
         productId: String,
-        products: List<ProductUiModel>,
+        products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
     ) {
         /** TODO("Not yet implemented") */
@@ -42,12 +45,31 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun clickProductCard(
         source: ProductTagSource,
-        shopId: String,
-        productId: String,
-        products: List<ProductUiModel>,
+        product: Pair<ProductUiModel, Int>,
         isGlobalSearch: Boolean
     ) {
-        /** TODO("Not yet implemented") */
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "productClick",
+                category = "content feed post creation - product tagging",
+                action = "click - entry point product card",
+                label = "${source.labelAnalytic} - {shop_id} - ${product.first.id}" /** TODO: shopId? */
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "click" to hashMapOf(
+                        "actionField" to hashMapOf( "list" to "/feed - creation tagging page"),
+                        "products" to listOf(convertProductToHashMapWithList(product.first, product.second))
+                    )
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
     }
 
     override fun clickSearchBar(source: ProductTagSource) {
@@ -101,6 +123,18 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userSession.userId,
             )
+        )
+    }
+
+    private fun convertProductToHashMapWithList(product: ProductUiModel, position: Int): HashMap<String, Any> {
+        return hashMapOf(
+            "name" to product.name,
+            "id" to product.id,
+            "price" to product.price,
+            "brand" to "",
+            "category" to "",
+            "variant" to "",
+            "position" to position
         )
     }
 }

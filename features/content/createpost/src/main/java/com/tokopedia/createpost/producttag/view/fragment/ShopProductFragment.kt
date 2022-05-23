@@ -41,7 +41,9 @@ class ShopProductFragment : BaseProductTagChildFragment() {
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
+            onSelected = { product, position ->
+                viewModel.submitAction(ProductTagAction.ProductSelected(product))
+            },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadShopProduct) }
         )
     }

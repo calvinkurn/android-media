@@ -16,15 +16,13 @@ interface ProductTagAnalytic {
         source: ProductTagSource,
         shopId: String,
         productId: String,
-        products: List<ProductUiModel>,
+        products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
     ) /** TODO: later */
 
     fun clickProductCard(
         source: ProductTagSource,
-        shopId: String,
-        productId: String,
-        products: List<ProductUiModel>,
+        product: Pair<ProductUiModel, Int>,
         isGlobalSearch: Boolean
     ) /** TODO: later */
 

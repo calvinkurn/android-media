@@ -96,7 +96,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
-    private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))
+    private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
