@@ -56,15 +56,15 @@ interface UserSessionDataStore {
     suspend fun setRefreshToken(refreshToken: String)
 
     suspend fun setLoginSession(
-	isLogin: Boolean,
-	userId: String,
-	fullName: String,
-	shopId: String,
-	isMsisdnVerified: Boolean,
-	shopName: String,
-	email: String,
-	shopIsGold: Boolean,
-	phoneNumber: String
+        isLogin: Boolean,
+        userId: String,
+        fullName: String,
+        shopId: String,
+        isMsisdnVerified: Boolean,
+        shopName: String,
+        email: String,
+        shopIsGold: Boolean,
+        phoneNumber: String
     )
 
     suspend fun setIsMSISDNVerified(isMsisdnVerified: Boolean)

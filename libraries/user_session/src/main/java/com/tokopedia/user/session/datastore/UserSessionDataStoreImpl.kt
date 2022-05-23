@@ -12,7 +12,8 @@ import okhttp3.internal.toLongOrDefault
 import java.security.MessageDigest
 import kotlin.experimental.and
 
-class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) : UserSessionDataStore {
+class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
+    UserSessionDataStore {
 
     fun getUserSessionFlow(): Flow<UserSessionProto> {
         return store.data
@@ -511,7 +512,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
     override suspend fun getAndroidId(context: Context): Flow<String> {
         val adsId = getUserSessionFlow().map { it.androidId }
-        return if(adsId.first().isEmpty()) {
+        return if (adsId.first().isEmpty()) {
             val newAndroidId = md5(
                 Settings.Secure.getString(
                     context.contentResolver,

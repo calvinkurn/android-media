@@ -9,7 +9,7 @@ object UserSessionKeyMapper {
 	key: String,
 	userSessionDataStore: UserSessionDataStore?,
 	value: String
-    ) {
+	) {
 	runBlocking {
 	    when (key) {
 		LOGIN_ID -> userSessionDataStore?.setUserId(value)
