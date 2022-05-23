@@ -116,10 +116,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-//    val observableNewChat: LiveData<Event<PlayChatUiModel>>
-//        get() = _observableNewChat
-//    val observableChatList: LiveData<out List<PlayChatUiModel>>
-//        get() = _observableChatList
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
     val observablePinnedMessage: LiveData<PinnedMessageUiModel>
@@ -417,17 +413,11 @@ class PlayViewModel @AssistedInject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-//    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
-//    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
-//        addSource(_observableChatList) { chatList ->
-//            chatList.lastOrNull()?.let { value = Event(it) }
-//        }
-//    }
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
@@ -528,8 +518,6 @@ class PlayViewModel @AssistedInject constructor(
         videoBufferGovernor.startBufferGovernance()
 
         stateHandler.observeForever(stateHandlerObserver)
-
-//        _observableChatList.value = mutableListOf()
 
         viewModelScope.launch {
             interactiveFlow.collect(::onReceivedInteractiveAction)
@@ -1353,9 +1341,6 @@ class PlayViewModel @AssistedInject constructor(
      * Private Method
      */
     private fun setNewChat(chat: PlayChatUiModel) {
-//        val currentChatList = _observableChatList.value ?: mutableListOf()
-//        currentChatList.add(chat)
-//        _observableChatList.value = currentChatList
         _chats.update {
             it.takeLast(30) + chat
         }
