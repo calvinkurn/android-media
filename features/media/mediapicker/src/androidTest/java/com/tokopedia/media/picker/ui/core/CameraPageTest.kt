@@ -76,20 +76,11 @@ abstract class CameraPageTest : PickerTest() {
                 Pair(initialFlashState, latestFlashState)
         }
 
-        fun captureVideo(duration: Long) {
-            onView(
-                withId(R.id.lst_camera_mode)
-            ).perform(swipeLeft())
-
+        fun clickCaptureVideo(duration: Long) {
             onView(
                 withId(R.id.btn_take_camera)
-            ).perform(click())
-
+            ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
             Thread.sleep(duration)
-
-            onView(
-                withId(R.id.btn_take_camera)
-            ).perform(click())
         }
 
         fun clickGalleryTab() {
@@ -98,6 +89,12 @@ abstract class CameraPageTest : PickerTest() {
             ).perform(
                 PickerCameraViewActions.clickGalleryTabAction(BottomNavComponent.PAGE_GALLERY_INDEX)
             )
+        }
+
+        fun swipeLeftCameraMode() {
+            onView(
+                withId(R.id.lst_camera_mode)
+            ).perform(swipeLeft())
         }
     }
 
