@@ -1562,21 +1562,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
         if (GlobalConfig.isSellerApp()) {
             productPriceVariantTicker?.setOnClickListener {
-                DialogUnify(context ?: return@setOnClickListener,
-                    DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setDefaultMaxWidth()
-                    setTitle(getString(R.string.title_edit_price_at_variant_detail_page))
-                    setDescription(getString(R.string.description_edit_price_at_variant_detail_page))
-                    setPrimaryCTAText(getString(R.string.label_cancel_edit_price_at_variant_detail_page))
-                    setPrimaryCTAClickListener {
-                        dismiss()
-                    }
-                    setSecondaryCTAText(getString(R.string.label_agree_edit_price_at_variant_detail_page))
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                        showVariantDetailActivity()
-                    }
-                }.show()
+                showVariantDetailActivity()
             }
         }
     }
