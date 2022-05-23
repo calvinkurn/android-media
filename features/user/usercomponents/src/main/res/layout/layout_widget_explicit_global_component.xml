@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_card"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imageUnify2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_food"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imageUnify"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_dismiss"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:text="Kamu hanya konsumsi kuliner halal?"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/imageUnify"
+            app:layout_constraintStart_toEndOf="@+id/imageUnify2"
+            app:layout_constraintTop_toTopOf="@+id/imageUnify2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="2dp"
+            android:text="Kami bisa kasih rekomendasi buatmu!"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/imageUnify"
+            app:layout_constraintStart_toEndOf="@+id/imageUnify2"
+            app:layout_constraintTop_toBottomOf="@+id/typography3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/unifyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:text="Benar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/typography4" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Benar"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/unifyButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>
