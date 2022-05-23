@@ -197,42 +197,44 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
-        /** Update the First Part */
-        if(productTagSourceStack.isNotEmpty()) {
-            val firstSource = productTagSourceStack.first()
+        if(viewModel.isUser) {
+            /** Update the First Part */
+            if(productTagSourceStack.isNotEmpty()) {
+                val firstSource = productTagSourceStack.first()
 
-            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
-            binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
-            if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
-                binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
-                binding.imgCcProductTagShopBadge1.show()
-                binding.icCcProductTagShopBadge1.hide()
+                binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
+                binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
+                if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+                    binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
+                    binding.imgCcProductTagShopBadge1.show()
+                    binding.icCcProductTagShopBadge1.hide()
+                }
+                else if(firstSource == ProductTagSource.Shop) {
+                    binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
+                    binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
+                    binding.imgCcProductTagShopBadge1.hide()
+                }
+                else {
+                    binding.imgCcProductTagShopBadge1.hide()
+                    binding.icCcProductTagShopBadge1.hide()
+                }
             }
-            else if(firstSource == ProductTagSource.Shop) {
-                binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
-                binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
-                binding.imgCcProductTagShopBadge1.hide()
-            }
-            else {
-                binding.imgCcProductTagShopBadge1.hide()
-                binding.icCcProductTagShopBadge1.hide()
-            }
-        }
 
-        /** Update the Last Part */
-        val hasLastPart = productTagSourceStack.size == 2
-        binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
-        binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
-        binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
+            /** Update the Last Part */
+            val hasLastPart = productTagSourceStack.size == 2
+            binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
+            binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
+            binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
 
-        if(hasLastPart) {
-            val lastSource = productTagSourceStack.last()
+            if(hasLastPart) {
+                val lastSource = productTagSourceStack.last()
 
-            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
-            binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
-            binding.icCcProductTagShopBadge2.apply {
-                showWithCondition(viewModel.selectedShop.isShopHasBadge)
-                if(viewModel.selectedShop.isShopHasBadge) setImage(viewModel.selectedShop.badge)
+                binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
+                binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
+                binding.icCcProductTagShopBadge2.apply {
+                    showWithCondition(viewModel.selectedShop.isShopHasBadge)
+                    if(viewModel.selectedShop.isShopHasBadge) setImage(viewModel.selectedShop.badge)
+                }
             }
         }
     }
