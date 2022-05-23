@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchShopTabBinding
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
@@ -26,11 +27,14 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
  */
-class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
+class GlobalSearchShopTabFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchShopTabFragment"
 

@@ -55,7 +55,8 @@ class MyShopProductFragment @Inject constructor(
             onSelected = { product, position ->
                 analytic.clickProductCard(
                     viewModel.selectedTagSource,
-                    Pair(product, position),
+                    product,
+                    position,
                     false
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))

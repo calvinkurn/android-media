@@ -22,7 +22,8 @@ interface ProductTagAnalytic {
 
     fun clickProductCard(
         source: ProductTagSource,
-        product: Pair<ProductUiModel, Int>,
+        product: ProductUiModel,
+        position: Int,
         isGlobalSearch: Boolean
     )
 
@@ -42,5 +43,10 @@ interface ProductTagAnalytic {
 
     fun impressShopCard() /** TODO: later */
 
-    fun clickShopCard() /** TODO: later */
+    fun clickShopCard()
+
+    fun clickProductCardOnShop(
+        product: ProductUiModel,
+        position: Int,
+    )
 }

@@ -48,7 +48,8 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun clickProductCard(
         source: ProductTagSource,
-        product: Pair<ProductUiModel, Int>,
+        product: ProductUiModel,
+        position: Int,
         isGlobalSearch: Boolean
     ) {
         trackingQueue.putEETracking(
@@ -56,13 +57,13 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "productClick",
                 category = "content feed post creation - product tagging",
                 action = if(isGlobalSearch) "click - product card" else "click - entry point product card",
-                label = "${source.labelAnalytic} - {shop_id} - ${product.first.id}" /** TODO: shopId? */
+                label = "${source.labelAnalytic} - {shop_id} - ${product.id}" /** TODO: shopId? */
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf( "list" to "/feed - creation tagging page"),
-                        "products" to listOf(convertProductToHashMapWithList(product.first, product.second))
+                        "products" to listOf(convertProductToHashMapWithList(product, position))
                     )
                 )
             ),
@@ -112,6 +113,34 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun clickShopCard() {
         /** TODO("Not yet implemented") */
+    }
+
+    override fun clickProductCardOnShop(
+        product: ProductUiModel,
+        position: Int
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "productClick",
+                category = "content feed post creation - product tagging",
+                action = "click - product card on toko",
+                label = "{shop_id} - ${product.id}" /** TODO: shopId? */
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "click" to hashMapOf(
+                        "actionField" to hashMapOf( "list" to "/feed - creation tagging page"),
+                        "products" to listOf(convertProductToHashMapWithList(product, position))
+                    )
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
     }
 
     private fun sendClickEvent(action: String, label: String = "") {

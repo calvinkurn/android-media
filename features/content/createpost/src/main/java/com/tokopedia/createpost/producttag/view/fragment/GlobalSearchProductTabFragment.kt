@@ -49,7 +49,8 @@ class GlobalSearchProductTabFragment @Inject constructor(
             onSelected = { product, position ->
                 analytic.clickProductCard(
                     viewModel.selectedTagSource,
-                    Pair(product, position),
+                    product,
+                    position,
                     true
                 )
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))

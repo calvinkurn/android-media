@@ -63,6 +63,16 @@ abstract class ContentCreationProductTagBindModule {
     @FragmentKey(GlobalSearchProductTabFragment::class)
     abstract fun bindGlobalSearchProductTabFragment(fragment: GlobalSearchProductTabFragment): Fragment
 
+    @Binds
+    @IntoMap
+    @FragmentKey(GlobalSearchShopTabFragment::class)
+    abstract fun bindGlobalSearchShopTabFragment(fragment: GlobalSearchShopTabFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShopProductFragment::class)
+    abstract fun bindShopProductFragment(fragment: ShopProductFragment): Fragment
+
     /** Repository */
     @Binds
     abstract fun bindProductTagRepository(productTagRepositoryImpl: ProductTagRepositoryImpl): ProductTagRepository

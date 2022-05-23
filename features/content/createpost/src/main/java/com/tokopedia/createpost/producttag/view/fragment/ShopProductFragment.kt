@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentShopProductBinding
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
@@ -26,11 +27,14 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class ShopProductFragment : BaseProductTagChildFragment() {
+class ShopProductFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "ShopProductFragment"
 
@@ -42,6 +46,7 @@ class ShopProductFragment : BaseProductTagChildFragment() {
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
+                analytic.clickProductCardOnShop(product, position)
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadShopProduct) }
