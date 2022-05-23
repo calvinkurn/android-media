@@ -55,4 +55,6 @@ interface ProductTagAnalytic {
         product: ProductUiModel,
         position: Int,
     )
+
+    fun sendAll()
 }

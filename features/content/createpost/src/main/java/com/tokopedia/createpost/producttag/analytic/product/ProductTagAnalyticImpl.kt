@@ -194,6 +194,10 @@ class ProductTagAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun sendAll() {
+        trackingQueue.sendAll()
+    }
+
     private fun sendClickEvent(action: String, label: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(

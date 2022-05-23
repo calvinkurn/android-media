@@ -11,7 +11,7 @@ import javax.inject.Inject
 class ProductImpressionCoordinator @Inject constructor(
     private val analytic: ContentProductTagAnalytic,
 ) {
-    private val mProductImpress = mutableSetOf<Pair<ProductUiModel, Int>>()
+    private val mProductImpress = mutableListOf<Pair<ProductUiModel, Int>>()
 
     private var mTagSource: ProductTagSource = ProductTagSource.Unknown
     private var mIsGlobalSearch: Boolean = false
@@ -29,13 +29,17 @@ class ProductImpressionCoordinator @Inject constructor(
     }
 
     fun sendProductImpress() {
+        val finalProduct = mProductImpress.distinctBy { it.first.id }
+
         analytic.impressProductCard(
             mTagSource,
             "",
             "",
-            mProductImpress.toList(),
+            finalProduct,
             mIsGlobalSearch,
         )
+        analytic.sendAll()
+
         mProductImpress.clear()
     }
 }
