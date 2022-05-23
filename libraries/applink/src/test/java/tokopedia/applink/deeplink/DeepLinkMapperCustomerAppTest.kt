@@ -1212,6 +1212,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check pod appLink then should return tokopedia internal proof of delivery in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/pod/123456?image_id=22222"
+        val appLink = UriUtil.buildUri(ApplinkConst.ORDER_POD, "123456?image_id=22222")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check flight appLink then should return tokopedia internal ticket detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://pesawat/dashboard"
         assertEqualsDeepLinkMapper(ApplinkConst.FLIGHT, expectedDeepLink)

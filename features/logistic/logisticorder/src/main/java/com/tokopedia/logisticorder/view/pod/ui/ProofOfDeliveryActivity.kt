@@ -12,8 +12,9 @@ import timber.log.Timber
  *
  * POD = Proof Of Delivery
  *  applink tokopedia://shipping/pod/{order_id}?image_id={image_id}&description={description}
+ *  and
+ *  ApplinkConstInternalLogistic.PROOF_OF_DELIVERY
  *
- *  Please use ApplinkConst.ORDER_POD
  */
 
 class ProofOfDeliveryActivity : BaseSimpleActivity() {

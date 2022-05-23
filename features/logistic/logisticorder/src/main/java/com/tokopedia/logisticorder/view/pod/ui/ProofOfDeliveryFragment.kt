@@ -11,13 +11,11 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticCommon.data.constant.PodConstant
-import com.tokopedia.logisticorder.R
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.DEFAULT_OS_TYPE
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.IMAGE_LARGE_SIZE
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.getDeliveryImage
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
 import com.tokopedia.logisticorder.databinding.FragmentProofOfDeliveryBinding
-import com.tokopedia.logisticorder.utils.TrackingPageUtil
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.DEFAULT_OS_TYPE
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.IMAGE_LARGE_SIZE
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.pod.data.ProofOfDeliveryModel
 import com.tokopedia.logisticorder.view.pod.di.DaggerProofOfDeliveryComponent
 import com.tokopedia.logisticorder.view.pod.di.ProofOfDeliveryComponent
@@ -36,7 +34,11 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_DESCRIPTION = "ARGUMENTS_DESCRIPTION"
 
-        fun createFragment(orderId: Long?, imageId: String?, description: String?): ProofOfDeliveryFragment {
+        fun createFragment(
+            orderId: Long?,
+            imageId: String?,
+            description: String?
+        ): ProofOfDeliveryFragment {
 
             return ProofOfDeliveryFragment().apply {
                 if (orderId != null) {
@@ -112,23 +114,19 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
     }
 
     private fun initImage() {
-
         val pod = podData ?: return finishWithToastError()
 
-        val url = getDeliveryImage(pod.imageId, pod.orderId, IMAGE_LARGE_SIZE, userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId)
-        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-        val newUrl = GlideUrl(url, LazyHeaders.Builder().addHeader(HEADER_KEY_AUTH, authKey).build())
+        val url = getDeliveryImage(
+            pod.imageId,
+            pod.orderId,
+            IMAGE_LARGE_SIZE,
+            userSession.userId,
+            DEFAULT_OS_TYPE,
+            userSession.deviceId
+        )
 
-        binding?.root?.let {
-            binding?.imgProof?.let { imgProof ->
-                Glide.with(it.context)
-                    .load(newUrl)
-                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
-                    .error(it.context.getDrawable(R.drawable.ic_image_error))
-                    .dontAnimate()
-                    .into(imgProof)
-            }
-        }
+        binding?.imgProof?.loadImagePod(requireContext(), userSession.accessToken, url)
+
     }
 
     private fun initTextDescription() {
