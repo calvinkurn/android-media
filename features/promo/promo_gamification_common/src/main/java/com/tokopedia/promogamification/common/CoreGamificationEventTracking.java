@@ -17,6 +17,7 @@ public interface CoreGamificationEventTracking {
 
     interface Action {
         String CLICK_LUCKY_EGG = "click egg on homepage";
+        String HIDE_LUCKY_EGG = "click hide button";
         String IMPRESSION_LUCKY_EGG = "impression on egg";
     }
 }

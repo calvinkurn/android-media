@@ -112,6 +112,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     long timeRemainingSeconds;
     boolean isShowTime = false;
     int screenHeight = 0;
+    private int tokenId;
+    private String tokenName;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -166,6 +168,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 isMinimized = true;
             else
                 isMinimized = false;
+        }
+        if(isMinimized){
+            // hide tracker
+            trackingEggHide(tokenId, tokenName);
         }
     }
 
@@ -467,6 +473,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onSuccessGetToken(GamiFloatingButtonEntity tokenData) {
         sumTokenString = tokenData.getSumTokenStr();
+        tokenId = tokenData.getId();
+        tokenName = tokenData.getName();
 
         FloatingCtaEntity tokenFloating = tokenData.getCta();
         final String pageUrl = tokenFloating.getUrl();
@@ -771,6 +779,15 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.CLICK_LUCKY_EGG,
+                idToken + "_" + name
+        );
+    }
+
+    private void trackingEggHide(int idToken, String name) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Action.HIDE_LUCKY_EGG,
                 idToken + "_" + name
         );
     }
