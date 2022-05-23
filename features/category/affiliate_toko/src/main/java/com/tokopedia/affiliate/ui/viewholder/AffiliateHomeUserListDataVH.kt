@@ -25,6 +25,8 @@ class AffiliateHomeUserListDataVH(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_performa_item
+        const val ROTATION_90  = 90f
+        const val ROTATION_270  = 270f
     }
 
     override fun bind(element: AffiliateUserPerformanceListModel?) {
@@ -59,7 +61,7 @@ class AffiliateHomeUserListDataVH(
                         setImage(
                             newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         )
-                        rotation = 90f
+                        rotation = ROTATION_90
                     }
                 }
                 metricIntValue < 0 ->{
@@ -69,7 +71,7 @@ class AffiliateHomeUserListDataVH(
                         setImage(
                             newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                         )
-                        rotation = 270f
+                        rotation = ROTATION_270
                     }
                 }
             }
