@@ -21,7 +21,7 @@
     <string name="picker_button_cancel">Batal</string>
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>
-    <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
+    <string name="picker_button_retake_image">Ambil Foto Ulang</string>
     <string name="picker_button_activation">Aktifkan</string>
 
     <string name="picker_button_delete_confirm">Ya, Hapus</string>
