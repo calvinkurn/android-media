@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleDayBinding
-import com.tokopedia.sellerorder.reschedulepickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.sellerorder.reschedulepickup.data.model.RescheduleDayOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 
 class RescheduleDayBottomSheet(

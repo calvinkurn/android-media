@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.BottomsheetRescheduleReasonBinding
-import com.tokopedia.sellerorder.reschedulepickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.sellerorder.reschedulepickup.data.model.RescheduleReasonOptionModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify

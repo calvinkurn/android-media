@@ -5,14 +5,8 @@ import android.view.LayoutInflater
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ReschedulePickupFailedDialogBinding
-import com.tokopedia.sellerorder.databinding.ReschedulePickupLoadingDialogBinding
-import com.tokopedia.sellerorder.databinding.SomListBulkActionDialogBinding
 
 class ReschedulePickupFailedDialog(private val context: Context) {
 
