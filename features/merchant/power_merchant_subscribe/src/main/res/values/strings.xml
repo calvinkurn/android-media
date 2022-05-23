@@ -142,12 +142,7 @@
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_option_become_power_merchant_description"><![CDATA[Jadi Seller tepercaya dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_options_tnc_text">Dengan melanjutkan, saya setuju dengan S&amp;K yang berlaku</string>
-
-    <string name="pm_pro_upgrade_30_first_monday_false_description"><![CDATA[Dengan <b>biaya layanan 1,5%</b>, kamu bisa dapat banyak keuntungan eksklusif Power Merchant PRO!]]></string>
-    <string name="pm_pro_upgrade_description">Sebagai PM PRO Advanced, kamu bisa dapat:</string>
-    <string name="pm_pro_upgrade_eligible_true_description"><![CDATA[Dengan <b>biaya layanan 1,5% saja</b>, kamu bisa dapat banyak keuntungan eksklusif Power Merchant PRO!]]></string>
-    <string name="pm_pro_upgrade_eligible_false_description"><![CDATA[%1s <font color="%2$s"><b>Level 2</b></font>]]></string>
-
+    <string name="pm_pro_upgrade_description">Keuntungan eksklusif Power Merchant PRO:</string>
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Proses bergabung tidak bisa \ndilanjutkan</string>
@@ -240,4 +235,6 @@
     <string name="pm_ticker_update_pm_pro">Kamu berpotensi langsung menjadi PM PRO Advanced pada tanggal %s. Pertahankan performa tokomu, ya!</string>
     <string name="pm_info_benefit_increase_desc"><![CDATA[Klik ikon <font color=\"%1$s\"> <b> > </b> </font>  di bagian atas halaman ini untuk lihat caranya. Yuk, cek targetmu selanjutnya!]]></string>
     <string name="pm_info_benefit_increase_title">Level Toko naik, keuntungan bertambah!</string>
+    <string name="pm_submit_activation_success">Hore! Kamu berhasil gabung di program Power Merchant.</string>
+
 </resources>
