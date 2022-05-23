@@ -75,7 +75,10 @@ class ProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun clickBackButton(source: ProductTagSource) {
-        sendClickEvent("click - back on product tagging", source.labelAnalytic)
+        if(source == ProductTagSource.Shop)
+            sendClickEvent("click - back button on toko")
+        else
+            sendClickEvent("click - back on product tagging", source.labelAnalytic)
     }
 
     override fun impressShopCard() {
@@ -84,10 +87,6 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun clickShopCard() {
         /** TODO("Not yet implemented") */
-    }
-
-    override fun clickBackOnShop() {
-        sendClickEvent("click - back button on toko")
     }
 
     private fun sendClickEvent(action: String, label: String = "") {

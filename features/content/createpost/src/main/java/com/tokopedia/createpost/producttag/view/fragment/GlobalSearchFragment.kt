@@ -82,8 +82,16 @@ class GlobalSearchFragment @Inject constructor(
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.clSearch.setOnClickListener {
-            analytic.clickSearchBar(ProductTagSource.GlobalSearch)
+            analytic.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
+        }
+
+        binding.tabItemProduct.setOnClickListener {
+            analytic.clickGlobalSearchTab("barang")
+        }
+
+        binding.tabItemShop.setOnClickListener {
+            analytic.clickGlobalSearchTab("toko")
         }
     }
 

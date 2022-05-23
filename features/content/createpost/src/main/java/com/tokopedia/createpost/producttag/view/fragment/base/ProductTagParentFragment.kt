@@ -120,6 +120,7 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun setupView() {
         binding.icCcProductTagBack.setOnClickListener {
+            analytic.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 

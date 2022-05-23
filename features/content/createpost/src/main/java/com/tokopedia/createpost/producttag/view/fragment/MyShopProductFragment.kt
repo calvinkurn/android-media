@@ -118,7 +118,7 @@ class MyShopProductFragment @Inject constructor(
         }
 
         binding.sbShopProduct.setOnClickListener {
-            analytic.clickSearchBar(ProductTagSource.MyShop)
+            analytic.clickSearchBar(viewModel.selectedTagSource)
         }
 
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->

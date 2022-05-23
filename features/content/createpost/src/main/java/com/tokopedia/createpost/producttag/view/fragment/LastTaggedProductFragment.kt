@@ -92,7 +92,7 @@ class LastTaggedProductFragment @Inject constructor(
         }
 
         binding.clSearch.setOnClickListener {
-            analytic.clickSearchBar(ProductTagSource.LastTagProduct)
+            analytic.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }

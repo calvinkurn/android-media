@@ -45,6 +45,4 @@ interface ProductTagAnalytic {
     fun impressShopCard() /** TODO: later */
 
     fun clickShopCard() /** TODO: later */
-
-    fun clickBackOnShop()
 }
