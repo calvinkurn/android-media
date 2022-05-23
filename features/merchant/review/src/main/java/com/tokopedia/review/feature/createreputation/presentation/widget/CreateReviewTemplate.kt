@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
@@ -32,8 +30,6 @@ class CreateReviewTemplate @JvmOverloads constructor(
     private val itemAnimator = CreateReviewItemAnimator()
     private val typeFactory = CreateReviewTemplateTypeFactory(createReviewTemplateListener, innerBaseCreateReviewCustomViewListener)
     private val adapter = CreateReviewTemplateAdapter(typeFactory)
-    private val gridLayoutManagerSpanCountChanger = Runnable { setupSpanCount() }
-    private val waitForRvAnimationToFinish = Runnable { waitForRvAnimationToFinish() }
 
     override val binding = WidgetCreateReviewTemplateBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -57,28 +53,12 @@ class CreateReviewTemplate @JvmOverloads constructor(
     }
 
     private fun setupTemplate(templates: List<CreateReviewTemplateItemUiModel>) {
-        createReviewTemplateListener.listener?.onStartAnimatingTemplates()
         adapter.updateItems(templates)
-        Handler(Looper.getMainLooper()).post(gridLayoutManagerSpanCountChanger)
-        Handler(Looper.getMainLooper()).post(waitForRvAnimationToFinish)
+        setupSpanCount()
     }
 
     private fun setupSpanCount() {
         layoutManager.spanCount = if (adapter.itemCount > 1) 2 else 1
-    }
-
-    /**
-     * To check whether the recyclerview is still animating it's item, use this to prevent
-     * updating recyclerview too rapidly since it will make the animation looks like a glitch
-     */
-    private fun waitForRvAnimationToFinish() {
-        if (itemAnimator.isRunning) {
-            itemAnimator.isRunning {
-                Handler(Looper.getMainLooper()).post(waitForRvAnimationToFinish)
-            }
-            return
-        }
-        createReviewTemplateListener.listener?.onFinishAnimatingTemplates()
     }
 
     fun updateUi(uiState: CreateReviewTemplateUiState) {
@@ -128,7 +108,5 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
     interface Listener {
         fun onTemplateSelected(template: CreateReviewTemplate)
-        fun onStartAnimatingTemplates()
-        fun onFinishAnimatingTemplates()
     }
 }

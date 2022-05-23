@@ -178,7 +178,6 @@ class CreateReviewViewModel @Inject constructor(
     // region state that must not be saved nor restored
     private val mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     private val textAreaHasFocus = MutableStateFlow(false)
-    private val reviewTemplatesAnimating = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
     private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
     // endregion state that must not be saved nor restored
@@ -254,7 +253,7 @@ class CreateReviewViewModel @Inject constructor(
 
     // region template state
     val templateUiState = combine(
-        canRenderForm, isGoodRating, reviewTemplatesAnimating, reviewTemplate.filterIsInstance(),
+        canRenderForm, isGoodRating, reviewTemplate.filterIsInstance(),
         ::mapTemplateUiState
     ).toStateFlow(CreateReviewTemplateUiState.Loading)
     // endregion template state
@@ -597,7 +596,6 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTemplateUiState(
         canRenderForm: Boolean,
         isGoodRating: Boolean,
-        reviewTemplatesAnimating: Boolean,
         reviewTemplates: ReviewTemplateRequestSuccessState
     ): CreateReviewTemplateUiState {
         val currentTemplates = templateUiState.value.templates
@@ -607,7 +605,6 @@ class CreateReviewViewModel @Inject constructor(
             return CreateReviewTemplateUiState.Loading
         }
         return when {
-            reviewTemplatesAnimating -> templateUiState.value
             templates.isEmpty() -> CreateReviewTemplateUiState.Hidden(emptyList())
             currentTemplates != templates -> CreateReviewTemplateUiState.Changing(templates)
             else -> CreateReviewTemplateUiState.Showing(templates)
@@ -1526,10 +1523,6 @@ class CreateReviewViewModel @Inject constructor(
     fun updateMediaPicker(selectedMedia: List<String>) {
         retryUploadMedia()
         mediaUris.value = selectedMedia
-    }
-
-    fun setReviewTemplatesAnimating(animating: Boolean) {
-        reviewTemplatesAnimating.value = animating
     }
 
     fun retryUploadMedia() {

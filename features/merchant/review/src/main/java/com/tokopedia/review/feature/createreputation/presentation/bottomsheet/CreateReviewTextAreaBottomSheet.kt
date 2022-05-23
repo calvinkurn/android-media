@@ -194,14 +194,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
             viewModel.selectTemplate(template)
         }
 
-        override fun onStartAnimatingTemplates() {
-            viewModel.setReviewTemplatesAnimating(animating = true)
-        }
-
-        override fun onFinishAnimatingTemplates() {
-            viewModel.setReviewTemplatesAnimating(animating = false)
-        }
-
         fun attachListener() {
             binding?.reviewTemplateExpandedCreateReviewBottomSheet?.setListener(this)
         }

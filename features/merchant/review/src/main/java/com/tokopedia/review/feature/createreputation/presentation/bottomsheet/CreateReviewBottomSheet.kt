@@ -1002,14 +1002,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             viewModel.selectTemplate(template)
         }
 
-        override fun onStartAnimatingTemplates() {
-            viewModel.setReviewTemplatesAnimating(true)
-        }
-
-        override fun onFinishAnimatingTemplates() {
-            viewModel.setReviewTemplatesAnimating(false)
-        }
-
         fun attachListener() {
             binding?.reviewFormTemplates?.setListener(this)
         }
