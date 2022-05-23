@@ -112,11 +112,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                     bindDataWithView(it.data)
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showEmptyState(
-                        activity,
-                        binding?.rootView,
-                        this::getInitialData
-                    )
+                    NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::getInitialData)
                 }
             }
         })
@@ -131,16 +127,11 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                         })
                         activity?.finish()
                     } else {
-                        showErrorDialog(
-                            it.data.message,
-                        )
+                        showErrorDialog(it.data.message)
                     }
                 }
                 is Fail -> {
-                    showErrorToaster(
-                        ErrorHandler.getErrorMessage(context, it.throwable),
-                        this::saveRescheduleDetail
-                    )
+                    showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable), this::saveRescheduleDetail)
                 }
             }
         })
@@ -210,38 +201,24 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         loadingDialog?.show()
         val chosenReason = binding?.etReason?.editText?.text.toString()
         val otherReason = binding?.etReasonDetail?.editText?.text.toString()
-        val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) {
-            otherReason
-        } else chosenReason
+        val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) { otherReason } else chosenReason
         val dayChosen = day?.day
         val timeChosen = time
         if (dayChosen != null && timeChosen != null) {
-            viewModel.saveReschedule(
-                orderId,
-                dayChosen,
-                timeChosen,
-                reason
-            )
+            viewModel.saveReschedule(orderId, dayChosen, timeChosen, reason)
         }
     }
 
     private fun openDaySelectionBottomSheet(daysOption: List<RescheduleDayOptionModel>) {
-        RescheduleDayBottomSheet(
-            daysOption,
-            this
-        ).show(parentFragmentManager)
+        RescheduleDayBottomSheet(daysOption, this).show(parentFragmentManager)
     }
 
     private fun openTimeSelectionBottomSheet(timeOption: List<RescheduleTimeOptionModel>) {
-        RescheduleTimeBottomSheet(timeOption, this).show(
-            parentFragmentManager
-        )
+        RescheduleTimeBottomSheet(timeOption, this).show(parentFragmentManager)
     }
 
     private fun openReasonSelectionBottomSheet(reasonOption: List<RescheduleReasonOptionModel>) {
-        RescheduleReasonBottomSheet(reasonOption, this).show(
-            parentFragmentManager
-        )
+        RescheduleReasonBottomSheet(reasonOption, this).show(parentFragmentManager)
     }
 
     private fun showSubtitle(context: Context, textView: TextView?, appLink: String) {
@@ -339,8 +316,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             otherReason.length in OTHER_REASON_MIN_CHAR..OTHER_REASON_MAX_CHAR
         } else chosenReason.isNotEmpty()
 
-        binding?.btnReschedulePickup?.isEnabled =
-            (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
+        binding?.btnReschedulePickup?.isEnabled = (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
     }
 
     private fun showErrorToaster(
