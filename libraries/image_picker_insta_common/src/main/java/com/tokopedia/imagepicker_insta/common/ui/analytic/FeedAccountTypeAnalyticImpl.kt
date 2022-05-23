@@ -19,6 +19,10 @@ class FeedAccountTypeAnalyticImpl @Inject constructor(
         sendClickEvent("click - available account types")
     }
 
+    override fun clickChangeAccountToSeller() {
+        sendClickEvent("click - change account to seller")
+    }
+
     private fun sendClickEvent(action: String, label: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(

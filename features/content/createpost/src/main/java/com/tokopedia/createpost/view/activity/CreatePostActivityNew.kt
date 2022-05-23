@@ -356,6 +356,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             setPrimaryCTAClickListener { dismiss() }
 
             setSecondaryCTAClickListener {
+                feedAccountAnalytic.clickChangeAccountToSeller()
                 dismiss()
                 when(intent.extras?.get(PARAM_TYPE)) {
                     TYPE_CONTENT_TAGGING_PAGE -> {

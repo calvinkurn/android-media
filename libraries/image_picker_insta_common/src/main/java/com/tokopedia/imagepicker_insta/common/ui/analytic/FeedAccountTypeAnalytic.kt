@@ -8,4 +8,6 @@ interface FeedAccountTypeAnalytic {
     fun clickAccountTypeItem(type: String)
 
     fun clickAccountInfo()
+
+    fun clickChangeAccountToSeller()
 }
