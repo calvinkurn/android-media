@@ -1,5 +1,6 @@
 package com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -26,7 +27,7 @@ class InputOldPhoneNumberViewModel @Inject constructor(
     val statusPhoneNumber: LiveData<Pair<Result<String>, String>> get() = _statusPhoneNumber
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData(Boolean) get() = _isLoading
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private fun validationNumber(number: String): Boolean {
         when {
