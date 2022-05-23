@@ -29,7 +29,7 @@ class GetHomeLayoutDataUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(GetHomeLayoutData.QUERY)
+        setGraphqlQuery(GetHomeLayoutData)
         setTypeClass(GetHomeLayoutResponse::class.java)
     }
 
