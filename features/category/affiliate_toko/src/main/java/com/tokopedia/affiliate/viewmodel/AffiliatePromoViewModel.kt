@@ -23,7 +23,6 @@ class AffiliatePromoViewModel  @Inject constructor(
     private var affiliateSearchData = MutableLiveData<AffiliateSearchData>()
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
-    private var isSoftBan = false
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
 
     fun getSearch(productLink : String) {
@@ -60,14 +59,6 @@ class AffiliatePromoViewModel  @Inject constructor(
 
     fun setValidateUserType(onRegistered: String) {
         validateUserState.value = onRegistered
-    }
-
-    fun setSoftBan(isBan: Boolean) {
-        isSoftBan = isBan
-    }
-
-    fun getSoftBan(): Boolean {
-        return isSoftBan
     }
 
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()

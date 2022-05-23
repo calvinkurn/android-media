@@ -87,7 +87,6 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
-        affiliateRecommendedProductViewModel.isUserBlackListed = affiliatePromoSharedViewModel.getSoftBan()
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 

@@ -228,10 +228,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                     showData(false)
                     items.forEach {
                         it?.let {
-                            val isBlackListedUser = affiliatePromoViewModel.getSoftBan()
-                            if(isBlackListedUser){
-                                it.status?.isLinkGenerationAllowed = !isBlackListedUser
-                            }
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         }
                     }
@@ -386,7 +382,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     }
 
     override fun onReviewed() {
-        affiliatePromoViewModel.setSoftBan(true)
         affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
         affiliatePromoViewModel.getAnnouncementInformation()
     }
