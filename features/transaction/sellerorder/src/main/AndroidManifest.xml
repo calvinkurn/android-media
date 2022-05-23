@@ -138,7 +138,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name="com.tokopedia.sellerorder.reschedule_pickup.presentation.activity.ReschedulePickupActivity"
+            android:name="com.tokopedia.sellerorder.reschedulepickup.presentation.activity.ReschedulePickupActivity"
             android:exported="false"
             android:label="@string/title_reschedule_pickup_activity"
             android:screenOrientation="portrait"
