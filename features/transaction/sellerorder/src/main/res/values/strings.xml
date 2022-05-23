@@ -367,7 +367,6 @@
     <string name="label_title_invoice_reschedule_pick_up">No. Invoice</string>
     <string name="label_title_courier_reschedule_pick_up">Kurir</string>
     <string name="label_title_order_detail_reschedule_pick_up">Detail Pesanan</string>
-    <string name="label_title_reschedule_detail">Estimasi pickup:</string>
     <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
     <string name="title_reschedule_day_bottomsheet">Pilih Hari</string>
     <string name="template_success_reschedule_pickup">Kami akan melakukan request pick-up sesuai jadwal barumu. %1$s</string>
@@ -381,9 +380,4 @@
     <string name="title_failed_reschedule_pickup_dialog">Yah, gagal ubah jadwal pick-up</string>
     <string name="error_message_reason_below_min_char">Min. 15 karakter</string>
     <string name="error_message_reason_over_max_char">Sudah mencapai maks. char</string>
-    <string-array name="reschedule_guide">
-        <item>Pastikan jadwal pick-up baru sesuai dengan kesepakatan pengiriman dengan pembeli</item>
-        <item>Ubah jadwal pick-up hanya bisa dilakukan 1 (satu) kali</item>
-        <item>Pastikan barang sudah siap</item>
-    </string-array>
 </resources>
