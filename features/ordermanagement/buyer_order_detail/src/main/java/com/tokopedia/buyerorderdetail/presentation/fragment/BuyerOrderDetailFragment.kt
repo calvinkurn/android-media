@@ -3,9 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +12,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.gson.JsonArray
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
@@ -67,8 +61,6 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
-import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -81,7 +73,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
-import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -707,15 +698,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         showEtaBottomSheet(delayedInfo)
     }
 
-
-    override fun onPodClicked(imageId: String, orderId: Long, description: String) {
-        //TODO Irpan
-//        Toaster.build(requireView(), urlPod).show()
-        Log.d("onPodClicked_ir","testt")
-        navigateToPodActivity(imageId, orderId, description)
-
-    }
-
     private fun showEtaBottomSheet(etaChangedDescription: String) {
         val delayedEtaBottomSheetFragment =
             DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
@@ -750,35 +732,5 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
-    }
-
-    //POD: navigate to pod activity
-    private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
-
-
-        val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
-            .appendQueryParameter(PodConstant.QUERY_IMAGE_ID, imageId)
-            .appendQueryParameter(PodConstant.QUERY_DESCRIPTION, description)
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
-        startActivityForResult(intent, PodConstant.REQUEST_POD)
-
-    }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        when (requestCode) {
-//            ProofOfDeliveryActivity.REQUEST_POD -> {
-//                if (requestCode == ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE) {
-//                    handleFailedLoadImagePod()
-//                }
-//            }
-//        }
-//    }
-
-    //POD view : handle when error
-    private fun handleFailedLoadImagePod() {
-        Toaster.build(requireView(), "Oops, terjadi kesalahan dalam memuat gambar").show()
     }
 }

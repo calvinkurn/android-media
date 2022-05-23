@@ -54,7 +54,6 @@
         android:id="@+id/tvBuyerOrderDetailArrivalEstimationValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:visibility="gone"
         android:layout_marginStart="8dp"
         android:drawablePadding="@dimen/dp_4"
         android:textColor="@color/Unify_N700_96"
@@ -67,49 +66,6 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="(Estimasi tiba 17 Jan - 19 Jan) " />
-
-    <LinearLayout
-        android:id="@+id/containerPod"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_rounder_corner_stroke"
-        android:orientation="horizontal"
-        android:padding="6dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/tvBuyerOrderDetailArrivalEstimationValue">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_pod"
-            android:layout_width="@dimen/buyer_order_detail_pod_thumbnail_size"
-            android:layout_height="@dimen/buyer_order_detail_pod_thumbnail_size" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_weight="1"
-            android:lines="1"
-            android:text="@string/label_proof_delivery"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="@dimen/spacing_lvl2"
-            android:lines="1"
-            android:text="@string/message_see"
-            android:textColor="@color/Unify_GN300"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
-    </LinearLayout>
-
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
