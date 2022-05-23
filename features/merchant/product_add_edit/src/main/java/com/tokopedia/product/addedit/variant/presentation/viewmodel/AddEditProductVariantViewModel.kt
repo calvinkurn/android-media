@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
@@ -558,7 +559,8 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (productVariant == null) {
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
-                    price = productInputModel.getValueOrDefault().detailInputModel.price,
+                    price = productInputModel.getValueOrDefault().getVariantDefaultVariantPrice(
+                        isEditMode.getValueOrDefault(false)),
                     pictures = variantPicture,
                     combination = combination,
                     status = STATUS_ACTIVE_STRING
@@ -640,8 +642,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (selectedVariantDetails.isEmpty()) {
             removeVariant()
         } else {
-            productInputModel.getValueOrDefault().variantInputModel.products = emptyList()
-            productInputModel.getValueOrDefault().variantInputModel.selections = emptyList()
+            productInputModel.getValueOrDefault().resetVariantData()
         }
     }
 
