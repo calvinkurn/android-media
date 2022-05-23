@@ -33,6 +33,7 @@ import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
+import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.models.*
@@ -90,6 +91,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
+    private val daggerComponent: ImagePickerComponent by lazy {
+        DaggerImagePickerComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFragment()
@@ -172,21 +181,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun injectFragment() {
-        DaggerImagePickerComponent.builder()
-            .baseAppComponent(
-                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-            )
-            .build().inject(this)
+        daggerComponent.inject(this)
     }
 
     private fun initDagger() {
         if (context is AppCompatActivity) {
             viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
-            val component = DaggerImagePickerComponent.builder()
-                .baseAppComponent(
-                    (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                ).build()
-            component.inject(viewModel)
+            daggerComponent.inject(viewModel)
         }
     }
 
