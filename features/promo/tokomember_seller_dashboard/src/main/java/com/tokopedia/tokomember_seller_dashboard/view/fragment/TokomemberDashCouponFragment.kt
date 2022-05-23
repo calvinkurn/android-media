@@ -118,7 +118,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                         }
                         voucherStatus = selectedStatusList.toString().replace("[", "")
                         voucherStatus = voucherStatus.replace("]", "")
-                        tmCouponViewModel.getCouponList(voucherStatus, voucherType)
+                        voucherStatus = voucherStatus.replace(" ", "")
+                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
                         Toast.makeText(context, selectedStatusList.toString(), Toast.LENGTH_SHORT).show()
                     }
                 },
@@ -218,6 +219,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    tmCouponAdapter.vouchersItemList.clear()
                     tmCouponAdapter.vouchersItemList = it.data.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
                     tmCouponAdapter.notifyDataSetChanged()
                 }
