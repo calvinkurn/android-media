@@ -3,16 +3,19 @@ package com.tokopedia.chatbot.view.activity
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.di.ChatbotModule
 
@@ -20,6 +23,8 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +40,9 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
     private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare2"
+
+    @Inject
+    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
     private val bottomSheetPage = BottomSheetUnify()
 
@@ -86,17 +94,22 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
         val viewBottomSheetPage =
             View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
-                this.text_title.text = title
-                this.text_subtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
-                this.text_list_header.text = content
-                this.btn_tokopedia_care.setOnClickListener {
+                val textTitle : Typography = this.findViewById(R.id.text_title)
+                val textSubtitle : Typography = this.findViewById(R.id.text_subtitle)
+                val textListHeader : Typography = this.findViewById(R.id.text_list_header)
+                val buttonTokopediaCare : UnifyButton = this.findViewById(R.id.btn_tokopedia_care)
+                val contentListRV : RecyclerView = this.findViewById(R.id.content_list)
+
+                textTitle.text = title
+                textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
+                textListHeader.text = content
+                buttonTokopediaCare.setOnClickListener {
                     goToHelpPage()
                 }
-
-                this.content_list.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
+                contentListRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
                 val adapter = ContactUsMigrationAdapter()
                 setList(contentList,adapter)
-                this.content_list.adapter = adapter
+                contentListRV.adapter = adapter
 
             }
         bottomSheetPage.apply {
@@ -105,6 +118,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
             showKnob = false
         }
         bottomSheetPage.setCloseClickListener {
+            chatbotAnalytics.get().eventOnClickCancelBottomSheet()
             goToContactUs()
         }
         supportFragmentManager?.let {
@@ -113,6 +127,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun goToContactUs() {
+        chatbotAnalytics.get().eventOnClickTokopediaCare()
         RouteManager.route(this, CONTACT_US_APPLINK)
         finish()
     }
