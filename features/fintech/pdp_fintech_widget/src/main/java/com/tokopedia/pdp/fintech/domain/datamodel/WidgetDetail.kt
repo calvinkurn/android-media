@@ -2,7 +2,7 @@ package com.tokopedia.pdp.fintech.domain.datamodel
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
+import kotlinx.android.parcel.Parcelize
 
 data class WidgetDetail(
     @SerializedName("paylater_getPDPWidgetV2") var baseWidgetResponse: BaseDataResponse? = null

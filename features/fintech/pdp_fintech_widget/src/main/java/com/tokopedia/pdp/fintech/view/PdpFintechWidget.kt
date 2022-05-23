@@ -3,7 +3,6 @@ package com.tokopedia.pdp.fintech.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.AttrRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -24,10 +23,8 @@ import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
-import com.tokopedia.pdp_fintech.R
 import com.tokopedia.pdp_fintech.databinding.PdpFintechWidgetLayoutBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -47,7 +44,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private val NOT_BRANDER_CHIPS = "NON BRANDED"
     private val BRANDER_CHIPS = "BRANDED"
     private var logInStatus = false
-  private lateinit var binding: PdpFintechWidgetLayoutBinding
+    private lateinit var binding: PdpFintechWidgetLayoutBinding
 
 
 
