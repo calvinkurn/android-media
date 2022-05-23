@@ -147,7 +147,9 @@ class CameraControllerComponent(
 
     fun setThumbnailPreview(model: MediaUiModel) {
         if (!param.isMultipleSelectionType()) return
-        imgThumbnail.smallThumbnail(model)
+        imgThumbnail.smallThumbnail(model){
+            controllerListener.onThumbnailLoaded()
+        }
         imgThumbnail.setOnClickListener {
             controllerListener.onCameraThumbnailClicked()
         }
@@ -303,6 +305,7 @@ class CameraControllerComponent(
         fun onTakeMediaClicked()
         fun onFlashClicked()
         fun onFlipClicked()
+        fun onThumbnailLoaded()
     }
 
     companion object {

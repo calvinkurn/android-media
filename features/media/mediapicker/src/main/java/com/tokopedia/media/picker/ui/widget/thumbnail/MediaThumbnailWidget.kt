@@ -31,20 +31,22 @@ class MediaThumbnailWidget @JvmOverloads constructor(
             addView(it.root)
         }
 
-    fun regularThumbnail(element: MediaUiModel?) {
+    fun regularThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
         binding.txtDuration.setType(BODY_3)
-        renderView(element)
+        renderView(element, onLoaded)
     }
 
-    fun smallThumbnail(element: MediaUiModel?) {
+    fun smallThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
         binding.txtDuration.setType(SMALL)
-        renderView(element)
+        renderView(element, onLoaded)
     }
 
-    private fun renderView(element: MediaUiModel?) {
+    private fun renderView(element: MediaUiModel?, onLoaded: () -> Unit) {
         if (element == null) return
         binding.container.show()
-        binding.imgPreview.pickerLoadImage(element.path)
+        binding.imgPreview.pickerLoadImage(element.path) {
+            onLoaded()
+        }
         binding.bgVideoShadow.showWithCondition(element.isVideo())
         binding.txtDuration.shouldShowWithAction(element.isVideo()) {
             videoDuration(element.path)
@@ -60,10 +62,15 @@ class MediaThumbnailWidget @JvmOverloads constructor(
         binding.txtDuration.text = duration.toReadableFormat()
     }
 
-    fun setThumbnailSelected(isSelected: Boolean){
-        if(isSelected){
-            val paddingSize = resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding).toInt()
-            val backgroundAsset = MethodChecker.getDrawable(context, mediaResources.drawable.picker_rect_green_selected_thumbnail)
+    fun setThumbnailSelected(isSelected: Boolean) {
+        if (isSelected) {
+            val paddingSize =
+                resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding)
+                    .toInt()
+            val backgroundAsset = MethodChecker.getDrawable(
+                context,
+                mediaResources.drawable.picker_rect_green_selected_thumbnail
+            )
 
             binding.imgPreview.setPadding(paddingSize, paddingSize, paddingSize, paddingSize)
             binding.imgPreview.background = backgroundAsset
