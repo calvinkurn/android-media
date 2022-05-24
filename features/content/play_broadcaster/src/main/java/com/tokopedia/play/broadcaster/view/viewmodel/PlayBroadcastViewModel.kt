@@ -718,25 +718,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
-
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            showInteractiveGameResultWidget()
-        }
+        displayGameResultIfHasLeaderBoard()
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished){
-            showInteractiveGameResultWidget()
-        }
+        displayGameResultIfHasLeaderBoard()
     }
 
     private fun showInteractiveGameResultWidget() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
-        }) { err ->
-
-        }
+        }) { }
     }
 
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
@@ -1015,6 +1008,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
+        }
+    }
+
+    private fun displayGameResultIfHasLeaderBoard() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            if (leaderboardSlots.isNotEmpty())
+                showInteractiveGameResultWidget()
+        }) {
+
         }
     }
 
