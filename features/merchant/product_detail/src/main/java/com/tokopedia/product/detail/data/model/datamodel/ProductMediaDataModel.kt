@@ -84,3 +84,8 @@ data class MediaDataModel(
 ) {
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }
+
+data class ThumbnailDataModel(
+        val media: MediaDataModel = MediaDataModel(),
+        val isSelected: Boolean = false
+)

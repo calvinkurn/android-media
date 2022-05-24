@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.widget
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Typeface
@@ -7,30 +8,39 @@ import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
+import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
+import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailAdapter
+import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailListener
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
+@SuppressLint("WrongConstant")
 class VideoPictureView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr), ProductMainThumbnailListener {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: DynamicProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
-
+    private var thumbnailAdapter: ProductMainThumbnailAdapter? = null
+    private var animator: ThumbnailAnimator? = null
     private var binding: WidgetVideoPictureBinding = WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
     private var lastPosition = 0
 
@@ -38,6 +48,19 @@ class VideoPictureView @JvmOverloads constructor(
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
         binding.pdpVideoPictureLabel.typeface = Typeface.DEFAULT
+        measureScreenHeight(binding)
+    }
+
+    private fun measureScreenHeight(binding: WidgetVideoPictureBinding) {
+        val screenWidth = binding.root.resources.displayMetrics.widthPixels
+        binding.viewPagerContainer.layoutParams.height = screenWidth
+    }
+
+    private fun showThumbnail() {
+        if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
+            animator?.animateShow()
+//            binding.pdpMainThumbnailRv.show()
+        }
     }
 
     fun setup(media: List<MediaDataModel>,
@@ -50,6 +73,7 @@ class VideoPictureView @JvmOverloads constructor(
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
             setupViewPager()
+            setupThumbnailRv()
             //If first position is video and selected: process the video
         }
         setPageControl(media, initialScrollPosition)
@@ -58,9 +82,33 @@ class VideoPictureView @JvmOverloads constructor(
         renderVideoOnceAtPosition(initialScrollPosition)
     }
 
+    override fun onThumbnailClicked(element: ThumbnailDataModel) {
+        val selectedPosition = thumbnailAdapter?.currentList?.indexOfFirst {
+            it.media.id == element.media.id
+        } ?: Int.ZERO
+
+        updateThumbnail(selectedPosition)
+        scrollToPosition(selectedPosition)
+        renderVideoOnceAtPosition(selectedPosition)
+    }
+
     private fun updateImages(listOfImage: List<MediaDataModel>?) {
         val mediaList = processMedia(listOfImage)
         videoPictureAdapter?.submitList(mediaList)
+        thumbnailAdapter?.submitList(mediaList.mapIndexed { index, data ->
+            val isSelected = lastPosition == index
+            ThumbnailDataModel(data, isSelected)
+        })
+        animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
+    }
+
+    private fun updateThumbnail(selectedPosition: Int) {
+        showThumbnail()
+        thumbnailAdapter?.submitList(thumbnailAdapter?.currentList?.toMutableList()?.mapIndexed { index, data ->
+            val isSelected = selectedPosition == index
+            data.copy(isSelected = isSelected)
+        } ?: listOf())
+        binding.pdpMainThumbnailRv.smoothScrollToPosition(selectedPosition)
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
@@ -71,6 +119,17 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         binding.imageSliderPageControl.setCurrentIndicator(position)
         updateMediaLabel(position)
+        updateThumbnail(position)
+    }
+
+    private fun setupThumbnailRv() {
+        binding.pdpMainThumbnailRv.layoutParams.height = 0
+
+        thumbnailAdapter = ProductMainThumbnailAdapter(this)
+        binding.pdpMainThumbnailRv.layoutManager = CenterLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL,
+                false)
+        binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
     }
 
     private fun setupViewPager() {
@@ -105,7 +164,7 @@ class VideoPictureView @JvmOverloads constructor(
                     }
                     binding.imageSliderPageControl.setCurrentIndicator(position)
                     updateMediaLabel(position)
-
+                    updateThumbnail(position)
                     lastPosition = position
                 }
             }
@@ -130,7 +189,8 @@ class VideoPictureView @JvmOverloads constructor(
             binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
         }
         binding.imageSliderPageControl.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
-        binding.imageSliderPageControl.setCurrentIndicator(initialScrollPosition.takeIf { it > -1 } ?: 0)
+        binding.imageSliderPageControl.setCurrentIndicator(initialScrollPosition.takeIf { it > -1 }
+                ?: 0)
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
