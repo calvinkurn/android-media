@@ -55,7 +55,7 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
             if (data.infoLink.isNotEmpty()) {
                 detailIcon?.show()
                 detailClickArea?.setOnClickListener {
-                    listener.goToApplink(data.applink)
+                    listener.goToEducational(data.applink)
                 }
 
                 data.icon.toIntOrNull()?.let { icon ->

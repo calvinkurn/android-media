@@ -96,7 +96,7 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             if (data.infoLink.isNotEmpty()) {
                 infoDetailIcon.show()
                 infoDetailClickArea.setOnClickListener {
-                    listener.goToApplink(data.infoLink)
+                    listener.goToEducational(data.infoLink)
                 }
 
                 data.icon.toIntOrNull()?.let { icon ->

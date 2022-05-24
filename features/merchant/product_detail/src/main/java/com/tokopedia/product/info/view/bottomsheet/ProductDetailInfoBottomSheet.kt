@@ -23,6 +23,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductEducationalHelper
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
@@ -153,6 +154,18 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToApplink(url: String) {
         RouteManager.route(context, url)
+    }
+
+    override fun goToEducational(url: String) {
+        val context = context ?: return
+        val data = listener?.getPdpDataSource() ?: return
+
+        ProductEducationalHelper.goToEducationalBottomSheet(
+            context,
+            url,
+            data.basic.productID,
+            data.basic.shopID
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
