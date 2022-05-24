@@ -69,8 +69,8 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="card_tipping_btn_default_text">Beri Tip</string>
     <string name="last_driver_button">Hubungi</string>
 
-<!--   pod-->
-    <string name="label_pod">Proof Of Delivery</string>
+    <!--   pod-->
+    <string name="label_pod">Bukti Pengiriman</string>
     <string name="label_back">Kembali</string>
     <string name="screen_name_pod">Proof of Delivery</string>
     <string name="error_message_failed_get_image">"Oops, terjadi kesalahan dalam memuat gambar"</string>
