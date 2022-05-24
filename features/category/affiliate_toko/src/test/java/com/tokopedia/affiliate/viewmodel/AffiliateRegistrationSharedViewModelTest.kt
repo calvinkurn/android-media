@@ -64,7 +64,7 @@ class AffiliateRegistrationSharedViewModelTest {
 
         affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
 
-        assertEquals(affiliateRegistrationSharedViewModel.getUserAction().value,
+        assertEquals(affiliateRegistrationSharedViewModel.getLoginScreenAction().value,
             AffiliateRegistrationSharedViewModel.UserAction.SignUpAction)
     }
 

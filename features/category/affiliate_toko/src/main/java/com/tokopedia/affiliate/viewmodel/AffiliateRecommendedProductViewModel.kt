@@ -16,7 +16,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
-    private val userSessionInterface: UserSessionInterface,
     private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
