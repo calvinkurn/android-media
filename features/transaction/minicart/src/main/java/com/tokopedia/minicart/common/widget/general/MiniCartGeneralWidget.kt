@@ -34,6 +34,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.minicart.common.widget.shoppingsummary.ShoppingSummaryBottomSheet
 import com.tokopedia.minicart.databinding.WidgetMiniCartBinding
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -54,8 +55,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     @Inject
     lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheetV2
 
-    // @Inject
-    // lateinit var shoppingSummaryBottomSheet: ShoppingSummaryBottomSheet
+    @Inject
+    lateinit var shoppingSummaryBottomSheet: ShoppingSummaryBottomSheet
 
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
@@ -511,8 +512,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to show simplified summary bottom sheet
      */
     fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
-        // TODO: Show Simplified Summary Bottom Sheet
-        Toast.makeText(fragment.context, "Show simplified summary bottom sheet!", Toast.LENGTH_LONG)
-            .show()
+        viewModel?.miniCartSimplifiedData?.value?.shoppingSummaryBottomSheetData?.let {
+            shoppingSummaryBottomSheet.show(it, fragment.parentFragmentManager, context)
+        }
     }
 }
