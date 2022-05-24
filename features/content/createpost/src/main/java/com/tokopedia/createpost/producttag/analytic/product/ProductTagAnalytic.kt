@@ -30,14 +30,6 @@ interface ProductTagAnalytic {
 
     fun clickSearchBar(source: ProductTagSource)
 
-    fun clickLastSearch()
-
-    fun clickShopSuggestion(shopId: String)
-
-    fun impressShopSuggestion(shopId: String) /** TODO: dunno how */
-
-    fun clickKeywordSuggestion()
-
     fun clickGlobalSearchTab(tabName: String)
 
     fun clickBackButton(source: ProductTagSource)

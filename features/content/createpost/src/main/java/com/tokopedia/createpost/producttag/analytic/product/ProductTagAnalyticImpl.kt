@@ -102,22 +102,6 @@ class ProductTagAnalyticImpl @Inject constructor(
         sendClickEvent("click - search bar", source.labelAnalytic)
     }
 
-    override fun clickLastSearch() {
-        sendClickEvent("click - search terakhir dicari")
-    }
-
-    override fun clickShopSuggestion(shopId: String) {
-        sendClickEvent("click - toko section search result", shopId)
-    }
-
-    override fun impressShopSuggestion(shopId: String) {
-        /** TODO: not sure dunno how */
-    }
-
-    override fun clickKeywordSuggestion() {
-        sendClickEvent("click - recommendation search result")
-    }
-
     override fun clickGlobalSearchTab(tabName: String) {
         sendClickEvent("click - tab", tabName)
     }
