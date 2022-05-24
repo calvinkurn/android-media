@@ -1264,7 +1264,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test success show bu list with disabled me page rollence then error after refresh data should update bu to error state`() {
+    fun `test success show bu list with disabled me page rollence then error after refresh data should update with cache data`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
@@ -1294,12 +1294,12 @@ class TestMainNavViewModel {
 
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertFalse(dataListRefreshed.contains(successResult))
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        Assert.assertTrue(dataListRefreshed.contains(successResult))
+        Assert.assertFalse(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
     }
 
     @Test
-    fun `given disable me page rollence when refresh category then show failed error category`() {
+    fun `given enable me page rollence when refresh category then show data from cache`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
@@ -1317,19 +1317,19 @@ class TestMainNavViewModel {
             getBuListUseCase.setStrategyCloudThenCache()
         } answers { }
         viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataList.contains(successResult))
+        val dataList = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertTrue(dataList.menus.contains(successResult))
 
         coEvery {
             getBuListUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
         viewModel.refreshBuListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertFalse(dataListRefreshed.contains(successResult))
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertTrue(dataListRefreshed.menus.contains(successResult))
+        Assert.assertFalse(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
     }
 }
