@@ -102,7 +102,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         (layoutParams as? LinearLayout.LayoutParams)?.bottomMargin ?: 0
     }
 
-    private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context)
@@ -135,12 +134,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
         loader = findViewById(R.id.loader_bundle)
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val newWidth = MeasureSpec.getSize(widthMeasureSpec) * widthMultiplier
-        val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth.toInt(), MeasureSpec.EXACTLY)
-        super.onMeasure(newWidthMeasureSpec, heightMeasureSpec)
     }
 
     fun bindData(
@@ -366,8 +359,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     companion object {
-        private const val SPACE = 15
-        private const val DEFAULT_WIDTH_MULTIPLIER = 0.75f
+        private const val SPACE = 12
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
     }
 }

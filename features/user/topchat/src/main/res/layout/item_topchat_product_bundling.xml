@@ -11,7 +11,7 @@
 
     <com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
         android:id="@+id/containerBundlingAttachment"
-        android:layout_width="match_parent"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         tools:layout_gravity="end"
         app:layout_constraintTop_toTopOf="parent"/>
