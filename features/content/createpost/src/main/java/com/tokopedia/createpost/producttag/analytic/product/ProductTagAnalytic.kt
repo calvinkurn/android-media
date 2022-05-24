@@ -42,7 +42,11 @@ interface ProductTagAnalytic {
 
     fun clickBackButton(source: ProductTagSource)
 
-    fun impressShopCard() /** TODO: later */
+    fun impressShopCard(
+        source: ProductTagSource,
+        shopId: String,
+        shops: List<Pair<ShopUiModel, Int>>,
+    )
 
     fun clickShopCard(
         shop: ShopUiModel,

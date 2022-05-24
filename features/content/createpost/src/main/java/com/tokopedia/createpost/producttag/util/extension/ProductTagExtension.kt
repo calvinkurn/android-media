@@ -1,11 +1,14 @@
 package com.tokopedia.createpost.producttag.util.extension
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -60,6 +63,21 @@ fun StaggeredGridLayoutManager.getVisibleItems(adapter: MyShopProductAdapter): L
     return emptyList()
 }
 
+fun LinearLayoutManager.getVisibleItems(adapter: ShopCardAdapter): List<Pair<ShopUiModel, Int>> {
+    val items = adapter.getItems()
+    val (start, end) = getVisibleItemsPosition(this, adapter)
+
+    if (start > -1 && end < items.size) {
+        return items.slice(start..end)
+            .filterIsInstance<ShopCardAdapter.Model.Shop>()
+            .mapIndexed { index, item ->
+                Pair(item.shop, start + index)
+            }
+    }
+
+    return emptyList()
+}
+
 private fun <T: Any> getVisibleItemsPosition(
     layoutManager: StaggeredGridLayoutManager,
     adapter: BaseDiffUtilAdapter<T>,
@@ -72,6 +90,22 @@ private fun <T: Any> getVisibleItemsPosition(
 
         val startPosition = startPositionArray[0]
         val endPosition = max(endPositionArray[0], endPositionArray[1])
+
+        return Pair(startPosition, endPosition)
+    }
+
+    return Pair(-1, -1)
+}
+
+private fun <T: Any> getVisibleItemsPosition(
+    layoutManager: LinearLayoutManager,
+    adapter: BaseDiffUtilAdapter<T>,
+): Pair<Int, Int> {
+
+    val products = adapter.getItems()
+    if (products.isNotEmpty()) {
+        val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val endPosition = layoutManager.findLastVisibleItemPosition()
 
         return Pair(startPosition, endPosition)
     }

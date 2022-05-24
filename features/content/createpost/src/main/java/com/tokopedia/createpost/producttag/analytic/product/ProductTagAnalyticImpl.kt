@@ -131,8 +131,34 @@ class ProductTagAnalyticImpl @Inject constructor(
             sendClickEvent("click - back on product tagging", source.labelAnalytic)
     }
 
-    override fun impressShopCard() {
-        /** TODO("Not yet implemented") */
+    override fun impressShopCard(
+        source: ProductTagSource,
+        shopId: String,
+        shops: List<Pair<ShopUiModel, Int>>,
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "promoView",
+                category = "content feed post creation - product tagging",
+                action = "impression - toko product tagging search result",
+                label = "{shop_id}" /** TODO: shop id siapa? */
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "promoView" to hashMapOf(
+                        "promotions" to shops.map {
+                            convertToPromotion(it.first, it.second)
+                        }
+                    )
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
     }
 
     override fun clickShopCard(
