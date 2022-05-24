@@ -35,11 +35,11 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun getDynamicPermissionList() {
         _permissionList.value = PermissionUiModel.getOrCreate(
             cacheManager.get().pageType(),
-            cacheManager.get().isVideoModeOnly()
+            cacheManager.get().modeType()
         )
     }
 
