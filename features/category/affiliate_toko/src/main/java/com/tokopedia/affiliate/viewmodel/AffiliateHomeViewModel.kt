@@ -45,7 +45,6 @@ class AffiliateHomeViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var errorMessage = MutableLiveData<Throwable>()
-    private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
     private var lastID = "0"

@@ -51,7 +51,7 @@ class AffiliateHomeViewModelTest{
     /**************************** getAnnouncementInformation() *******************************************/
     @Test
     fun getAnnouncementInformation(){
-        val affiliateAnnouncementData : AffiliateAnnouncementData = mockk(relaxed = true)
+        val affiliateAnnouncementData : AffiliateAnnouncementDataV2 = mockk(relaxed = true)
         coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
 
         affiliateHomeViewModel.getAnnouncementInformation()
@@ -66,7 +66,6 @@ class AffiliateHomeViewModelTest{
 
         affiliateHomeViewModel.getAnnouncementInformation()
 
-        assertEquals(affiliateHomeViewModel.getAffiliateErrorMessage().value, throwable)
         assertEquals(affiliateHomeViewModel.progressBar().value, false)
     }
 

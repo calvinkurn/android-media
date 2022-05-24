@@ -16,8 +16,7 @@ import javax.inject.Inject
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
-    private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
+    private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
@@ -25,7 +24,6 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = 20
     var isUserBlackListed : Boolean = false
-    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
         shimmerVisibility.value = true
@@ -54,19 +52,8 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
         return tempList
     }
 
-
-    fun getAnnouncementInformation() {
-        launchCatchError(block = {
-            affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
-        }, onError = {
-            it.printStackTrace()
-        })
-    }
-
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun getAffiliateItemCount(): LiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo> = pageInfo
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
-    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
 }
