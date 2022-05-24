@@ -30,7 +30,8 @@ import java.util.*
 class ProductHighlightComponentViewHolder(
         val view: View,
         val listener: HomeComponentListener?,
-        private val productHighlightListener: ProductHighlightListener?
+        private val productHighlightListener: ProductHighlightListener?,
+        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
     private var binding: LayoutProductHighlightBinding? by viewBinding()
     private var isCacheData = false
@@ -136,7 +137,7 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
-        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it) }
+        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it, cardInteraction) }
         channelDataModel?.let {
             masterProductCardListView?.setProductModel(it)
         }

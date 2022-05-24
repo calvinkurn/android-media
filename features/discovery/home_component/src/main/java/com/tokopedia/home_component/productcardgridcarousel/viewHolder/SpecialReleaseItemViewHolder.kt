@@ -22,7 +22,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class SpecialReleaseItemViewHolder(
     private val view: View,
-    private val channels: ChannelModel
+    private val channels: ChannelModel,
+    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY,
 ) : AbstractViewHolder<CarouselSpecialReleaseDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.home_component_special_release_item
@@ -30,7 +31,7 @@ class SpecialReleaseItemViewHolder(
     private var binding: HomeComponentSpecialReleaseItemBinding? by viewBinding()
 
     override fun bind(element: CarouselSpecialReleaseDataModel?) {
-        binding?.cardCampaign?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        binding?.cardCampaign?.animateOnPress = cardInteraction
         if (element != null) {
             view.addOnImpressionListener(element) {
                 element.listener.onProductCardImpressed(

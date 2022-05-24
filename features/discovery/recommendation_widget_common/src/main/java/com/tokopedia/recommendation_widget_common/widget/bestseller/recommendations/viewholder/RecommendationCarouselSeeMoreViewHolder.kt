@@ -5,12 +5,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.adapter.RecommendationCarouselListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.model.RecommendationSeeMoreDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by Lukas on 05/11/20.
  */
-class RecommendationCarouselSeeMoreViewHolder(view: View, private val listener: RecommendationCarouselListener) : AbstractViewHolder<RecommendationSeeMoreDataModel>(view){
+class RecommendationCarouselSeeMoreViewHolder(
+    view: View,
+    private val listener: RecommendationCarouselListener,
+    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+) : AbstractViewHolder<RecommendationSeeMoreDataModel>(view){
     override fun bind(element: RecommendationSeeMoreDataModel) {
+        itemView.findViewById<CardUnify2>(R.id.recommendation_carousel_see_more_card).apply {
+            animateOnPress = cardInteraction
+        }
         itemView.setOnClickListener {
             listener.onSeeMoreCardClick(element.applink)
         }

@@ -10,14 +10,15 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.CardUnify2
 
 class CarouselSeeMorePdpViewHolder(view: View,
-                                   private val channels: ChannelModel)
-    : AbstractViewHolder<CarouselSeeMorePdpDataModel>(view){
+                                   private val channels: ChannelModel,
+                                   private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY,
+) : AbstractViewHolder<CarouselSeeMorePdpDataModel>(view){
 
     private val card: CardUnify2 by lazy { view.findViewById<CardUnify2>(R.id.card_see_more_banner_mix) }
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more)}
 
     override fun bind(element: CarouselSeeMorePdpDataModel) {
-        card.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        card.animateOnPress = cardInteraction
         bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         itemView.setOnClickListener {
             element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)

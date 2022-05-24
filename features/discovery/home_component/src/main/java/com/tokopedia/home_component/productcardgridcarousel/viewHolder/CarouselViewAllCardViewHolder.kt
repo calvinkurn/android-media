@@ -22,7 +22,8 @@ import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_NORMAL
  */
 class CarouselViewAllCardViewHolder(
     view: View,
-    private val channels: ChannelModel
+    private val channels: ChannelModel,
+    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
 ) : AbstractViewHolder<CarouselViewAllCardDataModel>(view) {
 
     private val card: ViewAllCard by lazy { view.findViewById(R.id.card_view_all_banner) }
@@ -45,7 +46,7 @@ class CarouselViewAllCardViewHolder(
         val outValue = TypedValue()
         itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
         card.cardView.foreground = itemView.context.getDrawable(outValue.resourceId)
-        card.cardView.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        card.cardView.animateOnPress = cardInteraction
 
         card.setOnClickListener {
             element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)

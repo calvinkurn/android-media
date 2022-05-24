@@ -40,8 +40,9 @@ import com.tokopedia.unifycomponents.DividerUnify
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null):
-        AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
+                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
+                                  private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     private var isCacheData = false
     private var isLego24UsingRollenceVariant = false
     companion object {
@@ -96,7 +97,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     element.channelModel,
                     adapterPosition + 1,
                     isCacheData,
-                    isLego24UsingRollenceVariant)
+                    isLego24UsingRollenceVariant,
+                    cardInteraction
+            )
             var marginValue = 0
             var marginBottom = 0
             recyclerView.clearDecorations()
@@ -169,7 +172,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                           private val channel: ChannelModel,
                           private val parentPosition: Int,
                           private val isCacheData: Boolean,
-                          private val isLego24UsingRollenceVariant: Boolean = false) : RecyclerView.Adapter<LegoItemViewHolder>() {
+                          private val isLego24UsingRollenceVariant: Boolean = false,
+                          private val cardInteraction: Int
+    ) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
 
@@ -183,7 +188,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             val viewHolder = LegoItemViewHolder(v)
             if(viewType == LEGO_LANDSCAPE){
-                viewHolder.cardUnify.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                viewHolder.cardUnify.animateOnPress = cardInteraction
             }
             else if(viewType == LEGO_SQUARE){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

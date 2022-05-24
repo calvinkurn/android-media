@@ -7,11 +7,13 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.unifycomponents.CardUnify2
 
 class SizeLargeBusinessViewHolder (
         itemView: View,
-        listener: BusinessUnitItemViewListener
-) : SizeSmallBusinessViewHolder(itemView, listener) {
+        listener: BusinessUnitItemViewListener,
+        cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
 
     private var icon: AppCompatImageView = itemView.findViewById(R.id.icon)

@@ -26,8 +26,10 @@ import java.util.HashMap
 /**
  * created by Dhaba
  */
-class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: HomeCategoryListener) :
-        DynamicChannelViewHolder(view, categoryListener) {
+class CategoryWidgetV2ViewHolder (val view: View,
+                                  private val categoryListener: HomeCategoryListener,
+                                  private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+) : DynamicChannelViewHolder(view, categoryListener) {
 
     companion object {
         @LayoutRes
@@ -50,7 +52,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 )
             }
         }
-        recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener)
+        recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener, cardInteraction)
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
                 TOTAL_SPAN_RECYCLER,
@@ -81,7 +83,8 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
 
     class CategoryWidgetV2ItemAdapter(
         private val channels: DynamicHomeChannel.Channels,
-        private val listener: HomeCategoryListener?
+        private val listener: HomeCategoryListener?,
+        private val cardInteraction: Int
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
@@ -92,7 +95,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
             viewHolder.cardUnify.apply {
                 radius = CARD_CORNER_RADIUS.dpToPx()
                 cardType = CardUnify2.TYPE_BORDER
-                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                animateOnPress = cardInteraction
             }
             return viewHolder
         }

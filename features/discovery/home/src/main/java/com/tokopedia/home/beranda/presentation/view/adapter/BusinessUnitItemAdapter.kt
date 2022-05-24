@@ -11,7 +11,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.*
 
 @SuppressLint("SyntheticAccessor")
-class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String, private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
+class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String,
+                              private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
+                              private val cardInteraction: Int
+) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1
 
@@ -30,9 +33,9 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SizeSmallBusinessViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when(viewType) {
-            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(view, listener)
-            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(view, listener)
-            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(view, listener)
+            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(view, listener, cardInteraction)
+            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(view, listener, cardInteraction)
+            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(view, listener, cardInteraction)
             else -> super.createViewHolder(parent, viewType)
         }
     }

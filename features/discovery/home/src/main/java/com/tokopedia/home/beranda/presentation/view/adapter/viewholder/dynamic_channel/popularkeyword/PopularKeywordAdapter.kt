@@ -23,12 +23,13 @@ import com.tokopedia.unifyprinciples.Typography
 class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
                             val homeCategoryListener: HomeCategoryListener,
                             val channel: DynamicHomeChannel.Channels,
-                            val positionInWidget: Int)
+                            val positionInWidget: Int,
+                            private val cardInteraction: Int)
     : RecyclerView.Adapter<PopularKeywordAdapter.Holder>() {
 
     private val popularKeywordList: MutableList<PopularKeywordDataModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_popular_keyword_item, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_popular_keyword_item, parent, false), cardInteraction)
     }
 
     override fun getItemCount(): Int {
@@ -50,9 +51,9 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
         notifyDataSetChanged()
     }
 
-    class Holder(view: View): RecyclerView.ViewHolder(view) {
+    class Holder(view: View, private val cardInteraction: Int): RecyclerView.ViewHolder(view) {
         private val cardProduct: CardUnify2 = view.findViewById<CardUnify2>(R.id.card_product).apply {
-            animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            animateOnPress = cardInteraction
         }
         private val ivImage: ImageUnify = view.findViewById(R.id.iv_product)
         private val tvProduct: Typography = view.findViewById(R.id.tv_product)

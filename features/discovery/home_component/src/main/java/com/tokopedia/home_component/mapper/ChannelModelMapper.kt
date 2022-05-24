@@ -5,7 +5,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
 
 object ChannelModelMapper {
-    fun mapToProductCardModel(channelGrid: ChannelGrid): ProductCardModel {
+    fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteration: Int): ProductCardModel {
         return ProductCardModel(
                 slashedPrice = channelGrid.slashedPrice,
                 productName = channelGrid.name,
@@ -36,7 +36,7 @@ object ChannelModelMapper {
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
-                animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
+                animationOnPress = cardInteration,
         )
     }
 }

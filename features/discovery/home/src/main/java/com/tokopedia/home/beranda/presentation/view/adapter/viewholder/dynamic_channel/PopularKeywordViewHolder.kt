@@ -29,6 +29,7 @@ import com.tokopedia.home.databinding.HomePopularKeywordBinding
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -40,8 +41,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
-                                private val popularKeywordListener: PopularKeywordListener)
-    : AbstractViewHolder<PopularKeywordListDataModel>(view) {
+                                private val popularKeywordListener: PopularKeywordListener,
+                                private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+) : AbstractViewHolder<PopularKeywordListDataModel>(view) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
@@ -97,7 +99,7 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
-            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition)
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition, cardInteraction)
             val spanCount = DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context)
             recyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
             recyclerView.adapter = adapter

@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.CardUnify2
  * Created by Lukas on 2019-07-15
  */
 
-class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
+class HomeRecommendationItemViewHolder(itemView: View, private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
 
     companion object{
         @LayoutRes
@@ -55,7 +55,7 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                             ),
                             labelGroupList = productCardModelLabelGroupList,
                             hasThreeDots = true,
-                            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                            animationOnPress = cardInteraction
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {

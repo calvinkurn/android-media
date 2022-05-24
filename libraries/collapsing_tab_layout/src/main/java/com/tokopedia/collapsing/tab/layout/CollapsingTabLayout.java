@@ -61,7 +61,7 @@ public class CollapsingTabLayout extends TabLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList) {
+    public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList, int cardInteraction) {
         this.tabItemDataList.clear();
         this.tabItemDataList.addAll(tabItemDataList);
         resetAllState();
@@ -91,7 +91,7 @@ public class CollapsingTabLayout extends TabLayout {
 
         for (int i = 0; i < getTabCount(); i++) {
             TabLayout.Tab tab = getTabAt(i);
-            tab.setCustomView(getTabView(getContext(), i, tab));
+            tab.setCustomView(getTabView(getContext(), i, tab, cardInteraction));
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -338,10 +338,10 @@ public class CollapsingTabLayout extends TabLayout {
         lastTabCollapseFraction = tabCollapseFraction;
     }
 
-    private View getTabView(Context context, int position, TabLayout.Tab tab) {
+    private View getTabView(Context context, int position, TabLayout.Tab tab, int cardInteraction) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         CardUnify2 card = rootView.findViewById(R.id.card_tab);
-        card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY_BOUNCE());
+        card.setAnimateOnPress(cardInteraction);
         card.setRadius((int)(TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
         card.setOnClickListener(new OnClickListener() {
             @Override

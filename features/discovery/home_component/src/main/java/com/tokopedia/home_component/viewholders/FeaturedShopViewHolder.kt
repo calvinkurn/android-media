@@ -27,6 +27,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -35,7 +36,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class FeaturedShopViewHolder(
         itemView: View,
         private val listener: FeaturedShopListener,
-        private val homeComponentListener: HomeComponentListener?
+        private val homeComponentListener: HomeComponentListener?,
+        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
 ) : AbstractViewHolder<FeaturedShopDataModel>(itemView), CommonProductCardCarouselListener {
 
     private var binding: HomeFeaturedShopBinding? by viewBinding()
@@ -100,7 +102,7 @@ class FeaturedShopViewHolder(
             listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
 
         if(!this::adapter.isInitialized) {
-            val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
+            val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel, cardInteraction)
             adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
             binding?.dcBannerRv?.adapter = adapter
         } else {

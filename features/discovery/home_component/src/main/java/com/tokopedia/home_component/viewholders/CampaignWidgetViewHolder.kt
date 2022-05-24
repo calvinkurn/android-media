@@ -22,6 +22,7 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselV
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.CampaignWidgetAdapter
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by yfsx on 11/10/21.
@@ -30,7 +31,8 @@ class CampaignWidgetViewHolder(
     itemView: View,
     val homeComponentListener: HomeComponentListener?,
     val campaignWidgetComponentListener: CampaignWidgetComponentListener?,
-    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null
+    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
 ) : AbstractViewHolder<CampaignWidgetDataModel>(itemView), CommonProductCardCarouselListener {
 
     private lateinit var adapter: CampaignWidgetAdapter
@@ -126,7 +128,7 @@ class CampaignWidgetViewHolder(
                 )
             }
         }
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel, cardInteraction)
         adapter = CampaignWidgetAdapter(dataList, typeFactoryImpl)
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter

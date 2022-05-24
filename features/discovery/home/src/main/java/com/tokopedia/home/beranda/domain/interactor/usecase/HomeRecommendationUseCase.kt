@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 import dagger.Lazy
 import java.lang.Exception
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class HomeRecommendationUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                         recommendationFilterChips = currentBestSellerDataModel.filterChip
                 )
-                val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
                 val newModel = currentBestSellerDataModel.copy(
                         seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                         recommendationItemList = newBestSellerDataModel.recommendationItemList,

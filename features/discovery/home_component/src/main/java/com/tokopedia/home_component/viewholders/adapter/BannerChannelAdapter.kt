@@ -19,14 +19,18 @@ import com.tokopedia.unifycomponents.CardUnify2
  */
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
-class BannerChannelAdapter(itemList: List<BannerItemModel>, private val bannerItemListener: BannerItemListener) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
+class BannerChannelAdapter(
+    itemList: List<BannerItemModel>,
+    private val bannerItemListener: BannerItemListener,
+    private val cardInteraction: Int
+) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var itemList: List<BannerItemModel> = listOf()
     private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
         val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
         val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
-        viewHolder.cardUnify.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        viewHolder.cardUnify.animateOnPress = cardInteraction
         return viewHolder
     }
 

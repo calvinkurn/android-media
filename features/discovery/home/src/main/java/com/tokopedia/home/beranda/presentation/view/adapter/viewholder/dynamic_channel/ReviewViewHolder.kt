@@ -19,7 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ReviewViewHolder(
         itemView: View,
         private val reviewListener: HomeReviewListener,
-        private val categoryListener: HomeCategoryListener
+        private val categoryListener: HomeCategoryListener,
+        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
 ) : AbstractViewHolder<ReviewDataModel>(itemView) {
 
     private var binding: HomeItemReviewBinding? by viewBinding()
@@ -43,7 +44,7 @@ class ReviewViewHolder(
     }
 
     override fun bind(element: ReviewDataModel) {
-        binding?.cardReview?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        binding?.cardReview?.animateOnPress = cardInteraction
         performanceMonitoring?.startTrace(performanceTraceName)
         binding?.reviewCardBg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->

@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.unifycomponents.CardUnify2
 import java.util.*
 
 /**
@@ -24,7 +25,9 @@ import java.util.*
  */
 
 class HomeRecommendationFeedViewHolder(itemView: View,
-                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
+                                       private val listener: HomeCategoryListener,
+                                       private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
     private val context: Context = itemView.context
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
     private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
@@ -82,7 +85,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                     reason = e.message.toString()
             )
         }
-        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
+        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!), cardInteraction)
         homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position < recommendationTabDataModelList!!.size) {

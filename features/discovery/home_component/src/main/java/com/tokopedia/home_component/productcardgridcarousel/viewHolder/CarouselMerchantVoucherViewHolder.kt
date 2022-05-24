@@ -23,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 class CarouselMerchantVoucherViewHolder (
-    view: View
+    view: View,
+    private val cardInteraction: Int = CardUnify2.ANIMATE_NONE
 ): AbstractViewHolder<CarouselMerchantVoucherDataModel>(view) {
 
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
@@ -79,7 +80,7 @@ class CarouselMerchantVoucherViewHolder (
         binding?.cardContainerMvc?.apply {
             setCardUnifyBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
             cardType = CardUnify2.TYPE_CLEAR
-            animateOnPress = CardUnify2.ANIMATE_BOUNCE
+            animateOnPress = cardInteraction
             setOnClickListener {
                 element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
             }

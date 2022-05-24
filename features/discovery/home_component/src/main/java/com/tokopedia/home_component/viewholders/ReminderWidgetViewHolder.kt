@@ -23,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ReminderWidgetViewHolder(
         itemView: View,
         val reminderWidgetListener : ReminderWidgetListener?,
-        val disableNetwork: Boolean = false
+        val disableNetwork: Boolean = false,
+        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var binding: HomeComponentReminderWidgetBinding? by viewBinding()
@@ -54,7 +55,7 @@ class ReminderWidgetViewHolder(
             binding?.cardReminder?.apply {
                 cardElevation = 0f
                 cardType = CardUnify2.TYPE_CLEAR
-                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                animateOnPress = cardInteraction
             }
             if(element.data.reminders.isEmpty()){
                 this?.homeReminderRecommendationLoading?.root?.show()
