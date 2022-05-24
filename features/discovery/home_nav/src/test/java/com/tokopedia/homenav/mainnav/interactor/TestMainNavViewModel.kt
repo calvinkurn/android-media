@@ -902,7 +902,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list with disable me page rollence then refresh bu list data will success delete error bu list`() {
+    fun `test show error bu list with enable me page rollence then refresh bu list data will success delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -1268,7 +1268,6 @@ class TestMainNavViewModel {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
-        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
             getBuListUseCase.executeOnBackground()
         }.answers { listOf(successResult) }
