@@ -8,7 +8,6 @@ import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -59,12 +58,8 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                 }
                 // store this activity so it can be stopped later
                 prevActivityRef = WeakReference(activity)
-                Log.w(
-                    "HENDRYTAG",
-                    "Telemetry registerTelemetryListener " + activity::class.java.simpleName
-                )
             } catch (e: Throwable) {
-                Log.w("HENDRYTAG", "Error Telemetry registerTelemetryListener $e")
+                e.printStackTrace()
             }
         }
     }
@@ -111,7 +106,6 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
             activity.lifecycleScope.launch {
                 delay(SECTION_TELEMETRY_DURATION)
                 stopTelemetryListener(activity)
-                Log.w("HENDRYTAG", "Telemetry stop in tele activity")
                 Telemetry.addStopTime()
             }
 
@@ -120,18 +114,15 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                 // check if it is already past section duration or not
                 val elapsedDiff = Telemetry.getElapsedDiff()
                 if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
-                    Log.w("HENDRYTAG", "Regis tele $elapsedDiff")
                     registerTelemetryListener(activity)
                     // timer to stop after telemetry duration
                     activity.lifecycleScope.launch {
                         val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
                         delay(remainingDurr)
                         stopTelemetryListener(activity)
-                        Log.w("HENDRYTAG", "Telemetry stop in non-tele activity")
                         Telemetry.addStopTime()
                     }
                 } else { // duration is due
-                    Log.w("HENDRYTAG", "Telemetry stop in non-tele activity; due")
                     val estimatedDuration =
                         Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
                     Telemetry.addStopTime("", estimatedDuration)
@@ -151,7 +142,6 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     private fun stopTelemetryListener(activity: Activity) {
         try {
-            Log.w("HENDRYTAG", "stopTelemetryListener " + activity::class.java.simpleName)
             val sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             sensorManager?.unregisterListener(TelemetryAccelListener)
             sensorManager?.unregisterListener(TelemetryGyroListener)
@@ -166,7 +156,7 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                 activity.removeDispatchTouchListener(TelemetryTouchListener)
             }
         } catch (e: Throwable) {
-            Log.w("HENDRYTAG", "Error Telemetry stopTelemetryListener $e")
+            e.printStackTrace()
         }
     }
 }

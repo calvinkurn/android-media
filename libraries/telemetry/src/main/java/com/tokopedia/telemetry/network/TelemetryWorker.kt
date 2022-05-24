@@ -3,7 +3,6 @@ package com.tokopedia.telemetry.network
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.telemetry.model.Telemetry
-import com.tokopedia.telemetry.model.TelemetrySection
 import com.tokopedia.telemetry.network.di.DaggerTelemetryComponent
 import com.tokopedia.telemetry.network.di.TelemetryModule
 import com.tokopedia.telemetry.network.usecase.TelemetryUseCase
