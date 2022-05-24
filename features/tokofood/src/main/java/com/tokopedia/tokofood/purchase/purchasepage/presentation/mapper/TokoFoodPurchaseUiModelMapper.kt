@@ -30,7 +30,7 @@ object TokoFoodPurchaseUiModelMapper {
         needPinpoint: Boolean
     ): List<Visitable<*>> {
         val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
+        val shouldSummaryShown = !response.data.summaryDetail.hideSummary
 
         return mutableListOf<Visitable<*>>().apply {
             val tickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
@@ -87,7 +87,7 @@ object TokoFoodPurchaseUiModelMapper {
                         }
                     add(
                         mapSummaryTransactionUiModel(
-                            response.data.shoppingSummary.summaryDetail.details,
+                            response.data.summaryDetail.details,
                             isBottomTickerError to bottomTickerMessage
                         )
                     )
@@ -105,7 +105,7 @@ object TokoFoodPurchaseUiModelMapper {
     ): PartialTokoFoodUiModel {
         val shouldShippingShown = response.data.shipping.name.isNotEmpty()
         val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
+        val shouldSummaryShown = !response.data.summaryDetail.hideSummary
         val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
         val bottomTickerMessage =
             if (isBottomTickerError) {
@@ -121,7 +121,7 @@ object TokoFoodPurchaseUiModelMapper {
             ).takeIf { shouldShippingShown },
             promoUiModel = mapPromoUiModel(response.data.promo).takeIf { shouldPromoShown },
             summaryUiModel = mapSummaryTransactionUiModel(
-                response.data.shoppingSummary.summaryDetail.details,
+                response.data.summaryDetail.details,
                 isBottomTickerError to bottomTickerMessage
             ).takeIf { shouldSummaryShown },
             totalAmountUiModel = mapTotalAmountUiModel(

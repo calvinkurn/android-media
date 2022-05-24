@@ -45,16 +45,18 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(additionalAttributes: String): Map<String, Any> {
+        private fun generateParams(additionalAttributes: String,
+                                   source: String): Map<String, Any> {
             val params = CheckoutTokoFoodParam(
-                additionalAttributes = additionalAttributes
+                additionalAttributes = additionalAttributes,
+                source = source
             )
             return mapOf(PARAMS_KEY to params)
         }
     }
 
     override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: CheckoutTokoFoodParam!) {
+        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
           cart_list_tokofood(params: $$PARAMS_KEY) {
             message
             status
@@ -117,7 +119,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -155,7 +157,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -202,11 +204,11 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     original_amount
                     amount
                   }
-                  takeaway_fee {
+                  outlet_fee {
                     original_amount
                     amount
                   }
-                  convenience_fee {
+                  platform_fee {
                     original_amount
                     amount
                   }
@@ -218,7 +220,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                       factor
                     }
                   }
-                  parking_fee {
+                  reimbursement_fee {
                     original_amount
                     amount
                   }
@@ -234,19 +236,19 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   data_type
                   checkout_business_id
                 }
-                summary_detail {
-                  hide_summary
-                  total_items
-                  total_price
-                  details {
-                    title
-                    price_fmt
-                    info {
-                      image_url
-                      bottomsheet {
-                        title
-                        description
-                      }
+              }
+              summary_detail {
+                hide_summary
+                total_items
+                total_price
+                details {
+                  title
+                  price_fmt
+                  info {
+                    image_url
+                    bottomsheet {
+                      title
+                      description
                     }
                   }
                 }
@@ -265,7 +267,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 chosenAddressRequestHelper.getChosenAddress(),
                 params
             )
-            val param = generateParams(additionalAttributes.generateString())
+            val param = generateParams(additionalAttributes.generateString(), params)
             val response =
                 repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
             emit(response)
@@ -450,43 +452,43 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     discountBreakdown = listOf(CheckoutTokoFoodShoppingDiscountBreakdown(
                         title = "Total Diskon Item",
                         amount = 12000.00
-                    )),
-                    summaryDetail = CheckoutTokoFoodSummaryDetail(
-                        hideSummary = false,
-                        totalItems = 0,
-                        totalPrice = "Rp 133.000",
-                        details = listOf(
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Total Harga (2 item)",
-                                priceFmt = "Rp 125.000"
-                            ),
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Total Diskon Item",
-                                priceFmt = "-Rp 12.000"
-                            ),
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Biaya Bungkus dari Restoran",
-                                priceFmt = "Rp 6.000"
-                            ),
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Biaya Jasa Aplikasi",
-                                priceFmt = "Rp 4.000"
-                            ),
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Total Ongkos Kirim",
-                                priceFmt = "Rp 16.000",
-                                info = CheckoutTokoFoodSummaryItemDetailInfo(
-                                    imageUrl = "https://icons.veryicon.com/png/o/miscellaneous/zol-m-station/icon-top-arrow.png",
-                                    bottomSheet = CheckoutTokoFoodSummaryItemDetailBottomSheet(
-                                        title = "Ongkos kirim kamu naik, ya",
-                                        description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
-                                    )
+                    ))
+                ),
+                summaryDetail = CheckoutTokoFoodSummaryDetail(
+                    hideSummary = false,
+                    totalItems = 0,
+                    totalPrice = "Rp 133.000",
+                    details = listOf(
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Total Harga (2 item)",
+                            priceFmt = "Rp 125.000"
+                        ),
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Total Diskon Item",
+                            priceFmt = "-Rp 12.000"
+                        ),
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Biaya Bungkus dari Restoran",
+                            priceFmt = "Rp 6.000"
+                        ),
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Biaya Jasa Aplikasi",
+                            priceFmt = "Rp 4.000"
+                        ),
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Total Ongkos Kirim",
+                            priceFmt = "Rp 16.000",
+                            info = CheckoutTokoFoodSummaryItemDetailInfo(
+                                imageUrl = "https://icons.veryicon.com/png/o/miscellaneous/zol-m-station/icon-top-arrow.png",
+                                bottomSheet = CheckoutTokoFoodSummaryItemDetailBottomSheet(
+                                    title = "Ongkos kirim kamu naik, ya",
+                                    description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
                                 )
-                            ),
-                            CheckoutTokoFoodSummaryItemDetail(
-                                title = "Total Diskon Ongkos Kirim",
-                                priceFmt = "-Rp 6.000"
                             )
+                        ),
+                        CheckoutTokoFoodSummaryItemDetail(
+                            title = "Total Diskon Ongkos Kirim",
+                            priceFmt = "-Rp 6.000"
                         )
                     )
                 )

@@ -68,7 +68,10 @@ data class CheckoutTokoFoodData(
     val checkoutConsentBottomSheet: CheckoutTokoFoodConsentBottomSheet = CheckoutTokoFoodConsentBottomSheet(),
     @SerializedName("shopping_summary")
     @Expose
-    val shoppingSummary: CheckoutTokoFoodShoppingSummary = CheckoutTokoFoodShoppingSummary()
+    val shoppingSummary: CheckoutTokoFoodShoppingSummary = CheckoutTokoFoodShoppingSummary(),
+    @SerializedName("summary_detail")
+    @Expose
+    val summaryDetail: CheckoutTokoFoodSummaryDetail = CheckoutTokoFoodSummaryDetail()
 )
 
 data class CheckoutTokoFoodShop(
@@ -195,7 +198,7 @@ data class CheckoutTokoFoodProductVariant(
 )
 
 data class CheckoutTokoFoodProductVariantRules(
-    @SerializedName("selection_rules")
+    @SerializedName("selection_rule")
     @Expose
     val selectionRules: CheckoutTokoFoodProductVariantSelectionRules = CheckoutTokoFoodProductVariantSelectionRules()
 )
@@ -307,10 +310,7 @@ data class CheckoutTokoFoodShoppingSummary(
     val discountBreakdown: List<CheckoutTokoFoodShoppingDiscountBreakdown> = listOf(),
     @SerializedName("checkout_additional_data")
     @Expose
-    val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData(),
-    @SerializedName("summary_detail")
-    @Expose
-    val summaryDetail: CheckoutTokoFoodSummaryDetail = CheckoutTokoFoodSummaryDetail()
+    val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData()
 )
 
 data class CheckoutTokoFoodShoppingTotal(
@@ -326,16 +326,16 @@ data class CheckoutTokoFoodShoppingCostBreakdown(
     @SerializedName("total_cart_price")
     @Expose
     val totalCartPrice: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
-    @SerializedName("takeaway_fee")
+    @SerializedName("outlet_fee")
     @Expose
     val takeAwayFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
-    @SerializedName("convenience_fee")
+    @SerializedName("platform_fee")
     @Expose
     val convenienceFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
     @SerializedName("delivery_fee")
     @Expose
     val deliveryFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem(),
-    @SerializedName("parking_fee")
+    @SerializedName("reimbursement_fee")
     @Expose
     val parkingFee: CheckoutTokoFoodShoppingCostBreakdownItem = CheckoutTokoFoodShoppingCostBreakdownItem()
 )

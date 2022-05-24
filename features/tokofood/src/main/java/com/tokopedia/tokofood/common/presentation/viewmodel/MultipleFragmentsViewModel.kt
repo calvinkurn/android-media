@@ -267,8 +267,8 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         return MiniCartUiModel(
             shopName = cartData.shop.name,
             totalPrice = cartData.shoppingSummary.total.cost,
-            totalPriceFmt = cartData.shoppingSummary.summaryDetail.totalPrice,
-            totalProductQuantity = cartData.shoppingSummary.summaryDetail.totalItems
+            totalPriceFmt = cartData.summaryDetail.totalPrice,
+            totalProductQuantity = cartData.summaryDetail.totalItems
         )
     }
 
