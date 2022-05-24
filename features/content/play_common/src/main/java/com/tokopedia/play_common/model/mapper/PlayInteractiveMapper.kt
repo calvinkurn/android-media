@@ -24,7 +24,7 @@ class PlayInteractiveMapper @Inject constructor() {
         }
     }
 
-    fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
+    fun mapGiveaway(data: GiveawayResponse, waitingDuration: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
             title = data.title,
@@ -45,11 +45,11 @@ class PlayInteractiveMapper @Inject constructor() {
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
             },
-            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDurationInMillis),
+            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDuration),
         )
     }
 
-    fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
+    fun mapQuiz(data: QuizResponse, waitingDuration: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
             title = data.question,
@@ -74,7 +74,7 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
             },
             reward = data.prize,
-            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDurationInMillis),
+            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDuration),
         )
     }
 
