@@ -51,6 +51,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
+        private const val DISABLED_REASON_PRODUCT_ALREADY_HAS_DISCOUNT = "Produk sudah memiliki diskon"
 
         @JvmStatic
         fun newInstance(discountStatusId: Int): SelectProductFragment {
@@ -337,23 +338,19 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun showDisableReason(disableReason: String) {
-        if (disableReason.isNotEmpty()) {
-            Toaster.build(
-                binding?.recyclerView ?: return,
-                disableReason,
-                Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.sd_ok)
-            ).show()
-        } else {
-            Toaster.build(
-                binding?.recyclerView ?: return,
-                getString(R.string.sd_already_discount),
-                Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.sd_ok)
-            ).show()
+        val wording : String = when{
+            disableReason == DISABLED_REASON_PRODUCT_ALREADY_HAS_DISCOUNT -> getString(R.string.sd_product_already_on_discount)
+            disableReason.isNotEmpty() -> disableReason
+            else -> getString(R.string.sd_product_already_on_discount)
         }
+
+        Toaster.build(
+            binding?.recyclerView ?: return,
+            wording,
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            getString(R.string.sd_ok)
+        ).show()
     }
 
     private fun showNoMoreRemainingQuota() {
