@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
-import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
+import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -169,7 +169,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
                     }
                 }
             }
-            viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
+            viewBinding?.btnChat?.text = getString(R.string.mini_cart_chat_btn_label_ask_product, elements.size)
         }
     }
 
@@ -177,9 +177,9 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         mContext?.apply {
             elements.remove(element)
             if (elements.size == DEFAULT_PRODUCT_SIZE) {
-                viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
+                viewBinding?.btnChat?.text = getString(R.string.mini_cart_chat_btn_label)
             } else {
-                viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
+                viewBinding?.btnChat?.text = getString(R.string.mini_cart_chat_btn_label_ask_product, elements.size)
                 resetModelData(element)
                 scrollPosition = layoutManager?.findLastVisibleItemPosition().orZero()
                 miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
@@ -212,7 +212,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
             viewBinding.btnChat.text = getString(R.string.mini_cart_chat_btn_label)
             viewBinding.btnChat.setOnClickListener {
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
-                if (elements.isNullOrEmpty()) {
+                if (elements.isEmpty()) {
                     openChatPageWithoutProduct(shopId)
                     analytics.eventClickBtnDirectChatBottomSheet()
                 } else {
