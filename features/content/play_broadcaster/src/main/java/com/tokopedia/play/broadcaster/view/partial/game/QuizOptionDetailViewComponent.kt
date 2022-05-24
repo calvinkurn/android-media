@@ -61,7 +61,7 @@ class QuizOptionDetailViewComponent(
             listener.onBackButtonClicked(this)
         }
 
-        findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
+        findViewById<UnifyButton>(commonR.id.btn_action_leaderboard_error).setOnClickListener {
             listener.onRefreshButtonClicked(this)
         }
 
