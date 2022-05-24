@@ -29,7 +29,7 @@ import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCas
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
@@ -69,7 +69,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
 
-    private val homeLayoutItemList = mutableListOf<TokoFoodHomeItemUiModel>()
+    private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
         launchCatchError(block = {

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -28,12 +29,15 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodCategoryViewModel
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -104,6 +108,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         setupUi()
         setupNavToolbar()
         setupRecycleView()
+        observeLiveData()
+
+        loadLayout()
     }
 
     override fun getFragmentTitle(): String? {
@@ -140,6 +147,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun onRefreshLayout() {
         //TODO Refresh layout
+    }
+
+    private fun observeLiveData() {
+        observe(viewModel.layoutList) {
+            when (it) {
+                is Success -> onSuccessGetHomeLayout(it.data)
+            }
+        }
     }
 
     private fun setupUi() {
@@ -180,6 +195,37 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         val icons =
             IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
         navToolbar?.setIcon(icons)
+    }
+
+    private fun onSuccessGetHomeLayout(data: TokoFoodListUiModel) {
+        when (data.state) {
+            TokoFoodLayoutState.SHOW -> onShowHomeLayout(data)
+            TokoFoodLayoutState.HIDE -> onHideHomeLayout(data)
+            TokoFoodLayoutState.LOADING -> onLoadingHomelayout(data)
+            else -> showHomeLayout(data)
+        }
+    }
+
+    private fun onShowHomeLayout(data: TokoFoodListUiModel) {
+        showHomeLayout(data)
+    }
+
+    private fun onHideHomeLayout(data: TokoFoodListUiModel) {
+        showHomeLayout(data)
+    }
+
+    private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
+        showHomeLayout(data)
+    }
+
+    private fun showHomeLayout(data: TokoFoodListUiModel) {
+        rvCategory?.post {
+            adapter.submitList(data.items)
+        }
+    }
+
+    private fun loadLayout() {
+        viewModel.getLoadingState()
     }
 
 }
