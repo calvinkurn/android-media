@@ -11,6 +11,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -29,6 +31,8 @@ class RecentViewViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
+    private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
+    private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     lateinit var viewModel: RecentViewViewModel
@@ -41,7 +45,8 @@ class RecentViewViewModelTest {
         coEvery { recentViewUseCase.execute(capture(slot), any()) } answers {
             slot.captured.invoke(arrayListOf())
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         viewModel.getRecentView()
         assert(viewModel.recentViewDetailProductDataResp.value is Success)
     }
@@ -53,7 +58,8 @@ class RecentViewViewModelTest {
         coEvery { recentViewUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.invoke(Throwable())
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         viewModel.getRecentView()
         assert(viewModel.recentViewDetailProductDataResp.value is Fail)
     }
@@ -65,8 +71,9 @@ class RecentViewViewModelTest {
         coEvery { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessAddWishlist("1")
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
-        viewModel.addToWishlist(1, "1")
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.addToWishlist("1")
         assert(viewModel.addWishlistResponse.value is Success && (viewModel.addWishlistResponse.value as Success<String>).data == "1")
     }
 
@@ -78,8 +85,9 @@ class RecentViewViewModelTest {
         coEvery { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorAddWishList(errorMessage, "1")
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
-        viewModel.addToWishlist(1, "1")
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.addToWishlist( "1")
         assert(viewModel.addWishlistResponse.value is Fail && (viewModel.addWishlistResponse.value as Fail).throwable.message == errorMessage)
     }
 
@@ -90,8 +98,9 @@ class RecentViewViewModelTest {
         coEvery { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessRemoveWishlist("1")
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
-        viewModel.removeFromWishlist(1, "1")
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.removeFromWishlist("1")
         assert(viewModel.removeWishlistResponse.value is Success && (viewModel.removeWishlistResponse.value as Success<String>).data == "1")
     }
 
@@ -103,8 +112,9 @@ class RecentViewViewModelTest {
         coEvery { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorRemoveWishlist(errorMessage, "1")
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase, removeWishListUseCase, recentViewUseCase)
-        viewModel.removeFromWishlist(1, "1")
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.removeFromWishlist("1")
         assert(viewModel.removeWishlistResponse.value is Fail && (viewModel.removeWishlistResponse.value as Fail).throwable.message == errorMessage)
     }
 }
