@@ -71,7 +71,10 @@ data class CheckoutTokoFoodData(
     val shoppingSummary: CheckoutTokoFoodShoppingSummary = CheckoutTokoFoodShoppingSummary(),
     @SerializedName("summary_detail")
     @Expose
-    val summaryDetail: CheckoutTokoFoodSummaryDetail = CheckoutTokoFoodSummaryDetail()
+    val summaryDetail: CheckoutTokoFoodSummaryDetail = CheckoutTokoFoodSummaryDetail(),
+    @SerializedName("checkout_additional_data")
+    @Expose
+    val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData()
 )
 
 data class CheckoutTokoFoodShop(
@@ -307,10 +310,7 @@ data class CheckoutTokoFoodShoppingSummary(
     val costBreakdown: CheckoutTokoFoodShoppingCostBreakdown = CheckoutTokoFoodShoppingCostBreakdown(),
     @SerializedName("discount_breakdown")
     @Expose
-    val discountBreakdown: List<CheckoutTokoFoodShoppingDiscountBreakdown> = listOf(),
-    @SerializedName("checkout_additional_data")
-    @Expose
-    val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData()
+    val discountBreakdown: List<CheckoutTokoFoodShoppingDiscountBreakdown> = listOf()
 )
 
 data class CheckoutTokoFoodShoppingTotal(
