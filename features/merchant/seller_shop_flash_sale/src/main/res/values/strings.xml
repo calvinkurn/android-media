@@ -32,4 +32,10 @@
     <string name="success_register_campaign_description">Pastikan informasi produk sudah sesuai kebutuhan campaign-mu. Kamu masih bisa ubah informasi produknya juga, ya.</string>
     <string name="success_register_campaign_primary_cta_text">Oke, Mengerti</string>
 
+    <!--Shop Close Dialog-->
+    <string name="shop_close_title">Yaah, tokomu sedang tutup</string>
+    <string name="shop_close_description">Kamu tidak bisa tambah atau ubah produk campaign saat tokomu tutup. Buka tokomu dulu, yuk!</string>
+    <string name="shop_close_primary_cta">Buka Toko Sekarang</string>
+    <string name="shop_close_secondary_cta">Batal</string>
+    <string name="shop_close_foot_note">Kamu dapat mengatur kembali jam buka dan tutup toko di Pengaturan Toko</string>
 </resources>
