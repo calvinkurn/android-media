@@ -50,7 +50,7 @@ data class FlightVerify(
     data class FlightVerifyCart(
             @SerializedName("productId")
             @Expose
-            val productId: Int = 0,
+            val productId: String = "0",
 
             @SerializedName("quantity")
             @Expose

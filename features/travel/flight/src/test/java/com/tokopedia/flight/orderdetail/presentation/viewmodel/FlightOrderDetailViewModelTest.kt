@@ -683,11 +683,11 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
-                1,
+                "1",
                 "0001-01-01T00:00:00Z",
                 700,
                 "Berhasil",
-                1,
+                "1",
                 "1234567890",
                 "Muhammad Furqan",
                 "email@email.com",
@@ -709,7 +709,7 @@ class FlightOrderDetailViewModelTest {
                 "dummy contact us URL",
                 false,
                 FlightOrderDetailPaymentModel(
-                        1,
+                        "1",
                         1,
                         "Paid",
                         "BCA Virtual Account",
@@ -737,7 +737,7 @@ class FlightOrderDetailViewModelTest {
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
-                                1,
+                                "1",
                                 1,
                                 "123",
                                 "0001-01-01T00:00:00Z",
@@ -808,7 +808,7 @@ class FlightOrderDetailViewModelTest {
                 arrayListOf(
                         FlightOrderDetailPassengerModel(
                                 1,
-                                1,
+                                "1",
                                 1,
                                 "Dewasa",
                                 1,
@@ -843,11 +843,11 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
-                1,
+                "1",
                 "0001-01-01T00:00:00Z",
                 700,
                 "Berhasil",
-                1,
+                "1",
                 "1234567890",
                 "Muhammad Furqan",
                 "email@email.com",
@@ -869,7 +869,7 @@ class FlightOrderDetailViewModelTest {
                 "dummy contact us URL",
                 false,
                 FlightOrderDetailPaymentModel(
-                        1,
+                        "1",
                         1,
                         "Paid",
                         "BCA Virtual Account",
@@ -897,7 +897,7 @@ class FlightOrderDetailViewModelTest {
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
-                                1,
+                                "1",
                                 1,
                                 "123",
                                 "0001-01-01T00:00:00Z",
@@ -968,7 +968,7 @@ class FlightOrderDetailViewModelTest {
                 arrayListOf(
                         FlightOrderDetailPassengerModel(
                                 1,
-                                1,
+                                "1",
                                 1,
                                 "Dewasa",
                                 1,
@@ -1003,11 +1003,11 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
-                1,
+                "1",
                 "0001-01-01T00:00:00Z",
                 700,
                 "Berhasil",
-                1,
+                "1",
                 "1234567890",
                 "Muhammad Furqan",
                 "email@email.com",
@@ -1029,7 +1029,7 @@ class FlightOrderDetailViewModelTest {
                 "dummy contact us URL",
                 false,
                 FlightOrderDetailPaymentModel(
-                        1,
+                        "1",
                         1,
                         "Paid",
                         "BCA Virtual Account",
@@ -1057,7 +1057,7 @@ class FlightOrderDetailViewModelTest {
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
-                                1,
+                                "1",
                                 1,
                                 "123",
                                 "0001-01-01T00:00:00Z",
@@ -1128,7 +1128,7 @@ class FlightOrderDetailViewModelTest {
                 arrayListOf(
                         FlightOrderDetailPassengerModel(
                                 1,
-                                1,
+                                "1",
                                 1,
                                 "Dewasa",
                                 1,
@@ -1163,11 +1163,11 @@ class FlightOrderDetailViewModelTest {
         // given
         // dummy data will be build on runtime because checkIn date need to be dynamic
         val dummyData = FlightOrderDetailDataModel(
-                1,
+                "1",
                 "0001-01-01T00:00:00Z",
                 700,
                 "Berhasil",
-                1,
+                "1",
                 "1234567890",
                 "Muhammad Furqan",
                 "email@email.com",
@@ -1189,7 +1189,7 @@ class FlightOrderDetailViewModelTest {
                 "dummy contact us URL",
                 false,
                 FlightOrderDetailPaymentModel(
-                        1,
+                        "1",
                         1,
                         "Paid",
                         "BCA Virtual Account",
@@ -1217,7 +1217,7 @@ class FlightOrderDetailViewModelTest {
                 ),
                 arrayListOf(
                         FlightOrderDetailJourneyModel(
-                                1,
+                                "1",
                                 1,
                                 "123",
                                 "0001-01-01T00:00:00Z",
@@ -1288,7 +1288,7 @@ class FlightOrderDetailViewModelTest {
                 arrayListOf(
                         FlightOrderDetailPassengerModel(
                                 1,
-                                1,
+                                "1",
                                 1,
                                 "Dewasa",
                                 1,

@@ -28,7 +28,7 @@ class FlightOrderDetailEntity(
     class OrderDetailData(
         @SerializedName("omsID")
         @Expose
-        val omsId: Int = 0,
+        val omsId: String = "0",
         @SerializedName("createTime")
         @Expose
         val createTime: String = "",
@@ -68,7 +68,7 @@ class FlightOrderDetailEntity(
 class OrderDetailFlight(
     @SerializedName("id")
     @Expose
-    val id: Int = 0,
+    val id: String = "0",
     @SerializedName("invoiceID")
     @Expose
     val invoiceId: String = "",
@@ -155,7 +155,7 @@ class OrderDetailFlight(
 class OrderDetailPayment(
     @SerializedName("id")
     @Expose
-    val id: Long = 0,
+    val id: String = "0",
     @SerializedName("status")
     @Expose
     val status: Int = 0,
@@ -239,7 +239,7 @@ class OrderDetailPayment(
 class OrderDetailJourney(
     @SerializedName("id")
     @Expose
-    val id: Int = 0,
+    val id: String = "0",
     @SerializedName("status")
     @Expose
     val status: Int = 0,
@@ -412,7 +412,7 @@ class OrderDetailRoute(
     class OrderTickerNumbers(
         @SerializedName("passengerID")
         @Expose
-        val passengerId: Int = 0,
+        val passengerId: String = "0",
         @SerializedName("ticketNumber")
         @Expose
         val ticketNumber: String = ""
@@ -455,7 +455,7 @@ class OrderDetailFreeAmenity(
 class OrderDetailPassenger(
     @SerializedName("id")
     @Expose
-    val id: Int = 0,
+    val id: String = "0",
     @SerializedName("type")
     @Expose
     val type: Int = 0,
@@ -528,7 +528,7 @@ class OrderDetailPassenger(
 class OrderDetailActionButton(
     @SerializedName("id")
     @Expose
-    val id: Int = 0,
+    val id: String = "0",
     @SerializedName("label")
     @Expose
     val label: String = "",
@@ -597,7 +597,7 @@ class OrderDetailInsurance(
 class OrderDetailCancellation(
     @SerializedName("cancelID")
     @Expose
-    val cancelId: Int = 0,
+    val cancelId: String = "0",
     @SerializedName("cancelDetail")
     @Expose
     val cancelDetail: List<OrderDetailCancelDetail> = arrayListOf(),
@@ -638,10 +638,10 @@ class OrderDetailCancellation(
     class OrderDetailCancelDetail(
         @SerializedName("journeyID")
         @Expose
-        val journeyId: Int = 0,
+        val journeyId: String = "0",
         @SerializedName("passengerID")
         @Expose
-        val passengerId: Int = 0,
+        val passengerId: String = "0",
         @SerializedName("refundedGateway")
         @Expose
         val refundedGateway: String = "",

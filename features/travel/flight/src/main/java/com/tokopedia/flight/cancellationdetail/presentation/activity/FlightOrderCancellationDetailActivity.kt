@@ -38,7 +38,7 @@ class FlightOrderCancellationDetailActivity : BaseFlightActivity(), HasComponent
         val title = getString(R.string.flight_cancellation_list_title)
         val subtitle = String.format(
                 getString(R.string.flight_cancellation_list_id),
-                intent.getIntExtra(EXTRA_REFUND_ID, 0)
+                intent.getStringExtra(EXTRA_REFUND_ID) ?: ""
         )
         updateTitle(title, subtitle)
     }
@@ -48,7 +48,7 @@ class FlightOrderCancellationDetailActivity : BaseFlightActivity(), HasComponent
         const val EXTRA_SAVED_CANCELLATION_DETAIL = "EXTRA_SAVED_CANCELLATION_DETAIL"
         const val EXTRA_REFUND_ID = "EXTRA_REFUND_ID"
 
-        fun getIntent(context: Context, savedInstanceCacheId: String, refundId: Int): Intent =
+        fun getIntent(context: Context, savedInstanceCacheId: String, refundId: String): Intent =
                 Intent(context, FlightOrderCancellationDetailActivity::class.java)
                         .putExtra(EXTRA_SAVED_INSTANCE_CACHE_MANAGER_ID, savedInstanceCacheId)
                         .putExtra(EXTRA_REFUND_ID, refundId)
