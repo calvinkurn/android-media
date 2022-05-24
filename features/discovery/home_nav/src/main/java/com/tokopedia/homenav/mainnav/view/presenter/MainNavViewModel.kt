@@ -2,7 +2,6 @@ package com.tokopedia.homenav.mainnav.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -312,9 +311,6 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun isAllCategoriesNotContainsShimmer(): Boolean =
-        allCategories.menus.firstOrNull { it is InitialShimmerDataModel } == null
-
     private fun getBuListMenuRevamp(isExpanded: Boolean = false) {
         updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
         viewModelScope.launch {
@@ -512,8 +508,7 @@ class MainNavViewModel @Inject constructor(
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant)
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
-            val reviewList = if (isMePageUsingRollenceVariant) getReviewProductUseCase.get()
-                .executeOnBackground() else listOf()
+            val reviewList = getReviewProductUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW

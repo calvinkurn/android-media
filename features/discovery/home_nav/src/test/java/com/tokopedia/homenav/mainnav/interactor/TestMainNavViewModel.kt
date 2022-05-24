@@ -14,13 +14,7 @@ import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
-import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
-import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
-import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
@@ -1401,5 +1395,34 @@ class TestMainNavViewModel {
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertFalse(dataListRefreshed.contains(successResult))
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given 3 payment list and 3 reviews with enable me page rollence then get order history then show only 3 data payments and 2 data reviews`() {
+        val mockList3PaymentOrder = listOf(NavPaymentOrder(), NavPaymentOrder(), NavPaymentOrder())
+        val mockList3ReviewProduct = listOf(NavReviewOrder(), NavReviewOrder(), NavReviewOrder())
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val getReviewProductUseCase = mockk<GetReviewProductUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } returns mockList3PaymentOrder
+        coEvery {
+            getReviewProductUseCase.executeOnBackground()
+        } returns mockList3ReviewProduct
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            getReviewProductUseCase = getReviewProductUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as TransactionListItemDataModel
+
+        Assert.assertEquals(3, transactionDataModel.orderListModel.paymentList.size)
+        Assert.assertEquals(2, transactionDataModel.orderListModel.reviewList.size)
     }
 }
