@@ -88,6 +88,12 @@ class QuizWidgetView : ConstraintLayout {
             clickAnimator.duration = 100L
             clickAnimator.start()
         }
+
+        binding.viewGameReward.root.setOnClickListener {
+            answerTrueAnimator.addListener(animationListener)
+            answerTrueAnimator.duration = 100L
+            answerTrueAnimator.start()
+        }
     }
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
