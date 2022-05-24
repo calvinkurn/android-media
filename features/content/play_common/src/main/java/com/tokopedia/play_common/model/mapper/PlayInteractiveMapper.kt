@@ -45,7 +45,7 @@ class PlayInteractiveMapper @Inject constructor() {
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
             },
-            waitingDuration = waitingDurationInMillis,
+            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDurationInMillis),
         )
     }
 
@@ -74,7 +74,7 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
             },
             reward = data.prize,
-            waitingDuration = waitingDurationInMillis,
+            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDurationInMillis),
         )
     }
 
