@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER
+        return ""
     }
 }
