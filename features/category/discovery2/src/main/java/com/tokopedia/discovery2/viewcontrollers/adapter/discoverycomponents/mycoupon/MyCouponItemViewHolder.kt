@@ -16,6 +16,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 private const val DESIGN_1 = 1.0
 private const val DESIGN_2 = 2.1
+private const val CONST_3 = 3
 
 class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
@@ -56,7 +57,7 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
             val aspectRatio: Int
             if (myCouponItemViewModel.getCouponListSize() == 1) {
                 defaultDesign = DESIGN_1
-                aspectRatio = 3 / 1
+                aspectRatio = CONST_3 / 1
                 myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
             } else {
                 defaultDesign = DESIGN_2
