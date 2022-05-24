@@ -12,12 +12,9 @@ object PMConstant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
 
     object Images {
-        const val PM_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
         const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
         const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
-        const val PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_inactive.png"
-        const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/gold_merchant_common/gm_add_product.png"
-        const val PM_INACTIVE = "https://images.tokopedia.net/img/android/gold_merchant_common/gmc_pm_inactive.png"
+        const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_add_product_illustration.png"
         const val PM_TOTAL_ORDER_TERM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
         const val IMG_TOPED_PM_ACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_pm_active.png"
         const val IMG_TOPED_PM_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_pm_inactive.png"
@@ -33,15 +30,9 @@ object PMConstant {
         const val IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/toped/img_toped_new_seller_pm_pro_inactive.png"
     }
 
-    object Urls {
-        const val SHOP_SCORE_INTERRUPT_PAGE = "https://www.tokopedia.com/shop-interrupt"
-    }
-
     object AppLink {
         private const val APPLINK_PARAMS_KYC_PM = "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.MERCHANT_KYC_PROJECT_ID}"
-        private const val APPLINK_PARAMS_KYC_PM_PRO = "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.PM_PRO_KYC_PROJECT_ID}"
         const val KYC_POWER_MERCHANT = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC_PM"
-        const val KYC_POWER_MERCHANT_PRO = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC_PM_PRO"
     }
 
     object PMTierType {

@@ -8,6 +8,7 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBann
 import com.tokopedia.digital.home.model.RechargeHomepageRecommendationBannerModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemRecommendationBannerAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -21,6 +22,11 @@ class RechargeHomepageRecommendationBannerViewHolder(
             renderTitle(element)
             renderSeeAllButton(element)
             renderRecommendationBannerItems(element)
+
+            binding.root.addOnImpressionListener(element.section) {
+                listener.onRechargeSectionItemImpression(element.section)
+            }
+
         } else {
             with(binding) {
                 tvRechargeRecomBannerTitle.hide()
