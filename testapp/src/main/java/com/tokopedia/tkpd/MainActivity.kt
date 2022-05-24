@@ -126,6 +126,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://logistic/shipping/tracking/167075392"
+        return ""
     }
 }
