@@ -1297,4 +1297,39 @@ class TestMainNavViewModel {
         Assert.assertFalse(dataListRefreshed.contains(successResult))
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
     }
+
+    @Test
+    fun `given disable me page rollence when refresh category then show failed error category`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        }.answers { listOf(successResult) }
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertTrue(dataList.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertFalse(dataListRefreshed.contains(successResult))
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
 }
