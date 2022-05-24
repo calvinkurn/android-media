@@ -1425,4 +1425,51 @@ class TestMainNavViewModel {
         Assert.assertEquals(3, transactionDataModel.orderListModel.paymentList.size)
         Assert.assertEquals(2, transactionDataModel.orderListModel.reviewList.size)
     }
+
+    @Test
+    fun `given me page rollence disable when refresh order transaction then show failed get order transaction`() {
+        val userSession = mockk<UserSessionInterface>()
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
+
+        viewModel.refreshTransactionListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
+    }
+
+    @Test
+    fun `given me page rollence enable when refresh order transaction then show failed get order transaction`() {
+        val userSession = mockk<UserSessionInterface>()
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        every { userSession.isLoggedIn() } returns true
+        every { userSession.isShopOwner } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
+
+        viewModel.refreshTransactionListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
+    }
 }
