@@ -147,7 +147,7 @@ data class AceSearchProductModel(
 
             @SerializedName("typeId")
             @Expose
-            val typeId: Int = 0
+            val typeId: String = "0"
     )
 
         data class Related(
@@ -323,7 +323,7 @@ data class AceSearchProductModel(
 
             @SerializedName("categoryId")
             @Expose
-            val categoryId: Int = 0,
+            val categoryId: String = "0",
 
             @SerializedName("categoryName")
             @Expose
