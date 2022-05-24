@@ -156,7 +156,7 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    fun getBundleInfo(productId: Long) {
+    fun getBundleInfo(productId: Long, warehouseId: String) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
@@ -181,7 +181,8 @@ class ProductBundleViewModel @Inject constructor(
                         )
                     ),
                     productData = ProductData(
-                        productID = productId.toString()
+                        productID = productId.toString(),
+                        warehouseIDs = listOf(warehouseId)
                     ),
                     bundleIdList = createBundleListParam(productId)
                 )

@@ -32,6 +32,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
     private var bundleId: Long = 0
     private var selectedProductIds: List<String> = emptyList()
     private var source: String = ""
+    private var warehouseId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -52,7 +53,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         initApplinkValues()
 
         viewModel.parentProductID.let {
-            viewModel.getBundleInfo(it)
+            viewModel.getBundleInfo(it, warehouseId)
             entryPointFragment.setProductId(it.toString())
         }
 
@@ -83,6 +84,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
             selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
             source = ProductBundleApplinkMapper.getPageSourceFromUri(it)
+            warehouseId = ProductBundleApplinkMapper.getWarehouseIdFromUri(it)
             viewModel.parentProductID = ProductBundleApplinkMapper.getProductIdFromUri(it, pathSegments)
             viewModel.selectedBundleId = bundleId
             viewModel.selectedProductIds = selectedProductIds
@@ -210,6 +212,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
             .commit()
         val productId = viewModel.parentProductID
         viewModel.resetBundleMap()
-        viewModel.getBundleInfo(productId)
+        viewModel.getBundleInfo(productId, warehouseId)
     }
 }

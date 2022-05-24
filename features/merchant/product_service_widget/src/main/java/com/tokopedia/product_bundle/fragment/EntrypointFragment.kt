@@ -39,17 +39,19 @@ class EntrypointFragment : BaseDaggerFragment() {
         private const val EXTRA_SELECTED_PRODUCT_ID = "SELECTED_PRODUCT_ID"
         private const val EXTRA_SOURCE = "SOURCE"
         private const val EXTRA_PARENT_PRODUCT_ID = "PARENT_PRODUCT_ID"
+        private const val EXTRA_WAREHOUSE_ID = "PARENT_WAREHOUSE_ID"
 
         const val tagFragment = "TAG_FRAGMENT"
 
         @JvmStatic
-        fun newInstance(bundleId: Long, selectedProductsId: ArrayList<String>, source: String, parentProductId: Long): EntrypointFragment {
+        fun newInstance(bundleId: Long, selectedProductsId: ArrayList<String>, source: String, parentProductId: Long, warehouseId: String): EntrypointFragment {
             val fragment = EntrypointFragment()
             val bundle = Bundle().apply {
                 putLong(EXTRA_BUNDLE_ID, bundleId)
                 putStringArrayList(EXTRA_SELECTED_PRODUCT_ID, selectedProductsId)
                 putString(EXTRA_SOURCE, source)
                 putLong(EXTRA_PARENT_PRODUCT_ID, parentProductId)
+                putString(EXTRA_WAREHOUSE_ID, warehouseId)
             }
             fragment.arguments = bundle
             return fragment
@@ -59,6 +61,7 @@ class EntrypointFragment : BaseDaggerFragment() {
     private var bundleId: Long = 0
     private var selectedProductIds: List<String> = emptyList()
     private var source: String = ""
+    private var warehouseId: String = ""
     private var layoutShimmer: ViewGroup? = null
     private var layoutError: GlobalError? = null
 
@@ -81,7 +84,7 @@ class EntrypointFragment : BaseDaggerFragment() {
         initApplinkValues()
 
         viewModel.parentProductID.let {
-            viewModel.getBundleInfo(it)
+            viewModel.getBundleInfo(it, warehouseId)
         }
 
         setupToolbarActions()
@@ -156,7 +159,7 @@ class EntrypointFragment : BaseDaggerFragment() {
 
     private fun refreshPage() {
         viewModel.resetBundleMap()
-        viewModel.getBundleInfo(viewModel.parentProductID)
+        viewModel.getBundleInfo(viewModel.parentProductID, warehouseId)
     }
 
     private fun initApplinkValues() {
@@ -164,6 +167,7 @@ class EntrypointFragment : BaseDaggerFragment() {
             bundleId = getLong(EXTRA_BUNDLE_ID)
             selectedProductIds = getStringArrayList(EXTRA_SELECTED_PRODUCT_ID).orEmpty()
             source = getString(EXTRA_SOURCE).orEmpty()
+            warehouseId = getString(EXTRA_WAREHOUSE_ID).orEmpty()
             viewModel.parentProductID = getLong(EXTRA_PARENT_PRODUCT_ID)
             viewModel.selectedBundleId = bundleId
             viewModel.selectedProductIds = selectedProductIds

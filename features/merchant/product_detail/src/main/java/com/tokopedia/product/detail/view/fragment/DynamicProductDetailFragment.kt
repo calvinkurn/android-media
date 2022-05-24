@@ -3810,6 +3810,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val parameterizedAppLink = Uri.parse(appLink).buildUpon()
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_PDP)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID, viewModel.getMultiOriginByProductId().id)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)

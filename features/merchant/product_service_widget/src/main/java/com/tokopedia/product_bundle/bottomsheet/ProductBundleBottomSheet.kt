@@ -40,13 +40,15 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
             val bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
             val selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
             val parentProductId = ProductBundleApplinkMapper.getProductIdFromUri(it, it.pathSegments.orEmpty())
+            val warehouseId = ProductBundleApplinkMapper.getWarehouseIdFromUri(it)
             setTitle(getTitle(source))
 
             EntrypointFragment.newInstance(
                 bundleId = bundleId,
                 selectedProductsId = ArrayList(selectedProductIds),
                 source = source,
-                parentProductId = parentProductId
+                parentProductId = parentProductId,
+                warehouseId = warehouseId
             )
 
         } ?: EntrypointFragment()
