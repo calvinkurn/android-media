@@ -2,6 +2,7 @@ package com.tokopedia.reviewcommon.feature.media.gallery.detailed.util
 
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.IntDef
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -21,7 +22,7 @@ object ReviewMediaGalleryRouter {
 
     fun routeToReviewMediaGallery(
         context: Context,
-        pageSource: PageSource,
+        @PageSource pageSource: Int,
         productID: String,
         shopID: String,
         isProductReview: Boolean,
@@ -45,7 +46,13 @@ object ReviewMediaGalleryRouter {
         }
     }
 
-    enum class PageSource {
-        PDP, REVIEW
+    @Retention(AnnotationRetention.SOURCE)
+    @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
+    @IntDef(value = [PageSource.PDP, PageSource.REVIEW])
+    annotation class PageSource {
+        companion object {
+            const val PDP = 0
+            const val REVIEW = 1
+        }
     }
 }
