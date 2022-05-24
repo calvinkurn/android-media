@@ -15,6 +15,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -33,6 +35,8 @@ class TestSimilarProductRecommendationViewModel {
     private val getSingleRecommendationUseCase = mockk<GetSingleRecommendationUseCase>(relaxed = true)
     private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
+    private val addToWishistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
+    private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
@@ -43,7 +47,9 @@ class TestSimilarProductRecommendationViewModel {
             removeWishListUseCase = removeWishListUseCase,
             addWishListUseCase = addWishListUseCase,
             userSessionInterface = userSession,
-            getRecommendationFilterChips = getRecommendationFilterChips
+            getRecommendationFilterChips = getRecommendationFilterChips,
+            addToWishlistV2UseCase = addToWishistV2UseCase,
+            deleteWishlistV2UseCase = deleteWishlistV2UseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)
 
@@ -94,9 +100,9 @@ class TestSimilarProductRecommendationViewModel {
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessAddWishlist(recommendation.productId.toString())
         }
-        viewModel.addWishlist(recommendation, { success, _ ->
+        viewModel.addWishlist(recommendation) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == true)
     }
 
@@ -108,9 +114,9 @@ class TestSimilarProductRecommendationViewModel {
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorAddWishList("", recommendation.productId.toString())
         }
-        viewModel.addWishlist(recommendation, { success, _ ->
+        viewModel.addWishlist(recommendation) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == false)
     }
 
@@ -126,9 +132,9 @@ class TestSimilarProductRecommendationViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(mockWishlistModel)
         }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true), { success, _ ->
+        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == true)
     }
 
@@ -140,9 +146,9 @@ class TestSimilarProductRecommendationViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true), { success, _ ->
+        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == false)
     }
 
@@ -154,9 +160,9 @@ class TestSimilarProductRecommendationViewModel {
         every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessRemoveWishlist(recommendation.productId.toString())
         }
-        viewModel.removeWishlist(recommendation, { success, _ ->
+        viewModel.removeWishlist(recommendation) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == true)
     }
 
@@ -168,9 +174,9 @@ class TestSimilarProductRecommendationViewModel {
         every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorRemoveWishlist("", recommendation.productId.toString())
         }
-        viewModel.removeWishlist(recommendation, { success, _ ->
+        viewModel.removeWishlist(recommendation) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == false)
     }
 
