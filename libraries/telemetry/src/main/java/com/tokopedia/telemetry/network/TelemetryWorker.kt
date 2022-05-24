@@ -46,7 +46,6 @@ class TelemetryWorker(val appContext: Context, params: WorkerParameters) : Corou
                         if (telemetrySection.eventNameEnd.isNotEmpty()) {
                             telemetryUseCase.execute(telemetrySection)
                             telemetrySectionList.removeAt(i)
-                            Result.success()
                         }
                     }
                 }

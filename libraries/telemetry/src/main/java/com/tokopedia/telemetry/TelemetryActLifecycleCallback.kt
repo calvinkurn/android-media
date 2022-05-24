@@ -6,6 +6,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -28,6 +29,8 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     companion object {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
+        const val SAMPLING_RATE_MICRO = 500_000 // 500ms or 0.5s
+        const val SAMPLING_RATE_MS = 500 // 500ms or 0.5s
     }
 
     private fun registerTelemetryListener(activity: AppCompatActivity) {
@@ -45,20 +48,32 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                     activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
                 val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-                sensorManager?.registerListener(TelemetryAccelListener, sensor, SENSOR_DELAY_NORMAL)
+                val samplingRate = getSamplingRate()
+                sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
 
                 val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-                sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, SENSOR_DELAY_NORMAL)
+                sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
 
                 if (activity is BaseActivity) {
                     activity.addListener(TelemetryTouchListener)
                 }
                 // store this activity so it can be stopped later
                 prevActivityRef = WeakReference(activity)
-                Log.w("HENDRYTAG", "Telemetry registerTelemetryListener " + activity::class.java.simpleName)
+                Log.w(
+                    "HENDRYTAG",
+                    "Telemetry registerTelemetryListener " + activity::class.java.simpleName
+                )
             } catch (e: Throwable) {
                 Log.w("HENDRYTAG", "Error Telemetry registerTelemetryListener $e")
             }
+        }
+    }
+
+    private fun getSamplingRate(): Int {
+        return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            SAMPLING_RATE_MICRO
+        } else {
+            SENSOR_DELAY_NORMAL
         }
     }
 
@@ -117,7 +132,8 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
                     }
                 } else { // duration is due
                     Log.w("HENDRYTAG", "Telemetry stop in non-tele activity; due")
-                    val estimatedDuration = Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
+                    val estimatedDuration =
+                        Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
                     Telemetry.addStopTime("", estimatedDuration)
                 }
             }
@@ -129,8 +145,9 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
     override fun onActivityStopped(activity: Activity) {
         stopTelemetryListener(activity)
     }
+
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-    override fun onActivityDestroyed(activity: Activity) { }
+    override fun onActivityDestroyed(activity: Activity) {}
 
     private fun stopTelemetryListener(activity: Activity) {
         try {

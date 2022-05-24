@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.telemetry.SECTION_TELEMETRY_DURATION
+import com.tokopedia.telemetry.TelemetryActLifecycleCallback.Companion.SAMPLING_RATE_MS
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -93,13 +94,13 @@ class TelemetryRaw(
     var startTime: Long,
     @SerializedName("end_time")
     var endTime: Long,
-    @SerializedName("acc")
+    @SerializedName("p1")
     var accList: Array<FloatArray>,
-    @SerializedName("gyro")
+    @SerializedName("p2")
     var gyroList: Array<FloatArray>,
-    @SerializedName("type")
+    @SerializedName("p3")
     var typeList: Array<IntArray>,
-    @SerializedName("touch")
+    @SerializedName("p4")
     var touchList: Array<FloatArray>
 )
 
@@ -123,7 +124,7 @@ class Telemetry {
             )
         }
 
-        fun getCurrentSectionName():String {
+        fun getCurrentSectionName(): String {
             return if (telemetrySectionList.isEmpty()) {
                 ""
             } else {
@@ -170,22 +171,29 @@ class Telemetry {
         @JvmStatic
         fun addAccel(x: Float, y: Float, z: Float) {
             val accelList = telemetrySectionList[0].accelList
-            val lastCoord = accelList.lastOrNull()
-            if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
-                accelList.last().visit++
-            } else {
-                accelList.add(Coord(getElapsedDiff(), x, y, z, 0))
-            }
+            addToListCheckLastCoord(accelList, x, y, z)
         }
 
         @JvmStatic
         fun addGyro(x: Float, y: Float, z: Float) {
             val gyroList = telemetrySectionList[0].gyroList
-            val lastCoord = gyroList.lastOrNull()
+            addToListCheckLastCoord(gyroList, x, y, z)
+        }
+
+        private fun addToListCheckLastCoord(list: MutableList<Coord>, x: Float, y: Float, z: Float) {
+            val lastCoord = list.lastOrNull()
             if (lastCoord != null && lastCoord.x == x && lastCoord.y == y && lastCoord.z == z) {
-                gyroList.last().visit++
+                list.last().visit++
             } else {
-                gyroList.add(Coord(getElapsedDiff(), x, y, z, 0))
+                val elapsedDiff = getElapsedDiff()
+                val diffPrev = if (lastCoord != null) {
+                    elapsedDiff - lastCoord.ts
+                } else {
+                    SAMPLING_RATE_MS
+                }
+                if (diffPrev >= SAMPLING_RATE_MS) {
+                    list.add(Coord(elapsedDiff, x, y, z, 0))
+                }
             }
         }
 
