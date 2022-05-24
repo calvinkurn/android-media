@@ -30,10 +30,9 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="@id/rv_choices"
         app:layout_constraintStart_toStartOf="@id/rv_choices"
-        app:layout_constraintTop_toBottomOf="@id/rv_choices"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_empty"
         tools:itemCount="5"
-        tools:listitem="@layout/item_play_interactive_leaderboard_winner"
-        />
+        tools:listitem="@layout/item_play_interactive_leaderboard_winner" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_other_participant"
@@ -60,14 +59,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:gravity="start"
         android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl2"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/tv_reward"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_reward"
+        app:layout_constraintTop_toBottomOf="@+id/rv_choices"
         app:layout_goneMarginBottom="@dimen/spacing_lvl3"
         app:layout_goneMarginEnd="@dimen/spacing_lvl3"
         app:layout_goneMarginTop="@dimen/spacing_lvl3"
@@ -90,6 +88,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_10"
+        android:padding="@dimen/play_dp_6"
         android:background="@drawable/bg_leaderboard_reward"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N0"
@@ -126,7 +125,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_empty"
+        app:layout_constraintTop_toBottomOf="@+id/tv_reward"
         tools:itemCount="2"
         tools:listitem="@layout/item_quiz_choice"
         tools:visibility="visible" />

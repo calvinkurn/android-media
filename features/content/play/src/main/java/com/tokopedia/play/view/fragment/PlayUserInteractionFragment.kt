@@ -932,6 +932,8 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowCoachMarkWinnerEvent -> {
                         if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
                         interactiveResultView?.showCoachMark(event.title, event.subtitle)
+                        delay(GAME_LOSER_COACHMARK_DELAY)
+                        interactiveResultView?.hideCoachMark()
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
@@ -1457,8 +1459,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveFinishView?.hide()
                 }
             }
-            if(interactiveActiveView?.isShown() == false)
-                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
         }
     }
 
@@ -1513,6 +1513,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
+                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id)
             }
             InteractiveUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
@@ -1550,6 +1551,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) {
             interactiveResultView?.show()
+            if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
             analytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
         }
         else interactiveResultView?.hide()
@@ -1799,5 +1801,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val MASK_NO_CUT_HEIGHT = 0f
 
         private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
+
+        private const val GAME_LOSER_COACHMARK_DELAY = 5000L
     }
 }

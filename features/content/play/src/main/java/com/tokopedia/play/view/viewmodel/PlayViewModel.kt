@@ -1856,7 +1856,7 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
-            updateQuizOptionUi(selectedId = option.id, isLoading = true)
+            setUpQuizOptionLoader(selectedId = option.id, isLoading = true)
 
             val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = option.id)
             repo.setJoined(interactiveId)
@@ -1864,23 +1864,35 @@ class PlayViewModel @AssistedInject constructor(
             updateQuizOptionUi(selectedId = option.id, correctId = response)
             _uiEvent.emit(QuizAnsweredEvent)
         }) {
+            setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
                 ShowErrorEvent(it)
             )
-            _uiEvent.emit(QuizAnsweredEvent)
         }
     }
 
-    private fun updateQuizOptionUi(selectedId: String, correctId: String = "", isLoading: Boolean? = null){
+    private fun updateQuizOptionUi(selectedId: String, correctId: String){
         _interactive.update {
             val quiz = it.interactive as InteractiveUiModel.Quiz
             val new = quiz.copy(
                 listOfChoices =  quiz.listOfChoices.map { choice ->
-                    when {
-                        isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
-                        choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
+                    when (choice.id) {
+                        selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
                         else -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
                     }
+                }
+            )
+            it.copy(interactive = new)
+        }
+    }
+
+    private fun setUpQuizOptionLoader(selectedId: String, isLoading: Boolean){
+        _interactive.update {
+            val quiz = it.interactive as InteractiveUiModel.Quiz
+            val new = quiz.copy(
+                listOfChoices =  quiz.listOfChoices.map { choice ->
+                    if(choice.id == selectedId) choice.copy(isLoading = isLoading)
+                    else choice
                 }
             )
             it.copy(interactive = new)

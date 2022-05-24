@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -25,7 +26,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by mzennis on 30/06/21.
  */
-class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) : BaseViewHolder(itemView) {
+class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
     private val tvTitle = itemView.findViewById<Typography>(R.id.tv_leaderboard_title)
     private val rvWinner = itemView.findViewById<RecyclerView>(R.id.rv_winner)
@@ -66,6 +67,10 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
         if(leaderboard.choices.isEmpty()) hideQuiz(leaderboard) else showQuiz(leaderboard)
+
+        itemView.addOnImpressionListener(leaderboard.impressHolder){
+            listener.onLeaderBoardImpressed(leaderboard)
+        }
     }
 
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
@@ -119,6 +124,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
     interface Listener {
         fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int)
+        fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel)
     }
 
     companion object {

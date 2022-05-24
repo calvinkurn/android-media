@@ -46,6 +46,10 @@ class PlayInteractiveLeaderboardViewComponent(
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
+
+        override fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel) {
+            listener.onLeaderBoardImpressed(this@PlayInteractiveLeaderboardViewComponent, leaderboard)
+        }
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -67,11 +71,8 @@ class PlayInteractiveLeaderboardViewComponent(
         rvLeaderboard.adapter = leaderboardAdapter
 
         btnRefreshError.setOnClickListener {
+            showBtnLoader(shouldShow = true)
             listener.onRefreshButtonClicked(this)
-        }
-
-        btnRefreshError.addOnImpressionListener(impressHolder){
-            listener.onRefreshButtonImpressed(this)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
@@ -81,6 +82,10 @@ class PlayInteractiveLeaderboardViewComponent(
 
         registerAdapterObserver()
         rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
+
+        btnRefreshError.rootView.addOnImpressionListener(impressHolder){
+            listener.onRefreshButtonImpressed(this)
+        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -91,6 +96,8 @@ class PlayInteractiveLeaderboardViewComponent(
     }
 
     fun setError() {
+        showBtnLoader(shouldShow = false)
+
         errorView.show()
         rvLeaderboard.hide()
         llPlaceholder.hide()
@@ -110,6 +117,11 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         show()
+    }
+
+    private fun showBtnLoader(shouldShow: Boolean){
+        btnRefreshError.isLoading = shouldShow
+        btnRefreshError.isClickable = !shouldShow
     }
 
     override fun show() {
@@ -152,5 +164,6 @@ class PlayInteractiveLeaderboardViewComponent(
         }
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
         fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent)
+        fun onLeaderBoardImpressed(view: PlayInteractiveLeaderboardViewComponent, leaderboard: PlayLeaderboardUiModel)
     }
 }
