@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
@@ -21,6 +23,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
@@ -33,6 +36,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
     lateinit var viewStatus: View
     lateinit var optionMenu: IconUnify
     lateinit var ivCoupon: ImageUnify
+    lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage")
     fun bind(item: VouchersItem, programActions: ProgramActions) {
@@ -45,6 +49,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
         tvQuota = itemView.findViewById(R.id.tv_quota)
         optionMenu = itemView.findViewById(R.id.icon_options)
         ivCoupon = itemView.findViewById(R.id.iv_coupon)
+        btnAddQuota = itemView.findViewById(R.id.btn_add_quota)
 
         tvDate.text = "${item.voucherStartTime?.let { ProgramUpdateMapper.setDate(it) }} - ${item.voucherFinishTime?.let { ProgramUpdateMapper.setDate(it) }}"
         tvCouponTitle.text = item.voucherName
@@ -63,6 +68,16 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
         tvQuota.text = "${item.voucherQuota}/${item.remainingQuota}"
         itemView.setOnClickListener {
 
+        }
+
+        if(item.remainingQuota == item.voucherQuota){
+            btnAddQuota.show()
+            btnAddQuota.setOnClickListener {
+                
+            }
+        }
+        else{
+            btnAddQuota.hide()
         }
 
         when(item.voucherStatus){

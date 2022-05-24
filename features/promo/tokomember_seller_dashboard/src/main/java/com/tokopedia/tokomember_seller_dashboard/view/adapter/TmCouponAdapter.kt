@@ -1,7 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +18,7 @@ class TmCouponAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TmCouponVh {
         return TmCouponVh(
-            LayoutInflater.from(parent.context).inflate(R.layout.tm_coupon_list_item,parent,false),
-            fragmentManager
+            LayoutInflater.from(parent.context).inflate(R.layout.tm_coupon_list_item,parent,false), fragmentManager
         )
     }
 

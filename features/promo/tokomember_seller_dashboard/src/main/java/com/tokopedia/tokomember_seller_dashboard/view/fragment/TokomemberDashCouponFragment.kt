@@ -29,8 +29,11 @@ import javax.inject.Inject
 
 class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortFilterBottomSheet.Callback{
 
-    private var selectedType = 0
-    private var selectedStatus = ""
+    private var voucherStatus = ""
+    private var voucherType = 0
+    private var selectedType = "0"
+    private lateinit var selectedStatus: StringBuilder
+    private var selectedStatusList = arrayListOf<String>()
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -57,38 +60,29 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
 
         val filterData = ArrayList<SortFilterItem>()
         val filterStatus = SortFilterItem("Semua Status")
+        selectedStatus = StringBuilder()
         filterStatus.listener = {
-            filterStatus.type = if(filterStatus.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
-            filterStatus.selectedItem = arrayListOf("Semua Status", "Aktif", "Belum Aktif", "Sudah Berakhir")
-        }
-        filterData.add(filterStatus)
-        val filterType = SortFilterItem("Semua Type")
-        filterType.chevronListener
-        filterType.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
-        filterType.listener = {
-            val filterList = ArrayList<Filter>()
+
             val options = ArrayList<Option>()
-            options.add(Option(name = "Semua Status", key = "Semua Status", value = "Semua Status", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
-            options.add(Option(name = "Aktif", key = "Aktif", value = "Aktif", inputType = Option.INPUT_TYPE_RADIO))
-            options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "Belum Aktif", inputType = Option.INPUT_TYPE_RADIO))
-            options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "Sudah Berakhir", inputType = Option.INPUT_TYPE_RADIO))
-//            filterList.add(Filter(title = "Status Kupon", options = options))
-//            filterList.add(Filter(title = "Status Type", options = options))
-//            val data = DataValue(filterList, sort = arrayListOf())
-//            val dynamicFilterModel = DynamicFilterModel(data)
-//            val sortFilterBottomSheet = SortFilterBottomSheet()
-//            sortFilterBottomSheet.show(childFragmentManager, mapOf(), dynamicFilterModel = dynamicFilterModel, callback = this)
+
+            options.add(Option(name = "Semua Status", key = "Semua Status", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
+            options.add(Option(name = "Aktif", key = "Aktif", value = "2", inputType = Option.INPUT_TYPE_CHECKBOX))
+            options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "1", inputType = Option.INPUT_TYPE_CHECKBOX))
+            options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "4", inputType = Option.INPUT_TYPE_CHECKBOX))
             options.forEach {
-                if(options.indexOf(it) == selectedType){
+                val cs: CharSequence = it.value
+//                if(selectedStatus.contains(cs.toString(), false)){
+                if(selectedStatusList.contains(it.value)){
                     it.inputState = "true"
                 }
             }
-            if(selectedType == 0){
+            val cs: CharSequence = "0"
+//            if(selectedStatus.contains(cs.toString(), false)){
+            if(selectedStatusList.contains("0")){
                 options[0].inputState = "true"
+            }
+            else{
+                options[0].inputState = ""
             }
             FilterGeneralDetailBottomSheet().show(
                 parentFragmentManager,
@@ -97,20 +91,100 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                     override fun onApplyButtonClicked(optionList: List<Option>?) {
                         optionList?.forEachIndexed { index, option ->
                             if(option.inputState == "true"){
-                                if(selectedType != index){
-                                    selectedType = index
+                                val cs: CharSequence = option.value
+//                                if(!selectedStatus.contains(cs.toString(), false)){
+                                if(!selectedStatusList.contains(option.value)){
+//                                    selectedStatus.append(option.value + ",")
+                                    selectedStatusList.add(option.value)
                                 }
                                 else{
-                                    selectedType = 0
+//                                    selectedStatus = selectedStatus.removeRange(index-1, index+1) as StringBuilder
+//                                    selectedStatusList.remove(option.value)
+                                }
+                            }
+                            else{
+                                selectedStatusList.remove(option.value)
+                            }
+//                            if(option.inputState == "false"){
+//                                selectedStatus.removeRange(index, index+2)
+//                            }
+                        }
+//                        selectedStatus = selectedStatus.removeRange(selectedStatus.length - 1, selectedStatus.length) as StringBuilder
+                        if(selectedStatusList.isNullOrEmpty()){
+                            filterStatus.type = ChipsUnify.TYPE_NORMAL
+                        }
+                        else{
+                            filterStatus.type = ChipsUnify.TYPE_SELECTED
+                        }
+                        voucherStatus = selectedStatusList.toString().replace("[", "")
+                        voucherStatus = voucherStatus.replace("]", "")
+                        voucherStatus = voucherStatus.replace(" ", "")
+                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        Toast.makeText(context, selectedStatusList.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                },
+            )
+//            filterStatus.type = if(filterStatus.type == ChipsUnify.TYPE_NORMAL) {
+//                ChipsUnify.TYPE_SELECTED
+//            } else {
+//                ChipsUnify.TYPE_NORMAL
+//            }
+//            filterStatus.selectedItem = arrayListOf("Semua Status", "Aktif", "Belum Aktif", "Sudah Berakhir")
+        }
+        filterData.add(filterStatus)
+        val filterType = SortFilterItem("Semua Type")
+        filterType.chevronListener
+        filterType.iconDrawable = context?.let { getIconUnifyDrawable(it, IconUnify.ARROW_DOWN) }
+        filterType.listener = {
+            val filterList = ArrayList<Filter>()
+            val options = ArrayList<Option>()
+            options.add(Option(name = "Semua Type", key = "Semua Type", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
+            options.add(Option(name = "Cashback", key = "Cashback", value = "3", inputType = Option.INPUT_TYPE_RADIO))
+            options.add(Option(name = "Gratis Ongkir", key = "Gratis Ongkir", value = "1", inputType = Option.INPUT_TYPE_RADIO))
+//            filterList.add(Filter(title = "Status Kupon", options = options))
+//            filterList.add(Filter(title = "Status Type", options = options))
+//            val data = DataValue(filterList, sort = arrayListOf())
+//            val dynamicFilterModel = DynamicFilterModel(data)
+//            val sortFilterBottomSheet = SortFilterBottomSheet()
+//            sortFilterBottomSheet.show(childFragmentManager, mapOf(), dynamicFilterModel = dynamicFilterModel, callback = this)
+            options.forEach {
+                if(it.value == selectedType){
+                    it.inputState = "true"
+                }
+            }
+            if(selectedType == "0"){
+                options[0].inputState = "true"
+            }
+            else{
+                options[0].inputState = ""
+            }
+            FilterGeneralDetailBottomSheet().show(
+                parentFragmentManager,
+                Filter(title = "Status Kupon", options = options),
+                callback = object : FilterGeneralDetailBottomSheet.Callback{
+                    override fun onApplyButtonClicked(optionList: List<Option>?) {
+                        optionList?.forEachIndexed { index, option ->
+                            if(option.inputState == "true"){
+                                if(selectedType != option.value){
+                                    selectedType = option.value
+                                }
+                                else{
+                                    selectedType = "0"
+                                }
+                            }
+                            else{
+                                if(selectedType == option.value){
+                                    selectedType = "0"
                                 }
                             }
                         }
-                        if(selectedType == 0){
+                        if(selectedType == "0"){
                             filterType.type = ChipsUnify.TYPE_NORMAL
                         }
                         else{
                             filterType.type = ChipsUnify.TYPE_SELECTED
                         }
+                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
                     }
                 },
             )
@@ -133,7 +207,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         }
 
         observeViewModel()
-        tmCouponViewModel.getCouponList("0,1,2", 1)
+        tmCouponViewModel.getCouponList(voucherStatus, voucherType)
     }
 
     private fun filterClick() {
@@ -145,6 +219,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    tmCouponAdapter.vouchersItemList.clear()
                     tmCouponAdapter.vouchersItemList = it.data.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
                     tmCouponAdapter.notifyDataSetChanged()
                 }

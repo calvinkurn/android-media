@@ -1,12 +1,12 @@
 package com.tokopedia.tokomember_seller_dashboard.view.adapter
 
-import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashProgramVh
 
@@ -21,12 +21,7 @@ class TokomemberDashProgramAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokomemberDashProgramVh {
         return TokomemberDashProgramVh(
-            View.inflate(
-                parent.context,
-                R.layout.tm_dash_program_item,
-                null
-            ),
-            fragmentManager
+            LayoutInflater.from(parent.context).inflate(R.layout.tm_dash_program_item,parent,false), fragmentManager
         )
     }
 
