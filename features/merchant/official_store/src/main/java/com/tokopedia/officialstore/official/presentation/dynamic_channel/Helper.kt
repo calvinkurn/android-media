@@ -43,12 +43,12 @@ internal object OfficialStoreDateHelper {
 }
 
 fun isRunningTest(): Boolean {
-    var isRunningTest = false
-    try {
+    return try {
         Class.forName("org.junit.Test")
-        isRunningTest = true
+        true
     } catch (e: ClassNotFoundException) {
-        //no-op
+        false
+    } catch (e: Exception) {
+        false
     }
-    return isRunningTest
 }
