@@ -198,6 +198,8 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="label_pod">Bukti Pengiriman</string>
+
     <string name="title_activity_add_address">Tambah Alamat</string>
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
