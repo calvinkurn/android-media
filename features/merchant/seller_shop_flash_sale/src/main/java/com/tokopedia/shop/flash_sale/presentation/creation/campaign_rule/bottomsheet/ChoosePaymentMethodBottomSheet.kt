@@ -45,7 +45,7 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
 
     @SuppressLint("ResourcePackage")
     private fun setupView(view: View) {
-        setTitle(getString(R.string.campaign_teaser_info_title))
+        setTitle(getString(R.string.choose_payment_method_title))
 
         paymentMethodPoint1 = view.findViewById(R.id.tg_point_1_payment_method)
         paymentMethodPoint2 = view.findViewById(R.id.tg_point_2_payment_method)
