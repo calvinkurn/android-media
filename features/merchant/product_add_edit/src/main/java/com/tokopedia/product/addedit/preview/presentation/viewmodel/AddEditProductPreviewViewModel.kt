@@ -114,8 +114,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     val priceRangeFormatted = Transformations.map(productInputModel) {
         val highestPrice = it.variantInputModel.getHighestPrice().orZero()
         val lowestPrice = it.variantInputModel.getLowestPrice().orZero()
-        if (lowestPrice == highestPrice) {
+        if (!it.variantInputModel.hasVariant()) {
             it.detailInputModel.price.getCurrencyFormatted()
+        } else if (lowestPrice == highestPrice) {
+            lowestPrice.getCurrencyFormatted()
         } else {
             "${lowestPrice.getCurrencyFormatted()} - ${highestPrice.getCurrencyFormatted()}"
         }
