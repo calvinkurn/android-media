@@ -34,6 +34,10 @@ class ParentContainerComponent(
         return navigator?.cameraFragment()
     }
 
+    fun removePermissionFragment() {
+        navigator?.removePermissionFragment()
+    }
+
     fun addBottomNavMargin() {
         val marginBottom = context.dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
         container().setBottomMargin(marginBottom)
