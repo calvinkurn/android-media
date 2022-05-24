@@ -84,7 +84,10 @@ class QuizOptionDetailViewComponent(
         rvChoice.show()
         rvWinner.show()
         rvParticipant.show()
-        emptyParticipantView.showWithCondition(choiceDetail.participants.isEmpty())
+        emptyParticipantView.showWithCondition(
+            choiceDetail.participants.isEmpty()
+                    && choiceDetail.winners.isEmpty()
+        )
         if (ongoing)
             tvEmptyParticipant.text = getString(R.string.play_bro_ongoing_bottomsheet_empty_participant_message)
         else {
