@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.view.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -74,11 +74,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         val noticeStatus =  data?.ticket?.TicketData?.notice?.isActive
         if(noticeStatus==true){
             val notice = data?.ticket?.TicketData?.notice
-            val title = notice?.title
             val subtitle = notice?.subtitle
-            val content = notice?.content
-            val contentList = notice?.listOfContent
-            showBottomSheet(title,subtitle,content,contentList)
+            showBottomSheet(subtitle)
         }
         else{
             goToContactUs()
@@ -86,31 +83,21 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun showBottomSheet(
-        title: String,
-        subtitle: String,
-        content: String,
-        contentList: List<String>
+        subtitle: String
     ) {
 
         val viewBottomSheetPage =
             View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
-                val textTitle : Typography = this.findViewById(R.id.text_title)
                 val textSubtitle : Typography = this.findViewById(R.id.text_subtitle)
-                val textListHeader : Typography = this.findViewById(R.id.text_list_header)
                 val buttonTokopediaCare : UnifyButton = this.findViewById(R.id.btn_tokopedia_care)
                 val contentListRV : RecyclerView = this.findViewById(R.id.content_list)
 
-                textTitle.text = title
                 textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
-                textListHeader.text = content
                 buttonTokopediaCare.setOnClickListener {
                     chatbotAnalytics.get().eventOnClickTokopediaCare()
                     goToHelpPage()
                 }
-                contentListRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
-                val adapter = ContactUsMigrationAdapter()
-                setList(contentList,adapter)
-                contentListRV.adapter = adapter
+                initRecyclerViewFromContentList(context,contentListRV)
 
             }
         bottomSheetPage.apply {
@@ -125,6 +112,24 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         supportFragmentManager?.let {
             bottomSheetPage.show(it, "")
         }
+    }
+
+    private fun initRecyclerViewFromContentList(
+        context: Context,
+        contentListRV: RecyclerView
+    ) {
+        contentListRV.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false)
+        val adapter = ContactUsMigrationAdapter()
+        val contentList = getList()
+        setList(contentList,adapter)
+        contentListRV.adapter = adapter
+    }
+
+    private fun getList(): List<String> {
+        val list = mutableListOf<String>()
+        list.add(getString(R.string.chatbot_migration_list_item_1))
+        list.add(getString(R.string.chatbot_migration_list_item_2))
+        return list
     }
 
     private fun goToContactUs() {

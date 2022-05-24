@@ -25,18 +25,17 @@ class TicketListContactUsUsecase @Inject constructor(
     private fun getParams(): Map<String, Any>? {
         return mapOf(
             USERID to userSession.userId,
-            PAGE to page,
+            PAGE to pageNumber,
             STATUS to status
         )
     }
 
     companion object {
-        const val STATUS = "status"
+        private const val STATUS = "status"
         private const val USERID = "userID"
         private const val PAGE = "page"
-        const val page = 1
-        const val status = 0
-        const val rating = 0
+        private const val pageNumber = 1
+        private const val status = 0
     }
 
 }

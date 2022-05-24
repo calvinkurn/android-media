@@ -18,16 +18,13 @@ class ContactUsMigrationAdapter :
     inner class ContactUsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val contentTitle: Typography? =
             itemView.findViewById(R.id.content_text)
+        private val contentIndex: Typography? =
+            itemView.findViewById(R.id.content_index)
 
         fun bind(item: Pair<Int, String>) {
-            val index = buildString {
-                append(
-                    "<b>" + "${item.first}. " + "</b>",
-                    item.second
-                )
-            }
-            val string =  SpannableString(MethodChecker.fromHtml(index))
-            this.contentTitle?.text = string
+            val index = item.first.toString() + ". "
+            this.contentIndex?.text = index
+            this.contentTitle?.text = item.second
         }
     }
 
