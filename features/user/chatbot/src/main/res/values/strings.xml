@@ -52,7 +52,7 @@
     <string name="chatbot_migration_subtitle">Mulai dialihkan 22 Februari 2022</string>
     <string name="chatbot_migration_list_header">Akses pesan kamu atau mau ajukan komplain tetap mudah:</string>
     <string name="chatbot_migration_button_text">Lihat di Tokopedia Care</string>
-    <string name="chatbot_migration_list_item_1">Klik “Tokopedia Care” di navigasi bagian kanan atas.</string>
+    <string name="chatbot_migration_list_item_1">Klik “Bantuan Tokopedia Care” di menu utama</string>
     <string name="chatbot_migration_list_item_2">Temukan TANYA di bagian bawah halaman Tokopedia Care dan klik “Mulai Chat!”</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
