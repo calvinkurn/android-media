@@ -12,7 +12,7 @@ class SwitcherCoachMark(private val context: Context, private val onDismiss: () 
     fun show() {
         coachMark = CoachMark2(context)
         coachMark?.onDismissListener = {
-            onDismiss
+            onDismiss()
         }
         coachMark?.showCoachMark(listItem)
     }
