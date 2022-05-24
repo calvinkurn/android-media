@@ -98,6 +98,7 @@ import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
+import com.tokopedia.home_component.listener.CategoryWidgetV2Listener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -1626,7 +1627,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this,
             this,
             SpecialReleaseComponentCallback(context, this),
-            MerchantVoucherComponentCallback(this)
+            MerchantVoucherComponentCallback(this),
+            CategoryWidgetV2Callback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

@@ -11,6 +11,7 @@ data class AddOnUiModel(
         val id: String = "",
         val name: String = "",
         val isRequired: Boolean = false,
+        var isSelected: Boolean = false,
         val maxQty: Int = 0,
         val minQty: Int = 0,
         val options: List<OptionUiModel> = listOf()
@@ -37,4 +38,7 @@ data class AddOnUiModel(
 
     @IgnoredOnParcel
     val selectedAddOns = options.filter { it.isSelected }.map { it.name }
+
+    @IgnoredOnParcel
+    val isError = options.filter { it.isSelected }.count() < minQty && isSelected
 }

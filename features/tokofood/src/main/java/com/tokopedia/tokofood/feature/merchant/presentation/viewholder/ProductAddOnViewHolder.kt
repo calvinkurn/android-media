@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.R
@@ -12,8 +13,14 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 
-class ProductAddOnViewHolder(private val binding: TokofoodItemAddOnLayoutBinding)
-    : RecyclerView.ViewHolder(binding.root) {
+class ProductAddOnViewHolder(
+        private val binding: TokofoodItemAddOnLayoutBinding,
+        private val selectListener: OnAddOnSelectListener
+) : RecyclerView.ViewHolder(binding.root) {
+
+    interface OnAddOnSelectListener {
+        fun onAddOnSelected(isSelected: Boolean, addOnPositions: Pair<Int, Int>)
+    }
 
     private var context: Context? = null
     private var addOnItems = ArrayList<ListItemUnify>()
@@ -27,6 +34,16 @@ class ProductAddOnViewHolder(private val binding: TokofoodItemAddOnLayoutBinding
         binding.addOnsTypeLabel.text = addOnUiModel.name
         binding.requiredAddOnsLabel.isVisible = addOnUiModel.isRequired
         binding.tpgOptionalWording.isVisible = !addOnUiModel.isRequired
+
+        context?.run {
+            if (addOnUiModel.isError) {
+                val redColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                binding.tpgMandatoryLabel.setTextColor(redColor)
+            } else {
+                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                binding.tpgMandatoryLabel.setTextColor(greenColor)
+            }
+        }
 
         // setup add on rules wording e.g harus dipilih.pilih 2
         if (addOnUiModel.isRequired) {
@@ -84,14 +101,15 @@ class ProductAddOnViewHolder(private val binding: TokofoodItemAddOnLayoutBinding
                     listItemUnify.listRightRadiobtn?.setOnClickListener {
                         val type = addOnUiModel.options[index].selectionControlType
                         setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
-
+                            val isSelected = it.listRightCheckbox?.isChecked ?: false
+                            selectListener.onAddOnSelected(isSelected, Pair(index, adapterPosition))
                         }
                     }
                     // check box button click listener
                     listItemUnify.listRightCheckbox?.setOnClickListener {
                         val type = addOnUiModel.options[index].selectionControlType
                         setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
-
+                            selectListener.onAddOnSelected(isSelected, Pair(index, adapterPosition))
                         }
                     }
                 }

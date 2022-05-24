@@ -11,7 +11,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 
-class CustomListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAddOnSelectListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var customListItems: MutableList<CustomListItem> = mutableListOf()
 
@@ -27,7 +28,7 @@ class CustomListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             PRODUCT_ADD_ON -> {
                 val binding = TokofoodItemAddOnLayoutBinding
                         .inflate(LayoutInflater.from(parent.context), parent, false)
-                ProductAddOnViewHolder(binding)
+                ProductAddOnViewHolder(binding, selectListener)
             }
             else -> {
                 val binding = TokofoodItemOrderNoteLayoutBinding
@@ -55,9 +56,21 @@ class CustomListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return customListItems.size
     }
 
+    fun getCustomListItems(): List<CustomListItem> {
+        return customListItems
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setCustomListItems(customListItems: List<CustomListItem>) {
         this.customListItems = customListItems.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun updateAddOnSelection(isSelected: Boolean, addOnPositions: Pair<Int, Int>) {
+        val dataSetPosition = addOnPositions.first
+        val adapterPosition = addOnPositions.second
+        customListItems[dataSetPosition].addOnUiModel?.isSelected = isSelected
+        customListItems[dataSetPosition].addOnUiModel?.options?.get(dataSetPosition)?.isSelected = isSelected
+        notifyItemChanged(adapterPosition)
     }
 }

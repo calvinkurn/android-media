@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -14,7 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.di.TokoFoodComponentBuilder
+import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
@@ -25,6 +27,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOr
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
+import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -36,14 +39,26 @@ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
-
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MerchantPageFragment : BaseMultiFragment(),
         MerchantCarouseItemViewHolder.OnCarouselItemClickListener,
         ProductCardViewHolder.OnProductCardItemClickListener, OrderNoteBottomSheet.OnSaveNoteButtonClickListener {
 
+    private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
+
+    private val activityViewModel: MultipleFragmentsViewModel?
+        get() = parentActivity?.viewModel()
+
     private var binding: FragmentMerchantPageLayoutBinding? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -77,11 +92,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun initInjector() {
-        val baseMainApplication = requireContext().applicationContext as BaseMainApplication
-        DaggerMerchantPageComponent.builder()
-                .tokoFoodComponent(TokoFoodComponentBuilder.getComponent(baseMainApplication))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerMerchantPageComponent
+                    .builder()
+                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -103,6 +120,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                 super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
     override fun onCreateView(
@@ -234,6 +256,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
+        viewModel.cardPositions = cardPositions
         if (productUiModel.isCustomizable && productUiModel.isAtc) {
             CustomOrderDetailBottomSheet.createInstance(
                     productName = productUiModel.name,
@@ -243,6 +266,12 @@ class MerchantPageFragment : BaseMultiFragment(),
             val orderCustomizationFragment = OrderCustomizationFragment.createInstance(productUiModel)
             navigateToNewFragment(orderCustomizationFragment)
         } else {
+            val updateParam = TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
+                    shopId = userSession.shopId,
+                    productUiModels = listOf(productUiModel),
+                    addOnUiModels = listOf()
+            )
+            activityViewModel?.addToCart(updateParam, "")
             productListAdapter?.updateAtcStatus(true, cardPositions)
         }
     }
