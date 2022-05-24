@@ -1,8 +1,13 @@
 package com.tokopedia.play_common.view.game.quiz
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,6 +82,12 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setTitle(title: String) {
         binding.quizHeader.setupQuiz(title)
+
+        binding.quizHeader.setOnClickListener {
+            clickAnimator.addListener(animationListener)
+            clickAnimator.duration = 100L
+            clickAnimator.start()
+        }
     }
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
@@ -108,5 +119,45 @@ class QuizWidgetView : ConstraintLayout {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
 
         fun onQuizImpressed()
+    }
+
+    private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.ROTATION, 0f, -10f
+    )
+
+    private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.ROTATION, 0f, 10f
+    )
+
+    private val clickScaleXAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.SCALE_X, 1f, 0.8f
+    )
+    private val clickScaleYAnimation = ObjectAnimator.ofFloat(
+        binding.root, View.SCALE_Y, 1f, 0.8f
+    )
+
+    private val clickAnimator = AnimatorSet().apply {
+        interpolator = AnticipateInterpolator()
+        playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
+        playTogether(clickScaleXAnimation, clickScaleYAnimation)
+    }
+
+    private val animationListener = object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            binding.root.rotation = 0f
+            binding.root.scaleX = 1f
+            binding.root.scaleY = 1f
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+        }
+
     }
 }
