@@ -5,55 +5,47 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dms_proof_background_image_static_black"
     tools:context=".view.pod.ui.ProofOfDeliveryActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/image_preview_large"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_proof"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/proof_description"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_N700"
-        android:visibility="visible">
+        android:layout_height="wrap_content"
+        android:background="@color/dms_proof_description_static_black"
+        android:paddingHorizontal="62dp"
+        android:paddingVertical="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/img_proof"
+        app:layout_constraintEnd_toEndOf="@id/img_proof"
+        app:layout_constraintStart_toStartOf="@id/img_proof"
+        app:typographyType="body_3"
+        tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir." />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_proof"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/proof_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/dms_proof_description_static_black"
-            android:paddingHorizontal="62dp"
-            android:paddingVertical="10dp"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Background"
-            app:layout_constraintBottom_toBottomOf="@id/img_proof"
-            app:layout_constraintEnd_toEndOf="@id/img_proof"
-            app:layout_constraintStart_toStartOf="@id/img_proof"
-            app:typographyType="body_3"
-            tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir." />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/button_back"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/Unify_G500"
-            android:text="@string/label_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="filled" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_back"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/Unify_G500"
+        android:text="@string/label_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="filled" />
 </androidx.constraintlayout.widget.ConstraintLayout>

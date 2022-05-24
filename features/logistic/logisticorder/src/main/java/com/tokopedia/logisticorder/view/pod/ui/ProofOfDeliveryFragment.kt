@@ -124,13 +124,11 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
             requireContext().getDrawable(R.drawable.ic_image_error),
             requireContext().getDrawable(R.drawable.ic_image_error)
         )
-
     }
 
     private fun initTextDescription() {
         binding?.run {
             proofDescription.text = podData?.description
-            imagePreviewLarge.visibility = View.VISIBLE
         }
     }
 
@@ -138,7 +136,6 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         requireActivity().setResult(PodConstant.RESULT_FAIL_LOAD_IMAGE)
         requireActivity().finish()
     }
-
 
 }
 
