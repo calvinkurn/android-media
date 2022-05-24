@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchProductTabBinding
+import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecoration
@@ -35,6 +37,7 @@ import javax.inject.Inject
  */
 class GlobalSearchProductTabFragment @Inject constructor(
     private val analytic: ProductTagAnalytic,
+    private val impressionCoordinator: ProductImpressionCoordinator,
 ): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchProductTabFragment"
@@ -58,6 +61,18 @@ class GlobalSearchProductTabFragment @Inject constructor(
             onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) },
         )
     }
+    private val layoutManager: StaggeredGridLayoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            impressProduct()
+        }
+    }
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
+        }
+    }
+
     private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
     private val sortFilterCallback = object : SortFilterBottomSheet.Callback {
         override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -95,6 +110,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAnalytic()
         setupView()
         setupObserver()
     }
@@ -105,14 +121,28 @@ class GlobalSearchProductTabFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct)
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendProductImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvGlobalSearchProduct.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(
+            viewModel.selectedTagSource,
+            true,
+        )
+    }
+
     private fun setupView() {
+        binding.rvGlobalSearchProduct.addOnScrollListener(scrollListener)
         binding.rvGlobalSearchProduct.addItemDecoration(ProductTagItemDecoration(requireContext()))
-        binding.rvGlobalSearchProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
+        binding.rvGlobalSearchProduct.layoutManager = layoutManager
         binding.rvGlobalSearchProduct.adapter = adapter
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -233,6 +263,14 @@ class GlobalSearchProductTabFragment @Inject constructor(
 
         if(binding.rvGlobalSearchProduct.isComputingLayout.not())
             adapter.setItemsAndAnimateChanges(finalProducts)
+
+        impressProduct()
+    }
+
+    private fun impressProduct() {
+        val visibleProducts = layoutManager.getVisibleItems(adapter)
+        if(visibleProducts.isNotEmpty())
+            impressionCoordinator.saveProductImpress(visibleProducts)
     }
 
     companion object {
