@@ -38,7 +38,7 @@ import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.*
-import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
+import com.tokopedia.power_merchant.subscribe.view.helper.PMActiveTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
@@ -165,21 +165,8 @@ open class PowerMerchantSubscriptionFragment :
         fragment.show(childFragmentManager)
     }
 
-    override fun onUpgradePmProTnCClickListener() {
-        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
-        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
-            return
-        }
-
-        bottomSheet.show(childFragmentManager)
-    }
-
     override fun onMembershipStatusPmProClickListener() {
         showPmProDeactivationBottomSheet()
-    }
-
-    override fun onDeactivatePMClickListener() {
-        showRegularPmDeactivationBottomSheet()
     }
 
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
@@ -189,6 +176,10 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun goToMembershipDetail(model: PMProStatusInfoUiModel) {
+
     }
 
     override fun onPMProNewSellerLearnMore() {
@@ -637,7 +628,7 @@ open class PowerMerchantSubscriptionFragment :
                 && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
-            getUpgradePmProWidget()?.let {
+            getUpgradePmProWidget(getShopGradeWidgetData(data),data)?.let {
                 widgets.add(it)
             }
         }
@@ -650,6 +641,8 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
+        widgets.add(WidgetDividerUiModel)
+        widgets.add(WidgetFeeServiceUiModel)
         if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
@@ -735,7 +728,8 @@ open class PowerMerchantSubscriptionFragment :
             shopAge = shopInfo?.shopAge.orZero(),
             gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-            pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
+            pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
+            shopGrade = shopGrade?.gradeName ?: PMConstant.ShopGrade.PM
         )
     }
 
@@ -764,17 +758,23 @@ open class PowerMerchantSubscriptionFragment :
         binding?.swipeRefreshPm?.isRefreshing = false
     }
 
-    private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
+    private fun getUpgradePmProWidget(
+        shopGradeWidgetData: WidgetShopGradeUiModel,
+        data: PMGradeBenefitInfoUiModel
+    ): WidgetUpgradePmProUiModel? {
         context?.let { context ->
             pmBasicInfo?.shopInfo?.let {
                 return WidgetUpgradePmProUiModel(
                     shopInfo = it,
-                    registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(
+                    registrationTerms = PMActiveTermHelper.getPmProRegistrationTerms(
                         requireContext(),
                         it,
                         true
                     ),
-                    generalBenefits = PMRegistrationTermHelper.getBenefitList(context)
+                    generalBenefits = PMActiveTermHelper.getBenefitList(context),
+                    isPmActive = shopGradeWidgetData.pmStatus,
+                    shopGrade = shopGradeWidgetData.shopGrade,
+                    nextMonthlyRefreshDate = data.nextMonthlyRefreshDate
                 )
             }
         }
@@ -836,17 +836,6 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
 
-                getWidgetBenefitPackageView()?.let { widgetBenefitPackageView ->
-                    add(
-                        CoachMark2Item(
-                            widgetBenefitPackageView,
-                            getString(R.string.pm_pro_new_seller_title_coachmark_2),
-                            getString(R.string.pm_pro_new_seller_desc_coachmark_2),
-                            position = CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-
                 getCheckStatusPMProView()?.let { statusPMProView ->
                     add(
                         CoachMark2Item(
@@ -861,9 +850,6 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun getWidgetBenefitPackageView(): View? {
-        return getViewHolder<WidgetExpandableUiModel>()?.findViewById(R.id.viewPmProBenefitSection)
-    }
 
     private fun getWidgetDividerView(): View? {
         return getViewHolder<WidgetDividerUiModel>()

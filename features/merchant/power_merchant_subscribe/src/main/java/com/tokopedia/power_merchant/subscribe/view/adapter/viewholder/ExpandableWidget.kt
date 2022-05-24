@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
@@ -32,29 +34,31 @@ class ExpandableWidget(
 
     override fun bind(element: WidgetExpandableUiModel) {
         binding?.run {
-            if (element.isPmPro()) {
-                viewPmProBenefitSection.visible()
-            } else {
-                viewPmProBenefitSection.gone()
-            }
             viewPmBenefitSection.setOnExpandedChanged(true)
-
             setupExpandableItem(element)
             setupPmSection()
-            setupPmProSection(element)
+            setupInfoIncreaseBenefit(element.grade?.gradeName?:PMConstant.ShopGrade.PM)
+
+
+        }
+    }
+
+    private fun setupInfoIncreaseBenefit(grade:String) = binding?.run {
+        val textColor = PMCommonUtils.getHexColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_G500
+        )
+        textDescription.text = getString(R.string.pm_info_benefit_increase_desc,textColor).parseAsHtml()
+        if (grade != PMConstant.ShopGrade.PM){
+            cardInfoBenefit.show()
+        }else{
+            cardInfoBenefit.hide()
         }
     }
 
     private fun setupPmSection() = binding?.run {
         viewPmBenefitSection.setOnClickListener {
             handleExpandableView()
-        }
-    }
-
-    private fun setupPmProSection(element: WidgetExpandableUiModel) = binding?.run {
-        viewPmProBenefitSection.show(element)
-        viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
-            listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
         }
     }
 

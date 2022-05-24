@@ -12,6 +12,8 @@ object PMConstant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
 
     object Images {
+        const val PM_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
+        const val PM_SHOP_ICON = "https://images.tokopedia.net/img/android/gold_merchant_common/power_merchant_shop@3x.png"
         const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
         const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
         const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_add_product_illustration.png"
@@ -39,6 +41,7 @@ object PMConstant {
         const val NA = -1
         const val POWER_MERCHANT = 0
         const val POWER_MERCHANT_PRO = 1
+
     }
 
     object ShopTierType {
@@ -54,5 +57,12 @@ object PMConstant {
         const val TWO = 2
         const val THREE = 3
         const val FOUR = 4
+    }
+
+    object ShopGrade {
+        const val PM = "power merchant"
+        const val PRO_ADVANCE = "advanced"
+        const val PRO_EXPERT = "expert"
+        const val PRO_ULTIMATE = "ultimate"
     }
 }

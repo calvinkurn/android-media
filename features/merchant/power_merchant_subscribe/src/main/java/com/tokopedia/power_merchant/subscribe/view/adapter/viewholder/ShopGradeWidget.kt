@@ -1,5 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.graphics.*
+import android.os.Build
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -21,6 +23,12 @@ import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.R.color
+import android.util.TypedValue
+import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifyprinciples.Typography
+
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -35,6 +43,7 @@ class ShopGradeWidget(
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
+        const val SATURATION_INACTIVE = 0.0f
     }
 
     private val binding: WidgetPmShopGradeBinding? by viewBinding()
@@ -43,7 +52,86 @@ class ShopGradeWidget(
         setupShopGrade(element)
         setupShopScore(element)
         showTopedIllustration(element)
+        setupCurrentGradeStepper(element)
     }
+
+
+    private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
+        val isPm = element.shopGrade == PMConstant.ShopGrade.PM
+        val isPmProAdvance = element.shopGrade == PMConstant.ShopGrade.PRO_ADVANCE
+        val isPmProExpert = element.shopGrade == PMConstant.ShopGrade.PRO_EXPERT
+        val isPmProUltimate = element.shopGrade == PMConstant.ShopGrade.PRO_ULTIMATE
+
+
+        when {
+            isPm ->{
+                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
+                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
+                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
+                binding?.separator2?.stepSeparatorInActive()
+                binding?.separator3?.stepSeparatorInActive()
+            }
+            isPmProAdvance -> {
+                stepInActive(binding?.badgePm)
+                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
+                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
+                binding?.separator?.stepSeparatorInActive()
+                binding?.separator3?.stepSeparatorInActive()
+
+            }
+            isPmProExpert -> {
+                stepInActive(binding?.badgePm)
+                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
+                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
+                binding?.separator?.stepSeparatorInActive()
+                binding?.separator2?.stepSeparatorInActive()
+            }
+            isPmProUltimate -> {
+                stepInActive(binding?.badgePm)
+                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
+                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
+                binding?.separator?.stepSeparatorInActive()
+                binding?.separator2?.stepSeparatorInActive()
+                binding?.separator3?.stepSeparatorInActive()
+            }
+        }
+
+        binding?.chevron?.setOnClickListener {
+
+        }
+
+    }
+
+    private fun stepInActive(stepIcon: IconUnify?, text: Typography? = null) {
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(SATURATION_INACTIVE)
+        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
+        stepIcon?.iconImg?.colorFilter = colorMatrixColorFilter
+        stepIcon?.layoutParams?.height =
+            itemView.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                .toInt()
+        stepIcon?.layoutParams?.width =
+            itemView.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                .toInt()
+
+        text?.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            )
+        )
+        text?.setWeight(Typography.BOLD)
+
+    }
+    private fun View?.stepSeparatorInActive(){
+        this?.setBackgroundColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            )
+        )
+    }
+
 
     private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
@@ -294,6 +382,6 @@ class ShopGradeWidget(
 
     interface Listener {
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
-
+        fun goToMembershipDetail(model: PMProStatusInfoUiModel)
     }
 }
