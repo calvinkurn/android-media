@@ -592,7 +592,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
-                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
                 productID = viewModel.getProductId(),
                 shopID = viewModel.getShopId(),
                 isProductReview = isProductReview,
