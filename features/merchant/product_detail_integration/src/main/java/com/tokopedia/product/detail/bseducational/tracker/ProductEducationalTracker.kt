@@ -7,8 +7,9 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ProductEducationalTracker {
-    private const val MULTILOC_FLAG = "3"
-    private const val WEIGHT_FLAG = "1"
+    private const val WAREHOUSE_CHANGE_FLAG = "1"
+    private const val SHOP_MULTILOC_FLAG = "3"
+    private const val WEIGHT_FLAG = "5"
 
     const val CLOSE_BUTTON = "close"
     const val OK_BUTTON = "oke"
@@ -21,11 +22,7 @@ object ProductEducationalTracker {
                       productId: String,
                       shopId: String,
                       userId: String) {
-        val typeFlagString = when (typeFlag) {
-            MULTILOC_FLAG -> "reroute bottom sheet"
-            WEIGHT_FLAG -> "berat satuan bottomsheet"
-            else -> ""
-        }
+        val typeFlagString = generateTypeFlagString(typeFlag)
 
         val mapEvent = DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
@@ -58,11 +55,7 @@ object ProductEducationalTracker {
                                shopId: String,
                                productId: String,
                                userId: String) {
-        val typeFlagString = when (typeFlag) {
-            MULTILOC_FLAG -> "reroute bottom sheet"
-            WEIGHT_FLAG -> "berat satuan bottomsheet"
-            else -> ""
-        }
+        val typeFlagString = generateTypeFlagString(typeFlag)
 
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PG,
@@ -76,5 +69,14 @@ object ProductEducationalTracker {
         mapEvent[ProductTrackingConstant.Tracking.KEY_HIT_USER_ID] = userId.ifEmpty { null }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    private fun generateTypeFlagString(typeFlag: String): String {
+        return when (typeFlag) {
+            WAREHOUSE_CHANGE_FLAG -> "reroute bottom sheet"
+            SHOP_MULTILOC_FLAG -> "shop info bottom sheet"
+            WEIGHT_FLAG -> "berat satuan bottomsheet"
+            else -> ""
+        }
     }
 }
