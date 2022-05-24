@@ -119,10 +119,10 @@
     <string name="tokopedianow_2h_copy">2 jam</string>
     <string name="tokopedianow_20m_copy">20 menit</string>
     
-    <string name="tokopedianow_20m_switcher_title">Butuh produk tiba lebih cepat?</string>
-    <string name="tokopedianow_20m_switcher_subtitle">Ke Tokopedia NOW! 20 menit tiba</string>
-    <string name="tokopedianow_2h_switcher_title">Butuh produk lebih lengkap?</string>
-    <string name="tokopedianow_2h_switcher_subtitle">Tokopedia NOW! 2 jam tiba</string>
+    <string name="tokopedianow_20m_switcher_title">Butuh pesanan tiba lebih cepat?</string>
+    <string name="tokopedianow_20m_switcher_subtitle"><![CDATA[Cari produk di <b>20 menit tiba</b>]]></string>
+    <string name="tokopedianow_2h_switcher_title"><![CDATA[Kamu sedang di layanan <b>NOW! 20 menit tiba</b>]]></string>
+    <string name="tokopedianow_2h_switcher_subtitle">Kembali ke NOW! 2 jam</string>
     <string name="tokopedianow_20m_coachmark_title">Baru! Pesanan bisa tiba ke lokasimu dalam 20 menit  🚀</string>
     <string name="tokopedianow_20m_coachmark_description">Lebih cepat, tetap gratis ongkir!</string>
 
@@ -164,10 +164,10 @@
     <string name="tokopedianow_on_boarding_cta_try_now_button_bottomsheet">Coba Sekarang</string>
     <string name="tokopedianow_on_boarding_cta_back_to_2h_bottomsheet">Ke Layanan 2 Jam Tiba</string>
 
-    <string name="tokopedianow_on_boarding_title_20m_first_section_coachmark">Kamu bisa belanja NOW! 20 menit tiba 🚀️</string>
-    <string name="tokopedianow_on_boarding_description_20m_first_section_coachmark">Belanja produknya di halaman ini, langsung tiba 20 menit ke alamatmu. Tetap gratis ongkir!</string>
-    <string name="tokopedianow_on_boarding_title_2h_second_section_coachmark">Klik ini untuk balik ke NOW! 2 jam tiba</string>
-    <string name="tokopedianow_on_boarding_description_2h_second_section_coachmark">Maks. 2 jam tiba, produk lebih lengkap &amp; gratis ongkir.</string>
+    <string name="tokopedianow_home_on_boarding_20m_title_first_section_coachmark">Kamu bisa belanja NOW! 20 menit tiba 🚀️</string>
+    <string name="tokopedianow_home_on_boarding_20m_description_first_section_coachmark">Belanja produknya di halaman ini, langsung tiba 20 menit ke alamatmu. Tetap gratis ongkir!</string>
+    <string name="tokopedianow_home_on_boarding_20m_title_second_section_coachmark">Klik ini untuk balik ke NOW! 2 jam tiba</string>
+    <string name="tokopedianow_home_on_boarding_20m_description_second_section_coachmark">Maks. 2 jam tiba, produk lebih lengkap &amp; gratis ongkir.</string>
 
     <string name="tokopedianow_on_boarding_2h_toaster">Selamat menikmati layanan NOW! maks. 2 jam tiba!</string>
     <string name="tokopedianow_on_boarding_20m_toaster">Kamu sekarang berada di halaman khusus produk NOW! 20 menit tiba. Selamat belanja!</string>

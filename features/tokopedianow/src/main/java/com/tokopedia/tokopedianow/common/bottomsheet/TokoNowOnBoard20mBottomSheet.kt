@@ -27,17 +27,20 @@ class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowOnBoard20mBinding>()
 
+    private var listener: OnBoard20mBottomSheetListener? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        listener?.onDismiss()
         super.onDismiss(dialog)
-        activity?.finish()
     }
 
-    fun show(fm: FragmentManager) {
+    fun show(fm: FragmentManager, bottomSheetListener: OnBoard20mBottomSheetListener) {
+        listener = bottomSheetListener
         show(fm, TAG)
     }
 
@@ -50,9 +53,23 @@ class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
         binding?.iuTime?.setImageUrl(IMG_TIME)
         binding?.iuChoiceProduct?.setImageUrl(IMG_GUARANTEED_QUALITY)
 
+        binding?.btnTryNow?.setOnClickListener {
+            dismiss()
+        }
+
+        binding?.tpBackTo2h?.setOnClickListener {
+            dismiss()
+            listener?.onBackTo2hClicked()
+        }
+
         clearContentPadding = true
         isFullpage = false
         setTitle(getString(R.string.tokopedianow_on_boarding_title_bottomsheet))
         setChild(binding?.root)
+    }
+
+    interface OnBoard20mBottomSheetListener {
+        fun onBackTo2hClicked()
+        fun onDismiss()
     }
 }

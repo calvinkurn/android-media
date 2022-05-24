@@ -24,6 +24,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
@@ -66,6 +68,8 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet.OnBoard20mBottomSheetListener
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
@@ -122,6 +126,7 @@ import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home2hSwitcher
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
@@ -166,7 +171,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeSharingListener,
         HomeEducationalInformationListener,
         ServerErrorListener,
-        PermissionListener
+        PermissionListener,
+        OnBoard20mBottomSheetListener
 {
 
     companion object {
@@ -1149,8 +1155,6 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         onRefreshLayout()
-
-        showSwitchServiceTypeToaster(data.serviceType)
     }
 
     private fun showSwitchServiceTypeToaster(serviceType: String) {
@@ -1319,7 +1323,7 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         showHeaderBackground()
         stickyLoginLoadContent()
-        showSwitcherCoachMark()
+        showOnBoarding()
         getLayoutComponentData()
         stopRenderPerformanceMonitoring()
     }
@@ -1330,18 +1334,80 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun showSwitcherCoachMark() {
-        if(!homeSharedPref.getSwitcherCoachMarkShown()) {
-            rvHome?.addOneTimeGlobalLayoutListener {
-                adapter.getItem(Home20mSwitcher::class.java)?.let {
-                    val index = adapter.findPosition(it)
-                    val view = rvHome?.findViewHolderForAdapterPosition(index)?.itemView
-                        ?.findViewById<View>(R.id.coachMarkTarget)
-                    switcherCoachMark = SwitcherCoachMark(view) {
-                        homeSharedPref.setSwitcherCoachMarkShown(true)
+    private fun showOnBoarding() {
+        rvHome?.post {
+            when {
+                !homeSharedPref.get20mSwitcherCoachMarkShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
+                    show20mSwitcherCoachMark()
+                }
+                !homeSharedPref.get2hSwitcherCoachMarkShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
+                    TokoNowOnBoard20mBottomSheet
+                        .newInstance()
+                        .show(childFragmentManager, this)
+                }
+                else -> {
+                    localCacheModel?.apply {
+                        showSwitchServiceTypeToaster(service_type)
                     }
+                }
+            }
+        }
+    }
+
+    private fun show20mSwitcherCoachMark() {
+        rvHome?.addOneTimeGlobalLayoutListener {
+            adapter.getItem(Home20mSwitcher::class.java)?.let {
+                val index = adapter.findPosition(it)
+                rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<View>(R.id.tp_title)?.let { tpTitle ->
+                    switcherCoachMark = SwitcherCoachMark(tpTitle.context) {
+                        //                        homeSharedPref.setSwitcherCoachMarkShown(true)
+                    }
+                    switcherCoachMark?.setCoachMarkItems(
+                        arrayListOf(
+                            CoachMark2Item(
+                                anchorView = tpTitle,
+                                title = activity?.getString(R.string.tokopedianow_20m_coachmark_title).orEmpty(),
+                                description = activity?.getString(R.string.tokopedianow_20m_coachmark_description).orEmpty(),
+                                position = CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    )
                     switcherCoachMark?.show()
                 }
+            }
+        }
+    }
+
+    private fun show2hSwitcherCoachMark() {
+        adapter.getItem(Home2hSwitcher::class.java)?.let {
+            val index = adapter.findPosition(it)
+            rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.apply {
+                val tpTitle = findViewById<View>(R.id.tp_title)
+                val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
+                switcherCoachMark = SwitcherCoachMark(context) {
+                    //                        homeSharedPref.setSwitcherCoachMarkShown(true)
+                }
+                switcherCoachMark?.setCoachMarkItems(
+                    arrayListOf(
+                        CoachMark2Item(
+                            tpTitle,
+                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_first_section_coachmark)
+                                .orEmpty(),
+                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_first_section_coachmark)
+                                .orEmpty(),
+                            CoachMark2.POSITION_BOTTOM
+                        ),
+                        CoachMark2Item(
+                            tpSubtitle,
+                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_second_section_coachmark)
+                                .orEmpty(),
+                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_second_section_coachmark)
+                                .orEmpty(),
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                    )
+                )
+                switcherCoachMark?.show()
             }
         }
     }
@@ -1698,5 +1764,15 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+    }
+
+    override fun onBackTo2hClicked() {
+        localCacheModel?.let {
+            viewModelTokoNow.switchService(it)
+        }
+    }
+
+    override fun onDismiss() {
+        show2hSwitcherCoachMark()
     }
 }
