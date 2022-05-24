@@ -39,7 +39,7 @@ abstract class PickerTest {
             .context
             .applicationContext
 
-    abstract fun createAndAppendUri(builder: Uri.Builder)
+   private fun createAndAppendUri(builder: Uri.Builder) {} //no-op for now
 
     @Before open fun setUp() {
         setupBaseDaggerComponent()

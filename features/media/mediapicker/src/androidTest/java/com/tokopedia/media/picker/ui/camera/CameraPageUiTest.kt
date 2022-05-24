@@ -91,6 +91,17 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @Test
+    fun should_open_video_preview_activity_onLanjutClicked() {
+        // When
+        startCameraPage()
+        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
+        Robot.clickLanjutButton()
+
+        // Then
+        Assert.verifyOpenPreviewActivity()
+    }
+
+    @Test
     fun should_update_flash_state_onFlashButtonClicked() {
         // When
         startCameraPage()
