@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
@@ -401,7 +402,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     index = position,
                     productId = recommendationItem.productId.toString(),
                     productName = recommendationItem.name,
-                    price = recommendationItem.price.filter { it.isDigit() },
+                    price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero(),
                     productCategory = recommendationItem.categoryBreadcrumbs
                 )
             ),
@@ -435,7 +436,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     index = position.toString(),
                     productId = recomItem.productId.toString(),
                     productName = recomItem.name,
-                    price = recomItem.price.filter { it.isDigit() },
+                    price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
                     productCategory = recomItem.categoryBreadcrumbs
                 )
             )
@@ -465,7 +466,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             index = position,
             productId = recommendationItem.productId.toString(),
             productName = recommendationItem.name,
-            price = recommendationItem.price.filter { it.isDigit() }
+            price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(
                 KEY_DIMENSION_40,
@@ -498,7 +499,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val item = productItemDataLayer(
             productId = homeLeftCarouselProductCardUiModel.id.toString(),
             productName = homeLeftCarouselProductCardUiModel.productCardModel.productName,
-            price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }
+            price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${homeLeftCarouselProductCardUiModel.recommendationType} - ${homeLeftCarouselProductCardUiModel.channelPageName} - ${homeLeftCarouselProductCardUiModel.channelHeaderName}'}")
             putString(KEY_DIMENSION_45, cartId)
@@ -648,7 +649,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 index = position.toString(),
                 productId = product.id.orEmpty(),
                 productName = product.productCardModel.productName,
-                price = product.productCardModel.formattedPrice,
+                price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product.brandId,
                 productCategory = product.categoryId
             )
@@ -677,7 +678,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 index = position.toString(),
                 productId = product.id.orEmpty(),
                 productName = product.productCardModel.productName,
-                price = product.productCardModel.formattedPrice,
+                price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product.brandId,
                 productCategory = product.categoryId
             )
@@ -1495,7 +1496,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         index: String = "",
         productId: String = "",
         productName: String = "",
-        price: String = "",
+        price: Long = 0L,
         productBrand: String = "",
         productCategory: String = "",
         productVariant: String = ""
@@ -1509,7 +1510,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_ITEM_ID, productId)
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, productVariant)
-            putString(KEY_PRICE, price)
+            putLong(KEY_PRICE, price)
         }
     }
 
