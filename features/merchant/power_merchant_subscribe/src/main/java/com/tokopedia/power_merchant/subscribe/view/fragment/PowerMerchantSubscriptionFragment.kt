@@ -178,8 +178,8 @@ open class PowerMerchantSubscriptionFragment :
         bottomSheet.show(childFragmentManager)
     }
 
-    override fun goToMembershipDetail(model: PMProStatusInfoUiModel) {
-
+    override fun goToMembershipDetail() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
     }
 
     override fun onPMProNewSellerLearnMore() {
@@ -628,7 +628,7 @@ open class PowerMerchantSubscriptionFragment :
                 && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
-            getUpgradePmProWidget(getShopGradeWidgetData(data),data)?.let {
+            getUpgradePmProWidget(getShopGradeWidgetData(data), data)?.let {
                 widgets.add(it)
             }
         }

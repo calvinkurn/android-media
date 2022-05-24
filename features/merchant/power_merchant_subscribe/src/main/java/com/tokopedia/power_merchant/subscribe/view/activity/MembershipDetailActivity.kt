@@ -94,7 +94,7 @@ class MembershipDetailActivity : BaseActivity(),
 
     private fun onSuccessPmShopInfo(data: PowerMerchantBasicInfoUiModel) {
         pmBasicInfo = data
-        setupPagerItems(data.shopInfo)
+        setupPagerItems(data.shopInfo, data.pmStatus.pmTier)
         setupTabs()
     }
 
@@ -152,10 +152,10 @@ class MembershipDetailActivity : BaseActivity(),
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupPagerItems(shopInfo: PMShopInfoUiModel) {
+    private fun setupPagerItems(shopInfo: PMShopInfoUiModel, pmTire: Int) {
         pagerAdapter.clearFragments()
 
-        val powerMerchant = getPowerMerchantPager(shopInfo)
+        val powerMerchant = getPowerMerchantPager(pmTire)
         pagerAdapter.addFragment(
             MembershipDetailFragment.createInstance(
                 getMembershipData(
@@ -167,7 +167,7 @@ class MembershipDetailActivity : BaseActivity(),
             powerMerchant
         )
 
-        val pmProAdvance = getPmProAdvancePager(shopInfo)
+        val pmProAdvance = getPmProAdvancePager(shopInfo.shopLevel, pmTire)
         pagerAdapter.addFragment(
             MembershipDetailFragment.createInstance(
                 getMembershipData(
@@ -179,7 +179,7 @@ class MembershipDetailActivity : BaseActivity(),
             pmProAdvance
         )
 
-        val pmProExpert = getPmProExpertPager(shopInfo)
+        val pmProExpert = getPmProExpertPager(shopInfo.shopLevel, pmTire)
         pagerAdapter.addFragment(
             MembershipDetailFragment.createInstance(
                 getMembershipData(
@@ -191,7 +191,7 @@ class MembershipDetailActivity : BaseActivity(),
             pmProExpert
         )
 
-        val pmProUltimate = getPmProUltimatePager(shopInfo)
+        val pmProUltimate = getPmProUltimatePager(shopInfo.shopLevel, pmTire)
         pagerAdapter.addFragment(
             MembershipDetailFragment.createInstance(
                 getMembershipData(
@@ -223,11 +223,10 @@ class MembershipDetailActivity : BaseActivity(),
         )
     }
 
-    private fun getPowerMerchantPager(shopInfo: PMShopInfoUiModel): PMGradeWithBenefitsUiModel.PM {
+    private fun getPowerMerchantPager(pmTire: Int): PMGradeWithBenefitsUiModel.PM {
         return PMGradeWithBenefitsUiModel.PM(
             gradeName = Constant.POWER_MERCHANT,
-            isTabActive = shopInfo.shopLevel <= PMConstant.ShopLevel.ONE
-                    || !shopInfo.isEligiblePm || !shopInfo.isEligiblePmPro,
+            isTabActive = pmTire == PMConstant.PMTierType.POWER_MERCHANT,
             tabLabel = getString(R.string.pm_power_merchant),
             tabResIcon = IconUnify.BADGE_PM_FILLED,
             benefitList = getBenefitList(
@@ -239,10 +238,14 @@ class MembershipDetailActivity : BaseActivity(),
         )
     }
 
-    private fun getPmProAdvancePager(shopInfo: PMShopInfoUiModel): PMGradeWithBenefitsUiModel.PMProAdvance {
+    private fun getPmProAdvancePager(
+        shopLevel: Int,
+        pmTire: Int
+    ): PMGradeWithBenefitsUiModel.PMProAdvance {
         return PMGradeWithBenefitsUiModel.PMProAdvance(
             gradeName = Constant.PM_PRO_ADVANCED,
-            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.TWO && shopInfo.isEligiblePmPro,
+            isTabActive = shopLevel == PMConstant.ShopLevel.TWO && pmTire
+                    == PMConstant.PMTierType.POWER_MERCHANT_PRO,
             tabLabel = getString(R.string.pm_pro_advanced),
             tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = getBenefitList(
@@ -254,10 +257,14 @@ class MembershipDetailActivity : BaseActivity(),
         )
     }
 
-    private fun getPmProExpertPager(shopInfo: PMShopInfoUiModel): PMGradeWithBenefitsUiModel.PMProExpert {
+    private fun getPmProExpertPager(
+        shopLevel: Int,
+        pmTire: Int
+    ): PMGradeWithBenefitsUiModel.PMProExpert {
         return PMGradeWithBenefitsUiModel.PMProExpert(
             gradeName = Constant.PM_PRO_EXPERT,
-            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.THREE && shopInfo.isEligiblePmPro,
+            isTabActive = shopLevel == PMConstant.ShopLevel.THREE && pmTire
+                    == PMConstant.PMTierType.POWER_MERCHANT_PRO,
             tabLabel = getString(R.string.pm_pro_expert),
             tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = getBenefitList(
@@ -269,10 +276,14 @@ class MembershipDetailActivity : BaseActivity(),
         )
     }
 
-    private fun getPmProUltimatePager(shopInfo: PMShopInfoUiModel): PMGradeWithBenefitsUiModel.PMProUltimate {
+    private fun getPmProUltimatePager(
+        shopLevel: Int,
+        pmTire: Int
+    ): PMGradeWithBenefitsUiModel.PMProUltimate {
         return PMGradeWithBenefitsUiModel.PMProUltimate(
             gradeName = Constant.PM_PRO_ULTIMATE,
-            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.FOUR && shopInfo.isEligiblePmPro,
+            isTabActive = shopLevel == PMConstant.ShopLevel.FOUR && pmTire
+                    == PMConstant.PMTierType.POWER_MERCHANT_PRO,
             tabLabel = getString(R.string.pm_pro_ultimate),
             tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = getBenefitList(

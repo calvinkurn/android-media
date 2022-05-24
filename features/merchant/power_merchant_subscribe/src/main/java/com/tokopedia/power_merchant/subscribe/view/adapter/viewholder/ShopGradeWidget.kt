@@ -96,10 +96,9 @@ class ShopGradeWidget(
             }
         }
 
-        binding?.chevron?.setOnClickListener {
-
+        binding?.chevronPmGrade?.setOnClickListener {
+            listener.goToMembershipDetail()
         }
-
     }
 
     private fun stepInActive(stepIcon: IconUnify?, text: Typography? = null) {
@@ -382,6 +381,6 @@ class ShopGradeWidget(
 
     interface Listener {
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
-        fun goToMembershipDetail(model: PMProStatusInfoUiModel)
+        fun goToMembershipDetail()
     }
 }
