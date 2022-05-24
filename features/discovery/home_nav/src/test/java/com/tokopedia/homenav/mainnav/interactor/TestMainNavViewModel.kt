@@ -43,7 +43,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -968,7 +967,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given using rollence variant when user not logged in should add empty state non logged in`() = runBlocking {
+    fun `given using rollence variant when user not logged in should add empty state non logged in`() {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns false
@@ -983,7 +982,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success and not empty wishlist should add wishlist model to visitable list`() = runBlocking {
+    fun `given success and not empty wishlist should add wishlist model to visitable list`() {
         val userSession = mockk<UserSessionInterface>()
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1000,7 +999,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success and not empty when favorite shop should add favorite shop model to visitable list`() = runBlocking {
+    fun `given success and not empty when favorite shop should add favorite shop model to visitable list`() {
         val userSession = mockk<UserSessionInterface>()
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
@@ -1017,7 +1016,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given empty data when get wishlist should add empty state`() = runBlocking {
+    fun `given empty data when get wishlist should add empty state`() {
         val userSession = mockk<UserSessionInterface>()
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1034,7 +1033,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given empty data when get favorite shop should add empty state`() = runBlocking {
+    fun `given empty data when get favorite shop should add empty state`() {
         val userSession = mockk<UserSessionInterface>()
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
@@ -1051,7 +1050,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when get wishlist should add error state`() = runBlocking {
+    fun `given error when get wishlist should add error state`() {
         val userSession = mockk<UserSessionInterface>()
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1068,7 +1067,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when get favorite shop should add error state`() = runBlocking {
+    fun `given error when get favorite shop should add error state`() {
         val userSession = mockk<UserSessionInterface>()
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
@@ -1085,7 +1084,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when refresh favorite shop should update existing list`() = runBlocking {
+    fun `test when refresh favorite shop should update existing list`() {
         val userSession = mockk<UserSessionInterface>()
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
@@ -1123,7 +1122,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when refresh wishlist should update existing list`() = runBlocking {
+    fun `test when refresh wishlist should update existing list`()  {
         val userSession = mockk<UserSessionInterface>()
         val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1158,5 +1157,144 @@ class TestMainNavViewModel {
 
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
                 && it.wishlist.contains(wishlist2) } == true)
+    }
+
+    @Test
+    fun `test show error wishlist then success after refresh wishlist should update error state to show wishlist`() {
+        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
+
+        val wishlist = NavWishlistModel(
+            productId = "123",
+            productName = "Item 1",
+            wishlistId = "111"
+        )
+
+        coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
+
+        viewModel.refreshWishlistData()
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
+                && it.wishlist.contains(wishlist) } == true)
+    }
+
+    @Test
+    fun `test show error wishlist then success after reload page should update error state to show wishlist`() {
+        val wishlistNavUseCase = mockk<GetWishlistNavUseCase>()
+
+        val wishlist = NavWishlistModel(
+            productId = "123",
+            productName = "Item 1",
+            wishlistId = "111"
+        )
+
+        coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
+
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
+                && it.wishlist.contains(wishlist) } == true)
+    }
+
+    @Test
+    fun `test show error favorite shop then success after refresh favorite shop should update error state to show favorite shop`() {
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        val favoriteShop = NavFavoriteShopModel(
+            id = "1",
+            name = "Toko A",
+            location = "Tangerang"
+        )
+
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(getFavoriteShopsNavUseCase = favoriteShopsNavUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
+
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
+
+        viewModel.refreshFavoriteShopData()
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
+                && it.favoriteShops.contains(favoriteShop) } == true)
+    }
+
+    @Test
+    fun `test show error favorite shop then success after reload page should update error state to show favorite shop`() {
+        val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+
+        val favoriteShop = NavFavoriteShopModel(
+            id = "1",
+            name = "Toko A",
+            location = "Tangerang"
+        )
+
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel = createViewModel(getFavoriteShopsNavUseCase = favoriteShopsNavUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
+
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
+
+        viewModel.getMainNavData(true)
+
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
+                && it.favoriteShops.contains(favoriteShop) } == true)
+    }
+
+    @Test
+    fun `test success show bu list with disabled me page rollence then error after refresh data should update bu to error state`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        }.answers { listOf(successResult) }
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertTrue(dataList.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertFalse(dataListRefreshed.contains(successResult))
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
     }
 }
