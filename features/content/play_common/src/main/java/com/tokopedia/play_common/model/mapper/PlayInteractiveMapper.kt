@@ -5,6 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -14,6 +15,8 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 12/04/22
  */
 class PlayInteractiveMapper @Inject constructor() {
+
+    private val decodeHtml = DefaultHtmlTextTransformer()
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
         val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong())
@@ -27,7 +30,7 @@ class PlayInteractiveMapper @Inject constructor() {
     fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
-            title = data.title,
+            title = decodeHtml.transform(data.title),
             status = when (data.status) {
                 STATUS_SCHEDULED -> InteractiveUiModel.Giveaway.Status.Upcoming(
                     startTime = Calendar.getInstance().apply {
@@ -52,7 +55,7 @@ class PlayInteractiveMapper @Inject constructor() {
     fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
-            title = data.question,
+            title = decodeHtml.transform(data.question),
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
                     endTime = Calendar.getInstance().apply {
@@ -66,14 +69,14 @@ class PlayInteractiveMapper @Inject constructor() {
                 QuizChoicesUiModel(
                     index,
                     item.id,
-                    item.text,
+                    decodeHtml.transform(item.text),
                     if(item.id == data.userChoice)
                         PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
                     else
                         PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
                 )
             },
-            reward = data.prize,
+            reward = decodeHtml.transform(data.prize),
             waitingDuration = waitingDurationInMillis,
         )
     }
