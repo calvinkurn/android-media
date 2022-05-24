@@ -1,0 +1,57 @@
+package com.tokopedia.logisticCommon.util
+
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.url.Url
+
+/**
+ * Created by irpan on 23/05/22.
+ */
+object LogisticImageDeliveryHelper {
+
+    private const val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
+    private const val HEADER_KEY_AUTH = "Accounts-Authorization"
+    private const val HEADER_VALUE_BEARER = "Bearer"
+
+    const val IMAGE_SMALL_SIZE = "small"
+    const val IMAGE_LARGE_SIZE = "large"
+
+    const val DEFAULT_OS_TYPE = 1
+
+    //generate url image
+    fun getDeliveryImage(imageId: String, orderId: Long, size: String, userId: String, osType: Int, deviceId: String): String {
+        val baseUrl = TokopediaUrl.getInstance().API + PATH_IMAGE_LOGISTIC
+        return "$baseUrl?order_id=$orderId&image_id=$imageId&size=$size&user_id=$userId&os_type=$osType&device_id=$deviceId"
+    }
+
+    // use for load image POD
+    fun ImageView.loadImagePod(
+        context: Context,
+        accessToken: String,
+        url: String,
+        drawableImagePlaceholder: Drawable? = null,
+        drawableImageError: Drawable? = null
+    ) {
+
+        val authKey = String.format("%s %s", HEADER_VALUE_BEARER, accessToken)
+        val newUrl = GlideUrl(url, LazyHeaders.Builder().addHeader(HEADER_KEY_AUTH, authKey).build())
+
+        this?.let { imgProof ->
+            Glide.with(context)
+                .load(newUrl)
+                .placeholder(drawableImagePlaceholder)
+                .error(drawableImageError)
+                .dontAnimate()
+                .into(imgProof)
+        }
+
+
+    }
+}
+
