@@ -56,12 +56,7 @@ class ShopProductFragment @Inject constructor(
             onLoading = { viewModel.submitAction(ProductTagAction.LoadShopProduct) }
         )
     }
-    private val layoutManager: StaggeredGridLayoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            impressProduct()
-        }
-    }
+    private lateinit var layoutManager: StaggeredGridLayoutManager
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
@@ -114,6 +109,13 @@ class ShopProductFragment @Inject constructor(
     }
 
     private fun setupView() {
+        layoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressProduct()
+            }
+        }
+
         binding.rvShopProduct.addOnScrollListener(scrollListener)
         binding.rvShopProduct.layoutManager = layoutManager
         binding.rvShopProduct.adapter = adapter
@@ -223,9 +225,11 @@ class ShopProductFragment @Inject constructor(
     }
 
     private fun impressProduct() {
-        val visibleProducts = layoutManager.getVisibleItems(adapter)
-        if(visibleProducts.isNotEmpty())
-            impressionCoordinator.saveProductImpress(visibleProducts)
+        if(this::layoutManager.isInitialized) {
+            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            if(visibleProducts.isNotEmpty())
+                impressionCoordinator.saveProductImpress(visibleProducts)
+        }
     }
 
     companion object {
