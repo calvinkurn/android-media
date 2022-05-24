@@ -1,6 +1,13 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,38 +19,28 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
+import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
+import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
-import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import java.util.*
 import javax.inject.Inject
-import android.text.method.LinkMovementMethod
-
-import android.widget.TextView
-
-import android.text.Spanned
-
-import android.text.TextPaint
-
-import android.content.Intent
-import android.graphics.Color
-
-import android.text.style.ClickableSpan
-
-import android.text.SpannableString
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
-import com.tokopedia.unifycomponents.BottomSheetUnify
-
 
 class TokomemberKuponCreateFragment : BaseDaggerFragment() {
 
@@ -56,6 +53,9 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
     private var selectedCalendar: Calendar? = null
     private var selectedTime = ""
     private var startTime : Calendar? = null
+    private var programData: ProgramUpdateDataInput? = null
+    private var couponPremiumData :TmSingleCouponData? = null
+    private var couponVip : TmSingleCouponData? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -77,9 +77,10 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
-        renderProgram()
         renderButton()
         observeViewModel()
+        programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
+        renderProgram()
         if (arguments?.getBoolean(IS_SINGLE_COUPON,false) == true){
             renderSingleCoupon()
         } else {
@@ -99,10 +100,21 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
 
         })
 
-        tokomemberDashCreateViewModel.tmCouponPreValidateLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tmCouponPreValidateSingleCouponLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
-                    openPreviewPage()
+                    preValidateCoupons(couponVip)
+                }
+                is Fail -> {
+                    handleProgramValidateError()
+                }
+            }
+        })
+
+        tokomemberDashCreateViewModel.tmCouponPreValidateMultipleCouponLiveData.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> {
+                    tokomemberDashCreateViewModel.validateProgram()
                 }
                 is Fail -> {
                     handleProgramValidateError()
@@ -113,7 +125,7 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
-                    tokomemberDashCreateViewModel.validateProgram()
+                    openPreviewPage()
                 }
                 is Fail -> {
                     handlePreValidateError()
@@ -176,25 +188,44 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
         val firstIndex = COUPON_TERMS_CONDITION.indexOf("syarat")
         ss.setSpan(clickableSpan, firstIndex, firstIndex  + "syarat & ketentuan".length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        tvTermsAndCondition.text = ss
+        tvTermsAndCondition.text = Html.fromHtml(ss.toString())
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
-            val couponPremiumData = tmCouponPremium?.getSingleCouponData()
-            val y = tmCouponVip?.getSingleCouponData()
+             couponPremiumData = tmCouponPremium?.getSingleCouponData()
+             couponVip = tmCouponVip?.getSingleCouponData()
+
+            preValidateCoupons(couponPremiumData)
+            //validate two time
+            //  if succeed check program time
+            // if all succeed go to preview page
 
             tokomemberDashCreateViewModel.preValidateCoupon(
                 TmCouponValidateRequest(
                     targetBuyer = 3,
                     benefitType = "idr",
                     couponType = couponPremiumData?.typeCoupon,
-                    benefitMax = couponPremiumData?.maxCashback.toIntSafely(),
+                    benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:""),
                     benefitPercent = couponPremiumData?.cashBackPercentage,
-                    minPurchase = couponPremiumData?.minTransaki.toIntSafely(),
+                    minPurchase = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.minTransaki?:""),
                     source = "android"
                 )
             )
         }
+    }
+
+    private fun preValidateCoupons(coupon: TmSingleCouponData?) {
+        tokomemberDashCreateViewModel.preValidateMultipleCoupon(
+            TmCouponValidateRequest(
+                targetBuyer = 3,
+                benefitType = "idr",
+                couponType = coupon?.typeCoupon,
+                benefitMax = coupon?.maxCashback.toIntSafely(),
+                benefitPercent = coupon?.cashBackPercentage,
+                minPurchase = coupon?.minTransaki.toIntSafely(),
+                source = "android"
+            )
+        )
     }
 
     private fun renderMultipleCoupon() {
@@ -253,10 +284,11 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun renderProgram() {
-
+        setProgramDateAuto()
         chipDateSelection.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionDate = position
+                setProgramDateAuto()
             }
         })
         chipDateSelection.setDefaultSelection(selectedChipPositionDate)
@@ -297,6 +329,36 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
                 "Tentukan jam mulai untuk kupon TokoMember yang sudah kamu buat.",
                 textFieldProgramEndTime
             )
+        }
+    }
+
+    private fun setProgramDateAuto(){
+        when(selectedChipPositionDate){
+            ProgramDateType.AUTO -> {
+
+                textFieldProgramStartDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.startTime.toString()))
+                textFieldProgramStartTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.startTime.toString()))
+                textFieldProgramEndDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.endTime.toString()))
+                textFieldProgramEndTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.endTime.toString()))
+                textFieldProgramStartDate.isEnabled = false
+                textFieldProgramStartDate.iconContainer.isEnabled = false
+                textFieldProgramStartTime.isEnabled  = false
+                textFieldProgramStartTime.iconContainer.isEnabled = false
+                textFieldProgramEndDate.isEnabled = false
+                textFieldProgramEndDate.iconContainer.isEnabled = false
+                textFieldProgramEndTime.isEnabled  = false
+                textFieldProgramEndTime.iconContainer.isEnabled = false
+            }
+            ProgramDateType.MANUAL -> {
+                textFieldProgramStartDate.isEnabled = true
+                textFieldProgramStartDate.iconContainer.isEnabled = true
+                textFieldProgramStartTime.isEnabled  = true
+                textFieldProgramStartTime.iconContainer.isEnabled = true
+                textFieldProgramEndDate.isEnabled = true
+                textFieldProgramEndDate.iconContainer.isEnabled = true
+                textFieldProgramEndTime.isEnabled  = true
+                textFieldProgramEndTime.iconContainer.isEnabled = true
+            }
         }
 
     }
@@ -431,8 +493,10 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment() {
     companion object {
 
         const val IS_SINGLE_COUPON = "IS_SINGLE_COUPON"
-        fun newInstance(): TokomemberKuponCreateFragment {
-            return TokomemberKuponCreateFragment()
+        fun newInstance(bundle: Bundle): TokomemberKuponCreateFragment {
+            return TokomemberKuponCreateFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

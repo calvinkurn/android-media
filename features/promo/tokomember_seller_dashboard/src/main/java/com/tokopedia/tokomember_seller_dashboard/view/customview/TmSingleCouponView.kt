@@ -1,6 +1,8 @@
 package com.tokopedia.tokomember_seller_dashboard.view.customview
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -63,6 +65,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                 selectedChipPositionCashback = position
                 isShowCashPercentage = if (position == CashbackType.PERCENTAGE){
                     textFieldPercentCashback.show()
+                    chipCashBackCouponValidation()
                     true
                 } else{
                     textFieldPercentCashback.hide()
@@ -124,5 +127,21 @@ class TmSingleCouponView @JvmOverloads constructor(
                 }
             })
         }
+    }
+
+    private fun chipCashBackCouponValidation(){
+/*
+        textFieldPercentCashback.editText.run {
+            this.addTextChangedListener(object : NumberTextWatcher(this@run){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    if (number > 100 ){
+                        textFieldPercentCashback.isInputError = true
+                        textFieldPercentCashback.setMessage("Maximum reached")
+                    }
+                }
+            })
+        }
+*/
     }
 }

@@ -53,7 +53,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 intent.extras?.let { TokomemberProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
             COUPON ->{
-                intent.extras?.let { TokomemberKuponCreateFragment.newInstance() }?.let { addFragment(it, "") }
+                intent.extras?.let { TokomemberKuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 intent.extras?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -131,7 +131,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 bundle.let { TokomemberProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             COUPON ->{
-                bundle.let { TokomemberKuponCreateFragment.newInstance() }.let { addFragment(it, "") }
+                bundle.let { TokomemberKuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 bundle.let { TokomemberDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }

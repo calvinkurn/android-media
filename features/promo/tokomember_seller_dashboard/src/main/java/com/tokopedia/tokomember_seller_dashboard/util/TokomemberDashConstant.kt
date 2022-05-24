@@ -63,5 +63,7 @@ const val COUPON_SHIPPING = "shipping"
 const val CASHBACK_IDR = "idr"
 const val CASHBACK_PERCENTAGE = "percent"
 
+const val PROGRAM_AUTO_DATE = ""
+
 const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui " + "<br>" +
         "syarat & ketentuan TokoMember."

@@ -95,6 +95,11 @@ object ProgramUpdateMapper {
         return "$day $month $year"
     }
 
+    fun setTime(time: String): String {
+        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
+        return "$selectedTime WIB"
+    }
+
     fun convertDateTime(t: Date): String {
         var time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
         time = time.substring(0, time.length-2)

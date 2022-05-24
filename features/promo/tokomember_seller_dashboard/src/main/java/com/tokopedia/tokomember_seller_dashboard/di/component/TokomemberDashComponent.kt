@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.di.component
 
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberActivityContextModule
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberDashModule
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberViewmodelModule
@@ -19,7 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgram
 import dagger.Component
 
 @TokomemberDashScope
-@Component(modules = [TokomemberViewmodelModule::class, TokomemberActivityContextModule::class, TokomemberDashModule::class])
+@Component(modules = [TokomemberViewmodelModule::class, TokomemberActivityContextModule::class, TokomemberDashModule::class , MediaUploaderModule::class])
 interface TokomemberDashComponent {
     fun inject(tokomemberDashHomeMainFragment: TokomemberDashHomeMainFragment)
     fun inject(tokomemberDashHomeFragment: TokomemberDashHomeFragment)

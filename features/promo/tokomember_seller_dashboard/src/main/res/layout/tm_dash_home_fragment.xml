@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/viewFlipperIntro"
-    android:measureAllChildren="false">
+    android:id="@+id/viewFlipperIntro">
 
     <com.tokopedia.tokomember_common_widget.TokomemberShopView
         android:layout_width="match_parent"

@@ -15,6 +15,8 @@ import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.C
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.DETAIL
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EDIT
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
+import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.AUTO
+import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.MANUAL
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
@@ -77,6 +79,15 @@ annotation class CashbackType {
     companion object {
         const val IDR = 0
         const val PERCENTAGE = 1
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(AUTO, MANUAL)
+annotation class ProgramDateType {
+    companion object {
+        const val AUTO = 0
+        const val MANUAL = 1
     }
 }
 

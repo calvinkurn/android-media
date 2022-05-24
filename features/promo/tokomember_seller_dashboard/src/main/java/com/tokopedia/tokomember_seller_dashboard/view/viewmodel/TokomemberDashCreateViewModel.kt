@@ -52,9 +52,13 @@ class TokomemberDashCreateViewModel @Inject constructor(
     val tokomemberCardModifyLiveData: LiveData<TokoLiveDataResult<MembershipCreateEditCard>> =
         _tokomemberCardModifyLiveData
 
-    private val _tmCouponPreValidateLiveData = MutableLiveData<Result<TmVoucherValidationPartialResponse>>()
-    val tmCouponPreValidateLiveData: LiveData<Result<TmVoucherValidationPartialResponse>> =
-        _tmCouponPreValidateLiveData
+    private val _tmCouponPreValidateSingleCouponLiveData = MutableLiveData<Result<TmVoucherValidationPartialResponse>>()
+    val tmCouponPreValidateSingleCouponLiveData: LiveData<Result<TmVoucherValidationPartialResponse>> =
+        _tmCouponPreValidateSingleCouponLiveData
+
+    private val _tmCouponPreValidateMultipleCouponLiveData = MutableLiveData<Result<TmVoucherValidationPartialResponse>>()
+    val tmCouponPreValidateMultipleCouponLiveData: LiveData<Result<TmVoucherValidationPartialResponse>> =
+        _tmCouponPreValidateMultipleCouponLiveData
 
     private val _tmCouponCreateLiveData = MutableLiveData<Result<TmKuponCreateMVResponse>>()
     val tmCouponCreateLiveData: LiveData<Result<TmKuponCreateMVResponse>> =
@@ -169,9 +173,18 @@ class TokomemberDashCreateViewModel @Inject constructor(
     fun preValidateCoupon(tmCouponValidateRequest: TmCouponValidateRequest){
         tmKuponCreateValidateUsecase.cancelJobs()
         tmKuponCreateValidateUsecase.getPartialValidateData( {
-            _tmCouponPreValidateLiveData.postValue(Success(it))
+            _tmCouponPreValidateSingleCouponLiveData.postValue(Success(it))
         }, {
-            _tmCouponPreValidateLiveData.postValue(Fail(it))
+            _tmCouponPreValidateSingleCouponLiveData.postValue(Fail(it))
+        },tmCouponValidateRequest)
+    }
+
+    fun preValidateMultipleCoupon(tmCouponValidateRequest: TmCouponValidateRequest){
+        tmKuponCreateValidateUsecase.cancelJobs()
+        tmKuponCreateValidateUsecase.getPartialValidateData( {
+            _tmCouponPreValidateMultipleCouponLiveData.postValue(Success(it))
+        }, {
+            _tmCouponPreValidateMultipleCouponLiveData.postValue(Fail(it))
         },tmCouponValidateRequest)
     }
 

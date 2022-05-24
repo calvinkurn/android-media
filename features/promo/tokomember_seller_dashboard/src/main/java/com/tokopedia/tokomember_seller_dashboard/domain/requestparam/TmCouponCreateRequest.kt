@@ -1,7 +1,10 @@
 package com.tokopedia.tokomember_seller_dashboard.domain.requestparam
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class TmCouponCreateRequest(
 
 	@SerializedName("benefit_max")
@@ -69,4 +72,4 @@ data class TmCouponCreateRequest(
 
 	@SerializedName("warehouse_id")
 	val warehouseId: Int? = null
-)
+) : Parcelable
