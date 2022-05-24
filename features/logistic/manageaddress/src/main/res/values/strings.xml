@@ -11,7 +11,7 @@
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="pinpoint">Sudah Pinpoint</string>
     <string name="tokopedia_note">Tokopedia Note</string>
-    
+
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="daftar_alamat">Daftar Alamat</string>
     <string name="tambah_alamat">Tambah Alamat</string>
@@ -121,4 +121,6 @@
     <string name="shop_postal_code_invalid">Format kode pos invalid</string>
     <string name="edit_address_success">Alamat berhasil disimpan!</string>
 
+    <!--    remove address-->
+    <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
 </resources>
