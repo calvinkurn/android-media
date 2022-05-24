@@ -46,7 +46,7 @@ fun isRunningTest(): Boolean {
     return try {
         Class.forName("org.junit.Test")
         true
-    } catch (e: ClassNotFoundException) {
+    } catch (e: Exception) {
         false
     }
 }
