@@ -30,6 +30,7 @@ class PlayInteractiveModelBuilder {
             winners = winners,
             otherParticipantText = otherParticipantText,
             otherParticipant = otherParticipant,
+            id = "1"
     )
 
     fun buildWinner(
