@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmTermsHeaderBinding
 
 /**
@@ -20,7 +19,11 @@ class TermHeaderView : LinearLayout {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private var onClickCallback: ((Boolean) -> Unit)? = null
     private var isExpanded = true
@@ -46,10 +49,6 @@ class TermHeaderView : LinearLayout {
     fun setExpanded(isExpanded: Boolean) {
         this.isExpanded = isExpanded
         changeIconExpandedStatus()
-    }
-
-    fun setTermStatus(isEligible: Boolean) {
-        binding?.tvPmHeaderTermsStatus?.isVisible = isEligible
     }
 
     fun setOnSectionHeaderClickListener(callback: (isExpanded: Boolean) -> Unit) {

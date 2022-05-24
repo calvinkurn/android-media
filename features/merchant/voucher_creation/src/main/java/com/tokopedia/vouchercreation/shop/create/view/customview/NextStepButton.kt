@@ -2,33 +2,37 @@ package com.tokopedia.vouchercreation.shop.create.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.annotation.LayoutRes
-import com.tokopedia.vouchercreation.R
+import android.view.LayoutInflater
 import com.tokopedia.vouchercreation.common.view.VoucherCustomView
-import kotlinx.android.synthetic.main.mvc_next_step_button.view.*
+import com.tokopedia.vouchercreation.databinding.MvcNextStepButtonBinding
 
 class NextStepButton @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
-        defStyleRes: Int = 0,
-        @LayoutRes layoutResource: Int = R.layout.mvc_next_step_button
-) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource) {
+        defStyleRes: Int = 0
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes) {
+
+    private var binding: MvcNextStepButtonBinding = MvcNextStepButtonBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        setupLayout(binding)
+    }
 
     override fun setupAttributes() {}
 
     override fun setupView() {}
 
-    var isLoading = nextButton?.isLoading ?: false
+    var isLoading = binding.nextButton.isLoading ?: false
         set(value) {
             field = value
-            nextButton?.isLoading = value
+            binding.nextButton.isLoading = value
         }
 
-    var isButtonEnabled = nextButton?.isEnabled ?: false
+    var isButtonEnabled = binding.nextButton.isEnabled ?: false
         set(value) {
             field = value
-            nextButton?.isEnabled = value
+            binding.nextButton.isEnabled = value
             isEnabled = value
         }
 

@@ -25,8 +25,8 @@ class RemoveFingerprintUsecase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-            mutation remove_fingerprint {
-                flushFingerprintByUniqueID {
+            mutation remove_fingerprint(${'$'}device_biometrics: String!) {
+                flushFingerprintByUniqueID(device_biometrics: ${'$'}device_biometrics) {
                         is_success
                         error
                         message                   

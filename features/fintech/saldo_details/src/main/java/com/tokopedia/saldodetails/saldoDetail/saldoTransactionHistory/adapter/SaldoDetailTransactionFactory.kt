@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SalesSaldoTransactionViewHolder
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.SalesTransactionDetail
+import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.TickerDownloadFeeTransactionModel
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewholder.*
 
 class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit,
@@ -37,6 +38,9 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
             }
             TransactionLoadMoreViewHolder.LAYOUT -> {
                 return TransactionLoadMoreViewHolder(parent)
+            }
+            TickerDownloadFeeTransactionViewHolder.LAYOUT -> {
+                return TickerDownloadFeeTransactionViewHolder(parent)
             }
             else -> {
                 viewHolder = super.createViewHolder(parent, type)
@@ -67,5 +71,9 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
 
     fun type(salesTransactionDetail: SalesTransactionDetail): Int {
         return SalesSaldoTransactionViewHolder.LAYOUT
+    }
+
+    fun type(vm: TickerDownloadFeeTransactionModel): Int{
+        return TickerDownloadFeeTransactionViewHolder.LAYOUT
     }
 }

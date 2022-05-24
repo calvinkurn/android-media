@@ -53,7 +53,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/telco_filter_chip_shimmer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl3"
@@ -64,7 +64,8 @@
             app:layout_constraintTop_toBottomOf="@id/telco_field_input_number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:corners="@integer/corner_radius_shimmering" />
+            app:loader_corner_radius="10dp"
+            app:loader_type="rect"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/view_telco_input_number_prepaid"/>
