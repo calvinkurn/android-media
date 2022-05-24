@@ -31,17 +31,39 @@ internal val Throwable.isNetworkError: Boolean
 
 
 fun StaggeredGridLayoutManager.getVisibleItems(adapter: ProductTagCardAdapter): List<Pair<ProductUiModel, Int>> {
-    return getVisibleItems<ProductTagCardAdapter.Model, ProductTagCardAdapter.Model.Product>(this, adapter)
+    val items = adapter.getItems()
+    val (start, end) = getVisibleItemsPosition(this, adapter)
+
+    if (start > -1 && end < items.size) {
+        return items.slice(start..end)
+            .filterIsInstance<ProductTagCardAdapter.Model.Product>()
+            .mapIndexed { index, item ->
+                Pair(item.product, start + index)
+            }
+    }
+
+    return emptyList()
 }
 
 fun StaggeredGridLayoutManager.getVisibleItems(adapter: MyShopProductAdapter): List<Pair<ProductUiModel, Int>> {
-    return getVisibleItems<MyShopProductAdapter.Model, MyShopProductAdapter.Model.Product>(this, adapter)
+    val items = adapter.getItems()
+    val (start, end) = getVisibleItemsPosition(this, adapter)
+
+    if (start > -1 && end < items.size) {
+        return items.slice(start..end)
+            .filterIsInstance<MyShopProductAdapter.Model.Product>()
+            .mapIndexed { index, item ->
+                Pair(item.product, start + index)
+            }
+    }
+
+    return emptyList()
 }
 
-private inline fun <T: Any, reified R> getVisibleItems(
+private fun <T: Any> getVisibleItemsPosition(
     layoutManager: StaggeredGridLayoutManager,
     adapter: BaseDiffUtilAdapter<T>,
-): List<Pair<ProductUiModel, Int>> {
+): Pair<Int, Int> {
 
     val products = adapter.getItems()
     if (products.isNotEmpty()) {
@@ -51,15 +73,8 @@ private inline fun <T: Any, reified R> getVisibleItems(
         val startPosition = startPositionArray[0]
         val endPosition = max(endPositionArray[0], endPositionArray[1])
 
-        if (startPosition > -1 && endPosition < products.size) {
-            return products.slice(startPosition..endPosition)
-                .filterIsInstance<R>()
-                .filterIsInstance<MyShopProductAdapter.Model.Product>()
-                .mapIndexed { index, item ->
-                    Pair(item.product, startPosition + index)
-                }
-        }
+        return Pair(startPosition, endPosition)
     }
 
-    return emptyList()
+    return Pair(-1, -1)
 }

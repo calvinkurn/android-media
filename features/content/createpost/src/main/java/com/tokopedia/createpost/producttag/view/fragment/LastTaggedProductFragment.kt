@@ -12,11 +12,11 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
@@ -57,6 +57,17 @@ class LastTaggedProductFragment @Inject constructor(
             onLoading = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
         )
     }
+    private val layoutManager: StaggeredGridLayoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            impressProduct()
+        }
+    }
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,8 +97,14 @@ class LastTaggedProductFragment @Inject constructor(
         setupObserver()
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendProductImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvLastTaggedProduct.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
@@ -99,7 +116,8 @@ class LastTaggedProductFragment @Inject constructor(
     }
 
     private fun setupView() {
-        binding.rvLastTaggedProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
+        binding.rvLastTaggedProduct.addOnScrollListener(scrollListener)
+        binding.rvLastTaggedProduct.layoutManager = layoutManager
         binding.rvLastTaggedProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -136,6 +154,8 @@ class LastTaggedProductFragment @Inject constructor(
 
             binding.rvLastTaggedProduct.show()
             binding.globalError.hide()
+
+            impressProduct()
         }
 
         if(prev?.products == curr.products && prev.state == curr.state) return
@@ -164,6 +184,12 @@ class LastTaggedProductFragment @Inject constructor(
                 ).show()
             }
         }
+    }
+
+    private fun impressProduct() {
+        val visibleProducts = layoutManager.getVisibleItems(adapter)
+        if(visibleProducts.isNotEmpty())
+            impressionCoordinator.saveProductImpress(visibleProducts)
     }
 
     companion object {
