@@ -110,8 +110,13 @@ class ProductShopCredibilityViewHolder(
                 listener.onShopMultilocClicked(componentTracker)
                 listener.goToApplink(shopWarehouseApplink)
             }
+            shopCredibilityLocation.setOnClickListener {
+                listener.onShopMultilocClicked(componentTracker)
+                listener.goToApplink(shopWarehouseApplink)
+            }
             "$shopLocation $shopWarehouseCount"
         } else {
+            shopCredibilityLocation.setOnClickListener {  }
             icShopCredibilityLocation.hide()
             shopLocation
         }
