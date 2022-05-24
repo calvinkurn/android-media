@@ -5,7 +5,6 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
     tools:context=".view.pod.ui.ProofOfDeliveryActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
