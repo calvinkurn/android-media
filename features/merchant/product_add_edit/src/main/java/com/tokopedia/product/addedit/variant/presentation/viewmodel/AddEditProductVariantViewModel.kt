@@ -416,8 +416,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selections = productInputModel.getValueOrDefault().variantInputModel.selections.filter{
             it.variantId != CUSTOM_VARIANT_TYPE_ID.toString()
         }
-        val primaryVariantData = productInputModel.getValueOrDefault()
-            .variantInputModel.getPrimaryVariantData()
 
         selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = mutableListOf()
@@ -427,20 +425,21 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        productInputModel.getValueOrDefault().variantInputModel = VariantInputModel(
-                isRemoteDataHasVariant = isRemoteDataHasVariant)
-        productInputModel.getValueOrDefault().detailInputModel.let {
-            val categoryId = it.categoryId.toIntOrNull()
-            categoryId?.run { getVariantCategoryCombination(this, selections) }
-            it.price = primaryVariantData.price
-            it.sku = ""
-        }
+        with (productInputModel.getValueOrDefault()) {
+            variantInputModel = VariantInputModel(isRemoteDataHasVariant = isRemoteDataHasVariant)
+            detailInputModel.let {
+                val categoryId = it.categoryId.toIntOrNull()
+                categoryId?.run { getVariantCategoryCombination(this, selections) }
+                it.price = productInputModel.getValueOrDefault().lastVariantData.price
+                it.sku = ""
+            }
 
-        if (isEditMode.value == true) {
-            productInputModel.getValueOrDefault().shipmentInputModel.weight = Int.ZERO
-            productInputModel.getValueOrDefault().detailInputModel.stock = primaryVariantData.stock.orZero()
-        } else {
-            productInputModel.getValueOrDefault().shipmentInputModel.weight = primaryVariantData.weight.orZero()
+            if (isEditMode.value == true) {
+                shipmentInputModel.weight = Int.ZERO
+                detailInputModel.stock = lastVariantData.stock.orZero()
+            } else {
+                shipmentInputModel.weight = lastVariantData.weight.orZero()
+            }
         }
     }
 
