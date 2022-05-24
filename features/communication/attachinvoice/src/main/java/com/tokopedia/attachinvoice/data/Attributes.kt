@@ -19,7 +19,7 @@ data class Attributes(
     @SerializedName("Status")
     val status: String = "",
     @SerializedName("StatusId")
-    val statusId: String = "",
+    val statusId: String = "0",
     @SerializedName("Title")
     val title: String = "",
     @SerializedName("TotalAmount")

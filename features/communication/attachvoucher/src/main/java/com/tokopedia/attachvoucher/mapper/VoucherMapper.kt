@@ -27,7 +27,7 @@ class VoucherMapper @Inject constructor() {
             )
             val voucherStatus = MerchantVoucherStatus()
             val voucherUiModel = VoucherUiModel(
-                    voucherId = voucher.voucherId,
+                    voucherId = voucher.voucherId.toInt(),
                     voucherName = voucher.voucherName,
                     voucherCode = voucher.voucherCode,
                     merchantVoucherType = voucherType,
