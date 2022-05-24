@@ -718,12 +718,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
-        displayGameResultIfHasLeaderBoard()
+        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
+            displayGameResultWidgetIfHasLeaderBoard()
+        }
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
-        displayGameResultIfHasLeaderBoard()
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
+            displayGameResultWidgetIfHasLeaderBoard()
+        }
     }
 
     private fun showInteractiveGameResultWidget() {
@@ -1011,7 +1015,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun displayGameResultIfHasLeaderBoard() {
+    private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
             if (leaderboardSlots.isNotEmpty())
