@@ -67,17 +67,21 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -132,6 +136,9 @@ abstract class BaseSearchCategoryFragment:
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var sharedPref: TokoNowSharedPreference
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -1082,9 +1089,44 @@ abstract class BaseSearchCategoryFragment:
                     //Refresh the page
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
+
+                    /*
+                     * SWITCHER TOASTER
+                     * - toaster will show when switching service type to 2 hours
+                     * - when switching to 20 minutes, toaster will show if only OnBoard20mBottomSheet has been shown
+                     */
+
+                    val serviceType = getViewModel().getServiceTypeToShowSwitcherToaster(sharedPref.get2hSwitcherOnBoardShown())
+
+                    if (serviceType.isNotBlank()) {
+                        showSwitcherToaster(serviceType)
+                    } else {
+                        TokoNowOnBoard20mBottomSheet
+                            .newInstance()
+                            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                                onBackTo2hClicked = {
+                                    getViewModel().switchService()
+                                },
+                                onDismiss = {
+                                    sharedPref.set2hSwitcherOnBoardShown(true)
+                                }
+                            ))
+                    }
                 }
             }
             is Fail -> { /* no op */ }
+        }
+    }
+
+    private fun showSwitcherToaster(serviceType: String) {
+        TokoNowServiceTypeUtil.getServiceTypeRes(
+            key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
+            serviceType = serviceType
+        )?.apply {
+            showToaster(
+                message = getString(this),
+                toasterType = Toaster.TYPE_NORMAL
+            )
         }
     }
 

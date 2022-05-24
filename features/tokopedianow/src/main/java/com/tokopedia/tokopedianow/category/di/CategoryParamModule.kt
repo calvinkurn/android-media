@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.di
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -11,6 +12,7 @@ import javax.inject.Named
 class CategoryParamModule(
         private val categoryL1: String,
         private val categoryL2: String,
+        private val serviceType: String,
         private val queryParamMap: Map<String, String>,
 ) {
 
@@ -23,6 +25,11 @@ class CategoryParamModule(
     @Provides
     @Named(TOKONOW_CATEGORY_L2)
     fun provideCategoryL2() = categoryL2
+
+    @CategoryScope
+    @Provides
+    @Named(TOKONOW_CATEGORY_SERVICE_TYPE)
+    fun provideServiceType() = serviceType
 
     @CategoryScope
     @Provides

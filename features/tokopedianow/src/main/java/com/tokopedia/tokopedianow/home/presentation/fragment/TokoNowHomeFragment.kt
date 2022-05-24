@@ -144,7 +144,8 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequence
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
-import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -175,8 +176,7 @@ class TokoNowHomeFragment: Fragment(),
         HomeSharingListener,
         HomeEducationalInformationListener,
         ServerErrorListener,
-        PermissionListener,
-        OnBoard20mBottomSheetListener
+        PermissionListener
 {
 
     companion object {
@@ -212,7 +212,7 @@ class TokoNowHomeFragment: Fragment(),
     lateinit var analytics: HomeAnalytics
 
     @Inject
-    lateinit var homeSharedPref: HomeSharedPreference
+    lateinit var homeSharedPref: TokoNowSharedPreference
 
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
@@ -1184,18 +1184,24 @@ class TokoNowHomeFragment: Fragment(),
         onRefreshLayout()
 
         localCacheModel?.apply {
-            val is2hServiceType = service_type == NOW_2H
-            val has2hCoachMarkShown = homeSharedPref.get2hSwitcherCoachMarkShown()
-            val is20mServiceType = service_type == NOW_15M
-            val has20mCoachMarkShown = homeSharedPref.get20mSwitcherCoachMarkShown()
 
-            if ((is2hServiceType && !has2hCoachMarkShown) || (is20mServiceType && !has20mCoachMarkShown)) {
-                showSwitchServiceTypeToaster(service_type)
+            /*
+             * SWITCHER TOASTER
+             * - toaster will be shown if coach mark or bottomsheet has been shown
+             */
+
+            val is2hServiceType = service_type == NOW_2H
+            val has2hCoachMarkShown = homeSharedPref.get2hSwitcherOnBoardShown()
+            val is20mServiceType = service_type == NOW_15M
+            val has20mCoachMarkShown = homeSharedPref.get20mSwitcherOnBoardShown()
+
+            if ((is2hServiceType && has2hCoachMarkShown) || (is20mServiceType && has20mCoachMarkShown)) {
+                showSwitcherToaster(service_type)
             }
         }
     }
 
-    private fun showSwitchServiceTypeToaster(serviceType: String) {
+    private fun showSwitcherToaster(serviceType: String) {
         getServiceTypeRes(
             key = SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
             serviceType = serviceType
@@ -1383,13 +1389,25 @@ class TokoNowHomeFragment: Fragment(),
     private fun showOnBoarding() {
         rvHome?.post {
             when {
-                !homeSharedPref.get20mSwitcherCoachMarkShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
+                //if coach mark is never shown and the 20 minutes switcher widget is exist then show coach mark (in 2 hours state)
+                !homeSharedPref.get20mSwitcherOnBoardShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
                     show20mSwitcherCoachMark()
                 }
-                !homeSharedPref.get2hSwitcherCoachMarkShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
+                //if coach mark is never shown and the 2 hours switcher widget is exist then show coach mark (in 20 minutes state)
+                !homeSharedPref.get2hSwitcherOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
                     TokoNowOnBoard20mBottomSheet
                         .newInstance()
-                        .show(childFragmentManager, this)
+                        .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                            onBackTo2hClicked = {
+                                localCacheModel?.let {
+                                    viewModelTokoNow.switchService(it)
+                                }
+                            },
+                            onDismiss = {
+                                show2hSwitcherCoachMark()
+                            }
+                        )
+                    )
                 }
             }
         }
@@ -1401,7 +1419,7 @@ class TokoNowHomeFragment: Fragment(),
                 val index = adapter.findPosition(it)
                 rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<View>(R.id.tp_title)?.let { tpTitle ->
                     switcherCoachMark = SwitcherCoachMark(tpTitle.context) {
-                        //                        homeSharedPref.setSwitcherCoachMarkShown(true)
+                        homeSharedPref.set20mSwitcherOnBoardShown(true)
                     }
                     switcherCoachMark?.setCoachMarkItems(
                         arrayListOf(
@@ -1426,7 +1444,7 @@ class TokoNowHomeFragment: Fragment(),
                 val tpTitle = findViewById<View>(R.id.tp_title)
                 val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
                 switcherCoachMark = SwitcherCoachMark(context) {
-                    //                        homeSharedPref.setSwitcherCoachMarkShown(true)
+                    homeSharedPref.set2hSwitcherOnBoardShown(true)
                 }
                 switcherCoachMark?.setCoachMarkItems(
                     arrayListOf(
@@ -1805,15 +1823,5 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
-    }
-
-    override fun onBackTo2hClicked() {
-        localCacheModel?.let {
-            viewModelTokoNow.switchService(it)
-        }
-    }
-
-    override fun onDismiss() {
-        show2hSwitcherCoachMark()
     }
 }

@@ -1186,6 +1186,26 @@ abstract class BaseSearchCategoryViewModel(
         filter(option, false)
     }
 
+    fun getServiceTypeToShowSwitcherToaster(has2hCoachMarkShown: Boolean): String {
+        chooseAddressData?.apply {
+            val is2hServiceType = service_type == ServiceType.NOW_2H
+            val is20mServiceType = service_type == ServiceType.NOW_15M
+
+            /*
+             * return service type if :
+             * - the state is 2 hours
+             * - the state is 20 minutes and coach mark on 2 hours switcher widget or 20 minutes bottomsheet has been shown
+            */
+
+            return if (is2hServiceType || (is20mServiceType && has2hCoachMarkShown)) {
+                service_type
+            } else {
+                ""
+            }
+        }
+        return ""
+    }
+
     open fun setUserPreference(serviceType: String) {
         launchCatchError(
             block = {
