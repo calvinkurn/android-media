@@ -391,6 +391,7 @@
         <package android:name="com.megaprioritas.betax" />
         <package android:name="com.mekarmulia.mulia" />
         <package android:name="com.menjadi.kaya.loan" />
+        <package android:name="com.mecus.caerus.b18" />
         <package android:name="com.mexus.caerus.b18" />
         <package android:name="com.miaofu.pohonkredit" />
         <package android:name="com.miaofu.sakuuang" />
@@ -718,7 +719,7 @@
         <package android:name="ru.gavrikov.mocklocations" />
         <package android:name="ru.loans.express" />
         <package android:name="ru.loans.minute.quick" />
-        <package android:name="scr888.l918kiss.luxury918.apliqnq" />
+        <package android:name="scr888.l918kiss.luxury918.appliqnq" />
         <package android:name="slots.slot.machine.casino" />
         <package android:name="togel.lengkap" />
         <package android:name="tool.mtkengineering" />
