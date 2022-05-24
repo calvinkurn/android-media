@@ -43,8 +43,10 @@ data class ProductInputModel (
         }
 
         fun resetVariantData() {
-                lastVariantData = variantInputModel.getPrimaryVariantData()
-                variantInputModel.products = emptyList()
-                variantInputModel.selections = emptyList()
+                if (variantInputModel.hasVariant()) {
+                        lastVariantData = variantInputModel.getPrimaryVariantData()
+                        variantInputModel.products = emptyList()
+                        variantInputModel.selections = emptyList()
+                }
         }
 }

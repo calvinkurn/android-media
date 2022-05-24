@@ -425,12 +425,13 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        with (productInputModel.getValueOrDefault()) {
+        with(productInputModel.getValueOrDefault()) {
+            resetVariantData()
             variantInputModel = VariantInputModel(isRemoteDataHasVariant = isRemoteDataHasVariant)
             detailInputModel.let {
                 val categoryId = it.categoryId.toIntOrNull()
                 categoryId?.run { getVariantCategoryCombination(this, selections) }
-                it.price = productInputModel.getValueOrDefault().lastVariantData.price
+                it.price = lastVariantData.price
                 it.sku = ""
             }
 
