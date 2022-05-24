@@ -299,8 +299,6 @@ data class PurchaseItem(
         val productId: String,
         @SerializedName("product_name")
         val productName: String,
-        @SerializedName("product_variant")
-        val productVariant: String,
         @SerializedName("product_brand")
         val productBrand: String,
         @SuppressLint("Invalid Data Type")

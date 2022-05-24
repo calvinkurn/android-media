@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.toPx
@@ -22,12 +25,17 @@ class TopAdsViewAdapter(
         RecyclerView.Adapter<TopAdsViewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewViewHolder {
-        val parentWidth = parent.width
+        //val parentWidth = parent.width
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.thanks_item_top_ads_view, parent, false)
-        val layoutParams = view.layoutParams
-        layoutParams.width = parentWidth - 16.toPx()
-        return TopAdsViewViewHolder(view, onclick)
+        //val layoutParams = view.layoutParams
+        //layoutParams.width = parentWidth - 16.toPx()
+        val widthFraction = if (topAdsUIModelList.size > 1) 0.90f else 1.0f
+        val params = view.layoutParams
+        params.width = (widthFraction * getScreenWidth()).toInt()
+        view.layoutParams = params
+        return  TopAdsViewViewHolder(view, onclick)
+
     }
 
     override fun onBindViewHolder(holder: TopAdsViewViewHolder, position: Int) {
@@ -58,9 +66,9 @@ class TopAdsViewViewHolder(
         })
         topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
-                if (!topAdsUIModel.impressHolder.isInvoke) {
+                itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
+                    ImpresionTask(TopAdsViewViewHolder::class.java.canonicalName).execute(viewUrl)
                     hitTopAdsImpression(viewUrl)
-                    topAdsUIModel.impressHolder.invoke()
                 }
             }
         })

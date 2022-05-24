@@ -232,7 +232,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.productVariant, purchasedItem.quantity,
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.variant, purchasedItem.quantity,
         purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType, addOnList)
 
     private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(

@@ -136,6 +136,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     }
 
     private fun addOrderLevelAddOn(container: LinearLayout, shopInvoice: ShopInvoice) {
+        container.visible()
         if (!shopInvoice.orderLevelAddOn.addOnSectionDescription.isNullOrBlank()) {
             val descText = addOnDescriptionView(shopInvoice.orderLevelAddOn.addOnSectionDescription)
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -145,7 +146,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             descText.requestLayout()
         }
         shopInvoice.orderLevelAddOn.addOnList.forEach { addOn ->
-            val orderLevel= addOrderLevelGifting(addOn.name, addOn.addOnPrice)
+            val orderLevel= addOrderLevelGifting(container, addOn.name, addOn.addOnPrice)
             container.addView(orderLevel)
         }
     }
@@ -156,13 +157,12 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             val view = createShopItemView(context = view.context, orderedItem = orderItem)
             container.addView(view)
             orderItem.productLevelAddOn?.forEach { addOn ->
-                val productLevel = addOrderLevelGifting(addOn.name, addOn.addOnPrice)
+                val productLevel = addOrderLevelGifting(container, addOn.name, addOn.addOnPrice)
                 container.addView(productLevel)
             }
         }
 
     }
-
 
     private fun addOnDescriptionView(addOnSectionDescription: String): View {
         val descText = Typography(itemView.context)
@@ -173,9 +173,8 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         return descText
     }
 
-
-    private fun addOrderLevelGifting(titleStr: String, value: String): View {
-        val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
+    private fun addOrderLevelGifting(parent: LinearLayout, titleStr: String, value: String): View {
+        val rowView = inflater.inflate(R.layout.thank_payment_mode_item, parent, false)
         val tvTitle = rowView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
         val tvValue = rowView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
         tvTitle.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
