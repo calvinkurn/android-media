@@ -14,7 +14,7 @@ class DigitalHomePageBannerModel(@SerializedName("rechargeBanner")
 
     data class Banner(@SerializedName("id")
                       @Expose
-                      val id: Int = 0,
+                      val id: String = "0",
                       @SerializedName("img_url")
                       @Expose
                       val imgUrl: String = "",

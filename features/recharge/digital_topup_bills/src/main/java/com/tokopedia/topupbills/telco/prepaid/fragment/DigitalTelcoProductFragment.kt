@@ -260,7 +260,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                 selectedOperatorName, userSession.userId)
     }
 
-    private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
+    private fun renderSortFilter(componentId: String, filters: List<TelcoFilterTagComponent>) {
         if (filters.isEmpty()) {
             sortFilter.hide()
             telcoTelcoProductView.removePaddingTop(false)
@@ -294,7 +294,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         }
     }
 
-    private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: Int,
+    private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: String,
                                       sortFilterItem: SortFilterItem) {
         topupAnalytics.eventClickQuickFilter(categoryId, filterTag.text, userSession.userId)
         val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,

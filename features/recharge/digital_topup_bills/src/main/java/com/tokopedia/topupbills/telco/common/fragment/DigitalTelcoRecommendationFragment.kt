@@ -72,7 +72,7 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment(), TopupBillsRecen
         recentNumbersWidget.setListenerRecentTelco(this)
     }
 
-    override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
+    override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: String,
                                      position: Int) {
         topupBillsRecommendation.position = position
         viewModel.setSelectedRecentNumber(topupBillsRecommendation)

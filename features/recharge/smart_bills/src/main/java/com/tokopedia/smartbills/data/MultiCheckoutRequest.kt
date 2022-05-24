@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.topupbills.data.RechargeField
@@ -25,6 +26,7 @@ data class MultiCheckoutRequest (
         @Expose
         val index: Int = 0,
         @SerializedName("product_id")
+        @SuppressLint("Invalid Data Type")
         @Expose
         val productID: Int = 0,
         @SerializedName("fields")

@@ -210,7 +210,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             binding.emoneyFullPageLoadingLayout.show()
             proceedAddToCart(emoneyPdpViewModel.generateCheckoutPassData(
                     (requireActivity() as EmoneyPdpActivity).promoCode,
-                    it.clientNumber, it.productId.toString(), it.operatorId.toString()))
+                    it.clientNumber, it.productId, it.operatorId))
         })
 
         emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {

@@ -16,6 +16,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.lang.NumberFormatException
 
 
 /**
@@ -88,7 +89,7 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventClickSeeMore(categoryId: Int) {
+    fun eventClickSeeMore(categoryId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
@@ -97,7 +98,7 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventCloseDetailProduct(categoryId: Int) {
+    fun eventCloseDetailProduct(categoryId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
@@ -617,10 +618,19 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Additional.USER_ID, userId,
             )
         )
-    }
+     }
 
     private fun getTrackingCategoryName(categoryId: Int): String {
-        return getCategoryName(categoryId).toLowerCase()
+        return getCategoryName(categoryId).lowercase()
+    }
+
+    private fun getTrackingCategoryName(categoryId: String): String {
+        return try {
+            getCategoryName(categoryId.toInt()).lowercase()
+        } catch (e: NumberFormatException) {
+            ""
+        }
+
     }
 
     fun getCategoryName(categoryId: Int): String {

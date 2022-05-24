@@ -29,7 +29,7 @@ data class TelcoCatalogProductInput(
 data class TelcoCatalogEnquiryFields(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("param_name")
         @Expose
         val paramName: String = "",

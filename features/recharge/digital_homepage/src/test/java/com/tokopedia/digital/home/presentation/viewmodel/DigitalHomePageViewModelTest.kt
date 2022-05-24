@@ -74,7 +74,7 @@ class DigitalHomePageViewModelTest {
 
     @Test
     fun getData_Success_All() {
-        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner(1)))
+        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner("1")))
         val categoryData = DigitalHomePageCategoryModel(
                 listOf(DigitalHomePageCategoryModel.Subtitle("Prabayar & Pascabayar"))
         )
@@ -92,7 +92,7 @@ class DigitalHomePageViewModelTest {
             val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
-            assertEquals(actualBannerData.bannerList[0].id, 1)
+            assertEquals(actualBannerData.bannerList[0].id, "1")
 
             assert(actualData[1] is DigitalHomePageCategoryModel)
             val actualCategoryData = actualData[1] as DigitalHomePageCategoryModel
@@ -104,7 +104,7 @@ class DigitalHomePageViewModelTest {
 
     @Test
     fun getData_Success_Partial() {
-        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner(1)))
+        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner("1")))
         val failedCategoryData = DigitalHomePageCategoryModel()
         bannerData.isSuccess = true
         failedCategoryData.isSuccess = false
@@ -120,7 +120,7 @@ class DigitalHomePageViewModelTest {
             val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
-            assertEquals(actualBannerData.bannerList[0].id, 1)
+            assertEquals(actualBannerData.bannerList[0].id, "1")
 
             assert(actualData[1] is DigitalHomePageCategoryModel)
             assertEquals(actualData[1].isSuccess, false)
