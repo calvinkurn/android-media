@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.util
 const val TM_URL_INTRO_BG = ""
 const val BUNDLE_OPEN_BS = "bundleOpenBS"
 const val BUNDLE_SHOP_ID = "bundleShopId"
+const val BUNDLE_VOUCHER_ID = "bundleVoucherId"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
@@ -47,6 +48,7 @@ const val DELETE = "delete"
 const val STOP = "stop"
 const val SHARE = "share"
 const val DUPLICATE = "duplicate"
+const val ADD_QUOTA = "addQuota"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -16,9 +17,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -27,9 +32,10 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.*
 import javax.inject.Inject
 
-class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortFilterBottomSheet.Callback{
 
-    private var voucherStatus = ""
+class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback{
+
+    private var voucherStatus = "1,2,3,4"
     private var voucherType = 0
     private var selectedType = "0"
     private lateinit var selectedStatus: StringBuilder
@@ -52,7 +58,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_coupon_fragment, container, false)
+        return LayoutInflater.from(container?.context).inflate(R.layout.tm_dash_coupon_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +71,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
 
             val options = ArrayList<Option>()
 
-            options.add(Option(name = "Semua Status", key = "Semua Status", value = "0", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
+            options.add(Option(name = "Semua Status", key = "Semua Status", value = "1,2,3,4", inputType = Option.INPUT_TYPE_RADIO, inputState = "true"))
             options.add(Option(name = "Aktif", key = "Aktif", value = "2", inputType = Option.INPUT_TYPE_CHECKBOX))
             options.add(Option(name = "Belum Aktif", key = "Belum Aktif", value = "1", inputType = Option.INPUT_TYPE_CHECKBOX))
             options.add(Option(name = "Sudah Berakhir", key = "Sudah Berakhir", value = "4", inputType = Option.INPUT_TYPE_CHECKBOX))
@@ -78,7 +84,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
             }
             val cs: CharSequence = "0"
 //            if(selectedStatus.contains(cs.toString(), false)){
-            if(selectedStatusList.contains("0")){
+            if(voucherStatus.contains("1,2,3,4")){
                 options[0].inputState = "true"
             }
             else{
@@ -119,8 +125,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                         voucherStatus = selectedStatusList.toString().replace("[", "")
                         voucherStatus = voucherStatus.replace("]", "")
                         voucherStatus = voucherStatus.replace(" ", "")
-                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
-                        Toast.makeText(context, selectedStatusList.toString(), Toast.LENGTH_SHORT).show()
+                        if(selectedType.toInt() == 0){
+                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                        }
+                        else {
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        }
                     }
                 },
             )
@@ -184,7 +194,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                         else{
                             filterType.type = ChipsUnify.TYPE_SELECTED
                         }
-                        tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        if(selectedType.toInt() == 0){
+                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                        }
+                        else {
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                        }
                     }
                 },
             )
@@ -207,11 +222,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         }
 
         observeViewModel()
-        tmCouponViewModel.getCouponList(voucherStatus, voucherType)
-    }
-
-    private fun filterClick() {
-
+        if(selectedType.toInt() == 0){
+            tmCouponViewModel.getCouponList(voucherStatus, null)
+        }
+        else {
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+        }
     }
 
     private fun observeViewModel() {
@@ -224,6 +240,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
                     tmCouponAdapter.notifyDataSetChanged()
                 }
                 is Fail -> {
+
                 }
             }
         })
@@ -241,16 +258,47 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), ProgramActions, SortF
         }
     }
 
-    override fun option(type: String, programId: Int, shopId: Int) {
-
-    }
-
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         applySortFilterModel.selectedSortName
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        mapParameter
+
+    }
+
+    override fun option(type: String, voucherId: String) {
+        when(type){
+            DELETE ->{
+                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan program?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Program")
+                dialog?.setPrimaryCTAClickListener {
+//                          val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
+//                        intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
+//                        intent.putExtra(BUNDLE_SHOP_ID, shopId)
+//                        intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+//                        intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
+//                        requireContext().startActivity(intent)
+                        Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog?.show()
+            }
+            EDIT ->{
+
+            }
+            STOP ->{
+
+            }
+            ADD_QUOTA ->{
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId)
+            }
+        }
     }
 
 }

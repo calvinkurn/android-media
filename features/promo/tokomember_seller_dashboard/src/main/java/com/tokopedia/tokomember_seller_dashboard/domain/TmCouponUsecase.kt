@@ -12,7 +12,7 @@ class TmCouponUsecase@Inject constructor(graphqlRepository: GraphqlRepository) :
     fun getCouponList(
         success: (TmCouponListResponse) -> Unit,
         failure: (Throwable) -> Unit,
-        voucherStatus: String, voucherType: Int
+        voucherStatus: String, voucherType: Int?
     ){
         setTypeClass(TmCouponListResponse::class.java)
         setRequestParams(getRequestParams(voucherStatus, voucherType))
@@ -23,20 +23,16 @@ class TmCouponUsecase@Inject constructor(graphqlRepository: GraphqlRepository) :
         )
     }
 
-    private fun getRequestParams(voucherStatus: String, voucherType: Int): Map<String, Any> {
+    private fun getRequestParams(voucherStatus: String, voucherType: Int?): Map<String, Any> {
         val req = TmMVFilter(voucherType, voucherStatus, "1", "3")
         return mapOf("Filter" to req)
     }
 }
 
 const val QUERY_TM_COUPON_LIST = """
-    {
-    MerchantPromotionGetMVList(Filter: {
-      voucher_type: 1,
-      voucher_status: "0,1,2",
-      is_public: "0,1"
-      target_buyer: "3"
-    }){
+    
+    query MerchantPromotionGetMVList(${'$'}Filter: MVFilter!) {
+    MerchantPromotionGetMVList(Filter: ${'$'}Filter) {
         header{
             process_time
             message
