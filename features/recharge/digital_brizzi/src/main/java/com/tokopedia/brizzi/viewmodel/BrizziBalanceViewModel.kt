@@ -112,7 +112,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<BrizziInquiryLogResponse>()
 
             data.brizziInquiryLog?.let {
-                inquiryIdBrizzi = it.inquiryId
+                inquiryIdBrizzi = it.inquiryId.toIntOrNull() ?: 0
             }
         }) {
             inquiryIdBrizzi = -1

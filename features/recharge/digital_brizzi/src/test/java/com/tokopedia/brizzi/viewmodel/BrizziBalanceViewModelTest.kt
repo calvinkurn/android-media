@@ -156,7 +156,7 @@ class BrizziBalanceViewModelTest {
     fun processTagIntent_GetBalanceNoPendingBalanceLogSuccess_SuccessGetBalance() {
         //given
         val balanceInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 10000, pendingBalance = 0))
-        val inquiryId = 10
+        val inquiryId = "10"
 
         val result = HashMap<Type, Any>()
         result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
@@ -181,7 +181,7 @@ class BrizziBalanceViewModelTest {
         assertEquals(brizziBalanceViewModel.issuerId.value, 2)
 
         assertNotNull(brizziBalanceViewModel.inquiryIdBrizzi)
-        assertEquals(inquiryId, brizziBalanceViewModel.inquiryIdBrizzi)
+        assertEquals(inquiryId, brizziBalanceViewModel.inquiryIdBrizzi.toString())
 
         assertNotNull(brizziBalanceViewModel.emoneyInquiry.value)
         assertEquals(balanceInquiry, brizziBalanceViewModel.emoneyInquiry.value)
@@ -229,7 +229,7 @@ class BrizziBalanceViewModelTest {
     fun processTagIntent_WriteBalanceWithPendingLogSuccess_TokenExpired() {
         //given
         val balanceInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 10000, pendingBalance = 10000))
-        val inquiryId = 10
+        val inquiryId = "10"
 
         val result = HashMap<Type, Any>()
         result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
@@ -255,7 +255,7 @@ class BrizziBalanceViewModelTest {
         assertEquals(brizziBalanceViewModel.issuerId.value, 2)
 
         assertNotNull(brizziBalanceViewModel.inquiryIdBrizzi)
-        assertEquals(inquiryId, brizziBalanceViewModel.inquiryIdBrizzi)
+        assertEquals(inquiryId, brizziBalanceViewModel.inquiryIdBrizzi.toString())
 
         assertNotNull(brizziBalanceViewModel.tokenNeedRefresh.value)
         assertEquals(true, brizziBalanceViewModel.tokenNeedRefresh.value)
@@ -273,11 +273,11 @@ class BrizziBalanceViewModelTest {
         val gqlResponseRefreshTokenSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         val result1 = HashMap<Type, Any>()
-        result1[BrizziInquiryLogResponse::class.java] = BrizziInquiryLogResponse(brizziInquiryLog = BrizziInquiryLog(inquiryId = 10))
+        result1[BrizziInquiryLogResponse::class.java] = BrizziInquiryLogResponse(brizziInquiryLog = BrizziInquiryLog(inquiryId = "10"))
         val gqlResponseLog1Success = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
         val result2 = HashMap<Type, Any>()
-        result2[BrizziInquiryLogResponse::class.java] = BrizziInquiryLogResponse(brizziInquiryLog = BrizziInquiryLog(inquiryId = 13))
+        result2[BrizziInquiryLogResponse::class.java] = BrizziInquiryLogResponse(brizziInquiryLog = BrizziInquiryLog(inquiryId = "13"))
         val gqlResponseLog2Success = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
         every { brizzi.Init(any(),any()) } returns mockk()
