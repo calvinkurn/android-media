@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
@@ -16,6 +18,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
+
+    fun getProductListItems() = productListItems
 
     override fun getItemViewType(position: Int): Int {
         return when (productListItems[position].listItemType) {

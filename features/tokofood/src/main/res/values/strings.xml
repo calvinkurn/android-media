@@ -39,6 +39,7 @@
     <string name="text_optional_add_on_wording">Opsional • Pilih maks. %d</string>
     <string name="text_dot_separator">&#160;•&#160;</string>
     <string name="text_add_on_name">%s:&#160;</string>
+    <string name="category_filter_bottom_sheet_title">Mau menu dari kategori apa?</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

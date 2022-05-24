@@ -3,29 +3,49 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 object TokoFoodMerchantUiModelMapper {
 
     fun mapProductUiModelToAtcRequestParam(
-            cartId: String = "",
-            shopId: String,
-            productUiModels: List<ProductUiModel>,
-            addOnUiModels: List<AddOnUiModel>
+        cartId: String = "",
+        shopId: String,
+        productUiModels: List<ProductUiModel>,
+        addOnUiModels: List<AddOnUiModel>
     ): UpdateParam {
         return UpdateParam(
-                shopId = shopId,
-                productList = productUiModels.map {
-                    UpdateProductParam(
-                            productId = it.id,
-                            cartId = cartId,
-                            notes = it.orderNote,
-                            quantity = it.orderQty,
-                            variants = mapCustomListItemsToVariantParams(addOnUiModels)
-                    )
-                }
+            shopId = shopId,
+            productList = productUiModels.map {
+                UpdateProductParam(
+                    productId = it.id,
+                    cartId = cartId,
+                    notes = it.orderNote,
+                    quantity = it.orderQty,
+                    variants = mapCustomListItemsToVariantParams(addOnUiModels)
+                )
+            }
         )
+    }
+
+    fun mapProductListItemToCategoryFilterUiModel(
+        tokoFoodCategoryFilterList: List<TokoFoodCategoryFilter>,
+        filterNameSelected: String
+    ): CategoryFilterWrapperUiModel {
+        val categoryFilterListUiModel = tokoFoodCategoryFilterList.map {
+            val isSelected = filterNameSelected == it.title
+            CategoryFilterListUiModel(
+                categoryUiModel = CategoryUiModel(
+                    it.key,
+                    it.title
+                ), it.subtitle, isSelected
+            )
+        }
+        return CategoryFilterWrapperUiModel(categoryFilterListUiModel)
     }
 
     private fun mapCustomListItemsToVariantParams(addOnUiModels: List<AddOnUiModel>): List<UpdateProductVariantParam> {
@@ -34,13 +54,13 @@ object TokoFoodMerchantUiModelMapper {
         addOnUiModels.filter { it.isSelected }.forEach { addOnUiModel ->
             val variantId = addOnUiModel.id
             variantParams.addAll(addOnUiModel.options
-                    .filter { it.isSelected } // selected options
-                    .map { optionUiModel ->
-                        UpdateProductVariantParam(
-                                variantId = variantId,
-                                optionId = optionUiModel.id
-                        )
-                    }
+                .filter { it.isSelected } // selected options
+                .map { optionUiModel ->
+                    UpdateProductVariantParam(
+                        variantId = variantId,
+                        optionId = optionUiModel.id
+                    )
+                }
             )
         }
         return variantParams.toList()
