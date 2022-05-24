@@ -101,8 +101,8 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         params.parameters.clear()
 
         var urlParamWithIris = urlParam
-        if (urlParamWithIris.isNotBlank())
-            urlParamWithIris += "&${IRIS_SESSION_ID}=${irisSession.getSessionId()}"
+        if (urlParamWithIris.isNotBlank()) urlParamWithIris += "&"
+        urlParamWithIris += "${IRIS_SESSION_ID}=${irisSession.getSessionId()}"
 
         params.putString(PARAM_PRODUCT_ID, productId)
         params.putString(PARAM_PRODUCT_KEY, productKey)
