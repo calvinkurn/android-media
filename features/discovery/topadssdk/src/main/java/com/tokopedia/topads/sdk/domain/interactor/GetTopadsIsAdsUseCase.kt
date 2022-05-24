@@ -14,11 +14,9 @@ import javax.inject.Inject
  */
 
 class GetTopadsIsAdsUseCase @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<TopadsIsAdsQuery>
+    private val graphqlUseCase: GraphqlUseCase<TopadsIsAdsQuery>,
+    private val irisSession: TopAdsIrisSession
 ) : UseCase<TopadsIsAdsQuery>() {
-
-    @Inject
-    lateinit var irisSession: TopAdsIrisSession
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
