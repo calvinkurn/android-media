@@ -389,6 +389,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
             reloadSrw()
         }
+        viewModel.removeAttachmentPreview(model)
     }
 
     override fun reloadCurrentAttachment() {
