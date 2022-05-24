@@ -15,4 +15,11 @@
     <!--forbidden words info bottom sheet-->
     <string name="forbidden_words_info_title">Informasi daftar larangan kata</string>
     <string name="forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
+
+    <!--    payment method bottom sheet-->
+    <string name="payment_method_point_1">Campaign ini hanya menggunakan metode pembayaran VA, kartu kredit, kartu debit, GoPay, dan pembayaran instan lainnya.</string>
+    <string name="payment_method_point_2">Batas Bayar Cepat: Pembeli harus melakukan pembayaran di bawah 5 menit.</string>
+    <string name="payment_method_point_3">Batas Bayar Reguler: Pembeli harus melakukan pembayaran di bawah 30 menit.</string>
+    <string name="payment_method_point_4">Jika pembeli gagal melakukan pembayaran dalam waktu yang ditentukan, stok produk otomatis dikembalikan dan dapat dibeli pembeli lain.</string>
+
 </resources>
