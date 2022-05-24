@@ -430,7 +430,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         return _hasSuccessToggleLikeStatus.value
     }
 
-    fun getPageSource(): ReviewMediaGalleryRouter.PageSource {
+    fun getPageSource(): Int {
         return _pageSource.value
     }
 }

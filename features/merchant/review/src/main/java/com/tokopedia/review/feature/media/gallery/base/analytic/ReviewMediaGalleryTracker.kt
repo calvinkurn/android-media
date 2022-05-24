@@ -76,7 +76,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
 
     // row 22
     fun trackImpressImage(
-        pageSource: ReviewMediaGalleryRouter.PageSource,
+        @ReviewMediaGalleryRouter.PageSource pageSource: Int,
         imageCount: Long,
         productId: String,
         attachmentId: String,
