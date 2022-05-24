@@ -11,4 +11,8 @@
     <string name="no_campaign_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
     <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
     <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
+
+    <!--forbidden words info bottom sheet-->
+    <string name="forbidden_words_info_title">Informasi daftar larangan kata</string>
+    <string name="forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
 </resources>

@@ -7,7 +7,7 @@ import android.text.SpannableString
 import android.view.View
 import com.tokopedia.seller_shop_flash_sale.R
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.shop.flash_sale.common.extension.setBulletSpan
+import com.tokopedia.shop.flash_sale.common.extension.toBulletSpan
 
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -59,8 +59,8 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupContent() {
-        campaignTeaserInfoPoint1Text.setBulletSpan()
-        campaignTeaserInfoPoint2text.setBulletSpan()
+        campaignTeaserInfoPoint1Text.toBulletSpan()
+        campaignTeaserInfoPoint2text.toBulletSpan()
 
         campaignTeaserInfoPoint1?.run {
             text = campaignTeaserInfoPoint1Text

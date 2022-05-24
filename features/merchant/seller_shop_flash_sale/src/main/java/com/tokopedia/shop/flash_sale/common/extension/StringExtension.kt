@@ -24,12 +24,3 @@ fun String.toDate(inputFormat: String): Date {
         Date()
     }
 }
-
-fun Spannable.setBulletSpan() {
-    this.setSpan(
-        BulletSpan(16, Color.BLACK),
-        0,
-        0,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-}
