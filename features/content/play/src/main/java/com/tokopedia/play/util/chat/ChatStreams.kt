@@ -23,7 +23,7 @@ class ChatStreams(
     private val mutex = Mutex()
 
     private val pendingChats = mutableListOf<PlayChatUiModel>()
-    private val _chats = MutableStateFlow<List<PlayChatUiModel>>(pendingChats)
+    private val _chats = MutableStateFlow<List<PlayChatUiModel>>(emptyList())
 
     val chats: StateFlow<List<PlayChatUiModel>>
         get() = _chats
