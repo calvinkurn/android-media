@@ -689,7 +689,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
             //TODO test this
-            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
+            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else{
@@ -1343,7 +1343,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                 }
             bottomSheetPage.apply {
-                setTitle(getString(R.string.chatbot_reply_bubble_bottomsheet_title))
+                setTitle("Pengaturan pesan")
                 showCloseIcon = true
                 setChild(viewBottomSheetPage)
                 showKnob = false
@@ -1371,7 +1371,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun loadDataOnClick(){
         showLoading()
-        presenter.getTopChat(messageId, onSuccessGetTopChatData(fromOnClick = true), onErrorGetTopChat())
+        presenter.getTopChat(messageId, onSuccessGetTopChatData(fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
     }
 
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
@@ -1420,12 +1420,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
             override fun loadMoreTop() {
                 showTopLoading()
-                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
+                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
             }
 
             override fun loadMoreDown() {
                showBottomLoading()
-               presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat())
+               presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
             }
         }.also {
             recyclerView?.addOnScrollListener(it)

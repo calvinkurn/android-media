@@ -824,30 +824,23 @@ class ChatbotPresenter @Inject constructor(
 
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
-                                 onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+                                 onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
                                  onGetChatRatingListMessageError: (String) -> Unit) {
-//        if (messageId.isNotEmpty()) {
-//            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
-//                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
-//        }
+
         if(messageId.isNotEmpty()) {
             launchCatchError(
                 block = {
                     val response = getExistingChatUseCase.getFirstPageChat(messageId)
                     val mappedResponse =  getExistingChatMapper.map(response)
                     val chatReplies = response.chatReplies
-                    //TODO have to fix this
-//                    val inputList = getChatRatingData(mappedResponse)
-//                    if (!inputList.list.isNullOrEmpty()) {
-//                        getChatRatingList(inputList, mappedResponse) {}
-//                    } else {
-//                        //TODO fix this
-//                     //   onSuccessGetChat(mappedResponse)
-//
-//                    }
-
-                    onSuccess(mappedResponse,chatReplies)
-
+                    val inputList = getChatRatingData(mappedResponse)
+                    if (!inputList.list.isNullOrEmpty()) {
+                        getChatRatingList(inputList,
+                            onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                        )
+                    } else {
+                        onSuccessGetChat(mappedResponse,chatReplies)
+                    }
                 },
                 onError = {
                     onError()
@@ -869,78 +862,118 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
-    private fun getChatRatingList(inputList: ChipGetChatRatingListInput,
-                                  mappedPojo: ChatroomViewModel,
-                                  onSuccess: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
-                                  ) {
+    private fun getChatRatingList(
+        inputList: ChipGetChatRatingListInput,
+        onSuccessGetRatingList: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
+    ) {
         val input = inputList
-//        chipGetChatRatingListUseCase.execute(chipGetChatRatingListUseCase.generateParam(input),
-//            ChipGetChatRatingListSubscriber(onGetChatRatingListError, onChatRatingListSuccess(mappedPojo)))
         launchCatchError(
             block = {
                 val gqlResponse =  chipGetChatRatingListUseCase.getChatRatingList(chipGetChatRatingListUseCase.generateParam(input))
                 val response = gqlResponse.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
 
-                onSuccess(response.chipGetChatRatingList)
+                onSuccessGetRatingList(response.chipGetChatRatingList)
             },
             onError = {
-                //TODO fix this
-//                view.loadChatHistory()
-//                view.enableTyping()
+                onGetChatRatingListError(it)
             }
         )
     }
 
-    override fun loadPrevious(messageId: String, page: Int,
-                              onError: (Throwable) -> Unit,
-                              onSuccess: (ChatroomViewModel) -> Unit,
-                              onGetChatRatingListMessageError: (String) -> Unit) {
-        if (messageId.isNotEmpty()) {
-//            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId, page),
-//                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
-            launchCatchError(
-                block = {
-                   // val response = getExistingChatUseCase
-                },
-                onError = {
+    private fun onChatRatingListSuccess(
+        mappedPojo: ChatroomViewModel,
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        chatReplies: ChatReplies,
+        onGetChatRatingListMessageError: (String) -> Unit
+    )
+            : (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit = { ratings ->
+        updateMappedPojo(mappedPojo, ratings,onGetChatRatingListMessageError)
+        onSuccessGetChat(mappedPojo,chatReplies)
+    }
 
+    private val onGetChatRatingListError: (Throwable) -> Unit = {
+        it.printStackTrace()
+    }
+
+    private fun updateMappedPojo(
+        mappedPojo: ChatroomViewModel,
+        ratings: ChipGetChatRatingListResponse.ChipGetChatRatingList?,
+        onGetChatRatingListMessageError: (String) -> Unit
+    ) {
+        if (ratings?.ratingListData?.isSuccess == 1) {
+            for (rate in ratings.ratingListData.list ?: listOf()) {
+                val rateListMsgs = mappedPojo.listChat.filter { msg ->
+                    when {
+                        msg is HelpFullQuestionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero()
+                        -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
+                        msg is CsatOptionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero()
+                        -> (msg.csat?.caseChatId == rate.caseChatID)
+                        else -> false
+                    }
                 }
-            )
+                rateListMsgs.forEach {
+                    if (it is HelpFullQuestionsViewModel) {
+                        it.isSubmited = rate.isSubmitted ?: true
+                    }else if (it is CsatOptionsViewModel){
+                        it.isSubmited = rate.isSubmitted ?: true
+                    }
+                }
+
+            }
+        } else if (!ratings?.messageError.isNullOrEmpty()) {
+            onGetChatRatingListMessageError(ratings?.messageError?.get(0) ?: "")
         }
+
     }
 
     override fun getTopChat(
         messageId: String,
-        onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-        onError: Unit
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: Unit,
+        onGetChatRatingListMessageError: (String) -> Unit
     ) {
         launchCatchError(
             block = {
                 val gqlResponse = getExistingChatUseCase.getTopChat(messageId)
                 val chatReplies = gqlResponse.chatReplies
-                val chatViewModel = getExistingChatMapper.map(gqlResponse)
-                onSuccess(chatViewModel, chatReplies)
+                val mappedResponse = getExistingChatMapper.map(gqlResponse)
+                val inputList = getChatRatingData(mappedResponse)
+                if (!inputList.list.isNullOrEmpty()) {
+                    getChatRatingList(inputList,
+                        onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                    )
+                } else {
+                    onSuccessGetChat(mappedResponse,chatReplies)
+                }
             },
             onError = {
-
+                onError()
             }
         )
     }
 
     override fun getBottomChat(
         messageId: String,
-        onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-        onError: Unit
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: Unit,
+        onGetChatRatingListMessageError: (String) -> Unit
     ) {
         launchCatchError(
             block = {
                 val gqlResponse = getExistingChatUseCase.getBottomChat(messageId)
                 val chatReplies = gqlResponse.chatReplies
-                val chatViewModel = getExistingChatMapper.map(gqlResponse)
-                onSuccess(chatViewModel, chatReplies)
+                val mappedResponse = getExistingChatMapper.map(gqlResponse)
+                val inputList = getChatRatingData(mappedResponse)
+                if (!inputList.list.isNullOrEmpty()) {
+                    getChatRatingList(inputList,
+                        onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                    )
+                } else {
+                    onSuccessGetChat(mappedResponse,chatReplies)
+                }
             },
             onError = {
-
+                onError()
             }
         )
     }

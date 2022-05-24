@@ -89,13 +89,6 @@ interface ChatbotContract {
                             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
                             onGetChatRatingListMessageError: (String) -> Unit)
 
-        fun loadPrevious(messageId: String,
-                         page: Int,
-                         onError: (Throwable) -> Unit,
-                         onSuccess: (ChatroomViewModel) -> Unit,
-                         onGetChatRatingListMessageError: (String) -> Unit)
-
-
         fun connectWebSocket(messageId: String)
 
         fun sendRating(messageId : String, rating: Int, timestamp : String,
@@ -169,13 +162,15 @@ interface ChatbotContract {
         fun getTopChat(
             messageId: String,
             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onError: Unit
+            onError: Unit,
+            onGetChatRatingListMessageError: (String) -> Unit
         )
 
         fun getBottomChat(
             messageId: String,
             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onError: Unit
+            onError: Unit,
+            onGetChatRatingListMessageError: (String) -> Unit
         )
     }
 }

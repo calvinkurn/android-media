@@ -42,13 +42,19 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         }
     }
 
+    fun execute() {
+//        handleError(graphqlResponse, GetExistingChatPojo::class.java,
+//            routingOnNext(graphqlResponse), onErrorGetChat)
+    }
+
     private fun getChatRatingList(inputList: ChipGetChatRatingListInput, mappedPojo: ChatroomViewModel) {
         val input = inputList
 //        chipGetChatRatingListUseCase.execute(chipGetChatRatingListUseCase.generateParam(input),
 //                ChipGetChatRatingListSubscriber(onGetChatRatingListError, onChatRatingListSuccess(mappedPojo)))
     }
 
-    private fun onChatRatingListSuccess(mappedPojo: ChatroomViewModel): (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit = { ratings ->
+    private fun onChatRatingListSuccess(mappedPojo: ChatroomViewModel): (ChipGetChatRatingListResponse.ChipGetChatRatingList?)
+    -> Unit = { ratings ->
         updateMappedPojo(mappedPojo, ratings)
         onSuccessGetChat(mappedPojo)
     }

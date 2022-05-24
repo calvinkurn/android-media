@@ -1,10 +1,15 @@
 package com.tokopedia.chatbot
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
@@ -12,16 +17,15 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
+import org.junit.Assert.assertEquals
 
 @ExperimentalCoroutinesApi
 class ChatbotPresenterTest {
@@ -50,6 +54,7 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var getExistingChatMapper : ChatbotGetExistingChatMapper
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
 
@@ -76,6 +81,7 @@ class ChatbotPresenterTest {
         getTopBotNewSessionUseCase = mockk(relaxed = true)
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
+        getExistingChatMapper = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -96,7 +102,8 @@ class ChatbotPresenterTest {
                 getResolutionLinkUseCase,
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
-                chatBotSecureImageUploadUseCase
+                chatBotSecureImageUploadUseCase,
+                getExistingChatMapper
             )
         )
         view = mockk(relaxed = true)
@@ -181,6 +188,69 @@ class ChatbotPresenterTest {
                 ), any()
             )
         }
+
+    }
+
+    @Test
+    fun `getBottomChat success`() {
+
+    }
+
+    @Test
+    fun `getBottomChat failure`() {
+
+    }
+
+    @Test
+    fun `getTopChat success`() {
+//        // Given
+//        val expectedResponse = GetExistingChatPojo()
+//        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
+//        var roomViewModel : ChatroomViewModel? = null
+//
+//
+//        coEvery {
+//            getExistingChatUseCase.getTopChat(any())
+//        } returns expectedResponse
+//
+//        every {
+//            getExistingChatMapper.map(expectedResponse)
+//        } returns chatroomViewModel
+//
+//
+//        // When
+//        presenter.getTopChat("123456",{ a,b ->
+//             roomViewModel = a
+//        }, Unit)
+//
+//        assertEquals(
+//            chatroomViewModel, roomViewModel
+//        )
+
+    }
+
+    @Test
+    fun `getTopChat failure`() {
+
+    }
+
+    @Test
+    fun `getExistingChat Success`() {
+
+    }
+
+    @Test
+    fun `getExistingChat Failure`() {
+
+    }
+
+    @Test
+    fun `getChatRatingList success`() {
+
+    }
+
+    @Test
+    fun `getChatRatingList failure`() {
 
     }
 

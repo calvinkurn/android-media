@@ -158,9 +158,6 @@ class TopChatRoomAdapter constructor(
             getLocalIdMsgPosition(localId)
         } else {
             visitables.indexOfFirst {
-                if (it is BaseChatUiModel){
-                    Log.d("FATAL", "getBubblePosition: " + it.replyTime + " Params : " + replyTime)
-                }
                 it is BaseChatUiModel && it.replyTime == replyTime
             }
         }
