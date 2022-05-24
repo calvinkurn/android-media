@@ -1,12 +1,13 @@
 package com.tokopedia.createpost.producttag.util
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 
 /**
  * Created By : Jonathan Darwin on May 12, 2022
  */
 fun getAutocompleteApplink(query: String): String =
-    "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?${buildAutoCompletePageParam(query)}"
+    "${ApplinkConstInternalContent.INTERNAL_FEED_AUTOCOMPLETE}?${buildAutoCompletePageParam(query)}"
 
 private fun buildAutoCompletePageParam(query: String): String {
     return buildString {

@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.producttag.di
+package com.tokopedia.createpost.producttag.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

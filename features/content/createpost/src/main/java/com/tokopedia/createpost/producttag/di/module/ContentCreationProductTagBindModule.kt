@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.producttag.di
+package com.tokopedia.createpost.producttag.di.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
