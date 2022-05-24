@@ -92,7 +92,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
         if(item.remainingQuota == item.voucherQuota){
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
-                
+                item.voucherId?.let { it1 -> tmCouponActions.option(ADD_QUOTA, it1) }
             }
         }
         else{
