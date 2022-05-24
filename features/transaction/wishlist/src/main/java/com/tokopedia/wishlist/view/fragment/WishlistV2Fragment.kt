@@ -638,8 +638,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 is Success -> {
                     result.data.let { bulkDeleteWishlistV2 ->
                         if (bulkDeleteWishlistV2.success) {
-                            wishlistViewModel.getCountDeletionWishlistV2()
-
                             val listId = bulkDeleteWishlistV2.id.replace("[", "").replace("]", "").split(",").toList()
                             var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) {
@@ -687,39 +685,45 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
-                        handler.post(object: Runnable{
-                            override fun run() {
-                                if (result.data.status == OK) {
-                                    val data = result.data.data
-                                    if (data.success) {
-                                        if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
-                                            finishDeletionWidget()
-                                            doRefresh()
-                                        } else {
+                        if (result.data.status == OK) {
+                            val data = result.data.data
+                            if (data.success) {
+                                if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
+                                    finishDeletionWidget()
+                                    doRefresh()
+                                } else {
+                                    handler.post(object: Runnable {
+                                        override fun run() {
                                             handler.postDelayed(this, 1000)
                                             wishlistViewModel.getCountDeletionWishlistV2()
                                             if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
-                                                wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
-                                                wishlistV2Adapter.updateDeletionWidget(result.data.data)
+                                                // wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
+                                                wishlistV2Adapter.updateDeletionWidget(data)
                                                 wishlistV2Adapter.notifyItemChanged(0)
                                             } else {
-                                                wishlistV2Adapter.addDeletionProgressWidget(result.data.data)
+                                                wishlistV2Adapter.addDeletionProgressWidget(data)
                                             }
                                         }
-                                    } else {
-                                        showToaster(data.toasterMessage, "", Toaster.TYPE_ERROR)
-                                    }
-                                } else {
-                                    if (result.data.errorMessage.isNotEmpty()) {
-                                        showToaster(result.data.errorMessage[0], "", Toaster.TYPE_ERROR)
-                                    }
+                                    })
                                 }
+                            } else {
+                                showToaster(data.toasterMessage, "", Toaster.TYPE_ERROR)
+                                finishDeletionWidget()
+                                doRefresh()
                             }
-                        })
+                        } else {
+                            if (result.data.errorMessage.isNotEmpty()) {
+                                showToaster(result.data.errorMessage[0], "", Toaster.TYPE_ERROR)
+                                finishDeletionWidget()
+                                doRefresh()
+                            }
+                        }
                     }
                     is Fail -> {
                         val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
                         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                        finishDeletionWidget()
+                        doRefresh()
                     }
                 }
             }

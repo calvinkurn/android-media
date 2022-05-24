@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.data.model.response.CountDeletionWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET
@@ -338,21 +338,23 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun hideTicker() {
         isTickerCloseClicked = true
-        listTypeData.removeAt(0)
-        notifyItemRemoved(0)
+        notifyDataSetChanged()
+        // listTypeData.removeAt(0)
+        // notifyItemRemoved(0)
     }
 
     fun resetTicker() {
         isTickerCloseClicked = false
+        notifyDataSetChanged()
     }
 
-    fun addDeletionProgressWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data) {
+    fun addDeletionProgressWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
         hasDeletionProgressWidgetShow = true
         notifyDataSetChanged()
     }
 
-    fun updateDeletionWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data) {
+    fun updateDeletionWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         listTypeData[0] = WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET)
     }
 

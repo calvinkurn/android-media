@@ -22,9 +22,8 @@ import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
-import com.tokopedia.wishlist.data.model.response.CountDeletionWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
-// import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
@@ -69,8 +68,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _countDeletionWishlistV2 = MutableLiveData<Result<CountDeletionWishlistV2Response>>()
-    val countDeletionWishlistV2: LiveData<Result<CountDeletionWishlistV2Response>>
+    private val _countDeletionWishlistV2 = MutableLiveData<Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>>()
+    val countDeletionWishlistV2: LiveData<Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>>
         get() = _countDeletionWishlistV2
 
     fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean) {
