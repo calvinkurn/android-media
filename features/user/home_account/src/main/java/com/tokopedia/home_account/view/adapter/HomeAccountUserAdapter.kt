@@ -4,6 +4,7 @@ import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.home_account.view.adapter.delegate.*
 import com.tokopedia.home_account.view.delegate.HomeAccountTdnBannerDelegate
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -14,13 +15,14 @@ class HomeAccountUserAdapter(
         listener: HomeAccountUserListener,
         balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
         memberAdapter: HomeAccountMemberAdapter?,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        shopAdsNewPositionCallback: (Int, CpmModel) -> Unit
 ): BaseCommonAdapter() {
     init {
         delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, balanceAndPointAdapter, memberAdapter))
         delegatesManager.addDelegate(HomeAccountUserSettingDelegate(listener))
         delegatesManager.addDelegate(HomeAccountRecommendationTitleDelegate())
-        delegatesManager.addDelegate(TopAdsHeadlineViewDelegate(userSession))
+        delegatesManager.addDelegate(TopAdsHeadlineViewDelegate(userSession, shopAdsNewPositionCallback))
         delegatesManager.addDelegate(HomeAccountRecommendationItemDelegate(listener))
         delegatesManager.addDelegate(HomeAccountSeparatorDelegate())
         delegatesManager.addDelegate(HomeAccountRecommendationLoaderDelegate())

@@ -8,12 +8,13 @@ import com.tokopedia.home_account.databinding.ItemTopadsHeadlineBinding
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-
-class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface) :
+private const val HEADLINE_POSITION = 12
+class TopAdsHeadlineViewHolder(view: View, private  val shopAdsNewPositionCallback: (Int, CpmModel) -> Unit, private val userSession: UserSessionInterface) :
     BaseViewHolder(view) {
 
     private val binding: ItemTopadsHeadlineBinding? by viewBinding()
@@ -47,6 +48,11 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineUiModel?.run {
             this.cpmModel = cpmModel
             showHeadlineView(cpmModel)
+            val position = cpmModel.data.getOrNull(1)?.cpm?.position
+            if (cpmModel.header.totalData > 1 && position == HEADLINE_POSITION) {
+                val cpmModelNew = TopAdsHeadlineHelper.getCpmDataOfSameLayout(cpmModel, LAYOUT_5)
+                shopAdsNewPositionCallback.invoke(position + 1, cpmModelNew)
+            }
         }
     }
 
