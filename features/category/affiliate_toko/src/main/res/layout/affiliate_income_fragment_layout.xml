@@ -143,7 +143,7 @@
 
                                 <com.tokopedia.unifycomponents.UnifyButton
                                     android:id="@+id/saldo_button_affiliate"
-                                    android:layout_width="@dimen/dp_130"
+                                    android:layout_width="130dp"
                                     android:layout_height="wrap_content"
                                     android:text="@string/affiliate_tarik_saldo"
                                     app:layout_constraintBottom_toBottomOf="@id/saldo_amount_affiliate"
@@ -159,8 +159,8 @@
                                     app:layout_constraintRight_toRightOf="@+id/saldo_button_affiliate"
                                     app:layout_constraintTop_toTopOf="@+id/saldo_button_affiliate"
                                     android:id="@+id/tarik_saldo_loader"
-                                    android:layout_width="@dimen/dp_30"
-                                    android:layout_height="@dimen/dp_30"/>
+                                    android:layout_width="@dimen/unify_space_32"
+                                    android:layout_height="@dimen/unify_space_32"/>
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.tokopedia.unifycomponents.CardUnify>
 
@@ -253,10 +253,10 @@
                 <com.tkpd.remoteresourcerequest.view.DeferredImageView
                     android:id="@+id/affiliate_no__default_transaction_iv"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_220"
+                    android:layout_height="220dp"
                     android:background="@color/Unify_N0"
                     android:gravity="center"
-                    android:paddingTop="@dimen/dp_40"
+                    android:paddingTop="@dimen/unify_space_48"
                     android:visibility="gone"
                     app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction.png"
                     app:imageDpiSupportType="singleDpi"
@@ -265,11 +265,11 @@
                 <com.tkpd.remoteresourcerequest.view.DeferredImageView
                     android:id="@+id/affiliate_no_transaction_iv"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_220"
+                    android:layout_height="220dp"
                     android:layout_below="@+id/affiliate_no__default_transaction_iv"
                     android:background="@color/Unify_N0"
                     android:gravity="center"
-                    android:paddingTop="@dimen/dp_40"
+                    android:paddingTop="@dimen/unify_space_48"
                     android:visibility="gone"
                     app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction_for_filter.png"
                     app:imageDpiSupportType="singleDpi"
