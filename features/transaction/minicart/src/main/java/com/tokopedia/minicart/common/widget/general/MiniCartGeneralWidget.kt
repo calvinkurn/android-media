@@ -26,6 +26,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
+import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheetV2
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -33,7 +34,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
-import com.tokopedia.minicart.databinding.WidgetMiniCartGeneralBinding
+import com.tokopedia.minicart.databinding.WidgetMiniCartBinding
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
@@ -48,7 +49,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
+    lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheetV2
 
     // @Inject
     // lateinit var shoppingSummaryBottomSheet: ShoppingSummaryBottomSheet
@@ -61,10 +62,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private var miniCartChevronClickListener: OnClickListener? = null
 
     private var viewModel: MiniCartGeneralViewModel? = null
-    private val binding: WidgetMiniCartGeneralBinding
+    private val binding: WidgetMiniCartBinding
 
     init {
-        binding = WidgetMiniCartGeneralBinding.inflate(LayoutInflater.from(context))
+        binding = WidgetMiniCartBinding.inflate(LayoutInflater.from(context))
         val application = (context as? Activity)?.application
         initializeInjector(application)
     }
@@ -124,7 +125,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun initializeViewModel(fragment: Fragment) {
-        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartGeneralViewModel::class.java)
+        viewModel =
+            ViewModelProvider(fragment, viewModelFactory).get(MiniCartGeneralViewModel::class.java)
         viewModel?.initializeGlobalState()
         observeGlobalStateEvent(fragment)
         observeMiniCartWidgetUiModel(fragment)
@@ -168,16 +170,25 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             val outOfService = (globalEvent.data as MiniCartData).data.outOfService
             if (outOfService.id.isNotBlank() && outOfService.id != "0") {
                 fragment.context?.let {
-                    globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.SERVER_ERROR, outOfService, object : GlobalErrorBottomSheetActionListener {
-                        override fun onGoToHome() {
-                            RouteManager.route(context, ApplinkConst.HOME)
-                        }
+                    globalErrorBottomSheet.show(
+                        fragment.parentFragmentManager,
+                        it,
+                        GlobalError.SERVER_ERROR,
+                        outOfService,
+                        object : GlobalErrorBottomSheetActionListener {
+                            override fun onGoToHome() {
+                                RouteManager.route(context, ApplinkConst.HOME)
+                            }
 
-                        override fun onRefreshErrorPage() {
-                            // TODO: Show simplified summary bottom sheet
-                            Toast.makeText(it, "Show simplified summary bottom sheet", Toast.LENGTH_LONG).show()
-                        }
-                    })
+                            override fun onRefreshErrorPage() {
+                                // TODO: Show simplified summary bottom sheet
+                                Toast.makeText(
+                                    it,
+                                    "Show simplified summary bottom sheet",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        })
                 }
             } else {
                 showGlobalErrorNoConnection(fragment)
@@ -189,16 +200,25 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun showGlobalErrorNoConnection(fragment: Fragment) {
         fragment.context?.let {
-            globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
-                override fun onGoToHome() {
-                    // No-op
-                }
+            globalErrorBottomSheet.show(
+                fragment.parentFragmentManager,
+                it,
+                GlobalError.NO_CONNECTION,
+                null,
+                object : GlobalErrorBottomSheetActionListener {
+                    override fun onGoToHome() {
+                        // No-op
+                    }
 
-                override fun onRefreshErrorPage() {
-                    // TODO: Show Simplified Summary Bottom Sheet
-                    Toast.makeText(it, "Show simplified summary bottom sheet!", Toast.LENGTH_LONG).show()
-                }
-            })
+                    override fun onRefreshErrorPage() {
+                        // TODO: Show Simplified Summary Bottom Sheet
+                        Toast.makeText(
+                            it,
+                            "Show simplified summary bottom sheet!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
         }
     }
 
@@ -389,8 +409,14 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to show mini cart chat bottom sheet
      */
     fun showMiniCartChatListBottomSheet(fragment: Fragment) {
-        // TODO: MiniCartChatListBottomSheet viewModel is bound to MiniCartViewModel!
-        Toast.makeText(fragment.context, "Show mini cart chat list bottom sheet!", Toast.LENGTH_LONG).show()
+        viewModel?.let {
+            miniCartChatListBottomSheet.show(
+                fragment.context,
+                fragment.parentFragmentManager,
+                fragment.viewLifecycleOwner,
+                it
+            )
+        }
     }
 
     /**
@@ -398,6 +424,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      */
     fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
         // TODO: Show Simplified Summary Bottom Sheet
-        Toast.makeText(fragment.context, "Show simplified summary bottom sheet!", Toast.LENGTH_LONG).show()
+        Toast.makeText(fragment.context, "Show simplified summary bottom sheet!", Toast.LENGTH_LONG)
+            .show()
     }
 }
