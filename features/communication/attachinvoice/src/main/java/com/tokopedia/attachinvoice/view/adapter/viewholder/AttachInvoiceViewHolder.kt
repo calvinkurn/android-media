@@ -59,7 +59,7 @@ class AttachInvoiceViewHolder(private val binding: ItemAttachinvoiceBinding, val
     }
 
     private fun bindLabelInvoiceStatus(element: Invoice) {
-        val labelType = getLabelType(element.statusId)
+        val labelType = getLabelType(element.statusId.toInt())
         binding.labelInfo.text = element.status
         binding.labelInfo.setLabelType(labelType)
     }
