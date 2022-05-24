@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
@@ -40,7 +39,6 @@ import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
-import com.tokopedia.logisticorder.view.pod.ui.ProofOfDeliveryActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -56,11 +54,10 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
+class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -79,8 +76,8 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     override fun initInjector() {
         val component: TrackingPageComponent = DaggerTrackingPageComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         component.inject(this)
     }
 
@@ -129,7 +126,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         viewModel.retryAvailability.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val avail = it.data.retryAvailability
+                    val avail =  it.data.retryAvailability
                     val deadline = avail.deadlineRetryUnixtime.toLong()
                     if (avail.showRetryButton && avail.availabilityRetry) {
                         setRetryButton(true, 0L)
@@ -146,7 +143,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         })
 
         viewModel.retryBooking.observe(viewLifecycleOwner, Observer {
-            when (it) {
+            when(it) {
                 is Success -> startSuccessCountdown()
                 is Fail -> showError(it.throwable)
             }
@@ -184,7 +181,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun setDriverInfo(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
             binding?.dividerTippingGojek?.visibility = View.VISIBLE
@@ -232,8 +229,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
 
                 driverName.text = tippingData.tippingLastDriver.name
-                driverPhone.text =
-                    getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
+                driverPhone.text = getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
             }
 
             btnTipping.text = when (tippingData.status) {
@@ -306,7 +302,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             binding?.retryPickupButton?.visibility = View.GONE
             if (deadline > 0) {
                 binding?.tvRetryStatus?.visibility = View.VISIBLE
-                val now = System.currentTimeMillis() / 1000L
+                val now = System.currentTimeMillis()/1000L
                 val remainingTIme = deadline - now
                 initTimer(remainingTIme)
             } else {
@@ -343,17 +339,14 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
         mOrderId?.let {
             OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
-                DateUtils.formatElapsedTime(timeInMillis / 1000), it
-            )
+                    DateUtils.formatElapsedTime(timeInMillis / 1000), it)
         }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
             override fun onTick(millsUntilFinished: Long) {
                 if (context != null) {
                     val info = strFormat?.let {
-                        String.format(
-                            it,
-                            DateUtils.formatElapsedTime(millsUntilFinished / 1000)
-                        )
+                        String.format(it,
+                                DateUtils.formatElapsedTime(millsUntilFinished / 1000))
                     }
                     binding?.tvRetryStatus?.text = MethodChecker.fromHtml(info)
                 }
@@ -369,22 +362,22 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private fun startSuccessCountdown() {
         binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
         Observable.timer(5, TimeUnit.SECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<Long>() {
-                override fun onNext(t: Long?) {
-                    fetchData()
-                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object: Subscriber<Long>() {
+                    override fun onNext(t: Long?) {
+                        fetchData()
+                    }
 
-                override fun onCompleted() {
-                    //no-op
-                }
+                    override fun onCompleted() {
+                       //no-op
+                    }
 
-                override fun onError(e: Throwable) {
-                    showError(e)
-                }
+                    override fun onError(e: Throwable) {
+                        showError(e)
+                    }
 
-            })
+                })
     }
 
     private fun initialHistoryView() {
@@ -404,42 +397,42 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     }
 
     private fun setTicketInfoCourier(page: PageModel) {
-        if (page.additionalInfo.isEmpty()) {
-            binding?.tickerInfoLayout?.visibility = View.GONE
-        } else {
-            binding?.tickerInfoLayout?.visibility = View.VISIBLE
-            if (page.additionalInfo.size > 1) {
-                val message = ArrayList<TickerData>()
-                for (item in page.additionalInfo) {
-                    val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
-                    message.add(TickerData(item.title, formattedDes, Ticker.TYPE_ANNOUNCEMENT, true))
-                }
-                val tickerPageAdapter = TickerPagerAdapter(context, message)
-                tickerPageAdapter?.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
+       if (page.additionalInfo.isEmpty()) {
+           binding?.tickerInfoLayout?.visibility = View.GONE
+       } else {
+           binding?.tickerInfoLayout?.visibility = View.VISIBLE
+           if (page.additionalInfo.size > 1) {
+               val message = ArrayList<TickerData>()
+               for (item in page.additionalInfo) {
+                   val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
+                   message.add(TickerData(item.title, formattedDes, Ticker.TYPE_ANNOUNCEMENT, true))
+               }
+               val tickerPageAdapter = TickerPagerAdapter(context, message)
+               tickerPageAdapter?.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                   override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                       RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                   }
 
-                })
-                binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
-            } else {
-                val formattedDesc = formatTitleHtml(page.additionalInfo[0].notes, page.additionalInfo[0].urlDetail, page.additionalInfo[0].urlText)
-                binding?.tickerInfoCourier?.setHtmlDescription(formattedDesc)
-                binding?.tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
-                binding?.tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
-                binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
-                binding?.tickerInfoCourier?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
+               })
+               binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
+           } else {
+               val formattedDesc = formatTitleHtml(page.additionalInfo[0].notes, page.additionalInfo[0].urlDetail, page.additionalInfo[0].urlText)
+               binding?.tickerInfoCourier?.setHtmlDescription(formattedDesc)
+               binding?.tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
+               binding?.tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+               binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
+               binding?.tickerInfoCourier?.setDescriptionClickEvent(object: TickerCallback {
+                   override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                       RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                   }
 
-                    override fun onDismiss() {
-                        //no-op
-                    }
+                   override fun onDismiss() {
+                       //no-op
+                   }
 
-                })
-            }
-        }
+               })
+           }
+       }
     }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
@@ -530,6 +523,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     //POD view : handle when error
     private fun handleFailedLoadImagePod() {
-        Toaster.build(requireView(), "Oops, terjadi kesalahan dalam memuat gambar").show()
+        Toaster.build(requireView(), getString(R.string.error_message_failed_get_image)).show()
     }
 }
