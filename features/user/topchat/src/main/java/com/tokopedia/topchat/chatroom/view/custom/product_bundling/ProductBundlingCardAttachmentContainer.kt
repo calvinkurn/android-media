@@ -378,7 +378,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     companion object {
-        private const val SPACE = 12
+        private const val SPACE = 6
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
     }
 }

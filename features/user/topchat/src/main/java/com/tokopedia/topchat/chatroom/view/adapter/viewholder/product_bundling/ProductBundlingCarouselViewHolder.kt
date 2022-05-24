@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
@@ -20,7 +21,7 @@ class ProductBundlingCarouselViewHolder constructor(
     private val productBundlingCarouselListener: Listener,
     searchListener: SearchListener,
     commonListener: CommonViewHolderListener,
-    deferredAttachment: DeferredViewHolderAttachment
+    private val deferredAttachment: DeferredViewHolderAttachment
 ) : BaseChatViewHolder<MultipleProductBundlingUiModel>(itemView) {
 
     interface Listener {
@@ -64,8 +65,24 @@ class ProductBundlingCarouselViewHolder constructor(
 
     override fun bind(carouselBundling: MultipleProductBundlingUiModel) {
         super.bind(carouselBundling)
+        syncCarouselProductBundling(carouselBundling)
         multipleProductBundlingAdapter.carousel = carouselBundling
         binding?.rvProductBundleCard?.restoreSavedCarouselState(adapterPosition, productBundlingCarouselListener)
+    }
+
+    /**
+     * Update the element manually
+     * When this view has not been rendered but the adapter has been updated
+     */
+    private fun syncCarouselProductBundling(element: MultipleProductBundlingUiModel) {
+        if (!element.isLoading) return
+        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
+        val attachment = chatAttachments[element.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            element.syncError()
+        } else {
+            element.updateData(attachment.parsedAttributes)
+        }
     }
 
     companion object {
