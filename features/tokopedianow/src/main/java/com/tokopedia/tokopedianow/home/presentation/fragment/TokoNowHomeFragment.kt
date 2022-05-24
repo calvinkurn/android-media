@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
@@ -77,6 +78,9 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_20M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
@@ -193,6 +197,7 @@ class TokoNowHomeFragment: Fragment(),
         const val PAGE_TYPE_HOME = "home"
         const val SUCCESS_CODE = "200"
         const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
+        const val KEY_SERVICE_TYPE = "service_type"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -249,6 +254,7 @@ class TokoNowHomeFragment: Fragment(),
     private var movingPosition = 0
     private var isRefreshed = true
     private var isOpenMiniCartList = false
+    private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -301,17 +307,8 @@ class TokoNowHomeFragment: Fragment(),
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
-
-        loadLayout()
-        context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-                context = it,
-                screenShotListener = this,
-                fragment = this,
-                addFragmentLifecycleObserver = true,
-                permissionListener = this
-            )
-        }
+        switchServiceOrLoadLayout()
+        initScreenShotDetector()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -625,6 +622,36 @@ class TokoNowHomeFragment: Fragment(),
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun initScreenShotDetector() {
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                addFragmentLifecycleObserver = true,
+                permissionListener = this
+            )
+        }
+    }
+
+    private fun switchServiceOrLoadLayout() {
+        when(externalServiceType) {
+            NOW_20M -> {
+                localCacheModel?.apply {
+                    viewModelTokoNow.switchService(this, NOW_15M)
+                }
+                return
+            }
+            NOW_2H -> {
+                localCacheModel?.apply {
+                    viewModelTokoNow.switchService(this, NOW_2H)
+                }
+                return
+            }
+            else -> loadLayout()
+        }
     }
 
     private fun initPerformanceMonitoring() {
@@ -1155,10 +1182,24 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         onRefreshLayout()
+
+        localCacheModel?.apply {
+            val is2hServiceType = service_type == NOW_2H
+            val has2hCoachMarkShown = homeSharedPref.get2hSwitcherCoachMarkShown()
+            val is20mServiceType = service_type == NOW_15M
+            val has20mCoachMarkShown = homeSharedPref.get20mSwitcherCoachMarkShown()
+
+            if ((is2hServiceType && !has2hCoachMarkShown) || (is20mServiceType && !has20mCoachMarkShown)) {
+                showSwitchServiceTypeToaster(service_type)
+            }
+        }
     }
 
     private fun showSwitchServiceTypeToaster(serviceType: String) {
-        getServiceTypeRes(key = SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID, serviceType = serviceType)?.apply {
+        getServiceTypeRes(
+            key = SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
+            serviceType = serviceType
+        )?.apply {
             showToaster(
                 message = getString(this),
                 type = TYPE_NORMAL
@@ -1255,6 +1296,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun setUriData() {
         activity?.intent?.data?.let {
             isOpenMiniCartList = getIsOpenMiniCartListFromUri(it)
+            externalServiceType = getExternalServiceType(it)
         }
     }
 
@@ -1267,6 +1309,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun getIsOpenMiniCartListFromUri(uri: Uri): Boolean {
         return uri.getQueryParameter(KEY_IS_OPEN_MINICART_LIST)?.toBooleanStrictOrNull().orFalse()
+    }
+
+    private fun getExternalServiceType(uri: Uri): String {
+        return uri.getQueryParameter(KEY_SERVICE_TYPE)?.toBlankOrString().orEmpty()
     }
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
@@ -1344,11 +1390,6 @@ class TokoNowHomeFragment: Fragment(),
                     TokoNowOnBoard20mBottomSheet
                         .newInstance()
                         .show(childFragmentManager, this)
-                }
-                else -> {
-                    localCacheModel?.apply {
-                        showSwitchServiceTypeToaster(service_type)
-                    }
                 }
             }
         }

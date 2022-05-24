@@ -452,6 +452,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
+        launchCatchError(block = {
+            // need to create tracker
+
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            _setUserPreference.postValue(Success(userPreference))
+        }) {
+            _setUserPreference.postValue(Fail(it))
+        }
+    }
+
     /**
      * Get layout content data from external query.
      * Example: Category Grid get its data from TokonowCategoryTree.
