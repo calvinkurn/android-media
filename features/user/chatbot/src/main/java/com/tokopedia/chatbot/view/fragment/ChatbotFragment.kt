@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -1365,13 +1364,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         } else {
             resetData()
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
-            loadDataOnClick()
+            loadDataOnClick(parentReply.replyTime)
         }
     }
 
-    private fun loadDataOnClick(){
+    private fun loadDataOnClick(replyTime : String){
         showLoading()
-        presenter.getTopChat(messageId, onSuccessGetTopChatData(fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
+        presenter.getTopChat(messageId, onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
     }
 
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
@@ -1402,7 +1401,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
                     adapter as ChatbotAdapter,
                     reply_box, context)
-              //  it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition())
             }
         }
     }
@@ -1448,7 +1446,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideLoading()
     }
 
-    private fun onSuccessGetTopChatData(fromOnClick : Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
+    private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick : Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
         return { chatroom , chatReplies ->
             val list = chatroom.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
@@ -1459,10 +1457,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 val filteredList= getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
-                    renderList(renderList)
+                    renderTopList(renderList)
                 }
-                if (fromOnClick)
+                if (fromOnClick && replyTime.isNotEmpty()) {
                     updateHasNextAfterState(chatReplies)
+
+                    //TODO this part not working
+
+                    val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
+                        replyTime
+                    )
+                    if (bubblePosition != RecyclerView.NO_POSITION) {
+                        smoothScroll?.targetPosition = bubblePosition
+                        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
+                    }
+
+                }
                 updateHasNextState(chatReplies)
             }
         }
@@ -1529,13 +1539,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    private fun renderTopList(listChat: List<Visitable<*>>) {
+        val adapter = adapter as ChatbotAdapter
+     //   adapter?.hideLoading()
+        if (listChat.isNotEmpty()) {
+            adapter?.addTopData(listChat)
+        }
+    }
+
     private fun resetData(){
         rvScrollListener?.reset()
         presenter.clearGetChatUseCase()
         (adapter as ChatbotAdapter).reset()
         showTopLoading()
     }
-
 
 }
 

@@ -52,9 +52,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)
-        return if (item is SendableUiModel && item.isSender || item is ChatSepratorViewModel) {
-            true
-        } else false
+        return item is SendableUiModel && item.isSender || item is ChatSepratorViewModel
     }
 
     fun showBottomLoading(){
@@ -71,11 +69,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
-    override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
-        addTopData(visitables)
-    }
-
-    private fun addTopData(listChat: List<Visitable<Any>>?) {
+    fun addTopData(listChat: List<Visitable<*>>) {
         if (listChat == null || listChat.isEmpty()) return
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
