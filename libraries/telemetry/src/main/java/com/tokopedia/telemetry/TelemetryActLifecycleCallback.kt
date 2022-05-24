@@ -29,8 +29,8 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
     companion object {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
-        const val SAMPLING_RATE_MICRO = 500_000 // 500ms or 0.5s
-        const val SAMPLING_RATE_MS = 500 // 500ms or 0.5s
+        const val SAMPLING_RATE_MICRO = 400_000 // 400ms or 0.4s
+        const val SAMPLING_RATE_MS = 400 // 400ms or 0.4s
     }
 
     private fun registerTelemetryListener(activity: AppCompatActivity) {
