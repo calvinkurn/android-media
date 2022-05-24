@@ -243,7 +243,8 @@ internal class ProductCardOptionsViewModel(
 
     private fun hitWishlistClickUrl() {
         topAdsWishlistUseCase.execute(
-            createAddWishlistTopAdsClickRequestParams(), null
+            createAddWishlistTopAdsClickRequestParams(),
+            createAddWishlistV2TopAdsSubscriber()
         )
     }
 
@@ -259,6 +260,14 @@ internal class ProductCardOptionsViewModel(
         override fun onNext(t: Boolean?) = onSuccessAddWishlist()
 
         override fun onError(e: Throwable?) = catchAddWishlistError(e)
+
+        override fun onCompleted() { }
+    }
+
+    private fun createAddWishlistV2TopAdsSubscriber() = object: Subscriber<Boolean>() {
+        override fun onNext(t: Boolean?) { }
+
+        override fun onError(e: Throwable?) { }
 
         override fun onCompleted() { }
     }
