@@ -1,0 +1,120 @@
+{
+  "readme": "Feed Content Creation Product Tag - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickPG",
+      "eventAction":"click - product tagging source list",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - product tagging source",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"(tokopedia|terakhir dibeli|wishlist|toko saya)",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"view_item_list",
+      "eventAction":"impression - entry point product card",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"(tokopedia|toko saya) - .* - .*",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "item_list": "/feed - creation tagging page",
+      "items": [
+        {
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "price": "\\d+\\..*",
+          "item_variant": ".*",
+          "index": "\\d+(.\\d+)?"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"select_content",
+      "eventAction":"click - entry point product card",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"(tokopedia|toko saya) - .* - .*",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "item_list": "/feed - creation tagging page",
+      "items": [
+        {
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "price": "\\d+\\..*",
+          "item_variant": ".*",
+          "index": "\\d+(.\\d+)?"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - search bar",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"(tokopedia|terakhir dibeli|wishlist|toko saya)",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - search terakhir dicari",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - toko section search result",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":".*",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"viewPGIris",
+      "eventAction":"impression - toko section search result",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":".*",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - recommendation search result",
+      "eventCategory":"content feed post creation - product tagging",
+      "eventLabel":"",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    }
+  ]
+}
