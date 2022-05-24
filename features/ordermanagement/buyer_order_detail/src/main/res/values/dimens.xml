@@ -6,9 +6,6 @@
     <dimen name="buyer_order_detail_bo_badge_height">18dp</dimen>
     <dimen name="buyer_order_detail_card_horizontal_margin">11dp</dimen>
 
-    <!-- pod in detail page   -->
-    <dimen name="buyer_order_detail_pod_thumbnail_size">26dp</dimen>
-
     <!--Product Bundling-->
     <dimen name="buyer_order_detail_divider_height">1dp</dimen>
     <dimen name="buyer_order_detail_bundling_info_margin">10dp</dimen>

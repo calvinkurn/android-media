@@ -11,8 +11,6 @@
     <string name="label_awb_number">No Resi</string>
     <string name="label_address">Alamat</string>
     <string name="label_dropshipper">Dropshipper</string>
-    <string name="label_proof_delivery">Bukti Pengiriman</string>
-
     <string name="secondary_action_bottomsheet_header">Lainnya</string>
     <string name="buy_again_label">Beli Lagi</string>
     <string name="buyer_order_detail_toolbar_title">Detail Pesanan</string>
@@ -73,6 +71,4 @@
     <string name="order_addons_read_more">&lt;a href="#"&gt;Lihat Selengkapnya&lt;/a&gt;</string>
     <string name="order_addons_close"> &lt;a href="#"&gt;Tutup&lt;/a&gt;</string>
     <string name="order_addons_type_and_name">%1$s - %2$s</string>
-    <string name="message_see">Lihat</string>
-
 </resources>
