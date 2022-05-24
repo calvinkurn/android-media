@@ -14,7 +14,7 @@ public class BannerAdsContract {
 
         void showLoading();
 
-        void displayAds(CpmModel cpmModel);
+        void displayAds(CpmModel cpmModel, int index);
 
         void onCanceled();
 
