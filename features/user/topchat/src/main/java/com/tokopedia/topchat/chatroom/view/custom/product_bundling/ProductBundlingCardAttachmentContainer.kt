@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
@@ -148,13 +149,16 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         this.adapterPosition = adapterPosition
         bindListener(listener, adapterListener, searchListener, commonListener, deferredAttachment)
         bindLayoutGravity(element)
-        bindLoading(element)
         bindBackground(element)
-        bindMargin(element)
-        bindLayoutStyle(element)
-        bindPrice(element)
-        bindCtaClick(element)
-        listener.onSeenProductBundling(element)
+        bindSyncProductBundling(element)
+        bindLoading(element)
+        if (!element.isLoading || element.isError) {
+            bindMargin(element)
+            bindLayoutStyle(element)
+            bindPrice(element)
+            bindCtaClick(element)
+            listener.onSeenProductBundling(element)
+        }
     }
 
     private fun bindLayoutStyle(element: ProductBundlingUiModel) {
@@ -341,6 +345,21 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             bgSender
         } else {
             bgOpposite
+        }
+    }
+
+    /**
+     * Update the element manually
+     * When this view has not been rendered but the adapter has been updated
+     */
+    private fun bindSyncProductBundling(element: ProductBundlingUiModel) {
+        if (!element.isLoading) return
+        val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
+        val attachment = chatAttachments[element.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            element.syncError()
+        } else {
+            element.updateData(attachment.parsedAttributes)
         }
     }
 
