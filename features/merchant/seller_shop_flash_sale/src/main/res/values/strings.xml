@@ -26,4 +26,10 @@
     <!--Manage highligh product Bottom Sheet-->
     <string name="manage_highlight_product_title">Atur Highlight</string>
     <string name="manage_highlight_product_description">Produk yang dipilih sebagai highlight akan tampil di banner campaign tokomu. Kamu hanya bisa memilih maks. 5 produk untuk di-highlight, ya.</string>
+
+    <!--Success Register Campaign Dialog-->
+    <string name="success_register_campaign_title">Produk berhasil terdaftar dalam [%1$s]</string>
+    <string name="success_register_campaign_description">Pastikan informasi produk sudah sesuai kebutuhan campaign-mu. Kamu masih bisa ubah informasi produknya juga, ya.</string>
+    <string name="success_register_campaign_primary_cta_text">Oke, Mengerti</string>
+
 </resources>
