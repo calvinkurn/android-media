@@ -337,7 +337,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         ) ?: _detailedReviewMediaResult.value
         _pageSource.value = cacheManager.get(
             ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE,
-            ReviewMediaGalleryRouter.PageSource::class.java,
+            Int::class.java,
             _pageSource.value
         ) ?: _pageSource.value
         _productID.value = cacheManager.getString(
