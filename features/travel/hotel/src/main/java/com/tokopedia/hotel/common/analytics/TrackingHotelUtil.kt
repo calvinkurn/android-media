@@ -259,7 +259,7 @@ class TrackingHotelUtil {
     }
 
     fun hotelViewDetails(context: Context?, hotelHomepageModel: HotelHomepageModel,
-                         hotelName: String, hotelId: Long, available: Boolean,
+                         hotelName: String, hotelId: String, available: Boolean,
                          price: String, directPayment: Boolean, screenName: String) {
 
         val roomCount = hotelHomepageModel.roomCount
@@ -290,19 +290,19 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickHotelPhoto(context: Context?, hotelId: Long, price: String, screenName: String) {
+    fun hotelClickHotelPhoto(context: Context?, hotelId: String, price: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_HOTEL_PHOTO, "$HOTEL_LABEL - $hotelId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelClickHotelReviews(context: Context?, hotelId: Long, price: String, screenName: String) {
+    fun hotelClickHotelReviews(context: Context?, hotelId: String, price: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_HOTEL_REVIEWS, "$HOTEL_LABEL - $hotelId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelChooseViewRoom(context: Context?, hotelHomepageModel: HotelHomepageModel, hotelId: Long,
+    fun hotelChooseViewRoom(context: Context?, hotelHomepageModel: HotelHomepageModel, hotelId: String,
                             hotelName: String, screenName: String) {
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
@@ -406,7 +406,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickRoomListPhoto(context: Context?, hotelId: Int, roomId: String, price: String, screenName: String) {
+    fun hotelClickRoomListPhoto(context: Context?, hotelId: String, roomId: String, price: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_ROOM_PHOTO_ON_ROOM_LIST, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -441,7 +441,7 @@ class TrackingHotelUtil {
 
     }
 
-    fun hotelClickRoomDetailsPhoto(context: Context?, hotelId: Int, roomId: String, price: String, screenName: String) {
+    fun hotelClickRoomDetailsPhoto(context: Context?, hotelId: String, roomId: String, price: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_ROOM_PHOTO_ON_ROOM_PDP, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -643,7 +643,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String, hotelName: String){
+    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: String, hotelPrice: String, hotelName: String){
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
         map.addGeneralEvent(PROMO_VIEW, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
@@ -651,7 +651,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun getNearbyPromotions(hotelId: Long, hotelName: String): List<Any>{
+    fun getNearbyPromotions(hotelId: String, hotelName: String): List<Any>{
         val list = ArrayList<Map<String, Any>>()
         val map = HashMap<String, Any>()
         map[ID_LABEL] = hotelId

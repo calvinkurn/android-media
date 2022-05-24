@@ -53,7 +53,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            param.propertyId = it.getLong(ARG_PROPERTY_ID, 0)
+            param.propertyId = it.getString(ARG_PROPERTY_ID, "0")
         }
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -214,10 +214,10 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         const val FILTER_RANK_SECOND = 2
         const val FILTER_RANK_THIRD = 3
 
-        fun createInstance(propertyId: Long): HotelReviewFragment {
+        fun createInstance(propertyId: String): HotelReviewFragment {
             return HotelReviewFragment().also {
                 it.arguments = Bundle().apply {
-                    putLong(ARG_PROPERTY_ID, propertyId)
+                    putString(ARG_PROPERTY_ID, propertyId)
                 }
             }
         }

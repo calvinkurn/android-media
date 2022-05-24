@@ -16,11 +16,11 @@ data class HotelReview(
 
         @SerializedName("propertyId")
         @Expose
-        val propertyId: Int = 0,
+        val propertyId: String = "0",
 
         @SerializedName("reviewerId")
         @Expose
-        val reviewerId: Int = 0,
+        val reviewerId: String = "0",
 
         @SerializedName("name")
         @Expose

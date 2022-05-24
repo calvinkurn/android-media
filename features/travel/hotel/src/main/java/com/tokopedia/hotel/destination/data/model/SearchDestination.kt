@@ -12,7 +12,7 @@ import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 data class SearchDestination(
         @SerializedName("id")
         @Expose
-        val id: Long = 0,
+        val id: String = "0",
 
         @SerializedName("type")
         @Expose
