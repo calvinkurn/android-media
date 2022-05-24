@@ -115,6 +115,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     fun getCountDeletionWishlistV2() {
+        println("++ call getCountDeletionWishlistV2")
         launch {
             try {
                 countDeletionWishlistV2UseCase.execute(

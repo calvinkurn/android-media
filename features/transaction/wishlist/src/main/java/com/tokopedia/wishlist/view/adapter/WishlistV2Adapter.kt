@@ -32,7 +32,7 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
-    private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
+    private var listTypeData: ArrayList<WishlistV2TypeLayoutData> = arrayListOf()
     private var isShowCheckbox = false
     private var isTickerCloseClicked = false
     var isRefreshing = false
@@ -351,7 +351,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addDeletionProgressWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
         hasDeletionProgressWidgetShow = true
-        notifyDataSetChanged()
+        notifyItemInserted(0)
     }
 
     fun updateDeletionWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {

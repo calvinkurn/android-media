@@ -34,44 +34,41 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                     isFullSpan = true
                 }
                 binding.root.layoutParams = params
+                binding.wishlistv2TickerMaxQty.run {
+                    val tickerData = item.dataObject.tickerCleanerData
+                    val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
+                    when (tickerData.type) {
+                        WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
+                            tickerType = Ticker.TYPE_ANNOUNCEMENT
+                            closeButtonVisibility = View.VISIBLE
+                        }
+                        WishlistV2Consts.TICKER_TYPE_WARNING -> {
+                            tickerType = Ticker.TYPE_WARNING
+                            closeButtonVisibility = View.VISIBLE
+                        }
+                        WishlistV2Consts.TICKER_TYPE_ERROR -> {
+                            tickerType = Ticker.TYPE_ERROR
+                            closeButtonVisibility = View.GONE
+                        }
+                    }
 
-                binding.run {
-                    wishlistv2TickerMaxQty.apply {
-                        val tickerData = item.dataObject.tickerCleanerData
-                        val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
-                        when (tickerData.type) {
-                            WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
-                                tickerType = Ticker.TYPE_ANNOUNCEMENT
-                                closeButtonVisibility = View.VISIBLE
-                            }
-                            WishlistV2Consts.TICKER_TYPE_WARNING -> {
-                                tickerType = Ticker.TYPE_WARNING
-                                closeButtonVisibility = View.VISIBLE
-                            }
-                            WishlistV2Consts.TICKER_TYPE_ERROR -> {
-                                tickerType = Ticker.TYPE_ERROR
-                                closeButtonVisibility = View.GONE
+                    setHtmlDescription(tickerData.message + " <a href=\"cta_text\">" + tickerData.button.text + "</a>")
+                    setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            when (tickerData.button.action) {
+                                WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
+                                    actionListener?.onTickerCTAShowBottomSheet(bottomSheetCleanerData)
+                                }
+                                WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
+                                    actionListener?.onTickerCTASortFromLatest()
+                                }
                             }
                         }
 
-                        setHtmlDescription(tickerData.message + " <a href=\"cta_text\">" + tickerData.button.text + "</a>")
-                        setDescriptionClickEvent(object: TickerCallback {
-                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                when (tickerData.button.action) {
-                                    WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
-                                        actionListener?.onTickerCTAShowBottomSheet(bottomSheetCleanerData)
-                                    }
-                                    WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
-                                        actionListener?.onTickerCTASortFromLatest()
-                                    }
-                                }
-                            }
-
-                            override fun onDismiss() {
-                                actionListener?.onTickerCloseIconClicked()
-                            }
-                        })
-                    }
+                        override fun onDismiss() {
+                            actionListener?.onTickerCloseIconClicked()
+                        }
+                    })
                 }
             }
         }

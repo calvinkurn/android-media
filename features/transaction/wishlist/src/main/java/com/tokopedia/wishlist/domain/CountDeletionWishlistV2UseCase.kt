@@ -14,10 +14,12 @@ import javax.inject.Inject
 
 @GqlQuery("CountDeletionProgressQuery", GQL_COUNT_DELETION_WISHLIST_V2)
 class CountDeletionWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>>() {
-
     override suspend fun executeOnBackground(): Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress> {
         return try {
-            val request = GraphqlRequest(CountDeletionProgressQuery(), DeleteWishlistProgressV2Response.Data::class.java)
+            val request = GraphqlRequest(
+                CountDeletionProgressQuery(),
+                DeleteWishlistProgressV2Response.Data::class.java
+            )
             val response = gqlRepository.response(listOf(request)).getSuccessData<DeleteWishlistProgressV2Response.Data>()
             Success(response.deleteWishlistProgress)
         } catch (e: Exception) {
