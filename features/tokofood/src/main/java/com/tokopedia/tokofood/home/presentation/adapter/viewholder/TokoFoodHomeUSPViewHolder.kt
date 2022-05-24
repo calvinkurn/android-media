@@ -3,14 +3,13 @@ package com.tokopedia.tokofood.home.presentation.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodUspBinding
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -53,8 +52,8 @@ class TokoFoodHomeUSPViewHolder(
         tgPowered = binding?.tgPowered
 
         when(element.state){
-            TokoFoodHomeLayoutState.SHOW -> onShowLayout(element)
-            TokoFoodHomeLayoutState.LOADING -> onLoadLayout()
+            TokoFoodLayoutState.SHOW -> onShowLayout(element)
+            TokoFoodLayoutState.LOADING -> onLoadLayout()
         }
     }
 

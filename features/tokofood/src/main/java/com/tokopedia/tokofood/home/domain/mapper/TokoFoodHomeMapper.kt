@@ -15,8 +15,8 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.CATEGORY_WIDGET
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.ICON_TOKOFOOD
@@ -52,22 +52,22 @@ object TokoFoodHomeMapper {
 
     fun MutableList<TokoFoodHomeItemUiModel>.addLoadingIntoList() {
         val loadingLayout = TokoFoodHomeLoadingStateUiModel(id = LOADING_STATE)
-        add(TokoFoodHomeItemUiModel(loadingLayout, TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(loadingLayout, TokoFoodLayoutItemState.LOADED))
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.addNoPinPointState() {
         addChooseAddressWidget()
-        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodLayoutItemState.LOADED))
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.addNoAddressState() {
         addChooseAddressWidget()
-        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_ADDRESS), TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_ADDRESS), TokoFoodLayoutItemState.LOADED))
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.addOutOfCoverageState() {
         addChooseAddressWidget()
-        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_OUT_OF_COVERAGE), TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_OUT_OF_COVERAGE), TokoFoodLayoutItemState.LOADED))
     }
 
 
@@ -95,9 +95,9 @@ object TokoFoodHomeMapper {
             val usp = TokoFoodHomeUSPUiModel(
                 item.visitableId,
                 uspResponse,
-                TokoFoodHomeLayoutState.SHOW
+                TokoFoodLayoutState.SHOW
             )
-            TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
+            TokoFoodHomeItemUiModel(usp, TokoFoodLayoutItemState.LOADED)
         }
     }
 
@@ -110,23 +110,23 @@ object TokoFoodHomeMapper {
                 id = item.visitableId,
                 widgetParam = item.widgetParam,
                 listIcons = result.dynamicIcon.listDynamicIcon,
-                state = TokoFoodHomeLayoutState.SHOW
+                state = TokoFoodLayoutState.SHOW
             )
-            TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
+            TokoFoodHomeItemUiModel(usp, TokoFoodLayoutItemState.LOADED)
         }
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.addChooseAddressWidget() {
         val chooseAddressUiModel =
             TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodLayoutItemState.LOADED))
 
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.setStateToLoading(item: TokoFoodHomeItemUiModel) {
         item.layout?.let { layout ->
             updateItemById(layout.getVisitableId()) {
-                TokoFoodHomeItemUiModel(layout, TokoFoodHomeLayoutItemState.LOADING)
+                TokoFoodHomeItemUiModel(layout, TokoFoodLayoutItemState.LOADING)
             }
         }
     }
@@ -264,8 +264,8 @@ object TokoFoodHomeMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse
     ): TokoFoodHomeItemUiModel? {
-        val loadedState = TokoFoodHomeLayoutItemState.LOADED
-        val notLoadedState = TokoFoodHomeLayoutItemState.NOT_LOADED
+        val loadedState = TokoFoodLayoutItemState.LOADED
+        val notLoadedState = TokoFoodLayoutItemState.NOT_LOADED
 
         return when (response.layout) {
             // region data got from dynamic channel direcly
@@ -283,39 +283,39 @@ object TokoFoodHomeMapper {
         }
     }
 
-    private fun mapLego6DataModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
+    private fun mapLego6DataModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodHomeItemUiModel {
         val channelModel = mapToChannelModel(response)
         val dynamicLego6Data = DynamicLegoBannerDataModel(channelModel)
         return TokoFoodHomeItemUiModel(dynamicLego6Data, state)
     }
 
-    private fun mapBannerCarouselModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
+    private fun mapBannerCarouselModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodHomeItemUiModel {
         val channelModel = mapToChannelModel(response)
         val bannerDataModel = BannerDataModel(channelModel)
         return TokoFoodHomeItemUiModel(bannerDataModel, state)
     }
 
-    private fun mapCategoryWidgetModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
+    private fun mapCategoryWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodHomeItemUiModel {
         val channelModel = mapToChannelModel(response)
         val categoryWidgetV2DataModel = CategoryWidgetV2DataModel(channelModel)
         return TokoFoodHomeItemUiModel(categoryWidgetV2DataModel, state)
     }
 
-    private fun mapUSPWidgetModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
+    private fun mapUSPWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodHomeItemUiModel {
         val uspWidgetDataModel = TokoFoodHomeUSPUiModel(
             id = response.id,
             uspModel = null,
-            TokoFoodHomeLayoutState.LOADING
+            TokoFoodLayoutState.LOADING
         )
         return TokoFoodHomeItemUiModel(uspWidgetDataModel, state)
     }
 
-    private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
+    private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodHomeItemUiModel {
         val dynamicIconModel = TokoFoodHomeIconsUiModel(
             id = response.id,
             widgetParam = response.widgetParam,
             listIcons = null,
-            state = TokoFoodHomeLayoutState.LOADING
+            state = TokoFoodLayoutState.LOADING
         )
         return TokoFoodHomeItemUiModel(dynamicIconModel, state)
     }

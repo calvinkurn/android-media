@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 class TokoFoodHomeAdapter(
     typeFactory: TokoFoodHomeAdapterTypeFactory,
-    differ: TokoFoodHomeListDiffer
-): BaseTokoFoodHomeListAdapter<Visitable<*>, TokoFoodHomeAdapterTypeFactory>(typeFactory, differ) {
+    differ: TokoFoodListDiffer
+): BaseTokoFoodListAdapter<Visitable<*>, TokoFoodHomeAdapterTypeFactory>(typeFactory, differ) {
 
     fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
         return data.find { it.javaClass == itemClass}

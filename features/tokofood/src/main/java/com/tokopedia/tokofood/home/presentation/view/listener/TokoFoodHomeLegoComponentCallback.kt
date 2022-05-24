@@ -5,7 +5,7 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodHomeView): DynamicLegoBannerListener {
+class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): DynamicLegoBannerListener {
 
     private val context by lazy { view.getFragmentPage().context }
 

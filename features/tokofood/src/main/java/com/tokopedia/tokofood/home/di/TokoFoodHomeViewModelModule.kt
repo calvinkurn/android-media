@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,6 +22,12 @@ abstract class TokoFoodHomeViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TokoFoodHomeViewModel::class)
-    internal abstract fun bindViewModel(viewModel: TokoFoodHomeViewModel): ViewModel
+    internal abstract fun bindViewModelHome(viewModel: TokoFoodHomeViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TokoFoodCategoryViewModel::class)
+    internal abstract fun bindViewModelCategory(viewModel: TokoFoodCategoryViewModel): ViewModel
 
 }

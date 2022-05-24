@@ -5,7 +5,7 @@ import com.tokopedia.home_component.listener.CategoryWidgetV2Listener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodHomeCategoryWidgetV2ComponentCallback(private val view: TokoFoodHomeView): CategoryWidgetV2Listener {
+class TokoFoodHomeCategoryWidgetV2ComponentCallback(private val view: TokoFoodView): CategoryWidgetV2Listener {
 
     private val context by lazy { view.getFragmentPage().context }
 

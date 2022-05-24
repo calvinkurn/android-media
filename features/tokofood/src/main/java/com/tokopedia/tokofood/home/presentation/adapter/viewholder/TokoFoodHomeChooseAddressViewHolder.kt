@@ -9,12 +9,12 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodChooseAddressBinding
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
-import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoFoodHomeChooseAddressViewHolder(
     itemView: View,
-    private val tokoFoodHomeView: TokoFoodHomeView? = null,
+    private val tokoFoodView: TokoFoodView? = null,
     private val tokoFoodChooseAddressWidgetListener: TokoFoodChooseAddressWidgetListener? = null
 ): AbstractViewHolder<TokoFoodHomeChooseAddressWidgetUiModel>(itemView) {
 
@@ -36,10 +36,10 @@ class TokoFoodHomeChooseAddressViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokoFoodHomeView?.getFragmentPage()?.let { fragment ->
+        tokoFoodView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    tokoFoodHomeView.refreshLayoutPage()
+                    tokoFoodView.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {

@@ -13,8 +13,8 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoPinPointState
@@ -27,10 +27,11 @@ import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.setStateToLo
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
+import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,13 +45,14 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
+    private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val homeLayoutList: LiveData<Result<TokoFoodHomeListUiModel>>
+    val layoutList: LiveData<Result<TokoFoodListUiModel>>
         get() = _homeLayoutList
     val updatePinPointState: LiveData<Boolean>
         get() = _updatePinPointState
@@ -61,7 +63,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
         get() = _eligibleForAnaRevamp
 
-    private val _homeLayoutList = MutableLiveData<Result<TokoFoodHomeListUiModel>>()
+    private val _homeLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
     private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
@@ -103,9 +105,9 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun getLoadingState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
-        val data = TokoFoodHomeListUiModel(
+        val data = TokoFoodListUiModel(
             items = getHomeVisitableList(),
-            state = TokoFoodHomeLayoutState.LOADING
+            state = TokoFoodLayoutState.LOADING
         )
         _homeLayoutList.value = Success(data)
     }
@@ -113,9 +115,9 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun getNoPinPoinState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
-        val data = TokoFoodHomeListUiModel(
+        val data = TokoFoodListUiModel(
             items = getHomeVisitableList(),
-            state = TokoFoodHomeLayoutState.HIDE
+            state = TokoFoodLayoutState.HIDE
         )
         _homeLayoutList.value = Success(data)
     }
@@ -123,9 +125,9 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun getNoAddressState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoAddressState()
-        val data = TokoFoodHomeListUiModel(
+        val data = TokoFoodListUiModel(
             items = getHomeVisitableList(),
-            state = TokoFoodHomeLayoutState.HIDE
+            state = TokoFoodLayoutState.HIDE
         )
         _homeLayoutList.value = Success(data)
     }
@@ -141,9 +143,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
 
-            val data = TokoFoodHomeListUiModel(
+            val data = TokoFoodListUiModel(
                 items = getHomeVisitableList(),
-                state = TokoFoodHomeLayoutState.SHOW
+                state = TokoFoodLayoutState.SHOW
             )
 
             _homeLayoutList.value = Success(data)
@@ -155,7 +157,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun getLayoutComponentData(){
         launchCatchError(block = {
-            homeLayoutItemList.filter { it.state == TokoFoodHomeLayoutItemState.NOT_LOADED }.forEach {
+            homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
                 when (val item = it.layout){
@@ -163,9 +165,9 @@ class TokoFoodHomeViewModel @Inject constructor(
                     else -> {}
                 }
 
-                val data = TokoFoodHomeListUiModel(
+                val data = TokoFoodListUiModel(
                     items = getHomeVisitableList(),
-                    state = TokoFoodHomeLayoutState.UPDATE
+                    state = TokoFoodLayoutState.UPDATE
                 )
 
                 _homeLayoutList.value = Success(data)

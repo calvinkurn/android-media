@@ -28,7 +28,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -42,33 +41,32 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
-import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
-import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyR
 
 class TokoFoodHomeFragment : BaseDaggerFragment(),
         IBaseMultiFragment,
-        TokoFoodHomeView,
+        TokoFoodView,
         TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
         TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
         TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
@@ -99,7 +97,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 emptyStateLocationListener = this,
                 homeIconListener = this,
             ),
-            differ = TokoFoodHomeListDiffer(),
+            differ = TokoFoodListDiffer(),
         )
     }
 
@@ -344,7 +342,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.homeLayoutList) {
+        observe(viewModel.layoutList) {
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
             }
@@ -402,30 +400,30 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetHomeLayout(data: TokoFoodHomeListUiModel) {
+    private fun onSuccessGetHomeLayout(data: TokoFoodListUiModel) {
         when (data.state) {
-            TokoFoodHomeLayoutState.SHOW -> onShowHomeLayout(data)
-            TokoFoodHomeLayoutState.HIDE -> onHideHomeLayout(data)
-            TokoFoodHomeLayoutState.LOADING -> onLoadingHomelayout(data)
+            TokoFoodLayoutState.SHOW -> onShowHomeLayout(data)
+            TokoFoodLayoutState.HIDE -> onHideHomeLayout(data)
+            TokoFoodLayoutState.LOADING -> onLoadingHomelayout(data)
             else -> showHomeLayout(data)
         }
     }
 
-    private fun onHideHomeLayout(data: TokoFoodHomeListUiModel) {
+    private fun onHideHomeLayout(data: TokoFoodListUiModel) {
         showHomeLayout(data)
     }
 
-    private fun onShowHomeLayout(data: TokoFoodHomeListUiModel) {
+    private fun onShowHomeLayout(data: TokoFoodListUiModel) {
         showHomeLayout(data)
         getLayoutComponentData()
     }
 
-    private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
+    private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
     }
 
-    private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
+    private fun showHomeLayout(data: TokoFoodListUiModel) {
         rvHome?.post {
             adapter.submitList(data.items)
         }

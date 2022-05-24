@@ -2,9 +2,11 @@ package com.tokopedia.tokofood.home.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
 
-class TokoFoodHomeListDiffer: BaseTokoFoodHomeDiffer() {
+class TokoFoodListDiffer: BaseTokoFoodDiffer() {
 
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
@@ -15,8 +17,12 @@ class TokoFoodHomeListDiffer: BaseTokoFoodHomeDiffer() {
 
         return if (oldItem is TokoFoodHomeLayoutUiModel && newItem is TokoFoodHomeLayoutUiModel) {
             oldItem.visitableId == newItem.visitableId
-        }  else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
+        } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
+        } else if (oldItem is TokoFoodMerchantListUiModel && newItem is TokoFoodMerchantListUiModel){
+            oldItem.id == newItem.id
+        } else if (oldItem is TokoFoodCategoryLoadingStateUiModel && newItem is TokoFoodCategoryLoadingStateUiModel){
+            oldItem.id == newItem.id
         } else oldItem == newItem
     }
 
@@ -31,7 +37,7 @@ class TokoFoodHomeListDiffer: BaseTokoFoodHomeDiffer() {
     override fun create(
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
-    ): BaseTokoFoodHomeDiffer {
+    ): BaseTokoFoodDiffer {
         this.oldList = oldList
         this.newList = newList
         return this

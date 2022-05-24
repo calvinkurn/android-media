@@ -1,9 +1,9 @@
 package com.tokopedia.tokofood.home.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
 
 data class TokoFoodHomeItemUiModel (
     val layout: Visitable<*>?,
-    val state: TokoFoodHomeLayoutItemState
+    val state: TokoFoodLayoutItemState
 )

@@ -5,7 +5,7 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodHomeBannerComponentCallback(private val view: TokoFoodHomeView): BannerComponentListener {
+class TokoFoodHomeBannerComponentCallback(private val view: TokoFoodView): BannerComponentListener {
 
     private val context by lazy { view.getFragmentPage().context }
 

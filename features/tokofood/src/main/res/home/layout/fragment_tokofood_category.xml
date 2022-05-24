@@ -22,4 +22,23 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/nav_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeTitle"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarPageName="/" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

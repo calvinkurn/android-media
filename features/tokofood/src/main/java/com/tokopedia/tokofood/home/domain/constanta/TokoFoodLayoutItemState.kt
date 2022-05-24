@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.home.domain.constanta
 
-enum class TokoFoodHomeLayoutItemState {
+enum class TokoFoodLayoutItemState {
     NOT_LOADED,
     LOADED,
     LOADING,

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 
 object TokofoodRouteManager {
@@ -17,6 +18,8 @@ object TokofoodRouteManager {
             var f: Fragment? = null
             if (uri.path == "/home") { // tokopedia://tokofood/home
                 f = TokoFoodHomeFragment.createInstance()
+            } else if (uri.path == "/category"){
+                f = TokoFoodCategoryFragment.createInstance()
             }
             if (f != null) {
                 f.arguments = Bundle().apply {

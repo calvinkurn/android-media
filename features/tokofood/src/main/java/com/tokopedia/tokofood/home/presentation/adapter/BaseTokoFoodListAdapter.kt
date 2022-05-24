@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 
-open class BaseTokoFoodHomeListAdapter <T, F: AdapterTypeFactory>(
+open class BaseTokoFoodListAdapter <T, F: AdapterTypeFactory>(
     baseListAdapterTypeFactory: F,
-    private val differ: BaseTokoFoodHomeDiffer
+    private val differ: BaseTokoFoodDiffer
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {
 
     fun submitList(items: List<Visitable<*>>) {
