@@ -82,6 +82,8 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_special_release.png"
         const val IC_PM_TOP_ADS =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_topads.png"
+        const val IC_PM_BROADCAST_CHAT =
+            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_broadcast_chat.png"
         const val IMG_PM_REGISTRATION =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_registration_banner.png"
     }

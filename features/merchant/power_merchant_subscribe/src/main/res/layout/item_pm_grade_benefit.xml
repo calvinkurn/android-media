@@ -12,7 +12,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmBenefitItem"
         android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmBenefitItem"

@@ -11,8 +11,6 @@ class WidgetGradeBenefitUiModel(
     val currentShopLevel: Int,
     val currentCompletedOrder: Long,
     val currentIncome: Long,
-    val isEligiblePm: Boolean,
-    val isEligiblePmPro: Boolean,
     val benefitPages: List<PMGradeWithBenefitsUiModel>,
     val ctaAppLink: String,
     val shopScore:Int
