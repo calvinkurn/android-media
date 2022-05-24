@@ -53,6 +53,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
+import com.tokopedia.tokofood.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadataDetail
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodData
@@ -68,6 +69,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoo
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -85,6 +87,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -132,6 +137,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         collectSharedUiState()
         collectDebouncedQuantityUpdate()
         collectShouldRefreshCartData()
+        collectTrackerLoadCheckoutData()
+        collectTrackerPaymentCheckoutData()
         loadData()
     }
 
@@ -474,6 +481,26 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     if (shouldRefresh) {
                         viewModel.loadDataPartial()
                     }
+                }
+        }
+    }
+
+    private fun collectTrackerLoadCheckoutData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.trackerLoadCheckoutData
+                .collect { checkoutData ->
+                    val userId = userSession.userId
+                    TokoFoodPurchaseAnalytics.sendLoadCheckoutTracking(checkoutData, userId)
+                }
+        }
+    }
+
+    private fun collectTrackerPaymentCheckoutData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.trackerPaymentCheckoutData
+                .collect { checkoutData ->
+                    val userId = userSession.userId
+                    TokoFoodPurchaseAnalytics.sendSuccessChoosePayment(checkoutData, userId)
                 }
         }
     }

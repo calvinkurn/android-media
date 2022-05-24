@@ -17,7 +17,7 @@
     <string name="text_purchase_choose_payment">Pilih Pembayaran</string>
     <string name="text_purchase_payment_total">Total Tagihan</string>
     <string name="text_purchase_dash">-</string>
-    <string name="text_purchase_use_promo">Pakai Promo (%s)</string>
+    <string name="text_purchase_use_promo">Pakai Promo (%d)</string>
     <string name="text_purchase_delete_item">Hapus %s item yang tidak bisa diproses?</string>
     <string name="text_purchase_delete_all">Semua item ini akan dihapus dari keranjangmu.</string>
     <string name="text_purchase_delete">Hapus</string>

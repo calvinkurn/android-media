@@ -51,7 +51,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
         flow {
             if (isDebug) {
                 kotlinx.coroutines.delay(1000)
-                emit(getDummyErrorResponse())
+                emit(getDummyResponse())
             } else {
                 val param = generateParam(params)
                 val response =
