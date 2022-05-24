@@ -34,7 +34,6 @@ class MiniCartGeneralViewModel @Inject constructor(
         get() = _currentShopIds
     var isShopDirectPurchase = false
 
-    // TODO: Ask: Should default source be MiniCartSource.TokonowHome?
     var currentSource: MiniCartSource = MiniCartSource.TokonowHome
 
     // Widget Data

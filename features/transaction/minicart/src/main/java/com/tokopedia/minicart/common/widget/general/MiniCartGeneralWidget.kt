@@ -83,6 +83,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun initializeView(fragment: Fragment) {
+        // Init Total Amount Button
         miniCartChevronClickListener = OnClickListener {
             showSimplifiedSummaryBottomSheet(fragment)
         }
@@ -95,7 +96,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             }
         }
         binding.imageChevronUnavailable.setOnClickListener(miniCartChevronClickListener)
-
+        // Init Chat Button
         val chatIcon = getIconUnifyDrawable(
             context, IconUnify.CHAT,
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
@@ -105,7 +106,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             showMiniCartChatListBottomSheet(fragment)
         }
         binding.chatIcon.setImageDrawable(chatIcon)
-
+        // Init Progress Dialog
         context?.let {
             progressDialog = AlertDialog.Builder(it)
                 .setView(R.layout.mini_cart_progress_dialog_view)
@@ -138,10 +139,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private fun observeGlobalStateEvent(fragment: Fragment) {
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) { globalEvent ->
             when (globalEvent.state) {
-                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
-                    onSuccessDeleteCartItem(globalEvent)
-                }
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_SIMPLIFIED_SUMMARY_BOTTOM_SHEET -> {
+                    onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
+                }
+                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_CHAT_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
                 }
                 GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
@@ -159,10 +160,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                 }
             }
         }
-    }
-
-    private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent) {
-        Toast.makeText(context, "onSuccessDeleteCartItem", Toast.LENGTH_LONG).show()
     }
 
     private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
@@ -358,15 +355,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             // Reload data
             if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_GENERAL_WIDGET) {
                 viewModel?.getLatestWidgetState()
-            } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                viewModel?.getCartList()
             }
 
             // Show toaster error if have no out of service data
-            var ctaText = context.getString(R.string.mini_cart_cta_ok)
-            if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                ctaText = miniCartCheckoutData.toasterAction.text
-            }
+            val ctaText = context.getString(R.string.mini_cart_cta_ok)
             val errorMessage = miniCartCheckoutData.errorMessage
             if (miniCartCheckoutData.toasterAction.showCta) {
                 showToaster(view, errorMessage, Toaster.TYPE_ERROR, ctaText, true)
@@ -466,8 +458,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      */
     fun initialize(
         shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
-        autoInitializeData: Boolean = true, isShopDirectPurchase: Boolean = true,
-        source: MiniCartSource
+        isShopDirectPurchase: Boolean = true, source: MiniCartSource
     ) {
         removeAllViews()
 
@@ -477,14 +468,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             initializeViewModel(fragment)
             viewModel?.isShopDirectPurchase = isShopDirectPurchase
             viewModel?.currentSource = source
-            if (autoInitializeData) {
-                updateData(shopIds)
-            } else {
-                viewModel?.initializeShopIds(shopIds)
-            }
-        } else {
-            viewModel?.initializeShopIds(shopIds)
         }
+        viewModel?.initializeShopIds(shopIds)
         addView(binding.root)
     }
 
@@ -492,9 +477,9 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to trigger update mini cart data
      * This will trigger view model to fetch latest data from backend and update the UI
      */
-    fun updateData(shopIds: List<String>) {
+    fun updateData() {
         setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState(shopIds)
+        viewModel?.getLatestWidgetState()
     }
 
     /**
