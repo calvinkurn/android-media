@@ -56,14 +56,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
             }
         )
     }
-    private val layoutManager: LinearLayoutManager by lazy(mode = LazyThreadSafetyMode.NONE) {
-        object : LinearLayoutManager(requireContext()) {
-            override fun onLayoutCompleted(state: RecyclerView.State?) {
-                super.onLayoutCompleted(state)
-                impressShop()
-            }
-        }
-    }
+    private lateinit var layoutManager: LinearLayoutManager
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) impressShop()
@@ -134,6 +127,13 @@ class GlobalSearchShopTabFragment @Inject constructor(
     }
 
     private fun setupView() {
+        layoutManager = object : LinearLayoutManager(requireContext()) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressShop()
+            }
+        }
+
         binding.rvGlobalSearchShop.addOnScrollListener(scrollListener)
         binding.rvGlobalSearchShop.layoutManager = layoutManager
         binding.rvGlobalSearchShop.adapter = adapter
@@ -248,9 +248,11 @@ class GlobalSearchShopTabFragment @Inject constructor(
     }
 
     private fun impressShop() {
-        val visibleProducts = layoutManager.getVisibleItems(adapter)
-        if(visibleProducts.isNotEmpty())
-            impressionCoordinator.saveShopImpress(visibleProducts)
+        if(this::layoutManager.isInitialized) {
+            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            if(visibleProducts.isNotEmpty())
+                impressionCoordinator.saveShopImpress(visibleProducts)
+        }
     }
 
     companion object {
