@@ -32,13 +32,6 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
     private var campaignTeaserInfoPoint1: Typography? = null
     private var campaignTeaserInfoPoint2: Typography? = null
 
-    @SuppressLint("ResourcePackage")
-    private val campaignTeaserInfoPoint1Text =
-        SpannableString(getString(R.string.campaign_teaser_info_point_1))
-    @SuppressLint("ResourcePackage")
-    private val campaignTeaserInfoPoint2text =
-        SpannableString(getString(R.string.campaign_teaser_info_point_2))
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
         setupContent()
@@ -59,14 +52,11 @@ class CampaignTeaserInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupContent() {
-        campaignTeaserInfoPoint1Text.toBulletSpan()
-        campaignTeaserInfoPoint2text.toBulletSpan()
-
         campaignTeaserInfoPoint1?.run {
-            text = campaignTeaserInfoPoint1Text
+            text = SpannableString(getString(R.string.campaign_teaser_info_point_1)).toBulletSpan()
         }
         campaignTeaserInfoPoint2?.run {
-            text = campaignTeaserInfoPoint2text
+            text = SpannableString(getString(R.string.campaign_teaser_info_point_2)).toBulletSpan()
         }
     }
 }

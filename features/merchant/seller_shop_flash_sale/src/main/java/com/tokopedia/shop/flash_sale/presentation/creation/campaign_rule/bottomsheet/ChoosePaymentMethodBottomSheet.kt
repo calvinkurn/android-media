@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flash_sale.presentation.creation.campaign_rule.bottomsheet
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
@@ -14,7 +15,7 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(): ChoosePaymentMethodBottomSheet =
+        fun createInstance(context: Context): ChoosePaymentMethodBottomSheet =
             ChoosePaymentMethodBottomSheet().apply {
                 val view = View.inflate(
                     context,
@@ -24,26 +25,13 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
                 setChild(view)
             }
 
-        private const val TAG = "CampaignTeaserInformationBottomSheet"
+        private const val TAG = "ChoosePaymentMethodBottomSheet"
     }
 
     private var paymentMethodPoint1: Typography? = null
     private var paymentMethodPoint2: Typography? = null
     private var paymentMethodPoint3: Typography? = null
     private var paymentMethodPoint4: Typography? = null
-
-    @SuppressLint("ResourcePackage")
-    private val paymentMethodPoint1Text =
-        SpannableString(getString(R.string.payment_method_point_1))
-    @SuppressLint("ResourcePackage")
-    private val paymentMethodPoint2Text =
-        SpannableString(getString(R.string.payment_method_point_2))
-    @SuppressLint("ResourcePackage")
-    private val paymentMethodPoint3Text =
-        SpannableString(getString(R.string.payment_method_point_3))
-    @SuppressLint("ResourcePackage")
-    private val paymentMethodPoint4Text =
-        SpannableString(getString(R.string.payment_method_point_4))
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
@@ -67,22 +55,21 @@ class ChoosePaymentMethodBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupContent() {
-        paymentMethodPoint1Text.toBulletSpan()
-        paymentMethodPoint2Text.toBulletSpan()
-        paymentMethodPoint3Text.toBulletSpan()
-        paymentMethodPoint4Text.toBulletSpan()
-
-        paymentMethodPoint1?.run {
-            text = paymentMethodPoint1Text
+        paymentMethodPoint1?.apply {
+            text =
+                SpannableString(getString(R.string.payment_method_point_1)).toBulletSpan()
         }
-        paymentMethodPoint2?.run {
-            text = paymentMethodPoint2Text
+        paymentMethodPoint2?.apply {
+            text =
+                SpannableString(getString(R.string.payment_method_point_2)).toBulletSpan()
         }
-        paymentMethodPoint3?.run {
-            text = paymentMethodPoint3Text
+        paymentMethodPoint3?.apply {
+            text =
+                SpannableString(getString(R.string.payment_method_point_3)).toBulletSpan()
         }
         paymentMethodPoint4?.run {
-            text = paymentMethodPoint4Text
+            text =
+                SpannableString(getString(R.string.payment_method_point_4)).toBulletSpan()
         }
     }
 }
