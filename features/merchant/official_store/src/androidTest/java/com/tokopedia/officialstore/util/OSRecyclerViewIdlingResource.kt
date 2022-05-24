@@ -2,8 +2,10 @@ package com.tokopedia.officialstore.util
 
 import android.app.Activity
 import android.content.Context
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
@@ -23,7 +25,7 @@ internal class OSRecyclerViewIdlingResource(
     override fun isIdleNow(): Boolean {
         val activity = activity ?: return false
         val recyclerView = activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)?: return false
-
+        recyclerView.disableHomeAnimation()
         val isIdle = (recyclerView.adapter as? OfficialHomeAdapter).isContainsProductRecom()
         if (isIdle) resourceCallback?.onTransitionToIdle()
 
