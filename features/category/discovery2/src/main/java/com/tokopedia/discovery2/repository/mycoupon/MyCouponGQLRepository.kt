@@ -23,7 +23,7 @@ open class MyCouponGQLRepository @Inject constructor(val getGQLString: (Int) -> 
                 PARAM_INCLUDE_EXTRA_INFO to myCouponsRequest.includeExtraInfo,
                 PARAM_API_VERSION to myCouponsRequest.apiVersion,
                 PARAM_IS_GET_PROMO_INFO to myCouponsRequest.isGetPromoInfo,
-                PARAM_SOURCE to "",
+                PARAM_SOURCE to myCouponsRequest.source,
                 PARAM_CLIENT_ID to myCouponsRequest.clientID,
                 PARAM_CATALOG_SLUGS to myCouponsRequest.catalogSlugs
         )

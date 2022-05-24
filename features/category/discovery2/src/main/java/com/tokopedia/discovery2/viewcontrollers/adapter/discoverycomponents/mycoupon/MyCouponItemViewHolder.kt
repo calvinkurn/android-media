@@ -50,31 +50,27 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
         }
     }
 
-    private fun setupImage(couponItem: MyCoupon?){
+    private fun setupImage(couponItem: MyCoupon?) {
         try {
             val layoutParams: ViewGroup.LayoutParams = myCouponImage.layoutParams
-            if(myCouponItemViewModel.getCouponListSize() == 1){
+            val aspectRatio: Int
+            if (myCouponItemViewModel.getCouponListSize() == 1) {
                 defaultDesign = DESIGN_1
-                layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
-                        / defaultDesign).toInt()
-                val aspectRatio = 3 / 1
-                layoutParams.height = (layoutParams.width / aspectRatio)
-                myCouponImage.layoutParams = layoutParams
+                aspectRatio = 3 / 1
                 myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
-            }
-            else{
+            } else {
                 defaultDesign = DESIGN_2
-                layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
-                        / defaultDesign).toInt()
-                val aspectRatio = 2 / 1
-                layoutParams.height = (layoutParams.width / aspectRatio)
-                myCouponImage.layoutParams = layoutParams
-                if(!couponItem?.imageHalfURLMobile.isNullOrEmpty()) {
+                aspectRatio = 2 / 1
+                if (!couponItem?.imageHalfURLMobile.isNullOrEmpty()) {
                     myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
-                }else{
+                } else {
                     myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
                 }
             }
+            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
+                    / defaultDesign).toInt()
+            layoutParams.height = (layoutParams.width / aspectRatio)
+            myCouponImage.layoutParams = layoutParams
         } catch (exception: NumberFormatException) {
             exception.printStackTrace()
         }
