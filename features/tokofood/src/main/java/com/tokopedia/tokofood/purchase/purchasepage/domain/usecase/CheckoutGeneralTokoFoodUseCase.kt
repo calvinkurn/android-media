@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.TokoFoodCheckoutMetadata
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
@@ -106,9 +107,11 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
             val param =
                 CheckoutGeneralTokoFoodParam(
                     carts = CheckoutGeneralTokoFoodCartParam(
+                        businessType = tokoFoodResponse.data.checkoutAdditionalData.checkoutBusinessId.toIntOrNull() ?: TokoFoodCartUtil.TOKOFOOD_BUSINESS_TYPE,
                         cartInfo = listOf(
                             CheckoutGeneralTokoFoodCartInfoParam(
-                                metadata = metadataString
+                                metadata = metadataString,
+                                dataType = tokoFoodResponse.data.checkoutAdditionalData.dataType
                             )
                         )
                     )

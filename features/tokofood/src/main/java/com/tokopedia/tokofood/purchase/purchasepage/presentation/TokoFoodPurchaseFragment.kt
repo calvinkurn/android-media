@@ -522,7 +522,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchase.setType(errorType)
             it.layoutGlobalErrorPurchase.setActionClickListener {
-                loadInitialData()
+                loadData()
             }
         }
     }

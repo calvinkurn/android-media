@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CheckoutTokoFoodParam(
-    // TODO: Create correct object for parsed chosenAddress
     @SerializedName("additional_attributes")
     @Expose
     val additionalAttributes: String = "",
