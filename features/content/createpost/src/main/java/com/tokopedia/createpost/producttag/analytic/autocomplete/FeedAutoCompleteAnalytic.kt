@@ -9,5 +9,7 @@ interface FeedAutoCompleteAnalytic {
 
     fun clickSuggestionShop(shopId: String)
 
+    fun impressSuggestionShop(shopId: String)
+
     fun clickSuggestionKeyword()
 }

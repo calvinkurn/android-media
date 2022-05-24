@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.analytic.autocomplete
 
+import com.tokopedia.createpost.producttag.analytic.*
 import com.tokopedia.createpost.producttag.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.createpost.producttag.analytic.KEY_CURRENT_SITE
 import com.tokopedia.createpost.producttag.analytic.KEY_EVENT
@@ -29,16 +30,28 @@ class FeedAutoCompleteAnalyticImpl @Inject constructor(
         sendClickEvent("click - toko section search result", shopId)
     }
 
+    override fun impressSuggestionShop(shopId: String) {
+        sendImpressEvent("impression - toko section search result", shopId)
+    }
+
     override fun clickSuggestionKeyword() {
         sendClickEvent("click - recommendation search result")
     }
 
     private fun sendClickEvent(action: String, label: String = "") {
+        sendGeneralEvent("clickPG", action, label)
+    }
+
+    private fun sendImpressEvent(action: String, label: String = "") {
+        sendGeneralEvent("viewPGIris", action, label)
+    }
+
+    private fun sendGeneralEvent(event: String, action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to "clickPG",
+                KEY_EVENT to event,
                 KEY_EVENT_ACTION to action,
-                KEY_EVENT_CATEGORY to "content feed post creation - product tagging",
+                KEY_EVENT_CATEGORY to VAL_EVENT_CATEGORY,
                 KEY_EVENT_LABEL to label,
                 KEY_BUSINESS_UNIT to VAL_CONTENT,
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
