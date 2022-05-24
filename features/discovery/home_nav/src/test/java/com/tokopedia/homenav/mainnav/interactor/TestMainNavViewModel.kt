@@ -1332,4 +1332,74 @@ class TestMainNavViewModel {
         Assert.assertTrue(dataListRefreshed.menus.contains(successResult))
         Assert.assertFalse(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
     }
+
+    @Test
+    fun `given enable me page rollence when refresh category with failed data from cache then show retry button`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertFalse(dataList.menus.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertFalse(dataListRefreshed.menus.contains(successResult))
+        Assert.assertTrue(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given disable me page rollence when refresh category with failed data from cache then show retry button`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertFalse(dataList.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertFalse(dataListRefreshed.contains(successResult))
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
 }
