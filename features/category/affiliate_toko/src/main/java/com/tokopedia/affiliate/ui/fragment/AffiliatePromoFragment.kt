@@ -15,7 +15,15 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.ALMOST_OOS
+import com.tokopedia.affiliate.AVAILABLE
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.EMPTY_STOCK
+import com.tokopedia.affiliate.ON_REGISTERED
+import com.tokopedia.affiliate.ON_REVIEWED
+import com.tokopedia.affiliate.PRODUCT_INACTIVE
+import com.tokopedia.affiliate.SHOP_INACTIVE
+import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
@@ -23,6 +31,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
+import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -47,7 +56,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
-import java.util.*
 import javax.inject.Inject
 
 class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
@@ -198,47 +206,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
-            adapter.clearAllElements()
-            if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
-                showData(true)
-                if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
-                    view?.rootView?.let {
-                        Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
-                                Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                    }
-                    showDefaultState()
-                    sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
-                } else {
-                    affiliateSearchData.searchAffiliate?.data?.error?.let {
-                        adapter.addElement(AffiliatePromotionErrorCardModel(it))
-                    }
-                    val errorLabel = when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                            AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                            AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
-                        AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                            AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
-                        else -> AffiliateAnalytics.LabelKeys.NOT_URL
-                    }
-                    sendSearchEvent(errorLabel)
-                }
-            } else {
-                affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
-                    showData(false)
-                    items.forEach {
-                        it?.let {
-                            adapter.addElement(AffiliatePromotionCardModel(it))
-                        }
-                    }
-                    if(items.isNotEmpty()) {
-                        items.first()?.let {
-                            sendEnhancedTracker(it)
-                        }
-                    }
-
-                }
-            }
+            onGetAffiliateSearchData(affiliateSearchData)
         })
 
         affiliatePromoViewModel.getValidateUserdata().observe(this, { validateUserdata ->
@@ -248,6 +216,50 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(it,
                 activity)
         })
+    }
+
+    private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
+        adapter.clearAllElements()
+        if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
+            showData(true)
+            if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
+                view?.rootView?.let {
+                    Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+                showDefaultState()
+                sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
+            } else {
+                affiliateSearchData.searchAffiliate?.data?.error?.let {
+                    adapter.addElement(AffiliatePromotionErrorCardModel(it))
+                }
+                val errorLabel = when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
+                    AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
+                        AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
+                    AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
+                        AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
+                    AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
+                        AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
+                    else -> AffiliateAnalytics.LabelKeys.NOT_URL
+                }
+                sendSearchEvent(errorLabel)
+            }
+        } else {
+            affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
+                showData(false)
+                items.forEach {
+                    it?.let {
+                        adapter.addElement(AffiliatePromotionCardModel(it))
+                    }
+                }
+                if(items.isNotEmpty()) {
+                    items.first()?.let {
+                        sendEnhancedTracker(it)
+                    }
+                }
+
+            }
+        }
     }
 
     private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {

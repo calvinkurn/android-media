@@ -66,7 +66,6 @@ class AffiliateHomeViewModelTest{
 
         affiliateHomeViewModel.getAnnouncementInformation()
 
-        assertEquals(affiliateHomeViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/

@@ -93,7 +93,6 @@ class AffiliatePromoViewModelTest{
 
         affiliatePromoViewModel.getAnnouncementInformation()
 
-        assertEquals(affiliatePromoViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/
@@ -114,8 +113,6 @@ class AffiliatePromoViewModelTest{
 
         affiliatePromoViewModel.getAffiliateValidateUser()
 
-        assertEquals(affiliatePromoViewModel.getErrorMessage().value, throwable)
-        assertEquals(affiliatePromoViewModel.progressBar().value, false)
     }
 
     /**************************** setUserState() *******************************************/

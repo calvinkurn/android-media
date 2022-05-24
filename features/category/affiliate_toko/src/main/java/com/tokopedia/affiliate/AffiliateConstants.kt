@@ -130,7 +130,7 @@ const val TYPE_DIVIDER = "divider"
 
 const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
-const val dd_MMM_yyyy_HH_mm = "dd MMM yyyy, HH:mm"
+const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 
 const val UTC = "UTC"
 
@@ -155,3 +155,5 @@ const val TIME_FIFTEEN = 15
 const val TIME_SIXTEEN = 16
 
 const val TIME_EIGHTEEN = 18
+
+const val PAGE_LIMIT = 20

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_LIMIT
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
@@ -22,7 +23,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var pageInfo = MutableLiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo>()
     private var errorMessage = MutableLiveData<String>()
-    private val pageLimit = 20
+    private val pageLimit = PAGE_LIMIT
     var isUserBlackListed : Boolean = false
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
