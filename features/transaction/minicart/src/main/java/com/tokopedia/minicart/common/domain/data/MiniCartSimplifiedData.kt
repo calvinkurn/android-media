@@ -1,9 +1,12 @@
 package com.tokopedia.minicart.common.domain.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+
 data class MiniCartSimplifiedData(
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
         var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
-        var isShowMiniCartWidget: Boolean = false
+        var isShowMiniCartWidget: Boolean = false,
+        var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData()
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {
@@ -96,3 +99,8 @@ sealed class MiniCartItem {
             var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap(),
     ): MiniCartItem()
 }
+
+data class ShoppingSummaryBottomSheetData(
+    var title: String = "",
+    var items: List<Visitable<*>> = emptyList()
+)
