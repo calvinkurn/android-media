@@ -15,13 +15,13 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
 import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.bottomsheet.SortBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -37,7 +37,6 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -288,28 +287,10 @@ class MyShopProductFragment @Inject constructor(
         }
     }
 
-    private fun impressProduct(): List<Pair<ProductUiModel, Int>> {
-        val products = adapter.getItems()
-        if (products.isNotEmpty()) {
-            val startPositionArray = layoutManager.findFirstCompletelyVisibleItemPositions(null)
-            val endPositionArray = layoutManager.findLastVisibleItemPositions(null)
-
-            val startPosition = startPositionArray[0]
-            val endPosition = max(endPositionArray[0], endPositionArray[1])
-
-            if (startPosition > -1 && endPosition < products.size) {
-                val productImpression = products.slice(startPosition..endPosition)
-                    .filterIsInstance<MyShopProductAdapter.Model.Product>()
-                    .mapIndexed { index, item ->
-                        Pair(item.product, startPosition + index)
-                    }
-
-                if(productImpression.isNotEmpty())
-                    impressionCoordinator.saveProductImpress(productImpression)
-            }
-        }
-
-        return emptyList()
+    private fun impressProduct() {
+        val visibleProducts = layoutManager.getVisibleItems(adapter)
+        if(visibleProducts.isNotEmpty())
+            impressionCoordinator.saveProductImpress(visibleProducts)
     }
 
     companion object {
