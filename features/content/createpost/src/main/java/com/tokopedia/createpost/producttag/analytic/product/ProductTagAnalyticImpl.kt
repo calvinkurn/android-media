@@ -55,9 +55,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to products.map {
-                        convertProductToHashMapWithList(it.first, it.second).also { productHash ->
-                            productHash["list"] = "/feed - creation tagging page"
-                        }
+                        convertProductToHashMapWithList(it.first, it.second)
                     }
                 )
             ),
@@ -192,6 +190,35 @@ class ProductTagAnalyticImpl @Inject constructor(
         sendClickEvent("click - search bar on toko")
     }
 
+    override fun impressProductCardOnShop(
+        shopId: String,
+        productId: String,
+        products: List<Pair<ProductUiModel, Int>>
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = "productView",
+                category = "content feed post creation - product tagging",
+                action = "impression - product card on toko",
+                label = "{shop_id} - {product_id}" /** TODO: shopId? */
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to products.map {
+                        convertProductToHashMapWithList(it.first, it.second)
+                    }
+                )
+            ),
+            hashMapOf(
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to VAL_CONTENT
+            )
+        )
+    }
+
     override fun clickProductCardOnShop(
         product: ProductUiModel,
         position: Int
@@ -248,6 +275,7 @@ class ProductTagAnalyticImpl @Inject constructor(
             "category" to "",
             "variant" to "",
             "position" to position,
+            "list" to "/feed - creation tagging page",
         )
     }
 

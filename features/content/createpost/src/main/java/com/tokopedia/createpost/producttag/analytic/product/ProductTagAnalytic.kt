@@ -55,6 +55,12 @@ interface ProductTagAnalytic {
 
     fun clickSearchBarOnShop()
 
+    fun impressProductCardOnShop(
+        shopId: String,
+        productId: String,
+        products: List<Pair<ProductUiModel, Int>>,
+    )
+
     fun clickProductCardOnShop(
         product: ProductUiModel,
         position: Int,
