@@ -1066,6 +1066,10 @@ open class TopChatViewModel @Inject constructor(
         attachmentsPreview.clear()
     }
 
+    fun removeAttachmentPreview(sendablePreview: SendablePreview) {
+        attachmentsPreview.remove(sendablePreview)
+    }
+
     fun initAttachmentPreview() {
         _showableAttachmentPreviews.value = attachmentsPreview
     }
