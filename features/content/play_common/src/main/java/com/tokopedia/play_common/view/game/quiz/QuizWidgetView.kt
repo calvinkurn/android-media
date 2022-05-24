@@ -148,6 +148,11 @@ class QuizWidgetView : ConstraintLayout {
         playTogether(clickScaleXAnimation, clickScaleYAnimation)
     }
 
+    private val answerTrueAnimator = AnimatorSet().apply {
+        interpolator = AnticipateOvershootInterpolator()
+        playTogether(clickScaleXAnimation, clickScaleYAnimation)
+    }
+
     private val animationListener = object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator?) {
 
