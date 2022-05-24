@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 class BestSellerMapper (
     private val context: Context
 ){
-    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY): BestSellerDataModel{
+    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, cardInteraction: Boolean = false): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList, cardInteraction)
         return BestSellerDataModel(
             channelId = recommendationWidget.channelId,
@@ -32,7 +32,7 @@ class BestSellerMapper (
         )
     }
 
-    private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Int): List<ProductCardModel> {
+    private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean): List<ProductCardModel> {
         return recommendationList.map { recommendationItem ->
             recommendationItem.toProductCardModel(hasThreeDots = true, cardInteraction = cardInteraction)
         }

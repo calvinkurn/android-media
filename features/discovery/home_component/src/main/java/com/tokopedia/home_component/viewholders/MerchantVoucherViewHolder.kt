@@ -22,13 +22,12 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MerchantVoucherViewHolder(
     itemView: View,
     private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
-    private val cardInteraction: Int = CardUnify2.ANIMATE_NONE,
+    private val cardInteraction: Boolean = false,
 ) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
     private var adapter: MerchantVoucherAdapter? = null

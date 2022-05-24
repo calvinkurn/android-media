@@ -4,12 +4,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.home.R
-import com.tokopedia.unifycomponents.CardUnify2
 
 class SizeMiddleBusinessViewHolder (
     itemView: View,
     listener: BusinessUnitItemViewListener,
-    cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+    cardInteraction: Boolean = false
 ) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
     companion object {

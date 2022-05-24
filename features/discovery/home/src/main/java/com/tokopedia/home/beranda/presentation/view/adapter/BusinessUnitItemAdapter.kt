@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 @SuppressLint("SyntheticAccessor")
 class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String,
                               private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
-                              private val cardInteraction: Int
+                              private val cardInteraction: Boolean
 ) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1

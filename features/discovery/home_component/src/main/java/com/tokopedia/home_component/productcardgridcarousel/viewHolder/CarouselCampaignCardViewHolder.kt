@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 class CarouselCampaignCardViewHolder(
     private val view: View,
     private val channels: ChannelModel,
-    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY,
+    private val cardInteraction: Boolean = false,
 ) : AbstractViewHolder<CarouselCampaignCardDataModel>(view) {
     private lateinit var cardContainer: CardUnify2
     private lateinit var cardImage: ImageView
@@ -29,7 +29,7 @@ class CarouselCampaignCardViewHolder(
     private fun initView() {
         cardContainer = itemView.findViewById<CardUnify2?>(R.id.card_campaign).apply {
             cardType = CardUnify2.TYPE_CLEAR
-            animateOnPress = cardInteraction
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
         cardImage = itemView.findViewById(R.id.card_campaign_image)
     }

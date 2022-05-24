@@ -23,7 +23,6 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -35,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
                                 private val homeComponentListener: HomeComponentListener?,
-                                private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                                private val cardInteraction: Boolean = false
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         BannerItemListener, CoroutineScope {

@@ -194,7 +194,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         interactionRemoteConfigCondition(
             remoteConfigInteractionEnabled = {
-                cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
+                cardViewProductCard?.animateOnPress = if(productCardModel.cardInteraction){
+                    CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                } else CardUnify2.ANIMATE_OVERLAY
             },
             remoteConfigInteractionDisabled = {
                 cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY

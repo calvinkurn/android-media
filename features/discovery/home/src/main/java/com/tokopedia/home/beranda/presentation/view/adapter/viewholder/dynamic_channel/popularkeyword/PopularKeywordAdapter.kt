@@ -24,7 +24,7 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
                             val homeCategoryListener: HomeCategoryListener,
                             val channel: DynamicHomeChannel.Channels,
                             val positionInWidget: Int,
-                            private val cardInteraction: Int)
+                            private val cardInteraction: Boolean)
     : RecyclerView.Adapter<PopularKeywordAdapter.Holder>() {
 
     private val popularKeywordList: MutableList<PopularKeywordDataModel> = mutableListOf()
@@ -51,9 +51,9 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
         notifyDataSetChanged()
     }
 
-    class Holder(view: View, private val cardInteraction: Int): RecyclerView.ViewHolder(view) {
+    class Holder(view: View, private val cardInteraction: Boolean): RecyclerView.ViewHolder(view) {
         private val cardProduct: CardUnify2 = view.findViewById<CardUnify2>(R.id.card_product).apply {
-            animateOnPress = cardInteraction
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
         private val ivImage: ImageUnify = view.findViewById(R.id.iv_product)
         private val tvProduct: Typography = view.findViewById(R.id.tv_product)

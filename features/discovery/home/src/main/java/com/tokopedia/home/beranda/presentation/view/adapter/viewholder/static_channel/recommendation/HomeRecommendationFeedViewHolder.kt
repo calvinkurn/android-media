@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.util.HomeServerLogger
-import com.tokopedia.unifycomponents.CardUnify2
 import java.util.*
 
 /**
@@ -26,7 +25,7 @@ import java.util.*
 
 class HomeRecommendationFeedViewHolder(itemView: View,
                                        private val listener: HomeCategoryListener,
-                                       private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                                       private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
     private val context: Context = itemView.context
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null

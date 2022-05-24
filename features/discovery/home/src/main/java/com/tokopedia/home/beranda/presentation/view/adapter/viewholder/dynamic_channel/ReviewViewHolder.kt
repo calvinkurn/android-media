@@ -20,7 +20,7 @@ class ReviewViewHolder(
         itemView: View,
         private val reviewListener: HomeReviewListener,
         private val categoryListener: HomeCategoryListener,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<ReviewDataModel>(itemView) {
 
     private var binding: HomeItemReviewBinding? by viewBinding()
@@ -44,7 +44,7 @@ class ReviewViewHolder(
     }
 
     override fun bind(element: ReviewDataModel) {
-        binding?.cardReview?.animateOnPress = cardInteraction
+        binding?.cardReview?.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         performanceMonitoring?.startTrace(performanceTraceName)
         binding?.reviewCardBg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->

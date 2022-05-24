@@ -24,7 +24,7 @@ class ReminderWidgetViewHolder(
         itemView: View,
         val reminderWidgetListener : ReminderWidgetListener?,
         val disableNetwork: Boolean = false,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        private val cardInteraction: Boolean = false
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var binding: HomeComponentReminderWidgetBinding? by viewBinding()
@@ -55,7 +55,7 @@ class ReminderWidgetViewHolder(
             binding?.cardReminder?.apply {
                 cardElevation = 0f
                 cardType = CardUnify2.TYPE_CLEAR
-                animateOnPress = cardInteraction
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
             if(element.data.reminders.isEmpty()){
                 this?.homeReminderRecommendationLoading?.root?.show()

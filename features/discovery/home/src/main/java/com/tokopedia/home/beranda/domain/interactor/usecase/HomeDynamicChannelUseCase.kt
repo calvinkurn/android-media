@@ -43,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -438,7 +437,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                         recommendationFilterChips = recomFilterList
                 )
-                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true)
 
                 homeDataModel.updateWidgetModel(
                         visitable = dataModel.copy(

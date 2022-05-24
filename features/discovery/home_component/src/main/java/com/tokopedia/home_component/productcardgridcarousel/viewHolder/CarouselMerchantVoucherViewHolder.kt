@@ -24,7 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class CarouselMerchantVoucherViewHolder (
     view: View,
-    private val cardInteraction: Int = CardUnify2.ANIMATE_NONE
+    private val cardInteraction: Boolean
 ): AbstractViewHolder<CarouselMerchantVoucherDataModel>(view) {
 
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()
@@ -80,7 +80,7 @@ class CarouselMerchantVoucherViewHolder (
         binding?.cardContainerMvc?.apply {
             setCardUnifyBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
             cardType = CardUnify2.TYPE_CLEAR
-            animateOnPress = cardInteraction
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_BOUNCE else CardUnify2.ANIMATE_NONE
             setOnClickListener {
                 element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
             }

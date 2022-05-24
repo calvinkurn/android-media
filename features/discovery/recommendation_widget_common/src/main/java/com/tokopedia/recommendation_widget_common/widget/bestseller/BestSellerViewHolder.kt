@@ -36,7 +36,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class BestSellerViewHolder (private val view: View,
                             private val listener: RecommendationWidgetListener,
-                            private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                            cardInteraction: Boolean = false
 ): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
 
     private val minChipsToShow = 1

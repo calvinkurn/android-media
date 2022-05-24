@@ -22,7 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CarouselFeaturedShopViewHolder (
         view: View,
         private val channels: ChannelModel,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY,
+        private val cardInteraction: Boolean = false,
 ): AbstractViewHolder<CarouselFeaturedShopCardDataModel>(view) {
 
     private var binding: ContentFeaturedShopBigContentBinding? by viewBinding()
@@ -45,7 +45,7 @@ class CarouselFeaturedShopViewHolder (
         binding?.run {
             itemFeaturedShopCard.apply {
                 cardType = CardUnify2.TYPE_SHADOW
-                animateOnPress = cardInteraction
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
         }
     }

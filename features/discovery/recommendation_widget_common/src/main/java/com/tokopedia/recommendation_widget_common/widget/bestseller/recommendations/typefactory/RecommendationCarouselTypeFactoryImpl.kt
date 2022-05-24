@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.CardUnify2
  */
 class RecommendationCarouselTypeFactoryImpl(
         private val listener: RecommendationCarouselListener,
-        private val cardInteraction: Int
+        private val cardInteraction: Boolean
 ) : RecommendationCarouselTypeFactory{
     override fun type(dataModel: RecommendationSeeMoreDataModel): Int {
         return RecommendationCarouselSeeMoreViewHolder.LAYOUT

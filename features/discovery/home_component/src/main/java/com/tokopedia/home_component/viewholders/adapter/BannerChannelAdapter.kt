@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 class BannerChannelAdapter(
     itemList: List<BannerItemModel>,
     private val bannerItemListener: BannerItemListener,
-    private val cardInteraction: Int
+    private val cardInteraction: Boolean
 ) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var itemList: List<BannerItemModel> = listOf()
     private var imageRatio = ""
@@ -30,7 +30,7 @@ class BannerChannelAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
         val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
         val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
-        viewHolder.cardUnify.animateOnPress = cardInteraction
+        viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         return viewHolder
     }
 

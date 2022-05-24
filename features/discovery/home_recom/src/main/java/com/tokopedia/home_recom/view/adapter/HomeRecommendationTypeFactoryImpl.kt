@@ -9,7 +9,6 @@ import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.view.viewholder.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * A Class of Implementation Type Factory Pattern.

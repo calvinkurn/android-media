@@ -23,7 +23,6 @@ import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.CardUnify2
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -80,7 +79,7 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val animationOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+        val cardInteraction: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

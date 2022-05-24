@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 open class SizeSmallBusinessViewHolder(
     itemView: View,
     private val listener: BusinessUnitItemViewListener,
-    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+    private val cardInteraction: Boolean = false
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val card: CardUnify2 = itemView.findViewById(R.id.card_bu)
@@ -32,7 +32,7 @@ open class SizeSmallBusinessViewHolder(
     private var price: TextView? = itemView.findViewById(R.id.price)
 
     fun bind(element: BusinessUnitItemDataModel) {
-        card.animateOnPress = cardInteraction
+        card.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_NONE
         element.content.let {
             renderImage(it)
             renderProduct(it)

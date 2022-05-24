@@ -28,7 +28,7 @@ import java.util.HashMap
  */
 class CategoryWidgetV2ViewHolder (val view: View,
                                   private val categoryListener: HomeCategoryListener,
-                                  private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                                  private val cardInteraction: Boolean = false
 ) : DynamicChannelViewHolder(view, categoryListener) {
 
     companion object {
@@ -84,7 +84,7 @@ class CategoryWidgetV2ViewHolder (val view: View,
     class CategoryWidgetV2ItemAdapter(
         private val channels: DynamicHomeChannel.Channels,
         private val listener: HomeCategoryListener?,
-        private val cardInteraction: Int
+        private val cardInteraction: Boolean
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
@@ -95,7 +95,7 @@ class CategoryWidgetV2ViewHolder (val view: View,
             viewHolder.cardUnify.apply {
                 radius = CARD_CORNER_RADIUS.dpToPx()
                 cardType = CardUnify2.TYPE_BORDER
-                animateOnPress = cardInteraction
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
             return viewHolder
         }

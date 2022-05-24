@@ -39,7 +39,7 @@ import kotlinx.coroutines.SupervisorJob
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
                                            private val parentRecycledViewPool: RecyclerView.RecycledViewPool?,
-                                           private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                                           private val cardInteraction: Boolean = false
 ): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
     private var binding: HomeComponentRecommendationListCarouselBinding? by viewBinding()
     private val masterJob = SupervisorJob()
@@ -180,7 +180,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 shopBadgeList = grid.badges.map {
                     ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                 },
-                animationOnPress = cardInteraction,
+                cardInteraction = cardInteraction,
         )
     }
 
@@ -212,7 +212,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
             val isCacheData: Boolean,
-            private val cardInteraction: Int
+            private val cardInteraction: Boolean = false
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -247,7 +247,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         shopBadgeList = recommendation.grid.badges.map {
                             ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                         },
-                        animationOnPress = cardInteraction
+                        cardInteraction = cardInteraction
                     )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
@@ -270,11 +270,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     class HomeRecommendationSeeMoreViewHolder(
             itemView: View,
-            private val cardInteraction: Int
+            private val cardInteraction: Boolean = false
     ): RecommendationListCarouselItem(itemView){
         private val card: CardUnify2 by lazy {
             itemView.findViewById<CardUnify2?>(R.id.card_see_more_banner_mix).apply {
-                animateOnPress = cardInteraction
+                animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
         }
 
@@ -319,7 +319,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             private val recommendationList: List<HomeRecommendationListCarousel>,
             private val listener: RecommendationListCarouselListener?,
             private val isCacheData: Boolean,
-            private val cardInteraction: Int
+            private val cardInteraction: Boolean
     ): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87

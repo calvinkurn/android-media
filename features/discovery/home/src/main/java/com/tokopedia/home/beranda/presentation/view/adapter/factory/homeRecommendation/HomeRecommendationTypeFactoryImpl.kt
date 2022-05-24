@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.unifycomponents.CardUnify2
 
 class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
@@ -38,7 +37,7 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
 
     override fun createViewHolder(parent: View, viewType: Int): SmartAbstractViewHolder<*> {
         return when (viewType) {
-            HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent, cardInteraction = true)
             HomeRecommendationLoadingViewHolder.LAYOUT -> HomeRecommendationLoadingViewHolder(parent)
             HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(parent)
             HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(parent)

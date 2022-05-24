@@ -44,7 +44,7 @@ class SpecialReleaseViewHolder(
         itemView: View,
         val homeComponentListener: HomeComponentListener?,
         val specialReleaseComponentListener: SpecialReleaseComponentListener?,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<SpecialReleaseDataModel>(itemView), CommonProductCardCarouselListener,
     CoroutineScope {
     private var binding: HomeComponentSpecialReleaseBinding? by viewBinding()

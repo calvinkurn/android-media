@@ -2,10 +2,9 @@ package com.tokopedia.home_component.mapper
 
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.unifycomponents.CardUnify2
 
 object ProductHighlightModelMapper {
-     fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteraction: Int): ProductCardModel {
+     fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteraction: Boolean): ProductCardModel {
          with(channelGrid) {
              return ProductCardModel(
                  slashedPrice = slashedPrice,
@@ -32,7 +31,7 @@ object ProductHighlightModelMapper {
                  ratingCount = rating,
                  reviewCount = countReview,
                  countSoldRating = ratingFloat,
-                 animationOnPress = cardInteraction,
+                 cardInteraction = cardInteraction,
              )
          }
      }

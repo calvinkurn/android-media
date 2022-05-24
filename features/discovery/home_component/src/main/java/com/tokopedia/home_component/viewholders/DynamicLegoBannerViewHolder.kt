@@ -41,7 +41,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
                                   val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
-                                  private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+                                  private val cardInteraction: Boolean = false
 ): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     private var isCacheData = false
     private var isLego24UsingRollenceVariant = false
@@ -173,7 +173,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                           private val parentPosition: Int,
                           private val isCacheData: Boolean,
                           private val isLego24UsingRollenceVariant: Boolean = false,
-                          private val cardInteraction: Int
+                          private val cardInteraction: Boolean
     ) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
@@ -188,7 +188,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             val viewHolder = LegoItemViewHolder(v)
             if(viewType == LEGO_LANDSCAPE){
-                viewHolder.cardUnify.animateOnPress = cardInteraction
+                viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
             else if(viewType == LEGO_SQUARE){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

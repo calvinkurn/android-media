@@ -13,11 +13,11 @@ import com.tokopedia.unifycomponents.CardUnify2
 class RecommendationCarouselSeeMoreViewHolder(
     view: View,
     private val listener: RecommendationCarouselListener,
-    private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+    private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<RecommendationSeeMoreDataModel>(view){
     override fun bind(element: RecommendationSeeMoreDataModel) {
         itemView.findViewById<CardUnify2>(R.id.recommendation_carousel_see_more_card).apply {
-            animateOnPress = cardInteraction
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
         itemView.setOnClickListener {
             listener.onSeeMoreCardClick(element.applink)

@@ -46,7 +46,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -60,7 +59,7 @@ class MixTopComponentViewHolder(
         itemView: View,
         val homeComponentListener: HomeComponentListener?,
         val mixTopComponentListener: MixTopComponentListener?,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixTopDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
     private var binding: GlobalDcMixTopBinding? by viewBinding()
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)

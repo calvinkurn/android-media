@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 
@@ -26,7 +25,7 @@ import com.tokopedia.unifycomponents.PageControl
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?, cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY)
+class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?, cardInteraction: Boolean = false)
     : AbstractViewHolder<HomepageBannerDataModel>(itemView),
         CircularListener {
     private var slidesList: List<BannerSlidesModel>? = null

@@ -32,7 +32,7 @@ import java.util.*
 
 @SuppressLint("SyntheticAccessor")
 class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener,
-                            cardInteraction: Int = CardUnify2.ANIMATE_NONE
+                            cardInteraction: Boolean = false
 ) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
     private val errorBuWidget = view.findViewById<LocalLoad>(R.id.error_bu_widget)
     private val tabLayout = view.findViewById<TabsUnify>(R.id.tab_layout)

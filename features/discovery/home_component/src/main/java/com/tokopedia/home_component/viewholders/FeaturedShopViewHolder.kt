@@ -27,7 +27,6 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -37,7 +36,7 @@ class FeaturedShopViewHolder(
         itemView: View,
         private val listener: FeaturedShopListener,
         private val homeComponentListener: HomeComponentListener?,
-        private val cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<FeaturedShopDataModel>(itemView), CommonProductCardCarouselListener {
 
     private var binding: HomeFeaturedShopBinding? by viewBinding()

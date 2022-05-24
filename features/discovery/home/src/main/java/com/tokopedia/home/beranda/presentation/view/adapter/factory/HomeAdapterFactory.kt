@@ -40,7 +40,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.unifycomponents.CardUnify2
 import java.util.*
 
 /**
@@ -367,7 +366,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
@@ -376,21 +375,21 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
-            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
-            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
-            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
-            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener, cardInteraction = true)
+            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener, cardInteraction = true)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,
                     productHighlightListener,
-                    CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                    cardInteraction = true
             )
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
@@ -398,14 +397,14 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             legoListener,
                             homeComponentListener,
                             parentRecycledViewPool,
-                            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                            cardInteraction = true
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(
                             view,
                             recommendationListCarouselListener,
                             parentRecycledViewPool,
-                            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                            cardInteraction = true
                     )
             MixLeftComponentViewHolder.LAYOUT -> viewHolder =
                     MixLeftComponentViewHolder(
@@ -413,17 +412,17 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             mixLeftComponentListener,
                             homeComponentListener,
                             parentRecycledViewPool,
-                            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                            cardInteraction = true
                     )
             MixTopComponentViewHolder.LAYOUT -> viewHolder =
                     MixTopComponentViewHolder(
                             view,
                             homeComponentListener,
                             mixTopComponentListener,
-                            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                            cardInteraction = true
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,reminderWidgetListener, cardInteraction = CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+                    ReminderWidgetViewHolder(view,reminderWidgetListener, cardInteraction = true)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
@@ -437,7 +436,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     view,
                     featuredShopListener,
                     homeComponentListener,
-                    CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                    cardInteraction = true
             )
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> {
@@ -453,7 +452,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                 RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, cardInteraction = true)
             DynamicIconViewHolder.LAYOUT -> viewHolder =
                 DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
@@ -482,15 +481,15 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 homeComponentListener,
                 campaignWidgetComponentListener,
                 parentRecycledViewPool,
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                cardInteraction = true
             )
             MerchantVoucherViewHolder.LAYOUT -> viewHolder =
-                MerchantVoucherViewHolder(view, merchantVoucherComponentListener, CardUnify2.ANIMATE_BOUNCE)
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener, cardInteraction = true)
             SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
                 view,
                 homeComponentListener,
                 specialReleaseComponentListener,
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                cardInteraction = true
             )
             CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
                 view,

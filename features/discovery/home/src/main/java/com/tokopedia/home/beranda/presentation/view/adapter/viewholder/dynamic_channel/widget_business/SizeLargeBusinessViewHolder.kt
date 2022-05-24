@@ -7,12 +7,11 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.unifycomponents.CardUnify2
 
 class SizeLargeBusinessViewHolder (
         itemView: View,
         listener: BusinessUnitItemViewListener,
-        cardInteraction: Int = CardUnify2.ANIMATE_OVERLAY
+        cardInteraction: Boolean = false
 ) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
 
