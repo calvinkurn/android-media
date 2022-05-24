@@ -153,7 +153,7 @@ class PlayViewModel @AssistedInject constructor(
         get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE, true)
 
     private val isInteractiveAllowed: Boolean
-        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
+        get() = true
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
@@ -528,6 +528,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+
     }
 
     //region lifecycle
@@ -1379,7 +1380,19 @@ class PlayViewModel @AssistedInject constructor(
     private fun checkInteractive(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val interactive = repo.getCurrentInteractive(channelId)
+//            val interactive = repo.getCurrentInteractive(channelId)
+            val cal = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 2)
+            }
+            val interactive = InteractiveUiModel.Quiz(
+                status = InteractiveUiModel.Quiz.Status.Ongoing(cal),
+                waitingDuration = 5000L,
+                id = "1261",
+                title = "GA sendal",
+                reward = "a",
+                listOfChoices = listOf(QuizChoicesUiModel(id = "1", text = "APA", type = PlayQuizOptionState.Default('a')),
+                    QuizChoicesUiModel(id = "2", text = "YA", type = PlayQuizOptionState.Default('b')))
+            )
             setupInteractive(interactive)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
@@ -2042,6 +2055,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
+        handleClickRetryInteractive()
 
         fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
             val currentTotalLike = _channelReport.value.totalLike
