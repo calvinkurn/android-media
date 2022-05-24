@@ -294,10 +294,8 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-
-                if (isMePageUsingRollenceVariant) {
-                    allCategoriesCache = result
-                } else {
+                allCategoriesCache = result
+                if (!isMePageUsingRollenceVariant)  {
                     val shimmeringDataModel = _mainNavListVisitable.find {
                         it is InitialShimmerDataModel
                     }
@@ -313,13 +311,30 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun isAllCategoriesNotContainsShimmer(): Boolean =
-        allCategories.menus.firstOrNull { it is InitialShimmerDataModel } == null
+    private fun getBuListMenuRevamp(isExpanded: Boolean = false) {
+        updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+        viewModelScope.launch {
+            try {
+                getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+                getCategoryGroupUseCase.get().setStrategyCloudThenCache()
+                val result = getCategoryGroupUseCase.get().executeOnBackground()
 
-    private suspend fun getBuListMenu(isExpanded: Boolean = false) {
-        if (isMePageUsingRollenceVariant && isAllCategoriesNotContainsShimmer()) {
-            updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+                //PLT network process is finished
+                _networkProcessLiveData.postValue(true)
+                updateAllCategories(result, isExpanded)
+            } catch (e: Exception) {
+                if (allCategoriesCache.isNotEmpty()) {
+                    updateAllCategories(allCategoriesCache, isExpanded)
+                } else {
+                    updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
+                }
+                e.printStackTrace()
+            }
         }
+    }
+
+    private fun getBuListMenuOld() {
+        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition()?: INDEX_DEFAULT_ALL_CATEGORY)
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
@@ -329,46 +344,38 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
 
-                if (isMePageUsingRollenceVariant) {
-                    updateAllCategories(result, isExpanded)
-                } else {
-                    val shimmeringDataModel = _mainNavListVisitable.find {
-                        it is InitialShimmerDataModel
-                    }
-                    shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                    findBuStartIndexPosition()?.let {
-                        if (findExistingEndBuIndexPosition() == null) {
-                            addWidgetList(result, it)
-                        }
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
+                findBuStartIndexPosition()?.let {
+                    if (findExistingEndBuIndexPosition() == null) {
+                        addWidgetList(result, it)
                     }
                 }
             } catch (e: Exception) {
-                if (isMePageUsingRollenceVariant) {
+                val buShimmering = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                buShimmering?.let {
                     if (allCategoriesCache.isNotEmpty()) {
-                        updateAllCategories(allCategoriesCache, isExpanded)
-                    } else {
-                        updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
+                        addWidgetList(allCategoriesCache, _mainNavListVisitable.indexOf(it))
+                        deleteWidget(buShimmering)
                     }
-                } else {
-                    val isBuExist = findExistingEndBuIndexPosition()
-                    if (isBuExist == null) {
-                        findBuStartIndexPosition()?.let {
-                            updateWidget(ErrorStateBuDataModel(), it)
-                        }
-                    }
-
-                    val buShimmering = _mainNavListVisitable.find {
-                        it is InitialShimmerDataModel
-                    }
-                    buShimmering?.let {
-                        updateWidget(
-                            ErrorStateBuDataModel(),
-                            _mainNavListVisitable.indexOf(it)
-                        )
+                    else {
+                        updateWidget(ErrorStateBuDataModel(), _mainNavListVisitable.indexOf(it))
                     }
                 }
                 e.printStackTrace()
             }
+        }
+    }
+
+    private fun getBuListMenu(isExpanded: Boolean = false) {
+        if (isMePageUsingRollenceVariant) {
+            getBuListMenuRevamp(isExpanded)
+        } else {
+            getBuListMenuOld()
         }
     }
 
@@ -501,8 +508,7 @@ class MainNavViewModel @Inject constructor(
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             getUohOrdersNavUseCase.get().setIsMePageUsingRollenceVariant(isMePageUsingRollenceVariant)
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
-            val reviewList = if (isMePageUsingRollenceVariant) getReviewProductUseCase.get()
-                .executeOnBackground() else listOf()
+            val reviewList = getReviewProductUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
