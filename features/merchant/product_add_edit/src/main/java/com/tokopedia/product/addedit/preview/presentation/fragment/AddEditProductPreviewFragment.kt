@@ -1220,6 +1220,7 @@ class AddEditProductPreviewFragment :
                 // only greyed at add mode
                 if (isEditing()) {
                     enableShipmentEdit()
+                    addEditProductShipmentButton?.text = getString(R.string.action_add)
                 } else {
                     enableShipmentAdd()
                 }
