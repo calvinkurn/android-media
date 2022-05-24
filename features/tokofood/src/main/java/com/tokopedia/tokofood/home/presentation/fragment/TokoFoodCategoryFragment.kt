@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -43,7 +44,7 @@ import javax.inject.Inject
 
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
-    TokoFoodView{
+    TokoFoodView {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -109,6 +110,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         setupNavToolbar()
         setupRecycleView()
         observeLiveData()
+        updateCurrentPageLocalCacheModelData()
 
         loadLayout()
     }
@@ -152,7 +154,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
             when (it) {
-                is Success -> onSuccessGetHomeLayout(it.data)
+                is Success -> onSuccessGetCategoryLayout(it.data)
             }
         }
     }
@@ -197,28 +199,29 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         navToolbar?.setIcon(icons)
     }
 
-    private fun onSuccessGetHomeLayout(data: TokoFoodListUiModel) {
+    private fun onSuccessGetCategoryLayout(data: TokoFoodListUiModel) {
         when (data.state) {
-            TokoFoodLayoutState.SHOW -> onShowHomeLayout(data)
-            TokoFoodLayoutState.HIDE -> onHideHomeLayout(data)
-            TokoFoodLayoutState.LOADING -> onLoadingHomelayout(data)
-            else -> showHomeLayout(data)
+            TokoFoodLayoutState.SHOW -> onShowCategoryLayout(data)
+            TokoFoodLayoutState.HIDE -> onHideCategoryLayout(data)
+            TokoFoodLayoutState.LOADING -> onLoadingCategorylayout(data)
+            else -> showCategoryLayout(data)
         }
     }
 
-    private fun onShowHomeLayout(data: TokoFoodListUiModel) {
-        showHomeLayout(data)
+    private fun onShowCategoryLayout(data: TokoFoodListUiModel) {
+        showCategoryLayout(data)
     }
 
-    private fun onHideHomeLayout(data: TokoFoodListUiModel) {
-        showHomeLayout(data)
+    private fun onHideCategoryLayout(data: TokoFoodListUiModel) {
+        showCategoryLayout(data)
     }
 
-    private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
-        showHomeLayout(data)
+    private fun onLoadingCategorylayout(data: TokoFoodListUiModel) {
+        showCategoryLayout(data)
+        getCategoryLayout()
     }
 
-    private fun showHomeLayout(data: TokoFoodListUiModel) {
+    private fun showCategoryLayout(data: TokoFoodListUiModel) {
         rvCategory?.post {
             adapter.submitList(data.items)
         }
@@ -226,6 +229,22 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun loadLayout() {
         viewModel.getLoadingState()
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun getCategoryLayout() {
+        localCacheModel?.let {
+            viewModel.getCategoryLayout(
+                localCacheModel = it,
+                option = option,
+                sortBy = sortBy
+            )
+        }
     }
 
 }

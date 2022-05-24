@@ -23,7 +23,7 @@ class TokoFoodCategoryAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
-            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
+            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

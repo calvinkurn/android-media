@@ -29,6 +29,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.C
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
+import com.tokopedia.tokofood.home.domain.data.Merchant
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
@@ -39,6 +40,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiMode
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
 
 object TokoFoodHomeMapper {
 
@@ -55,12 +57,6 @@ object TokoFoodHomeMapper {
         val loadingLayout = TokoFoodHomeLoadingStateUiModel(id = LOADING_STATE)
         add(TokoFoodItemUiModel(loadingLayout, TokoFoodLayoutItemState.LOADED))
     }
-
-    fun MutableList<TokoFoodItemUiModel>.addLoadingCategoryIntoList() {
-        val loadingLayout = TokoFoodCategoryLoadingStateUiModel(id = LOADING_STATE)
-        add(TokoFoodItemUiModel(loadingLayout, TokoFoodLayoutItemState.LOADED))
-    }
-
 
     fun MutableList<TokoFoodItemUiModel>.addNoPinPointState() {
         addChooseAddressWidget()

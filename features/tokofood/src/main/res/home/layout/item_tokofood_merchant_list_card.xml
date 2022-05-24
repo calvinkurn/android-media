@@ -2,6 +2,8 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -95,7 +97,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
             app:layout_constraintTop_toBottomOf="@+id/label_merchant_diskon"
-            app:typographyType="small"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Unify_NN600"
             tools:text="5 km"
@@ -110,11 +112,9 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
             app:layout_constraintTop_toBottomOf="@+id/tg_tokofood_merchant_distance"
-            app:srcCompat="@drawable/ic_rating_apps_active"
-            tools:visibility="visible" />
+            app:srcCompat="@drawable/ic_rating_apps_active" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_tokofood_merchant_rating"
