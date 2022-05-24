@@ -468,8 +468,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             initializeViewModel(fragment)
             viewModel?.isShopDirectPurchase = isShopDirectPurchase
             viewModel?.currentSource = source
+            viewModel?.initializeShopIds(shopIds)
         }
-        viewModel?.initializeShopIds(shopIds)
+        updateData()
+
         addView(binding.root)
     }
 
