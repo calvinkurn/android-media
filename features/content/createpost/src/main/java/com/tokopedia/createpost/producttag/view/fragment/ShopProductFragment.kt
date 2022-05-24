@@ -128,7 +128,7 @@ class ShopProductFragment @Inject constructor(
 
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP) {
-                analytic.clickSearchBar(viewModel.selectedTagSource)
+                analytic.clickSearchBarOnShop()
             }
             false
         }

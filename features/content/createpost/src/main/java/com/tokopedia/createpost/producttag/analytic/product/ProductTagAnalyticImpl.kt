@@ -171,7 +171,7 @@ class ProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun clickSearchBarOnShop() {
-        sendClickEvent("click - search bar on toko")
+        sendClickEvent("click - search button on toko")
     }
 
     override fun impressProductCardOnShop(

@@ -272,7 +272,7 @@
       "event":"select_content",
       "eventAction":"click - product card on toko",
       "eventCategory":"content feed post creation - product tagging",
-      "eventLabel":"(tokopedia|terakhir dibeli|wishlist|toko saya) - .* - .*",
+      "eventLabel":".* - .*",
       "businessUnit":"content",
       "currentSite":"tokopediamarketplace",
       "item_list": "/feed - creation tagging page",
