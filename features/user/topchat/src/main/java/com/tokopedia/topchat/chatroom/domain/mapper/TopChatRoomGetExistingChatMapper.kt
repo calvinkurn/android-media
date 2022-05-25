@@ -48,6 +48,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
         val replies = pojo.chatReplies.list
+        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
         for ((index, chatItemPojo) in replies.withIndex()) {
             listChat.add(createHeaderDate(chatItemPojo))
             if (index == replies.lastIndex) {
@@ -70,7 +71,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                             val broadcast = mergeBroadcast(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
-                                chatDateTime.blastId
+                                chatDateTime.blastId,
+                                getAttachmentIds(pojo.chatReplies.attachmentIds)
                             )
                             val broadcastUiModel = createBroadCastUiModel(
                                 chatDateTime, broadcast.first
@@ -84,7 +86,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                             val products = mergeProduct(
                                 replyIndex,
                                 chatItemPojoByDate.replies,
-                                chatDateTime.isBroadCast()
+                                chatDateTime.isBroadCast(),
+                                attachmentIds
                             )
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
@@ -92,7 +95,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         }
                         // usual attachment
                         hasAttachment(chatDateTime) -> {
-                            listChat.add(mapAttachment(chatDateTime))
+                            listChat.add(mapAttachment(chatDateTime, attachmentIds))
                             replyIndex++
                         }
                         // text message
@@ -125,7 +128,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun mergeBroadcast(
-        index: Int, replies: List<Reply>, blastId: Long
+        index: Int, replies: List<Reply>, blastId: Long, attachmentIds: List<String>
     ): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
@@ -138,13 +141,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 reply.isAlsoProductAttachment(nextReply) &&
                 reply.blastId == blastId
             ) {
-                val products = mergeProduct(idx, replies, reply.isBroadCast())
+                val products = mergeProduct(idx, replies, reply.isBroadCast(), attachmentIds)
                 val carouselProducts = createCarouselProduct(reply, products)
                 broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
                 idx += products.size
             } else if (reply.isBroadCast() && reply.blastId == blastId) {
                 val messageItem = if (hasAttachment(reply)) {
-                    mapAttachment(reply)
+                    mapAttachment(reply, attachmentIds)
                 } else {
                     convertToMessageViewModel(reply)
                 }
@@ -186,14 +189,15 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun mergeProduct(
         index: Int,
         replies: List<Reply>,
-        isBroadCast: Boolean
+        isBroadCast: Boolean,
+        attachmentIds: List<String>
     ): List<Visitable<*>> {
         val products = mutableListOf<Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val chat = replies[idx]
             if (chat.isProductAttachment()) {
-                val product = convertToProductAttachment(chat)
+                val product = convertToProductAttachment(chat, attachmentIds)
                 products.add(product)
                 idx++
             } else {
@@ -208,16 +212,19 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return products
     }
 
-    override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
+    override fun mapAttachment(
+        chatItemPojoByDateByTime: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
+        return when (chatItemPojoByDateByTime.attachment.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
             TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(chatItemPojoByDateByTime)
-            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(chatItemPojoByDateByTime)
-            else -> super.mapAttachment(chatItemPojoByDateByTime)
+            TYPE_PRODUCT_BUNDLING -> convertToProductBundling(chatItemPojoByDateByTime, attachmentIds)
+            else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
 
@@ -376,21 +383,24 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         )
     }
 
-    private fun convertToProductBundling(item: Reply): Visitable<*> {
+    private fun convertToProductBundling(item: Reply, attachmentIds: List<String>): Visitable<*> {
         val pojo = gson.fromJson(
             item.attachment.attributes,
             ProductBundlingPojo::class.java
         )
+        val needSync = attachmentIds.contains(item.attachment.id)
         return if (pojo.listProductBundling.size == 1) {
             ProductBundlingUiModel.Builder()
                 .withResponseFromGQL(item)
                 .withIsSender(!item.isOpposite)
+                .withNeedSync(needSync)
                 .withProductBundling(pojo.listProductBundling.first())
                 .build()
         } else {
             MultipleProductBundlingUiModel.Builder()
                 .withResponseFromGQL(item)
                 .withIsSender(!item.isOpposite)
+                .withNeedSync(needSync)
                 .withProductBundlingResponse(pojo.listProductBundling)
                 .build()
         }
