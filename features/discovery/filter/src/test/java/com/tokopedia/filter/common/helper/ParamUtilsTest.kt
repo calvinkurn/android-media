@@ -183,10 +183,6 @@ class ParamUtilsTest {
 
         isPostProcessingFilter(mapOf(SearchApiConst.NAVSOURCE to "tokocabang")) shouldBe true
 
-        isPostProcessingFilter(mapOf(SearchApiConst.IS_FULFILLMENT to "false")) shouldBe false
-
-        isPostProcessingFilter(mapOf(SearchApiConst.GIFTING to "false")) shouldBe false
-
-        isPostProcessingFilter(mapOf(SearchApiConst.NAVSOURCE to "tokonow")) shouldBe false
+        isPostProcessingFilter(mapOf()) shouldBe false
     }
 }
