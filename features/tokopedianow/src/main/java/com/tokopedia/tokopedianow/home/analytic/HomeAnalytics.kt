@@ -725,7 +725,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_USER_ID, userSession.userId)
         }
 
-
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
@@ -759,7 +758,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putParcelableArrayList(KEY_ITEMS, items)
             putString(KEY_USER_ID, userSession.userId)
         }
-
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
