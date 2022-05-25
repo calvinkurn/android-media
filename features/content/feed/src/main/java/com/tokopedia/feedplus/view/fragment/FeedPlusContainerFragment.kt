@@ -79,6 +79,8 @@ import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+
 
 /**
  * @author by milhamj on 25/07/18.
@@ -87,7 +89,7 @@ import javax.inject.Inject
 private const val FEED_PAGE = "feed"
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
 
     private var showOldToolbar: Boolean = false
     private var shouldHitFeedTracker: Boolean = false
@@ -479,13 +481,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun expandFab() {
+    override fun expandFab() {
         if(!fab_feed.menuOpen) {
             feed_floating_button.expand()
         }
     }
 
-    fun shrinkFab() {
+    override fun shrinkFab() {
         feed_floating_button.shrink()
     }
 

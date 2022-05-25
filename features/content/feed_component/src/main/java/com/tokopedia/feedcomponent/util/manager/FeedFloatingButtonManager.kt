@@ -1,16 +1,16 @@
-package com.tokopedia.feedplus.view.util
+package com.tokopedia.feedcomponent.util.manager
 
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 25, 2022
  */
-class FeedFloatingButtonManager @Inject constructor() {
+class FeedFloatingButtonManager {
 
     private val dispatchers = CoroutineDispatchersProvider
     private val scope = CoroutineScope(dispatchers.computation)
@@ -45,14 +45,14 @@ class FeedFloatingButtonManager @Inject constructor() {
     }
 
     private fun expandFab() {
-        if(mParentFragment is FeedPlusContainerFragment) {
-            (mParentFragment as FeedPlusContainerFragment).expandFab()
+        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+            (mParentFragment as FeedPlusContainerListener).expandFab()
         }
     }
 
     fun shrinkFab() {
-        if(mParentFragment is FeedPlusContainerFragment) {
-            (mParentFragment as FeedPlusContainerFragment).shrinkFab()
+        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+            (mParentFragment as FeedPlusContainerListener).shrinkFab()
         }
     }
 

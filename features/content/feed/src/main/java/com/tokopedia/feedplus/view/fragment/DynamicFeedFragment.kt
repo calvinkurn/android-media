@@ -34,6 +34,7 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -73,6 +74,9 @@ class DynamicFeedFragment:
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
     private var isLoading = false
     private var isForceRefresh = false
     private var feedKey = ""
@@ -87,13 +91,21 @@ class DynamicFeedFragment:
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_dynamic_feed.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
+    }
+
     private fun initView() {
+        feedFloatingButtonManager.setInitialData(requireParentFragment())
         feedKey = arguments?.getString(KEY_FEED) ?: ""
         presenter.attachView(this)
+        rv_dynamic_feed.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         rv_dynamic_feed.adapter = adapter
         rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
         feedAnalyticTracker.eventOpenTrendingPage()
-
+        feedFloatingButtonManager.setDelayForExpandFab(rv_dynamic_feed)
     }
 
     private fun initViewListener() {
