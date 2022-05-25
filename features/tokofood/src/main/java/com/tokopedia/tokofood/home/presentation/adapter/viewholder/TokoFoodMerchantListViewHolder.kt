@@ -1,8 +1,10 @@
 package com.tokopedia.tokofood.home.presentation.adapter.viewholder
 
+import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +27,9 @@ class TokoFoodMerchantListViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
+        val DUMMY_FARE_COUNT = 2
+        val DUMMY_FARE_STRING = "$"
+        const val COUNT_MAX_LEVEL_PRICE = 3
     }
 
     private var binding: ItemTokofoodMerchantListCardBinding? by viewBinding()
@@ -131,8 +136,25 @@ class TokoFoodMerchantListViewHolder (
         return category.toString()
     }
 
+    private fun getPriceLevelString(priceLevel: PriceLevel): String {
+        val price = StringBuilder()
+        if (DUMMY_FARE_COUNT.isMoreThanZero()){
+            price.append("<b>")
+        }
+
+        for (i in 0..COUNT_MAX_LEVEL_PRICE){
+            price.append(DUMMY_FARE_STRING)
+            if(i == (DUMMY_FARE_COUNT - 1) && DUMMY_FARE_COUNT.isMoreThanZero()){
+                price.append("</b>")
+            }
+        }
+
+        return price.toString()
+    }
+
     private fun setPriceLevel(priceLevel: PriceLevel) {
-        //TODO PRICE LEVEL
+        val price = getPriceLevelString(priceLevel)
+        tgTokoFoodMerchantPriceScale?.text =  MethodChecker.fromHtml(price)
     }
 
 

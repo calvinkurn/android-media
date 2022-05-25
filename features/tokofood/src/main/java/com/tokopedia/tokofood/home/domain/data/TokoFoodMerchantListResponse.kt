@@ -47,7 +47,7 @@ data class Merchant (
 
 data class PriceLevel(
     @SerializedName("icon")
-    val icon: String = "",
+    val icon: String = "$",
     @SerializedName("fareCount")
     val fareCount: Int = 0,
 )
