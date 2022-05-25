@@ -15,6 +15,7 @@ object ProductBundleApplinkMapper {
     private const val VIEW_TYPE = "viewType"
     private const val SOURCE = "source"
     private const val WAREHOUSE_ID = "warehouseId"
+    private const val DEFAULT_VALUE_WAREHOUSE_ID = "0"
     private const val DEFAULT_VALUE_APPLINK_DATA = 0L
     private const val PRODUCT_ID_SEGMENT_INDEX = 1
     private const val PRODUCT_ID_SEGMENT_SIZE_MIN = 2
@@ -56,7 +57,7 @@ object ProductBundleApplinkMapper {
     }
 
     fun getWarehouseIdFromUri(uri: Uri): String {
-        return uri.getQueryParameter(WAREHOUSE_ID).orEmpty()
+        return uri.getQueryParameter(WAREHOUSE_ID) ?: DEFAULT_VALUE_WAREHOUSE_ID
     }
 }
 

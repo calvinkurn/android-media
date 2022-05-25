@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.oldproductbundle.common.data.mapper.ProductBundleApplinkMapper.DEFAULT_VALUE_WAREHOUSE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
@@ -167,7 +168,7 @@ class EntrypointFragment : BaseDaggerFragment() {
             bundleId = getLong(EXTRA_BUNDLE_ID)
             selectedProductIds = getStringArrayList(EXTRA_SELECTED_PRODUCT_ID).orEmpty()
             source = getString(EXTRA_SOURCE).orEmpty()
-            warehouseId = getString(EXTRA_WAREHOUSE_ID).orEmpty()
+            warehouseId = getString(EXTRA_WAREHOUSE_ID) ?: DEFAULT_VALUE_WAREHOUSE_ID
             viewModel.parentProductID = getLong(EXTRA_PARENT_PRODUCT_ID)
             viewModel.selectedBundleId = bundleId
             viewModel.selectedProductIds = selectedProductIds
