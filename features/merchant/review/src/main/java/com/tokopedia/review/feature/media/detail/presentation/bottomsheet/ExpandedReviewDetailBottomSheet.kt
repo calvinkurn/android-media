@@ -67,7 +67,6 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         daggerHandler.initInjector()
         super.onCreate(savedInstanceState)
-        initUiStateCollectors()
     }
 
     override fun onCreateView(
@@ -79,6 +78,11 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
             setChild(it.root)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUiStateCollectors()
     }
 
     private fun initUiStateCollectors() {

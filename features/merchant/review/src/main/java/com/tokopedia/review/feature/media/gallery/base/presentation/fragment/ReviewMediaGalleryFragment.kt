@@ -99,7 +99,6 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         savedInstanceState: Bundle?
     ): View {
         initUiState(savedInstanceState)
-        initUiStateCollectors()
         return FragmentReviewMediaGalleryBinding.inflate(
             inflater,
             container,
@@ -110,6 +109,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
+        initUiStateCollectors()
     }
 
     override fun onPause() {

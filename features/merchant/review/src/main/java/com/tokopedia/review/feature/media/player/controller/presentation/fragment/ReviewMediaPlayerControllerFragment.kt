@@ -69,7 +69,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let { reviewMediaPlayerControllerViewModel.restoreState(it) }
-        initUiStateCollectors()
     }
 
     override fun onCreateView(
@@ -87,6 +86,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
+        initUiStateCollectors()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

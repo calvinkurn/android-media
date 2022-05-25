@@ -67,7 +67,6 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         daggerHandler.initInjector()
         super.onCreate(savedInstanceState)
-        initUiStateCollector()
     }
 
     override fun onCreateView(
@@ -84,6 +83,7 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
+        initUiStateCollector()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

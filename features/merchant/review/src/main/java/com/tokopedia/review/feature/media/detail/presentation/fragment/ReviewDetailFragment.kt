@@ -89,11 +89,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         ReviewDetailComponentInstance.getInstance(requireContext()).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initUiStateCollectors()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -110,6 +105,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        initUiStateCollectors()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
