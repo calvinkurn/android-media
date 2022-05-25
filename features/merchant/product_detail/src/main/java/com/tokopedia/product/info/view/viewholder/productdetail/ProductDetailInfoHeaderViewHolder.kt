@@ -96,13 +96,15 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             if (data.infoLink.isNotEmpty()) {
                 infoDetailIcon.show()
                 infoDetailClickArea.setOnClickListener {
-                    listener.goToEducational(data.infoLink)
+                    listener.goToEducational(data.infoLink, data.title, data.subtitle, adapterPosition + 1)
                 }
 
                 data.icon.toIntOrNull()?.let { icon ->
                     infoDetailIcon.setImage(icon)
                 }
             }
+
+            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + 1)
         }
     }
 }
