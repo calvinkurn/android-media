@@ -20,6 +20,22 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_merchant_closed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/img_tokofood_merchant"
+            app:layout_constraintStart_toStartOf="@+id/img_tokofood_merchant"
+            app:layout_constraintEnd_toEndOf="@+id/img_tokofood_merchant"
+            app:layout_constraintBottom_toBottomOf="@+id/img_tokofood_merchant"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:labelTitle="@string/home_merchant_closed"
+            app:labelType="general_dark_grey"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_tokofood_merchant_title"
             android:layout_width="@dimen/unify_space_0"

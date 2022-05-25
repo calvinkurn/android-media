@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.home.presentation.adapter.viewholder
 
-import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -27,6 +26,7 @@ class TokoFoodMerchantListViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
+        val DUMMY_IMAGE = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/6/4/f92fc5a2-2837-4400-81ed-0d3755445e8b.jpg"
         val DUMMY_FARE_COUNT = 2
         val DUMMY_FARE_STRING = "$"
         const val COUNT_MAX_LEVEL_PRICE = 3
@@ -41,6 +41,7 @@ class TokoFoodMerchantListViewHolder (
     private var labelMerchantDiskon: Label? = null
     private var tgTokoFoodMerchantDistance: Typography? = null
     private var tgTokoFoodMerchantRating: Typography? = null
+    private var labelMerchantClosed: Label? = null
 
     override fun bind(element: TokoFoodMerchantListUiModel) {
         setupLayout()
@@ -56,6 +57,7 @@ class TokoFoodMerchantListViewHolder (
         labelMerchantDiskon = binding?.labelMerchantDiskon
         tgTokoFoodMerchantDistance = binding?.tgTokofoodMerchantDistance
         tgTokoFoodMerchantRating = binding?.tgTokofoodMerchantRating
+        labelMerchantClosed = binding?.labelMerchantClosed
     }
 
     private fun setMerchantLayout(merchant: Merchant) {
@@ -66,10 +68,11 @@ class TokoFoodMerchantListViewHolder (
         setMerchantRating(merchant.ratingFmt)
         setMerchantCategory(merchant.merchantCategories)
         setPriceLevel(merchant.priceLevel)
+        setMerchantClosed(true)
     }
 
     private fun setImageMerchant(imageUrl: String) {
-        imgTokoFoodMerchant?.loadImage(imageUrl)
+        imgTokoFoodMerchant?.loadImage(DUMMY_IMAGE)
     }
 
     private fun setTitleMerchant(title: String) {
@@ -125,6 +128,19 @@ class TokoFoodMerchantListViewHolder (
         } else tgTokoFoodMerchantCategory?.hide()
     }
 
+    private fun setPriceLevel(priceLevel: PriceLevel) {
+        val price = getPriceLevelString(priceLevel)
+        tgTokoFoodMerchantPriceScale?.text =  MethodChecker.fromHtml(price)
+    }
+
+    private fun setMerchantClosed(isClosed: Boolean) {
+        if (isClosed){
+            labelMerchantClosed?.show()
+        } else {
+            labelMerchantClosed?.hide()
+        }
+    }
+
     private fun getCategoryString(categories: List<String>) : String {
         val category = StringBuilder()
         categories.forEachIndexed { index, it ->
@@ -151,11 +167,5 @@ class TokoFoodMerchantListViewHolder (
 
         return price.toString()
     }
-
-    private fun setPriceLevel(priceLevel: PriceLevel) {
-        val price = getPriceLevelString(priceLevel)
-        tgTokoFoodMerchantPriceScale?.text =  MethodChecker.fromHtml(price)
-    }
-
 
 }
