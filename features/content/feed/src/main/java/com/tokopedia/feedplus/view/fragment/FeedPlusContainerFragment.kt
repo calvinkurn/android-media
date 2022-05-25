@@ -469,7 +469,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fab_feed.circleMainMenu.visibility = View.INVISIBLE
 
         feed_floating_button.setOnClickListener {
-            feed_floating_button.shrink()
             fab_feed.menuOpen = !fab_feed.menuOpen
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }

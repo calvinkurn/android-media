@@ -11,7 +11,7 @@ import com.tokopedia.feedplus.R
 /**
  * Created By : Jonathan Darwin on May 25, 2022
  */
-class FeedFloatingButton : LinearLayout {
+class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -20,14 +20,27 @@ class FeedFloatingButton : LinearLayout {
 
     /** View */
     private val flTextWrapper: FrameLayout
+    private val overlayView: View = View(context)
 
     init {
         val view = View.inflate(context, R.layout.view_feed_floating_button, this)
+        super.setOnClickListener(this)
 
         flTextWrapper = view.findViewById(R.id.fl_fab_text_wrapper)
     }
 
+    private var mOnClickListener: OnClickListener? = null
     private var isExpand: Boolean = false
+
+    override fun onClick(p0: View?) {
+        shrink()
+        /** TODO: change icon to X */
+        mOnClickListener?.onClick(p0)
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        mOnClickListener = l
+    }
 
     fun expand() {
         if(!isExpand) {
