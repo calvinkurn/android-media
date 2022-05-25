@@ -85,7 +85,7 @@ class PromoCheckoutAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickCatalog(promocode: String?, promoname: String, banner_id: String?, creativename: String, positionIndex: Int) {
+    fun clickCatalog(promocode: String?, promoname: String, banner_id: Int?, creativename: String, positionIndex: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_VALUE,

@@ -22,7 +22,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
     private val CATALOG_TYPE_FLASH_SALE = 3
 
     interface ListenerCouponExchange {
-        fun onClickRedeemCoupon(catalogId: String?, slug: String?, title: String, creativeName: String, position: Int)
+        fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int)
     }
 
     var mListener: ListenerCouponExchange
@@ -176,7 +176,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         }
 
         holder.imgBanner.setOnClickListener { v ->
-            mListener.onClickRedeemCoupon(item.id, item.slug, item.title ?: "", item.imageURL
+            mListener.onClickRedeemCoupon(item.id?.toIntOrNull(), item.slug, item.title ?: "", item.imageURL
                     ?: "", position)
 
         }
