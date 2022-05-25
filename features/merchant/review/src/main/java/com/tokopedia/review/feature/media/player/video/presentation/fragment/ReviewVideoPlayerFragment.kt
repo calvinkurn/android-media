@@ -90,12 +90,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        collectVideoPlayerUiState()
-        collectWifiConnectivityStatus()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -108,6 +102,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectVideoThumbnailUiState()
+        collectVideoPlayerUiState()
+        collectWifiConnectivityStatus()
     }
 
     override fun onPause() {
