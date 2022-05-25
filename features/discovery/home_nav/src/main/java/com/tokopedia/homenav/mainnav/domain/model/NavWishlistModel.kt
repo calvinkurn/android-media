@@ -9,7 +9,7 @@ data class NavWishlistModel(
     val priceFmt: String = "",
     val originalPriceFmt: String = "",
     val discountPercentageFmt: String = "",
-    val cashback: String = "",
+    val cashback: Boolean = false,
     val category: List<Category> = listOf(),
     val categoryBreadcrumb: String = "",
     val variant: String = "",
