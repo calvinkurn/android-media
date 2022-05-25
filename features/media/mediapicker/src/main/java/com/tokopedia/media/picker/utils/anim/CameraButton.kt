@@ -3,14 +3,15 @@ package com.tokopedia.media.picker.utils.anim
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.graphics.Color
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.tokopedia.picker.common.utils.Unify_R500
 
 object CameraButton {
 
     private const val CORNER_RADIUS_DURATION = 500L
-    private const val BACKGROUND_COLOR = "#EF144A"
     private const val RESIZE_BUTTON = 1.5f
 
     // we need to ensure that the camera button fully transform to circle
@@ -28,7 +29,7 @@ object CameraButton {
     }
 
     private fun View.animate(needToZoomOut: Boolean, init: Float, end: Float) {
-        val rectangle = createRectangle()
+        val rectangle = createRectangle(context)
         background = rectangle
 
         AnimatorSet().apply {
@@ -68,9 +69,9 @@ object CameraButton {
         }
     }
 
-    private fun createRectangle(): GradientDrawable {
+    private fun createRectangle(context: Context): GradientDrawable {
         return GradientDrawable().apply {
-            setColor(Color.parseColor(BACKGROUND_COLOR))
+            setColor(ContextCompat.getColor(context, Unify_R500))
             shape = GradientDrawable.RECTANGLE
         }
     }

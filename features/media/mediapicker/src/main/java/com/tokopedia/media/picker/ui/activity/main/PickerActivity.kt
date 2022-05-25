@@ -266,7 +266,6 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onPermissionGranted() {
-        container.removePermissionFragment()
         onPageViewByType()
     }
 

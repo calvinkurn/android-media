@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.common.types.FragmentType
 
 class PickerNavigator constructor(
     private val context: Context,
@@ -76,17 +76,6 @@ class PickerNavigator constructor(
         } catch (t: Throwable) {
             onPageSelected(page)
         }
-    }
-
-    fun removePermissionFragment() {
-        val transaction = fm.beginTransaction()
-        val fragment = fm.findFragmentByTag(PermissionFragment::class.java.canonicalName)
-
-        if (fragment != null && fragment.isAdded) {
-            transaction.remove(fragment)
-        }
-
-        transaction.commit()
     }
 
     fun cleanUp() {
