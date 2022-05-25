@@ -12,37 +12,40 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_shop"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:contentDescription="@string/content_desc_image_favorite_shop"
+        <FrameLayout
+            android:id="@+id/container_image_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:background="@drawable/shop_image_border"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginVertical="@dimen/unify_space_8"
-            android:layout_marginStart="@dimen/unify_space_8"/>
+            android:layout_marginStart="@dimen/unify_space_8">
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/image_shop_shimmer"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginVertical="@dimen/unify_space_8"
-            android:layout_marginStart="@dimen/unify_space_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:loader_corner_radius="8dp"
-            app:loader_type="circle" />
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_shop"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@string/content_desc_image_favorite_shop"/>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/image_shop_shimmer"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:loader_corner_radius="8dp"
+                app:loader_type="circle" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/container_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
-            app:layout_constraintStart_toEndOf="@id/image_shop"
-            app:layout_constraintTop_toTopOf="@id/image_shop"
+            app:layout_constraintStart_toEndOf="@id/container_image_shop"
+            app:layout_constraintTop_toTopOf="@id/container_image_shop"
             app:layout_constraintBottom_toTopOf="@id/text_shop_location"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -85,7 +88,7 @@
             app:layout_constraintLeft_toLeftOf="@id/container_name"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container_name"
-            app:layout_constraintBottom_toBottomOf="@id/image_shop"
+            app:layout_constraintBottom_toBottomOf="@id/container_image_shop"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="small"/>
 
