@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.cassava
 import android.app.Activity
 import android.app.Instrumentation
 import android.util.Log
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
@@ -21,7 +20,6 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.officialstore.R
@@ -272,6 +270,8 @@ class OfficialStoreAnalyticsTest {
     @Test
     fun checkOSAnalyticsWithCassava2() {
         onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
 
         OSCassavaTest {
             initTest()
@@ -284,6 +284,9 @@ class OfficialStoreAnalyticsTest {
 
     @Test
     fun testComponentMerchantVoucherWidget() {
+        onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
         OSCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
@@ -297,6 +300,9 @@ class OfficialStoreAnalyticsTest {
 
     @Test
     fun testSpecialReleaseWidget() {
+        onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
         OSCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) {viewHolder, itemClickLimit ->
