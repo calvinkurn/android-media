@@ -27,6 +27,7 @@ import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -59,6 +60,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
@@ -329,6 +331,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
+        if (homeNavTitleDataModel.identifier == ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY) {
+            sendTrackingAllTransaction()
+        }
         RouteManager.route(context, homeNavTitleDataModel.applink)
     }
 
@@ -433,6 +438,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
+    }
+
+    private fun sendTrackingAllTransaction() {
+        TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
     }
 }
 
