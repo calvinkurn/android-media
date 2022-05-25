@@ -39,6 +39,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -62,7 +63,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private var progressDialog: AlertDialog? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
-    private var miniCartChevronClickListener: OnClickListener? = null
 
     private var viewModel: MiniCartGeneralViewModel? = null
     private val binding: WidgetMiniCartBinding
@@ -84,18 +84,16 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun initializeView(fragment: Fragment) {
         // Init Total Amount Button
-        miniCartChevronClickListener = OnClickListener {
-            showSimplifiedSummaryBottomSheet(fragment)
-        }
         binding.miniCartTotalAmount.apply {
             enableAmountChevron(true)
-            amountChevronView.setOnClickListener(miniCartChevronClickListener)
+            amountChevronView.setOnClickListener {
+                showSimplifiedSummaryBottomSheet(fragment)
+            }
             amountCtaView.setOnClickListener {
                 showProgressLoading()
                 viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_GENERAL_WIDGET)
             }
         }
-        binding.imageChevronUnavailable.setOnClickListener(miniCartChevronClickListener)
         // Init Chat Button
         val chatIcon = getIconUnifyDrawable(
             context, IconUnify.CHAT,
@@ -113,15 +111,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                 .setCancelable(true)
                 .create()
         }
-
-        validateTotalAmountView()
-    }
-
-    private fun validateTotalAmountView() {
-        binding.miniCartTotalAmount.enableAmountChevron(true)
-        binding.miniCartTotalAmount.amountChevronView.setOnClickListener(
-            miniCartChevronClickListener
-        )
     }
 
     private fun initializeListener(listener: MiniCartWidgetListener) {
@@ -219,10 +208,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-            renderUnavailableWidget(miniCartSimplifiedData)
-        } else {
+        if (miniCartSimplifiedData.miniCartWidgetData.isShopActive) {
             renderAvailableWidget(miniCartSimplifiedData)
+        } else {
+            renderUnavailableWidget(miniCartSimplifiedData)
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
@@ -230,48 +219,51 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding.miniCartTotalAmount.apply {
-            setLabelTitle("")
-            setAmount("")
-            val ctaText = context.getString(R.string.mini_cart_widget_cta_text_default)
-            setCtaText(ctaText)
-            amountCtaView.isEnabled = false
-            amountCtaView.layoutParams.width =
-                resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-            amountCtaView.requestLayout()
-        }
-        binding.textCannotProcess.apply {
-            text = context.getString(R.string.mini_cart_label_cannot_process)
-            show()
-        }
-        binding.textCannotProcessQuantity.apply {
-            text = context.getString(
-                R.string.mini_cart_cannot_process_quantity,
-                miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount
-            )
-            show()
-        }
-        binding.imageChevronUnavailable.show()
-    }
-
-    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        binding.miniCartTotalAmount.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-            setAmount(
+            labelTitleView.setWeight(Typography.BOLD)
+            labelTitleView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+            val labelText = miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank {
+                context.getString(R.string.mini_cart_widget_label_purchase_summary)
+            }
+            setLabelTitle(labelText)
+            amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            val labelAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording.ifBlank {
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     miniCartSimplifiedData.miniCartWidgetData.totalProductPrice,
                     false
                 ).removeDecimalSuffix()
-            )
-            val ctaText = context.getString(R.string.mini_cart_widget_cta_text_default)
-            setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
+            }
+            setAmount(labelAmountText)
+            val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
+            setCtaText(ctaText)
             amountCtaView.isEnabled = true
             amountCtaView.layoutParams.width =
                 resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
+            enableAmountChevron(false)
         }
-        binding.textCannotProcess.gone()
-        binding.textCannotProcessQuantity.gone()
-        binding.imageChevronUnavailable.gone()
+    }
+
+    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        binding.miniCartTotalAmount.apply {
+            val labelText = miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank {
+                context.getString(R.string.mini_cart_widget_label_purchase_summary)
+            }
+            setLabelTitle(labelText)
+            val totalAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording.ifBlank {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    miniCartSimplifiedData.miniCartWidgetData.totalProductPrice,
+                    false
+                ).removeDecimalSuffix()
+            }
+            setAmount(totalAmountText)
+            val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
+            setCtaText(ctaText)
+            amountCtaView.isEnabled = true
+            amountCtaView.layoutParams.width =
+                resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+            enableAmountChevron(true)
+        }
     }
 
     private fun setTotalAmountLoading(isLoading: Boolean) {
@@ -284,7 +276,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                 binding.miniCartTotalAmount.isTotalAmountLoading = false
             }
         }
-        validateTotalAmountView()
     }
 
     private fun setAmountViewLayoutParams() {
