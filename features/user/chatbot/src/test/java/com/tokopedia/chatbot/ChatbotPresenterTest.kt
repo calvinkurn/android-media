@@ -217,7 +217,7 @@ class ChatbotPresenterTest {
 
         presenter.getBottomChat("123456", {viewModel , chatReplies ->
             roomViewModel = viewModel
-        }, Unit , {})
+        }, {} , {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput,any())
@@ -245,7 +245,7 @@ class ChatbotPresenterTest {
 
         presenter.getBottomChat("123456", {viewModel , chatReplies ->
             chatroomViewModel = viewModel!!
-        }, Unit , {})
+        }, {} , {})
 
         assertEquals(
             chatroomViewModel, getExistingChatMapper.map(expectedResponse)
@@ -257,16 +257,20 @@ class ChatbotPresenterTest {
     @Test
     fun `getBottomChat failure`() {
         val exception = mockk<Exception>()
+        var result : Throwable? = null
 
         coEvery {
             getExistingChatUseCase.getBottomChat(any())
         } throws exception
 
-        presenter.getBottomChat("123", {a,b -> }, Unit , {})
+        presenter.getBottomChat("123", {a,b -> }, {exception ->
+            result = exception
+        } , {})
 
-        verify {
-           view.showErrorToast(exception)
-        }
+        assertEquals(
+            exception, (result as Exception)
+        )
+
 
     }
 
@@ -321,7 +325,7 @@ class ChatbotPresenterTest {
         // When
         presenter.getTopChat("123456",{ viewModel, chatReplies ->
             roomViewModel = viewModel
-        }, Unit, {})
+        }, {}, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput,any())
@@ -329,24 +333,22 @@ class ChatbotPresenterTest {
 
     }
 
-    //Failing
     @Test
     fun `getTopChat throws exception - failure`() {
         val exception = mockk<Exception>()
+        var result : Throwable? = null
 
         coEvery {
             getExistingChatUseCase.getTopChat(any())
         } throws exception
 
-        presenter.getTopChat("123", {a,b -> }, Unit , {})
+        presenter.getTopChat("123", {a,b -> }, {exception ->
+            result = exception
+        } , {})
 
-        verify {
-            view.showErrorToast(exception)
-        }
-//        assertEquals(
-//
-//            exception
-//        )
+        assertEquals(
+            exception, (result as Exception)
+        )
 
     }
 
