@@ -58,8 +58,8 @@ object TrackingUtil {
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Tracking.KEY_ACTION, customAction,
                 ProductTrackingConstant.Tracking.KEY_LABEL, customLabel,
-                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
                 "categoryId", "productId : $productId",
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
@@ -83,7 +83,7 @@ object TrackingUtil {
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
         mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
         mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID] = shopId
-        mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = shopType
+        mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
 
         return mapEvent as HashMap<String, Any>?
     }
