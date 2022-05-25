@@ -108,8 +108,6 @@ class FlightHomepageActivityTest {
         validateFlightHomepageBannerClickableAndPerformClick()
         validateFlightHomepageSearchClick()
 
-        //assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
-        //        hasAllSuccess())
         assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_P1), hasAllSuccess())
     }
 
@@ -161,8 +159,7 @@ class FlightHomepageActivityTest {
         setPassengersClass()
 
         Thread.sleep(1000)
-        //assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
-        //        hasAllSuccess())
+
         assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ALL), hasAllSuccess())
     }
 
