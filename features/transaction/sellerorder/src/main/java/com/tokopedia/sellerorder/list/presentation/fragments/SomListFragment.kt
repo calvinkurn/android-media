@@ -107,6 +107,7 @@ import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
@@ -435,10 +436,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 data
             )
             SomNavigator.REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(
-                resultCode,
-                data
-            )
-            SomNavigator.REQUEST_RESCHEDULE_PICKUP -> handleSomReschedulePickupActivityResult(
                 resultCode,
                 data
             )
@@ -2099,6 +2096,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         onActionCompleted(true, selectedOrderId)
                     }
                 }
+                data.hasExtra(RESULT_RESCHEDULE_PICKUP) -> {
+                    data.getStringExtra(RESULT_RESCHEDULE_PICKUP)?.let { message ->
+                        handleSomReschedulePickupActivityResult(message)
+                    }
+                }
             }
         }
     }
@@ -2137,9 +2139,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun handleSomReschedulePickupActivityResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            data.getStringExtra(RESULT_RESCHEDULE_PICKUP).takeIf { !it.isNullOrBlank() }?.let {
+    private fun handleSomReschedulePickupActivityResult(message: String) {
+        context?.let {
+            val formattedMessage = HtmlLinkHelper(it, message).spannedString
+            formattedMessage?.let { description ->
                 val dialog = DialogUnify(
                     requireContext(),
                     DialogUnify.SINGLE_ACTION,
@@ -2147,7 +2150,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 ).apply {
                     setImageDrawable(R.drawable.ic_som_bulk_success)
                     setTitle(getString(R.string.title_reschedule_pickup_success_dialog))
-                    setDescription(it)
+                    setDescription(description)
                     setPrimaryCTAText(getString(R.string.title_reschedule_pickup_button_dialog))
                     setPrimaryCTAClickListener {
                         this.dismiss()

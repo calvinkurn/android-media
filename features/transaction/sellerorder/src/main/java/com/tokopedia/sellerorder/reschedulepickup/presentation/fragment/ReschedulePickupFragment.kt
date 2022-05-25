@@ -123,7 +123,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                 is Success -> {
                     if (it.data.success) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(SomConsts.RESULT_CONFIRM_SHIPPING, getString(R.string.template_success_reschedule_pickup, it.data.etaPickup))
+                            putExtra(SomConsts.RESULT_RESCHEDULE_PICKUP, getString(R.string.template_success_reschedule_pickup, it.data.etaPickup))
                         })
                         activity?.finish()
                     } else {
