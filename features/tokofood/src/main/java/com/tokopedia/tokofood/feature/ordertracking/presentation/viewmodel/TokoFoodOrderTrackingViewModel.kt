@@ -69,7 +69,26 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private var orderStatusKey = ""
 
     init {
-        fetchOrderLiveTracking()
+        viewModelScope.launch {
+            _orderId
+                .debounce(DELAY_ORDER_STATE)
+                .flatMapLatest { orderId ->
+                    fetchOrderStatusUseCase(orderId).catch {
+                        emit(Fail(it))
+                    }
+                }
+                .flowOn(coroutineDispatchers.io)
+                .collectLatest {
+                    when (orderStatusKey) {
+                        OrderStatusType.CANCELLED, OrderStatusType.COMPLETED -> {
+                            fetchOrderCompletedLiveTracking(orderId)
+                        }
+                        else -> {
+                            _orderLiveTrackingStatus.emit(it)
+                        }
+                    }
+                }
+        }
     }
 
     fun getFoodItems() = foodItems
@@ -118,29 +137,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         }, onError = {
             _orderCompletedLiveTracking.value = Fail(it)
         })
-    }
-
-    private fun fetchOrderLiveTracking() {
-        viewModelScope.launch {
-            _orderId
-                .debounce(DELAY_ORDER_STATE)
-                .flatMapLatest { orderId ->
-                    fetchOrderStatusUseCase(orderId).catch {
-                        emit(Fail(it))
-                    }
-                }
-                .flowOn(coroutineDispatchers.io)
-                .collectLatest {
-                    when (orderStatusKey) {
-                        OrderStatusType.CANCELLED, OrderStatusType.COMPLETED -> {
-                            fetchOrderCompletedLiveTracking(orderId)
-                        }
-                        else -> {
-                            _orderLiveTrackingStatus.emit(it)
-                        }
-                    }
-                }
-        }
     }
 
     private fun fetchOrderStatusUseCase(
