@@ -55,7 +55,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_DONE
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -167,6 +166,7 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 
 open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
         ProductViewHolder.ProductViewHolderView,
@@ -609,8 +609,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun observeDataSource() {
-        observe(viewModel.getDataSource) {
-            if (it.status == STATUS_DONE) {
+        observe(viewModel.uploadStatus) {
+            if (it.status == UploadStatusType.STATUS_DONE.name) {
                 viewModel.getPopupsInfo(it.productId)
                 shouldScrollToTop = true
                 getFiltersTab(withDelay = true)

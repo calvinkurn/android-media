@@ -26,9 +26,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_DONE
-import com.tokopedia.product.manage.common.feature.datasource.constant.DataSourceConstant.STATUS_ERROR
-import com.tokopedia.product.manage.common.feature.datasource.domain.SetDataSourceUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.SetUploadStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
@@ -58,7 +58,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
-    lateinit var setDataSourceUseCase: SetDataSourceUseCase
+    lateinit var setUploadStatusUseCase: SetUploadStatusUseCase
     @Inject
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
     @Inject
@@ -93,12 +93,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataSuccess(productId: String = "") {
         notificationManager?.onSuccessUpload()
-        setDataSource(STATUS_DONE, productId)
+        setDataSource(UploadStatusType.STATUS_DONE.name, productId)
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
-        setDataSource(STATUS_ERROR)
+        setDataSource(UploadStatusType.STATUS_ERROR.name)
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
@@ -250,10 +250,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 .replace("\\<.*?\\>".toRegex(), "")
     }
 
-    private fun setDataSource(status: Int, productId: String = "") {
+    private fun setDataSource(status: String, productId: String = "") {
         launchCatchError(block = {
-            setDataSourceUseCase.params = SetDataSourceUseCase.createRequestParams(status, productId)
-            setDataSourceUseCase.executeOnBackground()
+            setUploadStatusUseCase.setUploadStatus(
+                UploadStatusModel(
+                    productId = productId,
+                    status = status
+                )
+            )
         } , onError = {})
     }
 }

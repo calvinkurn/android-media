@@ -9,15 +9,12 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.common.feature.datasource.LocalDataSource
-import com.tokopedia.product.manage.common.feature.datasource.LocalDataSourceImpl
-import com.tokopedia.product.manage.common.feature.datasource.repository.DataSourceRepository
-import com.tokopedia.product.manage.common.feature.datasource.repository.DataSourceRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
@@ -148,26 +145,14 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
+    fun provideUploadStatusDao(draftDb: AddEditProductDraftDb): UploadStatusDao = draftDb.uploadStatusDao()
+
+    @ProductManageListScope
+    @Provides
     fun provideProductDraftRepository(
             draftDataSource: AddEditProductDraftDataSource,
             userSession: UserSessionInterface
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
-    }
-
-    @ProductManageListScope
-    @Provides
-    fun provideDataStoreDataSourceStatusRepository(
-        @ApplicationContext context: Context
-    ): LocalDataSource {
-        return LocalDataSourceImpl(context)
-    }
-
-    @ProductManageListScope
-    @Provides
-    fun provideDataStoreStatusRepository(
-        dataSource: LocalDataSource
-    ): DataSourceRepository {
-        return DataSourceRepositoryImpl(dataSource)
     }
 }

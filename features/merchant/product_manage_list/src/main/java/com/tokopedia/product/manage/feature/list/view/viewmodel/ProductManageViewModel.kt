@@ -9,9 +9,8 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.common.feature.datasource.domain.ClearDataSourceUseCase
-import com.tokopedia.product.manage.common.feature.datasource.domain.GetDataSourceUseCase
-import com.tokopedia.product.manage.common.feature.datasource.model.UserPreferences
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -20,6 +19,7 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
@@ -62,11 +62,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -86,8 +85,8 @@ class ProductManageViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
-    private val getDataSourceUseCase: GetDataSourceUseCase,
-    private val clearDataSourceUseCase: ClearDataSourceUseCase,
+    private val getDataSourceUseCase: GetUploadStatusUseCase,
+    private val clearDataSourceUseCase: ClearUploadStatusUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -148,8 +147,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _deleteProductDialog
     val topAdsInfo: LiveData<TopAdsInfo>
         get() = _topAdsInfo
-    val getDataSource: MutableLiveData<UserPreferences>
-        get() = _getDataSource
+    val uploadStatus: MutableLiveData<UploadStatusModel>
+        get() = _uploadStatus
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -176,7 +175,7 @@ class ProductManageViewModel @Inject constructor(
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
-    private val _getDataSource = MutableLiveData<UserPreferences>()
+    private val _uploadStatus = MutableLiveData<UploadStatusModel>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
@@ -190,17 +189,17 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private fun initGetDataSource() = launch {
-        getDataSourceUseCase.executeOnBackground()
+        getDataSourceUseCase
+            .getUploadStatus()
             .flowOn(dispatchers.io)
-            .catch { /* do nothing */ }
             .collect {
-                _getDataSource.postValue(it)
+                _uploadStatus.value = it
             }
     }
 
     fun clearDataSource() {
         launchCatchError(block = {
-            clearDataSourceUseCase.executeOnBackground()
+            clearDataSourceUseCase.clearUploadStatus()
         }) { /* do nothing */ }
     }
 

@@ -8,11 +8,15 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.entity.UploadStatusEntity
 
-@Database(entities = [AddEditProductDraftEntity::class], version = AddEditProductDraftConstant.DB_VERSION_9, exportSchema = false)
+@Database(entities = [AddEditProductDraftEntity::class, UploadStatusEntity::class], version = AddEditProductDraftConstant.DB_VERSION_9, exportSchema = false)
 abstract class AddEditProductDraftDb : RoomDatabase(){
 
     abstract fun getDraftDao(): AddEditProductDraftDao
+
+    abstract fun uploadStatusDao(): UploadStatusDao
 
     companion object {
         @Volatile
@@ -45,8 +49,6 @@ abstract class AddEditProductDraftDb : RoomDatabase(){
                 database.execSQL("ALTER TABLE ${AddEditProductDraftConstant.DB_TABLE}2 RENAME TO ${AddEditProductDraftConstant.DB_TABLE}")
             }
         }
-
-
 
         private val migrationFromEightToNine = object : Migration(AddEditProductDraftConstant.DB_VERSION_8, AddEditProductDraftConstant.DB_VERSION_9) {
             override fun migrate(database: SupportSQLiteDatabase) {

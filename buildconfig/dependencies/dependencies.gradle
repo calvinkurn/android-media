@@ -203,10 +203,6 @@ ext {
             dynamicLink:  "com.google.firebase:firebase-dynamic-links-ktx"
     ]
 
-    dataStoreDependencies = [
-            dataStorePreferences: "androidx.datastore:datastore-preferences:1.0.0"
-    ]
-
     viewDependencies = [
             expandableTextview: "at.blogc:expandabletextview:1.0.5",
     ]
