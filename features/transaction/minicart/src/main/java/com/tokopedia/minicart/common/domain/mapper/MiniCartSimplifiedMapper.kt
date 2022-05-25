@@ -18,9 +18,6 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             miniCartItems = mapMiniCartListData(miniCartData)
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
-            bottomBarText = miniCartData.data.bottomBar.text
-            bottomBarTotalPrice = miniCartData.data.bottomBar.totalPriceFmt
-            isShopActive = miniCartData.data.bottomBar.isShopActive
         }
     }
 
@@ -41,6 +38,9 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             unavailableItemsCount = miniCartData.data.totalProductError
             isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
             buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
+            headlineWording = miniCartData.data.bottomBar.text
+            totalProductPriceWording = miniCartData.data.bottomBar.totalPriceFmt
+            isShopActive = miniCartData.data.bottomBar.isShopActive
         }
     }
 
