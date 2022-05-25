@@ -94,6 +94,14 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
         ),
         HomeLayoutResponse(
             id = "2122",
+            layout = "left_carousel_atc",
+            header = Header(
+                name = "Mix Left Atc Carousel",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2333",
             layout = "left_carousel",
             header = Header(
                 name = "Mix Left Carousel",
@@ -329,7 +337,7 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createMixLeftDataModel(
+fun createMixLeftDataAtcModel(
     id: String,
     headerName: String,
 ): HomeLeftCarouselUiModel {
@@ -339,6 +347,25 @@ fun createMixLeftDataModel(
         header = TokoNowDynamicHeaderUiModel(title = headerName),
         productList = listOf(HomeLeftCarouselProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
     )
+}
+
+fun createMixLeftDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
+): MixLeftDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = layout)
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = layout,
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return MixLeftDataModel(channelModel = channelModel)
 }
 
 fun createCategoryGridDataModel(

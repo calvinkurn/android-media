@@ -50,6 +50,7 @@ import com.tokopedia.tokopedianow.data.createKeywordSearch
 import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createLocalCacheModel
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
+import com.tokopedia.tokopedianow.data.createMixLeftDataAtcModel
 import com.tokopedia.tokopedianow.data.createMixLeftDataModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
@@ -728,9 +729,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     id = "2322",
                     recomWidget = recommendationWidget
                 ),
-                createMixLeftDataModel(
+                createMixLeftDataAtcModel(
                     id = "2122",
+                    headerName = "Mix Left Atc Carousel",
+                ),
+                createMixLeftDataModel(
+                    id = "2333",
+                    groupId = "",
                     headerName = "Mix Left Carousel",
+                    layout = "left_carousel"
                 )
             ),
             state = TokoNowLayoutState.UPDATE
@@ -1929,11 +1936,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when add mix left product to cart should track add mix left product`() {
+    fun `when add mix left atc product to cart should track add mix left atc product`() {
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = "2122",
-                layout = "left_carousel",
+                layout = "left_carousel_atc",
                 header = Header(
                     name = "Mix Left Carousel",
                     serverTimeUnix = 0
