@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -192,6 +192,7 @@ class AddEditProductPreviewFragment :
     private var productStockView: Typography? = null
     private var iconOutOfStock: IconUnify? = null
     private var dividerDetail: DividerUnify? = null
+    private var outOfStockCoachMark: CoachMark2? = null
 
     // description
     private var addEditProductDescriptionTitle: Typography? = null
@@ -452,6 +453,15 @@ class AddEditProductPreviewFragment :
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        // dismiss coachmark when orientatioon changed
+        outOfStockCoachMark?.dismissCoachMark()
+        super.onConfigurationChanged(newConfig)
+        // re-display coachmark using loading listener
+        showLoading()
+        hideLoading()
     }
 
     private fun setupToolbar() {
@@ -858,10 +868,10 @@ class AddEditProductPreviewFragment :
                 CoachMarkContentPosition.BOTTOM.position
             )
         )
-        val coachMark = CoachMark2(context ?: return)
-        coachMark.simpleCloseIcon?.isVisible = false
-        coachMark.hideCoachmarkWhenTouchOutside(anchor)
-        coachMark.showCoachMark(ArrayList(items))
+        outOfStockCoachMark = CoachMark2(context ?: return)
+        outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
+        outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
+        outOfStockCoachMark?.showCoachMark(ArrayList(items))
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
