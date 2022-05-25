@@ -445,7 +445,7 @@ open class ProductManageFragment :
         observeFilterTabs()
         observeMultiSelect()
         observeProductVariantBroadcast()
-        observeDataSource()
+        observeUploadStatus()
 
         observeEditPrice()
         observeEditStock()
@@ -725,7 +725,7 @@ open class ProductManageFragment :
         }
     }
 
-    private fun observeDataSource() {
+    private fun observeUploadStatus() {
         observe(viewModel.uploadStatus) {
             if (it.status == UploadStatusType.STATUS_DONE.name) {
                 viewModel.getPopupsInfo(it.productId)

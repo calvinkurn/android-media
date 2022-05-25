@@ -101,12 +101,12 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
     fun setUploadProductDataSuccess(productId: String = "") {
         notificationManager?.onSuccessUpload()
-        setDataSource(UploadStatusType.STATUS_DONE.name, productId)
+        setUploadStatus(UploadStatusType.STATUS_DONE.name, productId)
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
-        setDataSource(UploadStatusType.STATUS_ERROR.name)
+        setUploadStatus(UploadStatusType.STATUS_ERROR.name)
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
@@ -271,7 +271,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
                 .replace("\\<.*?\\>".toRegex(), "")
     }
 
-    private fun setDataSource(status: String, productId: String = "") {
+    private fun setUploadStatus(status: String, productId: String = "") {
         launchCatchError(block = {
             setUploadStatusUseCase.setUploadStatus(
                 UploadStatusModel(
