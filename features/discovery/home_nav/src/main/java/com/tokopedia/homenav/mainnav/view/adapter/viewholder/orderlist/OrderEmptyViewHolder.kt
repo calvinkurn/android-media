@@ -28,7 +28,7 @@ class OrderEmptyViewHolder(itemView: View, val mainNavListener: MainNavListener)
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_empty
         private const val EMPTY_IMAGE_LINK =
-            "https://images.tokopedia.net/img/android/home/navigation/home_nav_empty_data.png"
+            "https://images.tokopedia.net/img/android/home_nav/home_nav_empty_transaction.png"
     }
 
     override fun bind(element: OrderEmptyModel) {
