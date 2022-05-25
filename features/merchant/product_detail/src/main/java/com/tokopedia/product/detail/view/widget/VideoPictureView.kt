@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.widget
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -47,7 +45,6 @@ class VideoPictureView @JvmOverloads constructor(
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
-        binding.pdpVideoPictureLabel.typeface = Typeface.DEFAULT
         measureScreenHeight(binding)
     }
 
@@ -59,7 +56,6 @@ class VideoPictureView @JvmOverloads constructor(
     private fun showThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
             animator?.animateShow()
-//            binding.pdpMainThumbnailRv.show()
         }
     }
 
@@ -208,9 +204,7 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun updateMediaLabel(position: Int) {
         val desc = videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
-        binding.pdpVideoPictureLabel.showIfWithBlock(desc.isNotEmpty()) {
-            text = desc
-        }
+        binding.txtAnimLabel.showView(desc)
     }
 
     companion object {
