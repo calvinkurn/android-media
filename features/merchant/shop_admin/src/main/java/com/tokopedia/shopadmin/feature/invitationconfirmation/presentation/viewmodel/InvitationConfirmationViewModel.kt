@@ -24,9 +24,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -104,9 +103,6 @@ class InvitationConfirmationViewModel @Inject constructor(
 
     private fun initValidateAdminEmail() = viewModelScope.launch {
         _emailParam
-            .filter {
-                return@filter it.isNotBlank()
-            }
             .debounce(DEBOUNCE_DELAY_MILLIS)
             .flatMapLatest { email ->
                 fetchValidateEmailUseCase(
@@ -116,7 +112,7 @@ class InvitationConfirmationViewModel @Inject constructor(
                 ).catch { emit(Fail(it)) }
             }
             .flowOn(coroutineDispatchers.io)
-            .collect {
+            .collectLatest {
                 _validateEmail.emit(it)
             }
     }
