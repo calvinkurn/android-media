@@ -25,9 +25,15 @@ class TokoFoodCategoryViewModel @Inject constructor(
     val layoutList: LiveData<Result<TokoFoodListUiModel>>
         get() = _categoryLayoutList
 
+    val loadMore: LiveData<Result<TokoFoodListUiModel>>
+        get() = _categoryLoadMore
+
     private val _categoryLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
+    private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
     private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
+
+    private var pageKey = ""
 
     fun getLoadingState() {
         categoryLayoutItemList.clear()
@@ -39,15 +45,22 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.value = Success(data)
     }
 
-    fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0, brandId: String = "",
-                          sortBy: Int = 0, orderById: Int = 0, pageKey: String = "") {
+    fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
+                          sortBy: Int = 0, page: String = "") {
         launchCatchError(block = {
-
+            setPageKey(page)
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
-                tokoFoodMerchantListUseCase.execute(localCacheModel, option, brandId, sortBy, orderById, pageKey)
+                tokoFoodMerchantListUseCase.execute(
+                    localCacheModel = localCacheModel,
+                    option = option,
+                    brandId = "",
+                    sortBy = sortBy,
+                    orderById = 0,
+                    pageKey = pageKey)
             }
 
+            setPageKey(categoryResponse.data.nextPageKey)
             categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
             val data = TokoFoodListUiModel(
                 items = categoryLayoutItemList,
@@ -58,5 +71,51 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }){
 
         }
+    }
+
+    fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
+                          sortBy: Int = 0) {
+        launchCatchError(block = {
+            val categoryResponse = withContext(dispatchers.io) {
+                tokoFoodMerchantListUseCase.execute(
+                    localCacheModel = localCacheModel,
+                    option = option,
+                    brandId = "",
+                    sortBy = sortBy,
+                    orderById = 0,
+                    pageKey = pageKey)
+            }
+
+            setPageKey(categoryResponse.data.nextPageKey)
+            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            val data = TokoFoodListUiModel(
+                items = categoryLayoutItemList,
+                state = TokoFoodLayoutState.LOAD_MORE
+            )
+
+            _categoryLoadMore.value = Success(data)
+        }){
+
+        }
+    }
+
+
+
+    fun onScrollProductList(index: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
+                            sortBy: Int = 0) {
+        val lastItemIndex = itemCount - 1
+        val containsLastItemIndex = index
+        val scrolledToLastItem = containsLastItemIndex == lastItemIndex
+        val hasNextPage = pageKey.isNotEmpty()
+
+        if(scrolledToLastItem && hasNextPage) {
+            loadMoreMerchant(localCacheModel = localCacheModel,
+                option = option,
+                sortBy = sortBy)
+        }
+    }
+
+    private fun setPageKey(pageNew:String) {
+        pageKey = pageNew
     }
 }

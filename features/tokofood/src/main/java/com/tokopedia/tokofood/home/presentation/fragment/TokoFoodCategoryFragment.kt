@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -64,6 +66,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             differ = TokoFoodListDiffer()
         )
     }
+
+    private val loadMoreListener by lazy { createLoadMoreListener() }
 
     companion object {
         private const val PAGE_TITLE_PARAM = "pageTitle"
@@ -172,13 +176,21 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
+            removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
             }
 
-            rvCategory?.post {
-                resetSwipeLayout()
+            addScrollListeners()
+            resetSwipeLayout()
+        }
+
+        observe(viewModel.loadMore) {
+            removeScrollListeners()
+            when (it) {
+                is Success -> showCategoryLayout(it.data)
             }
+            addScrollListeners()
         }
     }
 
@@ -266,7 +278,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,
-                pageKey = "1"
+                page = "1"
             )
         }
     }
@@ -274,6 +286,38 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
+    }
+
+    private fun removeScrollListeners() {
+        rvCategory?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun addScrollListeners() {
+        rvCategory?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                onScrollProductList()
+            }
+        }
+    }
+
+    private fun onScrollProductList() {
+        val layoutManager = rvCategory?.layoutManager as? CustomLinearLayoutManager
+        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
+        val itemCount = layoutManager?.itemCount.orZero()
+        localCacheModel?.let {
+            viewModel.onScrollProductList(
+                index,
+                itemCount,
+                localCacheModel = it,
+                option = option,
+                sortBy = sortBy,
+            )
+        }
     }
 
 }

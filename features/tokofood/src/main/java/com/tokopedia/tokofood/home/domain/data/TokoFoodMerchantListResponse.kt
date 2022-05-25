@@ -10,7 +10,7 @@ data class TokoFoodMerchantListResponse (
 data class TokoFoodMerchantList(
     @SerializedName("merchants")
     val merchants: List<Merchant> = emptyList(),
-    @SerializedName("id")
+    @SerializedName("nextPageKey")
     val nextPageKey: String = "",
 )
 
