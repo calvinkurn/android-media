@@ -326,7 +326,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         super.onDestroy()
-        feed_floating_button.stopTimer()
     }
 
     override fun getScreenName(): String? = null
