@@ -29,18 +29,18 @@ class ReviewProductDetailModule {
         return GsonBuilder()
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(ReviewMediaThumbnailVisitable::class.java)
-                    .registerSubtype(ReviewMediaImageThumbnailUiModel::class.java)
-                    .registerSubtype(ReviewMediaVideoThumbnailUiModel::class.java)
+                    .registerSubtype(ReviewMediaImageThumbnailUiModel::class.java, ReviewMediaImageThumbnailUiModel::class.java.name)
+                    .registerSubtype(ReviewMediaVideoThumbnailUiModel::class.java, ReviewMediaVideoThumbnailUiModel::class.java.name)
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(ReviewMediaImageThumbnailUiState::class.java)
-                    .registerSubtype(ReviewMediaImageThumbnailUiState.Showing::class.java)
-                    .registerSubtype(ReviewMediaImageThumbnailUiState.ShowingSeeMore::class.java)
+                    .registerSubtype(ReviewMediaImageThumbnailUiState.Showing::class.java, ReviewMediaImageThumbnailUiState.Showing::class.java.name)
+                    .registerSubtype(ReviewMediaImageThumbnailUiState.ShowingSeeMore::class.java, ReviewMediaImageThumbnailUiState.ShowingSeeMore::class.java.name)
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(ReviewMediaVideoThumbnailUiState::class.java)
-                    .registerSubtype(ReviewMediaVideoThumbnailUiState.Showing::class.java)
-                    .registerSubtype(ReviewMediaVideoThumbnailUiState.ShowingSeeMore::class.java)
+                    .registerSubtype(ReviewMediaVideoThumbnailUiState.Showing::class.java, ReviewMediaVideoThumbnailUiState.Showing::class.java.name)
+                    .registerSubtype(ReviewMediaVideoThumbnailUiState.ShowingSeeMore::class.java, ReviewMediaVideoThumbnailUiState.ShowingSeeMore::class.java.name)
             )
             .create()
     }

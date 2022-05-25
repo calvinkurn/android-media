@@ -38,9 +38,9 @@ class ReviewMediaGalleryModule {
         return GsonBuilder()
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(MediaItemUiModel::class.java)
-                    .registerSubtype(LoadingStateItemUiModel::class.java)
-                    .registerSubtype(ImageMediaItemUiModel::class.java)
-                    .registerSubtype(VideoMediaItemUiModel::class.java)
+                    .registerSubtype(LoadingStateItemUiModel::class.java, LoadingStateItemUiModel::class.java.name)
+                    .registerSubtype(ImageMediaItemUiModel::class.java, ImageMediaItemUiModel::class.java.name)
+                    .registerSubtype(VideoMediaItemUiModel::class.java, VideoMediaItemUiModel::class.java.name)
             ).create()
     }
 }
