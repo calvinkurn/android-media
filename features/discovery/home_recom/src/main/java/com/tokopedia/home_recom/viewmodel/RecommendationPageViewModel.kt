@@ -16,6 +16,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_GENERAL_ERROR
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
@@ -27,7 +28,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -72,7 +72,7 @@ open class RecommendationPageViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
-        const val PARAM_JOB_TIMEOUT_DEFAULT = 1000L
+        const val PARAM_JOB_TIMEOUT_DEFAULT = 5000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
         const val POS_CPM = 1
@@ -205,7 +205,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         pageName = ""
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                val dataList = recommendationListLiveData.value as MutableList
+                val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
@@ -235,12 +235,14 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
         }) {
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
+                throwable = it,
+                productId = productId,
+                queryParam = queryParam
+            )
             it.printStackTrace()
         }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
     }
 
     /**

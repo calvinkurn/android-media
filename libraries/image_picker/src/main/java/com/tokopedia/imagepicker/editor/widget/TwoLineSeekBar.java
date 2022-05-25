@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
 
 import java.util.Map;
@@ -282,16 +283,23 @@ public class TwoLineSeekBar extends View {
             mHighLightLinePaint.setColor(color);
             return;
         }
+
+        int seekBarColor =
+            MethodChecker.getColor(
+                getContext(),
+                com.tokopedia.imagepicker.R.color.imagepicker_dms_seek_bar
+            );
+
         mSavedColors.put("mNailPaint", Integer.valueOf(mNailPaint.getColor()));
         mSavedColors.put("mThumbPaint", Integer.valueOf(mThumbPaint.getColor()));
         mSavedColors.put("mLinePaint1", Integer.valueOf(mLinePaint1.getColor()));
         mSavedColors.put("mLinePaint2", Integer.valueOf(mLinePaint2.getColor()));
         mSavedColors.put("mHighLightLinePaint", Integer.valueOf(mHighLightLinePaint.getColor()));
-        mNailPaint.setColor(Color.parseColor("#505050"));
-        mThumbPaint.setColor(Color.parseColor("#505050"));
-        mLinePaint1.setColor(Color.parseColor("#505050"));
-        mLinePaint2.setColor(Color.parseColor("#505050"));
-        mHighLightLinePaint.setColor(Color.parseColor("#505050"));
+        mNailPaint.setColor(seekBarColor);
+        mThumbPaint.setColor(seekBarColor);
+        mLinePaint1.setColor(seekBarColor);
+        mLinePaint2.setColor(seekBarColor);
+        mHighLightLinePaint.setColor(seekBarColor);
     }
 
     public void setThumbSize(float size) {

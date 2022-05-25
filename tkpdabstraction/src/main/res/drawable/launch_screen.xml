@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/Unify_G500" />
+    <item android:drawable="@color/Unify_G500"/>
     <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/logo_tkpd_white" />
+        <bitmap android:gravity="center" android:src="@drawable/logo_tkpd_white"/>
     </item>
 </layer-list>

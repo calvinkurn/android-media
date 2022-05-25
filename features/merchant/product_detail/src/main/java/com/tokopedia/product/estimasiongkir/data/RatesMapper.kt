@@ -26,6 +26,7 @@ object RatesMapper {
                 freeOngkirImageUrl = request.freeOngkirUrl,
                 freeOngkirPrice = ratesModel.freeShipping.shippingPrice,
                 freeOngkirPriceOriginal = ratesModel.freeShipping.rawShippingRate,
+                isFreeOngkirQuotaEmpty = ratesModel.freeShipping.isQuotaEmpty,
                 freeOngkirDesc = ratesModel.freeShipping.desc,
                 isFulfillment = request.isFulfillment,
                 tokoCabangContent = ratesModel.tokoCabangData.content,

@@ -22,6 +22,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -38,6 +39,7 @@ import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.RESULT_INTENT_REVIEW_REPLY
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
 import com.tokopedia.review.databinding.FragmentInboxReviewBinding
@@ -87,6 +89,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         private const val positionUnAnswered = 1
         private const val positionAnswered = 2
         private const val allSelected = 5
+        private const val ONE = 1
     }
 
     @Inject
@@ -405,7 +408,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onSuccessGetFeedbackInboxReview(it.data)
                 }
                 is Fail -> {
-                    onErrorGetInboxReviewData()
+                    onErrorGetInboxReviewData(it.throwable)
                 }
             }
         }
@@ -423,7 +426,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     }
                 }
                 is Fail -> {
-                    onErrorGetInboxReviewData()
+                    onErrorGetInboxReviewData(it.throwable)
                 }
             }
         }
@@ -487,13 +490,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         } else {
-            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.clearAllElements()
-                inboxReviewAdapter.addInboxFeedbackEmpty(false)
+            if (inboxReviewAdapter.list.isEmpty() && data.feedbackInboxList.isEmpty()) {
+                if (isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(true)
+                } else if (!isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.clearAllElements()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(false)
+                }
             } else {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             }
@@ -506,22 +511,32 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetInboxReviewData() {
-        feedbackInboxList?.clear()
+    private fun onErrorGetInboxReviewData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
-        if (feedbackInboxList?.isEmpty() == true) {
+        if (feedbackInboxList.isNullOrEmpty()) {
             inboxReviewAdapter.clearAllElements()
-            inboxReviewAdapter.addInboxFeedbackError()
+            inboxReviewAdapter.addInboxFeedbackError(throwable)
         } else {
-            onErrorLoadMoreToaster(getString(R.string.error_message_load_more_review_product), getString(R.string.action_retry_toaster_review_product))
+            onErrorLoadMoreToaster(
+                throwable.getErrorMessage(
+                    context,
+                    getString(R.string.error_message_load_more_review_product)
+                ), getString(R.string.action_retry_toaster_review_product)
+            )
         }
     }
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = {
-                loadInitialData()
-            })
+            Toaster.build(
+                it,
+                message,
+                duration = Toaster.LENGTH_INDEFINITE,
+                actionText = action,
+                type = Toaster.TYPE_ERROR,
+                clickListener = {
+                    loadInitialData()
+                }).show()
         }
     }
 
@@ -657,12 +672,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 refChipUnify.chip_image_icon.hide()
             }
         } else {
-            if (countSelected == 0) {
+            if (countSelected == Int.ZERO) {
                 itemSortFilterList[positionRating].apply {
                     title = ALL_RATINGS
                     refChipUnify.chip_image_icon.hide()
                 }
-            } else if (countSelected == 1) {
+            } else if (countSelected == ONE) {
                 itemSortFilterList[positionRating].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()

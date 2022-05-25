@@ -3,15 +3,18 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
+import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteGroupModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.PrefillModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
@@ -56,27 +59,15 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         } throws error
     }
 
-    protected fun onGetFavoriteNumber_thenReturn(response: TopupBillsPersoFavNumberData) {
+    protected fun onGetFavoriteNumber_thenReturn(response: FavoriteGroupModel) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
+            repo.getFavoriteNumbers(any(), any(), any())
         } returns response
     }
 
     protected fun onGetFavoriteNumber_thenReturn(error: Throwable) {
         coEvery {
-            repo.getFavoriteNumberChips(any())
-        } throws error
-    }
-
-    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
-        coEvery {
-            repo.getFavoriteNumberList(any(), any())
-        } returns response
-    }
-
-    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
-        coEvery {
-            repo.getFavoriteNumberList(any(), any())
+            repo.getFavoriteNumbers(any(), any(), any())
         } throws error
     }
 
@@ -140,12 +131,8 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         coVerify { repo.getMenuDetail(any()) }
     }
 
-    protected fun verifyGetFavoriteNumberRepoChipsGetCalled() {
-        coVerify { repo.getFavoriteNumberChips(any(), any()) }
-    }
-
-    protected fun verifyGetFavoriteNumberListRepoGetCalled() {
-        coVerify { repo.getFavoriteNumberList(any(), any()) }
+    protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {
+        coVerify { repo.getFavoriteNumbers(any(), any(), any()) }
     }
 
     protected fun verifyGetOperatorSelectGroupRepoGetCalled() {
@@ -180,33 +167,29 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.favoriteNumberData.value
+        val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetFavoriteNumberSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
-        val actualResponse = viewModel.favoriteNumberData.value
+    protected fun verifyGetFavoriteNumberChipsSuccess(expectedResponse: List<FavoriteChipModel>) {
+        val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyGetFavoriteNumberFail() {
-        val actualResponse = viewModel.favoriteNumberData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
-    protected fun verifyGetAutoCompleteLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.autoCompleteData.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetAutoCompleteSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+    protected fun verifyGetFavoriteNumberListSuccess(expectedResponse: List<AutoCompleteModel>) {
         val actualResponse = viewModel.autoCompleteData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyGetAutoCompleteFail() {
-        val actualResponse = viewModel.autoCompleteData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    protected fun verifyGetFavoriteNumberPrefillSuccess(expectedResponse: PrefillModel) {
+        val actualResponse = viewModel.prefillData.value
+        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+    }
+
+    protected fun verifyGetFavoriteNumberPrefillEmpty() {
+        val actualResponse = viewModel.prefillData.value as RechargeNetworkResult.Success
+        Assert.assertTrue(actualResponse.data.clientName.isEmpty())
+        Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
     protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading){
@@ -263,22 +246,6 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
-
-    protected fun verifyGetInquiryProductLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetInquiryProductSuccess(expectedResponse: TopupBillsEnquiryData) {
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
-    }
-
-    protected fun verifyGetInquiryProductFail() {
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
 
     protected fun verifyValidateClientNumberTrue() {
         Assert.assertTrue(viewModel.isEligibleToBuy)
@@ -356,10 +323,6 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun TestCoroutineScope.skipValidatorDelay() {
         advanceTimeBy(DigitalPDPConstant.VALIDATOR_DELAY_TIME)
-    }
-
-    protected fun TestCoroutineScope.skipAutoCompleteDelay() {
-        advanceTimeBy(DigitalPDPConstant.DELAY_AUTOCOMPLETE)
     }
 
     companion object {

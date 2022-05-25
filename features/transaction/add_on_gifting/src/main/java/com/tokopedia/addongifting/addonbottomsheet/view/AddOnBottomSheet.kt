@@ -37,6 +37,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,6 +52,8 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
 
     companion object {
         const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
+        const val SCROLL_X = 0
+        const val SCROLL_Y = 300
     }
 
     @Inject
@@ -222,6 +225,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
+            amountCtaView.setPadding(20.toPx(), 0, 20.toPx(), 0)
             amountCtaView.show()
             amountCtaView.setOnClickListener {
                 viewBinding.totalAmount.amountCtaView.isLoading = true
@@ -335,7 +339,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
         measureRecyclerViewPaddingDebounceJob?.cancel()
         delayScrollJob?.cancel()
         activity?.finish()
-        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
+        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.add_on_selection_push_down)
         super.onDismiss(dialog)
     }
 
@@ -358,7 +362,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
     }
 
     override fun onNeedToMakeEditTextFullyVisible(view: View) {
-        viewBinding?.rvAddOn?.smoothScrollBy(0, 300)
+        viewBinding?.rvAddOn?.smoothScrollBy(SCROLL_X, SCROLL_Y)
     }
 
 }
