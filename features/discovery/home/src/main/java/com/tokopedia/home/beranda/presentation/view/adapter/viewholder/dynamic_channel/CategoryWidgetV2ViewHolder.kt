@@ -84,7 +84,7 @@ class CategoryWidgetV2ViewHolder (val view: View,
     class CategoryWidgetV2ItemAdapter(
         private val channels: DynamicHomeChannel.Channels,
         private val listener: HomeCategoryListener?,
-        private val cardInteraction: Boolean
+        private val cardInteraction: Boolean = false
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 

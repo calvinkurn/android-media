@@ -319,7 +319,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             private val recommendationList: List<HomeRecommendationListCarousel>,
             private val listener: RecommendationListCarouselListener?,
             private val isCacheData: Boolean,
-            private val cardInteraction: Boolean
+            private val cardInteraction: Boolean = false
     ): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87

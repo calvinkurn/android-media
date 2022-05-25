@@ -173,7 +173,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                           private val parentPosition: Int,
                           private val isCacheData: Boolean,
                           private val isLego24UsingRollenceVariant: Boolean = false,
-                          private val cardInteraction: Boolean
+                          private val cardInteraction: Boolean = false
     ) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout

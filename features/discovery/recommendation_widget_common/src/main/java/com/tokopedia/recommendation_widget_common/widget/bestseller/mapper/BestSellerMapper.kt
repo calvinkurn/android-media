@@ -32,7 +32,7 @@ class BestSellerMapper (
         )
     }
 
-    private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean): List<ProductCardModel> {
+    private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean = false): List<ProductCardModel> {
         return recommendationList.map { recommendationItem ->
             recommendationItem.toProductCardModel(hasThreeDots = true, cardInteraction = cardInteraction)
         }

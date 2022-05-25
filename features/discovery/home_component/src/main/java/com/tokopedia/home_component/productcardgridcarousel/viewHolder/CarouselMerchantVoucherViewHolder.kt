@@ -24,7 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class CarouselMerchantVoucherViewHolder (
     view: View,
-    private val cardInteraction: Boolean
+    private val cardInteraction: Boolean = false
 ): AbstractViewHolder<CarouselMerchantVoucherDataModel>(view) {
 
     private var binding: HomeBannerItemMerchantVoucherBinding? by viewBinding()

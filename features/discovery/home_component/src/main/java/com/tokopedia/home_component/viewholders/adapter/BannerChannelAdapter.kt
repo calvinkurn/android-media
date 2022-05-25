@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 class BannerChannelAdapter(
     itemList: List<BannerItemModel>,
     private val bannerItemListener: BannerItemListener,
-    private val cardInteraction: Boolean
+    private val cardInteraction: Boolean = false
 ) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var itemList: List<BannerItemModel> = listOf()
     private var imageRatio = ""

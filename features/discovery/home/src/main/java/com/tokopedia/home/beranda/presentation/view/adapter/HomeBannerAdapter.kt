@@ -11,7 +11,7 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.unifycomponents.CardUnify2
 
-class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListener, private val cardInteraction: Boolean) : CircularViewPagerAdapter(itemList, listener) {
+class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListener, private val cardInteraction: Boolean = false) : CircularViewPagerAdapter(itemList, listener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CircularViewHolder {
         return HomeBannerImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_home_banner, parent, false), cardInteraction)
     }

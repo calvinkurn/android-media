@@ -13,7 +13,7 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
 
 class CommonCarouselProductCardTypeFactoryImpl(
     private val channels: ChannelModel,
-    private val cardInteraction: Boolean
+    private val cardInteraction: Boolean = false
 ) : BaseAdapterTypeFactory(), CommonCarouselProductCardTypeFactory {
 
     override fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int {

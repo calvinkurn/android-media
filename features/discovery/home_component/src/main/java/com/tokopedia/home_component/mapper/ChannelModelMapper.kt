@@ -4,7 +4,7 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.productcard.ProductCardModel
 
 object ChannelModelMapper {
-    fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteration: Boolean): ProductCardModel {
+    fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteration: Boolean = false): ProductCardModel {
         return ProductCardModel(
                 slashedPrice = channelGrid.slashedPrice,
                 productName = channelGrid.name,
