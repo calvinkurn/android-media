@@ -138,10 +138,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlist_common.R as Rwishlist
 import org.json.JSONArray
 import javax.inject.Inject
@@ -1730,6 +1727,18 @@ class ProductListFragment: BaseDaggerFragment(),
                 Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
             else
                 Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+        }
+    }
+
+    override fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.productId,
+                productCardOptionsModel.productName,
+                productCardOptionsModel.productImageUrl
+            )
         }
     }
 

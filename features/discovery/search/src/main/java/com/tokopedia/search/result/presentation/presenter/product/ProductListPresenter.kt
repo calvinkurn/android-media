@@ -1794,6 +1794,7 @@ class ProductListPresenter @Inject constructor(
             view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
             view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
@@ -1823,6 +1824,7 @@ class ProductListPresenter @Inject constructor(
             ))
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
             view.showMessageSuccessWishlistAction(wishlistResult)
+            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
         }
     }
 
