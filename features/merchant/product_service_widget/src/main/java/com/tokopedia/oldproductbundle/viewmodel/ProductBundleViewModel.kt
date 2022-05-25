@@ -181,7 +181,7 @@ class ProductBundleViewModel @Inject constructor(
                         productID = productId.toString(),
                         warehouseIDs = listOf(warehouseId)
                     ),
-                    bundleIdList = createBundleListParam(productId)
+                    bundleIdList = createBundleListParam(productId, warehouseId)
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
@@ -367,10 +367,10 @@ class ProductBundleViewModel @Inject constructor(
         return isAddToCartInputValid
     }
 
-    private fun createBundleListParam(productId: Long): List<Bundle> {
+    private fun createBundleListParam(productId: Long, warehouseId: String): List<Bundle> {
         // if given product ID is 0, then use bundle ID to search bundle info
         return if (productId == Int.ZERO.toLong()) {
-            listOf(Bundle(ID = selectedBundleId.toString()))
+            listOf(Bundle(ID = selectedBundleId.toString(), WarehouseID = warehouseId))
         } else {
             emptyList()
         }
