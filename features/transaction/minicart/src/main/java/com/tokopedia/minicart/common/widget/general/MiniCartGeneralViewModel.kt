@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.minicart.chatlist.MiniCartChatListViewModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -26,7 +27,7 @@ class MiniCartGeneralViewModel @Inject constructor(
     private val getMiniCartListUseCase: GetMiniCartListUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper
-) : BaseViewModel(executorDispatchers.main) {
+) : BaseViewModel(executorDispatchers.main), MiniCartChatListViewModel {
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -47,15 +48,9 @@ class MiniCartGeneralViewModel @Inject constructor(
 
     // Bottom Sheet Data
     private val _miniCartChatListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
-    val miniCartChatListBottomSheetUiModel: LiveData<MiniCartListUiModel>
-        get() = _miniCartChatListBottomSheetUiModel
 
     fun initializeShopIds(shopIds: List<String>) {
         _currentShopIds.value = shopIds
-    }
-
-    private fun getShopIds(): List<String> {
-        return currentShopIds.value ?: emptyList()
     }
 
     fun initializeGlobalState() {
@@ -169,7 +164,7 @@ class MiniCartGeneralViewModel @Inject constructor(
             initializeShopIds(shopIds)
             getMiniCartListSimplifiedUseCase.setParams(shopIds, currentSource)
         } else {
-            val tmpShopIds = getShopIds()
+            val tmpShopIds = getCurrentShopIds()
             getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource)
         }
         getMiniCartListSimplifiedUseCase.execute(
@@ -186,8 +181,8 @@ class MiniCartGeneralViewModel @Inject constructor(
         )
     }
 
-    fun getCartList(isFirstLoad: Boolean = false) {
-        val shopIds = getShopIds()
+    override fun getCartList(isFirstLoad: Boolean) {
+        val shopIds = getCurrentShopIds()
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
             onSuccess = {
@@ -197,5 +192,13 @@ class MiniCartGeneralViewModel @Inject constructor(
                 onErrorGetCartList(isFirstLoad, it)
             }
         )
+    }
+
+    override fun getCurrentShopIds(): List<String> {
+        return _currentShopIds.value ?: emptyList()
+    }
+
+    override fun getMiniCartChatListBottomSheetUiModel(): LiveData<MiniCartListUiModel> {
+        return _miniCartChatListBottomSheetUiModel
     }
 }
