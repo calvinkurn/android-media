@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -26,6 +27,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
@@ -83,6 +85,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var navToolbar: NavToolbar? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
+    private val spaceZero: Int
+        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +113,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         setupUi()
         setupNavToolbar()
         setupRecycleView()
+        setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
@@ -147,14 +152,32 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun refreshLayoutPage() = onRefreshLayout()
 
+    private fun setupSwipeRefreshLayout() {
+        context?.let {
+            swipeLayout?.setMargin(
+                spaceZero,
+                NavToolbarExt.getToolbarHeight(it),
+                spaceZero,
+                spaceZero
+            )
+            swipeLayout?.setOnRefreshListener {
+                onRefreshLayout()
+            }
+        }
+    }
+
     private fun onRefreshLayout() {
-        //TODO Refresh layout
+        loadLayout()
     }
 
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
+            }
+
+            rvCategory?.post {
+                resetSwipeLayout()
             }
         }
     }
@@ -245,6 +268,11 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 sortBy = sortBy
             )
         }
+    }
+
+    private fun resetSwipeLayout() {
+        swipeLayout?.isEnabled = true
+        swipeLayout?.isRefreshing = false
     }
 
 }

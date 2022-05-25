@@ -25,7 +25,6 @@ class TokoFoodMerchantListViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
-        val DUMMY_IMAGE = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/6/4/f92fc5a2-2837-4400-81ed-0d3755445e8b.jpg"
     }
 
     private var binding: ItemTokofoodMerchantListCardBinding? by viewBinding()
@@ -65,7 +64,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     private fun setImageMerchant(imageUrl: String) {
-        imgTokoFoodMerchant?.loadImage(DUMMY_IMAGE) //TODO Change to not dummy
+        imgTokoFoodMerchant?.loadImage(imageUrl)
     }
 
     private fun setTitleMerchant(title: String) {
