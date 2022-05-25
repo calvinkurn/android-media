@@ -2,25 +2,33 @@ package com.tokopedia.promocheckout.list.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi.Companion.BASE_URL_EVENT_DEALS
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
+import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -125,6 +133,12 @@ class PromoCheckoutListModule {
         return EventCheckRepositoryImpl(eventCheckoutApi)
     }
 
+    @Provides
+    @PromoCheckoutListScope
+    fun provideCheckoutLisDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
+        return DealsCheckRepositoryImpl(dealsCheckoutApi)
+    }
+
     @PromoCheckoutListScope
     @Provides
     fun provideEventPresenter(eventCheckRepository: EventCheckRepository,
@@ -186,6 +200,32 @@ class PromoCheckoutListModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .build()
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(BASE_URL_EVENT)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(EventCheckoutApi::class.java)
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideApiServiceDeals(gson: Gson, client: OkHttpClient): DealsCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(BASE_URL_EVENT_DEALS)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(DealsCheckoutApi::class.java)
     }
 
     @PromoCheckoutListScope

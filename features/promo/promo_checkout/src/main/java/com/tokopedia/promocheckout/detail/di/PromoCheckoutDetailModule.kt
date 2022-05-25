@@ -14,7 +14,10 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
@@ -231,6 +234,13 @@ class PromoCheckoutDetailModule {
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
     }
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
+        return DealsCheckRepositoryImpl(dealsCheckoutApi)
+    }
+
 
     @Provides
     @PromoCheckoutDetailScope
