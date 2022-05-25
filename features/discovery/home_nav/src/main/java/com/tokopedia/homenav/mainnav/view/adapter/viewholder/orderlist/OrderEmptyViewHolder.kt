@@ -14,6 +14,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -31,6 +32,7 @@ class OrderEmptyViewHolder(itemView: View, val mainNavListener: MainNavListener)
     }
 
     override fun bind(element: OrderEmptyModel) {
+        binding?.cardEmptyTransaction?.cardType = CardUnify2.TYPE_BORDER
         val imageView = binding?.orderEmptyImage
         val shimmer = binding?.orderEmptyImageShimmer
         imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
