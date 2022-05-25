@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitShimmerBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
@@ -16,9 +17,10 @@ class ExplicitView(context: Context, attrs: AttributeSet?) :
     private val bindingQuestion = LayoutWidgetExplicitQuestionBinding.inflate(LayoutInflater.from(context), this)
     private val bindingSuccess = LayoutWidgetExplicitSuccessBinding.inflate(LayoutInflater.from(context), this)
     private val bindingShimmer = LayoutWidgetExplicitShimmerBinding.inflate(LayoutInflater.from(context), this)
+    private val bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this)
 
     init {
-        onLoading()
+        onFailed()
         initListener()
     }
 
@@ -37,21 +39,39 @@ class ExplicitView(context: Context, attrs: AttributeSet?) :
     }
 
     private fun onLoading() {
+        showShadow(true)
         bindingSuccess.containerSuccess.hide()
         bindingQuestion.containerQuestion.hide()
         bindingShimmer.containerShimmer.show()
+        bindingFailed.root.hide()
     }
 
     private fun onQuestion() {
+        showShadow(true)
         bindingSuccess.containerSuccess.hide()
         bindingQuestion.containerQuestion.show()
         bindingShimmer.containerShimmer.hide()
+        bindingFailed.root.hide()
     }
 
     private fun onSuccess() {
+        showShadow(true)
         bindingSuccess.containerSuccess.show()
         bindingQuestion.containerQuestion.hide()
         bindingShimmer.containerShimmer.hide()
+        bindingFailed.root.hide()
+    }
+
+    private fun onFailed() {
+        showShadow(false)
+        bindingSuccess.containerSuccess.hide()
+        bindingQuestion.containerQuestion.hide()
+        bindingShimmer.containerShimmer.hide()
+        bindingFailed.root.show()
+    }
+
+    private fun showShadow(show: Boolean) {
+        this.cardType = if (show) TYPE_SHADOW else TYPE_CLEAR
     }
 
     private fun setViewSuccess() {
