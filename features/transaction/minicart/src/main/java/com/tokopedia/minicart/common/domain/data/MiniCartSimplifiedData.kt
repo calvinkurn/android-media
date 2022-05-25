@@ -1,9 +1,12 @@
 package com.tokopedia.minicart.common.domain.data
 
 data class MiniCartSimplifiedData(
-        var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
-        var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
-        var isShowMiniCartWidget: Boolean = false
+    var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
+    var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
+    var isShowMiniCartWidget: Boolean = false,
+    var bottomBarText: String = "",
+    var bottomBarTotalPrice: String = "",
+    var isShopActive: Boolean = false
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {

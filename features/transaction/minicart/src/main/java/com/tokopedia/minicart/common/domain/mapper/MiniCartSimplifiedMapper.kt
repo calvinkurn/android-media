@@ -18,6 +18,9 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             miniCartItems = mapMiniCartListData(miniCartData)
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
+            bottomBarText = miniCartData.data.bottomBar.text
+            bottomBarTotalPrice = miniCartData.data.bottomBar.totalPriceFmt
+            isShopActive = miniCartData.data.bottomBar.isShopActive
         }
     }
 
