@@ -37,8 +37,6 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 ) : ViewModel(), CoroutineScope {
     val inputFlow = MutableSharedFlow<String>(Int.ONE)
 
-    val isDebug = true
-
     private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
     val cartDataFlow = cartDataState.asStateFlow()
 
@@ -151,23 +149,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
-                        if (isDebug) {
-                            updateParam.productList.firstOrNull().let { param ->
-                                UiEvent(
-                                    state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
-                                    data = updateParam to it.data.copy(carts = listOf(
-                                        CartTokoFood(
-                                            productId = param?.productId.orEmpty(),
-                                            cartId = param?.cartId.orEmpty())
-                                    ))
-                                )
-                            }
-                        } else {
-                            UiEvent(
-                                state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
-                                data = updateParam to it.data
-                            )
-                        }
+                        UiEvent(
+                            state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                            data = updateParam to it.data
+                        )
                     )
                 }
             }
@@ -188,7 +173,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                     loadCartList(source)
                     cartDataValidationState.emit(UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
-                        data = updateParam to it
+                        data = updateParam to it.data
                     ))
                 }
             }
@@ -209,7 +194,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                     loadCartList(source)
                     cartDataValidationState.emit(UiEvent(
                         state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
-                        data = updateParam to it
+                        data = updateParam to it.data
                     ))
                 }
             }
@@ -256,7 +241,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                         loadCartList(source)
                         cartDataValidationState.emit(UiEvent(
                             state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
-                            data = updateParam to it
+                            data = updateParam to it.data
                         ))
                     }
                 }

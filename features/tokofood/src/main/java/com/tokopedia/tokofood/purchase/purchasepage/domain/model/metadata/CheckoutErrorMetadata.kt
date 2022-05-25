@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 data class CheckoutErrorMetadata(
     @SerializedName("popup_message")
@@ -21,7 +22,7 @@ data class CheckoutErrorMetadataDetail(
     val actionText: String = "",
     @SerializedName("action")
     @Expose
-    val action: Int = 0,
+    val action: Int = Int.ZERO,
     @SerializedName("link")
     @Expose
     val link: String = ""
