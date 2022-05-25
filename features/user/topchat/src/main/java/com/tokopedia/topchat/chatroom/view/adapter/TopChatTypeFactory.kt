@@ -15,7 +15,6 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProd
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 interface TopChatTypeFactory {
@@ -37,8 +36,6 @@ interface TopChatTypeFactory {
     fun type(roomSettingFraudAlertUiModel: RoomSettingFraudAlertUiModel): Int
 
     fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int
-
-    fun type(quotationViewModel: QuotationUiModel): Int
 
     fun type(productCarouselUiModel: ProductCarouselUiModel): Int
 

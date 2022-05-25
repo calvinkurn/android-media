@@ -792,7 +792,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_sticker() {
+    fun srw_bubble_should_expanded_when_user_open_sticker() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -810,7 +810,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
         assertChatMenuVisibility((isDisplayed()))
         assertChatStickerMenuVisibility((isDisplayed()))
     }
@@ -841,7 +841,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_chat_menu() {
+    fun srw_bubble_should_expanded_when_user_open_chat_menu() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -859,7 +859,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
         assertChatMenuVisibility(((isDisplayed())))
         assertChatAttachmentMenuVisibility(isDisplayed())
     }
@@ -904,7 +904,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
-        clickSrwBubbleExpandCollapse(0)
+        clickSrwBubbleExpandCollapse(0) //Collapse
+        clickSrwBubbleExpandCollapse(0) //Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -928,7 +929,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
-        clickSrwBubbleExpandCollapse(0)
+        clickSrwBubbleExpandCollapse(0) //Collapse
+        clickSrwBubbleExpandCollapse(0) //Expand
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -937,7 +939,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_collapsed_when_user_open_keyboard() {
+    fun srw_bubble_should_remain_expanded_when_user_open_keyboard() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -955,7 +957,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -982,7 +984,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun srw_bubble_should_remain_collapsed_when_user_click_sticker_menu_and_click_open_keyboard() {
+    fun srw_bubble_should_remain_expanded_when_user_click_sticker_menu_and_click_open_keyboard() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -1001,11 +1003,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
-    fun srw_bubble_should_remain_collapsed_when_user_open_keyboard_and_open_sticker_menu() {
+    fun srw_bubble_should_remain_expanded_when_user_open_keyboard_and_open_sticker_menu() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -1024,7 +1026,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1169,7 +1171,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test
@@ -1191,7 +1193,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        assertSrwBubbleExpanded(0)
     }
 
     @Test

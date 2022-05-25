@@ -44,6 +44,10 @@ class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository
                   status
                   img_logo
                 }
+                sort_by{
+                  text
+                  value
+                }
               }
               orderTypeList {
                 id

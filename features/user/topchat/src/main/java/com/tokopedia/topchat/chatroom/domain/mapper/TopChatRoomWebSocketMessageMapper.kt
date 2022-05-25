@@ -6,18 +6,13 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUNDLING
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.Reply
-import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
-import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
@@ -25,7 +20,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.websocket.WebSocketResponse
 import javax.inject.Inject
@@ -48,7 +42,6 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
-            TYPE_QUOTATION -> convertToQuotation(pojo, jsonAttributes)
             TYPE_STICKER.toString() -> convertToSticker(pojo, jsonAttributes)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(pojo, jsonAttributes)
             TYPE_PRODUCT_BUNDLING -> convertToProductBundling(pojo, jsonAttributes)
@@ -109,18 +102,6 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             .withIsPublic(voucher.isPublic)
             .withIsLockToProduct(voucher.isLockToProduct?: 0)
             .withApplink(voucher.applink?: "")
-            .build()
-    }
-
-    private fun convertToQuotation(
-        payload: ChatSocketPojo, jsonAttributes: JsonObject
-    ): Visitable<*> {
-        val quotationAttributes = GsonBuilder()
-                .create()
-                .fromJson(jsonAttributes, QuotationAttributes::class.java)
-        return QuotationUiModel.Builder()
-            .withResponseFromWs(payload)
-            .withQuotationPojo(quotationAttributes.quotation)
             .build()
     }
 

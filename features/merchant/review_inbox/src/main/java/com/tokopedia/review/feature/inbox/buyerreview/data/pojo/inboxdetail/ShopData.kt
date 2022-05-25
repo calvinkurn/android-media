@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class ShopData(
     @SerializedName("shop_id")
     @Expose
-    val shopId: Long = 0,
+    val shopId: String = "",
 
     @SerializedName("shop_user_id")
     @Expose
-    val shopUserId: Long = 0,
+    val shopUserId: String = "",
 
     @SerializedName("domain")
     @Expose

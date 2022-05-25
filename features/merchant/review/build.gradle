@@ -90,7 +90,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lottie
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 

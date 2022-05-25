@@ -1,19 +1,19 @@
 package com.tokopedia.saldodetails.commom.di.component
 
 import android.content.Context
-import com.tokopedia.saldodetails.commom.di.scope.SaldoDetailsScope
 import com.tokopedia.saldodetails.commom.di.module.*
-import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
-import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailFragment
-import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
-import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailFragment
+import com.tokopedia.saldodetails.commom.di.scope.SaldoDetailsScope
 import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.BaseSaldoTransactionListFragment
-import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
+import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
+import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
+import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailFragment
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailFragment
 import dagger.Component
 
 @SaldoDetailsScope
