@@ -18,12 +18,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -44,6 +46,7 @@ import com.tokopedia.review.databinding.FragmentSellerReviewDetailBinding
 import com.tokopedia.review.databinding.ItemOverallReviewDetailBinding
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
+import com.tokopedia.review.feature.reviewdetail.di.qualifier.ReviewDetailGson
 import com.tokopedia.review.feature.reviewdetail.util.SellerReviewDetailPreference
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.OverallRatingDetailListener
@@ -65,6 +68,7 @@ import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductLi
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.extension.put
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -104,6 +108,10 @@ class SellerReviewDetailFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelProductReviewDetail: ProductReviewDetailViewModel? = null
+
+    @Inject
+    @ReviewDetailGson
+    lateinit var gson: Gson
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -660,26 +668,23 @@ class SellerReviewDetailFragment :
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
+                            val cacheManager = SaveInstanceCacheManager(
+                                context = requireContext(),
+                                generateObjectId = true
+                            ).apply {
+                                put(customId = SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, objectToPut = data, gson = gson)
+                                put(customId = SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, objectToPut = ProductReplyUiModel(productID, productImageUrl, productName, variantName), gson = gson)
+                                put(customId = SellerReviewReplyFragment.EXTRA_SHOP_ID, objectToPut = userSession.shopId.orEmpty(), gson = gson)
+                                put(customId = SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, objectToPut = isEmptyReply, gson = gson)
+                            }
                             startActivity(
                                 Intent(
                                     context,
                                     SellerReviewReplyActivity::class.java
                                 ).apply {
                                     putExtra(
-                                        SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA,
-                                        data
-                                    )
-                                    putExtra(
-                                        SellerReviewReplyFragment.EXTRA_PRODUCT_DATA,
-                                        ProductReplyUiModel(productID, productImageUrl, productName, variantName)
-                                    )
-                                    putExtra(
-                                        SellerReviewReplyFragment.EXTRA_SHOP_ID,
-                                        userSession.shopId.orEmpty()
-                                    )
-                                    putExtra(
-                                        SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW,
-                                        isEmptyReply
+                                        SellerReviewReplyFragment.CACHE_OBJECT_ID,
+                                        cacheManager.id
                                     )
                                 })
                             bottomSheetOptionFeedback?.dismiss()

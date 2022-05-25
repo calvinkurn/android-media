@@ -12,12 +12,14 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -45,6 +47,7 @@ import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent
+import com.tokopedia.review.feature.inboxreview.di.qualifier.InboxReviewGson
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.GlobalErrorStateListener
@@ -59,6 +62,7 @@ import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.extension.put
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
@@ -101,6 +105,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     @Inject
     lateinit var inboxReviewPreference: InboxReviewPreference
+
+    @Inject
+    @InboxReviewGson
+    lateinit var gson: Gson
 
     private var binding by autoClearedNullable<FragmentInboxReviewBinding>()
 
@@ -260,13 +268,19 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val feedbackReplyUiModel = ProductReplyUiModel(data.productID, data.productImageUrl, data.productName, data.variantName)
         val mapFeedbackData = InboxReviewMapper.mapFeedbackInboxToFeedbackUiModel(data)
 
-        startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
-            putExtra(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, mapFeedbackData)
-            putExtra(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
-            putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
-            putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
-        }, RESULT_INTENT_REVIEW_REPLY)
+        val cacheManager = SaveInstanceCacheManager(
+            context = requireContext(),
+            generateObjectId = true
+        ).apply {
+            put(customId = SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, objectToPut = mapFeedbackData, gson = gson)
+            put(customId = SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, objectToPut = feedbackReplyUiModel, gson = gson)
+            put(customId = SellerReviewReplyFragment.EXTRA_SHOP_ID, objectToPut = inboxReviewViewModel.userSession.shopId.orEmpty(), gson = gson)
+            put(customId = SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, objectToPut = isEmptyReply, gson = gson)
+        }
 
+        startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
+            putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager.id)
+        }, RESULT_INTENT_REVIEW_REPLY)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

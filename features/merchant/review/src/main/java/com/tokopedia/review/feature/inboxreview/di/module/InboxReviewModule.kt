@@ -1,10 +1,9 @@
-package com.tokopedia.review.feature.reviewdetail.di.module
+package com.tokopedia.review.feature.inboxreview.di.module
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
-import com.tokopedia.review.feature.reviewdetail.di.qualifier.ReviewDetailGson
-import com.tokopedia.review.feature.reviewdetail.di.scope.ReviewDetailScope
+import com.tokopedia.review.feature.inboxreview.di.qualifier.InboxReviewGson
+import com.tokopedia.review.feature.inboxreview.di.scope.InboxReviewScope
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
@@ -14,17 +13,11 @@ import com.tokopedia.reviewcommon.util.RuntimeTypeAdapterFactory
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [ReviewProductDetailViewModelModule::class])
-class ReviewProductDetailModule {
-    @ReviewDetailScope
+@Module
+class InboxReviewModule {
     @Provides
-    fun provideProductReviewDetailTracking(): ProductReviewDetailTracking {
-        return ProductReviewDetailTracking()
-    }
-
-    @Provides
-    @ReviewDetailScope
-    @ReviewDetailGson
+    @InboxReviewScope
+    @InboxReviewGson
     fun provideGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapterFactory(

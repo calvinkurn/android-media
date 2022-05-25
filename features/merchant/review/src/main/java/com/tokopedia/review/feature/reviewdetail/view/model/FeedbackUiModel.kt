@@ -6,7 +6,6 @@ import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerReviewDetail
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class FeedbackUiModel(
     var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
     var autoReply: Boolean = false,
@@ -25,7 +24,7 @@ data class FeedbackUiModel(
     var page: Int? = 0,
     var badRatingReason: String = "",
     var badRatingDisclaimer: String = ""
-) : BaseSellerReviewDetail, Parcelable {
+) : BaseSellerReviewDetail {
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
