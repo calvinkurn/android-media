@@ -58,11 +58,11 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
             val aspectRatio: Int
             if (myCouponItemViewModel.getCouponListSize() == 1) {
                 defaultDesign = DESIGN_1
-                aspectRatio = ASPECT_RATIO_3_TO_1 / 1
+                aspectRatio = ASPECT_RATIO_3_TO_1
                 myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
             } else {
                 defaultDesign = DESIGN_2
-                aspectRatio = ASPECT_RATIO_2_TO_1 / 1
+                aspectRatio = ASPECT_RATIO_2_TO_1
                 if (!couponItem?.imageHalfURLMobile.isNullOrEmpty()) {
                     myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
                 } else {
