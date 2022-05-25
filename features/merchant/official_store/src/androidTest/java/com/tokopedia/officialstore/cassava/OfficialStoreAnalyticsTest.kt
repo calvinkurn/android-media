@@ -93,11 +93,17 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
-                activity = activityRule.activity,
-                limitCountToIdle = 3
-        )
+//        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
+//                activity = activityRule.activity,
+//                limitCountToIdle = 3
+//        )
+//        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+//        IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
+            activity = activityRule.activity,
+            limitCountToIdle = 3
+        )
         IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
     }
 
