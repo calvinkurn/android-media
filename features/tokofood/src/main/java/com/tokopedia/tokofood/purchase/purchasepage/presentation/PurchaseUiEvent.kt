@@ -21,6 +21,7 @@ data class PurchaseUiEvent(
         const val EVENT_SUCCESS_VALIDATE_CONSENT = 91
         const val EVENT_FAILED_VALIDATE_CONSENT = 92
         const val EVENT_SUCCESS_CHECKOUT_GENERAL = 93
-        const val EVENT_FAILED_CHECKOUT_GENERAL = 94
+        const val EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET = 94
+        const val EVENT_FAILED_CHECKOUT_GENERAL_TOASTER = 95
     }
 }

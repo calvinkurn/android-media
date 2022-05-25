@@ -8,16 +8,19 @@ import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 
 object TokofoodRouteManager {
 
-    fun mapUriToFragment(uri: Uri): BaseMultiFragment? {
-        // tokopedia://tokofood
-        if (uri.host == "tokofood") {
-            var f: BaseMultiFragment? = null
-            if (uri.path == "/home") { // tokopedia://tokofood/home
-                f = TokoFoodHomeFragment()
-            }
+    fun mapUriToFragment(uri: Uri): Fragment? {
+        // tokopedia://food
+        if (uri.host == "food") {
+            val f: Fragment? =
+                when (uri.path) {
+                    "/home" -> TokoFoodHomeFragment() // tokopedia://tokofood/home
+                    "/purchase" -> TokoFoodPurchaseFragment.createInstance() // tokopedia://tokofood/purchase
+                    else -> null
+                }
             if (f != null) {
                 f.arguments = Bundle().apply {
                     putString(Constant.DATA_KEY, uri.toString())

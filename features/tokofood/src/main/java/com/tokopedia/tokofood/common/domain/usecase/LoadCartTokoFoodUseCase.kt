@@ -25,21 +25,23 @@ class LoadCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(additionalAttributes: String): Map<String, Any> {
+        private fun generateParams(additionalAttributes: String,
+                                   source: String): Map<String, Any> {
             val params = CheckoutTokoFoodParam(
-                additionalAttributes = additionalAttributes
+                additionalAttributes = additionalAttributes,
+                source = source
             )
             return mapOf(PARAMS_KEY to params)
         }
     }
 
     override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: CheckoutTokoFoodParam!) {
+        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
           mini_cart_tokofood(params: $$PARAMS_KEY) {
             message
             status
@@ -58,7 +60,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -84,7 +86,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -113,11 +115,8 @@ class LoadCartTokoFoodUseCase @Inject constructor(
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse())
         } else {
-            val additionalAttributes = CartAdditionalAttributesTokoFood(
-                chosenAddressRequestHelper.getChosenAddress(),
-                params
-            )
-            val param = generateParams(additionalAttributes.generateString())
+            val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
+            val param = generateParams(additionalAttributes.generateString(), params)
             val response =
                 repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
             emit(response)
@@ -137,11 +136,9 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                         CheckoutTokoFoodProduct(price = 20000.0)
                     )
                 ),
-                shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    summaryDetail = CheckoutTokoFoodSummaryDetail(
-                        totalPrice = "Rp 10.000",
-                        totalItems = 2
-                    ),
+                summaryDetail = CheckoutTokoFoodSummaryDetail(
+                    totalPrice = "Rp 10.000",
+                    totalItems = 2
                 )
             )
         )

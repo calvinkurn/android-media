@@ -17,7 +17,7 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<CartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
@@ -28,9 +28,9 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        query RemoveCartTokofood($${PARAMS_KEY}: CartTokoFoodParam!) {
+        mutation RemoveCartTokofood($${PARAMS_KEY}: RemoveCartGeneralParams!) {
           remove_cart_general(params: $${PARAMS_KEY}) {
-            error_messages
+            message
             status
             data {
               success

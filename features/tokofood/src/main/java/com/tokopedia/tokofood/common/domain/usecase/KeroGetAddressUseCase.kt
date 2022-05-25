@@ -1,8 +1,8 @@
-package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
+package com.tokopedia.tokofood.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.KeroAddressParamData
+import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.KeroGetAddressResponse
 import com.tokopedia.tokofood.purchase.purchasepage.domain.query.KeroGetAddressQuery
 import javax.inject.Inject
@@ -16,9 +16,11 @@ class KeroGetAddressUseCase @Inject constructor(
         setTypeClass(KeroGetAddressResponse::class.java)
     }
 
-    suspend fun execute(addressId: String): KeroAddressParamData {
+    suspend fun execute(addressId: String): KeroAddressParamData? {
         setRequestParams(KeroGetAddressQuery.createRequestParams(addressId))
-        return executeOnBackground().keroGetAddress.data
+        return executeOnBackground().keroGetAddress.data.find {
+            it.addressId.toString() == addressId
+        }
     }
 
 }

@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.domain.model.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.KeroAddressParamData
+import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
 
 data class KeroGetAddressResponse(
     @SerializedName("kero_get_address")
@@ -13,5 +13,5 @@ data class KeroGetAddressResponse(
 data class KeroGetAddress(
     @SerializedName("data")
     @Expose
-    val data: KeroAddressParamData = KeroAddressParamData()
+    val data: List<KeroAddressParamData> = listOf()
 )

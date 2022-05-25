@@ -1,0 +1,34 @@
+package com.tokopedia.tokofood.common.analytics
+
+object TokoFoodAnalytics {
+
+    const val KEY_BUSINESS_UNIT = ""
+    const val KEY_DIMENSION_49 = "dimension49"
+    const val KEY_DIMENSION_79 = "dimension79"
+    const val KEY_CHECKOUT_OPTION = "checkout_option"
+    const val KEY_CHECKOUT_STEP = "checkout_step"
+    const val KEY_SHOP_NAME = "shop_name"
+    const val KEY_ITEMS = "items"
+
+    // Event Name
+    const val EVENT_CHECKOUT_PROGRESS = "checkout_progress"
+    const val EVENT_VIEW_PG_IRIS = "viewPGIris"
+
+    // Event Action
+    const val EVENT_ACTION_VIEW_CHECKOUT = "view tokofood checkout"
+    const val EVENT_ACTION_CLICK_PAYMENT = "click pilih pembayaran in tokofood checkout page"
+    const val EVENT_ACTION_VIEW_PROMO_PAGE = "view tokofood promo page"
+
+    // Event Category
+    const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"
+    const val EVENT_CATEGORY_PROMO_PAGE = "tokofood promo page"
+
+    const val PHYSICAL_GOODS = "Physical Goods"
+    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    const val VIEW_CHECKOUT = "view checkout"
+    const val CLICK_SUCCESS_PAYMENT = "click bayar sukses"
+
+    const val CHECKOUT_STEP_2 = "2"
+    const val CHECKOUT_STEP_4 = "4"
+
+}

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.purchase.purchasepage.domain.model.param
+package com.tokopedia.tokofood.common.domain.param
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose

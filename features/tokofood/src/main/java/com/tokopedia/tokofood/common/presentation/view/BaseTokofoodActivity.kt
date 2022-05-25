@@ -26,6 +26,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     override fun getRootFragment(): Fragment {
+//        return TokoFoodHomeFragment()
         return TokoFoodPurchaseFragment.createInstance()
     }
 

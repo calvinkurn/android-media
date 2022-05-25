@@ -186,7 +186,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             updateCartTokoFoodUseCase(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
+                    cartDataValidationState.emit(UiEvent(
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
+                        data = updateParam to it
+                    ))
                 }
             }
         }, onError = {
@@ -204,7 +207,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             updateCartTokoFoodUseCase(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_CART))
+                    cartDataValidationState.emit(UiEvent(
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
+                        data = updateParam to it
+                    ))
                 }
             }
         }, onError = {
@@ -248,7 +254,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                         )
                     } else {
                         loadCartList(source)
-                        cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_ADD_TO_CART))
+                        cartDataValidationState.emit(UiEvent(
+                            state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
+                            data = updateParam to it
+                        ))
                     }
                 }
             }
@@ -267,8 +276,8 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         return MiniCartUiModel(
             shopName = cartData.shop.name,
             totalPrice = cartData.shoppingSummary.total.cost,
-            totalPriceFmt = cartData.shoppingSummary.summaryDetail.totalPrice,
-            totalProductQuantity = cartData.shoppingSummary.summaryDetail.totalItems
+            totalPriceFmt = cartData.summaryDetail.totalPrice,
+            totalProductQuantity = cartData.summaryDetail.totalItems
         )
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
+package com.tokopedia.tokofood.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -25,15 +25,20 @@ class KeroEditAddressUseCase @Inject constructor(
         longitude: String
     ): Boolean {
         if (isDebug) {
-            val addressParam = keroGetAddressUseCase.execute(addressId).copy(
-                latitude = latitude,
-                longitude = longitude
-            )
-            setRequestParams(KeroEditAddressQuery.createRequestParams(addressParam))
-            return executeOnBackground().keroEditAddress.data.isEditSuccess()
-        } else {
             delay(1000)
             return true
+        } else {
+            val addressParam = keroGetAddressUseCase.execute(addressId)?.copy(
+                latitude = latitude,
+                longitude = longitude,
+                secondAddress = "$latitude,$longitude"
+            )
+            return if (addressParam == null) {
+                false
+            } else {
+                setRequestParams(KeroEditAddressQuery.createRequestParams(addressParam))
+                executeOnBackground().keroEditAddress.data.isEditSuccess()
+            }
         }
     }
 
