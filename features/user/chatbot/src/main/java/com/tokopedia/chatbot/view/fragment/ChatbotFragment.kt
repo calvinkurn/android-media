@@ -1430,13 +1430,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onErrorGetBottomChat() {
+    private fun onErrorGetBottomChat() : (Throwable) -> Unit =  {
         (adapter as ChatbotAdapter).hideBottomLoading()
         onError()
         rvScrollListener?.finishBottomLoadingState()
     }
 
-    private fun onErrorGetTopChat() {
+    private fun onErrorGetTopChat() : (Throwable) -> Unit = {
         hideTopLoading()
         onError()
         rvScrollListener?.finishTopLoadingState()
@@ -1464,13 +1464,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                     //TODO this part not working
 
-                    val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
-                        replyTime
-                    )
-                    if (bubblePosition != RecyclerView.NO_POSITION) {
-                        smoothScroll?.targetPosition = bubblePosition
-                        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
-                    }
+//                    val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
+//                        replyTime
+//                    )
+//                    if (bubblePosition != RecyclerView.NO_POSITION) {
+//                        smoothScroll?.targetPosition = bubblePosition
+//                        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
+//                    }
 
                 }
                 updateHasNextState(chatReplies)
@@ -1497,7 +1497,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showTopLoading() {
-        showLoading()
+        (adapter as ChatbotAdapter).showTopLoading()
     }
 
     private fun showBottomLoading() {
@@ -1541,7 +1541,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun renderTopList(listChat: List<Visitable<*>>) {
         val adapter = adapter as ChatbotAdapter
-     //   adapter?.hideLoading()
+        adapter?.hideTopLoading()
         if (listChat.isNotEmpty()) {
             adapter?.addTopData(listChat)
         }

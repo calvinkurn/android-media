@@ -62,10 +62,27 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
+    fun showTopLoading(){
+        if (visitables.isEmpty()){
+            visitables.add(visitables.size,loadingMoreModel)
+            notifyItemInserted(visitables.size)
+        }
+        else if(visitables[visitables.size-1] !is LoadingMoreModel)
+            visitables.add(visitables.size,loadingMoreModel)
+            notifyItemInserted(visitables.size)
+    }
+
     fun hideBottomLoading() {
         if (visitables[0] is LoadingMoreModel) {
             visitables.removeAt(0)
             notifyItemRemoved(0)
+        }
+    }
+
+    fun hideTopLoading() {
+        if (visitables[visitables.size-1] is LoadingMoreModel) {
+            visitables.removeAt(visitables.size-1)
+            notifyItemRemoved(visitables.size-1)
         }
     }
 

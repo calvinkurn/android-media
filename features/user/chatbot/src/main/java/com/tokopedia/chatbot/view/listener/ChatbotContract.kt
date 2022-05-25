@@ -162,14 +162,14 @@ interface ChatbotContract {
         fun getTopChat(
             messageId: String,
             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onError: Unit,
+            onError: (Throwable) -> Unit,
             onGetChatRatingListMessageError: (String) -> Unit
         )
 
         fun getBottomChat(
             messageId: String,
             onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-            onError: Unit,
+            onError: (Throwable) -> Unit,
             onGetChatRatingListMessageError: (String) -> Unit
         )
     }

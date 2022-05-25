@@ -244,13 +244,14 @@ class ChatbotPresenter @Inject constructor(
                         mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
-                    if(attachmentType == SESSION_CHANGE) {
-                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
-                            chatResponse.attachment?.attributes,
-                            ReplyBubbleAttributes::class.java
-                        )
-                        handleReplyBubble(agentMode)
-                    }
+                    //TODO add this again
+//                    if(attachmentType == SESSION_CHANGE) {
+//                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
+//                            chatResponse.attachment?.attributes,
+//                            ReplyBubbleAttributes::class.java
+//                        )
+//                        handleReplyBubble(agentMode)
+//                    }
 
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
@@ -850,7 +851,7 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
-    private fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
+    fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
         val input = ChipGetChatRatingListInput()
         for (message in mappedPojo.listChat) {
             if (message is HelpFullQuestionsViewModel) {
@@ -862,7 +863,7 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
-    private fun getChatRatingList(
+    fun getChatRatingList(
         inputList: ChipGetChatRatingListInput,
         onSuccessGetRatingList: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
     ) {
@@ -929,7 +930,7 @@ class ChatbotPresenter @Inject constructor(
     override fun getTopChat(
         messageId: String,
         onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
-        onError: Unit,
+        onError: (Throwable) -> Unit,
         onGetChatRatingListMessageError: (String) -> Unit
     ) {
         launchCatchError(
@@ -947,7 +948,7 @@ class ChatbotPresenter @Inject constructor(
                 }
             },
             onError = {
-                onError()
+                onError.invoke(it)
             }
         )
     }
@@ -955,7 +956,7 @@ class ChatbotPresenter @Inject constructor(
     override fun getBottomChat(
         messageId: String,
         onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
-        onError: Unit,
+        onError: (Throwable) -> Unit,
         onGetChatRatingListMessageError: (String) -> Unit
     ) {
         launchCatchError(
@@ -973,7 +974,7 @@ class ChatbotPresenter @Inject constructor(
                 }
             },
             onError = {
-                onError()
+                onError.invoke(it)
             }
         )
     }
