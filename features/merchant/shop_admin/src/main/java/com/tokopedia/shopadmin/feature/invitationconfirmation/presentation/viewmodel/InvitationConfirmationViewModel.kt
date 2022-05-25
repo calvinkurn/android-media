@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -61,7 +61,21 @@ class InvitationConfirmationViewModel @Inject constructor(
     val validateEmail: Flow<Result<ValidateAdminEmailUiModel>> = _validateEmail
 
     init {
-        initValidateAdminEmail()
+        viewModelScope.launch {
+            _emailParam
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .flatMapLatest { email ->
+                    fetchValidateEmailUseCase(
+                        invitationConfirmationParam.getShopId(),
+                        email,
+                        invitationConfirmationParam.getShopManageId()
+                    ).catch { emit(Fail(it)) }
+                }
+                .flowOn(coroutineDispatchers.io)
+                .collect {
+                    _validateEmail.emit(it)
+                }
+        }
     }
 
     fun fetchAdminType() {
@@ -99,22 +113,6 @@ class InvitationConfirmationViewModel @Inject constructor(
         }, onError = {
             _confirmationReg.value = Fail(it)
         })
-    }
-
-    private fun initValidateAdminEmail() = viewModelScope.launch {
-        _emailParam
-            .debounce(DEBOUNCE_DELAY_MILLIS)
-            .flatMapLatest { email ->
-                fetchValidateEmailUseCase(
-                    invitationConfirmationParam.getShopId(),
-                    email,
-                    invitationConfirmationParam.getShopManageId()
-                ).catch { emit(Fail(it)) }
-            }
-            .flowOn(coroutineDispatchers.io)
-            .collectLatest {
-                _validateEmail.emit(it)
-            }
     }
 
     private fun fetchValidateEmailUseCase(
