@@ -21,7 +21,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProd
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ import kotlin.math.abs
 
 class HomeLeftCarouselViewHolder (
     itemView: View,
-    private val homeLeftCarouselListener: HomeLeftCarouselCallback? = null,
+    private val homeLeftCarouselListener: HomeLeftCarouselAtcCallback? = null,
     private val tokoNowView: TokoNowView? = null
 ) : AbstractViewHolder<HomeLeftCarouselUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {

@@ -1954,7 +1954,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL)
+        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
 
         val productCardUiModel = HomeLeftCarouselProductCardUiModel(
             id = "2",
@@ -2004,7 +2004,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
-        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL)
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
 
         verifyAddToCartUseCaseCalled()
 
@@ -2023,7 +2023,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
-        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL)
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyAddToCartUseCaseCalled()

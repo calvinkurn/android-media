@@ -32,7 +32,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
@@ -712,7 +712,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (type) {
             REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
-            MIX_LEFT_CAROUSEL -> trackLeftCarouselAddToCart(productId, quantity, cartId)
+            MIX_LEFT_CAROUSEL_ATC -> trackLeftCarouselAddToCart(productId, quantity, cartId)
         }
     }
 

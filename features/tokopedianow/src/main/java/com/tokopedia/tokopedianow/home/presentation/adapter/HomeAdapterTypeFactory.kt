@@ -23,7 +23,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
@@ -45,7 +45,8 @@ class HomeAdapterTypeFactory(
     private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
     private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
     private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
-    private val homeLeftCarouselListener: HomeLeftCarouselCallback? = null,
+    private val homeLeftCarouselListener: HomeLeftCarouselAtcCallback? = null,
+    private val mixLeftComponentListener: MixLeftComponentListener? = null,
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -128,6 +129,9 @@ class HomeAdapterTypeFactory(
             }
             BannerComponentViewHolder.LAYOUT -> {
                 BannerComponentViewHolder(view, bannerComponentListener, null)
+            }
+            MixLeftComponentViewHolder.LAYOUT -> {
+                MixLeftComponentViewHolder(view, mixLeftComponentListener, null)
             }
             // endregion
             else -> super.createViewHolder(view, type)

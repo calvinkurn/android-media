@@ -667,6 +667,34 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
+    fun trackImpressionProductLeftCarousel(
+        position: Int,
+        channelModel: ChannelModel,
+        grid: ChannelGrid
+    ) {
+        val items = arrayListOf(
+            productItemDataLayer(
+                index = position.toString(),
+                productId = grid.id,
+                productName = grid.name,
+                price = grid.price.filter { it.isDigit() }.toLongOrZero(),
+                productBrand = grid.brandId,
+                productCategory = grid.categoryId
+            )
+        )
+
+        val dataLayer = getMarketplaceDataLayer(
+            event = EVENT_VIEW_ITEM_LIST,
+            action = EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL,
+            label = "${channelModel.id} - ${channelModel.channelHeader.name}"
+        ).apply {
+            putParcelableArrayList(KEY_ITEMS, items)
+            putString(KEY_USER_ID, userSession.userId)
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
+    }
+
     fun trackClickProductLeftCarousel(
         position: Int,
         product: HomeLeftCarouselProductCardUiModel
@@ -691,6 +719,41 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL,
             label = "${product.id} - $headerName"
+        ).apply {
+            putString(KEY_ITEM_LIST, itemList)
+            putParcelableArrayList(KEY_ITEMS, items)
+            putString(KEY_USER_ID, userSession.userId)
+        }
+
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun trackClickProductLeftCarousel(
+        position: Int,
+        channelModel: ChannelModel,
+        grid: ChannelGrid
+    ) {
+        val headerName = channelModel.channelHeader.name
+
+        val items = arrayListOf(
+            productItemDataLayer(
+                index = position.toString(),
+                productId = grid.id,
+                productName = grid.name,
+                price = grid.price.filter { it.isDigit() }.toLongOrZero(),
+                productBrand = grid.brandId,
+                productCategory = grid.categoryId
+            )
+        )
+
+        val itemList = "$ITEM_LIST_LEFT_CAROUSEL${channelModel.type} - " +
+                "${channelModel.pageName} - " + headerName
+
+        val dataLayer = getMarketplaceDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL,
+            label = "${channelModel.id} - $headerName"
         ).apply {
             putString(KEY_ITEM_LIST, itemList)
             putParcelableArrayList(KEY_ITEMS, items)
