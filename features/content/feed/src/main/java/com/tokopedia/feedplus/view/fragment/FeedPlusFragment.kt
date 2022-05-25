@@ -109,6 +109,7 @@ import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FI
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.feedplus.view.util.FeedFloatingButtonManager
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
@@ -223,20 +224,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         TopAdsUrlHitter(context)
     }
 
-    private val dispatchers = CoroutineDispatchersProvider
-    private val scope = CoroutineScope(dispatchers.computation)
-
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(-1)) {
-                setDelayForExpandFab()
-            }
-            else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                shrinkFab()
-            }
-        }
-    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var feedViewModel: FeedViewModel
@@ -258,6 +245,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
     private lateinit var productTagBS: ProductItemInfoBottomSheet
     private val userIdInt: Int
         get() {
@@ -337,10 +328,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
-
-        // region fab feed
-        private const val FAB_EXPAND_WAITING_DELAY = 1000L
-        // endregion
 
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
@@ -758,27 +745,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.addOnScrollListener(scrollListener)
-        setDelayForExpandFab()
-    }
-
-    private fun setDelayForExpandFab() {
-        scope.launch {
-            delay(FAB_EXPAND_WAITING_DELAY)
-            withContext(dispatchers.main) {
-                if(!recyclerView.canScrollVertically(-1)) {
-                    if(requireParentFragment() is FeedPlusContainerFragment) {
-                        (requireParentFragment() as FeedPlusContainerFragment).expandFab()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun shrinkFab() {
-        if(requireParentFragment() is FeedPlusContainerFragment) {
-            (requireParentFragment() as FeedPlusContainerFragment).shrinkFab()
-        }
+        recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.setDelayForExpandFab(recyclerView)
     }
 
     private fun prepareView() {
@@ -818,6 +786,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
         })
+        feedFloatingButtonManager.setInitialData(requireParentFragment())
     }
 
     private fun sendNewFeedClickEvent() {
@@ -852,12 +821,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.onDestroy()
         }
         TopAdsHeadlineActivityCounter.page = 1
-        recyclerView.removeOnScrollListener(scrollListener)
+        recyclerView.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        scope.cancel()
+        feedFloatingButtonManager.cancel()
     }
 
     override fun onInfoClicked() {
