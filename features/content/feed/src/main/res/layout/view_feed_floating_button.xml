@@ -8,6 +8,7 @@
     android:orientation="horizontal">
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_lvl3"

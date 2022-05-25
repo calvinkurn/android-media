@@ -6,7 +6,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedplus.R
+import com.tokopedia.iconunify.IconUnify
+import kotlinx.coroutines.*
+import kotlin.concurrent.timer
 
 /**
  * Created By : Jonathan Darwin on May 25, 2022
@@ -20,17 +24,23 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
     /** View */
     private val flTextWrapper: FrameLayout
-    private val overlayView: View = View(context)
+    private val icFab: IconUnify
 
     init {
         val view = View.inflate(context, R.layout.view_feed_floating_button, this)
         super.setOnClickListener(this)
 
         flTextWrapper = view.findViewById(R.id.fl_fab_text_wrapper)
+        icFab = view.findViewById(R.id.ic_fab)
     }
 
     private var mOnClickListener: OnClickListener? = null
     private var isExpand: Boolean = false
+    private var isMenuOpen: Boolean = false
+
+    private val dispatchers = CoroutineDispatchersProvider
+    private var job: Job? = null
+    private val scope = CoroutineScope(dispatchers.computation)
 
     override fun onClick(p0: View?) {
         shrink()
@@ -75,7 +85,37 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
         }
     }
 
+    fun checkFabMenuStatusWithTimer(isMenuOpenCallback: () -> Boolean) {
+        job = scope.launch {
+            while (true) {
+                delay(TIMER_CHECK_MENU_STATUS_DURATION)
+
+                withContext(dispatchers.main) {
+                    val currIsMenuOpen = isMenuOpenCallback.invoke()
+                    if(isMenuOpen != currIsMenuOpen) {
+                        isMenuOpen = currIsMenuOpen
+                        changeFabIcon(isMenuOpen)
+                    }
+                }
+            }
+        }
+    }
+
+    fun stopTimer() {
+        job?.cancel()
+    }
+
+    private fun changeFabIcon(isMenuOpen: Boolean) {
+        icFab.setImage(if(isMenuOpen) IconUnify.CLOSE else IconUnify.ADD)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopTimer()
+    }
+
     companion object {
         private const val ANIMATION_DURATION = 200L
+        private const val TIMER_CHECK_MENU_STATUS_DURATION = 100L
     }
 }

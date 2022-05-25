@@ -277,11 +277,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         hideAllFab()
         shouldHitFeedTracker = true
         unRegisterNewFeedReceiver()
+        feed_floating_button.stopTimer()
     }
 
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
+        feed_floating_button.checkFabMenuStatusWithTimer {
+            fab_feed.menuOpen
+        }
 
         if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
             toolBarAnalytics.createAnalyticsForOpenScreen(
@@ -320,6 +324,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         super.onDestroy()
+        feed_floating_button.stopTimer()
     }
 
     override fun getScreenName(): String? = null
