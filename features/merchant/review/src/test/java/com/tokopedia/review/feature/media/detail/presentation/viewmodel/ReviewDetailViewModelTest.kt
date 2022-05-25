@@ -112,7 +112,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         )
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResultWithImageAndVideo)
         viewModel.updateCurrentMediaItem(mediaItemUiModel)
-        viewModel.updateCurrentOrientation(OrientationUiState.Landscape)
+        viewModel.updateCurrentOrientation(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE))
         viewModel.updateCurrentOverlayVisibility(false)
         val reviewDetailFragmentUiState = viewModel.reviewDetailFragmentUiState.first()
         Assert.assertEquals(ReviewDetailFragmentUiState.Hidden, reviewDetailFragmentUiState)

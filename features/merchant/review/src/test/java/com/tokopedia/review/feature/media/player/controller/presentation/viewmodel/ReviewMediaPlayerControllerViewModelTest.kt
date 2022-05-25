@@ -1,11 +1,11 @@
 package com.tokopedia.review.feature.media.player.controller.presentation.viewmodel
 
 import android.os.Bundle
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
+import com.tokopedia.reviewcommon.extension.getSavedState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -109,8 +109,8 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
 
     @Test
     fun `updateOrientationUiState should update orientationUiState`() = runBlockingTest {
-        viewModel.updateOrientationUiState(OrientationUiState.Landscape)
-        Assert.assertEquals(OrientationUiState.Landscape, viewModel.uiState.first().orientationUiState)
+        viewModel.updateOrientationUiState(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE))
+        Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE), viewModel.uiState.first().orientationUiState)
     }
 
     @Test

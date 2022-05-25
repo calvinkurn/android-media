@@ -7,14 +7,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.CacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.databinding.FragmentReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.gallery.base.analytic.ReviewMediaGalleryTracker
 import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
+import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryGson
 import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.base.presentation.adapter.ReviewMediaGalleryAdapter
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
@@ -27,6 +31,7 @@ import com.tokopedia.review.feature.media.player.image.presentation.fragment.Rev
 import com.tokopedia.review.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.review.feature.media.player.video.presentation.fragment.ReviewVideoPlayerFragment
 import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
+import com.tokopedia.reviewcommon.extension.get
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -45,10 +50,15 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     companion object {
         const val TAG = "ReviewMediaGalleryFragment"
+        const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
     }
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    @ReviewMediaGalleryGson
+    lateinit var gson: Gson
 
     @Inject
     lateinit var videoPlayer: ReviewVideoPlayer
@@ -122,7 +132,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        reviewMediaGalleryViewModel.saveUiState(outState)
+        val cacheManager = SaveInstanceCacheManager(
+            context = requireContext(),
+            generateObjectId = true
+        )
+        reviewMediaGalleryViewModel.saveUiState(cacheManager)
+        outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
     override fun getScreenName(): String = ReviewMediaGalleryFragment::class.simpleName.orEmpty()
@@ -326,14 +341,19 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            restoreUiState(savedInstanceState)
-            reviewMediaGalleryViewModel.restoreUiState(savedInstanceState)
+            val cacheManagerId = savedInstanceState.getString(KEY_CACHE_MANAGER_ID)
+            val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+            restoreUiState(cacheManager)
+            reviewMediaGalleryViewModel.restoreUiState(cacheManager)
         }
     }
 
-    private fun restoreUiState(savedInstanceState: Bundle) {
-        savedInstanceState.getParcelable<AdapterUiState>(
-            ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE
+    private fun restoreUiState(cacheManager: CacheManager) {
+        cacheManager.get<AdapterUiState>(
+            customId = ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE,
+            type = AdapterUiState::class.java,
+            defaultValue = null,
+            gson = gson
         )?.let { savedReviewMediaGalleryAdapterUiState ->
             galleryAdapter.restoreUiState(savedReviewMediaGalleryAdapterUiState.mediaItemUiModels)
         }

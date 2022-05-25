@@ -10,11 +10,11 @@ import com.tokopedia.review.feature.media.detail.presentation.uistate.ExpandedRe
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ReviewDetailBasicInfoUiState
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ReviewDetailFragmentUiState
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ReviewDetailSupplementaryUiState
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
+import com.tokopedia.reviewcommon.extension.getSavedState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +38,7 @@ class ReviewDetailViewModel @Inject constructor(
     private val _showExpandedReviewDetailBottomSheet = MutableStateFlow(false)
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
     private val _getDetailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
-    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    private val _orientationUiState = MutableStateFlow(OrientationUiState())
     private val _overlayVisibility = MutableStateFlow(true)
 
     val currentReviewDetail: StateFlow<ReviewDetailUiModel?> = combine(

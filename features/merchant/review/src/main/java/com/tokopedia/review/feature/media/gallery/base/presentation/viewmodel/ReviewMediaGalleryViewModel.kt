@@ -1,12 +1,14 @@
 package com.tokopedia.review.feature.media.gallery.base.presentation.viewmodel
 
-import android.os.Bundle
 import android.os.CountDownTimer
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryGson
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.AdapterUiState
@@ -16,8 +18,8 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
+import com.tokopedia.reviewcommon.extension.put
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,7 +33,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewMediaGalleryViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    @ReviewMediaGalleryGson private val gson: Gson
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -41,7 +44,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         const val SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE = "savedStateMediaViewPagerUiState"
     }
 
-    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    private val _orientationUiState = MutableStateFlow(OrientationUiState())
     private val _viewPagerUiState = MutableStateFlow(ViewPagerUiState())
     val viewPagerUiState: StateFlow<ViewPagerUiState>
         get() = _viewPagerUiState
@@ -164,16 +167,21 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         }
     }
 
-    fun saveUiState(outState: Bundle) {
+    fun saveUiState(cacheManager: CacheManager) {
         enableViewPagerTimer.cancel()
         requestToggleViewPagerSwipe(true)
-        outState.putParcelable(SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE, adapterUiState.value)
-        outState.putParcelable(SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, _viewPagerUiState.value)
+        cacheManager.put(
+            customId = SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE,
+            objectToPut = adapterUiState.value,
+            gson = gson
+        )
+        cacheManager.put(SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, _viewPagerUiState.value)
     }
 
-    fun restoreUiState(savedInstanceState: Bundle) {
-        savedInstanceState.getSavedState(
+    fun restoreUiState(cacheManager: CacheManager) {
+        cacheManager.get(
             SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE,
+            ViewPagerUiState::class.java,
             _viewPagerUiState.value
         )?.let { savedReviewMediaGalleryViewPagerUiState ->
             _viewPagerUiState.value = savedReviewMediaGalleryViewPagerUiState

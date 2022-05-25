@@ -1,26 +1,25 @@
 package com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate
 
-import java.io.Serializable
+import androidx.annotation.IntDef
 
-sealed interface OrientationUiState : Serializable {
-
+data class OrientationUiState(
+    @Orientation val orientation: Int = Orientation.PORTRAIT
+) {
     fun isPortrait(): Boolean {
-        return this is Portrait
+        return orientation == Orientation.PORTRAIT
     }
 
     fun isLandscape(): Boolean {
-        return this is Landscape
+        return orientation == Orientation.LANDSCAPE
     }
 
-    object Portrait : OrientationUiState {
-        override fun equals(other: Any?): Boolean {
-            return other is Portrait
-        }
-    }
-
-    object Landscape : OrientationUiState {
-        override fun equals(other: Any?): Boolean {
-            return other is Landscape
+    @Retention(AnnotationRetention.SOURCE)
+    @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
+    @IntDef(value = [Orientation.PORTRAIT, Orientation.LANDSCAPE])
+    annotation class Orientation {
+        companion object {
+            const val PORTRAIT = 0
+            const val LANDSCAPE = 1
         }
     }
 }

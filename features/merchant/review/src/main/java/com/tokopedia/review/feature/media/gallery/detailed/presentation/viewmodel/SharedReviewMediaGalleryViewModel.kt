@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel
 
-import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.CacheManager
@@ -19,7 +18,6 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.uimodel.StringRes
@@ -95,7 +93,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _currentReviewDetail = MutableStateFlow<ReviewDetailUiModel?>(null)
     val currentReviewDetail: StateFlow<ReviewDetailUiModel?>
         get() = _currentReviewDetail
-    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    private val _orientationUiState = MutableStateFlow(OrientationUiState())
     val orientationUiState: StateFlow<OrientationUiState>
         get() = _orientationUiState
     private val _overlayVisibility = MutableStateFlow(true)
@@ -296,27 +294,52 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         }
     }
 
-    fun saveState(outState: Bundle) {
-        outState.putSerializable(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
-        outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
-        outState.putBoolean(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)
-        outState.putSerializable(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)
-        outState.putBoolean(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
-        outState.putBoolean(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
-        outState.putBoolean(SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, _hasSuccessToggleLikeStatus.value)
+    fun saveState(cacheManager: CacheManager) {
+        cacheManager.put(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
+        cacheManager.put(SAVED_STATE_PRODUCT_ID, _productID.value)
+        cacheManager.put(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)
+        cacheManager.put(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)
+        cacheManager.put(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
+        cacheManager.put(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
+        cacheManager.put(SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, _hasSuccessToggleLikeStatus.value)
     }
 
-    fun restoreState(savedState: Bundle) {
-        _detailedReviewMediaResult.value = savedState.getSavedState(
-            SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
-        _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value)!!
-        _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)!!
-        _orientationUiState.value = savedState.getSavedState(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)!!
-        _overlayVisibility.value = savedState.getSavedState(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)!!
-        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(
-            SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)!!
-        _hasSuccessToggleLikeStatus.value = savedState.getSavedState(
-            SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, _hasSuccessToggleLikeStatus.value)!!
+    fun restoreState(cacheManager: CacheManager) {
+        _detailedReviewMediaResult.value = cacheManager.get(
+            SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT,
+            ProductrevGetReviewMedia::class.java,
+            _detailedReviewMediaResult.value
+        ) ?: _detailedReviewMediaResult.value
+        _productID.value = cacheManager.get(
+            SAVED_STATE_PRODUCT_ID,
+            String::class.java,
+            _productID.value
+        ) ?: _productID.value
+        _showSeeMore.value = cacheManager.get(
+            SAVED_STATE_SHOW_SEE_MORE,
+            Boolean::class.java,
+            _showSeeMore.value
+        ) ?: _showSeeMore.value
+        _orientationUiState.value = cacheManager.get(
+            SAVED_STATE_ORIENTATION_UI_STATE,
+            OrientationUiState::class.java,
+            _orientationUiState.value
+        ) ?: _orientationUiState.value
+        _overlayVisibility.value = cacheManager.get(
+            SAVED_STATE_OVERLAY_VISIBILITY,
+            Boolean::class.java,
+            _overlayVisibility.value
+        ) ?: _overlayVisibility.value
+        _showDetailedReviewActionMenuBottomSheet.value = cacheManager.get(
+            SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET,
+            Boolean::class.java,
+            _showDetailedReviewActionMenuBottomSheet.value
+        ) ?: _showDetailedReviewActionMenuBottomSheet.value
+        _hasSuccessToggleLikeStatus.value = cacheManager.get(
+            SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS,
+            Boolean::class.java,
+            _hasSuccessToggleLikeStatus.value
+        ) ?: _hasSuccessToggleLikeStatus.value
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {
@@ -373,11 +396,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun requestPortraitMode() {
-        _orientationUiState.value = OrientationUiState.Portrait
+        _orientationUiState.value = OrientationUiState(orientation = OrientationUiState.Orientation.PORTRAIT)
     }
 
     fun requestLandscapeMode() {
-        _orientationUiState.value = OrientationUiState.Landscape
+        _orientationUiState.value = OrientationUiState(orientation = OrientationUiState.Orientation.LANDSCAPE)
     }
 
     fun toggleOverlayVisibility() {

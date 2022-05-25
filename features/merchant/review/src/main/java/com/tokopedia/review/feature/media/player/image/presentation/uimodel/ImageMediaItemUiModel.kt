@@ -2,9 +2,7 @@ package com.tokopedia.review.feature.media.player.image.presentation.uimodel
 
 import android.net.Uri
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class ImageMediaItemUiModel(
     override val id: String,
     override val uri: String,

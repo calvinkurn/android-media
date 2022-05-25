@@ -1,9 +1,7 @@
 package com.tokopedia.review.feature.media.gallery.base.presentation.uimodel
 
 import com.tokopedia.kotlin.extensions.view.ZERO
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class LoadingStateItemUiModel(
     override val id: String = "",
     override val uri: String = "",

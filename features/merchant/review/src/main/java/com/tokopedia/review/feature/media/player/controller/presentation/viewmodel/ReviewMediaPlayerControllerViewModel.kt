@@ -8,12 +8,12 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.player.controller.presentation.uistate.ReviewMediaPlayerControllerUiState
+import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
 import com.tokopedia.reviewcommon.extension.combine
 import com.tokopedia.reviewcommon.extension.getSavedState
-import com.tokopedia.review.feature.media.player.video.presentation.model.VideoMediaItemUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -33,7 +33,7 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
 
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
     private val _getDetailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
-    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    private val _orientationUiState = MutableStateFlow(OrientationUiState())
     private val _overlayVisibility = MutableStateFlow(true)
     private val _muted = MutableStateFlow(true)
 

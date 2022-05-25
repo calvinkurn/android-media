@@ -1,11 +1,14 @@
 package com.tokopedia.review.feature.media.gallery.base.presentation.viewmodel
 
-import android.os.Bundle
-import com.tokopedia.reviewcommon.extension.getSavedState
+import com.google.gson.Gson
+import com.tokopedia.cachemanager.CacheManager
+import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.AdapterUiState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.ViewPagerUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
+import com.tokopedia.reviewcommon.extension.put
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
@@ -17,7 +20,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
     fun `onPageSelected should update _viewPagerUiState when changingConfiguration is false`() = runBlockingTest {
         val newPosition = 10
         val currentPosition = viewModel.viewPagerUiState.first().currentPagerPosition
-        viewModel.updateOrientationUiState(OrientationUiState.Portrait)
+        viewModel.updateOrientationUiState(OrientationUiState(OrientationUiState.Orientation.PORTRAIT))
         viewModel.onPageSelected(newPosition)
         Assert.assertEquals(currentPosition, viewModel.viewPagerUiState.first().previousPagerPosition)
         Assert.assertEquals(newPosition, viewModel.viewPagerUiState.first().currentPagerPosition)
@@ -28,7 +31,7 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
         val newPosition = 10
         val currentPosition = viewModel.viewPagerUiState.first().currentPagerPosition
         val previousPosition = viewModel.viewPagerUiState.first().previousPagerPosition
-        viewModel.updateOrientationUiState(OrientationUiState.Landscape)
+        viewModel.updateOrientationUiState(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE))
         viewModel.onPageSelected(newPosition)
         Assert.assertEquals(previousPosition, viewModel.viewPagerUiState.first().previousPagerPosition)
         Assert.assertEquals(currentPosition, viewModel.viewPagerUiState.first().currentPagerPosition)
@@ -53,21 +56,23 @@ class ReviewMediaGalleryViewModelTest : ReviewMediaGalleryViewModelTestFixture()
 
     @Test
     fun `saveUiState should save current states`() = runBlockingTest {
-        val outState = mockk<Bundle>(relaxed = true)
-        viewModel.saveUiState(outState)
-        verify { outState.putParcelable(ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE, any()) }
-        verify { outState.putParcelable(ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, any()) }
+        mockkStatic("com.tokopedia.reviewcommon.extension.CacheManagerExtKt") {
+            val cacheManager = mockk<CacheManager>(relaxed = true)
+            viewModel.saveUiState(cacheManager)
+            verify { cacheManager.put(customId = ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE, objectToPut = any<AdapterUiState>(), gson = any<Gson>()) }
+            verify { cacheManager.put(ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, any<ViewPagerUiState>(), CacheManager.defaultExpiredDuration) }
+        }
     }
 
     @Test
     fun `restoreUiState should restore all saved states`() = runBlockingTest {
         val latestViewPagerUiState = mockk<ViewPagerUiState>(relaxed = true)
-        val savedState = mockk<Bundle>(relaxed = true) {
+        val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
-                getSavedState(ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, viewModel.viewPagerUiState.value)
+                get(ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, ViewPagerUiState::class.java, viewModel.viewPagerUiState.value)
             } returns latestViewPagerUiState
         }
-        viewModel.restoreUiState(savedState)
+        viewModel.restoreUiState(cacheManager)
 
         Assert.assertEquals(latestViewPagerUiState, viewModel.viewPagerUiState.first())
     }

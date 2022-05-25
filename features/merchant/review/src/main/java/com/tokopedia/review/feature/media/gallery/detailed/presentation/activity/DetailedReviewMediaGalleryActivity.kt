@@ -22,20 +22,20 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.review.R
+import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
-import com.tokopedia.review.R
-import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
-import com.tokopedia.reviewcommon.extension.hideSystemUI
-import com.tokopedia.reviewcommon.extension.intersectWith
-import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
+import com.tokopedia.reviewcommon.extension.hideSystemUI
+import com.tokopedia.reviewcommon.extension.intersectWith
+import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -53,6 +53,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     companion object {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
+        const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
     }
 
     @Inject
@@ -146,7 +147,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        sharedReviewMediaGalleryViewModel.saveState(outState)
+        val cacheManager = SaveInstanceCacheManager(context = this, generateObjectId = true)
+        sharedReviewMediaGalleryViewModel.saveState(cacheManager)
+        outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
     override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
@@ -179,7 +182,11 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             val cacheManager = SaveInstanceCacheManager(this, cacheManagerId)
             sharedReviewMediaGalleryViewModel.tryGetPreloadedData(cacheManager)
         } else {
-            sharedReviewMediaGalleryViewModel.restoreState(savedInstanceState)
+            val cacheManagerId = savedInstanceState.getString(
+                KEY_CACHE_MANAGER_ID
+            ).orEmpty()
+            val cacheManager = SaveInstanceCacheManager(this, cacheManagerId)
+            sharedReviewMediaGalleryViewModel.restoreState(cacheManager)
         }
     }
 
@@ -313,8 +320,8 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             !it.isCompleted
         } ?: launch {
             sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
-                requestedOrientation = when(it) {
-                    OrientationUiState.Landscape -> {
+                requestedOrientation = when(it.orientation) {
+                    OrientationUiState.Orientation.LANDSCAPE -> {
                         enableFullscreen()
                         ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                     }

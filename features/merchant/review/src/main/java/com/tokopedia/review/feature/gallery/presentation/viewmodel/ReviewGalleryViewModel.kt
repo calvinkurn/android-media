@@ -135,7 +135,9 @@ class ReviewGalleryViewModel @Inject constructor(
     }
 
     private fun getPrevPage(): Int {
-        val firstLoaded = _concatenatedReviewImages.value?.reviewMedia?.firstOrNull()?.mediaNumber.orZero()
+        val firstLoaded = _concatenatedReviewImages.value?.let {
+            it.reviewMedia.firstOrNull()?.mediaNumber
+        }.orZero()
         return (firstLoaded / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT)
     }
 

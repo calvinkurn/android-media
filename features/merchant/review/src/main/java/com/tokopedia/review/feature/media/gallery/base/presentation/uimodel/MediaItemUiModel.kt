@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.media.gallery.base.presentation.uimodel
 
-import android.os.Parcelable
-
-interface MediaItemUiModel : Parcelable {
+interface MediaItemUiModel {
     val id: String
     val uri: String
     val mediaNumber: Int

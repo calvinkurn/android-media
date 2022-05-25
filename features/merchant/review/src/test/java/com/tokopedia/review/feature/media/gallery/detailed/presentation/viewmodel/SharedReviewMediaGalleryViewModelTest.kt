@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel
 
-import android.os.Bundle
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
@@ -11,7 +10,6 @@ import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.Toggle
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import io.mockk.coEvery
@@ -149,14 +147,15 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
 
     @Test
     fun `saveState should save current states`() {
-        val outState = mockk<Bundle>(relaxed = true)
-        viewModel.saveState(outState)
-        verify { outState.putSerializable(SharedReviewMediaGalleryViewModel.SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, any()) }
-        verify { outState.putString(SharedReviewMediaGalleryViewModel.SAVED_STATE_PRODUCT_ID, any()) }
-        verify { outState.putBoolean(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_SEE_MORE, any()) }
-        verify { outState.putSerializable(SharedReviewMediaGalleryViewModel.SAVED_STATE_ORIENTATION_UI_STATE, any()) }
-        verify { outState.putBoolean(SharedReviewMediaGalleryViewModel.SAVED_STATE_OVERLAY_VISIBILITY, any()) }
-        verify { outState.putBoolean(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, any()) }
+        val cacheManager = mockk<CacheManager>(relaxed = true)
+        viewModel.saveState(cacheManager)
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, any<ProductrevGetReviewMedia>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_PRODUCT_ID, any<String>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_SEE_MORE, any<Boolean>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_ORIENTATION_UI_STATE, any<OrientationUiState>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_OVERLAY_VISIBILITY, any<Boolean>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, any<Boolean>()) }
+        verify { cacheManager.put(SharedReviewMediaGalleryViewModel.SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, any<Boolean>()) }
     }
 
     @Test
@@ -164,31 +163,35 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         val latestGetDetailedReviewMediaResult = mockk<ProductrevGetReviewMedia>(relaxed = true)
         val latestProductID = "123456"
         val latestShowSeeMore = true
-        val latestOrientationUiState = OrientationUiState.Landscape
+        val latestOrientationUiState = OrientationUiState(OrientationUiState.Orientation.LANDSCAPE)
         val latestOverlayVisibility = false
         val latestShowActionMenuBottomSheet = true
-        val savedState = mockk<Bundle>(relaxed = true) {
+        val latestHasSuccessToggleLikeStatus = false
+        val cacheManager = mockk<CacheManager>(relaxed = true) {
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, viewModel.detailedReviewMediaResult.value)
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, ProductrevGetReviewMedia::class.java, viewModel.detailedReviewMediaResult.value)
             } returns latestGetDetailedReviewMediaResult
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_PRODUCT_ID, viewModel.getProductId())
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_PRODUCT_ID, String::class.java, viewModel.getProductId())
             } returns latestProductID
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_SEE_MORE, viewModel.showSeeMore.value)
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_SEE_MORE, Boolean::class.java, viewModel.showSeeMore.value)
             } returns latestShowSeeMore
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_ORIENTATION_UI_STATE, viewModel.orientationUiState.value)
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_ORIENTATION_UI_STATE, OrientationUiState::class.java, viewModel.orientationUiState.value)
             } returns latestOrientationUiState
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_OVERLAY_VISIBILITY, viewModel.overlayVisibility.value)
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_OVERLAY_VISIBILITY, Boolean::class.java, viewModel.overlayVisibility.value)
             } returns latestOverlayVisibility
             every {
-                getSavedState(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, false)
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, Boolean::class.java, false)
             } returns latestShowActionMenuBottomSheet
+            every {
+                get(SharedReviewMediaGalleryViewModel.SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, Boolean::class.java, false)
+            } returns latestHasSuccessToggleLikeStatus
         }
         viewModel.updateReviewDetailItem(mockk(relaxed = true))
-        viewModel.restoreState(savedState)
+        viewModel.restoreState(cacheManager)
 
         Assert.assertEquals(latestGetDetailedReviewMediaResult, viewModel.detailedReviewMediaResult.first())
         Assert.assertEquals(latestProductID, viewModel.getProductId())
@@ -196,6 +199,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         Assert.assertEquals(latestOrientationUiState, viewModel.orientationUiState.first())
         Assert.assertEquals(latestOverlayVisibility, viewModel.overlayVisibility.first())
         Assert.assertTrue(viewModel.actionMenuBottomSheetUiState.first() is ActionMenuBottomSheetUiState.Showing)
+        Assert.assertFalse(viewModel.hasSuccessToggleLikeStatus())
     }
 
     @Test
@@ -297,13 +301,13 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     @Test
     fun `requestPortraitMode should change _orientationUiState to OrientationUiState#Portrait`() = runBlockingTest {
         viewModel.requestPortraitMode()
-        Assert.assertEquals(OrientationUiState.Portrait, viewModel.orientationUiState.first())
+        Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.PORTRAIT), viewModel.orientationUiState.first())
     }
 
     @Test
     fun `requestLandscapeMode should change _orientationUiState to OrientationUiState#Landscape`() = runBlockingTest {
         viewModel.requestLandscapeMode()
-        Assert.assertEquals(OrientationUiState.Landscape, viewModel.orientationUiState.first())
+        Assert.assertEquals(OrientationUiState(OrientationUiState.Orientation.LANDSCAPE), viewModel.orientationUiState.first())
     }
 
     @Test
