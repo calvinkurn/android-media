@@ -1,37 +1,58 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.power_merchant.subscribe.view.fragment.MembershipDetailFragment
+import com.tokopedia.power_merchant.subscribe.databinding.ItemPmMembershipPageBinding
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 
 /**
  * Created by @ilhamsuaib on 23/05/22.
  */
 
-class MembershipViewPagerAdapter(
-    fragmentActivity: FragmentActivity
-) : FragmentStateAdapter(fragmentActivity) {
+class MembershipViewPagerAdapter : RecyclerView.Adapter<MembershipViewPagerAdapter.ViewHolder>() {
 
-    private val fragments = mutableListOf<MembershipDetailFragment>()
-    private val pmGrades = mutableListOf<PMGradeWithBenefitsUiModel>()
+    private val items = mutableListOf<MembershipDataUiModel>()
 
-    override fun getItemCount(): Int = fragments.size
-
-    override fun createFragment(position: Int): Fragment {
-        return fragments[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemPmMembershipPageBinding.inflate(inflater, parent, false)
+        return ViewHolder(binding)
     }
 
-    fun getPmGradeList(): List<PMGradeWithBenefitsUiModel> = pmGrades
-
-    fun clearFragments() {
-        fragments.clear()
-        pmGrades.clear()
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items.getOrNull(position))
     }
 
-    fun addFragment(fragment: MembershipDetailFragment, grade: PMGradeWithBenefitsUiModel) {
-        fragments.add(fragment)
-        pmGrades.add(grade)
+    override fun getItemCount(): Int = items.size
+
+    fun clearItems() {
+        items.clear()
+    }
+
+    fun addItem(item: MembershipDataUiModel) {
+        items.add(item)
+    }
+
+    fun getPmGradeList(): List<PMGradeWithBenefitsUiModel> {
+        return items.map { it.gradeBenefit }
+    }
+
+    inner class ViewHolder(
+        private val binding: ItemPmMembershipPageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: MembershipDataUiModel?) {
+            if (item == null) return
+            binding.run {
+                val benefitAdapter = GradeBenefitAdapter(item.gradeBenefit.benefitList)
+                rvPmGradeBenefit.layoutManager = object : LinearLayoutManager(root.context) {
+                    override fun canScrollVertically(): Boolean = false
+                }
+                rvPmGradeBenefit.adapter = benefitAdapter
+            }
+        }
     }
 }

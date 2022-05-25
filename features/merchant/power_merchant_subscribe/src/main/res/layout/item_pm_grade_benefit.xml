@@ -13,6 +13,7 @@
         android:id="@+id/icPmBenefitItem"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        app:unify_image_corner_radius="0"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography

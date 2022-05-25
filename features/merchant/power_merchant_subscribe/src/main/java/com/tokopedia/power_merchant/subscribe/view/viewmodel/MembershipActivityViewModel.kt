@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetMembershipBasicInfoUseCase
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipBasicInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,23 +20,25 @@ import javax.inject.Inject
  */
 
 class MembershipActivityViewModel @Inject constructor(
-    private val getPmBasicInfo: Lazy<GetPMBasicInfoUseCase>,
+    private val getMembershipBasicInfo: Lazy<GetMembershipBasicInfoUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    val powerMerchantBasicInfo: LiveData<Result<PowerMerchantBasicInfoUiModel>>
-        get() = _powerMerchantBasicInfo
+    val membershipBasicInfo: LiveData<Result<MembershipBasicInfoUiModel>>
+        get() = _membershipBasicInfo
 
-    private val _powerMerchantBasicInfo = MutableLiveData<Result<PowerMerchantBasicInfoUiModel>>()
+    private val _membershipBasicInfo = MutableLiveData<Result<MembershipBasicInfoUiModel>>()
 
-    fun getPowerMerchantBasicInfo(isFirstLoad: Boolean) {
+    fun getMembershipBasicInfo() {
         launchCatchError(block = {
+            val shopId = userSession.get().shopId
             val result = withContext(dispatchers.io) {
-                return@withContext getPmBasicInfo.get().executeOnBackground(isFirstLoad)
+                getMembershipBasicInfo.get().execute(shopId)
             }
-            _powerMerchantBasicInfo.value = Success(result)
+            _membershipBasicInfo.value = Success(result)
         }, onError = {
-            _powerMerchantBasicInfo.value = Fail(it)
+            _membershipBasicInfo.value = Fail(it)
         })
     }
 }

@@ -7,7 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmMembershipPerformancePeriod"
@@ -19,7 +20,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
-            tools:background="#19AF69"
+            tools:background="@drawable/bg_pm_membership_detail_header"
             tools:text="Berdasarkan penjualanmu di [1 Juli - 31 Sep 2022], kamu mendapat paket keuntungan Power Merchant." />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -46,8 +47,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipNextUpdate"
             tools:layout_height="32dp" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpPmMembership"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPmMembership"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +62,7 @@
             android:layout_height="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vpPmMembership" />
+            app:layout_constraintTop_toBottomOf="@+id/rvPmMembership" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -89,11 +90,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/pm_membership_detail_info_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dotPmMembership1"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small"
-                tools:text="@string/pm_membership_detail_info_1" />
+                app:typographyType="small" />
 
             <View
                 android:id="@+id/dotPmMembership2"
@@ -112,11 +113,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/pm_membership_detail_info_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dotPmMembership2"
                 app:layout_constraintTop_toBottomOf="@+id/tvPmMembership1"
-                app:typographyType="small"
-                tools:text="@string/pm_membership_detail_info_2" />
+                app:typographyType="small" />
 
             <View
                 android:id="@+id/dotPmMembership3"
@@ -136,12 +137,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:text="@string/pm_membership_detail_info_3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dotPmMembership2"
                 app:layout_constraintTop_toBottomOf="@+id/tvPmMembership2"
-                app:typographyType="small"
-                tools:text="@string/pm_membership_detail_info_3" />
+                app:typographyType="small" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
