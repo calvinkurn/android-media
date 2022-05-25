@@ -88,6 +88,11 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                 button_type
                 button_wording
               }
+              bottom_bar {
+                text
+                is_shop_active
+                total_price_fmt
+              }
               total_product_count
               total_product_error
               total_product_price
