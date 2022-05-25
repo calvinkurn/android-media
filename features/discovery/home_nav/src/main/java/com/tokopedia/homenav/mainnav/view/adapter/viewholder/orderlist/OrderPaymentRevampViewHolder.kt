@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -30,12 +31,24 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         val LAYOUT = R.layout.holder_transaction_payment_revamp
     }
 
+    private fun setLayoutFullWidth(element: OrderPaymentRevampModel) {
+        val layoutParams = binding?.orderPaymentCard?.layoutParams
+        if (element.navPaymentModel.fullWidth) {
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            layoutParams?.width =
+                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_order_transaction_me_page).toInt()
+        }
+        binding?.orderPaymentCard?.layoutParams = layoutParams
+    }
+
     override fun bind(element: OrderPaymentRevampModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
     override fun bind(paymentRevampModel: OrderPaymentRevampModel) {
         val context = itemView.context
+        setLayoutFullWidth(paymentRevampModel)
 
         itemView.addOnImpressionListener(paymentRevampModel)  {
             mainNavListener.putEEToTrackingQueue(

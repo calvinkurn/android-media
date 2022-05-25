@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -13,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,9 +33,20 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         bind(element)
     }
 
+    private fun setLayoutFullWidth(element: OrderProductRevampModel) {
+        val layoutParams = binding?.orderProductCard?.layoutParams
+        if (element.navProductModel.fullWidth) {
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            layoutParams?.width =
+                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_order_transaction_me_page).toInt()
+        }
+        binding?.orderProductCard?.layoutParams = layoutParams
+    }
+
     override fun bind(productRevampModel: OrderProductRevampModel) {
         val context = itemView.context
-
+        setLayoutFullWidth(productRevampModel)
         itemView.addOnImpressionListener(productRevampModel)  {
             mainNavListener.putEEToTrackingQueue(
                     TrackingTransactionSection.getImpressionOnOrderStatus(

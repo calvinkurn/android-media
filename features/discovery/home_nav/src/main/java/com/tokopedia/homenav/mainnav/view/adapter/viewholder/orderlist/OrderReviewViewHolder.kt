@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
@@ -42,6 +43,17 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
         private const val RATE_STARS_5 = "5"
     }
 
+    private fun setLayoutFullWidth(element: OrderReviewModel) {
+        val layoutParams = binding?.orderReviewCard?.layoutParams
+        if (element.navReviewModel.fullWidth) {
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            layoutParams?.width =
+                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_order_transaction_me_page).toInt()
+        }
+        binding?.orderReviewCard?.layoutParams = layoutParams
+    }
+
     override fun bind(element: OrderReviewModel, payloads: MutableList<Any>) {
         bind(element)
     }
@@ -71,6 +83,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
     }
 
     override fun bind(element: OrderReviewModel) {
+        setLayoutFullWidth(element)
         binding?.orderReviewProductName?.text = element.navReviewModel.productName
 
         if (element.navReviewModel.imageUrl.isNotEmpty()) {

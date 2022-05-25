@@ -92,6 +92,8 @@ class MainNavViewModel @Inject constructor(
         private const val SOURCE = "dave_home_nav"
         private const val MAX_ORDER_TO_SHOW = 6
         private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
+        private const val SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION = 1
+        private const val INDEX_FOR_FULL_WIDTH = 0
     }
 
     //network process live data, false if it is processing and true if it is finished
@@ -507,13 +509,27 @@ class MainNavViewModel @Inject constructor(
             val reviewList = getReviewProductUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
-                val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
+                val totalTransaction = paymentList.size + orderList.size + reviewList.size
+                val isFullWidth = totalTransaction == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION
+                if (isFullWidth) {
+                    when {
+                        paymentList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                            paymentList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
+                        }
+                        orderList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                            orderList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
+                        }
+                        reviewList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                            reviewList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
+                        }
+                    }
+                }
 
                 val (paymentListToShow, orderListToShow, reviewListToShow) = getOrderHistory(paymentList, orderList, reviewList)
 
                 val transactionListItemViewModel = TransactionListItemDataModel(
                     NavOrderListModel(orderListToShow, paymentListToShow, reviewListToShow),
-                    othersTransactionCount,
+                    totalTransaction,
                     isMePageUsingRollenceVariant
                 )
 

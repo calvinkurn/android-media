@@ -32,6 +32,7 @@ class TransactionListViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
+        private const val SIZE_LAYOUT_SHOW_VIEW_ALL_CARD = 5
     }
 
     private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
@@ -57,7 +58,7 @@ class TransactionListViewHolder(itemView: View,
         )
         if (binding?.transactionRv?.itemDecorationCount == 0) {
             binding?.transactionRv?.addItemDecoration(
-                    NavOrderSpacingDecoration(spacingBetween, edgeMargin)
+                NavOrderSpacingDecoration(spacingBetween, edgeMargin)
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
@@ -67,7 +68,7 @@ class TransactionListViewHolder(itemView: View,
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
-            } else {
+            } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > SIZE_LAYOUT_SHOW_VIEW_ALL_CARD) {
                 visitableList.add(OtherTransactionRevampModel())
                 binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
             }

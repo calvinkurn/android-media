@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 android:id="@+id/order_product_card"
+<com.tokopedia.unifycomponents.CardUnify2
+    android:id="@+id/order_payment_card"
     android:layout_width="254dp"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true"
