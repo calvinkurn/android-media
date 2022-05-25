@@ -72,6 +72,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             data {
                 isQuerySafe
                 autocompleteApplink
+                backendFilters
                 redirection {
                     redirectApplink
                 }
@@ -200,6 +201,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     }
                     wishlist
                     applink
+                    customVideoURL
                 }
                 violation {
                     headerText

@@ -1,0 +1,12 @@
+{
+  "readme": "Product Manage - click edit stock button",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "product list page",
+      "event": "clickManageProduct",
+      "eventAction": "click edit stock",
+      "eventLabel": ".+"
+    }
+  ]
+}

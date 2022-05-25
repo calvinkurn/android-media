@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,15 +27,17 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.databinding.SearchResultShopFragmentLayoutBinding
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
+import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
@@ -49,15 +52,17 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import java.util.ArrayList
 
 internal class ShopListFragment:
-        TkpdBaseV4Fragment(),
-        ShopListener,
-        EmptyStateListener,
-        BannerAdsListener,
-        QuickFilterElevation,
-        SortFilterBottomSheet.Callback {
+    TkpdBaseV4Fragment(),
+    ShopListener,
+    EmptyStateListener,
+    BannerAdsListener,
+    QuickFilterElevation,
+    ChooseAddressListener,
+    SortFilterBottomSheet.Callback {
 
     companion object {
         private const val SHOP = "shop"
@@ -154,15 +159,15 @@ internal class ShopListFragment:
     }
 
     private fun createShopListTypeFactory(): ShopListTypeFactory {
-        return ShopListTypeFactoryImpl(this, this, this)
+        return ShopListTypeFactoryImpl(this, this, this, this)
     }
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         )
     }
 
@@ -631,5 +636,19 @@ internal class ShopListFragment:
         searchShopViewModel
                 ?.generalSearchTrackingLiveData
                 ?.observe(viewLifecycleOwner, SearchTracking::trackEventGeneralSearchShop)
+    }
+
+    override fun onLocalizingAddressSelected() {
+        searchShopViewModel?.onLocalizingAddressSelected()
+    }
+
+    override fun getFragment(): Fragment {
+        return this
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        searchShopViewModel?.onViewResume()
     }
 }

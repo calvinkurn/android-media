@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ open class GetTemplateChatRoomUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) {
 
-    open suspend fun getTemplateChat(isSeller: Boolean): GetTemplateUiModel {
+    open suspend fun getTemplateChat(isSeller: Boolean): GetTemplateResultModel {
         return withContext(dispatcher.io) {
             val params = generateParam(isSeller)
             val response = api.getTemplateSuspend(params)

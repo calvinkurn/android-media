@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,8 +23,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CreditCardViewModel::class)
-    internal abstract fun bindsCreditCardViewModel(viewModel: CreditCardViewModel): ViewModel
+    @ViewModelKey(PayLaterActivationViewModel::class)
+    internal abstract fun bindsPayLaterActivationViewModel(viewModel: PayLaterActivationViewModel): ViewModel
 
 
 }

@@ -40,8 +40,9 @@ android {
         multiDexEnabled true
     }
 
-    viewBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
+        buildConfig true
     }
 }
 
@@ -61,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -75,8 +77,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
@@ -94,7 +96,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.okHttp
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.liveDataKtx
@@ -109,7 +110,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 

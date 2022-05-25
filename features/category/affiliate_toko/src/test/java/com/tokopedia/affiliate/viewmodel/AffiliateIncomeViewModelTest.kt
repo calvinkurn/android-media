@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.PROJECT_ID
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -59,6 +60,17 @@ class AffiliateIncomeViewModelTest{
 
     }
 
+    @Test
+    fun `Get Affiliate Balance Exception`() {
+        val exception = Throwable("Exception")
+
+        coEvery { affiliateIncomeViewModel.affiliateBalanceDataUseCase.getAffiliateBalance() } throws exception
+
+        affiliateIncomeViewModel.getAffiliateBalance()
+
+
+    }
+
     /**************************** getKycDetails() *******************************************/
     @Test
     fun `Get Kyc Details`() {
@@ -85,7 +97,7 @@ class AffiliateIncomeViewModelTest{
     /**************************** getSelectedDate() *******************************************/
     @Test
     fun getSelectedDataTest(){
-        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        val selectedDate = AffiliateBottomDatePicker.THIRTY_DAYS
         assertEquals(affiliateIncomeViewModel.getSelectedDate(),selectedDate)
     }
 
@@ -101,17 +113,34 @@ class AffiliateIncomeViewModelTest{
     /**************************** getTransactionDetails() *******************************************/
     @Test
     fun getTransactionDetailsTest(){
-        val transaction : AffiliateTransactionHistoryData = mockk(relaxed = true)
+        val transactionItem : AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data.Transaction = mockk(relaxed = true)
+        val list = MutableList(2){
+            transactionItem
+        }
+        val data = AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data("",null,false,10,1,"",1,list)
+        val transaction = AffiliateTransactionHistoryData(AffiliateTransactionHistoryData.GetAffiliateTransactionHistory(data))
+
+        coEvery { affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(any(),any()) } returns transaction
+        val response = affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.data)
+
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+
+        assertEquals(Gson().toJson(affiliateIncomeViewModel.getAffiliateDataItems().value),Gson().toJson(response))
+        assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value,true)
+        assertEquals(affiliateIncomeViewModel.hasNext,false)
+    }
+    @Test
+    fun getTransactionDetailNull(){
+        val data = AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data("",null,false,10,1,"",1,null)
+        val transaction = AffiliateTransactionHistoryData(AffiliateTransactionHistoryData.GetAffiliateTransactionHistory(data))
         coEvery { affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(any(),any()) } returns transaction
         val response = affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.data)
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
         assertEquals(affiliateIncomeViewModel.getAffiliateDataItems().value,response)
-        assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value,true)
-        assertEquals(affiliateIncomeViewModel.hasNext,false)
     }
-    @Test
+@Test
     fun getTransactionDetailsTestExaception(){
         val throwable = Throwable("Validate Data Exception")
         coEvery { affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(any(),any()) } throws throwable
@@ -120,5 +149,13 @@ class AffiliateIncomeViewModelTest{
 
         assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value, false)
         assertEquals(affiliateIncomeViewModel.getErrorMessage().value , throwable)
+    }
+
+    /**************************** testAffiliateUserBlackListed() *******************************************/
+    @Test
+    fun testAffiliateUserBlackListed() {
+        affiliateIncomeViewModel.setBlacklisted(false)
+        assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
+
     }
 }

@@ -12,33 +12,14 @@ data class PromoEligibilityHeaderUiModel(
         return typeFactory.type(this)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PromoEligibilityHeaderUiModel
-
-        if (uiData != other.uiData) return false
-        if (uiState != other.uiState) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = uiData.hashCode()
-        result = 31 * result + uiState.hashCode()
-        return result
-    }
-
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var tmpPromo: List<Visitable<*>> = emptyList()
+            var tabId: String = ""
     )
 
     data class UiState(
-            var isEnabled: Boolean = false,
-            var isCollapsed: Boolean = false
+            var isEnabled: Boolean = false
     )
 
 }

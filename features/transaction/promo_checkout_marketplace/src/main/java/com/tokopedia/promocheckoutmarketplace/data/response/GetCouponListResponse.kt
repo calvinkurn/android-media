@@ -36,17 +36,8 @@ data class Data(
         val couponSections: List<CouponSection> = emptyList(),
         @SerializedName("attempted_promo_code_error")
         val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
-        @SerializedName("additional_message")
-        val additionalMessage: String = "",
-        @SerializedName("reward_points_info")
-        val rewardPointsInfo: RewardPointsInfo = RewardPointsInfo()
-)
-
-data class RewardPointsInfo(
-        @SerializedName("message")
-        val message: String = "",
-        @SerializedName("gain_reward_points_tnc")
-        val gainRewardPointsTnc: GainRewardPointsTnc = GainRewardPointsTnc()
+        @SerializedName("section_tabs")
+        val sectionTabs: List<SectionTab> = emptyList()
 )
 
 data class GainRewardPointsTnc(
@@ -115,60 +106,66 @@ data class PromoRecommendation(
 )
 
 data class CouponSection(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("sub_title")
         val subTitle: String = "",
-        @SerializedName("icon_url")
-        val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
-        @SerializedName("is_collapsed")
-        val isCollapsed: Boolean = false,
-        @SerializedName("tags")
-        val tags: List<String> = emptyList(),
         @SerializedName("sub_sections")
         val subSections: List<SubSection> = emptyList()
 )
 
+data class CouponGroup(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("count")
+        val count: Int = 0
+)
+
 data class SubSection(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("sub_title")
         val subTitle: String = "",
-        @SerializedName("icon_url")
-        val iconUrl: String = "",
+        @SerializedName("icon_unify")
+        val iconUnify: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
-        @SerializedName("is_collapsed")
-        val isCollapsed: Boolean = false,
-        @SerializedName("tags")
-        val tags: List<String> = emptyList(),
         @SerializedName("coupons")
-        val coupons: List<Coupon> = emptyList()
-)
+        val coupons: List<Coupon> = emptyList(),
+        @SerializedName("coupon_groups")
+        val couponGroups: List<CouponGroup> = emptyList()
+) {
+    companion object {
+        const val ICON_COUPON = "COUPON"
+        const val ICON_BADGE_OS_FILLED = "BADGE_OS_FILLED"
+        const val ICON_BADGE_PMPRO_FILLED = "BADGE_PMPRO_FILLED"
+        const val ICON_BADGE_PM_FILLED = "BADGE_PM_FILLED"
+        const val ICON_SHOP_FILLED = "SHOP_FILLED"
+        const val ICON_BADGE_NOW_FILLED = "BADGE_NOW_FILLED"
+    }
+}
 
 data class Coupon(
+        @SerializedName("promo_id")
+        val promoId: String = "",
         @SerializedName("code")
         val code: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("message")
         val message: String = "",
-        @SerializedName("expiry_info")
-        val expiryInfo: String = "",
-        @SerializedName("expiry_count_down")
-        val expiryCountDown: Int = 0,
-        @SerializedName("coupon_url")
-        val couponUrl: String = "",
         @SerializedName("coupon_app_link")
         val couponAppLink: String = "",
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop_id")
         val shopId: String = "",
-        @SerializedName("tag_image_urls")
-        val tagImageUrls: List<String> = emptyList(),
         @SerializedName("benefit_amount")
         val benefitAmount: Int = 0,
         @SerializedName("is_recommended")
@@ -177,21 +174,70 @@ data class Coupon(
         var isSelected: Boolean = false,
         @SerializedName("is_attempted")
         val isAttempted: Boolean = false,
-        @SerializedName("radio_check_state")
-        val radioCheckState: String = "",
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
-        val coachMark: PromoCoachmark = PromoCoachmark()
+        val coachMark: PromoCoachmark = PromoCoachmark(),
+        @SerializedName("is_highlighted")
+        val isHighlighted: Boolean = false,
+        @SerializedName("group_id")
+        val groupId: String = "",
+        @SerializedName("is_group_header")
+        val isGroupHeader: Boolean = false,
+        @SerializedName("promo_infos")
+        val promoInfos: List<PromoInfo> = emptyList(),
+        @SerializedName("benefit_details")
+        val benefitDetail: List<BenefitDetail> = emptyList()
 )
+
+data class BenefitDetail(
+        @SerializedName("amount_idr")
+        val amountIdr: Double = 0.0,
+        @SerializedName("benefit_type")
+        val benefitType: String = "",
+        @SerializedName("data_type")
+        val dataType: String = ""
+)
+
+data class PromoInfo(
+        @SerializedName("type")
+        val type: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("validation_type")
+        val validationType: String = "",
+        @SerializedName("methods")
+        val methods: List<String> = emptyList()
+) {
+    companion object {
+        const val VALIDATION_TYPE_SHIPPING = "shipping"
+        const val VALIDATION_TYPE_PAYMENT = "payment"
+
+        const val TYPE_TOP_BANNER = "top_banner"
+        const val TYPE_PROMO_INFO = "promo_info"
+        const val TYPE_BOTTOM_BANNER = "bottom_banner"
+        const val TYPE_PROMO_VALIDITY = "promo_validity"
+
+        const val ICON_USER = "USER"
+        const val ICON_INFORMATION = "INFORMATION"
+        const val ICON_FINANCE = "FINANCE"
+        const val ICON_CLOCK = "CLOCK"
+        const val ICON_COURIER = "COURIER"
+        const val ICON_TOKO_MEMBER = "TOKOMEMBER"
+    }
+}
 
 data class ClashingInfo(
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")
-        val message: String = ""
+        val message: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
 )
 
 data class PromoCoachmark(
@@ -211,4 +257,11 @@ data class AttemptedPromoCodeError(
         val code: String = "",
         @SerializedName("message")
         val message: String = ""
+)
+
+data class SectionTab(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("title")
+        val title: String = ""
 )

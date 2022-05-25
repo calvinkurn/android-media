@@ -135,13 +135,14 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
             userId: String,
             paymentId: String,
             paymentType: String,
+            tenureType: String,
             ee: Map<String, Any>
     ) {
         val dataLayer = getGtmData(
                 EventName.CHECKOUT,
                 EventCategory.ORDER_SUMMARY,
                 if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
-                "success"
+                "success - $paymentType - $tenureType"
         )
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[Key.PAYMENT_ID] = paymentId
@@ -500,6 +501,66 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_TOP_UP_GOPAY_BUTTON,
                 ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewPaymentMethod(paymentType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PAYMENT_METHOD,
+                paymentType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewTenureOption(tenureType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_TENURE_OPTION,
+                tenureType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTenureOptionsBottomSheet() {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TENURE_OPTIONS_BOTTOMSHEET,
+                ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickAddOnsDetail(productId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ADD_ONS_DETAIL,
+                productId
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE

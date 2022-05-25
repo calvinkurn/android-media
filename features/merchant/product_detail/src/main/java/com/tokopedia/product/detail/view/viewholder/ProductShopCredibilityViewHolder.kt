@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
@@ -18,8 +19,10 @@ import com.tokopedia.product.detail.databinding.ItemShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -87,9 +90,36 @@ class ProductShopCredibilityViewHolder(
                 listener.gotoShopDetail(componentTracker)
             }
 
+            setupTicker(element.tickerDataResponse, componentTracker, this)
+
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentTracker)
             }
+        }
+    }
+
+    private fun setupTicker(
+        tickerDataResponse: List<ShopInfo.TickerDataResponse>,
+        componentTrackDataModel: ComponentTrackDataModel,
+        binding: ViewShopCredibilityBinding
+    ) {
+        binding.shopCredibilityInfoTicker.showIfWithBlock(tickerDataResponse.isNotEmpty()) {
+            val data = tickerDataResponse.first()
+
+            listener.onShopTickerImpressed(data, componentTrackDataModel)
+
+            setHtmlDescription(generateHtml(data.message, data.link))
+            tickerTitle = data.title
+            setDescriptionClickEvent(object : TickerCallback{
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    listener.onShopTickerClicked(data, componentTrackDataModel)
+                }
+
+                override fun onDismiss() {
+                    // no op
+                }
+
+            })
         }
     }
 
@@ -259,6 +289,10 @@ class ProductShopCredibilityViewHolder(
 
     private fun enableButton() = mainBinding?.apply {
         shopCredibilityButtonFollow.isClickable = true
+    }
+
+    private fun generateHtml(message: String, link: String): String = with(itemView) {
+        return message.replace("{link}", context.getString(R.string.ticker_href_builder, link))
     }
 
     private fun getComponentTrackData(

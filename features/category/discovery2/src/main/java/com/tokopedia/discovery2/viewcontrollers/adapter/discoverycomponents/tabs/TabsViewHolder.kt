@@ -185,7 +185,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (it.size >= tab.position)
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                         ?.trackTabsClick(tabsViewModel.components.id,
-                                tabsViewModel.components.position,
+                                tabsViewModel.position,
                                 it[tab.position],
                                 tab.position)
         }

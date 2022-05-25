@@ -18,10 +18,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
@@ -105,6 +106,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
                 is ProductCardItemViewHolder -> false
                 is CalendarWidgetItemViewHolder -> false
                 is ShimmerCalendarViewHolder -> false
+                is ShopBannerInfiniteItemViewHolder -> false
                 is MasterProductCardItemViewHolder -> template == LIST
                 is ShimmerProductCardViewHolder -> template == LIST
                 else -> true
@@ -127,9 +129,17 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
         mCurrentHeader = currentHeader
+        if (currentHeader == null) {
+            (fragment as DiscoveryFragment).stickyHeaderIsHidden()
+        } else
+            (fragment as DiscoveryFragment).showingStickyHeader()
     }
 
     fun getCurrentHeader() = mCurrentHeader
+
+    fun notifySectionId(it: String) {
+        (fragment as? DiscoveryFragment)?.updateSelectedSection(it)
+    }
 
 }
 

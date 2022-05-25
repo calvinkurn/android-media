@@ -4,13 +4,13 @@ import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.list_feed_detail.view.*
 
 /**
@@ -24,7 +24,6 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
 
     override fun bind(productFeedDetailViewModelNew: ProductFeedDetailViewModelNew) {
         itemView.run {
-//            ImageHandler.LoadImage(productImage, productFeedDetailViewModelNew.imgUrl)
 
             productImage.setImageUrl(productFeedDetailViewModelNew.imgUrl)
             productName.text = MethodChecker.fromHtml(productFeedDetailViewModelNew.text)
@@ -33,12 +32,13 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
 
 
             discount_layout.showWithCondition(productFeedDetailViewModelNew.isDiscount)
+            discountLabel.showWithCondition(productFeedDetailViewModelNew.isDiscount)
             if (productFeedDetailViewModelNew.isDiscount) {
+                discountLabel.text = productFeedDetailViewModelNew.discountFmt
                 productTag.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = productFeedDetailViewModelNew.originalPriceFmt
                 }
-                productFeedDetailViewModelNew.text = productFeedDetailViewModelNew.discountFmt
                 productPrice.text = productFeedDetailViewModelNew.priceDiscountFmt
 
             }
@@ -49,7 +49,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", productFeedDetailViewModelNew.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.toString()
+            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + productFeedDetailViewModelNew.totalSold.productThousandFormatted()
+
             soldInfo.text = soldInfoText
             star.showWithCondition(productFeedDetailViewModelNew.rating != 0)
             divider.showWithCondition(productFeedDetailViewModelNew.rating != 0 && productFeedDetailViewModelNew.totalSold != 0)

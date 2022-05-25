@@ -50,6 +50,7 @@ data class FeedTabs(
     companion object {
         const val TYPE_FEEDS = "feeds"
         const val TYPE_EXPLORE = "explore"
+        const val TYPE_VIDEO = "video"
         const val TYPE_CUSTOM = "custom"
         const val KEY_TRENDING = "trending";
     }

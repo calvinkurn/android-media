@@ -50,10 +50,10 @@ import javax.inject.Inject
  * @author rival
  * @created 29-01-2020
  *
- * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LOGOUT]
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME]
+ * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.LOGOUT]
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME]
  * default is 'true', set 'false' if you wan get activity result
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY]
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY]
  * default is 'false', set 'true' if you just wan to clear data only
  */
 
@@ -183,6 +183,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
+        clearRegisterPushNotificationPref()
 
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
@@ -247,6 +248,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
+    private fun clearRegisterPushNotificationPref() {
+        getSharedPreferences(REGISTER_PUSH_NOTIFICATION_PREFERENCE, Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+    }
+
     private fun showLoading() {
         logoutLoading?.visibility = View.VISIBLE
     }
@@ -278,5 +284,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
+
+        /**
+         * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]
+         */
+        private const val REGISTER_PUSH_NOTIFICATION_PREFERENCE = "registerPushNotification"
     }
 }

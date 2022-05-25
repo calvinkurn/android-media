@@ -1,5 +1,8 @@
 package com.tokopedia.chat_common.data
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Builder
@@ -67,8 +70,9 @@ open class ProductAttachmentUiModel protected constructor(
         }
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = builder.campaignId
-    var isFulfillment: Boolean = false
-    var urlTokocabang: String = ""
+    var isFulfillment: Boolean = builder.isFulfillment
+    var urlTokocabang: String = builder.urlTokoCabang
+    var descTokoCabang: String = builder.descTokoCabang
     var parentId: String = "0"
 
     var colorVariantId: String = ""
@@ -79,10 +83,8 @@ open class ProductAttachmentUiModel protected constructor(
     var isSupportVariant: Boolean = builder.isSupportVariant
     var cartId: String = ""
 
-    var isUpcomingCampaign: Boolean = false
-        private set
-    var locationStock: LocationStock = LocationStock()
-        private set
+    var isUpcomingCampaign: Boolean = builder.isUpcomingCampaign
+    var locationStock: LocationStock = builder.locationStock
 
     init {
         if (variants.isNotEmpty()) {
@@ -91,6 +93,10 @@ open class ProductAttachmentUiModel protected constructor(
         if (!builder.needSync) {
             finishLoading()
         }
+    }
+
+    protected fun updateCanShowFooter(canShowFooter: Boolean) {
+        this.canShowFooter = canShowFooter
     }
 
     override fun updateData(attribute: Any?) {
@@ -119,6 +125,7 @@ open class ProductAttachmentUiModel protected constructor(
             campaignId = attribute.productProfile.campaignId
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
+            descTokoCabang = attribute.productProfile.descTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -281,6 +288,31 @@ open class ProductAttachmentUiModel protected constructor(
         return !isSupportVariant && !isProductCampaign() && !fromBroadcast() && !isPreOrder
     }
 
+    fun generateVariantRequest(): JsonElement? {
+        val list = JsonArray()
+
+        if (hasColorVariant()) {
+            val color = JsonObject()
+            val colorOption = JsonObject()
+            colorOption.addProperty("id", colorVariantId.toLongOrNull() ?: 0)
+            colorOption.addProperty("value", colorVariant)
+            colorOption.addProperty("hex", colorHexVariant)
+            color.add("option", colorOption)
+            list.add(color)
+        }
+
+        if (hasSizeVariant()) {
+            val size = JsonObject()
+            val sizeOption = JsonObject()
+            sizeOption.addProperty("id", sizeVariantId.toInt())
+            sizeOption.addProperty("value", sizeVariant)
+            size.add("option", sizeOption)
+            list.add(size)
+        }
+
+        return list
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
@@ -307,7 +339,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var categoryId: Long = 0
         internal var playStoreData: PlayStoreData = PlayStoreData()
         internal var minOrder: Int = 1
-        internal var remainingStock: Int = 1
+        internal var remainingStock: Int = 0
         internal var status: Int = 0
         internal var rating: TopchatProductRating = TopchatProductRating()
         internal var variants: List<AttachmentVariant> = emptyList()
@@ -317,6 +349,11 @@ open class ProductAttachmentUiModel protected constructor(
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
         internal var campaignId: Long = 0
+        internal var locationStock: LocationStock = LocationStock()
+        internal var isUpcomingCampaign: Boolean = false
+        internal var isFulfillment: Boolean = false
+        internal var urlTokoCabang: String = ""
+        internal var descTokoCabang: String = ""
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -343,6 +380,11 @@ open class ProductAttachmentUiModel protected constructor(
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
             withIsPreOrder(product.productProfile.isPreOrder)
+            withLocationStock(product.productProfile.locationStock)
+            withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
+            withIsFulfillment(product.productProfile.isFulFillment)
+            withUrlTokoCabang(product.productProfile.urlTokocabang)
+            withDescTokoCabang(product.productProfile.descTokocabang)
             return self()
         }
 
@@ -473,6 +515,31 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withCampaignId(campaignId: Long): Builder {
             this.campaignId = campaignId
+            return self()
+        }
+
+        fun withLocationStock(locationStock: LocationStock): Builder {
+            this.locationStock = locationStock
+            return self()
+        }
+
+        fun withIsUpcomingCampaign(isUpcomingCampaign: Boolean): Builder {
+            this.isUpcomingCampaign = isUpcomingCampaign
+            return self()
+        }
+
+        fun withIsFulfillment(isFulfillment: Boolean): Builder {
+            this.isFulfillment = isFulfillment
+            return self()
+        }
+
+        fun withUrlTokoCabang(urlTokoCabang: String): Builder {
+            this.urlTokoCabang = urlTokoCabang
+            return self()
+        }
+
+        fun withDescTokoCabang(descTokoCabang: String): Builder {
+            this.descTokoCabang = descTokoCabang
             return self()
         }
 

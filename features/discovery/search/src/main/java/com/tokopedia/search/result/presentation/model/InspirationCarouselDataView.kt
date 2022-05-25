@@ -98,6 +98,7 @@ class InspirationCarouselDataView(
                 val componentId: String = "",
                 val inspirationCarouselTitle: String = "",
                 val dimension90: String = "",
+                val customVideoURL : String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {

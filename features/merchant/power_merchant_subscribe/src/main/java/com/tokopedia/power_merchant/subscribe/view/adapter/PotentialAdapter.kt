@@ -13,7 +13,8 @@ import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
  */
 
 class PotentialAdapter(
-    private val items: List<PotentialItemUiModel>
+    private val items: List<PotentialItemUiModel>,
+    private val itemWidth: Int
 ) : RecyclerView.Adapter<PotentialAdapter.PotentialViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PotentialViewHolder {
@@ -37,7 +38,9 @@ class PotentialAdapter(
 
         fun bind(item: PotentialItemUiModel) {
             with(binding) {
-                imgPmPotentialItem.loadImage(item.imgUrl) {}
+                itemPmPotential.layoutParams.width = itemWidth
+                itemPmPotential.requestLayout()
+                imgPmPotentialItem.loadImage(item.imgUrl)
                 tvPmPotentialItemDescription.text = item.description.parseAsHtml()
             }
         }

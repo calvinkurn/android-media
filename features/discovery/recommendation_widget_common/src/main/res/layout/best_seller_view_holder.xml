@@ -27,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="9dp"
         android:text="@string/best_seller_title_other_product"
         android:visibility="gone"
         tools:visibility="visible"
@@ -89,23 +89,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_subtitle" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/best_seller_recommendation_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/best_seller_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:scrollbars="none"
-        android:orientation="horizontal"
         android:layout_marginTop="8dp"
         android:paddingBottom="12dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/best_seller_chip_filter_recyclerview"
-        tools:listitem="@layout/recommendation_carousel_item_view_holder"
-        tools:visibility="visible" />
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/best_seller_recommendation_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            android:scrollbars="none"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/recommendation_carousel_item_view_holder"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/best_seller_loading_recommendation"

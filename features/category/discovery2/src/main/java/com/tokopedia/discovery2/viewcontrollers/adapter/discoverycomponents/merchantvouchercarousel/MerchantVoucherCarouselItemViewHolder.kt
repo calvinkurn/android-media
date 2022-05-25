@@ -64,6 +64,7 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
         lifecycleOwner?.let { lifecycle ->
             merchantVoucherCarouselItemViewModel.multiShopModel.observe(lifecycle,{
                 mvcMultiShopView.show()
+                merchantVoucherCarouselItemViewModel.syncParentPosition()
                 mvcMultiShopView.setTracker(getMerchantAnalytics())
                 mvcMultiShopView.setMultiShopModel(it, MvcSource.DISCO)
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics()

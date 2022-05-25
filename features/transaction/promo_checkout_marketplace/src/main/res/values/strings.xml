@@ -22,9 +22,10 @@
     <string name="label_subtitle_promo_selected">Promo dipilih</string>
     <string name="label_subtitle_only_one_promo">Hanya bisa pilih 1</string>
     <string name="label_promo_show_detail">Lihat Detail</string>
-    <string name="label_promo_last_seen_title">Promo terakhir dilihat</string>
+    <string name="label_promo_suggestion_title">Promo terakhir dilihat</string>
     <string name="label_promo_code">Kode promo:&#160;</string>
     <string name="content_description_image_coupon_sub_section">image coupon sub section</string>
     <string name="content_description_image_arrow_coupon_sub_section">image arrow coupon sub section</string>
+    <string name="label_button_close">Tutup</string>
 
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDriverInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
@@ -23,7 +24,7 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationData: DigitalRecommendationData,
     digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
-    productViewListener: ProductViewHolder.ProductViewListener,
+    productViewListener: PartialProductItemViewHolder.ProductViewListener,
     navigator: BuyerOrderDetailNavigator,
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BuyerOrderDetailTypeFactory(

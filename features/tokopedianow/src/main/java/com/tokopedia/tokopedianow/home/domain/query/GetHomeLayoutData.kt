@@ -86,6 +86,7 @@ internal object GetHomeLayoutData {
                  position
                  type
                }
+               param
              }
              banner {
                id
@@ -106,6 +107,7 @@ internal object GetHomeLayoutData {
                gradient_color
              }
              token
+             widgetParam
            }
          }
        }

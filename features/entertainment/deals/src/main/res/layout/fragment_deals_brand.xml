@@ -56,13 +56,14 @@
             app:layout_constraintTop_toTopOf="@+id/tv_brand_title"
             tools:visibility="gone" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmering_title"
             android:layout_width="@dimen/deals_dp_100"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            app:corners="16"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />

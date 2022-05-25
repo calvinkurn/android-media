@@ -9,13 +9,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftModule
 import com.tokopedia.product.addedit.draft.di.DaggerAddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductDraftFragment
 
 
-open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddEditProductDraftComponent> {
+open class AddEditProductDraftActivity : TabletAdaptiveActivity(), HasComponent<AddEditProductDraftComponent> {
 
     private var toolbarDraft: HeaderUnify? = null
     private val addEditProductDraftFragment: AddEditProductDraftFragment by lazy {
@@ -32,6 +33,7 @@ open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddE
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product_draft)
         toolbarDraft = findViewById(R.id.toolbar_draft)
+        toolbarDraft?.headerTitle = getString(R.string.label_title_draft_product)
         setSupportActionBar(toolbarDraft)
     }
 

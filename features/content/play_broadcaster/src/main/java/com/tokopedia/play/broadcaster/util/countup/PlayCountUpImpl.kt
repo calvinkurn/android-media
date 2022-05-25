@@ -11,6 +11,7 @@ class PlayCountUpImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
 ): PlayCountUp {
 
+    private val scope = CoroutineScope(dispatcher.io)
     private var job: Job? = null
     private var listener: PlayCountUpListener? = null
 
@@ -22,8 +23,8 @@ class PlayCountUpImpl @Inject constructor(
         var currentDuration = duration
 
         job?.cancel()
-        job = CoroutineScope(dispatcher.io).launch {
-            while(duration < maxDuration) {
+        job = scope.launch {
+            while(currentDuration < maxDuration && isActive) {
 
                 delay(DEFAULT_INTERVAL)
                 currentDuration += DEFAULT_INTERVAL
@@ -33,8 +34,8 @@ class PlayCountUpImpl @Inject constructor(
                 }
             }
 
-            withContext(dispatcher.main) {
-                listener?.onFinish()
+            if (isActive) {
+                withContext(dispatcher.main) { listener?.onFinish() }
             }
         }
     }

@@ -287,18 +287,20 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun stopRecord() {
         GlobalScope.launch(Dispatchers.Main) {
-            mediaRecorder?.stop()
+            try {
+                mediaRecorder?.stop()
 
-            releaseResources()
+                releaseResources()
 
-            withContext(Dispatchers.IO) {
-                resultVideoPath = writeResultToMovies()
-                cleanUnusedFiles()
-            }
+                withContext(Dispatchers.IO) {
+                    resultVideoPath = writeResultToMovies()
+                    cleanUnusedFiles()
+                }
 
-            stopForeground(true)
-            infoFinishToUser(resultVideoPath)
-            stopSelf()
+                stopForeground(true)
+                infoFinishToUser(resultVideoPath)
+                stopSelf()
+            } catch (e: Exception) {}
         }
     }
 
@@ -405,7 +407,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         try {
             preRecordCountDownText = Typography(this)
             preRecordCountDownText.textSize = PRE_RECORD_COUNTDOWN_TEXT_SIZE_SP
-            preRecordCountDownText.setTextColor(resources.getColor(R.color.pre_record_countdown_text_color))
+            preRecordCountDownText.setTextColor(resources.getColor(R.color.pre_record_countdown_dms_text_color))
             preRecordCountDownText.setLayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             preRecordCountDownText.setGravity(Gravity.CENTER)
 

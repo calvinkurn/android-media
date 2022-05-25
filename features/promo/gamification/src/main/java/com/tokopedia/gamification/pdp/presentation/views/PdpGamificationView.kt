@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -201,7 +200,7 @@ class PdpGamificationView : LinearLayout {
 
     private fun sendPdpRecomImpressionEvent(isFirstLoad:Boolean){
         if(isFirstLoad) {
-            GtmEvents.impressionProductRecom(userId)
+            GtmEvents.impressionProductRecom(userId , shopId)
         }
     }
 

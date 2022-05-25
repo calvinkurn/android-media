@@ -165,7 +165,8 @@ class MediaView @JvmOverloads constructor(
         if (asset is VideoData) {
             playerView.visibility = View.VISIBLE
             assetView.visibility = View.GONE
-            createVideoItem(asset)
+            createVideoItem(asset, zoomInfo)
+            // send zoom info to show preview
         } else if (asset is PhotosData) {
             assetView.visibility = View.VISIBLE
             playerView.visibility = View.GONE
@@ -196,7 +197,7 @@ class MediaView @JvmOverloads constructor(
         assetView.loadAsset(asset, zoomInfo)
     }
 
-    fun createVideoItem(videoData: VideoData) {
+    fun createVideoItem(videoData: VideoData, zoomInfo: ZoomInfo) {
         val tmpUri = videoData.contentUri
         val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)

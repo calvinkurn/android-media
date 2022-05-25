@@ -49,6 +49,10 @@ object FeedScrollListenerNew {
                     if (item != null) {
                         getVODModelScrollListener(layoutManager, recyclerView, i, item)
                     }
+                }else if (isLongVideoCard(list, i) && isWifiEnabled(recyclerView.context)){
+                    if (item != null) {
+                        getVODModelScrollListener(layoutManager, recyclerView, i, item)
+                    }
                 }
                 else if (isTopadsImageCard(list, i)) {
                     if (topadsItem != null) {
@@ -186,7 +190,7 @@ object FeedScrollListenerNew {
         return (list.size > position && list[position] is DynamicPostUiModel
                 && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
-            it.type == TYPE_VIDEO || it.type == TYPE_LONG_VIDEO
+            it.type == TYPE_VIDEO
         } != null))
     }
     private fun isVODCard(list: List<Visitable<*>>, position: Int): Boolean {
@@ -194,6 +198,13 @@ object FeedScrollListenerNew {
                 && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_PLAY
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
             it.type == TYPE_VIDEO
+        } != null))
+    }
+    private fun isLongVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
+        return (list.size > position && list[position] is DynamicPostUiModel
+                && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
+                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+            it.type == TYPE_LONG_VIDEO
         } != null))
     }
 

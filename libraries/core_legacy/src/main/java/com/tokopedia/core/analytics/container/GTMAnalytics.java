@@ -17,13 +17,14 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -38,6 +39,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
@@ -45,6 +47,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +60,10 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.google.gson.Gson;
 
 public class GTMAnalytics extends ContextAnalytics {
     public static final String OPEN_SCREEN = "openScreen";
@@ -104,6 +111,11 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
+    private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
+    private static final String EMBRACE_KEY = "GTMAnalytics";
+    private static final String EMBRACE_EVENT_NAME = "eventName";
+    private static final String EMBRACE_EVENT_ACTION = "eventAction";
+    private static final String EMBRACE_EVENT_LABEL = "eventLabel";
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -282,7 +294,8 @@ public class GTMAnalytics extends ContextAnalytics {
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
-            GtmLogger.getInstance(context).saveError(stacktrace.toString());
+            Map<String, Object> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
+            GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
             if (!TextUtils.isEmpty(e.getMessage())) {
                 Map<String, String> map = new HashMap<>();
                 map.put("msg", e.getMessage());
@@ -891,8 +904,9 @@ public class GTMAnalytics extends ContextAnalytics {
         // fix Caused by java.lang.NoSuchMethodError
         try {
             String name = eventName == null ? (String) values.get("event") : eventName;
-            if (isGtmV5) name += " (v5)";
-            GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
+            if (!isGtmV5) name += " (legacy_v4)";
+            String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
+            GtmLogger.getInstance(context).save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
             if (tetraDebugger != null) {
@@ -1167,9 +1181,51 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
+            trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        try {
+            EmbraceConfig config =
+                    new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+            if (bundle.containsKey(KEY_CATEGORY)) {
+                String eventCategoryValue = bundle.getString(KEY_CATEGORY);
+                if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
+                    EmbraceMonitoring.INSTANCE.logBreadcrumb(
+                            String.format(
+                                    EMBRACE_BREADCRUMB_FORMAT,
+                                    EMBRACE_KEY,
+                                    createJsonFromBundle(eventName, bundle)
+                            )
+                    );
+                }
+            }
+        } catch (Exception e) { }
+    }
+
+    private JSONObject createJsonFromBundle(String eventName, Bundle bundle) {
+        JSONObject json = new JSONObject();
+        Set<String> keys = bundle.keySet();
+        try {
+            json.put(EMBRACE_EVENT_NAME, eventName);
+
+            if (bundle.containsKey(KEY_ACTION)) {
+                String action = bundle.getString(KEY_ACTION);
+                json.put(EMBRACE_EVENT_ACTION, action);
+            }
+
+            if (bundle.containsKey(KEY_LABEL)) {
+                String label = bundle.getString(KEY_LABEL);
+                json.put(EMBRACE_EVENT_LABEL, label);
+            }
+        } catch(JSONException e) {
+            //Handle exception here
+        }
+        return json;
     }
 
     public void publishNewRelic(String eventName, Bundle bundle) {

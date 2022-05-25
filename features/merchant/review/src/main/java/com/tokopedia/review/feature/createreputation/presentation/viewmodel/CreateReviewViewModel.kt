@@ -19,6 +19,7 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
@@ -61,7 +62,7 @@ class CreateReviewViewModel @Inject constructor(
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
-        const val LOCAL_IMAGE_SOURCE = "storage"
+        const val HTTP_PREFIX = "http"
         const val MAX_IMAGE_COUNT = 5
     }
 
@@ -109,6 +110,32 @@ class CreateReviewViewModel @Inject constructor(
         get() = _postSubmitUiState
 
     private val selectedBadRatingCategories = mutableSetOf<String>()
+
+    private fun mergeImagePickerResultWithOriginalImages(
+        imagePickerResult: MutableList<String>,
+        imagesFedIntoPicker: MutableList<String>
+    ): List<String> {
+        return imagePickerResult.mapIndexed { index, result ->
+            if (result.endsWith(ReviewConstants.TEMP_IMAGE_EXTENSION)) {
+                imagesFedIntoPicker[index]
+            } else {
+                result
+            }
+        }
+    }
+
+    private fun updateBadRatingCategories(badRatingCategoryId: String, selected: Boolean) {
+        _badRatingCategories.value = _badRatingCategories.value.let {
+            if (it is CoroutineSuccess) {
+                val newBadRatingCategories = it.data.map {
+                    if (it.id == badRatingCategoryId) it.copy(selected = selected) else it
+                }
+                CoroutineSuccess(newBadRatingCategories)
+            } else {
+                it
+            }
+        }
+    }
 
     fun submitReview(
         rating: Int,
@@ -204,16 +231,16 @@ class CreateReviewViewModel @Inject constructor(
         imagesFedIntoPicker: MutableList<String>
     ): MutableList<BaseImageReviewUiModel> {
         // Remove old image
-        originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
-
-        when (imagePickerResult.size) {
+        val mergedImagePaths = mergeImagePickerResultWithOriginalImages(imagePickerResult, imagesFedIntoPicker)
+        originalImages = mergedImagePaths.filter { it.startsWith(HTTP_PREFIX) }.toMutableList()
+        when (mergedImagePaths.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (imagePickerResult.map {
+                imageData = (mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imagePickerResult.map {
+                imageData.addAll(mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())
@@ -403,11 +430,13 @@ class CreateReviewViewModel @Inject constructor(
 
     fun addBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.add(badRatingCategoryId)
+        updateBadRatingCategories(badRatingCategoryId, true)
         updateProgressBarFromBadRatingCategory()
     }
 
     fun removeBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.remove(badRatingCategoryId)
+        updateBadRatingCategories(badRatingCategoryId, false)
         updateProgressBarFromBadRatingCategory()
     }
 

@@ -96,7 +96,6 @@ class AffiliateHomeViewModelTest{
     @Test
     fun getAffiliatePerformance(){
         val affiliateUserPerformaListData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
-        val metricData : AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics = mockk(relaxed = true)
         val defaultMetricData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics(
             null,"","1",null,null,null,0,null
         )
@@ -105,7 +104,13 @@ class AffiliateHomeViewModelTest{
         )
         affiliateUserPerformaListData.getAffiliatePerformance.data?.userData = performData
         coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } returns affiliateUserPerformaListData
-
+        val ticker = AffiliateDateFilterResponse.Data.Ticker("info","")
+        val list =  arrayListOf(AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","30 Hari Terakhir","LastThirtyDays","30"),
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","7 Hari Terakhir","LastSevenDays","7"))
+        val filterResponse = AffiliateDateFilterResponse(AffiliateDateFilterResponse.Data(
+            list,
+            arrayListOf(ticker)))
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() }returns filterResponse
         val affiliatePerformanceListData: AffiliatePerformanceListData = mockk(relaxed = true)
         val item : AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item = mockk(relaxed = true)
         val data = AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data(
@@ -113,9 +118,6 @@ class AffiliateHomeViewModelTest{
             null, arrayListOf(item),null)
         affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data = data
         coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any()) } returns affiliatePerformanceListData
-
-        val listResponse = affiliateHomeViewModel.convertDataToVisitables(affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data,affiliateUserPerformaListData,
-            PAGE_ZERO)
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
         assertEquals(affiliateHomeViewModel.getAffiliateItemCount().value,0)
@@ -127,6 +129,7 @@ class AffiliateHomeViewModelTest{
     fun getAffiliatePerformanceException() {
         val throwable = Throwable("Validate Data Exception")
         coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } throws throwable
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } throws throwable
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
 
@@ -157,7 +160,7 @@ class AffiliateHomeViewModelTest{
     /**************************** getSelectedDate() *******************************************/
     @Test
     fun getSelectedDataTest(){
-        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        val selectedDate = AffiliateBottomDatePicker.THIRTY_DAYS
         assertEquals(affiliateHomeViewModel.getSelectedDate(),selectedDate)
     }
 

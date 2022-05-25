@@ -234,4 +234,7 @@ yang ditemukan</string>
     <string name="topchat_action_delete_msg_bubble_confirmation">Ya, Hapus</string>
     <string name="topchat_desc_delete_msg_bubble_confirmation">Pesan yang dihapus tidak akan bisa dilihat lagi oleh kamu dan lawan bicaramu.</string>
     <string name="desc_topchat_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
+
+    <string name="title_topchat_click_refresh">Klik ikon di samping untuk refresh.</string>
+    <string name="topchat_mvc_not_available">Pengaturan Kupon Produk hanya tersedia di desktop dan aplikasi Tokopedia Seller.</string>
 </resources>

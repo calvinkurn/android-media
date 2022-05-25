@@ -54,6 +54,10 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
         return view
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -80,7 +84,7 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
                 }
                 is Fail -> {
                     view?.run {
-                        Toaster.make(this, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.general_label_ok))
+                        Toaster.make(this, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
                     }
                 }
             }

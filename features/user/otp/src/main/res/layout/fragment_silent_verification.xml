@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white_95"
+    android:background="@color/Unify_N0_96"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -74,7 +74,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/fragment_silent_verif_subtitle"
             android:textAlignment="center"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/fragment_silent_verif_title"
             app:layout_constraintStart_toStartOf="@+id/fragment_silent_verif_title"
             app:layout_constraintTop_toBottomOf="@+id/fragment_silent_verif_title"

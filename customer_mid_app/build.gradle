@@ -35,6 +35,11 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
+    }
 }
 
 dependencies {
@@ -124,10 +129,12 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.biometric
+    implementation platform(rootProject.ext.firebase.bom)
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
@@ -149,12 +156,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonTravel)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)
-    implementation projectOrAar(rootProject.ext.features.travelCountryCode)
-    implementation projectOrAar(rootProject.ext.features.travelPassenger)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
@@ -209,7 +215,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.weaver)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.filter)
@@ -247,16 +252,14 @@ dependencies {
     }
 
     // in~house dependencies
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.measurementApi
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-
 
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
@@ -371,5 +374,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

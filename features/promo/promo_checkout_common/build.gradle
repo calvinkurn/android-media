@@ -35,12 +35,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
 }

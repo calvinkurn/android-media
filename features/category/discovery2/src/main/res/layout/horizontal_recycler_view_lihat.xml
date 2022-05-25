@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"
-        android:contentDescription="@string/content_desc_title_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:contentDescription="@string/content_desc_title_tv"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/lihat_semua_tv"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        tools:text="Earphones on Sale" />
+        tools:text="Earphones on Sale"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lihat_semua_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:gravity="end"
         android:maxLines="1"
+        android:text="@string/lihat_semua"
         android:textColor="@color/Unify_G500"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/title_tv"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/title_tv"
-        app:layout_constraintBottom_toBottomOf="@id/title_tv"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:text="@string/lihat_semua" />
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_rv"
@@ -49,6 +53,15 @@
         android:layout_marginTop="2dp"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_tv" />
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/viewEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/list_rv"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

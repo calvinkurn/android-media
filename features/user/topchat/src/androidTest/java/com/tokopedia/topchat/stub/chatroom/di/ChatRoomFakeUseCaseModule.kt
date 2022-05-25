@@ -459,4 +459,21 @@ class ChatRoomFakeUseCaseModule {
     ): ChatToggleBlockChatUseCaseStub {
         return ChatToggleBlockChatUseCaseStub(repository, dispatchers)
     }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetChatPreAttachPayloadUseCase(
+        stub: GetChatPreAttachPayloadUseCaseStub
+    ): GetChatPreAttachPayloadUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetChatPreAttachPayloadUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetChatPreAttachPayloadUseCaseStub {
+        return GetChatPreAttachPayloadUseCaseStub(repository, dispatchers)
+    }
 }

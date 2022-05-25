@@ -86,8 +86,10 @@ class MilestoneMissionAdapter(
                 if (mission.isProgressAvailable()) {
                     progressBarShcMilestoneCard.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
                     progressBarShcMilestoneCard.setValue(mission.missionProgress.percentage)
-                    tvShcMilestoneCardDescription.text =
-                        mission.missionProgress.description.parseAsHtml()
+                    val progress = mission.missionProgress
+                    val description =
+                        "<b>${progress.completed}</b> / ${progress.target} ${progress.description}"
+                    tvShcMilestoneCardDescription.text = description.parseAsHtml()
                 }
             }
         }

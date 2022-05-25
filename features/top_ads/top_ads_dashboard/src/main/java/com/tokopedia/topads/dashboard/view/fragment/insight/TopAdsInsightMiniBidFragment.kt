@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import kotlinx.android.synthetic.main.topads_insight_empty_view_mini.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 20/7/20.
@@ -23,14 +23,18 @@ class TopAdsInsightMiniBidFragment : BaseDaggerFragment() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.topads_insight_empty_view_mini, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        text_title.text = resources.getString(R.string.topads_insight_empty_bid_title)
-        text_desc.text = resources.getString(R.string.topads_insight_empty_bid_desc)
+        view.findViewById<Typography>(R.id.text_title)?.text =
+            resources.getString(R.string.topads_insight_empty_bid_title)
+        view.findViewById<Typography>(R.id.text_desc)?.text =
+            resources.getString(R.string.topads_insight_empty_bid_desc)
 
     }
 

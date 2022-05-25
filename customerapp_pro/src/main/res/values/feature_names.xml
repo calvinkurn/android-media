@@ -32,6 +32,8 @@
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
+    <string name="travel_contact_data_activity_title">Data Pemesan</string>
+    <string name="activity_label_travel_country_code">Kode Telepon Negara</string>
 
     <!--User Settings-->
     <string name="title_module_user_settings">Settings</string>
@@ -45,6 +47,9 @@
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
+    <string name="change_profile_info_title">Ubah Info Profil</string>
+    <string name="title_profile_info">Ubah Profil</string>
+
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
@@ -319,6 +324,8 @@
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+    <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
 
     <!-- Dynamic feature for buyerorder-->
@@ -353,6 +360,9 @@
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
 
+    <!-- Merchant NonLogin -->
+    <string name="title_module_merchant_nonlogin">Fitur Toko Non-Login</string>
+
     <!-- Shop Page -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
@@ -375,13 +385,11 @@
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
 
-    <!-- Review   -->
-    <string name="title_review">Ulasan</string>
-
     <string name="title_image_picker_insta_df">Media Picker</string>
     <string name="title_feed_create_post">Create Post</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
     <string name="cu_surey_layana">Survey Layana</string>
+    <string name="title_dynamic_libraries">Libraries</string>
 </resources>

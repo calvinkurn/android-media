@@ -9,8 +9,10 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
@@ -25,7 +27,7 @@ const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {
 
-    fun map(feedXHome: FeedXHome, cursor: String): DynamicFeedDomainModel {
+    fun map(feedXHome: FeedXHome, cursor: String, shouldShowNewTopadsOnly:Boolean): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var firstPageCursor = ""
 
@@ -33,7 +35,7 @@ object DynamicFeedNewMapper {
             when (it.typename) {
                 TYPE_FEED_X_CARD_PLACEHOLDER -> {
                     if (it.type == TYPE_TOPADS_HEADLINE) {
-                        mapCardHeadline(posts)
+                        mapCardHeadline(posts, shouldShowNewTopadsOnly)
                     } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && cursor.isEmpty()) {
                         mapCardCarousel(posts)
                     }
@@ -62,7 +64,7 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
-        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
+        val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData(), mapPostTracking(feedXCard))
         posts.add(dynamicPostUiModel)
     }
     private fun mapCardVOD(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
@@ -71,12 +73,14 @@ object DynamicFeedNewMapper {
     }
 
 
-    private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
+    private fun mapCardHeadline(posts: MutableList<Visitable<*>>, shouldShowNewTopadsOnly: Boolean) {
         val headLinePge = TopAdsHeadlineActivityCounter.page++
         val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = headLinePge)
         val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = headLinePge)
-        posts.add(topadsHeadlineUiModel)
-        posts.add(topadsHeadlineUiModelV2)
+        if (!shouldShowNewTopadsOnly)
+            posts.add(topadsHeadlineUiModel)
+            posts.add(topadsHeadlineUiModelV2)
+
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
@@ -103,6 +107,29 @@ object DynamicFeedNewMapper {
             posts.add(dynamicPostUiModel)
         }
     }
+    private fun mapPostTracking(feed: FeedXCard): TrackingPostModel {
+        val media = feed.media.firstOrNull()
+        val mediaType = media?.type ?: ""
+        val mediaUrl = media?.mediaUrl ?: ""
+        val tagsType = ""
+        val authorId = feed.author.id
+        val recomId = feed.id.toIntOrZero()
+
+        return TrackingPostModel(
+                feed.type,
+                feed.typename,
+                "",
+                mediaType,
+                mediaUrl,
+                tagsType,
+                feed.appLink,
+                authorId,
+                feed.id.toIntOrZero(),
+                feed.media.size,
+                recomId
+        )
+    }
+
 }
 
 

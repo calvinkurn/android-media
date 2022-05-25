@@ -180,7 +180,7 @@ class RechargeHomepageViewModelTest {
         // Sections
         val sectionsResponse = RechargeHomepageSections(listOf(
                 RechargeHomepageSections.Section("1", "1", "Test", "test", "TOP_ICONS", listOf(), "", "Lihat semua",
-                        "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
+                        "", "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
                 ))))
         val sectionResult = HashMap<Type, Any>()
         val sectionObjectType = RechargeHomepageSections.Response::class.java
@@ -243,7 +243,7 @@ class RechargeHomepageViewModelTest {
         // Sections
         val sectionsResponse = RechargeHomepageSections(listOf(
                 RechargeHomepageSections.Section("1", "1", "Test", "test", "TOP_ICONS", listOf(), "", "Lihat semua",
-                        "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
+                        "", "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
                 ))))
         val sectionResult = HashMap<Type, Any>()
         val sectionObjectType = RechargeHomepageSections.Response::class.java

@@ -31,6 +31,7 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -298,7 +299,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.districtName}, ${data.cityName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     } else {
                         localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -310,7 +313,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.addressName} ${data.receiverName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     }
 
@@ -355,7 +360,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             )),
                             postalCode = data.postalCode,
                             warehouseId = it.data.tokonow.warehouseId.toString(),
-                            shopId = it.data.tokonow.warehouseId.toString()
+                            shopId = it.data.tokonow.warehouseId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(it.data.tokonow.warehouses),
+                            serviceType = it.data.tokonow.serviceType
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {

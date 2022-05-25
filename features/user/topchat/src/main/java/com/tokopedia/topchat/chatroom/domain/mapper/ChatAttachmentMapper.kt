@@ -9,14 +9,23 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import javax.inject.Inject
 
 class ChatAttachmentMapper @Inject constructor() {
 
     fun map(response: ChatAttachmentResponse): ArrayMap<String, Attachment> {
+        return mapAttachments(response.chatAttachments.list)
+    }
+
+    fun map(response: PreAttachPayloadResponse): ArrayMap<String, Attachment> {
+        return mapAttachments(response.chatPreAttachPayload.list)
+    }
+
+    private fun mapAttachments(attachments: List<Attachment>): ArrayMap<String, Attachment> {
         val map = ArrayMap<String, Attachment>()
-        for (attachment in response.chatAttachments.list) {
+        for (attachment in attachments) {
             parseAttribute(attachment)
             map[attachment.id] = attachment
         }

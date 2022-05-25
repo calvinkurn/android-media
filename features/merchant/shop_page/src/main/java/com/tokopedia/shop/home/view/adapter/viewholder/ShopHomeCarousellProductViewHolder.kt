@@ -91,6 +91,7 @@ class ShopHomeCarousellProductViewHolder(
     }
 
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
+        recyclerView?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(

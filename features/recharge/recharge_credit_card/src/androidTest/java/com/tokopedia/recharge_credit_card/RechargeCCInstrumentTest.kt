@@ -7,13 +7,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-import androidx.test.espresso.matcher.ViewMatchers.supportsInputMethods
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -109,6 +103,29 @@ class RechargeCCInstrumentTest {
         Thread.sleep(2000)
     }
 
+    @Test
+    fun next_button_is_enabled_on_inserted_valid_amex_credit_card_number() {
+        onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
+        typeCreditCardNumber(VALID_AMEX_CC_NUMBER)
+        Thread.sleep(500)
+        onView(withId(R.id.cc_button_next)).check(matches(isEnabled()))
+        Thread.sleep(2000)
+    }
+
+    @Test
+    fun next_button_is_enabled_on_inserted_valid_amex_or_visa_credit_card_number() {
+        onView(withId(R.id.cc_button_next)).check(matches(not(isEnabled())))
+        typeCreditCardNumber(VALID_AMEX_CC_NUMBER)
+        Thread.sleep(500)
+        onView(withId(R.id.cc_button_next)).check(matches(isEnabled()))
+        Thread.sleep(2000)
+        onView(withContentDescription(CLEAR_BTN_CONTENT_DESCRIPTION)).perform(click())
+        Thread.sleep(500)
+        typeCreditCardNumber(VALID_CC_NUMBER)
+        Thread.sleep(500)
+        onView(withId(R.id.cc_button_next)).check(matches(isEnabled()))
+        Thread.sleep(2000)
+    }
 
     @Test
     fun next_button_is_disabled_on_inserted_invalid_credit_card_number() {
@@ -139,6 +156,7 @@ class RechargeCCInstrumentTest {
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY = "tracker/recharge/recharge_credit_card.json"
         private const val VALID_CC_NUMBER = "4111111111111111"
+        private const val VALID_AMEX_CC_NUMBER = "371449635398431"
         private const val INVALID_CC_NUMBER = "4141414141414141"
 
         private const val KEY_QUERY_BANK_LIST = "rechargeBankList"
@@ -148,5 +166,7 @@ class RechargeCCInstrumentTest {
         private const val PATH_RESPONSE_RECHARGE_BANK_LIST = "response_mock_data_cc_bank_list.json"
         private const val PATH_RESPONSE_RECHARGE_CATALOG_MENU_DETAIL = "response_mock_data_cc_menu_detail.json"
         private const val PATH_RESPONSE_RECHARGE_CATALOG_PREFIXES = "response_mock_data_cc_prefixes.json"
+
+        private const val CLEAR_BTN_CONTENT_DESCRIPTION = "icon_clear"
     }
 }

@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
+import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
@@ -255,6 +257,10 @@ open class TopChatViewStateImpl constructor(
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
         fragmentView?.notifyPreviewRemoved(model)
+    }
+
+    override fun reloadCurrentAttachment() {
+        fragmentView?.reloadCurrentAttachment()
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -705,13 +711,13 @@ open class TopChatViewStateImpl constructor(
     }
 
     fun setTemplate(
-            listTemplate: List<Visitable<Any>>?,
+            listTemplate: List<Visitable<*>>?,
             isLastMessageBroadcast: Boolean = false,
             amIBuyer: Boolean = true
     ) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
-            templateAdapter.list = listTemplate
+            templateAdapter.setList(listTemplate)
             if (setTemplateChecker(isLastMessageBroadcast, amIBuyer)) {
                 showTemplateChat()
             } else {
@@ -752,6 +758,10 @@ open class TopChatViewStateImpl constructor(
 
     override fun showRetryUploadImages(it: ImageUploadUiModel, retry: Boolean) {
         getAdapter().showRetryFor(it, retry)
+    }
+
+    fun updateProductPreviews(mapProducts: ArrayMap<String, Attachment>) {
+        attachmentPreviewAdapter.updateDeferredAttachment(mapProducts)
     }
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {

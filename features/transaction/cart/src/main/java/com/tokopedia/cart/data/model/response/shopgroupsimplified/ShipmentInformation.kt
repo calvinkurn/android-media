@@ -12,5 +12,7 @@ data class ShipmentInformation(
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
         @SerializedName("preorder")
-        val preorder: PreOrder = PreOrder()
+        val preorder: PreOrder = PreOrder(),
+        @SerializedName("enable_bo_affordability")
+        val enableBoAffordability: Boolean = false
 )

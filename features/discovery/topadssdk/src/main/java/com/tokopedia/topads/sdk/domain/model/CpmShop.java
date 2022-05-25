@@ -30,6 +30,7 @@ public class CpmShop implements Parcelable {
     private static final String KEY_IS_POWER_MERCHANT = "gold_shop";
     private static final String KEY_MERCHANT_VOUCHERS = "merchant_vouchers";
     private static final String KEY_IS_FOLLOWED = "is_followed";
+    private static final String KEY_LOCATION = "location";
 
     @SerializedName(KEY_ID)
     private String id;
@@ -53,6 +54,8 @@ public class CpmShop implements Parcelable {
     private boolean isPowerMerchant;
     @SerializedName(KEY_IS_FOLLOWED)
     private boolean isFollowed;
+    @SerializedName(KEY_LOCATION)
+    private String location;
     @SerializedName(KEY_MERCHANT_VOUCHERS)
     private List<String> merchantVouchers = new ArrayList<>();
 
@@ -99,6 +102,9 @@ public class CpmShop implements Parcelable {
                 merchantVouchers.add(merchantVouchersArray.getString(i));
             }
         }
+        if(!object.isNull(KEY_LOCATION)){
+            setLocation(object.getString(KEY_LOCATION));
+        }
     }
 
 
@@ -108,6 +114,7 @@ public class CpmShop implements Parcelable {
         domain = in.readString();
         tagline = in.readString();
         slogan = in.readString();
+        location = in.readString();
         products = in.createTypedArrayList(Product.CREATOR);
         imageShop = in.readParcelable(ImageShop.class.getClassLoader());
         isOfficial = in.readByte() != 0;
@@ -123,6 +130,7 @@ public class CpmShop implements Parcelable {
         dest.writeString(domain);
         dest.writeString(tagline);
         dest.writeString(slogan);
+        dest.writeString(location);
         dest.writeTypedList(products);
         dest.writeParcelable(imageShop, flags);
         dest.writeByte((byte) (isOfficial ? 1 : 0));
@@ -242,5 +250,13 @@ public class CpmShop implements Parcelable {
 
     public void setFollowed(boolean followed) {
         isFollowed = followed;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

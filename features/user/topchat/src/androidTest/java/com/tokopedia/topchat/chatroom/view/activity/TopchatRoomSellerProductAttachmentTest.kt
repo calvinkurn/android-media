@@ -347,7 +347,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
                 withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         1, R.id.tp_seller_fullfilment
                 )
-        ).check(matches(withText("Dilayani TokoCabang")))
+        ).check(matches(withText("Dilayani Tokopedia")))
     }
 
     @Test

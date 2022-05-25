@@ -38,14 +38,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.core
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
