@@ -417,33 +417,31 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         viewModel.bulkDeleteUnavailableProducts()
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
-                        (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? UpdateParam)?.productList?.firstOrNull()?.cartId?.let { cartId ->
-                                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                                    cartTokoFoodData.carts.firstOrNull()?.let { product ->
-                                        if (viewModel.isDebug) {
-                                            (pair.first as? UpdateParam)?.productList?.firstOrNull()?.notes?.let { notes ->
-                                                viewModel.updateNotesDebug(product, cartId, notes)
-                                            }
-                                        } else {
-                                            viewModel.updateNotes(product, cartId)
-                                        }
-                                        view?.let {
-                                            Toaster.build(
-                                                view = it,
-                                                text = context?.getString(R.string.text_purchase_success_notes).orEmpty(),
-                                                duration = Toaster.LENGTH_SHORT,
-                                                type = Toaster.TYPE_NORMAL,
-                                                actionText = getOkayMessage()
-                                            ).show()
-                                        }
+                        it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
+                            cartTokoFoodData.carts.firstOrNull()?.let { product ->
+                                if (viewModel.isDebug) {
+                                    updateParams.productList.firstOrNull()?.notes?.let { notes ->
+                                        viewModel.updateNotesDebug(product, updateParams.productList.firstOrNull()?.cartId.orEmpty(), notes)
                                     }
+                                } else {
+                                    viewModel.updateNotes(updateParams, cartTokoFoodData)
+                                }
+                                view?.let {
+                                    Toaster.build(
+                                        view = it,
+                                        text = context?.getString(R.string.text_purchase_success_notes).orEmpty(),
+                                        duration = Toaster.LENGTH_SHORT,
+                                        type = Toaster.TYPE_NORMAL,
+                                        actionText = getOkayMessage()
+                                    ).show()
                                 }
                             }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
-                        // TODO: update cart id
+                        it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
+                            viewModel.updateCartId(updateParams, cartTokoFoodData)
+                        }
                         viewModel.refreshPartialCartInformation()
                         view?.let {
                             Toaster.build(
@@ -585,7 +583,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         view?.let {
             Toaster.build(
                     view = it,
-                    text = "$productCount item berhasil dihapus.",
+                    text = getString(R.string.text_purchase_success_delete, productCount),
                     duration = Toaster.LENGTH_SHORT,
                     type = Toaster.TYPE_NORMAL,
                     actionText = getOkayMessage()
@@ -699,7 +697,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
                 override fun onGoToHome() {
-
+                    // TODO: Go To Homepage
                 }
 
                 override fun onRetry() {
@@ -809,6 +807,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         } else {
             showToaster(errorDetail.text, actionText) {
                 toasterAction()
+            }
+        }
+    }
+
+    private fun Any.getSuccessUpdateResultPair(): Pair<UpdateParam, CartTokoFoodData>? {
+        return (this as? Pair<*, *>)?.let { pair ->
+            (pair.first as? UpdateParam)?.let { updateParams ->
+                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
+                    updateParams to cartTokoFoodData
+                }
             }
         }
     }

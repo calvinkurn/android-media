@@ -40,7 +40,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = false
+    private val isDebug = true
 
     companion object {
         private const val PARAMS_KEY = "params"

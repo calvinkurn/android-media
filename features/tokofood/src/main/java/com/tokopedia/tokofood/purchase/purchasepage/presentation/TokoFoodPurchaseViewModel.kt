@@ -13,6 +13,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -25,6 +27,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHe
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByUpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getTickerErrorShopLevelUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
@@ -477,6 +480,39 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         })
     }
 
+    fun updateNotes(updateParam: UpdateParam, cartData: CartTokoFoodData) {
+        launchCatchError(block = {
+            val dataList = getVisitablesValue()
+            updateParam.productList.forEach { param ->
+                getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
+                    val newProductData = productData.second.copy().also { newProduct ->
+                        cartData.carts.find { cartData ->
+                            cartData.productId == newProduct.id && cartData.getMetadata().variants.any { cartVariant ->
+                                var isSameVariants = false
+                                run checkVariant@ {
+                                    newProduct.variants.forEach { productVariant ->
+                                        if (cartVariant.variantId == productVariant.variantId && cartVariant.optionId == productVariant.optionId) {
+                                            isSameVariants = true
+                                            return@checkVariant
+                                        }
+                                    }
+                                }
+                                isSameVariants
+                            }
+                        }?.let {
+                            newProduct.notes = it.getMetadata().notes
+                            newProduct.cartId = it.cartId
+                        }
+                    }
+                    dataList[productData.first] = newProductData
+                }
+            }
+            _visitables.value = dataList
+        }, onError = {
+            // TODO: Add Error
+        })
+    }
+
     fun updateNotesDebug(product: CartTokoFood, previousCartId: String, notes: String) {
         launchCatchError(block = {
             val productData = getVisitablesValue().getProductById(product.productId, previousCartId)
@@ -493,9 +529,36 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         })
     }
 
+    fun updateCartId(updateParam: UpdateParam, cartData: CartTokoFoodData) {
+        updateParam.productList.forEach { param ->
+            getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
+                productData.second.let { product ->
+                    cartData.carts.find { cartData ->
+                        cartData.productId == product.id && cartData.getMetadata().variants.any { cartVariant ->
+                            var isSameVariants = false
+                            run checkVariant@ {
+                                product.variants.forEach { productVariant ->
+                                    if (cartVariant.variantId == productVariant.variantId && cartVariant.optionId == productVariant.optionId) {
+                                        isSameVariants = true
+                                        return@checkVariant
+                                    }
+                                }
+                            }
+                            isSameVariants
+                        }
+                    }?.let {
+                        (visitables.value?.getOrNull(productData.first) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = it.cartId
+                    }
+                }
+            }
+        }
+    }
+
     fun triggerEditQuantity() {
         viewModelScope.launch {
-            val dataList = getVisitablesValue().filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+            val dataList = getVisitablesValue()
+                .filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+                .filter { it.isAvailable && it.isEnabled }
             _updateQuantityState.emit(dataList)
         }
     }

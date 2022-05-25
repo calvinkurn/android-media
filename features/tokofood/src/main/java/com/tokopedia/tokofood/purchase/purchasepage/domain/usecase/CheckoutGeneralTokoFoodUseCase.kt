@@ -23,7 +23,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : FlowUseCase<CheckoutTokoFoodResponse, CheckoutGeneralTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     override fun graphqlQuery(): String = """
         mutation TokoFoodCheckoutGeneral($$PARAMS_KEY: CheckoutGeneralV2Params!) {

@@ -20,6 +20,7 @@
     <string name="text_purchase_use_promo">Pakai Promo (%d)</string>
     <string name="text_purchase_delete_item">Hapus %s item yang tidak bisa diproses?</string>
     <string name="text_purchase_delete_all">Semua item ini akan dihapus dari keranjangmu.</string>
+    <string name="text_purchase_success_delete">%d item berhasil dihapus.</string>
     <string name="text_purchase_delete">Hapus</string>
     <string name="text_purchase_back">Kembali</string>
     <string name="text_purchase_no_pinpoint">Kamu belum set pinpoint lokasi</string>
