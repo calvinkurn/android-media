@@ -2,7 +2,6 @@ package com.tokopedia.test.application.id_generator
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.instrumentation.test.BuildConfig
 
 /**
  * Created by kenny.hadisaputra on 15/04/22
