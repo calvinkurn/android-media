@@ -73,6 +73,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -93,12 +94,13 @@ import com.tokopedia.play_common.R as commonR
  * Created by jegul on 29/11/19
  */
 class PlayUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatchers,
-        private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-        private val castAnalyticHelper: CastAnalyticHelper
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
+    private val pipAnalytic: PlayPiPAnalytic,
+    private val analytic: PlayAnalytic,
+    private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
+    private val castAnalyticHelper: CastAnalyticHelper,
+    private val performanceClassConfig: PerformanceClassConfig,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -146,7 +148,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
-        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
+        it,
+        R.id.view_like_bubble,
+        viewLifecycleOwner.lifecycleScope,
+        multipleLikesIconCacheStorage,
+        performanceClassConfig,
+    ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
 
