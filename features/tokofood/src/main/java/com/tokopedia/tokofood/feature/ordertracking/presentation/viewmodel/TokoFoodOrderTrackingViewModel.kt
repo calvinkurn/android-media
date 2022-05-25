@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
@@ -55,23 +54,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val driverPhoneNumber: LiveData<Result<DriverPhoneNumberUiModel>>
         get() = _driverPhoneNumber
 
-    private val canceledOrder = R.raw.orderdetailcancelled
-    private val successOrder = R.raw.orderdetailsuccess
-
-    private val resources = listOf(
-        R.raw.order_tracking_created,
-        R.raw.order_tracking_new,
-        R.raw.order_tracking_awaiting_merchant_acceptance,
-        R.raw.order_tracking_merchant_accepted,
-        R.raw.order_tracking_searching_driver,
-        R.raw.order_tracking_otw_pickup,
-        R.raw.order_tracking_driver_arrived,
-        R.raw.order_tracking_pickup_requested,
-        R.raw.order_tracking_order_placed,
-        R.raw.order_tracking_otw_destination,
-        R.raw.orderdetailsuccess
-    )
-
     private var foodItems = listOf<FoodItemUiModel>()
     private var orderId = ""
     private var orderStatus = ""
@@ -80,10 +62,18 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         fetchOrderLiveTracking()
     }
 
-    fun fetchOrderDetail(orderId: String, resourceId: Int) {
+    fun getFoodItems() = foodItems
+    fun getOrderId() = orderId
+
+    fun updateOrderId(orderId: String) {
+        _orderId.tryEmit(orderId)
+        this.orderId = orderId
+    }
+
+    fun fetchOrderDetail(orderId: String) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
+                getTokoFoodOrderDetailUseCase.get().execute(orderId)
             }
             this@TokoFoodOrderTrackingViewModel.orderStatus = orderDetailResult.orderStatus
             this@TokoFoodOrderTrackingViewModel.foodItems =
@@ -105,10 +95,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         })
     }
 
-    private fun fetchOrderCompletedLiveTracking(orderId: String, resourceId: Int) {
+    private fun fetchOrderCompletedLiveTracking(orderId: String) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
+                getTokoFoodOrderDetailUseCase.get().execute(orderId)
             }
             this@TokoFoodOrderTrackingViewModel.orderStatus = orderDetailResult.orderStatus
             this@TokoFoodOrderTrackingViewModel.foodItems =
@@ -119,30 +109,17 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         })
     }
 
-    fun getFoodItems() = foodItems
-    fun getOrderId() = orderId
-
-    fun updateOrderId(orderId: String) {
-        _orderId.tryEmit(orderId)
-        this.orderId = orderId
-    }
-
     private fun fetchOrderLiveTracking() {
         viewModelScope.launchCatchError(block = {
-            var index = 0
             _orderId.collect {
                 delay(DELAY_ORDER_STATE)
                 val orderStatusResult = withContext(coroutineDispatchers.io) {
-                    getTokoFoodOrderStatusUseCase.get().executeTemp(resources[index])
+                    getTokoFoodOrderStatusUseCase.get().execute(it)
                 }
                 this@TokoFoodOrderTrackingViewModel.orderStatus = orderStatusResult.orderStatusKey
-                index++
                 when (orderStatus) {
-                    OrderStatusType.CANCELLED -> {
-                        fetchOrderCompletedLiveTracking(it, canceledOrder)
-                    }
-                    OrderStatusType.COMPLETED -> {
-                        fetchOrderCompletedLiveTracking(it, successOrder)
+                    OrderStatusType.CANCELLED, OrderStatusType.COMPLETED -> {
+                        fetchOrderCompletedLiveTracking(it)
                     }
                     else -> {
                         _orderLiveTrackingStatus.emit(Success(orderStatusResult))
@@ -156,5 +133,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     companion object {
         const val DELAY_ORDER_STATE = 5000L
+
+        const val ORDER_ID_CANCELLED_DUMMY = "422acc7a-ef9a-4486-8a60-2c4f3c48f12e"
     }
 }

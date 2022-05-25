@@ -83,7 +83,6 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_DIMENSION_45,
-//                setValueOrDefault(data.cartId)
                 ""
             )
             putString(
@@ -96,12 +95,10 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_ID,
-//                setValueOrDefault(data.productId.toString())
                 ""
             )
             putString(
                 AddToCartExternalAnalytics.EE_PARAM_ITEM_NAME,
-//                setValueOrDefault(product.name)
                 ""
             )
             putString(

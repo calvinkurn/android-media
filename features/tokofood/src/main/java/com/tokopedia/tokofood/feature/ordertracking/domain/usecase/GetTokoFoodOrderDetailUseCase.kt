@@ -1,20 +1,15 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.query.TokoFoodOrderDetailQuery
-import com.tokopedia.tokofood.feature.ordertracking.domain.utils.FileUtilsTemp
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import javax.inject.Inject
 
 class GetTokoFoodOrderDetailUseCase @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val useCase: GraphqlUseCase<TokoFoodOrderDetailResponse>,
-    private val tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper,
-    private val fileUtilsTemp: FileUtilsTemp
+    private val tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
 ) {
     init {
         useCase.setGraphqlQuery(TokoFoodOrderDetailQuery)
@@ -24,13 +19,6 @@ class GetTokoFoodOrderDetailUseCase @Inject constructor(
     suspend fun execute(orderId: String): OrderDetailResultUiModel {
         useCase.setRequestParams(TokoFoodOrderDetailQuery.createRequestParamsOrderDetail(orderId))
         val response = useCase.executeOnBackground().tokofoodOrderDetail
-        return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
-    }
-
-    fun executeTemp(resourceId: Int): OrderDetailResultUiModel {
-        val json = fileUtilsTemp.getJsonFromRaw(context.resources, resourceId)
-        val response =
-            fileUtilsTemp.getJsonResources<TokoFoodOrderDetailResponse>(json).tokofoodOrderDetail
         return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }
 }

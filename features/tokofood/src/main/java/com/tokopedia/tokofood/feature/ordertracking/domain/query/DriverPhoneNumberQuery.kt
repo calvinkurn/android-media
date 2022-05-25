@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.feature.ordertracking.domain.query
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.usecase.RequestParams
 
-object DriverPhoneNumberQuery: GqlQueryInterface {
+internal object DriverPhoneNumberQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "GetDriverPhoneNumber"
 

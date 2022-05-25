@@ -14,24 +14,26 @@ import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 
-class TokoFoodOrderTrackingViewModelTest: TokoFoodOrderTrackingViewModelTestFixture() {
+class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFixture() {
 
     @Test
     fun `when fetchOrderDetail should return set live data success`() {
         runBlocking {
-            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(ORDER_TRACKING_SUCCESS).tokofoodOrderDetail
-            val orderDetailResultUiModel = tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
+            val jsonResponse = JsonResourcesUtil.createSuccessResponse<TokoFoodOrderDetailResponse>(
+                ORDER_TRACKING_SUCCESS
+            ).tokofoodOrderDetail
+            val orderDetailResultUiModel =
+                tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(jsonResponse)
             coEvery {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(anyInt())
+                getTokoFoodOrderDetailUseCase.get().execute(anyString())
             } returns orderDetailResultUiModel
 
-            viewModel.fetchOrderDetail(anyString(), anyInt())
+            viewModel.fetchOrderDetail(anyString())
 
             coVerify {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(anyInt())
+                getTokoFoodOrderDetailUseCase.get().execute(anyString())
             }
 
             val expectedResult = (viewModel.orderDetailResult.observeAwaitValue() as Success).data
@@ -48,13 +50,13 @@ class TokoFoodOrderTrackingViewModelTest: TokoFoodOrderTrackingViewModelTestFixt
             val errorException = MessageErrorException()
 
             coEvery {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(anyInt())
+                getTokoFoodOrderDetailUseCase.get().execute(anyString())
             } throws errorException
 
-            viewModel.fetchOrderDetail(anyString(), anyInt())
+            viewModel.fetchOrderDetail(anyString())
 
             coVerify {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(anyInt())
+                getTokoFoodOrderDetailUseCase.get().execute(anyString())
             }
 
             val actualResult = (viewModel.orderDetailResult.value as Fail).throwable::class.java
@@ -66,7 +68,8 @@ class TokoFoodOrderTrackingViewModelTest: TokoFoodOrderTrackingViewModelTestFixt
     @Test
     fun `when fetchDriverPhoneNumber should return set live data success`() {
         runBlocking {
-            val driverPhoneNumberUiModel = DriverPhoneNumberUiModel(isCallable = true, phoneNumber = "0812345646")
+            val driverPhoneNumberUiModel =
+                DriverPhoneNumberUiModel(isCallable = true, phoneNumber = "0812345646")
 
             coEvery {
                 getDriverPhoneNumberUseCase.get().execute(anyString())

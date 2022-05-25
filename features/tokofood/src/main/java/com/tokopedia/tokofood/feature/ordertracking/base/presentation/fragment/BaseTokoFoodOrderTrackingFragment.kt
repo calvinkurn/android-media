@@ -17,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -106,7 +105,7 @@ class BaseTokoFoodOrderTrackingFragment :
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRvOrderTracking()
-        fetchOrderDetail(ORDER_TRACKING_RESOURCE)
+        fetchOrderDetail()
         observeOrderDetail()
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
@@ -156,7 +155,7 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onErrorActionClicked() {
-        fetchOrderDetail(ORDER_TRACKING_RESOURCE)
+        fetchOrderDetail()
     }
 
     override val parentPool: RecyclerView.RecycledViewPool
@@ -173,13 +172,13 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun fetchOrderDetail(resourceId: Int) {
+    private fun fetchOrderDetail() {
         orderTrackingAdapter.run {
             removeOrderTrackingData()
             hideError()
             showLoadingShimmer(LoadingModel())
         }
-        viewModel.fetchOrderDetail(orderId, resourceId)
+        viewModel.fetchOrderDetail(TokoFoodOrderTrackingViewModel.ORDER_ID_CANCELLED_DUMMY)
     }
 
     private fun observeOrderDetail() {
@@ -365,7 +364,7 @@ class BaseTokoFoodOrderTrackingFragment :
         binding?.orderTrackingSwipeRefresh?.run {
             isEnabled = true
             setOnRefreshListener {
-                fetchOrderDetail(ORDER_DETAIL_RESOURCE)
+                fetchOrderDetail()
             }
         }
     }
@@ -392,9 +391,6 @@ class BaseTokoFoodOrderTrackingFragment :
                 }
             }
         }
-
-        private val ORDER_TRACKING_RESOURCE = R.raw.ordertracking
-        private val ORDER_DETAIL_RESOURCE = R.raw.orderdetailsuccess
     }
 
 }
