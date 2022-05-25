@@ -476,7 +476,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun expandFab() {
-        feed_floating_button.expand()
+        if(!fab_feed.menuOpen) {
+            feed_floating_button.expand()
+        }
     }
 
     fun shrinkFab() {

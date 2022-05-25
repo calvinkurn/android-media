@@ -17,9 +17,10 @@ class FeedFloatingButtonManager @Inject constructor() {
 
     private lateinit var mParentFragment: Fragment
 
-    val scrollListener = object: RecyclerView.OnScrollListener(){
+    val scrollListener = object : RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(-1)) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && recyclerViewAtMostTop(recyclerView)) {
                 setDelayForExpandFab(recyclerView)
             }
             else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -35,13 +36,16 @@ class FeedFloatingButtonManager @Inject constructor() {
     fun setDelayForExpandFab(recyclerView: RecyclerView) {
         scope.launch {
             delay(FAB_EXPAND_WAITING_DELAY)
+
             withContext(dispatchers.main) {
-                if(!recyclerView.canScrollVertically(-1)) {
-                    if(mParentFragment is FeedPlusContainerFragment) {
-                        (mParentFragment as FeedPlusContainerFragment).expandFab()
-                    }
-                }
+                if(recyclerViewAtMostTop(recyclerView)) expandFab()
             }
+        }
+    }
+
+    private fun expandFab() {
+        if(mParentFragment is FeedPlusContainerFragment) {
+            (mParentFragment as FeedPlusContainerFragment).expandFab()
         }
     }
 
@@ -53,6 +57,10 @@ class FeedFloatingButtonManager @Inject constructor() {
 
     fun cancel() {
         scope.cancel()
+    }
+
+    private fun recyclerViewAtMostTop(recyclerView: RecyclerView): Boolean {
+        return !recyclerView.canScrollVertically(-1)
     }
 
     companion object {
