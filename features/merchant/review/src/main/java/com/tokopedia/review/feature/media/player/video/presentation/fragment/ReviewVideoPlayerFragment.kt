@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewMediaGalleryVideoPlayerBinding
 import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
@@ -69,11 +70,9 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private var binding by viewBinding(FragmentReviewMediaGalleryVideoPlayerBinding::bind)
     private var listener: Listener? = null
-    private var videoPlayerUiStateCollector: Job? = null
     private var videoPlaybackUiStateCollector: Job? = null
     private var videoErrorUiStateCollector: Job? = null
     private var videoThumbnailUiStateCollector: Job? = null
-    private var wifiConnectivityStatusCollector: Job? = null
 
     private val reviewVideoPlayerViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(requireActivity(), reviewVideoPlayerViewModelFactory).get(
@@ -91,6 +90,12 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        collectVideoPlayerUiState()
+        collectWifiConnectivityStatus()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -105,16 +110,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         collectVideoThumbnailUiState()
     }
 
-    override fun onResume() {
-        super.onResume()
-        collectVideoPlayerUiState()
-        collectWifiConnectivityStatus()
-    }
-
     override fun onPause() {
         super.onPause()
-        wifiConnectivityStatusCollector?.cancel()
-        videoPlayerUiStateCollector?.cancel()
         if (activity?.isChangingConfigurations != true) {
             updateCurrentFrameBitmap()
             reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
@@ -179,26 +176,24 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     }
 
     private fun collectVideoPlayerUiState() {
-        videoPlayerUiStateCollector = videoPlayerUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
-            reviewVideoPlayerViewModel.videoPlayerUiState.collectLatest {
-                when (it) {
-                    is ReviewVideoPlayerUiState.Initial -> {
-                        videoPlayer.initializeVideoPlayer(it.videoUri, true)
-                        reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
-                    }
-                    is ReviewVideoPlayerUiState.ChangingConfiguration -> {
-                        videoPlayer.initializeVideoPlayer(it.videoUri, false)
-                        reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
-                    }
-                    is ReviewVideoPlayerUiState.RestoringState -> {
-                        videoPlayer.restorePlaybackState(it.presentationTimeMs, it.playWhenReady)
-                        reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
-                    }
-                    else -> {
-                        collectVideoPlaybackUiState()
-                        collectVideoErrorUiState()
-                        collectVideoThumbnailUiState()
-                    }
+        viewLifecycleOwner.collectLatestWhenResumed(reviewVideoPlayerViewModel.videoPlayerUiState) {
+            when (it) {
+                is ReviewVideoPlayerUiState.Initial -> {
+                    videoPlayer.initializeVideoPlayer(it.videoUri, true)
+                    reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
+                }
+                is ReviewVideoPlayerUiState.ChangingConfiguration -> {
+                    videoPlayer.initializeVideoPlayer(it.videoUri, false)
+                    reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
+                }
+                is ReviewVideoPlayerUiState.RestoringState -> {
+                    videoPlayer.restorePlaybackState(it.presentationTimeMs, it.playWhenReady)
+                    reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
+                }
+                else -> {
+                    collectVideoPlaybackUiState()
+                    collectVideoErrorUiState()
+                    collectVideoThumbnailUiState()
                 }
             }
         }
@@ -227,12 +222,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     }
 
     private fun collectWifiConnectivityStatus() {
-        wifiConnectivityStatusCollector = wifiConnectivityStatusCollector?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.connectedToWifi.collectLatest {
-                reviewVideoPlayerViewModel.updateWifiConnectivityStatus(it)
-            }
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.connectedToWifi) {
+            reviewVideoPlayerViewModel.updateWifiConnectivityStatus(it)
         }
     }
 
