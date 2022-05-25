@@ -27,7 +27,7 @@ class FeedFloatingButton : LinearLayout {
         flTextWrapper = view.findViewById(R.id.fl_fab_text_wrapper)
     }
 
-    private var isExpand: Boolean = true
+    private var isExpand: Boolean = false
 
     fun expand() {
         if(!isExpand) {

@@ -475,6 +475,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    fun expandFab() {
+        feed_floating_button.expand()
+    }
+
+    fun shrinkFab() {
+        feed_floating_button.shrink()
+    }
+
     override fun onStop() {
         super.onStop()
         activity?.run {

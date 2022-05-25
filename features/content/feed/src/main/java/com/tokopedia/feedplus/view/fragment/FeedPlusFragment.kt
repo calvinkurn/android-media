@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -148,6 +149,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -219,6 +221,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var shareBottomSheetProduct = false
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
+    }
+
+    private val dispatchers = CoroutineDispatchersProvider
+    private val scope = CoroutineScope(dispatchers.computation)
+
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(-1)) {
+                setDelayForExpandFab()
+            }
+            else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                shrinkFab()
+            }
+        }
     }
 
     @Inject
@@ -321,6 +337,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
+
+        // region fab feed
+        private const val FAB_EXPAND_WAITING_DELAY = 1000L
+        // endregion
 
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
@@ -736,6 +756,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return parentView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.addOnScrollListener(scrollListener)
+        setDelayForExpandFab()
+    }
+
+    private fun setDelayForExpandFab() {
+        scope.launch {
+            delay(FAB_EXPAND_WAITING_DELAY)
+            withContext(dispatchers.main) {
+                if(!recyclerView.canScrollVertically(-1)) {
+                    if(requireParentFragment() is FeedPlusContainerFragment) {
+                        (requireParentFragment() as FeedPlusContainerFragment).expandFab()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun shrinkFab() {
+        if(requireParentFragment() is FeedPlusContainerFragment) {
+            (requireParentFragment() as FeedPlusContainerFragment).shrinkFab()
+        }
+    }
+
     private fun prepareView() {
         adapter.itemTreshold = 1
         layoutManager = NpaLinearLayoutManager(
@@ -807,6 +852,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.onDestroy()
         }
         TopAdsHeadlineActivityCounter.page = 1
+        recyclerView.removeOnScrollListener(scrollListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 
     override fun onInfoClicked() {
