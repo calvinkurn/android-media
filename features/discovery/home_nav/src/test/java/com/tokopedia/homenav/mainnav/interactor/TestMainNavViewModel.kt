@@ -14,13 +14,7 @@ import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
-import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
-import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
-import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
@@ -902,7 +896,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list with disable me page rollence then refresh bu list data will success delete error bu list`() {
+    fun `test show error bu list with enable me page rollence then refresh bu list data will success delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -1264,11 +1258,10 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test success show bu list with disabled me page rollence then error after refresh data should update bu to error state`() {
+    fun `test success show bu list with disabled me page rollence then error after refresh data should update with cache data`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
 
-        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
             getBuListUseCase.executeOnBackground()
         }.answers { listOf(successResult) }
@@ -1294,7 +1287,188 @@ class TestMainNavViewModel {
 
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        Assert.assertTrue(dataListRefreshed.contains(successResult))
+        Assert.assertFalse(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given enable me page rollence when refresh category then show data from cache`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        }.answers { listOf(successResult) }
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertTrue(dataList.menus.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertTrue(dataListRefreshed.menus.contains(successResult))
+        Assert.assertFalse(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given enable me page rollence when refresh category with failed data from cache then show retry button`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertFalse(dataList.menus.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        Assert.assertFalse(dataListRefreshed.menus.contains(successResult))
+        Assert.assertTrue(dataListRefreshed.menus.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given disable me page rollence when refresh category with failed data from cache then show retry button`() {
+        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
+        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
+
+        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        every {
+            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCache()
+        } answers { }
+        every {
+            getBuListUseCase.setStrategyCloudThenCache()
+        } answers { }
+        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertFalse(dataList.contains(successResult))
+
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.refreshBuListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         Assert.assertFalse(dataListRefreshed.contains(successResult))
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) //error state bu data model existed
+    }
+
+    @Test
+    fun `given 3 payment list and 3 reviews with enable me page rollence then get order history then show only 3 data payments and 2 data reviews`() {
+        val mockList3PaymentOrder = listOf(NavPaymentOrder(), NavPaymentOrder(), NavPaymentOrder())
+        val mockList3ReviewProduct = listOf(NavReviewOrder(), NavReviewOrder(), NavReviewOrder())
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val getReviewProductUseCase = mockk<GetReviewProductUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } returns mockList3PaymentOrder
+        coEvery {
+            getReviewProductUseCase.executeOnBackground()
+        } returns mockList3ReviewProduct
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            getReviewProductUseCase = getReviewProductUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as TransactionListItemDataModel
+
+        Assert.assertEquals(3, transactionDataModel.orderListModel.paymentList.size)
+        Assert.assertEquals(2, transactionDataModel.orderListModel.reviewList.size)
+    }
+
+    @Test
+    fun `given me page rollence disable when refresh order transaction then show failed get order transaction`() {
+        val userSession = mockk<UserSessionInterface>()
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+        viewModel.getMainNavData(true)
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
+
+        viewModel.refreshTransactionListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
+    }
+
+    @Test
+    fun `given me page rollence enable when refresh order transaction then show failed get order transaction`() {
+        val userSession = mockk<UserSessionInterface>()
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        every { userSession.isLoggedIn() } returns true
+        every { userSession.isShopOwner } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val dataList = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
+
+        viewModel.refreshTransactionListData()
+        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
+        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
     }
 }
