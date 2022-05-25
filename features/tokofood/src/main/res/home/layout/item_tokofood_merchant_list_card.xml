@@ -32,6 +32,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:labelTitle="@string/home_merchant_closed"
             app:labelType="general_dark_grey"
+            app:labelOpacityLevel="0.7"
             android:visibility="gone"
             tools:visibility="visible"
             />
