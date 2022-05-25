@@ -217,6 +217,7 @@ object ShopPageTrackingConstant {
     const val CLICK_OCC_RECOMMENDATION = "click 'beli sekarang' - " + PRODUCT_RECOMMENDATION
     const val IMPRESSION_PRODUCT_RECOMMENDATION = "impression - " + PRODUCT_RECOMMENDATION
     const val WIDGET_TYPE_CAROUSELL = "carousell"
+    const val WIDGET_TYPE_ADD_ONS = "add_ons"
     const val WIDGET_TYPE_BUY_AGAIN = "buy it again"
     const val WIDGET_TYPE_REMINDER = "reminder"
     const val BUYER_RECOMMENDATION = "rekomendasi untuk anda"

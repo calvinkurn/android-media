@@ -9,9 +9,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
@@ -54,12 +52,24 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         this.coupon = coupon
     }
 
+    fun getCoupon(): Coupon? {
+        return coupon
+    }
+
     fun setCurrentlySelectedStartDate(startDate: Date) {
         currentlySelectedStartDate = startDate
     }
 
+    fun getSelectedStartDate(): Date {
+        return currentlySelectedStartDate
+    }
+
     fun setCurrentlySelectedEndDate(endDate: Date) {
         currentlySelectedEndDate = endDate
+    }
+
+    fun getSelectedEndDate(): Date {
+        return currentlySelectedEndDate
     }
 
     fun openStartDateTimePicker() {
@@ -70,28 +80,16 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         _endDate.value = Pair(currentlySelectedStartDate, currentlySelectedEndDate)
     }
 
-    fun updateCoupon() {
-        val newPeriod = CouponInformation.Period(currentlySelectedStartDate, currentlySelectedEndDate)
-
-        val coupon = coupon ?: return
-        val updatedCouponInformation = coupon.information.copy(
-            target = coupon.information.target,
-            name = coupon.information.name,
-            code = coupon.information.code,
-            period = newPeriod
-        )
-
+    fun updateCoupon(updatedCoupon : Coupon, updatedCouponParentProductIds : List<Long>) {
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
                     updateCouponUseCase.execute(
-                        this,
-                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
-                        coupon.id,
-                        updatedCouponInformation,
-                        coupon.settings,
-                        coupon.products,
-                        coupon.productIds.map { it.parentProductId }
+                        updatedCoupon.id,
+                        updatedCoupon.information,
+                        updatedCoupon.settings,
+                        updatedCoupon.products,
+                        updatedCouponParentProductIds
                     )
                 }
                 _updateCouponResult.value = Success(result)
@@ -106,7 +104,7 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.execute(this, couponId, IS_TO_CREATE_NEW_COUPON)
+                    getCouponDetailUseCase.execute(couponId, IS_TO_CREATE_NEW_COUPON)
                 }
                 _couponDetail.value = Success(result)
             },

@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.product.create.domain.usecase.update
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
@@ -53,67 +54,61 @@ class UpdateCouponUseCase @Inject constructor(private val gqlRepository: Graphql
         }
     }
 
-    fun createRequestParam(
-        couponId : Long,
-        couponInformation: CouponInformation,
-        couponSettings: CouponSettings,
-        couponProducts: List<CouponProduct>,
-        token: String,
-        imageUrl : String,
-        imageSquare: String,
-        imagePortrait: String
-    ): RequestParams {
-        val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
-        val startDate =
-            couponInformation.period.startDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
-        val startHour = couponInformation.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
-        val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
-        val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+    fun createRequestParam(useCaseParam: UpdateCouponUseCaseParam): RequestParams {
+        with(useCaseParam) {
+            val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
+            val startDate =
+                couponInformation.period.startDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+            val startHour = couponInformation.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+            val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+            val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
 
-        val benefitType = when {
-            couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
-            couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
-            else -> "idr"
-        }
+            val benefitType = when {
+                couponSettings.type == CouponType.FREE_SHIPPING -> "idr"
+                couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.NOMINAL -> "idr"
+                couponSettings.type == CouponType.CASHBACK && couponSettings.discountType == DiscountType.PERCENTAGE -> "percent"
+                else -> "idr"
+            }
 
-        val couponType = when (couponSettings.type) {
-            CouponType.NONE -> ""
-            CouponType.CASHBACK -> "cashback"
-            CouponType.FREE_SHIPPING -> "shipping"
-        }
+            val couponType = when (couponSettings.type) {
+                CouponType.NONE -> ""
+                CouponType.CASHBACK -> "cashback"
+                CouponType.FREE_SHIPPING -> "shipping"
+            }
 
-        val params = UpdateCouponRequestParams(
-            voucherId = couponId,
-            benefitIdr = couponSettings.discountAmount,
-            benefitMax = couponSettings.maxDiscount,
-            benefitPercent = couponSettings.discountPercentage,
-            benefitType = benefitType,
-            code = couponInformation.code,
-            couponName = couponInformation.name,
-            couponType = couponType,
-            dateStart = startDate,
-            dateEnd = endDate,
-            hourStart = startHour,
-            hourEnd = endHour,
-            image = imageUrl,
-            imageSquare = imageSquare,
-            imagePortrait = imagePortrait,
-            isPublic = isPublic,
-            minPurchase = couponSettings.minimumPurchase,
-            quota = couponSettings.quota,
-            token = token,
-            source = VoucherSource.SELLERAPP,
-            targetBuyer = 0,
-            minimumTierLevel = 0,
-            isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ",") { it.id },
-            productIdsCsvUrl = ""
-        )
+            val params = UpdateCouponRequestParams(
+                voucherId = couponId,
+                benefitIdr = couponSettings.discountAmount,
+                benefitMax = couponSettings.maxDiscount,
+                benefitPercent = couponSettings.discountPercentage,
+                benefitType = benefitType,
+                code = couponInformation.code,
+                couponName = couponInformation.name,
+                couponType = couponType,
+                dateStart = startDate,
+                dateEnd = endDate,
+                hourStart = startHour,
+                hourEnd = endHour,
+                image = imageUrl,
+                imageSquare = imageSquare,
+                imagePortrait = imagePortrait,
+                isPublic = isPublic,
+                minPurchase = couponSettings.minimumPurchase,
+                quota = couponSettings.quota,
+                token = token,
+                source = VoucherSource.SELLERAPP,
+                targetBuyer = 0,
+                minimumTierLevel = 0,
+                isLockToProduct = 1,
+                productIds = couponProducts.joinToString(separator = ",") { it.id },
+                productIdsCsvUrl = "",
+                warehouseId = warehouseId.toLongOrZero()
+            )
 
 
-        return RequestParams.create().apply {
-            putObject(UPDATE_PARAM_KEY, params)
+            return RequestParams.create().apply {
+                putObject(UPDATE_PARAM_KEY, params)
+            }
         }
     }
 }

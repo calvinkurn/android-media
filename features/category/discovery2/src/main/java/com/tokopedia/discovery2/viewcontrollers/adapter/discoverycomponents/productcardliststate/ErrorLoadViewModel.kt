@@ -43,10 +43,7 @@ class ErrorLoadViewModel(val application: Application,
                 if (it.noOfPagesLoaded == 0) {
                     syncData.value = when (components.parentComponentName) {
                         ComponentNames.MerchantVoucherList.componentName ->
-                            merchantVoucherUseCase.loadFirstPageComponents(
-                                components.parentComponentId,
-                                components.pageEndPoint
-                            )
+                            hitMerchantVoucherFirstPageCall(it)
                         ComponentNames.BannerInfinite.componentName ->
                             bannerInfiniteUseCase.loadFirstPageComponents(
                                     components.id,
@@ -61,11 +58,16 @@ class ErrorLoadViewModel(val application: Application,
                 } else {
                     syncData.value =
                         when (components.parentComponentName) {
-                            ComponentNames.MerchantVoucherList.componentName ->
-                                merchantVoucherUseCase.getVoucherUseCase(
-                                    components.id,
-                                    components.pageEndPoint
-                                )
+                            ComponentNames.MerchantVoucherList.componentName ->{
+                                if (it.getComponentsItem().isNullOrEmpty()) {
+                                    hitMerchantVoucherFirstPageCall(it)
+                                } else
+                                    merchantVoucherUseCase.getVoucherUseCase(
+                                        components.id,
+                                        components.pageEndPoint
+                                    )
+                            }
+
                             ComponentNames.BannerInfinite.componentName ->
                                 bannerInfiniteUseCase.getBannerUseCase(
                                         components.id,
@@ -83,5 +85,19 @@ class ErrorLoadViewModel(val application: Application,
         }, onError = {
             showLoader.value = false
         })
+    }
+
+    private suspend fun hitMerchantVoucherFirstPageCall(components: ComponentsItem):Boolean{
+        components.noOfPagesLoaded = 0
+        val shouldSync =
+            merchantVoucherUseCase.loadFirstPageComponents(
+                components.id,
+                components.pageEndPoint
+            )
+        return if (components.getComponentsItem().isNullOrEmpty()) {
+            showLoader.value = false
+            false
+        } else
+            shouldSync
     }
 }
