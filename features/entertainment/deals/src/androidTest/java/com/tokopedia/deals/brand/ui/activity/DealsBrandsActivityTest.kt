@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
@@ -31,6 +32,9 @@ class DealsBrandsActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsBrandActivity> = object : IntentsTestRule<DealsBrandActivity>(DealsBrandActivity::class.java) {
@@ -53,7 +57,7 @@ class DealsBrandsActivityTest {
         actionOnDealsBrandViewHolder()
         clickOnRelaksasiTab()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
+        Assert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
                 hasAllSuccess())
     }
 
@@ -66,8 +70,7 @@ class DealsBrandsActivityTest {
     }
 
     private fun clickOnRelaksasiTab() {
-        Thread.sleep(2000)
-        onView(AllOf.allOf(withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
     }
 
     private fun changeLocationBrandPage() {
