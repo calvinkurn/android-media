@@ -1,6 +1,6 @@
-package com.tokopedia.usercomponents.explicitglobalcomponent.view
+package com.tokopedia.usercomponents.explicit.view
 
-interface ExplicitGlobalComponentAction {
+interface ExplicitAction {
     fun onPositifClick()
     fun onNegatifClick()
     fun onDismiss()

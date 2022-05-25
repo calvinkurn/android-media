@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicitglobalcomponent.view
+package com.tokopedia.usercomponents.explicit.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitGlobalComponentQuestionBinding
-import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitGlobalComponentShimmerBinding
-import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitGlobalComponentSuccessBinding
+import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
+import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitShimmerBinding
+import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 
-class ExplicitGlobalComponentView(context: Context, attrs: AttributeSet?) :
+class ExplicitView(context: Context, attrs: AttributeSet?) :
     CardUnify2(context, attrs) {
 
-    private val bindingQuestion = LayoutWidgetExplicitGlobalComponentQuestionBinding.inflate(LayoutInflater.from(context), this)
-    private val bindingSuccess = LayoutWidgetExplicitGlobalComponentSuccessBinding.inflate(LayoutInflater.from(context), this)
-    private val bindingShimmer = LayoutWidgetExplicitGlobalComponentShimmerBinding.inflate(LayoutInflater.from(context), this)
+    private val bindingQuestion = LayoutWidgetExplicitQuestionBinding.inflate(LayoutInflater.from(context), this)
+    private val bindingSuccess = LayoutWidgetExplicitSuccessBinding.inflate(LayoutInflater.from(context), this)
+    private val bindingShimmer = LayoutWidgetExplicitShimmerBinding.inflate(LayoutInflater.from(context), this)
 
     init {
         onLoading()
