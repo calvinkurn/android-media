@@ -1785,9 +1785,11 @@ class PlayViewModel @AssistedInject constructor(
                 delay(interactive.interactive.waitingDuration)
                 checkWinnerStatus()
             }
-
-            _interactive.value = InteractiveStateUiModel.Empty
-
+            /**
+             * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
+             * checkWinnerStatus() if we use both there's a case when the delay is still on but the socket
+             * is coming, seller create another quiz it'll ruin the current flow.
+             * */
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
