@@ -7,25 +7,22 @@ import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvicto
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import java.io.File
 
-class MediaPlayerCache {
+object MediaPlayerCache {
+    private var INSTANCE: Cache? = null
 
-    companion object {
-        private var INSTANCE: Cache? = null
+    private const val BYTES_IN_MB = 1024 * 1024
+    private const val CACHE_SIZE_IN_MB = 25L
 
-        private const val BYTES_IN_MB = 1024 * 1024
-        private const val CACHE_SIZE_IN_MB = 25L
+    private const val CACHE_FOLDER_NAME = "review_media_player"
 
-        private const val CACHE_FOLDER_NAME = "review_media_player"
+    fun getInstance(context: Context): Cache = synchronized(this) {
+        if (INSTANCE == null) {
+            val cacheFolder = File(context.cacheDir, CACHE_FOLDER_NAME)
+            val cacheEvictor = LeastRecentlyUsedCacheEvictor(CACHE_SIZE_IN_MB * BYTES_IN_MB)
+            val cacheDbProvider = ExoDatabaseProvider(context)
 
-        fun getInstance(context: Context): Cache = synchronized(this) {
-            if (INSTANCE == null) {
-                val cacheFolder = File(context.cacheDir, CACHE_FOLDER_NAME)
-                val cacheEvictor = LeastRecentlyUsedCacheEvictor(CACHE_SIZE_IN_MB * BYTES_IN_MB)
-                val cacheDbProvider = ExoDatabaseProvider(context)
-
-                INSTANCE = SimpleCache(cacheFolder, cacheEvictor, cacheDbProvider)
-            }
-            return@synchronized INSTANCE!!
+            INSTANCE = SimpleCache(cacheFolder, cacheEvictor, cacheDbProvider)
         }
+        return@synchronized INSTANCE!!
     }
 }

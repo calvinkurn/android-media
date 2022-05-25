@@ -15,6 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.gallery.base.analytic.ReviewMediaGalleryTracker
 import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
@@ -36,12 +37,9 @@ import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -78,11 +76,6 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     private var binding by viewBinding(FragmentReviewMediaGalleryBinding::bind)
-    private var uiStateCollectorJob: Job? = null
-    private var swipeTrackerEventHandlerJob: Job? = null
-    private var currentMediaItemCollectorJob: Job? = null
-    private var detailedReviewMediaResultCollectorJob: Job? = null
-    private var orientationUiStateCollectorJob: Job? = null
 
     private val reviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(requireActivity(), reviewMediaGalleryViewModelFactory)
@@ -106,6 +99,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         savedInstanceState: Bundle?
     ): View {
         initUiState(savedInstanceState)
+        initUiStateCollectors()
         return FragmentReviewMediaGalleryBinding.inflate(
             inflater,
             container,
@@ -118,14 +112,8 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         setupLayout()
     }
 
-    override fun onResume() {
-        super.onResume()
-        collectUiState()
-    }
-
     override fun onPause() {
         super.onPause()
-        stopUiStateCollector()
         releaseVideoPlayer()
         reviewMediaGalleryTracker.sendQueuedTrackers()
     }
@@ -228,91 +216,85 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         }
     }
 
-    private fun collectUiState() {
-        uiStateCollectorJob = uiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewMediaGalleryViewModel.uiState.collectLatest {
-                updateAdapter(it.adapterUiState)
-                // only update when there's any media item, since updating viewpager while there's no
-                // media item is unnecessary
-                val needUpdate = it.adapterUiState.mediaItemUiModels.any {
-                    it !is LoadingStateItemUiModel
-                }
-                if (needUpdate) binding?.updateViewPager(it.viewPagerUiState)
+    private fun initUiStateCollectors() {
+        collectReviewMediaGalleryUiStateUpdate()
+        collectCurrentMediaItemUpdateForTracker()
+        collectCurrentMediaItemUpdate()
+        collectDetailedReviewMediaGalleryResultUpdate()
+        collectOrientationUpdate()
+    }
+
+    private fun collectReviewMediaGalleryUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewMediaGalleryViewModel.uiState) {
+            updateAdapter(it.adapterUiState)
+            // only update when there's any media item, since updating viewpager while there's no
+            // media item is unnecessary
+            val needUpdate = it.adapterUiState.mediaItemUiModels.any {
+                it !is LoadingStateItemUiModel
             }
+            if (needUpdate) binding?.updateViewPager(it.viewPagerUiState)
         }
-        swipeTrackerEventHandlerJob = swipeTrackerEventHandlerJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewMediaGalleryViewModel.currentMediaItem.distinctUntilChangedBy {
-                it?.id
-            }.collectLatest {
-                if (it is ImageMediaItemUiModel || it is VideoMediaItemUiModel) {
-                    val currentViewPagerState = reviewMediaGalleryViewModel.viewPagerUiState.value
-                    if (currentViewPagerState.previousPagerPosition != currentViewPagerState.currentPagerPosition) {
-                        if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                            reviewMediaGalleryTracker.trackSwipeImage(
-                                it.feedbackId,
-                                currentViewPagerState.previousPagerPosition,
-                                currentViewPagerState.currentPagerPosition,
-                                sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
-                                userSession.userId
-                            )
-                        } else {
-                            reviewMediaGalleryTracker.trackShopReviewSwipeImage(
-                                it.feedbackId,
-                                currentViewPagerState.previousPagerPosition,
-                                currentViewPagerState.currentPagerPosition,
-                                sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
-                                sharedReviewMediaGalleryViewModel.getShopId()
-                            )
-                        }
+    }
+
+    private fun collectCurrentMediaItemUpdateForTracker() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewMediaGalleryViewModel.currentMediaItem.distinctUntilChangedBy {
+            it?.id
+        }) {
+            if (it is ImageMediaItemUiModel || it is VideoMediaItemUiModel) {
+                val currentViewPagerState = reviewMediaGalleryViewModel.viewPagerUiState.value
+                if (currentViewPagerState.previousPagerPosition != currentViewPagerState.currentPagerPosition) {
+                    if (sharedReviewMediaGalleryViewModel.isProductReview()) {
+                        reviewMediaGalleryTracker.trackSwipeImage(
+                            it.feedbackId,
+                            currentViewPagerState.previousPagerPosition,
+                            currentViewPagerState.currentPagerPosition,
+                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                            userSession.userId
+                        )
+                    } else {
+                        reviewMediaGalleryTracker.trackShopReviewSwipeImage(
+                            it.feedbackId,
+                            currentViewPagerState.previousPagerPosition,
+                            currentViewPagerState.currentPagerPosition,
+                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                            sharedReviewMediaGalleryViewModel.getShopId()
+                        )
                     }
                 }
             }
         }
-        currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewMediaGalleryViewModel.currentMediaItem.collectLatest {
-                sharedReviewMediaGalleryViewModel.updateCurrentMediaItem(it)
-            }
+    }
+
+    private fun collectCurrentMediaItemUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewMediaGalleryViewModel.currentMediaItem) {
+            sharedReviewMediaGalleryViewModel.updateCurrentMediaItem(it)
         }
-        detailedReviewMediaResultCollectorJob = detailedReviewMediaResultCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
+    }
+
+    private fun collectDetailedReviewMediaGalleryResultUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(
             combine(
                 sharedReviewMediaGalleryViewModel.detailedReviewMediaResult,
                 sharedReviewMediaGalleryViewModel.mediaNumberToLoad,
                 sharedReviewMediaGalleryViewModel.showSeeMore,
             ) { detailedReviewMediaResult, mediaNumberToLoad, showSeeMore ->
                 Triple(detailedReviewMediaResult, mediaNumberToLoad, showSeeMore)
-            }.collectLatest {
-                reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(
-                    it.first,
-                    it.second,
-                    it.third,
-                    it.first?.detail?.mediaCount.orZero().toInt()
-                )
             }
-        }
-        orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
-                reviewMediaGalleryViewModel.updateOrientationUiState(it)
-                binding?.viewPagerReviewMediaGallery?.isUserInputEnabled = it.isPortrait()
-            }
+        ) {
+            reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(
+                it.first,
+                it.second,
+                it.third,
+                it.first?.detail?.mediaCount.orZero().toInt()
+            )
         }
     }
 
-    private fun stopUiStateCollector() {
-        uiStateCollectorJob?.cancel()
-        swipeTrackerEventHandlerJob?.cancel()
-        currentMediaItemCollectorJob?.cancel()
-        detailedReviewMediaResultCollectorJob?.cancel()
-        orientationUiStateCollectorJob?.cancel()
+    private fun collectOrientationUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
+            reviewMediaGalleryViewModel.updateOrientationUiState(it)
+            binding?.viewPagerReviewMediaGallery?.isUserInputEnabled = it.isPortrait()
+        }
     }
 
     private fun releaseVideoPlayer() {

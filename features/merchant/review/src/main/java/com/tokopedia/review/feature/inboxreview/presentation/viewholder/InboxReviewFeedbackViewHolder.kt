@@ -48,7 +48,7 @@ class InboxReviewFeedbackViewHolder(
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
             if(element.replyText.isNotBlank()) {
-                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             } else {
                 root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }

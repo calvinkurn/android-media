@@ -49,29 +49,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     }
 
     private fun reviewOnGlobalLayoutListener(): ViewTreeObserver.OnGlobalLayoutListener {
-        return ViewTreeObserver.OnGlobalLayoutListener {
-            if (currentUiState is ReviewDetailSupplementaryUiState.Showing) {
-                binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.layout?.run {
-                    val lines = lineCount
-                    val currentText = text
-                    val nonEllipsizedTextLength = getLineEnd(lines.dec())
-                    val ellipsisCount = getEllipsisCount(lines.dec())
-                    val isEllipsized = ellipsisCount.isMoreThanZero()
-                    if (isEllipsized) {
-                        val seeMoreText = HtmlLinkHelper(
-                            context,
-                            context.getString(R.string.review_media_common_see_more)
-                        ).spannedString ?: ""
-                        val seeMoreTextLength = seeMoreText.length
-                        val concatenatedNonEllipsizedText = SpannableStringBuilder().apply {
-                            append(currentText.take((nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength).coerceAtLeast(Int.ZERO)))
-                            append(seeMoreText)
-                        }
-                        binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.text = concatenatedNonEllipsizedText
-                    }
-                }
-            }
-        }
+        return ViewTreeObserver.OnGlobalLayoutListener(::formatReviewText)
     }
 
     private fun hideReviewDetailSupplementaryInfo() {
@@ -159,6 +137,30 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
             setupProductVariant(data.variant, source)
             setupReviewText(data.review, source)
             setupComplaint(data.complaint, source)
+        }
+    }
+
+    private fun formatReviewText() {
+        if (currentUiState is ReviewDetailSupplementaryUiState.Showing) {
+            binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.layout?.run {
+                val lines = lineCount
+                val currentText = text
+                val nonEllipsizedTextLength = getLineEnd(lines.dec())
+                val ellipsisCount = getEllipsisCount(lines.dec())
+                val isEllipsized = ellipsisCount.isMoreThanZero()
+                if (isEllipsized) {
+                    val seeMoreText = HtmlLinkHelper(
+                        context,
+                        context.getString(R.string.review_media_common_see_more)
+                    ).spannedString ?: ""
+                    val seeMoreTextLength = seeMoreText.length
+                    val concatenatedNonEllipsizedText = SpannableStringBuilder().apply {
+                        append(currentText.take((nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength).coerceAtLeast(Int.ZERO)))
+                        append(seeMoreText)
+                    }
+                    binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.text = concatenatedNonEllipsizedText
+                }
+            }
         }
     }
 

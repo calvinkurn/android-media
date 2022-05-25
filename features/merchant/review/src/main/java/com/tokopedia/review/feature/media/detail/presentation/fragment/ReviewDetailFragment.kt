@@ -13,11 +13,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
+import com.tokopedia.review.databinding.FragmentReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
 import com.tokopedia.review.feature.media.detail.presentation.bottomsheet.ExpandedReviewDetailBottomSheet
-import com.tokopedia.review.databinding.FragmentReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ExpandedReviewDetailBottomSheetUiState
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ReviewDetailFragmentUiState
 import com.tokopedia.review.feature.media.detail.presentation.viewmodel.ReviewDetailViewModel
@@ -29,10 +30,7 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmode
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -61,13 +59,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     private var binding by viewBinding(FragmentReviewDetailCommonBinding::bind)
-    private var reviewDetailFragmentUiStateCollectorJob: Job? = null
-    private var expandedReviewDetailBottomSheetUiStateCollectorJob: Job? = null
-    private var getDetailedReviewMediaResultCollectorJob: Job? = null
-    private var currentMediaItemCollectorJob: Job? = null
-    private var orientationCollectorJob: Job? = null
-    private var overlayVisibilityCollectorJob: Job? = null
-    private var currentReviewDetailCollectorJob: Job? = null
 
     private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
     private val reviewDetailBasicInfoListener = ReviewDetailBasicInfoListener()
@@ -98,6 +89,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         ReviewDetailComponentInstance.getInstance(requireContext()).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initUiStateCollectors()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -116,16 +112,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         setupListeners()
     }
 
-    override fun onResume() {
-        super.onResume()
-        collectUIState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cancelUIStateCollector()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         reviewDetailViewModel.saveState(outState)
@@ -142,67 +128,56 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         reviewDetailSupplementaryInfoListener.attachListener()
     }
 
-    private fun collectUIState() {
-        reviewDetailFragmentUiStateCollectorJob = reviewDetailFragmentUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewDetailViewModel.reviewDetailFragmentUiState.collectLatest {
-                updateUi(it)
-            }
-        }
-        expandedReviewDetailBottomSheetUiStateCollectorJob = expandedReviewDetailBottomSheetUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewDetailViewModel.expandedReviewDetailBottomSheetUiState.collectLatest {
-                if (it is ExpandedReviewDetailBottomSheetUiState.Showing) {
-                    bottomSheetHandler.showExpandedReviewDetailBottomSheet()
-                }
-            }
-        }
-        getDetailedReviewMediaResultCollectorJob = getDetailedReviewMediaResultCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.detailedReviewMediaResult.collectLatest {
-                reviewDetailViewModel.updateGetDetailedReviewMediaResult(it)
-            }
-        }
-        currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.currentMediaItem.collectLatest {
-                reviewDetailViewModel.updateCurrentMediaItem(it)
-            }
-        }
-        orientationCollectorJob = orientationCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
-                reviewDetailViewModel.updateCurrentOrientation(it)
-            }
-        }
-        overlayVisibilityCollectorJob = overlayVisibilityCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.overlayVisibility.collectLatest {
-                reviewDetailViewModel.updateCurrentOverlayVisibility(it)
-            }
-        }
-        currentReviewDetailCollectorJob = currentReviewDetailCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            reviewDetailViewModel.currentReviewDetail.collectLatest {
-                sharedReviewMediaGalleryViewModel.updateReviewDetailItem(it)
+    private fun initUiStateCollectors() {
+        collectReviewDetailFragmentUiStateUpdate()
+        collectExpandedReviewDetailBottomSheetUiStateUpdate()
+        collectDetailedReviewMediaResultUpdate()
+        collectCurrentMediaItemUpdate()
+        collectOrientationUiStateUpdate()
+        collectOverlayVisibilityUpdate()
+        collectCurrentReviewDetailUpdate()
+    }
+
+    private fun collectReviewDetailFragmentUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewDetailViewModel.reviewDetailFragmentUiState, ::updateUi)
+    }
+
+    private fun collectExpandedReviewDetailBottomSheetUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewDetailViewModel.expandedReviewDetailBottomSheetUiState) {
+            if (it is ExpandedReviewDetailBottomSheetUiState.Showing) {
+                bottomSheetHandler.showExpandedReviewDetailBottomSheet()
             }
         }
     }
 
-    private fun cancelUIStateCollector() {
-        reviewDetailFragmentUiStateCollectorJob?.cancel()
-        expandedReviewDetailBottomSheetUiStateCollectorJob?.cancel()
-        getDetailedReviewMediaResultCollectorJob?.cancel()
-        currentMediaItemCollectorJob?.cancel()
-        orientationCollectorJob?.cancel()
-        overlayVisibilityCollectorJob?.cancel()
+    private fun collectDetailedReviewMediaResultUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.detailedReviewMediaResult) {
+            reviewDetailViewModel.updateGetDetailedReviewMediaResult(it)
+        }
+    }
+
+    private fun collectCurrentMediaItemUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.currentMediaItem) {
+            reviewDetailViewModel.updateCurrentMediaItem(it)
+        }
+    }
+
+    private fun collectOrientationUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
+            reviewDetailViewModel.updateCurrentOrientation(it)
+        }
+    }
+
+    private fun collectOverlayVisibilityUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.overlayVisibility) {
+            reviewDetailViewModel.updateCurrentOverlayVisibility(it)
+        }
+    }
+
+    private fun collectCurrentReviewDetailUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewDetailViewModel.currentReviewDetail) {
+            sharedReviewMediaGalleryViewModel.updateReviewDetailItem(it)
+        }
     }
 
     private fun updateUi(uiState: ReviewDetailFragmentUiState) {

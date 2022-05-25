@@ -11,18 +11,20 @@ import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
+import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
@@ -41,11 +43,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -65,11 +64,6 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private var binding by viewBinding(ActivityDetailedReviewMediaGalleryBinding::bind)
 
-    private var toolbarUiStateCollectorJob: Job? = null
-    private var orientationUiStateCollectorJob: Job? = null
-    private var actionMenuBottomSheetUiStateCollectorJob: Job? = null
-    private var toasterQueueCollectorJob: Job? = null
-    private var toasterActionCLickEventCollectorJob: Job? = null
     private var gestureDetector: GestureDetectorCompat? = null
 
     private var galleryFragment: ReviewMediaGalleryFragment? = null
@@ -131,17 +125,16 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         setupInsetListener()
         setupMainLayout()
         setupFragments()
+        initUiStateCollectors()
     }
 
     override fun onResume() {
         super.onResume()
-        collectUiState()
         connectivityStatusListener.attachListener()
     }
 
     override fun onPause() {
         super.onPause()
-        cancelUiStateCollector()
         connectivityStatusListener.detachListener()
     }
 
@@ -239,7 +232,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            MethodChecker.getColor(
+            ContextCompat.getColor(
                 this,
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
             )
@@ -296,85 +289,79 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun collectUiState() {
-        toolbarUiStateCollectorJob = toolbarUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
+    private fun collectToolbarUiStateUpdate() {
+        collectLatestWhenResumed(
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
                 sharedReviewMediaGalleryViewModel.overlayVisibility,
                 sharedReviewMediaGalleryViewModel.currentReviewDetail,
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
-            }.collectLatest {
-                val showOverlay = it.second
-                val isInPortrait = it.first.isPortrait()
-                val isReportable = it.third?.isReportable.orFalse()
-                binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-                binding?.icReviewMediaGalleryKebab?.showWithCondition(
-                    showOverlay && isInPortrait && isReportable
-                )
             }
+        ) {
+            val showOverlay = it.second
+            val isInPortrait = it.first.isPortrait()
+            val isReportable = it.third?.isReportable.orFalse()
+            binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
+            binding?.icReviewMediaGalleryKebab?.showWithCondition(
+                showOverlay && isInPortrait && isReportable
+            )
         }
-        orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
-                requestedOrientation = when(it.orientation) {
-                    OrientationUiState.Orientation.LANDSCAPE -> {
-                        enableFullscreen()
-                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                    }
-                    else -> {
-                        disableFullscreen()
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    }
+    }
+
+    private fun collectOrientationUiStateUpdate() {
+        collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
+            requestedOrientation = when(it.orientation) {
+                OrientationUiState.Orientation.LANDSCAPE -> {
+                    enableFullscreen()
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 }
-            }
-        }
-        actionMenuBottomSheetUiStateCollectorJob = actionMenuBottomSheetUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState.collectLatest {
-                if (it is ActionMenuBottomSheetUiState.Showing) {
-                    bottomSheetHandler.showActionMenuBottomSheet()
-                }
-            }
-        }
-        toasterQueueCollectorJob = toasterQueueCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.toasterQueue.collectLatest {
-                binding?.root?.let { view ->
-                    Toaster.build(
-                        view,
-                        it.message.getStringValue(view.context),
-                        it.duration,
-                        it.type,
-                        it.actionText.getStringValue(view.context)
-                    ) { _ ->
-                        sharedReviewMediaGalleryViewModel.toasterEventActionClicked(it.key)
-                    }.show()
-                }
-            }
-        }
-        toasterActionCLickEventCollectorJob = toasterActionCLickEventCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.toasterEventActionClickQueue.collectLatest {
-                if (it == TOASTER_KEY_ERROR_GET_REVIEW_MEDIA) {
-                    sharedReviewMediaGalleryViewModel.retryGetReviewMedia()
+                else -> {
+                    disableFullscreen()
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
             }
         }
     }
 
-    private fun cancelUiStateCollector() {
-        toolbarUiStateCollectorJob?.cancel()
-        orientationUiStateCollectorJob?.cancel()
-        actionMenuBottomSheetUiStateCollectorJob?.cancel()
-        toasterQueueCollectorJob?.cancel()
-        toasterActionCLickEventCollectorJob?.cancel()
+    private fun collectActionMenuBottomSheetUiStateUpdate() {
+        collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState) {
+            if (it is ActionMenuBottomSheetUiState.Showing) {
+                bottomSheetHandler.showActionMenuBottomSheet()
+            }
+        }
+    }
+
+    private fun collectToasterQueue() {
+        collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.toasterQueue) {
+            binding?.root?.let { view ->
+                Toaster.build(
+                    view,
+                    it.message.getStringValue(view.context),
+                    it.duration,
+                    it.type,
+                    it.actionText.getStringValue(view.context)
+                ) { _ ->
+                    sharedReviewMediaGalleryViewModel.toasterEventActionClicked(it.key)
+                }.show()
+            }
+        }
+    }
+
+    private fun collectToasterActionClickEvent() {
+        collectWhenResumed(sharedReviewMediaGalleryViewModel.toasterEventActionClickQueue) {
+            if (it == TOASTER_KEY_ERROR_GET_REVIEW_MEDIA) {
+                sharedReviewMediaGalleryViewModel.retryGetReviewMedia()
+            }
+        }
+    }
+
+    private fun initUiStateCollectors() {
+        collectToolbarUiStateUpdate()
+        collectOrientationUiStateUpdate()
+        collectActionMenuBottomSheetUiStateUpdate()
+        collectToasterQueue()
+        collectToasterActionClickEvent()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {

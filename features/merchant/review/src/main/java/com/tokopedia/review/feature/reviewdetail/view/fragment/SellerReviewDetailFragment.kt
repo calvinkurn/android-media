@@ -65,11 +65,6 @@ import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductLi
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -125,7 +120,7 @@ class SellerReviewDetailFragment :
 
     private var binding by autoClearedNullable<FragmentSellerReviewDetailBinding>()
 
-    private val sellerReviewDetailTypeFactory by lazy {
+    private val sellerReviewDetailTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         SellerReviewDetailAdapterTypeFactory(
             listener = this,
             overallRatingDetailListener = this,

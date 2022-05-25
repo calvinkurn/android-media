@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
+import com.tokopedia.review.databinding.BottomsheetExpandedReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
-import com.tokopedia.review.databinding.BottomsheetExpandedReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ExpandedReviewDetailBottomSheetUiState
 import com.tokopedia.review.feature.media.detail.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailBasicInfo
@@ -16,10 +17,7 @@ import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetai
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -42,7 +40,6 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
     private var supplementaryInfoListener: ReviewDetailSupplementaryInfo.Listener? = null
 
     private var supervisorJob = SupervisorJob()
-    private var uiStateCollectorJob: Job? = null
 
     private val daggerHandler = DaggerHandler()
 
@@ -70,6 +67,7 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         daggerHandler.initInjector()
         super.onCreate(savedInstanceState)
+        initUiStateCollectors()
     }
 
     override fun onCreateView(
@@ -83,26 +81,8 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-        collectUiState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cancelUiStateCollector()
-    }
-
-    private fun collectUiState() {
-        uiStateCollectorJob = uiStateCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-            reviewDetailViewModel.expandedReviewDetailBottomSheetUiState.collectLatest {
-                updateUi(it)
-            }
-        }
-    }
-
-    private fun cancelUiStateCollector() {
-        uiStateCollectorJob?.cancel()
+    private fun initUiStateCollectors() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewDetailViewModel.expandedReviewDetailBottomSheetUiState, ::updateUi)
     }
 
     private fun updateUi(uiState: ExpandedReviewDetailBottomSheetUiState) {

@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewMediaPlayerControllerBinding
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
@@ -23,10 +24,7 @@ import com.tokopedia.review.feature.media.player.controller.presentation.viewmod
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -51,11 +49,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     lateinit var videoPlayer: ReviewVideoPlayer
 
     private var binding by viewBinding(FragmentReviewMediaPlayerControllerBinding::bind)
-    private var uiStateCollectorJob: Job? = null
-    private var currentMediaItemCollectorJob: Job? = null
-    private var detailedReviewMediaGalleryResultCollectorJob: Job? = null
-    private var orientationUiStateCollectorJob: Job? = null
-    private var overlayVisibilityCollectorJob: Job? = null
 
     private val reviewMediaPlayerControllerViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -76,6 +69,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let { reviewMediaPlayerControllerViewModel.restoreState(it) }
+        initUiStateCollectors()
     }
 
     override fun onCreateView(
@@ -93,16 +87,6 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        collectUiState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopUiStateCollector()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -126,48 +110,42 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         }
     }
 
-    private fun collectUiState() {
-        uiStateCollectorJob = uiStateCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-            reviewMediaPlayerControllerViewModel.uiState.collectLatest {
-                binding?.updateUi(it)
-            }
-        }
-        currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.currentMediaItem.collectLatest {
-                reviewMediaPlayerControllerViewModel.updateCurrentMediaItem(it)
-            }
-        }
-        detailedReviewMediaGalleryResultCollectorJob = detailedReviewMediaGalleryResultCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.detailedReviewMediaResult.collectLatest {
-                reviewMediaPlayerControllerViewModel.updateGetDetailedReviewMediaResult(it)
-            }
-        }
-        orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
-                reviewMediaPlayerControllerViewModel.updateOrientationUiState(it)
-            }
-        }
-        overlayVisibilityCollectorJob = overlayVisibilityCollectorJob?.takeIf {
-            !it.isCompleted
-        } ?: launch {
-            sharedReviewMediaGalleryViewModel.overlayVisibility.collectLatest {
-                reviewMediaPlayerControllerViewModel.updateOverlayVisibility(it)
-            }
+    private fun initUiStateCollectors() {
+        collectUiStateUpdate()
+        collectCurrentMediaItemUpdate()
+        collectDetailedReviewMediaGalleryResultUpdate()
+        collectOrientationUiStateUpdate()
+        collectOverlayVisibilityUpdate()
+    }
+
+    private fun collectUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(reviewMediaPlayerControllerViewModel.uiState) {
+            binding?.updateUi(it)
         }
     }
 
-    private fun stopUiStateCollector() {
-        uiStateCollectorJob?.cancel()
-        currentMediaItemCollectorJob?.cancel()
-        detailedReviewMediaGalleryResultCollectorJob?.cancel()
-        orientationUiStateCollectorJob?.cancel()
-        overlayVisibilityCollectorJob?.cancel()
+    private fun collectCurrentMediaItemUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.currentMediaItem) {
+            reviewMediaPlayerControllerViewModel.updateCurrentMediaItem(it)
+        }
+    }
+
+    private fun collectDetailedReviewMediaGalleryResultUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.detailedReviewMediaResult) {
+            reviewMediaPlayerControllerViewModel.updateGetDetailedReviewMediaResult(it)
+        }
+    }
+
+    private fun collectOrientationUiStateUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.orientationUiState) {
+            reviewMediaPlayerControllerViewModel.updateOrientationUiState(it)
+        }
+    }
+
+    private fun collectOverlayVisibilityUpdate() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.overlayVisibility) {
+            reviewMediaPlayerControllerViewModel.updateOverlayVisibility(it)
+        }
     }
 
     private fun FragmentReviewMediaPlayerControllerBinding.setupVideoPlayerController() {

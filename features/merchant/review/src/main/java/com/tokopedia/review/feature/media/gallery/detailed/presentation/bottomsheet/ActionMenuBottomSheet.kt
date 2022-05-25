@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.BottomsheetReviewActionMenuBinding
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
@@ -22,10 +23,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -53,7 +51,6 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
     private val adapter = BaseAdapter(DetailedReviewActionAdapterTypeFactory(detailedReviewActionMenuListener))
 
     private var supervisorJob = SupervisorJob()
-    private var uiStateCollectorJob: Job? = null
     private var uiState: ActionMenuBottomSheetUiState? = null
 
     private var binding by viewBinding(BottomsheetReviewActionMenuBinding::bind)
@@ -70,6 +67,7 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         daggerHandler.initInjector()
         super.onCreate(savedInstanceState)
+        initUiStateCollector()
     }
 
     override fun onCreateView(
@@ -86,16 +84,6 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        collectUiState()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cancelUiStateCollector()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,12 +104,10 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
         binding?.rvDetailedReviewActionMenu?.adapter = adapter
     }
 
-    private fun collectUiState() {
-        uiStateCollectorJob = uiStateCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-            sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState.collectLatest {
-                uiState = it
-                updateUi(it)
-            }
+    private fun initUiStateCollector() {
+        viewLifecycleOwner.collectLatestWhenResumed(sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState) {
+            uiState = it
+            updateUi(it)
         }
     }
 
@@ -132,10 +118,6 @@ class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
                 adapter.setElements(uiState.items)
             }
         }
-    }
-
-    private fun cancelUiStateCollector() {
-        uiStateCollectorJob?.cancel()
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {

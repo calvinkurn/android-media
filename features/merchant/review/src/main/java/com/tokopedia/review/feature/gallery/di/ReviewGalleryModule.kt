@@ -9,6 +9,7 @@ import dagger.Provides
 @Module
 class ReviewGalleryModule {
     @Provides
+    @ReviewGalleryScope
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }
