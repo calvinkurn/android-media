@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.common.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class CheckPinV2Param(
     @SerializedName("pin")
@@ -12,5 +13,5 @@ data class CheckPinV2Param(
     @SerializedName("validate_token")
     val validateToken: String = "",
     @SerializedName("user_id")
-    val userId: String = ""
-)
+    val userId: Int = 0
+): GqlParam

@@ -3,7 +3,7 @@ package com.tokopedia.profilecompletion.changepin.data.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
-data class ChangePinV2param(
+data class ChangePinV2Param(
     @SerializedName("pin")
     val pin: String = "",
     @SerializedName("pin_old")
@@ -11,7 +11,7 @@ data class ChangePinV2param(
     @SerializedName("pin_confirm")
     val confirmPin: String = "",
     @SerializedName("h")
-    val hash: Boolean = false
+    val hash: String = ""
 ): GqlParam
 
 data class MutatePinV2Data(

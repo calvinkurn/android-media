@@ -3,7 +3,7 @@ package com.tokopedia.sessioncommon.data.pin
 import com.google.gson.annotations.SerializedName
 
 data class PinStatusResponse(
-    @SerializedName("data")
+    @SerializedName("pinV2Check")
     val data: PinStatusData = PinStatusData()
 )
 
