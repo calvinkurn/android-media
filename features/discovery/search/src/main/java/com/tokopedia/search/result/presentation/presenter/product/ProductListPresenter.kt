@@ -1573,7 +1573,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
         var isChipSelected = false
-
         val selectedOptionsOnCurrentFilter = mutableListOf<Option>()
 
         options.forEach {
