@@ -295,14 +295,14 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
                 allCategoriesCache = result
-                if (!isMePageUsingRollenceVariant)  {
-                    val shimmeringDataModel = _mainNavListVisitable.find {
-                        it is InitialShimmerDataModel
-                    }
-                    shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+            if (!isMePageUsingRollenceVariant)  {
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
             }
             getBuListMenu()
         }
