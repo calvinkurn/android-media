@@ -66,8 +66,8 @@ class DealsBrandsActivityTest {
     }
 
     private fun clickOnRelaksasiTab() {
-        Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
+        Thread.sleep(2000)
+        onView(AllOf.allOf(withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
     }
 
     private fun changeLocationBrandPage() {
