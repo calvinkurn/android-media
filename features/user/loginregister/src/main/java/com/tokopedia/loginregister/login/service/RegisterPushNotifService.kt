@@ -7,7 +7,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import androidx.core.app.JobIntentService
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
@@ -28,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 @Deprecated("move into workmanager")
-class RegisterPushNotifService : JobIntentService(), CoroutineScope {
+class RegisterPushNotifService : JobIntentServiceX(), CoroutineScope {
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
