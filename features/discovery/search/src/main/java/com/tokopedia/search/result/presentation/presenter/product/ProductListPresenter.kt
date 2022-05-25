@@ -1564,32 +1564,67 @@ class ProductListPresenter @Inject constructor(
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
             quickFilterOptionList.addAll(options)
-            sortFilterItems.addAll(convertToSortFilterItem(filter, options))
+            sortFilterItems.add(createSortFilterItem(filter, options))
         }
 
         if (sortFilterItems.isNotEmpty())
             view.setQuickFilter(sortFilterItems)
     }
 
-    private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
-        options.map { option ->
-            createSortFilterItem(filter, option)
+    private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
+        var isChipSelected = false
+
+        val selectedOptionsOnCurrentFilter = mutableListOf<Option>()
+
+        options.forEach {
+            if (view.isFilterSelected(it)) {
+                isChipSelected = true
+
+                selectedOptionsOnCurrentFilter.add(it)
+                filter.options.firstOrNull { option -> option.uniqueId == it.uniqueId }?.inputState = "true"
+            }
         }
 
-    private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
-        val item = SortFilterItem(filter.title) {
-            view.onQuickFilterSelected(filter, option)
-        }
+        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter),
+            if (isChipSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
 
-        setSortFilterItemState(item, option)
+        setSortFilterItemListener(item, filter, options)
+        setSortFilterItemState(item, isChipSelected)
 
         return item
     }
 
-    private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
-        if (view.isFilterSelected(option)) {
+    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
+        val optionSize = activeOptions.size
+
+        return when {
+            optionSize == 1 -> activeOptions.first().name
+            optionSize > 1 -> "$optionSize ${filter.title}"
+            else -> filter.title
+        }
+    }
+
+    private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
+        if (isChipSelected) {
             item.type = ChipsUnify.TYPE_SELECTED
             item.typeUpdated = false
+        } else {
+            item.type = ChipsUnify.TYPE_NORMAL
+        }
+    }
+
+    private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
+        if (options.size == 1) {
+            item.listener = {
+                view.onQuickFilterSelected(filter, options.first())
+            }
+        } else {
+            item.listener = {
+                view.openBottomsheetMultipleOptionsQuickFilter(filter)
+            }
+            item.chevronListener = {
+                view.openBottomsheetMultipleOptionsQuickFilter(filter)
+            }
         }
     }
 

@@ -17,7 +17,7 @@ data class SearchProductModel(
         @Expose
         val searchProduct: SearchProduct = SearchProduct(),
 
-        @SerializedName("quick_filter")
+        @SerializedName("filter_sort_product")
         @Expose
         var quickFilterModel: DataValue = DataValue(),
 

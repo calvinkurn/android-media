@@ -113,6 +113,7 @@ interface ProductListSectionContract {
         fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
     }
 
     interface Presenter : CustomerPresenter<View>{

@@ -39,6 +39,7 @@ import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -1878,6 +1879,33 @@ class ProductListFragment: BaseDaggerFragment(),
             sortFilterBottomSheet = null
             presenter?.onBottomSheetFilterDismissed()
         }
+    }
+
+    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
+            override fun onApplyButtonClicked(optionList: List<Option>?) {
+                val a = optionList
+
+                optionList?.forEach {
+                    setFilterToQuickFilterController(it, it.inputState.toBoolean())
+
+                    trackEventSearchResultQuickFilter(it.key, it.value, it.inputState.toBoolean())
+                }
+
+                val queryParams = filterController.getParameter().addFilterOrigin()
+                refreshSearchParameter(queryParams)
+
+                updateLastFilter()
+
+                reloadData()
+            }
+        }
+
+        FilterGeneralDetailBottomSheet().show(
+            parentFragmentManager,
+            filter,
+            filterDetailCallback
+        )
     }
 
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {

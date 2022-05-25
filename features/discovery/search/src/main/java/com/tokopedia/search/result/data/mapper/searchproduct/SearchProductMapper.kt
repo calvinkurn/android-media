@@ -3,12 +3,12 @@ package com.tokopedia.search.result.data.mapper.searchproduct
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
+import com.tokopedia.search.result.domain.model.FilterSortPorductModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
-import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -43,8 +43,8 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
             ?: SearchProduct()
 
     private fun GraphqlResponse.getQuickFilter(): DataValue =
-        getData<QuickFilterModel>(QuickFilterModel::class.java)
-            ?.quickFilterModel
+        getData<FilterSortPorductModel>(FilterSortPorductModel::class.java)
+            ?.filterSortProductModel?.data
             ?: DataValue()
 
     private fun GraphqlResponse.getTopAdsModel(): TopAdsModel =
