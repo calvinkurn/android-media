@@ -3,14 +3,14 @@ package com.tokopedia.play.viewmodel.interactive
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
+import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.assertEqualTo
-import com.tokopedia.play.util.assertFalse
-import com.tokopedia.play.util.millisFromNow
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -200,10 +200,10 @@ class PlayLiveInitialInteractiveTest {
     }
 
     @Test
-    fun `given has active quiz from socket, when retrieved, state should be ongoing`() {
+    fun `given has interactive active quiz from socket, when retrieved, state should be ongoing`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
             WebSocketAction.NewMessage(
-                socketResponseBuilder.buildQuiz()
+                socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
             )
         )
         every { socket.listenAsFlow() } returns socketFlow
@@ -223,18 +223,112 @@ class PlayLiveInitialInteractiveTest {
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
 
-        givenPlayViewModelRobot(
+        createPlayViewModelRobot (
             playChannelWebSocket = socket,
             repo = repo,
             dispatchers = testDispatcher,
             remoteConfig = mockRemoteConfig,
-        ) {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }.thenVerify {
-            withState {
-                interactive.interactive.assertEqualTo(model)
+        ).use {
+            val state = it.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
             }
+            state.interactive.interactive.assertEqualTo(model)
+        }
+    }
+
+    @Test
+    fun `given has active channel quiz from socket, when retrieved, state should be ongoing`() {
+        val socketFlow = MutableStateFlow<WebSocketAction>(
+            WebSocketAction.NewMessage(
+                socketResponseBuilder.buildQuiz()
+            )
+        )
+        every { socket.listenAsFlow() } returns socketFlow
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val state = it.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                socketFlow.emit(
+                    WebSocketAction.NewMessage(socketResponseBuilder.buildQuiz())
+                )
+            }
+            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
+        }
+    }
+
+    @Test
+    fun `given has active quiz finished interactive, when retrieved, there should be no interactive but result badge is shown`() {
+        val socketFlow = MutableStateFlow<WebSocketAction>(
+            WebSocketAction.NewMessage(
+                socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
+            )
+        )
+        every { socket.listenAsFlow() } returns socketFlow
+
+        val repo: PlayViewerRepository = mockk(relaxed = true)
+        val title = "Quiz Sepeda Ikan Koi"
+        val model = InteractiveUiModel.Quiz(
+            status = InteractiveUiModel.Quiz.Status.Finished,
+            title = title,
+            id = "1",
+            waitingDuration = 1500L,
+            reward = "Sepeda",
+            listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
+        )
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+            leaderboardWinners = listOf(
+                interactiveModelBuilder.buildLeaderboard(winners = listOf(
+                    PlayWinnerUiModel(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
+                ))
+            )
+        )
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val state = it.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
+            state.interactive.interactive.assertEqualTo(
+                InteractiveUiModel.Unknown
+            )
+            state.winnerBadge.shouldShow.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given has active channel quiz from socket, user has not answer`() {
+        val socketFlow = MutableStateFlow<WebSocketAction>(
+            WebSocketAction.NewMessage(
+                socketResponseBuilder.buildQuiz()
+            )
+        )
+        every { socket.listenAsFlow() } returns socketFlow
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val state = it.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                socketFlow.emit(
+                    WebSocketAction.NewMessage(socketResponseBuilder.buildQuiz())
+                )
+            }
+            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
         }
     }
     //awal user choice kosong (socket)
