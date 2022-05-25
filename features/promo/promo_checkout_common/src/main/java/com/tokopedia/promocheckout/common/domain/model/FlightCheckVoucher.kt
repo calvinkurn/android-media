@@ -16,7 +16,7 @@ class FlightCheckVoucher (
         var isCoupon: Int = 0,
         @SerializedName("UserID")
         @Expose
-        var userID: Int = 0,
+        var userID: String = "0",
         @SerializedName("DiscountAmount")
         @Expose
         var discountAmount: String = "",

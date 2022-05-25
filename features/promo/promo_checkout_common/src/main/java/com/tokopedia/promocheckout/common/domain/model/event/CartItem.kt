@@ -12,7 +12,7 @@ data class CartItem(
         val appLink: String = "",
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("configuration")
         @Expose
         val configuration: Configuration= Configuration(),
@@ -27,7 +27,7 @@ data class CartItem(
         val displaySequence: Int = 0,
         @SerializedName("fulfillment_service_id")
         @Expose
-        val fulfillmentServiceId: Int = 0,
+        val fulfillmentServiceId: String = "0",
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = "",
@@ -48,7 +48,7 @@ data class CartItem(
         val product: Product = Product(),
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("product_name")
         @Expose
         val productName: String = "",

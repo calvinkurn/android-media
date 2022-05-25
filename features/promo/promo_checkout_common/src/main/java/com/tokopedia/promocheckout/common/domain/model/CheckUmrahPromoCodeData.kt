@@ -15,7 +15,7 @@ data class CheckUmrahPromoCodeData(
         var codes: String = "",
         @SerializedName("promoCodeId")
         @Expose
-        var promoCodeId : Int = 0,
+        var promoCodeId : String = "0",
         @SerializedName("titleDescription")
         @Expose
         var titleDescription : String = "",
@@ -36,7 +36,7 @@ data class CheckUmrahPromoCodeData(
         var isCoupon : Boolean = false,
         @SerializedName("gatewayId")
         @Expose
-        var gatewayId : Int = 0,
+        var gatewayId : String = "0",
         @SerializedName("tickerInfo")
         @Expose
         var tickerInfo: TickerInfo = TickerInfo()
@@ -45,7 +45,7 @@ data class CheckUmrahPromoCodeData(
 data class TickerInfo(
         @SerializedName("uniqueId")
         @Expose
-        var uniqueId : Int = 0,
+        var uniqueId : String = "0",
         @SerializedName("statusCode")
         @Expose
         var statusCode : Int = 0,

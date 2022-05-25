@@ -10,5 +10,5 @@ data class Merchant(
         val address: Any = Any(),
         @SerializedName("id")
         @Expose
-        val id: Int = 0
+        val id: String = "0"
 )

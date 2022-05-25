@@ -19,7 +19,7 @@ open class UmrahCheckPromoMapper @Inject constructor() {
                 discountAmount = data.discountAmount,
                 cashbackWalletAmount = data.cashbackWalletAmount,
                 invoiceDescription = data.invoiceDescription,
-                gatewayId = data.gatewayId.toString(),
+                gatewayId = data.gatewayId,
                 isCoupon = mapIsCoupon(data.isCoupon)
         )
     }

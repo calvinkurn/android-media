@@ -10,7 +10,7 @@ data class Data(
         val codes: List<String?> = ArrayList(),
 
         @field:SerializedName("promo_code_id")
-        val promoCodeId: Int = 0,
+        val promoCodeId: String = "0",
 
         @field:SerializedName("voucher_orders")
         val voucherOrders: List<VoucherOrdersItem> = ArrayList(),
