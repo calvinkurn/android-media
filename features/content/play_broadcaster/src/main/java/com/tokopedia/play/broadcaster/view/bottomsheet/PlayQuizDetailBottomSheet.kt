@@ -32,6 +32,8 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     private val sheetType
         get() = arguments?.getString(ARG_TYPE) ?: ""
+    private val sheetSize
+        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.toString()
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -68,13 +70,22 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.65f).toInt()
+        when (sheetSize) {
+            Size.HALF.toString() -> {
+                binding.root.layoutParams = binding.root.layoutParams.apply {
+                    height = (getScreenHeight() * 0.65f).toInt()
+                }
+            }
+            Size.FULL.toString() -> {
+                binding.root.layoutParams = binding.root.layoutParams.apply {
+                    height = (getScreenHeight() * 1f).toInt()
+                }
+            }
         }
         if (sheetType.isNotBlank()){
             when (sheetType){
-                Type.QUIZ_DETAIL.toString().lowercase() -> setupQuizDetail()
-                Type.LEADERBOARD.toString().lowercase() -> setupLeaderBoard()
+                Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
+                Type.LEADERBOARD.toString() -> setupLeaderBoard()
             }
             observeQuizDetail()
         }
@@ -188,25 +199,37 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
 
     companion object {
-        const val ARG_TYPE = "ARG_TYPE"
+        private const val ARG_TYPE = "ARG_TYPE"
+        private const val ARG_SIZE = "ARG_SIZE"
 
         private const val TAG = "PlayQuizDetailBottomSheet"
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader
+            classLoader: ClassLoader,
+            type: Type,
+            size: Size? = Size.HALF,
         ): PlayQuizDetailBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayQuizDetailBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayQuizDetailBottomSheet::class.java.name
-            ) as PlayQuizDetailBottomSheet
+                PlayQuizDetailBottomSheet::class.java.name,
+            ) as PlayQuizDetailBottomSheet).apply {
+                arguments = Bundle().apply {
+                    putString(ARG_TYPE, type.toString())
+                    putString(ARG_SIZE, size.toString())
+                }
+            }
         }
     }
 
-    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString().lowercase()
+    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString()
 
     enum class Type {
         LEADERBOARD,
         QUIZ_DETAIL
+    }
+    enum class Size {
+        FULL,
+        HALF
     }
 }

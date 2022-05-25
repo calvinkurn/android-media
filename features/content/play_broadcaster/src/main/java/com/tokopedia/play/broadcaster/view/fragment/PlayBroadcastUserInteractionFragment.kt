@@ -1054,10 +1054,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun openInteractiveBottomSheet(type: PlayQuizDetailBottomSheet.Type) {
         val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
             childFragmentManager,
-            requireContext().classLoader)
-        playQuizDetailBottomSheet.arguments = Bundle().apply {
-            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString().lowercase())
-        }
+            requireContext().classLoader,
+            type
+        )
         playQuizDetailBottomSheet.show(childFragmentManager)
     }
 

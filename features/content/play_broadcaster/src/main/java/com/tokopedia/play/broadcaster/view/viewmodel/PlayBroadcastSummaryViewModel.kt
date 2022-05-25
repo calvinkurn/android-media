@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -42,6 +43,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
+    private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val userSession: UserSessionInterface,
     private val playBroadcastMapper: PlayBroadcastMapper,
@@ -249,6 +251,9 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }
             while(reportChannelSummary.duration.isEmpty() && fetchTryCount < FETCH_REPORT_MAX_RETRY)
 
+            getInteractiveSummaryLivestreamUseCase.setRequestParams(GetInteractiveSummaryLivestreamUseCase.createParams(channelId))
+            val participantResponse = getInteractiveSummaryLivestreamUseCase.executeOnBackground()
+
             _channelSummary.value = playBroadcastMapper.mapChannelSummary(
                                         channel.basic.title,
                                         channel.basic.coverUrl,
@@ -258,10 +263,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                     )
 
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if(summaryLeaderboardInfo.isLeaderboardExists) {
+                if(participantResponse.playInteractiveGetSummaryLivestream.participantCount > 0) {
                     add(TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
-                            count = summaryLeaderboardInfo.totalInteractiveParticipant,
+                            count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString(),
                         )
                     )
                 }
