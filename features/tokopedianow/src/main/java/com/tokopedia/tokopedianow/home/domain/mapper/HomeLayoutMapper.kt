@@ -40,7 +40,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
-import com.tokopedia.tokopedianow.home.domain.mapper.MixLeftCarouselMapper.mapToMixLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
@@ -51,6 +50,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapToMixLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -62,6 +62,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiMo
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
@@ -300,6 +302,13 @@ object HomeLayoutMapper {
         updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM)
     }
 
+    fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+        miniCartData: MiniCartSimplifiedData,
+    ) {
+        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL)
+        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL)
+    }
+
     // Update all product with quantity from cart
     private fun MutableList<HomeLayoutItemUiModel>.updateAllProductQuantity(
         miniCartData: MiniCartSimplifiedData,
@@ -321,6 +330,7 @@ object HomeLayoutMapper {
         when (type) {
             REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
             PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
+            MIX_LEFT_CAROUSEL -> updateLeftCarouselProductQuantity(productId, quantity)
         }
     }
 
@@ -370,6 +380,34 @@ object HomeLayoutMapper {
                             }
                         } else {
                             updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
+                        }
+                    }
+                }
+            }
+            MIX_LEFT_CAROUSEL -> {
+                filter { it.layout is HomeLeftCarouselUiModel }.forEach { homeLayoutItemUiModel->
+                    val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselUiModel
+                    val cartProductIds = miniCartData.miniCartItems.map { it.productId }
+                    val deletedProducts: MutableList<HomeLeftCarouselProductCardUiModel> = mutableListOf()
+                    layout.productList.forEach {
+                        if((it is HomeLeftCarouselProductCardUiModel) && it.id !in cartProductIds ) {
+                            deletedProducts.add(it)
+                        }
+                    }
+
+                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
+
+                    deletedProducts.forEach { item ->
+                        if (item.parentProductId != DEFAULT_PARENT_ID) {
+                            val miniCartItemsWithSameParentId = variantGroup[item.parentProductId]
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumOf { it.quantity }.orZero()
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateLeftCarouselProductQuantity(item.id.toString(), DEFAULT_QUANTITY)
+                            } else {
+                                updateLeftCarouselProductQuantity(item.id.toString(), totalQuantity)
+                            }
+                        } else {
+                            updateLeftCarouselProductQuantity(item.id.toString(), DEFAULT_QUANTITY)
                         }
                     }
                 }
@@ -433,6 +471,42 @@ object HomeLayoutMapper {
                     val updatedRecom = recom.copy(recommendationItemList = recommendationItemList)
                     val updatedUiModel = uiModel.copy(recomWidget = updatedRecom)
                     homeLayoutItemUiModel.copy(layout = updatedUiModel)
+                }
+            }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
+        productId: String,
+        quantity: Int
+    ) {
+        firstOrNull { it.layout is HomeLeftCarouselUiModel }?.run {
+            val layoutUiModel = layout as HomeLeftCarouselUiModel
+            val productList = layoutUiModel.productList.toMutableList()
+            val productUiModel = productList.firstOrNull {
+                if (it is HomeLeftCarouselProductCardUiModel) {
+                    it.id == productId
+                } else {
+                    false
+                }
+            }
+            val index = layoutUiModel.productList.indexOf(productUiModel)
+
+            (productUiModel as? HomeLeftCarouselProductCardUiModel)?.productCardModel?.run {
+                if (hasVariant()) {
+                    copy(variant = variant?.copy(quantity = quantity))
+                } else {
+                    copy(
+                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                        nonVariant = nonVariant?.copy(quantity = quantity)
+                    )
+                }
+            }?.let {
+                updateItemById(layout.getVisitableId()) {
+                    (productUiModel as? HomeLeftCarouselProductCardUiModel)?.copy(productCardModel = it)?.apply {
+                        productList[index] = this
+                    }
+                    copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }
@@ -508,7 +582,7 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
-            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState)
+            MIX_LEFT_CAROUSEL -> mapToMixLeftCarousel(response, loadedState, miniCartData)
             // endregion
 
             // region TokoNow Component

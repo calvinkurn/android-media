@@ -124,21 +124,21 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.title.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
         } else {
-            tv_payment_success.text = thanksPageData.thanksCustomization.customTitle
+            tv_payment_success.text = thanksPageData.customDataMessage.title
         }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.subtitle.isNullOrBlank()) {
             tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
         } else {
-            tv_payment_success_check_order.text = thanksPageData.thanksCustomization.customSubtitle
+            tv_payment_success_check_order.text = thanksPageData.customDataMessage.subtitle
         }
 
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.titleOrderButton.isNullOrBlank()) {
             btn_see_transaction_list.text = getString(R.string.thank_see_transaction_list)
         } else {
-            btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
+            btn_see_transaction_list.text = thanksPageData.customDataMessage.titleOrderButton
         }
 
         if (thanksPageData.gatewayImage.isNotEmpty()) {
@@ -178,11 +178,11 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         clPaymentMethod.setOnClickListener { openInvoiceDetail(thanksPageData) }
 
         btn_see_transaction_list.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null
-                    || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+            if (thanksPageData.customDataAppLink == null
+                    || thanksPageData.customDataAppLink.order.isNullOrBlank()) {
                 gotoOrderList()
             } else {
-                gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
+                gotoOrderList(thanksPageData.customDataAppLink.order)
             }
         }
         setUpHomeButton(btnShopAgain)

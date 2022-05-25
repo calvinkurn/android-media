@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
@@ -24,14 +23,12 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.User
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
@@ -208,7 +205,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
-            TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
             TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(chatItemPojoByDateByTime)
@@ -290,18 +286,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             broadcastBlastId = item.blastId,
             source = item.source
         )
-    }
-
-    private fun convertToQuotation(message: Reply): Visitable<*> {
-        val quotationAttributes = gson
-            .fromJson<QuotationAttributes>(
-                message.attachment?.attributes,
-                QuotationAttributes::class.java
-            )
-        return QuotationUiModel.Builder()
-            .withResponseFromGQL(message)
-            .withQuotationPojo(quotationAttributes.quotation)
-            .build()
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {

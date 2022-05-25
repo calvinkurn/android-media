@@ -163,7 +163,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
     SendButtonListener, ImagePickerListener, ChatTemplateListener,
     HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-    InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
+    InvoiceThumbnailListener,
     TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
     StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
     SearchListener, BroadcastSpamHandlerViewHolder.Listener,
@@ -398,6 +398,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
             reloadSrw()
         }
+        viewModel.removeAttachmentPreview(model)
     }
 
     override fun reloadCurrentAttachment() {
@@ -968,7 +969,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this
+            this,
         )
     }
 
@@ -2041,10 +2042,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
             }
         })
-    }
-
-    override fun trackClickQuotation(msg: QuotationUiModel) {
-        analytics.eventClickQuotation(msg)
     }
 
     override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {

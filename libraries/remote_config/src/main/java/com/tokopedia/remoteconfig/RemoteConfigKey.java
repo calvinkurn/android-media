@@ -291,4 +291,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
 
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
+
+    public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 }
