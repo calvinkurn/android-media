@@ -1773,16 +1773,17 @@ class PlayViewModel @AssistedInject constructor(
                 )
             }
 
-            val isRewardAvailable: Boolean = (_interactive.value.interactive as InteractiveUiModel.Quiz).reward.isNotEmpty()
-            val winnerStatus = _winnerStatus.value
-
-            if (!isRewardAvailable){
-                showLeaderBoard()
-            } else {
-                delay(interactive.interactive.waitingDuration) //waiting duration: wait for user winner message
-                winnerStatus?.let {
+            suspend fun checkWinnerStatus(): Boolean {
+                val winnerStatus = _winnerStatus.value
+                return if (winnerStatus != null) {
                     processWinnerStatus(winnerStatus, interactive.interactive)
-                }
+                    true
+                } else false
+            }
+
+            if (!checkWinnerStatus() && interactive.interactive is InteractiveUiModel.Quiz) {
+                delay(interactive.interactive.waitingDuration)
+                checkWinnerStatus()
             }
 
             _interactive.value = InteractiveStateUiModel.Empty
@@ -1790,14 +1791,6 @@ class PlayViewModel @AssistedInject constructor(
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
-    }
-
-    private fun showLeaderBoard(){
-        if (repo.hasProcessedWinner(_interactive.value.interactive.id)) return
-        _leaderboardUserBadgeState.setValue {
-            copy(showLeaderboard = true, shouldRefreshData = true)
-        }
-        repo.setHasProcessedWinner(_interactive.value.interactive.id)
     }
 
     private suspend fun processWinnerStatus(
