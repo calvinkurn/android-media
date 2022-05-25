@@ -4,9 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Category
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.LabelGroup
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Wishlist
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
@@ -114,7 +117,7 @@ class GetWishlistNavUseCase @Inject constructor (
                 priceFmt = it.priceFmt.orEmpty(),
                 originalPriceFmt = it.originalPriceFmt.orEmpty(),
                 discountPercentageFmt = it.discountPercentageFmt.orEmpty(),
-                cashback = it.cashback.orEmpty(),
+                cashback = it.labelGroup?.checkHasCashback().orFalse(),
                 category = it.category.orEmpty(),
                 categoryBreadcrumb = it.category?.generateCategoryBreadcrumb().orEmpty(),
                 wishlistId = it.wishlistId.orEmpty(),
@@ -126,6 +129,10 @@ class GetWishlistNavUseCase @Inject constructor (
 
     private fun List<Category>.generateCategoryBreadcrumb() : String {
         return this.joinToString(separator = " / ") { it.name.orEmpty() }
+    }
+
+    private fun List<LabelGroup>.checkHasCashback() : Boolean {
+        return this.any { it.title.asLowerCase() == LABEL_CASHBACK }
     }
 
     private fun setParams(
@@ -143,5 +150,6 @@ class GetWishlistNavUseCase @Inject constructor (
         private const val PARAM_LIMIT = "limit"
         private const val PARAM_PAGE_VALUE = 1
         private const val PARAM_LIMIT_VALUE = 5
+        private const val LABEL_CASHBACK = "cashback"
     }
 }

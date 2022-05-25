@@ -57,7 +57,7 @@ data class WishlistItem (
     @SerializedName("discount_percentage")
     @Expose
     val discountPercentage: Int? = 0,
-    @SerializedName("discount_percentageFmt")
+    @SerializedName("discount_percentage_fmt")
     @Expose
     val discountPercentageFmt: String? = "",
     @SerializedName("label_stock")
@@ -66,9 +66,6 @@ data class WishlistItem (
     @SerializedName("bebas_ongkir")
     @Expose
     val freeOngkir: FreeOngkir? = FreeOngkir(),
-    @SerializedName("cashback")
-    @Expose
-    val cashback: String? = "",
     @SerializedName("wishlist_id")
     @Expose
     val wishlistId: String? = "",
@@ -77,7 +74,9 @@ data class WishlistItem (
     val variant: String? = "",
     @SerializedName("category")
     @Expose
-    val category: List<Category>? = listOf()
+    val category: List<Category>? = listOf(),
+    @SerializedName("label_group")
+    val labelGroup: List<LabelGroup>? = listOf()
 )
 
 data class FreeOngkir (
@@ -97,4 +96,9 @@ data class Category(
     @SerializedName("category_name")
     @Expose
     val name: String? = ""
+)
+
+data class LabelGroup(
+    @SerializedName("title")
+    val title: String
 )
