@@ -12,7 +12,6 @@ object ShopAdminDeepLinkMapper {
     const val REQUEST_CODE_ADMIN_REDIRECTION = 939
 
     const val SHOP_NAME = "shop_name"
-    const val FROM_PARAM = "from"
 
     /**
      * mapping applink external to internal
