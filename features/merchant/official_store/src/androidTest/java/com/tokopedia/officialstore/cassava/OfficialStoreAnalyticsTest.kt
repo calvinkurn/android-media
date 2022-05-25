@@ -93,8 +93,6 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-        val loadingLayout = activityRule.activity.findViewById<LinearLayout>(R.id.view_category_tab_loading)
-        loadingLayout.gone()
         osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
                 activity = activityRule.activity,
                 limitCountToIdle = 3
