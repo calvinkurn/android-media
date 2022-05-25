@@ -62,7 +62,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
-    override fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int) {
+    override fun onClickRedeemCoupon(catalogId: String?, slug: String?, title: String, creativeName: String, position: Int) {
         childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug, catalogId = catalogId, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo)).addToBackStack(CHECKOUT_CATALOG_DETAIL_FRAGMENT).commit()
         promoCheckoutAnalytics.clickCatalog(slug, title, catalogId, creativeName, position)
     }

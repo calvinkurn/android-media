@@ -22,7 +22,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
     private val CATALOG_TYPE_FLASH_SALE = 3
 
     interface ListenerCouponExchange {
-        fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int)
+        fun onClickRedeemCoupon(catalogId: String?, slug: String?, title: String, creativeName: String, position: Int)
     }
 
     var mListener: ListenerCouponExchange
