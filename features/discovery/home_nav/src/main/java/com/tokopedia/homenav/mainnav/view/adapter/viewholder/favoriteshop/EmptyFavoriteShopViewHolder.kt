@@ -23,7 +23,7 @@ class EmptyFavoriteShopViewHolder(itemView: View): AbstractViewHolder<EmptyState
         @LayoutRes
         val LAYOUT = R.layout.holder_empty_favorite_shop
         private const val EMPTY_IMAGE_LINK =
-            "https://images.tokopedia.net/img/android/home/navigation/home_nav_empty_data.png"
+            "https://images.tokopedia.net/img/android/home_nav/home_nav_empty_followed_shop.png"
     }
 
     override fun bind(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel) {
