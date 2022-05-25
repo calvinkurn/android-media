@@ -67,7 +67,7 @@ class DealsBrandsActivityTest {
 
         Assert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
                 hasAllSuccess())
-        activityRule.finishActivity()
+
     }
 
     private fun actionOnDealsBrandViewHolder() {
@@ -80,6 +80,7 @@ class DealsBrandsActivityTest {
 
     private fun clickOnRelaksasiTab() {
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
+        activityRule.finishActivity()
     }
 
     private fun changeLocationBrandPage() {
