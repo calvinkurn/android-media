@@ -47,7 +47,7 @@ class TokoFoodOrderDetailMapper @Inject constructor(
             addAll(foodList.map {
                 FoodItemUiModel(
                     foodName = it.displayName,
-                    quantity = it.quantity.toString(),
+                    quantity = it.quantity,
                     priceStr = it.price,
                     notes = it.notes.orEmpty(),
                     addOnVariantList = mapToAddonVariantUiModel(it)

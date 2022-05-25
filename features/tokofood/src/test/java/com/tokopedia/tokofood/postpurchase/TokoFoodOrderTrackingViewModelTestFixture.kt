@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.postpurchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
+import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderStatusMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetDriverPhoneNumberUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
@@ -32,12 +33,15 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
 
     protected lateinit var tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
 
+    protected lateinit var tokoFoodOrderStatusMapper: TokoFoodOrderStatusMapper
+
     protected lateinit var viewModel: TokoFoodOrderTrackingViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         tokoFoodOrderDetailMapper = TokoFoodOrderDetailMapper(mockk(relaxed = true), mockk(relaxed = true))
+        tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
         viewModel = TokoFoodOrderTrackingViewModel(
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
@@ -52,6 +56,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     }
 
     companion object {
+        const val ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
+
         const val ORDER_TRACKING_CREATED = "json/order_tracking_created.json"
         const val ORDER_TRACKING_MERCHANT_ACCEPTED = "json/order_tracking_merchant_accepted.json"
         const val ORDER_TRACKING_SEARCHING_DRIVER = "json/order_tracking_searching_driver.json"

@@ -13,13 +13,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import io.mockk.*
+import io.mockk.clearStaticMockk
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -2041,7 +2044,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokofood post purchase appLink then should return tokopedia internal tokofood post purchase in customerapp`() {
         val orderId = "123"
         val expectedDeepLink =
-            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?order_id=${orderId}"
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
         val appLink = "${ApplinkConst.TokoFood.POST_PURCHASE}/$orderId"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

@@ -1,7 +1,7 @@
 {
   "tokofoodOrderDetail": {
     "orderStatus": {
-      "status": "CANCELLED",
+      "status": "CANCELED",
       "title": "Dibatalkan",
       "subtitle": null,
       "iconName": null

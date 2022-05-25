@@ -67,7 +67,7 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingAdapter(orderTrackingAdapterTypeFactory)
     }
 
-    private val navigator by lazy {
+    private val navigator by lazy(LazyThreadSafetyMode.NONE) {
         OrderTrackingNavigator(this, tracking)
     }
 
@@ -77,7 +77,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
-    private val orderId: String by lazy {
+    private val orderId: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
     }
 
@@ -145,7 +145,7 @@ class BaseTokoFoodOrderTrackingFragment :
         with(orderDetailResultUiModel) {
             orderTrackingAdapter.removeOrderTrackingData()
             orderTrackingAdapter.updateOrderTracking(orderDetailList)
-            updateViewsOrderCompleted(actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatus)
+            updateViewsOrderCompleted(actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey)
         }
     }
 
@@ -188,11 +188,11 @@ class BaseTokoFoodOrderTrackingFragment :
                 is Success -> {
                     orderTrackingAdapter.updateOrderTracking(it.data.orderDetailList)
                     setupViews(
-                        it.data.orderStatus,
+                        it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
                         it.data.toolbarLiveTrackingUiModel
                     )
-                    fetchOrderLiveTracking(it.data.orderStatus)
+                    fetchOrderLiveTracking(orderId)
                 }
                 is Fail -> {
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
@@ -262,7 +262,7 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun updateOrderCompleted(orderDetailResultUiModel: OrderDetailResultUiModel) {
         binding?.containerOrderTrackingHelpButton?.hide()
         with(orderDetailResultUiModel) {
-            if (orderStatus == OrderStatusType.COMPLETED) {
+            if (orderStatusKey == OrderStatusType.COMPLETED) {
                 orderTrackingAdapter.updateOrderTracking(
                     listOf(
                         TemporaryFinishOrderUiModel(orderDetailResultUiModel)
@@ -273,15 +273,15 @@ class BaseTokoFoodOrderTrackingFragment :
                 updateViewsOrderCompleted(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
-                    orderStatus
+                    orderStatusKey
                 )
             }
         }
     }
 
-    private fun fetchOrderLiveTracking(orderStatus: String) {
+    private fun fetchOrderLiveTracking(orderId: String) {
         orderLiveTrackingFragment?.let {
-            viewModel.updateOrderId(orderStatus)
+            viewModel.updateOrderId(orderId)
         }
     }
 
@@ -370,13 +370,15 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     private fun showErrorToaster(errorMessage: String) {
-        view?.let {
-            Toaster.build(
-                it,
-                text = errorMessage,
-                duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
-            ).show()
+        if (errorMessage.isNotBlank()) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            }
         }
     }
 

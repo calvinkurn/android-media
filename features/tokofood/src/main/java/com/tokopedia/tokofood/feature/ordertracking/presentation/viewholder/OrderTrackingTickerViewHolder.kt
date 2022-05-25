@@ -41,7 +41,7 @@ class OrderTrackingTickerViewHolder(
             addPagerView(tickerPagerAdapter, tickerList)
             tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    if (linkUrl.isNotEmpty()) {
+                    if (linkUrl.isNotBlank()) {
                         orderTrackingListener.onTickerLinkClick(linkUrl.toString())
                     }
                 }

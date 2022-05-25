@@ -56,7 +56,7 @@ class TokoFoodOrderLiveTrackingFragment(
                 when (it) {
                     is Success -> {
                         updateAllOrderLiveTracking(it.data)
-                        viewModel.updateOrderId(it.data.orderStatusKey)
+                        viewModel.updateOrderId(viewModel.getOrderId())
                     }
                     is Fail -> {
                         viewModel.updateOrderId(viewModel.getOrderId())

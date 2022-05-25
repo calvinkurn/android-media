@@ -41,7 +41,9 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
         eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta?
     ) {
         if (eta != null) {
-            add(mapToEstimationUiModel(eta))
+            if (eta.time.isNotBlank() && eta.label.isNotBlank()) {
+                add(mapToEstimationUiModel(eta))
+            }
         }
     }
 
@@ -105,7 +107,7 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
         addAll(foodList.take(Int.ONE).map {
             FoodItemUiModel(
                 foodName = it.displayName,
-                quantity = it.quantity.toString(),
+                quantity = it.quantity,
                 priceStr = it.price,
                 notes = it.notes.orEmpty(),
                 addOnVariantList = mapToAddonVariantUiModel(it)

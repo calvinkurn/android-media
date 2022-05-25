@@ -62,7 +62,7 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
     }
 
     fun updateLottie(statusKey: String, animationUrl: String) {
-        if (animationUrl.isNotEmpty()) {
+        if (animationUrl.isNotBlank()) {
             val cacheKey = when (statusKey) {
                 SEARCHING_DRIVER -> CONFIRMATION_STATUS_INFO_KEY
                 ON_PROCESS -> ON_PROCESS_STATUS_INFO_KEY

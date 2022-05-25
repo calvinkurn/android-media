@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.model
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -56,13 +57,25 @@ data class TokoFoodOrderDetailResponse(
             val label: String = ""
         )
 
-        data class AdditionalTickerInfo(
-            @SerializedName("level")
+        data class DotMenu(
+            @SerializedName("label")
             @Expose
-            val level: String = "",
+            val label: String = "",
+            @SerializedName("actionType")
+            @Expose
+            val actionType: String = "",
+            @SerializedName("appUrl")
+            @Expose
+            val appUrl: String = "",
+        )
+
+        data class AdditionalTickerInfo(
             @SerializedName("appText")
             @Expose
-            val appText: String = ""
+            val appText: String = "",
+            @SerializedName("level")
+            @Expose
+            val level: String = ""
         )
 
         data class Destination(
@@ -77,22 +90,10 @@ data class TokoFoodOrderDetailResponse(
             val phone: String = ""
         )
 
-        data class DotMenu(
-            @SerializedName("actionType")
-            @Expose
-            val actionType: String = "",
-            @SerializedName("appUrl")
-            @Expose
-            val appUrl: String = "",
-            @SerializedName("label")
-            @Expose
-            val label: String = ""
-        )
-
         data class DriverDetails(
             @SerializedName("karma")
             @Expose
-            val karma: List<Karma>? = listOf(),
+            val karma: List<Karma> = listOf(),
             @SerializedName("licensePlateNumber")
             @Expose
             val licensePlateNumber: String = "",
@@ -109,7 +110,7 @@ data class TokoFoodOrderDetailResponse(
                 val icon: String = "",
                 @SerializedName("message")
                 @Expose
-                val message: String = ""
+                val message: String = "",
             )
         }
 
@@ -128,9 +129,13 @@ data class TokoFoodOrderDetailResponse(
             val gofoodOrderNumber: String? = "",
             @SerializedName("invoiceNumber")
             @Expose
-            val invoiceNumber: String = ""
+            val invoiceNumber: String = "",
+            @SerializedName("invoiceURL")
+            @Expose
+            val invoiceURL: String = ""
         )
 
+        @SuppressLint("Invalid Data Type")
         data class Item(
             @SerializedName("displayName")
             @Expose
@@ -140,10 +145,10 @@ data class TokoFoodOrderDetailResponse(
             val notes: String? = "",
             @SerializedName("price")
             @Expose
-            val price: String = "0.0",
+            val price: String = "",
             @SerializedName("quantity")
             @Expose
-            val quantity: Int = 0,
+            val quantity: String = "",
             @SerializedName("variants")
             @Expose
             val variants: List<Variant>? = listOf()
@@ -170,13 +175,13 @@ data class TokoFoodOrderDetailResponse(
         data class OrderStatus(
             @SerializedName("iconName")
             @Expose
-            val iconName: String? = "",
+            val iconName: String = "",
             @SerializedName("status")
             @Expose
             val status: String = "",
             @SerializedName("subtitle")
             @Expose
-            val subtitle: String? = "",
+            val subtitle: String = "",
             @SerializedName("title")
             @Expose
             val title: String = ""

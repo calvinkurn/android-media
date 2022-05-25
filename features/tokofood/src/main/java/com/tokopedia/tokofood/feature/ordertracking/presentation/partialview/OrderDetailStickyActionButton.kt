@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodPartialOrderDetailStickyActionButtonsBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.SecondaryActionBottomSheet
@@ -84,6 +85,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
         fragmentManager: FragmentManager
     ) {
         binding?.btnOrderDetailSecondaryActions?.run {
+            showWithCondition(secondaryButton.isNotEmpty())
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))

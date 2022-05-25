@@ -68,7 +68,7 @@ class OrderTrackingToolbarHandler(
     private fun FragmentTokofoodOrderTrackingBinding.setCustomToolbarView() {
         orderTrackingToolbar.run {
             val descToolbar =
-                if (toolbarLiveTracking?.composeEstimation?.isNotEmpty() == true) {
+                if (toolbarLiveTracking?.composeEstimation?.isNotBlank() == true) {
                     context.getString(
                         R.string.order_tracking_toolbar_desc_with_eta,
                         toolbarLiveTracking?.orderStatusTitle.orEmpty(),

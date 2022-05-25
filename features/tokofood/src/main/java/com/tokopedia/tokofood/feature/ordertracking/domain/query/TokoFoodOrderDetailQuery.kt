@@ -10,8 +10,8 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
 
     private val TOKO_FOOD_ORDER_DETAIL_QUERY = """
         query $OPERATION_NAME(${'$'}orderID : String!) {
-          tokofoodOrderDetail(orderID: $${'$'}orderID) {
-            orderStatus {
+          tokofoodOrderDetail(orderID: ${'$'}orderID) {
+             orderStatus {
               status
               title
               subtitle
@@ -48,13 +48,11 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
               label
               actionType
               appUrl
-              webUrl
             }
             dotMenus {
               label
               actionType
               appUrl
-              webUrl
             }
             driverDetails {
               name
@@ -67,6 +65,7 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
             }
             invoice {
               invoiceNumber
+              invoiceURL
               gofoodOrderNumber
             }
             payment {

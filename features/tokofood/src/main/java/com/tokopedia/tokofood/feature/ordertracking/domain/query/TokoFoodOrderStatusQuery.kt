@@ -10,7 +10,7 @@ internal object TokoFoodOrderStatusQuery: GqlQueryInterface {
 
     private val TOKO_FOOD_ORDER_STATUS_QUERY = """
         query ${OPERATION_NAME}(${'$'}orderID : String!) {
-          tokofoodOrderDetail(orderID: $${'$'}orderID) {
+          tokofoodOrderDetail(orderID: ${'$'}orderID) {
             orderStatus {
               status
               title

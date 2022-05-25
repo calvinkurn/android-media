@@ -30,7 +30,7 @@ class OrderTrackingStickyHelpButton @JvmOverloads constructor(
     fun setupHelpButton(orderId: String, primaryButton: ActionButtonsUiModel.ActionButton) {
         binding?.btnOrderTrackingSecondaryHelp?.run {
             text = primaryButton.label
-            if (primaryButton.appUrl.isNotEmpty()) {
+            if (primaryButton.appUrl.isNotBlank()) {
                 setOnClickListener(createPrimaryButtonClickListener(orderId, primaryButton.appUrl))
             }
         }
