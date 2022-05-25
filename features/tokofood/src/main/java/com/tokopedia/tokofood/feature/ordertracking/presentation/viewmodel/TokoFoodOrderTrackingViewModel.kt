@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -54,7 +54,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderLiveTrackingStatus: SharedFlow<Result<OrderStatusLiveTrackingUiModel>> =
         _orderLiveTrackingStatus
 
-    val _orderId = MutableStateFlow("")
+    private val _orderId = MutableStateFlow("")
 
     private val _orderCompletedLiveTracking = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderCompletedLiveTracking: LiveData<Result<OrderDetailResultUiModel>>
@@ -130,7 +130,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
                     }
                 }
                 .flowOn(coroutineDispatchers.io)
-                .collect {
+                .collectLatest {
                     when (orderStatusKey) {
                         OrderStatusType.CANCELLED, OrderStatusType.COMPLETED -> {
                             fetchOrderCompletedLiveTracking(orderId)

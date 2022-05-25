@@ -13,10 +13,14 @@ import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.unmockkAll
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 abstract class TokoFoodOrderTrackingViewModelTestFixture {
 
     @get:Rule
