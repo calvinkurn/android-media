@@ -40,7 +40,4 @@ class FeedComponentModule {
     @Provides
     @Named(SUSPEND_GRAPHQL_REPOSITORY)
     fun provideSuspendGraphqlInteractor(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-
-    @Provides
-    fun provideFeedFloatingButtonManager(): FeedFloatingButtonManager = FeedFloatingButtonManager()
 }
