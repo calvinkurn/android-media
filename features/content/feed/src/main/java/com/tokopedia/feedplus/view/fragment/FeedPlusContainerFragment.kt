@@ -466,12 +466,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun initFab() {
         fab_feed.type = FloatingButtonUnify.BASIC
         fab_feed.color = FloatingButtonUnify.COLOR_GREEN
-        fab_feed.circleMainMenu.setOnClickListener {
+        fab_feed.circleMainMenu.visibility = View.INVISIBLE
+
+        ll_fab_feed.setOnClickListener {
             fab_feed.menuOpen = !fab_feed.menuOpen
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
-
-        renderCompleteFab()
     }
 
     override fun onStop() {
@@ -624,9 +624,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         if (items.isNotEmpty()) {
             fab_feed.addItem(items)
-            fab_feed.show()
+            ll_fab_feed.show()
         } else {
-            fab_feed.hide()
+            ll_fab_feed.hide()
         }
     }
 
@@ -752,18 +752,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun showCreatePostOnBoarding() {
-        val fabCircle = fab_feed.circleMainMenu
-        fabCircle.addOneTimeGlobalLayoutListener {
+        ll_fab_feed.addOneTimeGlobalLayoutListener {
             val location = IntArray(2)
-            fabCircle.getLocationOnScreen(location)
+            ll_fab_feed.getLocationOnScreen(location)
 
             val x1 = location[0]
             val y1 = location[1]
-            val x2 = x1 + fabCircle.width
-            val y2 = y1 + fabCircle.height
+            val x2 = x1 + ll_fab_feed.width
+            val y2 = y1 + ll_fab_feed.height
 
             coachMarkItem = CoachMarkItem(
-                fabCircle,
+                ll_fab_feed,
                 getString(R.string.feed_onboarding_create_post_title),
                 getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
@@ -775,7 +774,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized
             && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
-            && !fab_feed.circleMainMenu.isOrWillBeHidden) {
+            && ll_fab_feed.visibility == View.VISIBLE) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
