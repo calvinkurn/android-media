@@ -83,7 +83,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
                 }
                 binding?.labelCashback?.invisible()
             }
-            wishlistModel.navWishlistModel.cashback.isNotEmpty() -> {
+            wishlistModel.navWishlistModel.cashback -> {
                 binding?.textSlashedPrice?.invisible()
                 binding?.labelDiscountPercent?.invisible()
                 binding?.labelCashback?.visible()
