@@ -265,7 +265,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             viewModel.getCategoryLayout(
                 localCacheModel = it,
                 option = option,
-                sortBy = sortBy
+                sortBy = sortBy,
+                pageKey = "1"
             )
         }
     }

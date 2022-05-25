@@ -26,7 +26,6 @@ class TokoFoodMerchantListViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
-        val DUMMY_IMAGE = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/6/4/f92fc5a2-2837-4400-81ed-0d3755445e8b.jpg"
         val DUMMY_FARE_COUNT = 2
         val DUMMY_FARE_STRING = "$"
         const val COUNT_MAX_LEVEL_PRICE = 3
@@ -68,11 +67,11 @@ class TokoFoodMerchantListViewHolder (
         setMerchantRating(merchant.ratingFmt)
         setMerchantCategory(merchant.merchantCategories)
         setPriceLevel(merchant.priceLevel)
-        setMerchantClosed(true)
+        setMerchantClosed(merchant.isClosed)
     }
 
     private fun setImageMerchant(imageUrl: String) {
-        imgTokoFoodMerchant?.loadImage(DUMMY_IMAGE)
+        imgTokoFoodMerchant?.loadImage(imageUrl)
     }
 
     private fun setTitleMerchant(title: String) {
