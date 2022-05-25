@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/order_product_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="254dp"
+    android:layout_width="@dimen/nav_card_order_transaction_me_page"
     app:cardUseCompatPadding="true"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground">
