@@ -29,8 +29,8 @@ object ProductEducationalTracker {
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, "${ProductTrackingConstant.Category.PDP} $typeFlagString",
                 ProductTrackingConstant.Tracking.KEY_ACTION, "impression - $typeFlagString",
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
-                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId.ifEmpty { null },
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(
