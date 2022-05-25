@@ -24,6 +24,7 @@ class ProductRecommendationDataMapper @Inject constructor(
             val thankYouProductCardModelList = getProductCardModel(recommendationItemList)
             return ProductRecommendationData(
                     recommendationWidget.title,
+                    recommendationWidget.subtitle,
                     getMaxHeight(thankYouProductCardModelList),
                     thankYouProductCardModelList)
         }
