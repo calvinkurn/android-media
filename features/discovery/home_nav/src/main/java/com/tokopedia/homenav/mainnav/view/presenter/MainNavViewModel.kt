@@ -294,7 +294,6 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-
                 if (isMePageUsingRollenceVariant) {
                     allCategoriesCache = result
                 } else {
@@ -328,7 +327,6 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-
                 if (isMePageUsingRollenceVariant) {
                     updateAllCategories(result, isExpanded)
                 } else {
@@ -356,7 +354,6 @@ class MainNavViewModel @Inject constructor(
                             updateWidget(ErrorStateBuDataModel(), it)
                         }
                     }
-
                     val buShimmering = _mainNavListVisitable.find {
                         it is InitialShimmerDataModel
                     }
