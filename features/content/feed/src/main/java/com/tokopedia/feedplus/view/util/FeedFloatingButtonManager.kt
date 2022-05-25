@@ -14,6 +14,7 @@ class FeedFloatingButtonManager @Inject constructor() {
 
     private val dispatchers = CoroutineDispatchersProvider
     private val scope = CoroutineScope(dispatchers.computation)
+    private var job: Job? = null
 
     private lateinit var mParentFragment: Fragment
 
@@ -34,7 +35,7 @@ class FeedFloatingButtonManager @Inject constructor() {
     }
 
     fun setDelayForExpandFab(recyclerView: RecyclerView) {
-        scope.launch {
+        job = scope.launch {
             delay(FAB_EXPAND_WAITING_DELAY)
 
             withContext(dispatchers.main) {
@@ -56,7 +57,7 @@ class FeedFloatingButtonManager @Inject constructor() {
     }
 
     fun cancel() {
-        scope.cancel()
+        job?.cancel()
     }
 
     private fun recyclerViewAtMostTop(recyclerView: RecyclerView): Boolean {

@@ -822,10 +822,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         TopAdsHeadlineActivityCounter.page = 1
         recyclerView.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         feedFloatingButtonManager.cancel()
     }
 
