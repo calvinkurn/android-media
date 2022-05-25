@@ -7,26 +7,26 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardSeeMoreViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardSpaceViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSeeMoreViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSpaceViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 
 class HomeLeftCarouselProductCardTypeFactoryImpl(
-    private val productCardListener: HomeLeftCarouselProductCardViewHolder.HomeLeftCarouselProductCardListener? = null,
-    private val productCardSeeMoreListener: HomeLeftCarouselProductCardSeeMoreViewHolder.HomeLeftCarouselProductCardSeeMoreListener? = null,
-    private val productCardSpaceListener: HomeLeftCarouselProductCardSpaceViewHolder.HomeLeftCarouselProductCardSpaceListener? = null
+    private val productCardListener: HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselProductCardListener? = null,
+    private val productCardSeeMoreListener: HomeLeftCarouselAtcProductCardSeeMoreViewHolder.HomeLeftCarouselProductCardSeeMoreListener? = null,
+    private val productCardSpaceListener: HomeLeftCarouselAtcProductCardSpaceViewHolder.HomeLeftCarouselProductCardSpaceListener? = null
 ):  BaseAdapterTypeFactory(), HomeLeftCarouselProductCardTypeFactory {
-    override fun type(uiModel: HomeLeftCarouselProductCardUiModel): Int = HomeLeftCarouselProductCardViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselProductCardUiModel): Int = HomeLeftCarouselAtcProductCardViewHolder.LAYOUT
 
-    override fun type(uiModel: HomeLeftCarouselProductCardSpaceUiModel): Int = HomeLeftCarouselProductCardSpaceViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselProductCardSpaceUiModel): Int = HomeLeftCarouselAtcProductCardSpaceViewHolder.LAYOUT
 
-    override fun type(uiModel: HomeLeftCarouselProductCardSeeMoreUiModel): Int = HomeLeftCarouselProductCardSeeMoreViewHolder.LAYOUT
+    override fun type(uiModel: HomeLeftCarouselProductCardSeeMoreUiModel): Int = HomeLeftCarouselAtcProductCardSeeMoreViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            HomeLeftCarouselProductCardViewHolder.LAYOUT -> HomeLeftCarouselProductCardViewHolder(view, productCardListener)
-            HomeLeftCarouselProductCardSpaceViewHolder.LAYOUT -> HomeLeftCarouselProductCardSpaceViewHolder(view, productCardSpaceListener)
-            HomeLeftCarouselProductCardSeeMoreViewHolder.LAYOUT -> HomeLeftCarouselProductCardSeeMoreViewHolder(view, productCardSeeMoreListener)
+            HomeLeftCarouselAtcProductCardViewHolder.LAYOUT -> HomeLeftCarouselAtcProductCardViewHolder(view, productCardListener)
+            HomeLeftCarouselAtcProductCardSpaceViewHolder.LAYOUT -> HomeLeftCarouselAtcProductCardSpaceViewHolder(view, productCardSpaceListener)
+            HomeLeftCarouselAtcProductCardSeeMoreViewHolder.LAYOUT -> HomeLeftCarouselAtcProductCardSeeMoreViewHolder(view, productCardSeeMoreListener)
             else -> super.createViewHolder(view, type)
         }
     }

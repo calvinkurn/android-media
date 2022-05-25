@@ -132,7 +132,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomV
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
@@ -222,8 +222,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
-                homeLeftCarouselListener = createLeftCarouselAtcCallback(),
-                mixLeftComponentListener = createLeftCarouselCallback()
+                homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
+                homeLeftCarouselListener = createLeftCarouselCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1682,7 +1682,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun createLeftCarouselCallback(): MixLeftComponentListener {
-        return MixLeftCarouselCallback(this, analytics)
+        return HomeLeftCarouselCallback(this, analytics)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

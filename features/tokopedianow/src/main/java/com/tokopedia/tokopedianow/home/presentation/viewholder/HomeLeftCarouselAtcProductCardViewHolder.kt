@@ -7,21 +7,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselProductCardBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeLeftCarouselProductCardViewHolder(
+class HomeLeftCarouselAtcProductCardViewHolder(
     itemView: View,
     private var listener: HomeLeftCarouselProductCardListener? = null
 ): AbstractViewHolder<HomeLeftCarouselProductCardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_product_card
+        val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc_product_card
     }
 
-    private var binding: ItemTokopedianowHomeLeftCarouselProductCardBinding? by viewBinding()
+    private var binding: ItemTokopedianowHomeLeftCarouselAtcProductCardBinding? by viewBinding()
 
     override fun bind(element: HomeLeftCarouselProductCardUiModel) {
         binding?.productCardGridView?.apply {

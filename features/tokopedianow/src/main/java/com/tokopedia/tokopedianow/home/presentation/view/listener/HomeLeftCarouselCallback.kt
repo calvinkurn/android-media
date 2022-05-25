@@ -7,7 +7,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 
-class MixLeftCarouselCallback(
+class HomeLeftCarouselCallback(
     view: TokoNowView,
     private val analytics: HomeAnalytics
 ): MixLeftComponentListener {

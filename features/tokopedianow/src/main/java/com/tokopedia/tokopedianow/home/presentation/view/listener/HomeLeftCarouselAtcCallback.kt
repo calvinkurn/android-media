@@ -10,10 +10,10 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardSeeMoreViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardSpaceViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselProductCardViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSeeMoreViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardSpaceViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -23,10 +23,10 @@ class HomeLeftCarouselAtcCallback (
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
-): HomeLeftCarouselProductCardViewHolder.HomeLeftCarouselProductCardListener,
-   HomeLeftCarouselProductCardSeeMoreViewHolder.HomeLeftCarouselProductCardSeeMoreListener,
-   HomeLeftCarouselProductCardSpaceViewHolder.HomeLeftCarouselProductCardSpaceListener,
-   HomeLeftCarouselViewHolder.HomeLeftCarouselListener
+): HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselProductCardListener,
+   HomeLeftCarouselAtcProductCardSeeMoreViewHolder.HomeLeftCarouselProductCardSeeMoreListener,
+   HomeLeftCarouselAtcProductCardSpaceViewHolder.HomeLeftCarouselProductCardSpaceListener,
+   HomeLeftCarouselAtcViewHolder.HomeLeftCarouselListener
 {
 
     override fun onProductCardAddVariantClicked(product: HomeLeftCarouselProductCardUiModel) {

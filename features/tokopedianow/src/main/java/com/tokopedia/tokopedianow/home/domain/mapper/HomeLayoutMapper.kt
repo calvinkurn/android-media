@@ -64,7 +64,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiMo
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
@@ -388,8 +388,8 @@ object HomeLayoutMapper {
                 }
             }
             MIX_LEFT_CAROUSEL_ATC -> {
-                filter { it.layout is HomeLeftCarouselUiModel }.forEach { homeLayoutItemUiModel->
-                    val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselUiModel
+                filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel->
+                    val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
                     val deletedProducts: MutableList<HomeLeftCarouselProductCardUiModel> = mutableListOf()
                     layout.productList.forEach {
@@ -483,8 +483,8 @@ object HomeLayoutMapper {
         productId: String,
         quantity: Int
     ) {
-        firstOrNull { it.layout is HomeLeftCarouselUiModel }?.run {
-            val layoutUiModel = layout as HomeLeftCarouselUiModel
+        firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.run {
+            val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
                 if (it is HomeLeftCarouselProductCardUiModel) {

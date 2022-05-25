@@ -69,7 +69,7 @@
                 app:layout_constraintVertical_bias="1.0"
                 tools:itemCount="10"
                 tools:layout_height="300dp"
-                tools:listitem="@layout/item_tokopedianow_home_left_carousel_product_card"
+                tools:listitem="@layout/item_tokopedianow_home_left_carousel_atc_product_card"
                 tools:orientation="horizontal"
                 tools:spanCount="3"
                 tools:translationX="200dp" />

@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -16,7 +16,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
@@ -29,11 +29,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class HomeLeftCarouselViewHolder (
+class HomeLeftCarouselAtcViewHolder (
     itemView: View,
-    private val homeLeftCarouselListener: HomeLeftCarouselAtcCallback? = null,
+    private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
     private val tokoNowView: TokoNowView? = null
-) : AbstractViewHolder<HomeLeftCarouselUiModel>(itemView), CoroutineScope,
+) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope,
     TokoNowDynamicHeaderCustomView.HeaderCustomViewListener {
 
     companion object {
@@ -41,10 +41,10 @@ class HomeLeftCarouselViewHolder (
         const val IMAGE_ALPHA = "image_alpha"
 
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_left_carousel
+        val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc
     }
 
-    private var binding: ItemTokopedianowHomeLeftCarouselBinding? by viewBinding()
+    private var binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
 
     private val masterJob = SupervisorJob()
 
@@ -53,14 +53,14 @@ class HomeLeftCarouselViewHolder (
     private var viewParallaxBackground: View? = null
     private var layoutManager: LinearLayoutManager? = null
     private var dynamicHeaderCustomView: TokoNowDynamicHeaderCustomView? = null
-    private var uiModel: HomeLeftCarouselUiModel? = null
+    private var uiModel: HomeLeftCarouselAtcUiModel? = null
 
     private val adapter by lazy {
         HomeLeftCarouselProductCardAdapter(
             baseListAdapterTypeFactory = HomeLeftCarouselProductCardTypeFactoryImpl(
-                productCardListener = homeLeftCarouselListener,
-                productCardSeeMoreListener = homeLeftCarouselListener,
-                productCardSpaceListener = homeLeftCarouselListener
+                productCardListener = homeLeftCarouselAtcCallback,
+                productCardSeeMoreListener = homeLeftCarouselAtcCallback,
+                productCardSpaceListener = homeLeftCarouselAtcCallback
             ),
             differ = HomeLeftCarouselProductCardDiffer()
         )
@@ -84,7 +84,7 @@ class HomeLeftCarouselViewHolder (
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
-    override fun bind(element: HomeLeftCarouselUiModel) {
+    override fun bind(element: HomeLeftCarouselAtcUiModel) {
         uiModel = element
         dynamicHeaderCustomView?.setModel(
             model = element.header,
@@ -105,16 +105,16 @@ class HomeLeftCarouselViewHolder (
     }
 
     override fun onSeeAllClicked(appLink: String) {
-        homeLeftCarouselListener?.onSeeMoreClicked(
+        homeLeftCarouselAtcCallback?.onSeeMoreClicked(
             appLink = appLink,
             channelId = uiModel?.id.orEmpty(),
             headerName = uiModel?.header?.title.orEmpty()
         )
     }
 
-    private fun onLeftCarouselImpressed(element: HomeLeftCarouselUiModel) {
+    private fun onLeftCarouselImpressed(element: HomeLeftCarouselAtcUiModel) {
         if (!element.isInvoke) {
-            homeLeftCarouselListener?.onLeftCarouselImpressed(
+            homeLeftCarouselAtcCallback?.onLeftCarouselImpressed(
                 channelId = element.id,
                 headerName = element.header.title
             )
@@ -122,7 +122,7 @@ class HomeLeftCarouselViewHolder (
         }
     }
 
-    private fun setupRecyclerView(element: HomeLeftCarouselUiModel) {
+    private fun setupRecyclerView(element: HomeLeftCarouselAtcUiModel) {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         rvProduct?.layoutManager = layoutManager
         restoreInstanceStateToLayoutManager()
@@ -132,11 +132,11 @@ class HomeLeftCarouselViewHolder (
         setHeightProductCard(element)
     }
 
-    private fun submitList(element: HomeLeftCarouselUiModel) {
+    private fun submitList(element: HomeLeftCarouselAtcUiModel) {
         adapter.submitList(element.productList)
     }
 
-    private fun setHeightProductCard(element: HomeLeftCarouselUiModel) {
+    private fun setHeightProductCard(element: HomeLeftCarouselAtcUiModel) {
         launch {
             try {
                 val productCardModels = element.productList.filterIsInstance<HomeLeftCarouselProductCardUiModel>()
@@ -202,14 +202,14 @@ class HomeLeftCarouselViewHolder (
         rvProduct?.layoutParams = carouselLayoutParams
     }
 
-    private fun setupImage(element: HomeLeftCarouselUiModel) {
+    private fun setupImage(element: HomeLeftCarouselAtcUiModel) {
         ivParallaxImage?.show()
         ivParallaxImage?.layout(0,0,0,0)
         ivParallaxImage?.translationX = 0f
         ivParallaxImage?.alpha = 1f
         ivParallaxImage?.loadImage(element.imageBanner)
         ivParallaxImage?.setOnClickListener {
-            homeLeftCarouselListener?.onLeftCarouselLeftImageClicked(
+            homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
                 appLink = element.imageBannerAppLink,
                 channelId = element.id,
                 headerName = element.header.title

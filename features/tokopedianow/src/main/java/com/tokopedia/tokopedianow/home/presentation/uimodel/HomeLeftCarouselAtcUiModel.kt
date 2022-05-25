@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
-data class HomeLeftCarouselUiModel(
+data class HomeLeftCarouselAtcUiModel(
     val id : String,
     val name :String,
     val header: TokoNowDynamicHeaderUiModel,
@@ -24,6 +24,6 @@ data class HomeLeftCarouselUiModel(
     }
 
     override fun equals(other: Any?): Boolean {
-        return (other as? HomeLeftCarouselUiModel)?.id == id
+        return (other as? HomeLeftCarouselAtcUiModel)?.id == id
     }
 }

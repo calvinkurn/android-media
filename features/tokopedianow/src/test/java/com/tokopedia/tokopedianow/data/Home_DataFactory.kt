@@ -340,8 +340,8 @@ fun createSliderBannerDataModel(
 fun createMixLeftDataAtcModel(
     id: String,
     headerName: String,
-): HomeLeftCarouselUiModel {
-    return HomeLeftCarouselUiModel(
+): HomeLeftCarouselAtcUiModel {
+    return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),

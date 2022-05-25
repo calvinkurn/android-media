@@ -87,7 +87,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -762,8 +762,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }?.apply {
-            val repurchase = layout as HomeLeftCarouselUiModel
+        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
+            val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
             val product = productList.firstOrNull {
                 if (it is HomeLeftCarouselProductCardUiModel) {

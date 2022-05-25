@@ -12,7 +12,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselAtcMapper {
 
@@ -70,7 +70,7 @@ object LeftCarouselAtcMapper {
             )
         }
 
-        val layout = HomeLeftCarouselUiModel(
+        val layout = HomeLeftCarouselAtcUiModel(
             id = channelModel.id,
             name = channelModel.name,
             header = TokoNowDynamicHeaderUiModel(
