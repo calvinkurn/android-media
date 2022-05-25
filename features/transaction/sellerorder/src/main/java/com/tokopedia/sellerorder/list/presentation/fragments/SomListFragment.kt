@@ -40,7 +40,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -105,9 +104,9 @@ import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
@@ -2141,22 +2140,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun handleSomReschedulePickupActivityResult(message: String) {
         context?.let {
-            val formattedMessage = HtmlLinkHelper(it, message).spannedString
-            formattedMessage?.let { description ->
-                val dialog = DialogUnify(
-                    it,
-                    DialogUnify.SINGLE_ACTION,
-                    DialogUnify.WITH_ILLUSTRATION
-                ).apply {
-                    setImageDrawable(R.drawable.ic_som_bulk_success)
-                    setTitle(getString(R.string.title_reschedule_pickup_success_dialog))
-                    setDescription(description)
-                    setPrimaryCTAText(getString(R.string.title_reschedule_pickup_button_dialog))
-                    setPrimaryCTAClickListener {
-                        this.dismiss()
-                    }
-                }
-                dialog.show()
+            ReschedulePickupResultDialog(it).apply {
+                init()
+                setSuccessMessage(message)
+                show()
             }
         }
     }

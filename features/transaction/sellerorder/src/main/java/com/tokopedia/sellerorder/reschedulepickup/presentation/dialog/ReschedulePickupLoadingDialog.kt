@@ -6,17 +6,16 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.sellerorder.databinding.ReschedulePickupLoadingDialogBinding
+import com.tokopedia.sellerorder.databinding.DialogLoadingReschedulePickupBinding
 
 class ReschedulePickupLoadingDialog(private val context: Context) {
 
-    private var onDismissAction: (() -> Unit)? = null
     private var dialogUnify: DialogUnify? = null
 
-    private var binding: ReschedulePickupLoadingDialogBinding? = null
+    private var binding: DialogLoadingReschedulePickupBinding? = null
 
     fun init() {
-        binding = ReschedulePickupLoadingDialogBinding.inflate(LayoutInflater.from(context))
+        binding = DialogLoadingReschedulePickupBinding.inflate(LayoutInflater.from(context))
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
             if (DeviceScreenInfo.isTablet(context)) {
                 dialogMaxWidth = getScreenWidth() / 2
@@ -33,7 +32,6 @@ class ReschedulePickupLoadingDialog(private val context: Context) {
         }
     }
 
-    fun getDialogUnify() = dialogUnify
 
     fun show() {
         dialogUnify?.show()

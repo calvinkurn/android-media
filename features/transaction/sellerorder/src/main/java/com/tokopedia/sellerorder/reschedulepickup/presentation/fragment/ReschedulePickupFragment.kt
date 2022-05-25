@@ -40,7 +40,7 @@ import com.tokopedia.sellerorder.reschedulepickup.di.ReschedulePickupComponent
 import com.tokopedia.sellerorder.reschedulepickup.presentation.bottomsheet.RescheduleDayBottomSheet
 import com.tokopedia.sellerorder.reschedulepickup.presentation.bottomsheet.RescheduleReasonBottomSheet
 import com.tokopedia.sellerorder.reschedulepickup.presentation.bottomsheet.RescheduleTimeBottomSheet
-import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupFailedDialog
+import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
 import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.sellerorder.reschedulepickup.presentation.viewmodel.ReschedulePickupViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -258,10 +258,12 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private fun showErrorDialog(
         bodyText: String,
     ) {
-        ReschedulePickupFailedDialog(requireContext()).apply {
-            init()
-            setErrorMessage(bodyText)
-            show()
+        context?.let {
+            ReschedulePickupResultDialog(it).apply {
+                init()
+                setErrorMessage(bodyText)
+                show()
+            }
         }
     }
 
