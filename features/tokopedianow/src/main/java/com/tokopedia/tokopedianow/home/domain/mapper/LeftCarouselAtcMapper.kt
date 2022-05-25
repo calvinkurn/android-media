@@ -9,9 +9,9 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 
 object LeftCarouselAtcMapper {
@@ -28,7 +28,7 @@ object LeftCarouselAtcMapper {
 
         // Add front space to make distance
         productList.add(
-            HomeLeftCarouselProductCardSpaceUiModel(
+            HomeLeftCarouselAtcProductCardSpaceUiModel(
                 channelId = channelModel.id,
                 channelHeaderName = channelModel.channelHeader.name,
                 appLink = channelModel.channelBanner.applink
@@ -38,7 +38,7 @@ object LeftCarouselAtcMapper {
         // Add mix left carousel products
         channelModel.channelGrids.forEach {
             productList.add(
-                HomeLeftCarouselProductCardUiModel(
+                HomeLeftCarouselAtcProductCardUiModel(
                     id = it.id,
                     brandId = it.brandId,
                     categoryId = it.categoryId,
@@ -61,7 +61,7 @@ object LeftCarouselAtcMapper {
         // Add see more at the end of products
         if(channelModel.channelGrids.size > 1 && channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
-                HomeLeftCarouselProductCardSeeMoreUiModel(
+                HomeLeftCarouselAtcProductCardSeeMoreUiModel(
                     channelId = channelModel.id,
                     channelHeaderName = channelModel.channelHeader.name,
                     appLink = channelModel.channelHeader.applink,

@@ -8,13 +8,13 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeLeftCarouselAtcProductCardViewHolder(
     itemView: View,
-    private var listener: HomeLeftCarouselProductCardListener? = null
-): AbstractViewHolder<HomeLeftCarouselProductCardUiModel>(itemView) {
+    private var listener: HomeLeftCarouselAtcProductCardListener? = null
+): AbstractViewHolder<HomeLeftCarouselAtcProductCardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -23,7 +23,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     private var binding: ItemTokopedianowHomeLeftCarouselAtcProductCardBinding? by viewBinding()
 
-    override fun bind(element: HomeLeftCarouselProductCardUiModel) {
+    override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCardGridView?.apply {
             applyCarousel()
             layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -56,10 +56,10 @@ class HomeLeftCarouselAtcProductCardViewHolder(
         }
     }
 
-    interface HomeLeftCarouselProductCardListener {
-        fun onProductCardAddVariantClicked(product: HomeLeftCarouselProductCardUiModel)
-        fun onProductCardQuantityChanged(product: HomeLeftCarouselProductCardUiModel, quantity: Int)
-        fun onProductCardClicked(position: Int, product: HomeLeftCarouselProductCardUiModel)
-        fun onProductCardImpressed(position: Int, product: HomeLeftCarouselProductCardUiModel)
+    interface HomeLeftCarouselAtcProductCardListener {
+        fun onProductCardAddVariantClicked(product: HomeLeftCarouselAtcProductCardUiModel)
+        fun onProductCardQuantityChanged(product: HomeLeftCarouselAtcProductCardUiModel, quantity: Int)
+        fun onProductCardClicked(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
+        fun onProductCardImpressed(position: Int, product: HomeLeftCarouselAtcProductCardUiModel)
     }
 }

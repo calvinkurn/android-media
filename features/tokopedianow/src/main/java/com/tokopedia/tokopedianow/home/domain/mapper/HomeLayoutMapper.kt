@@ -65,7 +65,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
@@ -391,9 +391,9 @@ object HomeLayoutMapper {
                 filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
-                    val deletedProducts: MutableList<HomeLeftCarouselProductCardUiModel> = mutableListOf()
+                    val deletedProducts: MutableList<HomeLeftCarouselAtcProductCardUiModel> = mutableListOf()
                     layout.productList.forEach {
-                        if((it is HomeLeftCarouselProductCardUiModel) && it.id !in cartProductIds ) {
+                        if((it is HomeLeftCarouselAtcProductCardUiModel) && it.id !in cartProductIds ) {
                             deletedProducts.add(it)
                         }
                     }
@@ -487,7 +487,7 @@ object HomeLayoutMapper {
             val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
-                if (it is HomeLeftCarouselProductCardUiModel) {
+                if (it is HomeLeftCarouselAtcProductCardUiModel) {
                     it.id == productId
                 } else {
                     false
@@ -495,7 +495,7 @@ object HomeLayoutMapper {
             }
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
-            (productUiModel as? HomeLeftCarouselProductCardUiModel)?.productCardModel?.run {
+            (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
                 if (hasVariant()) {
                     copy(variant = variant?.copy(quantity = quantity))
                 } else {
@@ -506,7 +506,7 @@ object HomeLayoutMapper {
                 }
             }?.let {
                 updateItemById(layout.getVisitableId()) {
-                    (productUiModel as? HomeLeftCarouselProductCardUiModel)?.copy(productCardModel = it)?.apply {
+                    (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = it)?.apply {
                         productList[index] = this
                     }
                     copy(layout = layoutUiModel.copy(productList = productList))

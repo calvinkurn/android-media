@@ -17,10 +17,10 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderCustomView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselProductCardTypeFactoryImpl
-import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardAdapter
+import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardTypeFactoryImpl
+import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselAtcProductCardDiffer
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -56,13 +56,13 @@ class HomeLeftCarouselAtcViewHolder (
     private var uiModel: HomeLeftCarouselAtcUiModel? = null
 
     private val adapter by lazy {
-        HomeLeftCarouselProductCardAdapter(
-            baseListAdapterTypeFactory = HomeLeftCarouselProductCardTypeFactoryImpl(
+        HomeLeftCarouselAtcProductCardAdapter(
+            baseListAdapterTypeFactory = HomeLeftCarouselAtcProductCardTypeFactoryImpl(
                 productCardListener = homeLeftCarouselAtcCallback,
                 productCardSeeMoreListener = homeLeftCarouselAtcCallback,
                 productCardSpaceListener = homeLeftCarouselAtcCallback
             ),
-            differ = HomeLeftCarouselProductCardDiffer()
+            differ = HomeLeftCarouselAtcProductCardDiffer()
         )
     }
 
@@ -139,7 +139,7 @@ class HomeLeftCarouselAtcViewHolder (
     private fun setHeightProductCard(element: HomeLeftCarouselAtcUiModel) {
         launch {
             try {
-                val productCardModels = element.productList.filterIsInstance<HomeLeftCarouselProductCardUiModel>()
+                val productCardModels = element.productList.filterIsInstance<HomeLeftCarouselAtcProductCardUiModel>()
                 rvProduct?.setHeightBasedOnProductCardMaxHeight(productCardModelList = productCardModels.map { it.productCardModel })
             }
             catch (throwable: Throwable) {
@@ -235,7 +235,7 @@ class HomeLeftCarouselAtcViewHolder (
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth.orZero())
     }
 
-    interface HomeLeftCarouselListener {
+    interface HomeLeftCarouselAtcListener {
         fun onSeeMoreClicked(appLink: String, channelId: String, headerName: String)
         fun onLeftCarouselImpressed(channelId: String, headerName: String)
         fun onLeftCarouselLeftImageClicked(appLink: String, channelId: String, headerName: String)

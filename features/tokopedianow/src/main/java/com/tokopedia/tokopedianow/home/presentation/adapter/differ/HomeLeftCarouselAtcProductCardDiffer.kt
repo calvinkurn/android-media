@@ -2,9 +2,9 @@ package com.tokopedia.tokopedianow.home.presentation.adapter.differ
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 
-class HomeLeftCarouselProductCardDiffer: DiffUtil.Callback() {
+class HomeLeftCarouselAtcProductCardDiffer: DiffUtil.Callback() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -17,7 +17,7 @@ class HomeLeftCarouselProductCardDiffer: DiffUtil.Callback() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is HomeLeftCarouselProductCardUiModel && newItem is HomeLeftCarouselProductCardUiModel) {
+        return if (oldItem is HomeLeftCarouselAtcProductCardUiModel && newItem is HomeLeftCarouselAtcProductCardUiModel) {
             oldItem.id == newItem.id
         } else {
             false
@@ -35,7 +35,7 @@ class HomeLeftCarouselProductCardDiffer: DiffUtil.Callback() {
     fun create(
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
-    ): HomeLeftCarouselProductCardDiffer {
+    ): HomeLeftCarouselAtcProductCardDiffer {
         this.oldList = oldList
         this.newList = newList
         return this

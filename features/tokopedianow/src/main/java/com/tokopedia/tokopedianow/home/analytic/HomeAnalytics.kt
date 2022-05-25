@@ -157,7 +157,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -493,36 +493,36 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     fun onClickLeftCarouselAddToCart(
         quantity: String,
-        homeLeftCarouselProductCardUiModel: HomeLeftCarouselProductCardUiModel,
+        uiModel: HomeLeftCarouselAtcProductCardUiModel,
         cartId: String
     ) {
         val item = productItemDataLayer(
-            productId = homeLeftCarouselProductCardUiModel.id.toString(),
-            productName = homeLeftCarouselProductCardUiModel.productCardModel.productName,
-            price = homeLeftCarouselProductCardUiModel.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero()
+            productId = uiModel.id.toString(),
+            productName = uiModel.productCardModel.productName,
+            price = uiModel.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero()
         ).apply {
-            putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${homeLeftCarouselProductCardUiModel.recommendationType} - ${homeLeftCarouselProductCardUiModel.channelPageName} - ${homeLeftCarouselProductCardUiModel.channelHeaderName}'}")
+            putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${uiModel.recommendationType} - ${uiModel.channelPageName} - ${uiModel.channelHeaderName}'}")
             putString(KEY_DIMENSION_45, cartId)
             putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
             putString(KEY_QUANTITY, quantity)
-            putString(KEY_SHOP_ID, homeLeftCarouselProductCardUiModel.shopId)
-            putString(KEY_SHOP_NAME, homeLeftCarouselProductCardUiModel.shopName)
+            putString(KEY_SHOP_ID, uiModel.shopId)
+            putString(KEY_SHOP_NAME, uiModel.shopName)
             putString(KEY_SHOP_TYPE, "")
-            putString(KEY_CATEGORY_ID, homeLeftCarouselProductCardUiModel.categoryId)
+            putString(KEY_CATEGORY_ID, uiModel.categoryId)
         }
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART,
             category = EVENT_CATEGORY_HOME_PAGE,
-            label = "${homeLeftCarouselProductCardUiModel.channelId} - ${homeLeftCarouselProductCardUiModel.channelHeaderName} - ${homeLeftCarouselProductCardUiModel.warehouseId}",
+            label = "${uiModel.channelId} - ${uiModel.channelHeaderName} - ${uiModel.warehouseId}",
             items = arrayListOf(item),
-            productId = homeLeftCarouselProductCardUiModel.id.toString(),
+            productId = uiModel.id.toString(),
             pageSource = ""
         ).apply {
-            putString(KEY_CAMPAIGN_CODE, homeLeftCarouselProductCardUiModel.campaignCode)
-            putString(KEY_CHANNEL_ID, homeLeftCarouselProductCardUiModel.channelId)
-            putString(KEY_WAREHOUSE_ID, homeLeftCarouselProductCardUiModel.warehouseId)
+            putString(KEY_CAMPAIGN_CODE, uiModel.campaignCode)
+            putString(KEY_CHANNEL_ID, uiModel.channelId)
+            putString(KEY_WAREHOUSE_ID, uiModel.warehouseId)
         }
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
@@ -642,7 +642,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     fun trackImpressionProductLeftCarousel(
         position: Int,
-        product: HomeLeftCarouselProductCardUiModel
+        product: HomeLeftCarouselAtcProductCardUiModel
     ) {
         val items = arrayListOf(
             productItemDataLayer(
@@ -697,7 +697,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     fun trackClickProductLeftCarousel(
         position: Int,
-        product: HomeLeftCarouselProductCardUiModel
+        product: HomeLeftCarouselAtcProductCardUiModel
     ) {
         val headerName = product.channelHeaderName
 

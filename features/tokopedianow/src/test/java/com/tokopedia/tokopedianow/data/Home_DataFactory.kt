@@ -337,7 +337,7 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createMixLeftDataAtcModel(
+fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
 ): HomeLeftCarouselAtcUiModel {
@@ -345,11 +345,11 @@ fun createMixLeftDataAtcModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
     )
 }
 
-fun createMixLeftDataModel(
+fun createLeftCarouselDataModel(
     id: String,
     groupId: String,
     headerName: String,

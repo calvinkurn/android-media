@@ -113,7 +113,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -1054,7 +1054,7 @@ class TokoNowHomeFragment: Fragment(),
                     it.cartId,
                     it.data
                 )
-                is HomeLeftCarouselProductCardUiModel -> trackLeftCarouselAddToCart(
+                is HomeLeftCarouselAtcProductCardUiModel -> trackLeftCarouselAddToCart(
                     it.quantity,
                     it.cartId,
                     it.data
@@ -1148,10 +1148,10 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselProductCardUiModel) {
+    private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselAtcProductCardUiModel) {
         analytics.onClickLeftCarouselAddToCart(
             quantity = quantity.toString(),
-            homeLeftCarouselProductCardUiModel = product,
+            uiModel = product,
             cartId = cartId,
         )
     }

@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardSeeMoreBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSeeMoreUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeLeftCarouselAtcProductCardSeeMoreViewHolder(
     view: View,
-    private val listener: HomeLeftCarouselProductCardSeeMoreListener? = null
-) : AbstractViewHolder<HomeLeftCarouselProductCardSeeMoreUiModel>(view){
+    private val listener: HomeLeftCarouselAtcProductCardSeeMoreListener? = null
+) : AbstractViewHolder<HomeLeftCarouselAtcProductCardSeeMoreUiModel>(view){
 
     companion object{
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc_product_card_see_more
@@ -19,7 +19,7 @@ class HomeLeftCarouselAtcProductCardSeeMoreViewHolder(
 
     private val binding: ItemTokopedianowHomeLeftCarouselAtcProductCardSeeMoreBinding? by viewBinding()
 
-    override fun bind(element: HomeLeftCarouselProductCardSeeMoreUiModel) {
+    override fun bind(element: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {
         binding?.backgroundBannerMixMore?.setOnClickListener {
             listener?.onProductCardSeeMoreClickListener(element)
         }
@@ -29,7 +29,7 @@ class HomeLeftCarouselAtcProductCardSeeMoreViewHolder(
         }
     }
 
-    interface HomeLeftCarouselProductCardSeeMoreListener {
-        fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselProductCardSeeMoreUiModel)
+    interface HomeLeftCarouselAtcProductCardSeeMoreListener {
+        fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel)
     }
 }

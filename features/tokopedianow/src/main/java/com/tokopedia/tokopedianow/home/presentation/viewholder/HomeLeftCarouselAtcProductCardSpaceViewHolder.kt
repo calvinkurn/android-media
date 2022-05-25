@@ -5,13 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcProductCardSpaceBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeLeftCarouselAtcProductCardSpaceViewHolder(
     itemView: View,
-    private val listener: HomeLeftCarouselProductCardSpaceListener? = null
-): AbstractViewHolder<HomeLeftCarouselProductCardSpaceUiModel>(itemView) {
+    private val listener: HomeLeftCarouselAtcProductCardSpaceListener? = null
+): AbstractViewHolder<HomeLeftCarouselAtcProductCardSpaceUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -20,7 +20,7 @@ class HomeLeftCarouselAtcProductCardSpaceViewHolder(
 
     private val binding: ItemTokopedianowHomeLeftCarouselAtcProductCardSpaceBinding? by viewBinding()
 
-    override fun bind(element: HomeLeftCarouselProductCardSpaceUiModel) {
+    override fun bind(element: HomeLeftCarouselAtcProductCardSpaceUiModel) {
         binding?.root?.setOnClickListener {
             listener?.onProductCardSpaceClicked(
                 appLink = element.appLink,
@@ -30,7 +30,7 @@ class HomeLeftCarouselAtcProductCardSpaceViewHolder(
         }
     }
 
-    interface HomeLeftCarouselProductCardSpaceListener {
+    interface HomeLeftCarouselAtcProductCardSpaceListener {
         fun onProductCardSpaceClicked(appLink: String, channelId: String, headerName: String)
     }
 }
