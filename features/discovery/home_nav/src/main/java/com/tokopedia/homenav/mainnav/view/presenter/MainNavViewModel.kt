@@ -295,17 +295,14 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
                 allCategoriesCache = result
-                if (!isMePageUsingRollenceVariant)  {
-                    val shimmeringDataModel = _mainNavListVisitable.find {
-                        it is InitialShimmerDataModel
-                    }
-                    shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                    findBuStartIndexPosition()?.let {
-                        addWidgetList(result, it)
-                    }
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+            if (!isMePageUsingRollenceVariant)  {
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
             }
             getBuListMenu()
         }
@@ -334,7 +331,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun getBuListMenuOld() {
-        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition()?: INDEX_DEFAULT_ALL_CATEGORY)
+        addWidgetList(listOf(InitialShimmerDataModel()), findBuStartIndexPosition()?: INDEX_DEFAULT_ALL_CATEGORY)
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
