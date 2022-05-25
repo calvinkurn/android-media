@@ -300,9 +300,6 @@ class MainNavViewModel @Inject constructor(
                         it is InitialShimmerDataModel
                     }
                     shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                    findBuStartIndexPosition()?.let {
-                        addWidgetList(result, it)
-                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -334,7 +331,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun getBuListMenuOld() {
-        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition()?: INDEX_DEFAULT_ALL_CATEGORY)
+        addWidgetList(listOf(InitialShimmerDataModel()), findBuStartIndexPosition()?: INDEX_DEFAULT_ALL_CATEGORY)
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
