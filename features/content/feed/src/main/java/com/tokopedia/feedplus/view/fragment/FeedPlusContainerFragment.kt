@@ -642,7 +642,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.addItem(items)
             feed_floating_button.show()
         } else {
-            feed_floating_button.hide()
+            feed_floating_button.show()
         }
     }
 
