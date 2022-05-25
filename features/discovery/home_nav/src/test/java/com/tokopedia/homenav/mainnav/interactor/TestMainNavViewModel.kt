@@ -1471,4 +1471,78 @@ class TestMainNavViewModel {
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList?: mutableListOf()
         Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
     }
+
+    @Test
+    fun `given 1 payment list with enable me page rollence then get order history then show only 1 payment full width`() {
+        val mockList1PaymentOrder = listOf(NavPaymentOrder())
+        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getPaymentOrderNavUseCase.executeOnBackground()
+        } returns mockList1PaymentOrder
+        viewModel = createViewModel(
+            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as TransactionListItemDataModel
+
+        Assert.assertEquals(1, transactionDataModel.orderListModel.paymentList.size)
+        Assert.assertTrue(transactionDataModel.orderListModel.paymentList[0].fullWidth)
+    }
+
+    @Test
+    fun `given 1 order product list with enable me page rollence then get order history then show only 1 order product full width`() {
+        val mockList1OrderProduct = listOf(NavProductOrder())
+        val getUohOrderNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        every {
+            getUohOrderNavUseCase.setIsMePageUsingRollenceVariant(
+                MOCK_IS_ME_PAGE_ROLLENCE_ENABLE
+            )
+        }.answers { }
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getUohOrderNavUseCase.executeOnBackground()
+        } returns mockList1OrderProduct
+        viewModel = createViewModel(
+            getUohOrdersNavUseCase = getUohOrderNavUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as TransactionListItemDataModel
+
+        Assert.assertEquals(1, transactionDataModel.orderListModel.orderList.size)
+        Assert.assertTrue(transactionDataModel.orderListModel.orderList[0].fullWidth)
+    }
+
+    @Test
+    fun `given 1 review product list with enable me page rollence then get order history then show only 1 review product full width`() {
+        val mockList1ReviewOrder = listOf(NavReviewOrder())
+        val getReviewProductUseCase = mockk<GetReviewProductUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+        every { userSession.isLoggedIn() } returns true
+        coEvery {
+            getReviewProductUseCase.executeOnBackground()
+        } returns mockList1ReviewOrder
+        viewModel = createViewModel(
+            getReviewProductUseCase = getReviewProductUseCase,
+            userSession = userSession
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        } as TransactionListItemDataModel
+
+        Assert.assertEquals(1, transactionDataModel.orderListModel.reviewList.size)
+        Assert.assertTrue(transactionDataModel.orderListModel.reviewList[0].fullWidth)
+    }
 }
