@@ -2144,7 +2144,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             val formattedMessage = HtmlLinkHelper(it, message).spannedString
             formattedMessage?.let { description ->
                 val dialog = DialogUnify(
-                    requireContext(),
+                    it,
                     DialogUnify.SINGLE_ACTION,
                     DialogUnify.WITH_ILLUSTRATION
                 ).apply {
