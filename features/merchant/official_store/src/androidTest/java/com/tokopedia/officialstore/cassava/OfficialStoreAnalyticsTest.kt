@@ -129,7 +129,7 @@ class OfficialStoreAnalyticsTest {
 
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+//        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         waitForData()
     }
 
