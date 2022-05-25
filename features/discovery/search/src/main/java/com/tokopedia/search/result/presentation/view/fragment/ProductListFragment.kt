@@ -1884,8 +1884,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
             override fun onApplyButtonClicked(optionList: List<Option>?) {
-                val a = optionList
-
                 optionList?.forEach {
                     setFilterToQuickFilterController(it, it.inputState.toBoolean())
 
