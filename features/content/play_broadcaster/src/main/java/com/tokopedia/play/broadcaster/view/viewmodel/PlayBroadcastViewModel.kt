@@ -733,7 +733,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun showInteractiveGameResultWidget() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
-        }) { }
+        }) { err ->
+            err.printStackTrace()
+        }
     }
 
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {

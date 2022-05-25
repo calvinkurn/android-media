@@ -733,7 +733,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             durationInMs = event.durationInMs,
                         )
                     }
-                    is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget()
+                    PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget()
                     else -> {}
                 }
             }
