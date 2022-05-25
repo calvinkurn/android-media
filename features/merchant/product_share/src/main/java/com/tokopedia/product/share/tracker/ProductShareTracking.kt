@@ -18,6 +18,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_BUSINE
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_CURRENT_SITE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.CUSTOM_SHARE_SHEET
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.SCREENSHOT_SHARE_SHEET
 
@@ -51,7 +52,7 @@ object ProductShareTracking {
             EVENT_VIEW_IRIS_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             eventAction,
-            ""
+            UniversalShareBottomSheet.getUserType()+"-"+productId,
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -62,7 +63,7 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES,
-            label
+            label+"-"+productId
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -73,7 +74,7 @@ object ProductShareTracking {
                 EVENT_CLICK_PDP_SHARING,
                 EVENT_CATEGORY_PDP_SHARING,
                 EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
-                channel)
+                channel+"-"+UniversalShareBottomSheet.getUserType()+"-"+productId)
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
@@ -93,7 +94,7 @@ object ProductShareTracking {
                 EVENT_CLICK_PDP_SHARING,
                 EVENT_CATEGORY_PDP_SHARING,
                 EVENT_ACTION_SHARE_BOTTOMSHEET,
-                "")
+            UniversalShareBottomSheet.getUserType()+"-"+productId)
 
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
