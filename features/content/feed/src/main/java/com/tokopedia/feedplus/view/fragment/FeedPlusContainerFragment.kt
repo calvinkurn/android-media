@@ -468,7 +468,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fab_feed.color = FloatingButtonUnify.COLOR_GREEN
         fab_feed.circleMainMenu.visibility = View.INVISIBLE
 
-        ll_fab_feed.setOnClickListener {
+        feed_floating_button.setOnClickListener {
+            feed_floating_button.shrink()
             fab_feed.menuOpen = !fab_feed.menuOpen
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
@@ -624,9 +625,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         if (items.isNotEmpty()) {
             fab_feed.addItem(items)
-            ll_fab_feed.show()
+            feed_floating_button.show()
         } else {
-            ll_fab_feed.hide()
+            feed_floating_button.hide()
         }
     }
 
@@ -752,17 +753,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun showCreatePostOnBoarding() {
-        ll_fab_feed.addOneTimeGlobalLayoutListener {
+        feed_floating_button.addOneTimeGlobalLayoutListener {
             val location = IntArray(2)
-            ll_fab_feed.getLocationOnScreen(location)
+            feed_floating_button.getLocationOnScreen(location)
 
             val x1 = location[0]
             val y1 = location[1]
-            val x2 = x1 + ll_fab_feed.width
-            val y2 = y1 + ll_fab_feed.height
+            val x2 = x1 + feed_floating_button.width
+            val y2 = y1 + feed_floating_button.height
 
             coachMarkItem = CoachMarkItem(
-                ll_fab_feed,
+                feed_floating_button,
                 getString(R.string.feed_onboarding_create_post_title),
                 getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
@@ -774,7 +775,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized
             && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
-            && ll_fab_feed.visibility == View.VISIBLE) {
+            && feed_floating_button.visibility == View.VISIBLE) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }

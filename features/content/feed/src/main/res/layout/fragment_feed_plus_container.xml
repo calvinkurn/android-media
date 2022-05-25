@@ -124,30 +124,13 @@
         app:srcCompat="@drawable/ic_feed_post_plus"
         />
 
-    <LinearLayout
-        android:id="@+id/ll_fab_feed"
+    <com.tokopedia.feedplus.view.customview.FeedFloatingButton
+        android:id="@+id/feed_floating_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/unify_space_16"
-        android:background="@drawable/bg_fab_feed"
-        >
+        />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl3"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="ADD" />
-
-<!--        <com.tokopedia.unifyprinciples.Typography-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Buat Konten"-->
-<!--            />-->
-
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
