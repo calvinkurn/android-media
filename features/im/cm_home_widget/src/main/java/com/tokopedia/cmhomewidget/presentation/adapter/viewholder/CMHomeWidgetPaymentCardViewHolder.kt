@@ -22,7 +22,7 @@ class CMHomeWidgetPaymentCardViewHolder(
         setBankGatewayName(paymentData.gatewayName)
         setAccountNo(paymentData.accountNumber)
         setTotalPayment(paymentData.totalPayment)
-        setActionButtonText(paymentData.actionButton?.get(0)?.actionButtonText)
+        setActionButtonText(paymentData.actionButton?.get(FIRST_INDEX)?.actionButtonText)
         setOnClickListeners(paymentData)
         if (paymentData.isWidgetClosePress) {
             binding.timer.onPause
@@ -81,7 +81,7 @@ class CMHomeWidgetPaymentCardViewHolder(
 
     private fun setDividerMargin() {
         val param = binding.vCmHomeWidgetDivider.layoutParams as ViewGroup.MarginLayoutParams
-        param.marginStart = 180
+        param.marginStart = DIVIDER_MARGIN_START
         binding.vCmHomeWidgetDivider.layoutParams = param
     }
 
@@ -97,9 +97,10 @@ class CMHomeWidgetPaymentCardViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_cm_home_widget_payment_card
-        val divider = R.id.v_cm_home_widget_divider
         const val RATIO_WIDTH = 0.689
         const val SINGLE_ITEM_RATIO_WIDTH = 0.943
+        const val FIRST_INDEX = 0
+        const val DIVIDER_MARGIN_START = 180
     }
 
 }

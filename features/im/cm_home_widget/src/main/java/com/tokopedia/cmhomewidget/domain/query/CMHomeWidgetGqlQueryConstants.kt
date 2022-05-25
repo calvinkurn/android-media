@@ -30,7 +30,7 @@ const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
                     app_link
                 }
             }
-            payment {
+            payments {
                 image_url
                 gateway_name
                 account_number

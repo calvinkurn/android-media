@@ -51,9 +51,9 @@ data class CMHomeWidgetData(
     @SerializedName("products")
     @Expose
     val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
-    @SerializedName("payment")
+    @SerializedName("payments")
     @Expose
-    val cMHomeWidgetPaymentData: CMHomeWidgetPaymentData?,
+    val cMHomeWidgetPaymentData: List<CMHomeWidgetPaymentData>?,
     @SerializedName("card")
     @Expose
     val cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData?

@@ -22,6 +22,7 @@ import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
 import com.tokopedia.cmhomewidget.presentation.adapter.decorator.CMHomeWidgetItemDecorator
+import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetPaymentCardViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 import javax.inject.Inject
@@ -53,6 +54,8 @@ class CMHomeWidget @JvmOverloads constructor(
     private var isShowShimmer = false
 
     private var cmHomeWidgetCloseClickListener : CMHomeWidgetCloseClickListener? = null
+
+    private val paymentDataIndex = CMHomeWidgetPaymentCardViewHolder.FIRST_INDEX
 
     init {
         initAttrs(context, attrs)
@@ -126,7 +129,7 @@ class CMHomeWidget @JvmOverloads constructor(
             itemsList.addAll(it)
         }
         cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-            itemsList.add(it)
+            itemsList.add(it[paymentDataIndex])
         }
         cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
             itemsList.add(it)
@@ -135,7 +138,7 @@ class CMHomeWidget @JvmOverloads constructor(
             binding.root.visibility = View.VISIBLE
             adapter.get().loadData(itemsList)
             cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-                it.widgetDataItemSize = itemsList.size
+                it[paymentDataIndex].widgetDataItemSize = itemsList.size
             }
         } else {
             adapter.get().clearAllElements()
@@ -148,7 +151,7 @@ class CMHomeWidget @JvmOverloads constructor(
         this.cmHomeWidgetCloseClickListener = cmHomeWidgetCloseClickListener
         binding.ivCmHomeWidgetClose.setOnClickListener {
             cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-                it.isWidgetClosePress = true
+                it[paymentDataIndex].isWidgetClosePress = true
                 binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
             }
             cmHomeWidgetData?.let {
