@@ -8,5 +8,6 @@
     <dimen name="nav_user_profile_icon_setting_size">20dp</dimen>
     <dimen name="nav_user_profile_icon_retry_size">25dp</dimen>
     <dimen name="nav_card_order_transaction_me_page">254dp</dimen>
+    <dimen name="nav_card_me_page_size">246dp</dimen>
 
 </resources>

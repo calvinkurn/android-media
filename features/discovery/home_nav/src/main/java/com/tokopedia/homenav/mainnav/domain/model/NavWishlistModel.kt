@@ -13,5 +13,6 @@ data class NavWishlistModel(
     val category: List<Category> = listOf(),
     val categoryBreadcrumb: String = "",
     val variant: String = "",
-    val wishlistId: String = ""
+    val wishlistId: String = "",
+    var fullWidth: Boolean = false
 )

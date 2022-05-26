@@ -23,7 +23,7 @@ class EmptyWishlistViewHolder(itemView: View): AbstractViewHolder<EmptyStateWish
         @LayoutRes
         val LAYOUT = R.layout.holder_empty_wishlist
         private const val EMPTY_IMAGE_LINK =
-            "https://images.tokopedia.net/img/android/home/navigation/home_nav_empty_data.png"
+            "https://images.tokopedia.net/img/android/home_nav/home_nav_empty_wishlist.png"
     }
 
     override fun bind(emptyStateWishlistDataModel: EmptyStateWishlistDataModel) {

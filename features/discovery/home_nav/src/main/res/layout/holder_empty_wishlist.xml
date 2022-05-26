@@ -18,10 +18,10 @@
             app:typographyType="display_3"
             android:gravity="center_vertical"
             android:layout_marginVertical="20dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="92dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/wishlist_empty_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_weight="1"/>
@@ -31,11 +31,11 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:contentDescription="@string/content_desc_image_empty_wishlist"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -43,10 +43,10 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:loader_corner_radius="8dp"
             app:loader_type="rect" />

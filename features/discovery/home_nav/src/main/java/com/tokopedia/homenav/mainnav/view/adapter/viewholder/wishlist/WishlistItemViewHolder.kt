@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -14,7 +15,6 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<WishlistModel>(itemView) {
@@ -24,28 +24,26 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
         val LAYOUT = R.layout.holder_wishlist
     }
 
-    override fun bind(element: WishlistModel, payloads: MutableList<Any>) {
-        bind(element)
-    }
+    override fun bind(element: WishlistModel) {
+        setLayoutFullWidth(element)
 
-    override fun bind(wishlistModel: WishlistModel) {
-        itemView.addOnImpressionListener(wishlistModel) {
+        itemView.addOnImpressionListener(element) {
             mainNavListener.putEEToTrackingQueue(
                 TrackingTransactionSection.getImpressionOnWishlist(
                     userId = mainNavListener.getUserId(),
                     position = adapterPosition,
-                    wishlistModel = wishlistModel.navWishlistModel
+                    wishlistModel = element.navWishlistModel
                 )
             )
         }
 
-        binding?.textProductName?.text = wishlistModel.navWishlistModel.productName
+        binding?.textProductName?.text = element.navWishlistModel.productName
 
-        if (wishlistModel.navWishlistModel.imageUrl.isNotEmpty()) {
+        if (element.navWishlistModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.imageWishlist
             val shimmer = binding?.imageWishlistShimmer
             Glide.with(itemView.context)
-                .load(wishlistModel.navWishlistModel.imageUrl)
+                .load(element.navWishlistModel.imageUrl)
                 .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                 .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                 .dontAnimate()
@@ -69,21 +67,29 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
                     }
                 })
         }
-        binding?.textPriceValue?.text = wishlistModel.navWishlistModel.priceFmt
+        binding?.textPriceValue?.text = element.navWishlistModel.priceFmt
+        setLabel(element)
+
+        binding?.containerWishlistItem?.setOnClickListener {
+            mainNavListener.onWishlistItemClicked(element.navWishlistModel, adapterPosition)
+        }
+    }
+
+    private fun setLabel(element: WishlistModel){
         when {
-            wishlistModel.navWishlistModel.discountPercentageFmt.isNotEmpty() -> {
+            element.navWishlistModel.discountPercentageFmt.isNotEmpty() -> {
                 binding?.textSlashedPrice?.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    text = wishlistModel.navWishlistModel.originalPriceFmt
+                    text = element.navWishlistModel.originalPriceFmt
                     show()
                 }
                 binding?.labelDiscountPercent?.apply {
-                    text = wishlistModel.navWishlistModel.discountPercentageFmt
+                    text = element.navWishlistModel.discountPercentageFmt
                     show()
                 }
                 binding?.labelCashback?.invisible()
             }
-            wishlistModel.navWishlistModel.cashback -> {
+            element.navWishlistModel.cashback -> {
                 binding?.textSlashedPrice?.invisible()
                 binding?.labelDiscountPercent?.invisible()
                 binding?.labelCashback?.visible()
@@ -94,9 +100,15 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
                 binding?.labelCashback?.invisible()
             }
         }
+    }
 
-        binding?.containerWishlistItem?.setOnClickListener {
-            mainNavListener.onWishlistItemClicked(wishlistModel.navWishlistModel, adapterPosition)
+    private fun setLayoutFullWidth(element: WishlistModel) {
+        val layoutParams = binding?.cardWishlist?.layoutParams
+        if (element.navWishlistModel.fullWidth) {
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            layoutParams?.width = itemView.resources.getDimension(R.dimen.nav_card_me_page_size).toInt()
         }
+        binding?.cardWishlist?.layoutParams = layoutParams
     }
 }
