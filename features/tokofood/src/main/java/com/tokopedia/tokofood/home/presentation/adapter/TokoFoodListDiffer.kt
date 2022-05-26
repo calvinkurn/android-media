@@ -5,6 +5,7 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
 
 class TokoFoodListDiffer: BaseTokoFoodDiffer() {
 
@@ -22,6 +23,8 @@ class TokoFoodListDiffer: BaseTokoFoodDiffer() {
         } else if (oldItem is TokoFoodMerchantListUiModel && newItem is TokoFoodMerchantListUiModel){
             oldItem.id == newItem.id
         } else if (oldItem is TokoFoodCategoryLoadingStateUiModel && newItem is TokoFoodCategoryLoadingStateUiModel){
+            oldItem.id == newItem.id
+        } else if (oldItem is TokoFoodProgressBarUiModel && newItem is TokoFoodProgressBarUiModel) {
             oldItem.id == newItem.id
         } else oldItem == newItem
     }

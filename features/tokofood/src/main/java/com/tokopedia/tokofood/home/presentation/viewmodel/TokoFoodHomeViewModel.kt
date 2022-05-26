@@ -76,19 +76,19 @@ class TokoFoodHomeViewModel @Inject constructor(
             val isSuccess = withContext(dispatchers.io) {
                 keroEditAddressUseCase.execute(addressId, latitude, longitude)
             }
-            _updatePinPointState.value = isSuccess
+            _updatePinPointState.postValue(isSuccess)
         }){
-            _errorMessage.value = it.message
+            _errorMessage.postValue(it.message)
         }
     }
 
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+                _eligibleForAnaRevamp.postValue(Success(it.eligibleForRevampAna))
             },
             {
-                _eligibleForAnaRevamp.value = Fail(it)
+                _eligibleForAnaRevamp.postValue(Fail(it))
             },
             AddressConstant.ANA_REVAMP_FEATURE_ID
         )
@@ -109,7 +109,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodLayoutState.LOADING
         )
-        _homeLayoutList.value = Success(data)
+        _homeLayoutList.postValue(Success(data))
     }
 
     fun getNoPinPoinState() {
@@ -119,7 +119,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodLayoutState.HIDE
         )
-        _homeLayoutList.value = Success(data)
+        _homeLayoutList.postValue(Success(data))
     }
 
     fun getNoAddressState() {
@@ -129,7 +129,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodLayoutState.HIDE
         )
-        _homeLayoutList.value = Success(data)
+        _homeLayoutList.postValue(Success(data))
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -148,7 +148,7 @@ class TokoFoodHomeViewModel @Inject constructor(
                 state = TokoFoodLayoutState.SHOW
             )
 
-            _homeLayoutList.value = Success(data)
+            _homeLayoutList.postValue(Success(data))
 
             }){
 
@@ -170,7 +170,7 @@ class TokoFoodHomeViewModel @Inject constructor(
                     state = TokoFoodLayoutState.UPDATE
                 )
 
-                _homeLayoutList.value = Success(data)
+                _homeLayoutList.postValue(Success(data))
             }
         }){
 

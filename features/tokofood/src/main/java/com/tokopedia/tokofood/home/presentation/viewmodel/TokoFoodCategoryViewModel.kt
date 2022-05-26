@@ -9,7 +9,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addLoadingCategoryIntoList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.usecase.coroutines.Result
@@ -42,7 +44,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
             items = categoryLayoutItemList,
             state = TokoFoodLayoutState.LOADING
         )
-        _categoryLayoutList.value = Success(data)
+        _categoryLayoutList.postValue(Success(data))
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
@@ -67,7 +69,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
                 state = TokoFoodLayoutState.SHOW
             )
 
-            _categoryLayoutList.value = Success(data)
+            _categoryLayoutList.postValue(Success(data))
         }){
 
         }
@@ -76,6 +78,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
                           sortBy: Int = 0) {
         launchCatchError(block = {
+            showProgressBar()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
@@ -88,18 +91,17 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
             setPageKey(categoryResponse.data.nextPageKey)
             categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            categoryLayoutItemList.removeProgressBar()
             val data = TokoFoodListUiModel(
                 items = categoryLayoutItemList,
                 state = TokoFoodLayoutState.LOAD_MORE
             )
 
-            _categoryLoadMore.value = Success(data)
+            _categoryLoadMore.postValue(Success(data))
         }){
 
         }
     }
-
-
 
     fun onScrollProductList(index: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
                             sortBy: Int = 0) {
@@ -117,5 +119,14 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
     private fun setPageKey(pageNew:String) {
         pageKey = pageNew
+    }
+
+    private fun showProgressBar(){
+        categoryLayoutItemList.addProgressBar()
+        val data = TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.UPDATE
+        )
+        _categoryLayoutList.postValue(Success(data))
     }
 }

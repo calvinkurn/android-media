@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -70,6 +71,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private val loadMoreListener by lazy { createLoadMoreListener() }
 
     companion object {
+        private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val PAGE_TITLE_PARAM = "pageTitle"
         private const val OPTION_PARAM = "option"
         private const val CUISINE_PARAM = "cuisine"
@@ -209,6 +211,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
             }
+            rvCategory?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
         }
     }
 
@@ -257,9 +260,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
-        rvCategory?.post {
-            adapter.submitList(data.items)
-        }
+        adapter.submitList(data.items)
     }
 
     private fun loadLayout() {
@@ -306,8 +307,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onScrollProductList() {
-        val layoutManager = rvCategory?.layoutManager as? CustomLinearLayoutManager
-        val index = layoutManager?.findLastCompletelyVisibleItemPosition()
+        val layoutManager = rvCategory?.layoutManager as? LinearLayoutManager
+        val index = layoutManager?.findLastVisibleItemPosition().orZero()
         val itemCount = layoutManager?.itemCount.orZero()
         localCacheModel?.let {
             viewModel.onScrollProductList(
