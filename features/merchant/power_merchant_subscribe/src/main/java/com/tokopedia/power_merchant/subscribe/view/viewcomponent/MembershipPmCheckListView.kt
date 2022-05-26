@@ -132,10 +132,10 @@ class MembershipPmCheckListView : LinearLayout {
 
     data class Data(
         val shopScoreThreshold: Int,
-        val orderThreshold: Int,
+        val orderThreshold: Long,
         val netIncomeThreshold: Long,
         val shopScore: Int,
-        val totalOrder: Int,
+        val totalOrder: Long,
         val netIncome: Long
     ) {
         fun isEligibleShopScore() = shopScore >= shopScoreThreshold

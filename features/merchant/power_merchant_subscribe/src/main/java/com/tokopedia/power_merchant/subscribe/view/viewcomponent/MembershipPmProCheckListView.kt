@@ -88,9 +88,9 @@ class MembershipPmProCheckListView : LinearLayout {
     }
 
     data class Data(
-        val orderThreshold: Int,
+        val orderThreshold: Long,
         val netIncomeThreshold: Long,
-        val totalOrder: Int,
+        val totalOrder: Long,
         val netIncome: Long
     ) {
         fun isEligibleOrder() = totalOrder >= orderThreshold
