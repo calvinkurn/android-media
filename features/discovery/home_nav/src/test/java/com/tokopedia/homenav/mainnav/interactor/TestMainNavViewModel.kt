@@ -1545,4 +1545,44 @@ class TestMainNavViewModel {
         Assert.assertEquals(1, transactionDataModel.orderListModel.reviewList.size)
         Assert.assertTrue(transactionDataModel.orderListModel.reviewList[0].fullWidth)
     }
+
+    @Test
+    fun `given 1 wishlist with enable me page rollence then get wishlist should show only 1 wishlist full width`() {
+        val mockList1Wishlist = listOf(NavWishlistModel())
+        val getWishlistNavUseCase = mockk<GetWishlistNavUseCase>()
+        coEvery {
+            getWishlistNavUseCase.executeOnBackground()
+        } returns mockList1Wishlist
+        viewModel = createViewModel(
+            getWishlistNavUseCase = getWishlistNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val wishlistDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is WishlistDataModel
+        } as WishlistDataModel
+
+        Assert.assertEquals(1, wishlistDataModel.wishlist.size)
+        Assert.assertTrue(wishlistDataModel.wishlist[0].fullWidth)
+    }
+
+    @Test
+    fun `given 1 favorite shop with enable me page rollence then get favorite shop should show only 1 favorite shop full width`() {
+        val mockList1FavShop = listOf(NavFavoriteShopModel())
+        val getFavoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
+        coEvery {
+            getFavoriteShopsNavUseCase.executeOnBackground()
+        } returns mockList1FavShop
+        viewModel = createViewModel(
+            getFavoriteShopsNavUseCase = getFavoriteShopsNavUseCase
+        )
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
+        viewModel.getMainNavData(true)
+        val favoriteShopListDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is FavoriteShopListDataModel
+        } as FavoriteShopListDataModel
+
+        Assert.assertEquals(1, favoriteShopListDataModel.favoriteShops.size)
+        Assert.assertTrue(favoriteShopListDataModel.favoriteShops[0].fullWidth)
+    }
 }
