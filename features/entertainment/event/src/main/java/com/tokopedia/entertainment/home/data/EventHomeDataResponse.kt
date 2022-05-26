@@ -40,7 +40,9 @@ data class EventHomeDataResponse(
 
         data class EventHome(
                 @SerializedName("layout")
-                val layout: MutableList<Layout> = mutableListOf()
+                val layout: MutableList<Layout> = mutableListOf(),
+                @SerializedName("ticker")
+                val ticker: Ticker = Ticker()
         ) {
             data class Layout(
                     @SerializedName("app_url")
@@ -94,6 +96,13 @@ data class EventHomeDataResponse(
                         val minStartDate: String = ""
                 )
             }
+
+            data class Ticker(
+                    @SerializedName("devices")
+                    val devices: String = "",
+                    @SerializedName("message")
+                    val message: String = ""
+            )
         }
 
         data class EventLocationSearch(

@@ -5,6 +5,7 @@ import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
 import dagger.Component
@@ -28,5 +29,5 @@ interface LoginComponent {
     fun inject(service: RegisterPushNotifService)
     fun inject(getDefaultChosenAddressService: GetDefaultChosenAddressService?)
     fun inject(registerPushNotificationWorker: RegisterPushNotificationWorker)
-
+    fun inject(bottomSheet: NeedHelpBottomSheet)
 }

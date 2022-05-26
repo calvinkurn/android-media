@@ -39,11 +39,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
+import com.tokopedia.people.*
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
-import com.tokopedia.people.UserProfileUtils
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
 import com.tokopedia.people.itemDecoration.GridSpacingItemDecoration
@@ -316,11 +313,6 @@ class UserProfileFragment : BaseDaggerFragment(),
                     }
                     is Success -> {
                         mAdapter.onSuccess(it.data)
-//                        it.data.playGetContentSlot.data.forEach {
-//                            it.items.forEach {
-//                                setData(it)
-//                            }
-//                        }
                     }
                     is ErrorMessage -> {
                         mAdapter.onError()
@@ -329,58 +321,6 @@ class UserProfileFragment : BaseDaggerFragment(),
             }
         })
 
-//    private fun setData(item: PlayPostContentItem) {
-//
-//        var live = if (item.isLive) {
-//            PlayWidgetChannelType.Live
-//        } else {
-//            PlayWidgetChannelType.Vod
-//        }
-//        val playWidgetTotalView = PlayWidgetTotalView("", false)
-//        val lvFormatVal = item.stats.view.formatted.toIntOrNull()
-//        if (lvFormatVal == null || lvFormatVal == 0) {
-//            playWidgetTotalView.isVisible = false
-//        } else {
-//            playWidgetTotalView.isVisible = true
-//            playWidgetTotalView.totalViewFmt = item.stats.view.formatted
-//        }
-//
-//        val reminderType = if(item.configurations.reminder.isSet){
-//            PlayWidgetReminderType.NotReminded
-//        }
-//        else{
-//            PlayWidgetReminderType.Reminded
-//        }
-//
-//        val config = PlayWidgetConfigUiModel.Empty
-//        val backgroundUiModel = PlayWidgetBackgroundUiModel.Empty
-//        val playWidgetUiModel = PlayWidgetUiModel(title = item.title, actionTitle = "", actionAppLink = "", config = config, background = backgroundUiModel, items = listOf(
-//            PlayWidgetChannelUiModel(
-//                channelId = "",
-//                title = item.title,
-//                appLink = item.appLink,
-//                startTime = item.startTime,
-//                totalView = playWidgetTotalView,
-//                promoType = PlayWidgetPromoType.getByType(
-//                    "",
-//                    ""
-//                ),
-//                reminderType = reminderType,
-//                partner = PlayWidgetPartnerUiModel("", ""),
-//                video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
-//                channelType = PlayWidgetChannelType.getByValue(item.airTime),
-//                hasGiveaway = false,
-//                share = PlayWidgetShareUiModel("", false),
-//                performanceSummaryLink = "",
-//                poolType = "",
-//                recommendationType = "",
-//                hasAction = false,
-//                channelTypeTransition = PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.getByValue(""))
-//            )
-//        ), isActionVisible = false)
-//        playWidgetLargeView?.setData(playWidgetUiModel)
-//
-//    }
 
     private fun addDoFollowedObserver() =
         mPresenter.profileDoFollowLiveData.observe(viewLifecycleOwner, Observer {
@@ -629,10 +569,13 @@ class UserProfileFragment : BaseDaggerFragment(),
             }
 
             if (isFollowed) {
+                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_NOT_FOLLOWED)
+
                 userProfileTracker?.clickUnfollow(userId, profileUserId == userId)
                 mPresenter.doUnFollow(userIdEnc)
                 updateToUnFollowUi()
             } else {
+                activity?.intent?.putExtra(EXTRA_FOLLOW_UNFOLLOW_STATUS, EXTRA_VALUE_IS_FOLLOWED)
                 userProfileTracker?.clickFollow(userId, profileUserId == userId)
                 mPresenter.doFollow(userIdEnc)
                 updateToFollowUi()
@@ -1012,6 +955,11 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val APPLINK_PROFILE = "tokopedia://setting/profile"
         const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN = 1
+        const val REQUEST_CODE_USER_PROFILE = 99
+        const val EXTRA_POSITION_OF_PROFILE = "profile_position"
+        const val EXTRA_FOLLOW_UNFOLLOW_STATUS = "follow_unfollow_status"
+        const val EXTRA_VALUE_IS_FOLLOWED = "is_followed"
+        const val EXTRA_VALUE_IS_NOT_FOLLOWED = "is_not_followed"
         private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0

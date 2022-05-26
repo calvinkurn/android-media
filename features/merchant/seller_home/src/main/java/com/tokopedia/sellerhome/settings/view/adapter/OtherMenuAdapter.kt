@@ -120,7 +120,7 @@ class OtherMenuAdapter(
         MenuItemUiModel(
             title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care)
                 .orEmpty(),
-            clickApplink = ApplinkConst.CONTACT_US_NATIVE,
+            clickApplink = ApplinkConst.TOKOPEDIA_CARE_HELP,
             eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
             iconUnify = IconUnify.CALL_CENTER
         ),
