@@ -41,6 +41,11 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
     private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare2"
 
+    private lateinit var textSubtitle : Typography
+    private lateinit var buttonTokopediaCare : UnifyButton
+    private lateinit var contentListRV : RecyclerView
+
+
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
@@ -85,33 +90,44 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private fun showBottomSheet(
         subtitle: String
     ) {
-
         val viewBottomSheetPage =
             View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
-                val textSubtitle : Typography = this.findViewById(R.id.text_subtitle)
-                val buttonTokopediaCare : UnifyButton = this.findViewById(R.id.btn_tokopedia_care)
-                val contentListRV : RecyclerView = this.findViewById(R.id.content_list)
-
-                textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
-                buttonTokopediaCare.setOnClickListener {
-                    chatbotAnalytics.get().eventOnClickTokopediaCare()
-                    goToHelpPage()
-                }
+                initViews(this)
+                setSubtitle(subtitle)
                 initRecyclerViewFromContentList(context,contentListRV)
-
+                setOnClickListener()
             }
         bottomSheetPage.apply {
             showCloseIcon = true
             setChild(viewBottomSheetPage)
             showKnob = false
         }
+
+        supportFragmentManager?.let {
+            bottomSheetPage.show(it, "")
+        }
+    }
+
+    private fun initViews(view : View) {
+        textSubtitle = view.findViewById(R.id.text_subtitle)
+        buttonTokopediaCare = view.findViewById(R.id.btn_tokopedia_care)
+        contentListRV= view.findViewById(R.id.content_list)
+    }
+
+    private fun setOnClickListener() {
+        buttonTokopediaCare.setOnClickListener {
+            chatbotAnalytics.get().eventOnClickTokopediaCare()
+            goToHelpPage()
+        }
+
         bottomSheetPage.setCloseClickListener {
             chatbotAnalytics.get().eventOnClickCancelBottomSheet()
             goToContactUs()
         }
-        supportFragmentManager?.let {
-            bottomSheetPage.show(it, "")
-        }
+    }
+
+    private fun setSubtitle(subtitle: String) {
+        textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
     }
 
     private fun initRecyclerViewFromContentList(

@@ -1,15 +1,22 @@
 package com.tokopedia.chatbot.domain.usecase
 
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
+import com.tokopedia.chatbot.domain.gqlqueries.GQL_INBOX_LIST
+import com.tokopedia.chatbot.domain.gqlqueries.InboxTicketListQuery
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+@GqlQuery("TicketListQuery", GQL_INBOX_LIST)
 class TicketListContactUsUsecase @Inject constructor(
-    private val userSession: UserSessionInterface
-) {
+    private val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository
+)  : GraphqlUseCase<InboxTicketListResponse>(graphqlRepository) {
 
     suspend fun getTicketList(): GraphqlResponse {
         val gql = MultiRequestGraphqlUseCase()
@@ -22,7 +29,29 @@ class TicketListContactUsUsecase @Inject constructor(
         return gql.executeOnBackground()
     }
 
-    private fun getParams(): Map<String, Any>? {
+    fun getTicketList(onSuccess : (InboxTicketListResponse) -> Unit,
+                      onError : (Throwable) -> Unit
+    ) {
+        try {
+            this.setTypeClass(InboxTicketListResponse::class.java)
+            this.setRequestParams(getParams())
+            this.setGraphqlQuery(InboxTicketListQuery())
+
+            this.execute(
+                { result ->
+                    onSuccess(result)
+                }, { error ->
+                    onError(error)
+                }
+            )
+
+        } catch (throwable : Throwable) {
+            onError(throwable)
+        }
+    }
+
+
+    private fun getParams(): Map<String, Any?> {
         return mapOf(
             USERID to userSession.userId,
             PAGE to pageNumber,

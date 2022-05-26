@@ -9,7 +9,13 @@ import dagger.Component
  * @author by nisie on 12/12/18.
  */
 @ChatbotScope
-@Component(modules = arrayOf(ChatbotModule::class,ChatViewModelModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(
+    modules = arrayOf(
+        ChatbotModule::class,
+        ChatViewModelModule::class
+    ),
+    dependencies = arrayOf(BaseAppComponent::class)
+)
 interface ChatbotComponent {
 
     fun inject(chatbotFragment: ChatbotFragment)
