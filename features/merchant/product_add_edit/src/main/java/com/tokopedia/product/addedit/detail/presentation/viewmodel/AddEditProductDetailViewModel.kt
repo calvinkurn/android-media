@@ -659,7 +659,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         annotationCategoryList.forEach {
             val selectedValue = it.data.firstOrNull { value -> value.selected }
             selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id.toString(), name, it.variant)
+                val specificationInputModel = SpecificationInputModel(id, name, it.variant)
                 selectedSpecificationList.add(specificationInputModel)
             }
         }

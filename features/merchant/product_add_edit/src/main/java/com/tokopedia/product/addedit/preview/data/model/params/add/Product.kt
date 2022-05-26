@@ -11,6 +11,7 @@ import java.math.BigInteger
 data class Product (
         @SerializedName("combination")
         var combination: List<Int> = emptyList(),
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
         var price: BigInteger = 0.toBigInteger(),
         @SerializedName("sku")

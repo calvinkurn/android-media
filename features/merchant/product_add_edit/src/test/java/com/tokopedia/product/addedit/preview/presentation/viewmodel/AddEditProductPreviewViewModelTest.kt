@@ -734,14 +734,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa",
                         data = listOf(
-                                Values(1, "Soto", false, ""),
-                                Values(1, "Bawang", true, ""))
+                                Values("1", "Soto", false, ""),
+                                Values("1", "Bawang", true, ""))
                 )
         )
 
@@ -785,8 +785,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", false, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", false, ""),
+                                Values("1", "Seedap", false, ""))
                 )
         )
 

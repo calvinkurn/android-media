@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize
-@SuppressLint("Invalid Data Type")
 data class Wholesale(
     @SerializedName("minQty")
     var minQty: Int = 0,
+    @SuppressLint("Invalid Data Type") // price currently using Integer at server
     @SerializedName("price")
     var price: BigInteger = 0.toBigInteger()
 ): Parcelable

@@ -25,14 +25,14 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
             AnnotationCategoryData(
                     variant = "Merek",
                     data = listOf(
-                            Values(1, "Indomie", true, ""),
-                            Values(2, "Seedap", false, ""))
+                            Values("1", "Indomie", true, ""),
+                            Values("2", "Seedap", false, ""))
             ),
             AnnotationCategoryData(
                     variant = "Rasa",
                     data = listOf(
-                            Values(3, "Soto", false, ""),
-                            Values(4, "Bawang", true, ""))
+                            Values("3", "Soto", false, ""),
+                            Values("4", "Bawang", true, ""))
             )
     )
 

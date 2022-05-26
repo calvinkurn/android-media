@@ -11,6 +11,7 @@ import java.math.BigInteger
 data class ProductAddParam (
         @SerializedName("productName")
         var productName: String? = null,
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
         var price: BigInteger? = null,
         @SerializedName("priceCurrency")
