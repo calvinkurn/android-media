@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addLoadingCategoryIntoList
@@ -14,6 +15,7 @@ import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCateg
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -78,7 +80,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
     fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
                           sortBy: Int = 0) {
         launchCatchError(block = {
-            showProgressBar()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
@@ -103,14 +104,18 @@ class TokoFoodCategoryViewModel @Inject constructor(
         }
     }
 
-    fun onScrollProductList(index: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
+    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
                             sortBy: Int = 0) {
         val lastItemIndex = itemCount - 1
-        val containsLastItemIndex = index
-        val scrolledToLastItem = containsLastItemIndex == lastItemIndex
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero()
+                && itemCount.isMoreThanZero())
         val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
 
-        if(scrolledToLastItem && hasNextPage) {
+        if(scrolledToLastItem && hasNextPage && !isLoading) {
+            showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,
                 sortBy = sortBy)
