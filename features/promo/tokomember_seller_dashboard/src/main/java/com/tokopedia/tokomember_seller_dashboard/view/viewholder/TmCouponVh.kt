@@ -27,6 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
@@ -77,22 +78,16 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
 
         }
 
-        optionMenu.setOnClickListener {
-            item.voucherId?.let { it1 ->
-                val actions = Actions()
-                val tripleDots = arrayListOf<TripleDotsItem?>()
-                tripleDots.add(TripleDotsItem("Ubah Kupon", EDIT))
-                tripleDots.add(TripleDotsItem("Hapus Kupon", DELETE))
-                tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
-                actions.tripleDots = tripleDots
-                TokomemberOptionsMenuBottomsheet.show(Gson().toJson(actions), fragmentManager, tmCouponActions, it1)
-            }
-        }
-
         if(item.remainingQuota == item.voucherQuota){
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
-                item.voucherId?.let { it1 -> tmCouponActions.option(ADD_QUOTA, it1) }
+                item.voucherId?.let { it1 -> item.voucherTypeFormatted?.let { it2 ->
+                    item.voucherQuota?.let { it3 ->
+                        tmCouponActions.option(ADD_QUOTA, it1,
+                            it2, it3
+                        )
+                    }
+                } }
             }
         }
         else{
@@ -105,17 +100,49 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
             COUPON_PROCESSING ->{
             }
             COUPON_NOT_STARTED ->{
-//                optionMenu.setOnClickListener {
-//                    item.voucherId?.toInt()?.let { it1 ->
-//                        TokomemberOptionsMenuBottomsheet.show(Gson().toJson(item.actions), shopId,
-//                            it1, fragmentManager, programActions)
-//                    }
-//                }
+                optionMenu.setOnClickListener {
+                    item.voucherId?.let { it1 ->
+                        val actions = Actions()
+                        val tripleDots = arrayListOf<TripleDotsItem?>()
+                        tripleDots.add(TripleDotsItem("Ubah Kupon", EDIT))
+                        tripleDots.add(TripleDotsItem("Hapus Kupon", DELETE))
+                        actions.tripleDots = tripleDots
+                        item.voucherTypeFormatted?.let { it2 ->
+                            item.voucherQuota?.let { it3 ->
+                                TokomemberOptionsMenuBottomsheet.show(Gson().toJson(actions), fragmentManager, tmCouponActions, it1,
+                                    it2,
+                                    it3
+                                )
+                            }
+                        }
+                    }
+                }
                 tvCouponState.text = "Belum Aktif"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
             }
             COUPON_ON_GOING ->{
+                optionMenu.setOnClickListener {
+                    item.voucherId?.let { it1 ->
+                        val actions = Actions()
+                        val tripleDots = arrayListOf<TripleDotsItem?>()
+                        tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
+                        /*
+                            Not in phase 1
+                            tripleDots.add(TripleDotsItem("Bakikan", SHARE))
+                        */
+                        tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
+                        actions.tripleDots = tripleDots
+                        item.voucherTypeFormatted?.let { it2 ->
+                            item.voucherQuota?.let { it3 ->
+                                TokomemberOptionsMenuBottomsheet.show(Gson().toJson(actions), fragmentManager, tmCouponActions, it1,
+                                    it2,
+                                    it3
+                                )
+                            }
+                        }
+                    }
+                }
                 ivCoupon.loadImage(R.drawable.ic_tm_member_golden)
                 tvCouponState.text = "Kupon Aktif"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
@@ -125,6 +152,24 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 viewStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+            }
+        }
+        if(item.voucherStatus == COUPON_ON_GOING && item.remainingQuota == 0){
+            optionMenu.setOnClickListener {
+                item.voucherId?.let { it1 ->
+                    val actions = Actions()
+                    val tripleDots = arrayListOf<TripleDotsItem?>()
+                    tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
+                    actions.tripleDots = tripleDots
+                    item.voucherTypeFormatted?.let { it2 ->
+                        item.voucherQuota?.let { it3 ->
+                            TokomemberOptionsMenuBottomsheet.show(Gson().toJson(actions), fragmentManager, tmCouponActions, it1,
+                                it2,
+                                it3
+                            )
+                        }
+                    }
+                }
             }
         }
     }

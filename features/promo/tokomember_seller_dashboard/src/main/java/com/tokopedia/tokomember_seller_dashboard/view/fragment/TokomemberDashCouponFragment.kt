@@ -16,14 +16,17 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -33,10 +36,13 @@ import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.*
 import javax.inject.Inject
 
 
-class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback{
+class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
+    TmCouponListRefreshCallback {
 
     private var voucherStatus = "1,2,3,4"
     private var voucherType = 0
+    private var voucherIdToUpdate = 0
+    private var voucherStatusToUpdate = ""
     private var selectedType = "0"
     private lateinit var selectedStatus: StringBuilder
     private var selectedStatusList = arrayListOf<String>()
@@ -244,6 +250,17 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
             }
         })
+
+        tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    it.data.getInitiateVoucherPage?.data?.token?.let { it1 -> tmCouponViewModel.updateStatus(voucherId = voucherIdToUpdate, status = voucherStatusToUpdate, token = it1) }
+                }
+                is Fail ->{
+
+                }
+            }
+        })
     }
 
     override fun getScreenName() = ""
@@ -266,22 +283,18 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
     }
 
-    override fun option(type: String, voucherId: String) {
+    override fun option(type: String, voucherId: String, couponType: String, currentQuota: Int) {
         when(type){
             DELETE ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-                dialog?.setTitle("Yakin batalkan program?")
+                dialog?.setTitle("Yakin batalkan Kupon?")
                 dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
                 dialog?.setPrimaryCTAText("Lanjutkan")
-                dialog?.setSecondaryCTAText("Batalkan Program")
+                dialog?.setSecondaryCTAText("Batalkan Kupon")
                 dialog?.setPrimaryCTAClickListener {
-//                          val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
-//                        intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
-//                        intent.putExtra(BUNDLE_SHOP_ID, shopId)
-//                        intent.putExtra(BUNDLE_PROGRAM_ID, programId)
-//                        intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
-//                        requireContext().startActivity(intent)
-                        Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                        voucherIdToUpdate = voucherId.toInt()
+                        voucherStatusToUpdate = DELETE
+                        tmCouponViewModel.getInitialCouponData("update", couponType)
                         dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
@@ -290,14 +303,37 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             EDIT ->{
-
+                TokomemberDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON)
             }
             STOP ->{
-
+                val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan Kupon?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Kupon")
+                dialog?.setPrimaryCTAClickListener {
+                    voucherIdToUpdate = voucherId.toInt()
+                    voucherStatusToUpdate = STOP
+                    tmCouponViewModel.getInitialCouponData("update", couponType)
+                    dialog.dismiss()
+                }
+                dialog?.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog?.show()
             }
             ADD_QUOTA ->{
-                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId)
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this)
             }
+        }
+    }
+
+    override fun refreshCouponList() {
+        if(selectedType.toInt() == 0){
+            tmCouponViewModel.getCouponList(voucherStatus, null)
+        }
+        else {
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
         }
     }
 

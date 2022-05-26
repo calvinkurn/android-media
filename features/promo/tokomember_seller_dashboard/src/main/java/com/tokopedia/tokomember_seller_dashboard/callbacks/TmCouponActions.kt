@@ -1,5 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.callbacks
 
 interface TmCouponActions {
-    fun option(type: String, voucherId: String)
+    fun option(type: String, voucherId: String, couponType: String, currentQuota: Int)
 }

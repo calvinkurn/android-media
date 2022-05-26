@@ -119,6 +119,17 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 } ?:  it.startActivity(intent)
             }
         }
+
+        fun openActivity(
+            activity: Activity?,
+            screenType: Int,
+        ){
+            activity?.let {
+                val intent = Intent(it, TokomemberDashCreateActivity::class.java)
+                intent.putExtra(BUNDLE_PROGRAM, screenType)
+                it.startActivity(intent)
+            }
+        }
     }
 
     override fun openFragment(screenType: Int, bundle: Bundle) {
