@@ -23,32 +23,24 @@ class ChatbotViewModel @Inject constructor(
         get() = _ticketList
 
     fun getTicketList(){
-//        launchCatchError(
-//            block = {
-//                val response = ticketListContactUsUseCase.getTicketList()
-//                val ticketList = response.getData<InboxTicketListResponse>(InboxTicketListResponse::class.java)
-//                _ticketList.value = Success(ticketList)
-//            },
-//            onError = {
-//                _ticketList.value = Fail(it)
-//            }
-//        )
-
         ticketListContactUsUseCase.cancelJobs()
         ticketListContactUsUseCase.getTicketList(
             ::onTicketListDataSuccess,
             ::onTicketListDataFail
         )
-
     }
 
     fun onTicketListDataSuccess(inboxTicketListResponse: InboxTicketListResponse) {
-        _ticketList.value = Success(inboxTicketListResponse)
+        _ticketList.postValue(Success(inboxTicketListResponse))
     }
 
     fun onTicketListDataFail(throwable: Throwable) {
         _ticketList.value = Fail(throwable)
     }
 
+    override fun onCleared() {
+        ticketListContactUsUseCase.cancelJobs()
+        super.onCleared()
+    }
 
 }

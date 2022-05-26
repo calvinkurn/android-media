@@ -36,15 +36,16 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModelFactory : ViewModelProvider.Factory
 
-    lateinit var viewModel : ChatbotViewModel
+    private val viewModel : ChatbotViewModel by lazy(LazyThreadSafetyMode.NONE){
+        ViewModelProvider(this,viewModelFactory).get(ChatbotViewModel::class.java)
+    }
 
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
-    private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare2"
+    private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
 
     private lateinit var textSubtitle : Typography
     private lateinit var buttonTokopediaCare : UnifyButton
     private lateinit var contentListRV : RecyclerView
-
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -56,7 +57,6 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         setContentView(R.layout.activity_chatbot_inbox_migration)
 
         initInjector()
-        initViewModel()
         startObservingViewModels()
 
         viewModel.getTicketList()
@@ -168,9 +168,6 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         adapter.setList(newList)
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProvider(this,viewModelFactory).get(ChatbotViewModel::class.java)
-    }
 
     private fun initInjector() {
         val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
