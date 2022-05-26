@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -85,18 +87,22 @@ abstract class BaseCreateReviewCustomView<VB: ViewBinding> @JvmOverloads constru
     }
 
     fun animateShow() {
-        hideAnimator?.cancel()
-        val measuredWrapHeight = calculateWrapHeight()
-        val animator = arrayOf(createHeightAnimator(end = measuredWrapHeight), createAlphaAnimator(
-            MAX_ALPHA
-        ))
-        showAnimator = createAnimatorSet(*animator)
+        Handler(Looper.getMainLooper()).post {
+            hideAnimator?.cancel()
+            val measuredWrapHeight = calculateWrapHeight()
+            val animator = arrayOf(createHeightAnimator(end = measuredWrapHeight), createAlphaAnimator(
+                MAX_ALPHA
+            ))
+            showAnimator = createAnimatorSet(*animator)
+        }
     }
 
     fun animateHide() {
-        showAnimator?.cancel()
-        val animator = arrayOf(createHeightAnimator(end = Int.ZERO), createAlphaAnimator(MIN_ALPHA))
-        hideAnimator = createAnimatorSet(*animator)
+        Handler(Looper.getMainLooper()).post {
+            showAnimator?.cancel()
+            val animator = arrayOf(createHeightAnimator(end = Int.ZERO), createAlphaAnimator(MIN_ALPHA))
+            hideAnimator = createAnimatorSet(*animator)
+        }
     }
 
     fun setBaseCustomViewListener(newListener: Listener) {

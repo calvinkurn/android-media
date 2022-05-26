@@ -3,6 +3,8 @@ package com.tokopedia.review.feature.createreputation.presentation.viewholder
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -81,29 +83,35 @@ abstract class BaseCreateReviewViewHolder<VB : ViewBinding, V : BaseCreateReview
     }
 
     fun animateShow(duration: Long, onStart: () -> Unit, onComplete: () -> Unit) {
-        hideAnimator?.cancel()
-        addAnimator?.cancel()
-        val measuredWrapHeight = calculateWrapHeight()
-        val animator = arrayOf(createHeightAnimator(end = measuredWrapHeight), createAlphaAnimator(
-            MAX_ALPHA
-        ))
-        showAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        Handler(Looper.getMainLooper()).post {
+            hideAnimator?.cancel()
+            addAnimator?.cancel()
+            val measuredWrapHeight = calculateWrapHeight()
+            val animator = arrayOf(createHeightAnimator(end = measuredWrapHeight), createAlphaAnimator(
+                MAX_ALPHA
+            ))
+            showAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        }
     }
 
     fun animateHide(duration: Long, onStart: () -> Unit, onComplete: () -> Unit) {
-        showAnimator?.cancel()
-        addAnimator?.cancel()
-        val animator = arrayOf(createHeightAnimator(end = Int.ZERO), createAlphaAnimator(MIN_ALPHA))
-        hideAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        Handler(Looper.getMainLooper()).post {
+            showAnimator?.cancel()
+            addAnimator?.cancel()
+            val animator = arrayOf(createHeightAnimator(end = Int.ZERO), createAlphaAnimator(MIN_ALPHA))
+            hideAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        }
     }
 
     fun animateAdd(duration: Long, onStart: () -> Unit, onComplete: () -> Unit) {
-        hideAnimator?.cancel()
-        showAnimator?.cancel()
-        val measuredWrapHeight = calculateWrapHeight()
-        val animator = arrayOf(createHeightAnimator(Int.ZERO, measuredWrapHeight), createAlphaAnimator(
-            MAX_ALPHA
-        ))
-        addAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        Handler(Looper.getMainLooper()).post {
+            hideAnimator?.cancel()
+            showAnimator?.cancel()
+            val measuredWrapHeight = calculateWrapHeight()
+            val animator = arrayOf(createHeightAnimator(Int.ZERO, measuredWrapHeight), createAlphaAnimator(
+                MAX_ALPHA
+            ))
+            addAnimator = createAnimatorSet(*animator, duration = duration, onStart = onStart, onComplete = onComplete)
+        }
     }
 }
