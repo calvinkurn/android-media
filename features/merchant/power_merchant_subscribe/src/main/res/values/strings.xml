@@ -244,4 +244,5 @@
     <string name="pm_membership_benefit_special_release"><![CDATA[Rilisan Spesial sebanyak <b>%1$d kali</b>/bulan]]></string>
     <string name="pm_membership_benefit_product_bundling"><![CDATA[<b>%1$d</b> kuota Paket Bundling]]></string>
     <string name="pm_membership_shop_score_threshold">Batas min. skor %1$d</string>
+    <string name="pm_shop_label">TOKOMU</string>
 </resources>
