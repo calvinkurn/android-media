@@ -36,4 +36,5 @@
     <string name="content_desc_imageShopRating">image rating</string>
     <string name="content_desc_imageShop">image toko</string>
     <string name="content_desc_imageTopAds">image topads</string>
+    <string name="content_desc_videoPlay">button play</string>
 </resources>

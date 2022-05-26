@@ -247,8 +247,15 @@ class AddEditProductShipmentFragment:
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
                 val shipperServicesIdsInt = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
-                shipperServicesIdsInt?.forEach { ids ->
-                    shipperServicesIds?.add(ids.toLong())
+                if (shipperServicesIdsInt != null) {
+                    shipperServicesIds = arrayListOf()
+                    shipperServicesIdsInt.forEach { ids ->
+                        shipperServicesIds?.add(ids.toLong())
+                    }
+                    shipperServicesIds?.let {
+                        shipmentConventionalAdapter.setProductActiveState(it)
+                        shipmentOnDemandAdapter.setProductActiveState(it)
+                    }
                 }
             }
         }
@@ -593,14 +600,14 @@ class AddEditProductShipmentFragment:
             radioStandarShipment?.isChecked = true
             radioCustomShipment?.isChecked = false
             isCPLActivated = true
-            shipmentRadioValue(true)
             updateShipmentDataStandard(data)
+            shipmentRadioValue(true)
         } else {
             radioStandarShipment?.isChecked = false
             radioCustomShipment?.isChecked = true
             isCPLActivated = false
-            shipmentRadioValue(false)
             updateShipmentDataCustom(data)
+            shipmentRadioValue(false)
         }
     }
 

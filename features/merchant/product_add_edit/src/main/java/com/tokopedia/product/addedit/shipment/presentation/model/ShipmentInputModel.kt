@@ -20,5 +20,5 @@ data class ShipmentInputModel(
 
 @Parcelize
 data class CPLModel(
-    var shipmentServicesIds: ArrayList<Long>? = arrayListOf()
+    var shipmentServicesIds: ArrayList<Long>? = null
 ) : Parcelable

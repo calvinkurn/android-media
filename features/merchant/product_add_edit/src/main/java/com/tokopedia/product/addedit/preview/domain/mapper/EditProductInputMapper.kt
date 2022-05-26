@@ -95,10 +95,8 @@ class EditProductInputMapper @Inject constructor() {
         }
     }
 
-    private fun mapCPLData(cpl: CPLModel): CPLData {
-        return CPLData(
-            cpl.shipmentServicesIds
-        )
+    private fun mapCPLData(cpl: CPLModel): CPLData? {
+        return cpl.shipmentServicesIds?.let {  CPLData(it) }
     }
 
     private fun mapVariantSelections(selections: List<SelectionInputModel>) = selections.map {
