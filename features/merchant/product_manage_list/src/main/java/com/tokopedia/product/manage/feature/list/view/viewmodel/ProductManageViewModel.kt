@@ -86,8 +86,8 @@ class ProductManageViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
-    private val getDataSourceUseCase: GetUploadStatusUseCase,
-    private val clearDataSourceUseCase: ClearUploadStatusUseCase,
+    private val getUploadStatusUseCase: GetUploadStatusUseCase,
+    private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -186,11 +186,11 @@ class ProductManageViewModel @Inject constructor(
 
 
     init {
-        initGetDataSource()
+        initGetUploadStatus()
     }
 
-    private fun initGetDataSource() = launch {
-        getDataSourceUseCase
+    private fun initGetUploadStatus() = launch {
+        getUploadStatusUseCase
             .getUploadStatus()
             .flowOn(dispatchers.io)
             .collect {
@@ -198,9 +198,9 @@ class ProductManageViewModel @Inject constructor(
             }
     }
 
-    fun clearDataSource() {
+    fun clearUploadStatus() {
         launchCatchError(block = {
-            clearDataSourceUseCase.clearUploadStatus()
+            clearUploadStatusUseCase.clearUploadStatus()
         }) { /* do nothing */ }
     }
 

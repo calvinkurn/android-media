@@ -4,9 +4,6 @@ import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.reposito
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
 import com.tokopedia.product.manage.common.feature.uploadstatus.util.UploadStatusMapper.convertToModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 

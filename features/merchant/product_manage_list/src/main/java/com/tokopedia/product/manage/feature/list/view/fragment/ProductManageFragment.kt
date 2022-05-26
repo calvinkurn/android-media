@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -732,7 +733,7 @@ open class ProductManageFragment :
                 shouldScrollToTop = true
                 getFiltersTab(withDelay = true)
                 getProductList(withDelay = true, isRefresh = true)
-                viewModel.clearDataSource()
+                viewModel.clearUploadStatus()
             }
         }
     }
