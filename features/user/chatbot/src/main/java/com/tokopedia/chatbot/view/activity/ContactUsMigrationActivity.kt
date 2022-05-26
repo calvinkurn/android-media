@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.chatbot.ChatbotConstant.CONTACT_US_APPLINK
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
@@ -41,7 +41,6 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
-    private val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
 
     private lateinit var textSubtitle : Typography
     private lateinit var buttonTokopediaCare : UnifyButton
@@ -63,12 +62,12 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun startObservingViewModels() {
-        viewModel.ticketList.observe(this, Observer {
-            when(it) {
+        viewModel.ticketList.observe(this) {
+            when (it) {
                 is Success -> handleSuccess(it.data)
                 is Fail -> handleGQLError(it.throwable)
             }
-        })
+        }
     }
 
     private fun handleGQLError(throwable: Throwable) {
@@ -76,10 +75,10 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun handleSuccess(data: InboxTicketListResponse) {
-        val noticeStatus =  data?.ticket?.TicketData?.notice?.isActive
-        if(noticeStatus==true){
-            val notice = data?.ticket?.TicketData?.notice
-            val subtitle = notice?.subtitle
+        val showBottomSheet =  data?.ticket?.TicketData?.notice?.isActive
+        if(showBottomSheet==true){
+            val noticeData = data?.ticket?.TicketData?.notice
+            val subtitle = noticeData?.subtitle
             showBottomSheet(subtitle)
         }
         else{
@@ -90,13 +89,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private fun showBottomSheet(
         subtitle: String
     ) {
-        val viewBottomSheetPage =
-            View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
-                initViews(this)
-                setSubtitle(subtitle)
-                initRecyclerViewFromContentList(context,contentListRV)
-                setOnClickListener()
-            }
+        val viewBottomSheetPage = initBottomSheet(subtitle)
+
         bottomSheetPage.apply {
             showCloseIcon = true
             setChild(viewBottomSheetPage)
@@ -106,6 +100,16 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         supportFragmentManager?.let {
             bottomSheetPage.show(it, "")
         }
+    }
+
+    private fun initBottomSheet(subtitle: String): View? {
+        val view = View.inflate(this, R.layout.bottom_sheet_go_to_help, null).apply {
+            initViews(this)
+            setSubtitle(subtitle)
+            initRecyclerViewFromContentList(context,contentListRV)
+            setOnClickListener()
+        }
+        return view
     }
 
     private fun initViews(view : View) {
