@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
     android:paddingBottom="8dp"
-    tools:background="#CC000000">
+    tools:background="@color/review_dms_fragment_review_detail_common_background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_review_detail_product_variant"

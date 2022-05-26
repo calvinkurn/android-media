@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="#CC000000"
+    android:background="@color/review_dms_fragment_review_detail_common_background"
     android:paddingBottom="12dp"
     tools:viewBindingIgnore="true">
 

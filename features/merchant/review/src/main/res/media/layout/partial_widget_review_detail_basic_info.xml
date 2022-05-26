@@ -8,7 +8,7 @@
     android:paddingTop="4dp"
     android:paddingEnd="0dp"
     android:paddingBottom="8dp"
-    tools:background="#CC000000">
+    tools:background="@color/review_dms_fragment_review_detail_common_background">
 
     <com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailRating
         android:id="@+id/review_detail_rating"

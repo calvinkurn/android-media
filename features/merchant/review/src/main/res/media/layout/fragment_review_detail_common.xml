@@ -8,7 +8,7 @@
         android:id="@+id/layout_review_media_gallery_review_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#CC000000"
+        android:background="@color/review_dms_fragment_review_detail_common_background"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailBasicInfo

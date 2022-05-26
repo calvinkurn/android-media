@@ -68,7 +68,7 @@
         android:id="@+id/overlay_review_video_player_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N700_68" />
+        android:background="@color/review_dms_n700_68" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_review_video_player"
