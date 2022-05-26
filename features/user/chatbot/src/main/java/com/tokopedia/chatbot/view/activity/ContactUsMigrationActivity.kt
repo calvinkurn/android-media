@@ -64,19 +64,16 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private fun startObservingViewModels() {
         viewModel.ticketList.observe(this) {
             when (it) {
-                is Success -> handleSuccess(it.data)
-                is Fail -> handleGQLError(it.throwable)
+                is Success -> onSuccessGetTicketData(it.data)
+                is Fail -> goToContactUs()
             }
         }
     }
 
-    private fun handleGQLError(throwable: Throwable) {
-        goToContactUs()
-    }
 
-    private fun handleSuccess(data: InboxTicketListResponse) {
-        val showBottomSheet =  data?.ticket?.TicketData?.notice?.isActive
-        if(showBottomSheet==true){
+    private fun onSuccessGetTicketData(data: InboxTicketListResponse) {
+        val shouldShowBottomSheet =  data?.ticket?.TicketData?.notice?.isActive
+        if(shouldShowBottomSheet==true){
             val noticeData = data?.ticket?.TicketData?.notice
             val subtitle = noticeData?.subtitle
             showBottomSheet(subtitle)
