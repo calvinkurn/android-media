@@ -9,12 +9,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.*
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 /**
@@ -109,29 +104,6 @@ internal class ProductTagCardViewHolder private constructor() {
                     false,
                 ),
                 onSelected = onSelected,
-            )
-        }
-    }
-
-    internal class Loading(
-        binding: ItemProductTagLoadingListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = Loading(
-                ItemProductTagLoadingListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
             )
         }
     }

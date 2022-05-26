@@ -6,11 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.*
-import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
@@ -64,29 +62,6 @@ internal class ShopCardViewHolder private constructor() {
                     false,
                 ),
                 onSelected = onSelected,
-            )
-        }
-    }
-
-    internal class Loading(
-        binding: ItemProductTagLoadingListBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            val layoutParams = itemView.layoutParams
-            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-                layoutParams.isFullSpan = true
-            }
-        }
-
-        companion object {
-
-            fun create(parent: ViewGroup) = Loading(
-                ItemProductTagLoadingListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                ),
             )
         }
     }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.ProductTagCardViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
@@ -87,19 +88,19 @@ internal class ProductTagCardAdapterDelegate private constructor() {
     internal class Loading : TypedAdapterDelegate<
             ProductTagCardAdapter.Model.Loading,
             ProductTagCardAdapter.Model,
-            ProductTagCardViewHolder.Loading>(
+            LoadingViewHolder>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: ProductTagCardAdapter.Model.Loading,
-            holder: ProductTagCardViewHolder.Loading
+            holder: LoadingViewHolder
         ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): ProductTagCardViewHolder.Loading {
-            return ProductTagCardViewHolder.Loading.create(parent)
+        ): LoadingViewHolder {
+            return LoadingViewHolder.create(parent)
         }
     }
 

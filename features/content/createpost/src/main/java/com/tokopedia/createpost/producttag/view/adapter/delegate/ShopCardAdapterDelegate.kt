@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.MyShopProductViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.ShopCardViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
@@ -43,19 +44,19 @@ internal class ShopCardAdapterDelegate private constructor() {
     internal class Loading : TypedAdapterDelegate<
             ShopCardAdapter.Model.Loading,
             ShopCardAdapter.Model,
-            ShopCardViewHolder.Loading>(
+            LoadingViewHolder>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: ShopCardAdapter.Model.Loading,
-            holder: ShopCardViewHolder.Loading
+            holder: LoadingViewHolder
         ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): ShopCardViewHolder.Loading {
-            return ShopCardViewHolder.Loading.create(parent)
+        ): LoadingViewHolder {
+            return LoadingViewHolder.create(parent)
         }
     }
 
