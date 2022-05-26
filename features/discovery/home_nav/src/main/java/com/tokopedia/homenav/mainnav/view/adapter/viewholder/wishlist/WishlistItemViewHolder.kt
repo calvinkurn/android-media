@@ -68,6 +68,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
                 })
         }
         binding?.textPriceValue?.text = element.navWishlistModel.priceFmt
+        setLabel(element)
 
         binding?.containerWishlistItem?.setOnClickListener {
             mainNavListener.onWishlistItemClicked(element.navWishlistModel, adapterPosition)
