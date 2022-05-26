@@ -1264,6 +1264,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             imageAdapter.setImageReviewData(imageListData)
             binding?.reviewFormPhotosRv?.apply {
                 adapter = imageAdapter
+                layoutManager = GridLayoutManager(
+                    context,
+                    CreateReviewViewModel.MAX_IMAGE_COUNT,
+                    GridLayoutManager.VERTICAL,
+                    false
+                )
                 show()
             }
             binding?.reviewFormAddPhoto?.hide()
