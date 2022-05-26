@@ -5,22 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftListAdapter
-import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftItemModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import java.util.*
+import com.tokopedia.shop.flash_sale.common.customcomponent.ModalBottomSheet
 
-class DraftListBottomSheet: BottomSheetUnify() {
+class DraftDeleteBottomSheet: ModalBottomSheet() {
 
     companion object {
         const val TAG = "Tag New User Specification Bottom Sheet"
     }
 
     init {
-        setTitle("Draft campaign penuh")
         setCloseClickListener {
             dismiss()
         }
@@ -37,18 +31,8 @@ class DraftListBottomSheet: BottomSheetUnify() {
 
     private fun initChildLayout() {
         overlayClickDismiss = true
-        val contentView: View? = View.inflate(context, R.layout.ssfs_bottomsheet_draft_list , null)
-        val rvDraft: RecyclerView? = contentView?.findViewById(R.id.rvDraft)
+        val contentView: View? = View.inflate(context, R.layout.ssfs_bottomsheet_draft_list, null)
         setChild(contentView)
-
-        rvDraft?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvDraft?.adapter = DraftListAdapter().apply {
-            setItems(listOf(
-                DraftItemModel("1", "title 1", "desc1", Date(), Date()),
-                DraftItemModel("2", "title 2", "desc2", Date(), Date()),
-            ))
-        }
-
     }
 
     fun show(manager: FragmentManager?) {
