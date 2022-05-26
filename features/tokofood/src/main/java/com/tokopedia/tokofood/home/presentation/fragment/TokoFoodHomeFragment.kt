@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -100,6 +102,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             differ = TokoFoodListDiffer(),
         )
     }
+
+    private val loadMoreListener by lazy { createLoadMoreListener() }
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
@@ -343,6 +347,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
+            removeAllScrollListener()
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
             }
@@ -453,9 +458,33 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun removeAllScrollListener() {
+        rvHome?.removeOnScrollListener(loadMoreListener)
     }
 
     private fun addScrollListener() {
+        rvHome?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                onScrollProductList()
+            }
+        }
+    }
+
+    private fun onScrollProductList() {
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
+        val index = layoutManager?.findLastVisibleItemPosition().orZero()
+        val itemCount = layoutManager?.itemCount.orZero()
+        localCacheModel?.let {
+            viewModel.onScrollProductList(
+                index,
+                itemCount,
+                localCacheModel = it
+            )
+        }
     }
 
     private fun onRefreshLayout() {

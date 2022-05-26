@@ -320,5 +320,4 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             )
         }
     }
-
 }

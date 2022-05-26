@@ -28,7 +28,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
     val layoutList: LiveData<Result<TokoFoodListUiModel>>
         get() = _categoryLayoutList
-
     val loadMore: LiveData<Result<TokoFoodListUiModel>>
         get() = _categoryLoadMore
 
@@ -36,7 +35,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
     private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
 
     private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
-
     private var pageKey = ""
 
     fun getLoadingState() {
@@ -58,9 +56,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
                     option = option,
-                    brandId = "",
                     sortBy = sortBy,
-                    orderById = 0,
                     pageKey = pageKey)
             }
 
@@ -72,33 +68,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
             )
 
             _categoryLayoutList.postValue(Success(data))
-        }){
-
-        }
-    }
-
-    fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0) {
-        launchCatchError(block = {
-            val categoryResponse = withContext(dispatchers.io) {
-                tokoFoodMerchantListUseCase.execute(
-                    localCacheModel = localCacheModel,
-                    option = option,
-                    brandId = "",
-                    sortBy = sortBy,
-                    orderById = 0,
-                    pageKey = pageKey)
-            }
-
-            setPageKey(categoryResponse.data.nextPageKey)
-            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
-            categoryLayoutItemList.removeProgressBar()
-            val data = TokoFoodListUiModel(
-                items = categoryLayoutItemList,
-                state = TokoFoodLayoutState.LOAD_MORE
-            )
-
-            _categoryLoadMore.postValue(Success(data))
         }){
 
         }
@@ -134,4 +103,30 @@ class TokoFoodCategoryViewModel @Inject constructor(
         )
         _categoryLayoutList.postValue(Success(data))
     }
+
+    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
+                                 sortBy: Int = 0) {
+        launchCatchError(block = {
+            val categoryResponse = withContext(dispatchers.io) {
+                tokoFoodMerchantListUseCase.execute(
+                    localCacheModel = localCacheModel,
+                    option = option,
+                    sortBy = sortBy,
+                    pageKey = pageKey)
+            }
+
+            setPageKey(categoryResponse.data.nextPageKey)
+            categoryLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            categoryLayoutItemList.removeProgressBar()
+            val data = TokoFoodListUiModel(
+                items = categoryLayoutItemList,
+                state = TokoFoodLayoutState.LOAD_MORE
+            )
+
+            _categoryLoadMore.postValue(Success(data))
+        }){
+
+        }
+    }
+
 }

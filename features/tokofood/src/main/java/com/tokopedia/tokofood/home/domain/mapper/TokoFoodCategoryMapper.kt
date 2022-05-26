@@ -16,8 +16,8 @@ object TokoFoodCategoryMapper {
     }
 
     fun MutableList<Visitable<*>>.addProgressBar() {
-        val loadingLayout = TokoFoodProgressBarUiModel(id = TokoFoodHomeStaticLayoutId.PROGRESS_BAR)
-        add(loadingLayout)
+        val progressBarLayout = TokoFoodProgressBarUiModel(id = TokoFoodHomeStaticLayoutId.PROGRESS_BAR)
+        add(progressBarLayout)
     }
 
     fun MutableList<Visitable<*>>.removeProgressBar() {

@@ -23,6 +23,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
@@ -41,6 +42,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingState
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
 
 object TokoFoodHomeMapper {
 
@@ -87,6 +89,29 @@ object TokoFoodHomeMapper {
                         add(item)
                     }
                 }
+        }
+    }
+
+    fun MutableList<TokoFoodItemUiModel>.addLoadingCategoryIntoList() {
+        val loadingLayout = TokoFoodCategoryLoadingStateUiModel(id = TokoFoodHomeStaticLayoutId.LOADING_STATE)
+        add(TokoFoodItemUiModel(loadingLayout, TokoFoodLayoutItemState.LOADED))
+    }
+
+    fun MutableList<TokoFoodItemUiModel>.addProgressBar() {
+        val progressBarLayout = TokoFoodProgressBarUiModel(id = TokoFoodHomeStaticLayoutId.PROGRESS_BAR)
+        add(TokoFoodItemUiModel(progressBarLayout, TokoFoodLayoutItemState.LOADED))
+    }
+
+    fun MutableList<TokoFoodItemUiModel>.removeProgressBar() {
+        removeAll { it.layout is TokoFoodProgressBarUiModel }
+    }
+
+    fun MutableList<TokoFoodItemUiModel>.mapCategoryLayoutList(
+        responses: List<Merchant>
+    ){
+        responses.forEach {
+            val merchant = TokoFoodMerchantListUiModel(it.id, it)
+            add(TokoFoodItemUiModel(merchant, TokoFoodLayoutItemState.LOADED))
         }
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -15,14 +16,20 @@ import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoPinPointState
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.getVisitableId
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapDynamicIcons
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapUSPData
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeItem
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.setStateToLoading
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
@@ -33,6 +40,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -70,6 +78,11 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
+    private var pageKey = PAGE_KEY_MERCHANT
+
+    companion object {
+        private const val PAGE_KEY_MERCHANT = "1"
+    }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
         launchCatchError(block = {
@@ -177,6 +190,52 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
+    fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
+        val lastItemIndex = itemCount - 1
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero()
+                && itemCount.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = homeLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
+
+        if(scrolledToLastItem && hasNextPage && !isLoading) {
+            showProgressBar()
+            getMerchantList(localCacheModel = localCacheModel)
+        }
+    }
+
+    private fun getMerchantList(localCacheModel: LocalCacheModel) {
+        launchCatchError(block = {
+            val categoryResponse = withContext(dispatchers.io) {
+                tokoFoodMerchantListUseCase.execute(
+                    localCacheModel = localCacheModel,
+                    pageKey = pageKey)
+            }
+
+            setPageKey(categoryResponse.data.nextPageKey)
+            homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+            homeLayoutItemList.removeProgressBar()
+            val data = TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.LOAD_MORE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }){
+
+        }
+    }
+
+    private fun showProgressBar() {
+        homeLayoutItemList.addProgressBar()
+        val data = TokoFoodListUiModel(
+            getHomeVisitableList(),
+            TokoFoodLayoutState.UPDATE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
     private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel) {
         when (item) {
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
@@ -209,5 +268,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private fun removeUnsupportedLayout(item: Visitable<*>?) {
         homeLayoutItemList.removeItem(item?.getVisitableId())
+    }
+
+    private fun setPageKey(pageNew:String) {
+        pageKey = pageNew
     }
 }
