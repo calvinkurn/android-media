@@ -20,7 +20,7 @@ class TmCouponViewModel @Inject constructor(
     private val _couponListLiveData = MutableLiveData<Result<TmCouponListResponse>>()
     val couponListLiveData: LiveData<Result<TmCouponListResponse>> = _couponListLiveData
 
-    fun getCouponList(voucherStatus: String, voucherType: Int){
+    fun getCouponList(voucherStatus: String, voucherType: Int?){
         tmCouponUsecase.cancelJobs()
         tmCouponUsecase.getCouponList({
             _couponListLiveData.postValue(Success(it))

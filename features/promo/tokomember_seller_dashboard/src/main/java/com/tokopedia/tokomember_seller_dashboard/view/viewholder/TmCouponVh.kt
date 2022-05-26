@@ -6,13 +6,17 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.model.Actions
+import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
@@ -21,7 +25,10 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ON_GOING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
+import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -39,7 +46,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
     lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage")
-    fun bind(item: VouchersItem, programActions: ProgramActions) {
+    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions) {
 
         viewStatus = itemView.findViewById(R.id.view_status)
         tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
@@ -70,10 +77,22 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
 
         }
 
+        optionMenu.setOnClickListener {
+            item.voucherId?.let { it1 ->
+                val actions = Actions()
+                val tripleDots = arrayListOf<TripleDotsItem?>()
+                tripleDots.add(TripleDotsItem("Ubah Kupon", EDIT))
+                tripleDots.add(TripleDotsItem("Hapus Kupon", DELETE))
+                tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
+                actions.tripleDots = tripleDots
+                TokomemberOptionsMenuBottomsheet.show(Gson().toJson(actions), fragmentManager, tmCouponActions, it1)
+            }
+        }
+
         if(item.remainingQuota == item.voucherQuota){
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
-                
+                item.voucherId?.let { it1 -> tmCouponActions.option(ADD_QUOTA, it1) }
             }
         }
         else{
