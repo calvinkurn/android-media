@@ -148,10 +148,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tickerVariantWholesale" />
 
+    <!--ignored because we need no padding and 0px radius card-->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:ignore="UnifyComponentUsage"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
