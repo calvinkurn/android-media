@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.cassava
 import android.app.Activity
 import android.app.Instrumentation
 import android.util.Log
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
@@ -20,6 +21,7 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.officialstore.R
@@ -91,12 +93,10 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-//        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
-//                activity = activityRule.activity,
-//                limitCountToIdle = 3
-//        )
-//        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-//        IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
+        val categoryLoading = activityRule.activity.findViewById<LinearLayout>(R.id.view_category_tab_loading)
+        categoryLoading.gone()
+        val contentLoading = activityRule.activity.findViewById<LinearLayout>(R.id.view_content_loading)
+        contentLoading.gone()
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
             activity = activityRule.activity,
