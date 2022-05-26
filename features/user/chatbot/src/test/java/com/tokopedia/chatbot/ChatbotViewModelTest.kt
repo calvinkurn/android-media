@@ -31,6 +31,9 @@ class ChatbotViewModelTest {
 
     private lateinit var viewModel : ChatbotViewModel
 
+    private val fetchFailedErrorMessage = "Fetch Failed"
+    private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+
     @Before
     @Throws(Exception::class)
     fun setUp(){
@@ -50,22 +53,19 @@ class ChatbotViewModelTest {
     @Test
     fun `getTicketList success` ()  {
 
-        val response = mockk<GraphqlResponse>()
-        val ticketList = mockk<InboxTicketListResponse>()
+        val ticketListData = mockk<InboxTicketListResponse>()
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList()
-        } returns response
-
-        every {
-            response.getData<InboxTicketListResponse>(InboxTicketListResponse::class.java)
-        } returns ticketList
+            ticketListContactUsUsecase.getTicketList(any(),any())
+        } coAnswers {
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(ticketListData)
+        }
 
         viewModel.getTicketList()
 
         assertEquals(
             (viewModel.ticketList.value as Success).data,
-            ticketList
+            ticketListData
         )
 
     }
@@ -73,18 +73,17 @@ class ChatbotViewModelTest {
     @Test
     fun `getTicketList failure` () {
 
-        val exception = mockk<Exception>()
-
         coEvery {
-            ticketListContactUsUsecase.getTicketList()
-        } throws exception
-
+            ticketListContactUsUsecase.getTicketList(any(),any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
 
         viewModel.getTicketList()
 
         assertEquals(
             (viewModel.ticketList.value as Fail).throwable,
-            exception
+            mockThrowable
         )
 
     }

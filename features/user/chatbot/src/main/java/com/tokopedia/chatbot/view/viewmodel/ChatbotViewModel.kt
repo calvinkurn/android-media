@@ -30,11 +30,11 @@ class ChatbotViewModel @Inject constructor(
         )
     }
 
-    fun onTicketListDataSuccess(inboxTicketListResponse: InboxTicketListResponse) {
+    private fun onTicketListDataSuccess(inboxTicketListResponse: InboxTicketListResponse) {
         _ticketList.postValue(Success(inboxTicketListResponse))
     }
 
-    fun onTicketListDataFail(throwable: Throwable) {
+    private fun onTicketListDataFail(throwable: Throwable) {
         _ticketList.value = Fail(throwable)
     }
 
