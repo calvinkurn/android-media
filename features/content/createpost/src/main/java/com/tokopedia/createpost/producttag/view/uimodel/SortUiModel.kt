@@ -10,7 +10,5 @@ data class SortUiModel(
     val isSelected: Boolean,
 ) {
 
-    fun isSame(sort: SortUiModel): Boolean {
-        return key == sort.key && value == sort.value
-    }
+    fun isSame(sort: SortUiModel) = (key == sort.key && value == sort.value)
 }
