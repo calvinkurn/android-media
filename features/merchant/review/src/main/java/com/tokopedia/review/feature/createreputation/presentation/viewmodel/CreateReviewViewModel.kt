@@ -57,12 +57,12 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.util.CreateReviewMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.reviewcommon.extension.getSavedState
-import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -85,7 +85,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 typealias ReviewFormRequestState = RequestState<ProductRevGetForm, Nothing>
@@ -120,10 +119,7 @@ class CreateReviewViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
-        private const val MAX_MEDIA_COUNT = 5
         private const val GOOD_RATING_THRESHOLD = 2
-        private const val UPLOADED_ALL_MEDIA_POEM_EXPIRY_DURATION = 3
-        private const val UPLOADED_MEDIA_POEM_EXPIRY_DURATION = 5
         private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
         private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
@@ -374,10 +370,13 @@ class CreateReviewViewModel @Inject constructor(
         mediaUploadResults: MediaUploadResultMap,
         mediaUploadJobs: MediaUploadJobMap
     ): List<CreateReviewMediaUiModel> {
-        return mutableListOf<CreateReviewMediaUiModel>().apply {
-            includeMediaItems(mediaUris, mediaUploadResults, mediaUploadJobs)
-            includeAddMediaUiModel(mediaUris)
-        }
+        return CreateReviewMapper.mapMediaItems(
+            mediaUris,
+            mediaUploadResults,
+            mediaUploadJobs,
+            mediaItems.value,
+            uploadBatchNumber
+        )
     }
 
     private fun mapIsAnyBadRatingCategorySelected(
@@ -614,47 +613,11 @@ class CreateReviewViewModel @Inject constructor(
         mediaItems: List<CreateReviewMediaUiModel>,
         updateSignal: Unit
     ): Pair<String, StringRes> {
-        val (nextMediaUri, stringResId) = if (canRenderForm) {
-            val filteredMediaItems = mediaItems.filter {
-                (it is CreateReviewMediaUiModel.Image || it is CreateReviewMediaUiModel.Video) &&
-                it.uploadBatchNumber == uploadBatchNumber
-            }
-            val uploadingMedia = filteredMediaItems.firstOrNull {
-                it.state == CreateReviewMediaUiModel.State.UPLOADING
-            }
-            val hasSucceedUpload = filteredMediaItems.any {
-                it.state == CreateReviewMediaUiModel.State.UPLOADED
-            }
-            val lastFinishedUploadMedia = filteredMediaItems.lastOrNull {
-                it.state != CreateReviewMediaUiModel.State.UPLOADING
-            }
-            if (uploadingMedia != null) {
-                if (lastFinishedUploadMedia == null || !hasSucceedUpload) {
-                    uploadingMedia.uri to R.string.review_form_waiting_upload_poem
-                } else {
-                    val timeDiffMillis = System.currentTimeMillis() - lastFinishedUploadMedia.finishUploadTimestamp
-                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > UPLOADED_MEDIA_POEM_EXPIRY_DURATION) {
-                        uploadingMedia.uri to R.string.review_form_waiting_upload_poem
-                    } else {
-                        uploadingMedia.uri to R.string.review_form_on_progress_upload_poem
-                    }
-                }
-            } else if (filteredMediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
-                poem.value.first to Int.ZERO
-            } else {
-                filteredMediaItems.lastOrNull()?.let { lastMediaItem ->
-                    val timeDiffMillis = System.currentTimeMillis() - lastMediaItem.finishUploadTimestamp
-                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > UPLOADED_ALL_MEDIA_POEM_EXPIRY_DURATION || lastMediaItem.uri != poem.value.first) {
-                        poem.value.first to Int.ZERO
-                    } else {
-                        poem.value.first to R.string.review_form_success_upload_poem
-                    }
-                } ?: (poem.value.first to Int.ZERO)
-            }
+        return if (canRenderForm) {
+            CreateReviewMapper.mapPoem(poem.value, mediaItems, uploadBatchNumber)
         } else {
-            poem.value.first to Int.ZERO
+            poem.value.first to StringRes(Int.ZERO)
         }
-        return nextMediaUri to StringRes(stringResId)
     }
 
     private fun mapMediaPickerUiState(
@@ -901,175 +864,6 @@ class CreateReviewViewModel @Inject constructor(
                 }
             )
         } else null
-    }
-
-    private fun MutableList<CreateReviewMediaUiModel>.includeAddMediaUiModel(mediaUris: List<String>) {
-        if (mediaUris.isEmpty()) {
-            add(CreateReviewMediaUiModel.AddLarge)
-        } else if (mediaUris.size < MAX_MEDIA_COUNT) {
-            add(
-                CreateReviewMediaUiModel.AddSmall(
-                    enabled = none { it.state == CreateReviewMediaUiModel.State.UPLOADING }
-                )
-            )
-        }
-    }
-
-    private fun MutableList<CreateReviewMediaUiModel>.includeMediaItems(
-        mediaUris: List<String>,
-        mediaUploadResults: MediaUploadResultMap,
-        mediaUploadJobs: MediaUploadJobMap
-    ) {
-        mediaUris.forEach { uri ->
-            val uploadResult = mediaUploadResults[uri]
-            val uploadJob = mediaUploadJobs[uri]
-            val existingMediaItems = mediaItems.value
-            if (uploadJob?.isActive != true) {
-                when (uploadResult) {
-                    is CreateReviewMediaUploadResult.Success -> {
-                        val mediaItem = existingMediaItems.find {
-                            it.uri == uri
-                        }?.let {
-                            if (it is CreateReviewMediaUiModel.Image) {
-                                it.copy(
-                                    uploadId = uploadResult.uploadId,
-                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
-                                        it.isMoreThanZero()
-                                    } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOADED
-                                )
-                            } else if (it is CreateReviewMediaUiModel.Video) {
-                                it.copy(
-                                    uploadId = uploadResult.uploadId,
-                                    remoteUrl = uploadResult.videoUrl,
-                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
-                                        it.isMoreThanZero()
-                                    } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOADED
-                                )
-                            } else null
-                        } ?: if (isVideoFormat(uri)) {
-                            CreateReviewMediaUiModel.Video(
-                                uri = uri,
-                                uploadId = uploadResult.uploadId,
-                                remoteUrl = uploadResult.videoUrl,
-                                uploadBatchNumber = uploadBatchNumber,
-                                finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOADED
-                            )
-                        } else {
-                            CreateReviewMediaUiModel.Image(
-                                uri = uri,
-                                uploadId = uploadResult.uploadId,
-                                uploadBatchNumber = uploadBatchNumber,
-                                finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOADED
-                            )
-                        }
-                        add(mediaItem)
-                    }
-                    is CreateReviewMediaUploadResult.Error -> {
-                        val mediaItem = existingMediaItems.find {
-                            it.uri == uri
-                        }?.let {
-                            if (it is CreateReviewMediaUiModel.Image) {
-                                it.copy(
-                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
-                                        it.isMoreThanZero()
-                                    } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                                )
-                            } else if (it is CreateReviewMediaUiModel.Video) {
-                                it.copy(
-                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
-                                        it.isMoreThanZero()
-                                    } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                                )
-                            } else null
-                        } ?: if (isVideoFormat(uri)) {
-                            CreateReviewMediaUiModel.Video(
-                                uri = uri,
-                                uploadBatchNumber = uploadBatchNumber,
-                                finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                            )
-                        } else {
-                            CreateReviewMediaUiModel.Image(
-                                uri = uri,
-                                uploadBatchNumber = uploadBatchNumber,
-                                finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                            )
-                        }
-                        add(mediaItem)
-                    }
-                    else -> {
-                        val mediaItem = existingMediaItems.find {
-                            it.uri == uri
-                        }?.let {
-                            if (it is CreateReviewMediaUiModel.Image) {
-                                it.copy(
-                                    uploadBatchNumber = uploadBatchNumber,
-                                    finishUploadTimestamp = 0L,
-                                    state = CreateReviewMediaUiModel.State.UPLOADING
-                                )
-                            } else if (it is CreateReviewMediaUiModel.Video) {
-                                it.copy(
-                                    uploadBatchNumber = uploadBatchNumber,
-                                    finishUploadTimestamp = 0L,
-                                    state = CreateReviewMediaUiModel.State.UPLOADING
-                                )
-                            } else null
-                        } ?: if (isVideoFormat(uri)) {
-                            CreateReviewMediaUiModel.Video(
-                                uri = uri,
-                                uploadBatchNumber = uploadBatchNumber,
-                                state = CreateReviewMediaUiModel.State.UPLOADING
-                            )
-                        } else {
-                            CreateReviewMediaUiModel.Image(
-                                uri = uri,
-                                uploadBatchNumber = uploadBatchNumber,
-                                state = CreateReviewMediaUiModel.State.UPLOADING
-                            )
-                        }
-                        add(mediaItem)
-                    }
-                }
-            } else {
-                val mediaItem = existingMediaItems.find {
-                    it.uri == uri
-                }?.let {
-                    if (it is CreateReviewMediaUiModel.Image) {
-                        it.copy(
-                            uploadBatchNumber = uploadBatchNumber,
-                            finishUploadTimestamp = 0L,
-                            state = CreateReviewMediaUiModel.State.UPLOADING
-                        )
-                    } else if (it is CreateReviewMediaUiModel.Video) {
-                        it.copy(
-                            uploadBatchNumber = uploadBatchNumber,
-                            finishUploadTimestamp = 0L,
-                            state = CreateReviewMediaUiModel.State.UPLOADING
-                        )
-                    } else null
-                } ?: if (isVideoFormat(uri)) {
-                    CreateReviewMediaUiModel.Video(
-                        uri = uri,
-                        uploadBatchNumber = uploadBatchNumber,
-                        state = CreateReviewMediaUiModel.State.UPLOADING
-                    )
-                } else {
-                    CreateReviewMediaUiModel.Image(
-                        uri = uri,
-                        uploadBatchNumber = uploadBatchNumber,
-                        state = CreateReviewMediaUiModel.State.UPLOADING
-                    )
-                }
-                add(mediaItem)
-            }
-        }
     }
 
     private fun getReviewTemplatesToShow(

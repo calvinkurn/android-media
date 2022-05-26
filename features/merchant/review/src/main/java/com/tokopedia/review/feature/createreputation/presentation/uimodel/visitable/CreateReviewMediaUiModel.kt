@@ -21,6 +21,14 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
     fun areContentsTheSame(other: Any?): Boolean
     fun getChangePayload(other: Any?): Bundle
 
+    fun isImage(): Boolean {
+        return this is Image
+    }
+
+    fun isVideo(): Boolean {
+        return this is Video
+    }
+
     data class Image(
         override val uri: String,
         override val uploadId: String = "",

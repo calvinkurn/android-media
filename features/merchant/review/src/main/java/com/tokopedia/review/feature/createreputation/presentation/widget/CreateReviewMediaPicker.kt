@@ -66,8 +66,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         val successCount = uiState
             .mediaItems
             .filter {
-                (it is CreateReviewMediaUiModel.Image || it is CreateReviewMediaUiModel.Video) &&
-                it.uploadBatchNumber == uiState.currentUploadBatchNumber
+                (it.isImage() || it.isVideo()) && it.uploadBatchNumber == uiState.currentUploadBatchNumber
             }
             .count { it.state == CreateReviewMediaUiModel.State.UPLOADED }
         transitionHandler.transitionToShowMediaPicker(showError = false, showPoem = true)

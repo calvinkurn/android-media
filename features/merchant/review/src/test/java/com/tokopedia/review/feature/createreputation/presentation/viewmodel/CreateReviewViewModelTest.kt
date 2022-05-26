@@ -1507,6 +1507,46 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `hasTemplate should return true when contain template`() {
+        `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`()
+        Assert.assertTrue(viewModel.hasTemplate())
+    }
+
+    @Test
+    fun `hasTemplate should return false when does not contain template`() {
+        `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`()
+        Assert.assertFalse(viewModel.hasTemplate())
+    }
+
+    @Test
+    fun `hasTemplate should return false when template not loaded`() {
+        Assert.assertFalse(viewModel.hasTemplate())
+    }
+
+    @Test
+    fun `templateUsedCount should return 0 when contain template and no template used`() {
+        `templateUiState should equal to CreateReviewTemplateUiState#Showing when canRenderForm is true and template is not empty`()
+        Assert.assertEquals(0, viewModel.templateUsedCount())
+    }
+
+    @Test
+    fun `templateUsedCount should return 1 when contain template and 1 template used`() {
+        `selectTemplate should add template text to review text`()
+        Assert.assertEquals(1, viewModel.templateUsedCount())
+    }
+
+    @Test
+    fun `templateUsedCount should 0 false when does not contain template`() {
+        `templateUiState should equal to CreateReviewTemplateUiState#Hidden when canRenderForm is true and template is empty`()
+        Assert.assertEquals(0, viewModel.templateUsedCount())
+    }
+
+    @Test
+    fun `templateUsedCount should return 0 when template not loaded`() {
+        Assert.assertEquals(0, viewModel.templateUsedCount())
+    }
+
+    @Test
     fun `saveUiState should save current state`() {
         mockk<Bundle>(relaxed = true) {
             viewModel.saveUiState(this)
