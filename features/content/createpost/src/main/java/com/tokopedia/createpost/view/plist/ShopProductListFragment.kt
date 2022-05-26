@@ -69,8 +69,13 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
     private fun initViews(view: View) {
 
-        view.recycler_view.layoutManager = GridLayoutManager(activity, 2)
-        view.recycler_view.adapter = mAdapter
+        val gridLayoutManager =  GridLayoutManager(activity, 2)
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+        view.recycler_view.apply {
+            layoutManager = gridLayoutManager
+            adapter = mAdapter
+        }
 
         mAdapter.resetAdapter()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
@@ -106,6 +111,16 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             createPostAnalytics.eventClickOnSearchBar()
         }
 
+    }
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItemViewType(position)) {
+                    LOADING -> 2
+                    else -> 1
+                }
+            }
+        }
     }
     private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
         it?.let {
@@ -204,11 +219,11 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-
+//        showLoader()
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
+//        hideLoader()
     }
 
     override fun onError(pageNumber: Int) {
@@ -246,6 +261,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_DATA = 1
         private val CONTAINER_EMPTY = 2
         private val CONTAINER_ERROR = 3
+        private const val LOADING = -94567
         private val SCREEN_NAME = "Product Tag Listing"
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_ID = "shopid"

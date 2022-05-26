@@ -205,7 +205,11 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
+        val gridLayoutManager =  GridLayoutManager(activity, 2)
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+
+        recyclerviewPost?.layoutManager = gridLayoutManager
         if (recyclerviewPost?.itemDecorationCount == 0) {
             context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
                 ?.let {
@@ -216,6 +220,17 @@ class UserProfileFragment : BaseDaggerFragment(),
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)
+    }
+
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItemViewType(position)) {
+                    LOADING -> 2
+                    else -> 1
+                }
+            }
+        }
     }
 
     private fun initObserver() {
@@ -997,6 +1012,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val APPLINK_PROFILE = "tokopedia://setting/profile"
         const val OFFSET_USERINFO = 136F
         const val REQUEST_CODE_LOGIN = 1
+        private const val LOADING = -94567
 
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
