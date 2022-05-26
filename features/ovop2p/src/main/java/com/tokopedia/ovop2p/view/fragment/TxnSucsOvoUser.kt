@@ -89,8 +89,8 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun setRcvrUserData() {
         thankYouDataCntnr.ovoP2pTransferThankyou?.destination.let {
-            rcvrName.text = it?.name
-            var number = it?.phone
+            rcvrName.text = it?.name?:""
+            var number = it?.phone?:""
             if (!TextUtils.isEmpty(number)) {
                 number = Constants.Prefixes.OVO + number
             } else {
@@ -158,10 +158,10 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         thankYouDataCntnr = thankYouData
-        date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate
+        date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate?:""
         val rpFormattedString = thankYouData.ovoP2pTransferThankyou?.amt?.toDouble()
             ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
-        trnsfrAmt.text = rpFormattedString?.formattedString
+        trnsfrAmt.text = rpFormattedString?.formattedString?:""
         var sourceName = thankYouData.ovoP2pTransferThankyou?.source?.name
         if (TextUtils.isEmpty(sourceName)) {
             sourceName = context?.let {
@@ -169,7 +169,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
             }.toString()
             thankYouDataCntnr.ovoP2pTransferThankyou?.source?.name = sourceName
         }
-        sndrName.text = sourceName
+        sndrName.text = sourceName?:""
         sndrNum.text = Constants.Prefixes.OVO + thankYouData.ovoP2pTransferThankyou?.source?.phone
         setRcvrUserData()
     }

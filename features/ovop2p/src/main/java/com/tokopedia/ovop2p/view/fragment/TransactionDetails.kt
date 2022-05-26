@@ -51,8 +51,8 @@ class TransactionDetails : BaseDaggerFragment(){
 
     fun setViewData(){
         if(::ovoP2pTransferThankyouBase.isInitialized) {
-            date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.trnsfrDate
-            txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.msg
+            date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.trnsfrDate?:""
+            txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.msg?:""
             val rpFormattedString =
                 ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.amt?.toDouble()
                     ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
