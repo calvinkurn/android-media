@@ -5,5 +5,6 @@ data class NavFavoriteShopModel(
     val name: String = "",
     val imageUrl: String = "",
     val location: String = "",
-    val badgeImageUrl: String = ""
+    val badgeImageUrl: String = "",
+    var fullWidth: Boolean = false
 )

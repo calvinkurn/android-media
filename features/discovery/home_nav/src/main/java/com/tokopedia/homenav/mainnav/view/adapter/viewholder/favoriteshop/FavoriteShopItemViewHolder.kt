@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -15,7 +16,6 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.utils.view.binding.viewBinding
 
 class FavoriteShopItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<FavoriteShopModel>(itemView) {
@@ -29,24 +29,26 @@ class FavoriteShopItemViewHolder(itemView: View, val mainNavListener: MainNavLis
         bind(element)
     }
 
-    override fun bind(favoriteShopModel: FavoriteShopModel) {
-        itemView.addOnImpressionListener(favoriteShopModel){
+    override fun bind(element: FavoriteShopModel) {
+        setLayoutFullWidth(element)
+
+        itemView.addOnImpressionListener(element){
             mainNavListener.putEEToTrackingQueue(
                 TrackingTransactionSection.getImpressionOnFavoriteShop(
                     userId = mainNavListener.getUserId(),
                     position = adapterPosition,
-                    favoriteShopModel = favoriteShopModel.navFavoriteShopModel
+                    favoriteShopModel = element.navFavoriteShopModel
                 )
             )
         }
 
-        binding?.textShopName?.text = favoriteShopModel.navFavoriteShopModel.name
+        binding?.textShopName?.text = element.navFavoriteShopModel.name
 
-        if (favoriteShopModel.navFavoriteShopModel.imageUrl.isNotEmpty()) {
+        if (element.navFavoriteShopModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.imageShop
             val shimmer = binding?.imageShopShimmer
             Glide.with(itemView.context)
-                .load(favoriteShopModel.navFavoriteShopModel.imageUrl)
+                .load(element.navFavoriteShopModel.imageUrl)
                 .circleCrop()
                 .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                 .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
@@ -71,13 +73,23 @@ class FavoriteShopItemViewHolder(itemView: View, val mainNavListener: MainNavLis
                 })
         }
 
-        binding?.textShopLocation?.text = favoriteShopModel.navFavoriteShopModel.location
-        if(favoriteShopModel.navFavoriteShopModel.badgeImageUrl.isNotEmpty()){
-            binding?.iconShopBadge?.setImageUrl(favoriteShopModel.navFavoriteShopModel.badgeImageUrl)
+        binding?.textShopLocation?.text = element.navFavoriteShopModel.location
+        if(element.navFavoriteShopModel.badgeImageUrl.isNotEmpty()){
+            binding?.iconShopBadge?.setImageUrl(element.navFavoriteShopModel.badgeImageUrl)
         } else binding?.iconShopBadge?.gone()
 
         binding?.containerFavshop?.setOnClickListener {
-            mainNavListener.onFavoriteShopItemClicked(favoriteShopModel.navFavoriteShopModel, adapterPosition)
+            mainNavListener.onFavoriteShopItemClicked(element.navFavoriteShopModel, adapterPosition)
         }
+    }
+
+    private fun setLayoutFullWidth(element: FavoriteShopModel) {
+        val layoutParams = binding?.cardFavoriteShop?.layoutParams
+        if (element.navFavoriteShopModel.fullWidth) {
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            layoutParams?.width = itemView.resources.getDimension(R.dimen.nav_card_me_page_size).toInt()
+        }
+        binding?.cardFavoriteShop?.layoutParams = layoutParams
     }
 }

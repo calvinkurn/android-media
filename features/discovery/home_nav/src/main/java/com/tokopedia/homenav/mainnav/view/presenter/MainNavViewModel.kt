@@ -92,7 +92,7 @@ class MainNavViewModel @Inject constructor(
         private const val SOURCE = "dave_home_nav"
         private const val MAX_ORDER_TO_SHOW = 6
         private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
-        private const val SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION = 1
+        private const val SIZE_LAYOUT_SHOW_FULL_WIDTH = 1
         private const val INDEX_FOR_FULL_WIDTH = 0
     }
 
@@ -510,16 +510,16 @@ class MainNavViewModel @Inject constructor(
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val totalTransaction = paymentList.size + orderList.size + reviewList.size
-                val isFullWidth = totalTransaction == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION
+                val isFullWidth = totalTransaction == SIZE_LAYOUT_SHOW_FULL_WIDTH
                 if (isFullWidth) {
                     when {
-                        paymentList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                        paymentList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
                             paymentList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
                         }
-                        orderList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                        orderList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
                             orderList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
                         }
-                        reviewList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH_TRANSACTION -> {
+                        reviewList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH -> {
                             reviewList[INDEX_FOR_FULL_WIDTH].fullWidth = isFullWidth
                         }
                     }
@@ -626,6 +626,9 @@ class MainNavViewModel @Inject constructor(
             val favoriteShopList = getFavoriteShopsNavUseCase.get().executeOnBackground()
 
             if (favoriteShopList.isNotEmpty()) {
+                if(favoriteShopList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH){
+                    favoriteShopList[INDEX_FOR_FULL_WIDTH].fullWidth = true
+                }
                 val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopList)
 
                 //find shimmering and change with result value
@@ -673,6 +676,9 @@ class MainNavViewModel @Inject constructor(
             val wishlist = getWishlistNavUseCase.get().executeOnBackground()
 
             if (wishlist.isNotEmpty()) {
+                if(wishlist.size == SIZE_LAYOUT_SHOW_FULL_WIDTH){
+                    wishlist[INDEX_FOR_FULL_WIDTH].fullWidth = true
+                }
                 val wishlistModel = WishlistDataModel(wishlist)
 
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
