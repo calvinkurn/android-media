@@ -844,7 +844,7 @@ class ChatbotPresenter @Inject constructor(
                     }
                 },
                 onError = {
-                    onError()
+                    onError.invoke(it)
                 }
             )
         }
@@ -896,7 +896,7 @@ class ChatbotPresenter @Inject constructor(
         it.printStackTrace()
     }
 
-    private fun updateMappedPojo(
+    fun updateMappedPojo(
         mappedPojo: ChatroomViewModel,
         ratings: ChipGetChatRatingListResponse.ChipGetChatRatingList?,
         onGetChatRatingListMessageError: (String) -> Unit

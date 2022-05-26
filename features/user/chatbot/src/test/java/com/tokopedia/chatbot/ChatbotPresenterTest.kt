@@ -55,7 +55,7 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
-    private lateinit var getExistingChatMapper : ChatbotGetExistingChatMapper
+    private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
 
@@ -196,7 +196,6 @@ class ChatbotPresenterTest {
     fun `getBottomChat success when chat ratings list is not empty`() {
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var roomViewModel : ChatroomViewModel? = null
         var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
         coEvery {
@@ -212,15 +211,13 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(),any())
+            presenter.getChatRatingList(any(), any())
         }
 
-        presenter.getBottomChat("123456", {viewModel , chatReplies ->
-            roomViewModel = viewModel
-        }, {} , {})
+        presenter.getBottomChat("123456", { viewModel, chatReplies -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput,any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
 
     }
@@ -243,39 +240,36 @@ class ChatbotPresenterTest {
             presenter.getChatRatingData(any())
         } returns chatRatingListInput
 
-        presenter.getBottomChat("123456", {viewModel , chatReplies ->
+        presenter.getBottomChat("123456", { viewModel, chatReplies ->
             chatroomViewModel = viewModel!!
-        }, {} , {})
+        }, {}, {})
 
         assertEquals(
             chatroomViewModel, getExistingChatMapper.map(expectedResponse)
         )
     }
 
-
-    //Failing
     @Test
     fun `getBottomChat failure`() {
         val exception = mockk<Exception>()
-        var result : Throwable? = null
+        var result: Throwable? = null
 
         coEvery {
             getExistingChatUseCase.getBottomChat(any())
         } throws exception
 
-        presenter.getBottomChat("123", {a,b -> }, {exception ->
+        presenter.getBottomChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
             result = exception
-        } , {})
+        }, {})
 
         assertEquals(
             exception, (result as Exception)
         )
 
-
     }
 
     @Test
-    fun `getTopChat when inputList is empty success`() {
+    fun `getTopChat when inputList is not empty success`() {
         // Given
 //        val expectedResponse = GetExistingChatPojo()
 //        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
@@ -302,7 +296,6 @@ class ChatbotPresenterTest {
 
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var roomViewModel : ChatroomViewModel? = null
         var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
 
@@ -319,32 +312,57 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(),any())
+            presenter.getChatRatingList(any(), any())
         }
 
         // When
-        presenter.getTopChat("123456",{ viewModel, chatReplies ->
-            roomViewModel = viewModel
-        }, {}, {})
+        presenter.getTopChat("123456", { viewModel, chatReplies -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput,any())
+            presenter.getChatRatingList(chatRatingListInput, any())
         }
 
     }
 
     @Test
+    fun `getTopChat when inputList is empty success`() {
+        val expectedResponse = GetExistingChatPojo()
+        var chatroomViewModel = ChatroomViewModel(mockk())
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+        coEvery {
+            getExistingChatUseCase.getTopChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        presenter.getTopChat("123456", { viewModel, chatReplies ->
+            chatroomViewModel = viewModel!!
+        }, {}, {})
+
+        assertEquals(
+            chatroomViewModel, getExistingChatMapper.map(expectedResponse)
+        )
+    }
+
+    @Test
     fun `getTopChat throws exception - failure`() {
         val exception = mockk<Exception>()
-        var result : Throwable? = null
+        var result: Throwable? = null
 
         coEvery {
             getExistingChatUseCase.getTopChat(any())
         } throws exception
 
-        presenter.getTopChat("123", {a,b -> }, {exception ->
+        presenter.getTopChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
             result = exception
-        } , {})
+        }, {})
 
         assertEquals(
             exception, (result as Exception)
@@ -359,29 +377,68 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getFirstPageChat(any())
         }
 
-        presenter.getExistingChat("", {},{a,b ->},{})
+        presenter.getExistingChat("", {}, { chatroomViewModel, chatReplies -> }, {})
 
         verify(exactly = 0) {
             presenter.getChatRatingData(any())
         }
     }
 
-
     @Test
-    fun `getExistingChat Success`() {
+    fun `getExistingChat - when input List is empty calls getChatRatingList - Success`() {
+        val expectedResponse = GetExistingChatPojo()
+        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
+        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
+
+        coEvery {
+            getExistingChatUseCase.getFirstPageChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        coEvery {
+            presenter.getChatRatingList(any(), any())
+        }
+
+        // When
+        presenter.getExistingChat("123456", { }, { viewModel, chatReplies -> }, {})
+
+        verify {
+            presenter.getChatRatingList(chatRatingListInput, any())
+        }
     }
 
     @Test
     fun `getExistingChat Failure`() {
+        val exception = mockk<Exception>()
+        var result: Throwable? = null
 
+        coEvery {
+            getExistingChatUseCase.getFirstPageChat(any())
+        } throws exception
+
+        presenter.getExistingChat("123", { exception ->
+            result = exception
+        }, { chatroomViewModel, chatReplies -> }, {})
+
+        assertEquals(
+            exception, (result as Exception)
+        )
     }
 
     @Test
     fun `getChatRatingList success`() {
         val response = mockk<GraphqlResponse>(relaxed = true)
         val ratingListResponse = ChipGetChatRatingListResponse(mockk())
-        var expectedChatRatingList = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
+        var expectedChatRatingList =
+            mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
 
         coEvery {
             chipGetChatRatingListUseCase.getChatRatingList(any())
@@ -409,11 +466,29 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(),{})
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), {})
 
         verify {
             exception.printStackTrace()
         }
+    }
+
+    @Test
+    fun `updateMappedPojo for error`() {
+
+//        val ratings = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
+//        var ratingsList : ChipGetChatRatingListResponse.ChipGetChatRatingList? = null
+//        var message : String? = null
+//
+//        every {
+//            ratings.messageError
+//        } returns message
+//
+//        presenter.updateMappedPojo(ChatroomViewModel(),
+//            ChipGetChatRatingListResponse.ChipGetChatRatingList(),{ error ->
+//            message = error
+//        })
+
     }
 
 }

@@ -1474,6 +1474,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                 }
                 updateHasNextState(chatReplies)
+            }else{
+                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             }
         }
     }
@@ -1488,10 +1490,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishBottomLoadingState()
-                filteredList?.let { renderList ->
-                    renderBottomList(renderList)
+                if (filteredList?.isNotEmpty()==true) {
+                    renderBottomList(filteredList)
+                }else{
+                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
                 }
                 updateHasNextAfterState(chatReplies)
+            }
+            else{
+                presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
             }
         }
     }
