@@ -76,7 +76,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/chipGroupLevel"
                 app:layout_constraintBottom_toTopOf="@id/accordionUnifyVIP"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:ignore="MissingConstraints" />
 
             <com.tokopedia.accordion.AccordionUnify
@@ -85,7 +85,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:layout_constraintBottom_toTopOf="@+id/containerSingleCoupon"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/accordionUnifyPremium"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:ignore="MissingConstraints" />
 
             <include

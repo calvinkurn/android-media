@@ -21,6 +21,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -28,7 +29,9 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
@@ -89,7 +92,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     private fun observeViewModel() {
@@ -164,9 +167,11 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     }
 
     override fun onButtonItemClick(position: Int) {
-        startActivity(Intent(this.context, TokomemberDashCreateActivity::class.java).putExtra(
-            "cardID",cardID?:0
-        ))
+        val intent = Intent(this.context, TokomemberDashCreateActivity::class.java)
+        intent.putExtra("cardID",cardID?:0)
+        intent.putExtra(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
+        intent.putExtra(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
+        startActivity(intent)
     }
 
     private fun renderHeader(){

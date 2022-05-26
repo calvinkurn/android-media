@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
@@ -45,7 +46,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     }
 
     private fun initDagger() {
-        DaggerTokomemberDashComponent.create().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     override fun onBackPressed() {

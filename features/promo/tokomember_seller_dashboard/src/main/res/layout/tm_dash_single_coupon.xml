@@ -118,7 +118,7 @@
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.tokomember_common_widget.TmCouponViewPreview
         android:id="@+id/ivPreviewCoupon"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/unify_space_16"

@@ -3,6 +3,8 @@ package com.tokopedia.tokomember_seller_dashboard.util
 const val TM_URL_INTRO_BG = ""
 const val BUNDLE_OPEN_BS = "bundleOpenBS"
 const val BUNDLE_SHOP_ID = "bundleShopId"
+const val BUNDLE_SHOP_NAME = "bundleShopName"
+const val BUNDLE_SHOP_AVATAR = "bundleShopAvatar"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
@@ -58,7 +60,9 @@ const val ERROR_CREATING_CTA = "Coba Lagi"
 const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 
 const val COUPON_CASHBACK = "cashback"
+const val COUPON_CASHBACK_PREVIEW = "Cashback"
 const val COUPON_SHIPPING = "shipping"
+const val COUPON_SHIPPING_PREVIEW = "Gratis Ongkir"
 
 const val CASHBACK_IDR = "idr"
 const val CASHBACK_PERCENTAGE = "percent"

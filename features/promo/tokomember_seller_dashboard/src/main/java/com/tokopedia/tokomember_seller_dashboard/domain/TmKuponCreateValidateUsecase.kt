@@ -18,7 +18,7 @@ class TmKuponCreateValidateUsecase @Inject constructor(graphqlRepository: Graphq
         tmCouponValidateRequest: TmCouponValidateRequest,
     ) {
         this.setTypeClass(TmVoucherValidationPartialResponse::class.java)
-        this.getRequestParams(tmCouponValidateRequest)
+        this.setRequestParams(getRequestParams(tmCouponValidateRequest))
         this.setGraphqlQuery(TmPartialValidateKupon.GQL_QUERY)
         this.execute({
             success(it)
