@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashIntroFragment
 
 class TokomemberDashIntroActivity : BaseSimpleActivity() {
@@ -23,10 +25,12 @@ class TokomemberDashIntroActivity : BaseSimpleActivity() {
     }
 
     companion object{
-        fun openActivity(shopId: Int, openBS: Boolean = false, context: Context?){
+        fun openActivity(shopId: Int, shopAvatar:String,shopName:String, openBS: Boolean = false, context: Context?){
             context?.let {
                 val intent = Intent(it, TokomemberDashIntroActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                intent.putExtra(BUNDLE_SHOP_NAME,shopName)
+                intent.putExtra(BUNDLE_SHOP_AVATAR,shopAvatar)
                 intent.putExtra(BUNDLE_OPEN_BS, openBS)
                 it.startActivity(intent)
             }

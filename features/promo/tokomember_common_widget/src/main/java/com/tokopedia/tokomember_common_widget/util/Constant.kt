@@ -67,9 +67,9 @@ annotation class ProgramScreenType {
 @IntDef(SHIPPING, DISCOUNT, CASHBACK)
 annotation class CouponType {
     companion object {
-        const val SHIPPING = 0
-        const val DISCOUNT = 1
-        const val CASHBACK = 2
+        const val CASHBACK = 0
+        const val SHIPPING = 1
+        const val DISCOUNT = 2
     }
 }
 

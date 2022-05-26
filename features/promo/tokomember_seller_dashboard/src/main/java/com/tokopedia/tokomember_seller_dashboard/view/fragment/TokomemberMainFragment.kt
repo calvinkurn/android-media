@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -20,6 +21,8 @@ import javax.inject.Inject
 class TokomemberMainFragment : BaseDaggerFragment() {
 
     private var shopId = 0
+    private var shopName = ""
+    private var shopAvatar = ""
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -48,6 +51,8 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
+                    shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
+                    shopName = it.data.userShopInfo?.info?.shopName?:""
                     tokomemberEligibilityViewModel.checkEligibility(shopId, true)
                 }
                 is Fail -> {
@@ -73,18 +78,18 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
          //       TokomemberDashHomeActivity.openActivity(shopId, context)
-              TokomemberDashIntroActivity.openActivity(shopId, context = context)
+              TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
                 activity?.finish()
                 // redirect to dashboard
             }
             else{
-                TokomemberDashIntroActivity.openActivity(shopId, context = context)
+                TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
                 activity?.finish()
                 // redirect to intro page
             }
         }
         else{
-            TokomemberDashIntroActivity.openActivity(shopId, true, context)
+            TokomemberDashIntroActivity.openActivity(shopId, shopAvatar,shopName,true, context)
             activity?.finish()
             // redirect to intro page + bottomsheet
         }
@@ -93,7 +98,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     companion object {

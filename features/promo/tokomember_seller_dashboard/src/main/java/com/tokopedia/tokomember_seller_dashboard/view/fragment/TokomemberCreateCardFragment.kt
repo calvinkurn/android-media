@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
@@ -118,7 +119,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     private fun observeViewModel() {
@@ -216,6 +217,8 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
         bundle.putInt(BUNDLE_SHOP_ID, shopID)
+        bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
+        bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
         tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
     }
@@ -385,7 +388,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
             0 -> tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
             else -> {
                 (TokomemberDashIntroActivity.openActivity(
-                    shopID,
+                    shopID,"","",
                     false,
                     this.context
                 ))

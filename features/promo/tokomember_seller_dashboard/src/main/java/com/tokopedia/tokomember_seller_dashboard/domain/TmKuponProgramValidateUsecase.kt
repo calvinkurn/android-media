@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.MemberShipValidateResponse
 import javax.inject.Inject
 
@@ -13,14 +14,22 @@ class TmKuponProgramValidateUsecase @Inject constructor(graphqlRepository: Graph
     fun getMembershipValidateInfo(
         success: (MemberShipValidateResponse) -> Unit,
         onFail: (Throwable) -> Unit,
+        shopId: String,
+        startTime: String,
+        endTime: String,
     ) {
         this.setTypeClass(MemberShipValidateResponse::class.java)
+        this.setRequestParams(getRequestParams(shopId,startTime,endTime))
         this.setGraphqlQuery(TmMemberShipValidate.GQL_QUERY)
         this.execute({
             success(it)
         }, {
             onFail(it)
         })
+    }
+
+    private fun getRequestParams(shopId: String,startTime: String,endTime: String): Map<String, Any> {
+        return mapOf("shopID" to shopId ,"StartTimeUnix" to startTime , "EndTimeUnix" to endTime , "Source" to "" )
     }
 
 }

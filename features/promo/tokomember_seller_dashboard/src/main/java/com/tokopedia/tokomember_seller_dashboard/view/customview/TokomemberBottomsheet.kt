@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 
-class TokomemberBottomsheet(): BottomSheetUnify() {
+class TokomemberBottomsheet : BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
     private lateinit var imgBottomsheet: ImageUnify
@@ -65,10 +65,6 @@ class TokomemberBottomsheet(): BottomSheetUnify() {
         customPeekHeight = (getScreenHeight()).toDp()
     }
 
-    fun setUpBottomSheetListener(bottomSheetClickListener:BottomSheetClickListener){
-        mBottomSheetClickListener = bottomSheetClickListener
-    }
-
     companion object {
 
         const val TAG = "PayLaterTokopediaGopayBottomsheet"
@@ -85,6 +81,9 @@ class TokomemberBottomsheet(): BottomSheetUnify() {
         }
     }
 
+    fun setUpBottomSheetListener(bottomSheetClickListener:BottomSheetClickListener){
+        mBottomSheetClickListener = bottomSheetClickListener
+    }
 }
 
 interface BottomSheetClickListener{

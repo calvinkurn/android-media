@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -29,22 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpda
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -115,7 +101,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().build().inject(this)
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     private fun observeViewModel() {
@@ -195,6 +181,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private fun onProgramUpdateSuccess() {
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
+        bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
+        bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
         bundle.putParcelable(BUNDLE_CARD_DATA , arguments?.getParcelable(BUNDLE_CARD_DATA))
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
@@ -306,8 +294,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
-        textFieldTranskPremium.editText.run {
-            this.addTextChangedListener(object : NumberTextWatcher(this@run){
+        textFieldTranskPremium.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     if (number >= programThreshold?.maxThresholdLevel1 ?: 0
@@ -335,13 +323,12 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     }
                 }
             })
-            requestFocus()
         }
     }
 
     private fun addVipTransactionTextListener(programThreshold: ProgramThreshold?) {
-        textFieldTranskVip.editText.run {
-            this.addTextChangedListener(object : NumberTextWatcher(textFieldTranskVip.editText) {
+        textFieldTranskVip.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     when {
@@ -461,7 +448,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
         } else {
             (TokomemberDashIntroActivity.openActivity(
-                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,"","",
                 false,
                 this.context
             ))
