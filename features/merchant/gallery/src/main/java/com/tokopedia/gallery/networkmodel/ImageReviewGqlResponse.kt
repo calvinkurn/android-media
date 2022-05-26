@@ -28,13 +28,13 @@ class ImageReviewGqlResponse {
 
         @SerializedName("imageID")
         @Expose
-        var imageID: Int = 0
+        var imageID: String = "0"
         @SerializedName("videoID")
         @Expose
-        var videoID: Int = 0
+        var videoID: String = "0"
         @SerializedName("reviewID")
         @Expose
-        var reviewID: Int = 0
+        var reviewID: String = "0"
         @SerializedName("imageSibling")
         @Expose
         var imageSibling: List<Int>? = null
@@ -66,7 +66,7 @@ class ImageReviewGqlResponse {
 
         @SerializedName("imageAttachmentID")
         @Expose
-        var imageAttachmentID: Int = 0
+        var imageAttachmentID: String = "0"
         @SerializedName("description")
         @Expose
         var description: String? = null
@@ -85,7 +85,7 @@ class ImageReviewGqlResponse {
 
         @SerializedName("attachmentID")
         @Expose
-        var attachmentID: Int = 0
+        var attachmentID: String = "0"
         @SerializedName("url")
         @Expose
         var url: String? = ""
@@ -133,7 +133,7 @@ class ImageReviewGqlResponse {
 
         @SerializedName("userID")
         @Expose
-        var userID: Int = 0
+        var userID: String = "0"
         @SerializedName("fullName")
         @Expose
         var fullName: String? = null

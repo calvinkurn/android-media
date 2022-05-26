@@ -385,7 +385,7 @@ object DynamicProductDetailMapper {
             if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
                 ReviewMediaVideoThumbnailUiModel(
                     uiState = ReviewMediaVideoThumbnailUiState.ShowingSeeMore(
-                        attachmentID = video.attachmentID.toString(),
+                        attachmentID = video.attachmentID,
                         reviewID = video.feedbackID.orEmpty(),
                         url = video.url.orEmpty(),
                         totalMediaCount = data.detail?.mediaCount.toIntOrZero(),
@@ -395,7 +395,7 @@ object DynamicProductDetailMapper {
             } else {
                 ReviewMediaVideoThumbnailUiModel(
                     uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                        attachmentID = video.attachmentID.toString(),
+                        attachmentID = video.attachmentID,
                         reviewID = video.feedbackID.orEmpty(),
                         url = video.url.orEmpty()
                     )
@@ -408,7 +408,7 @@ object DynamicProductDetailMapper {
             if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
                 ReviewMediaImageThumbnailUiModel(
                     uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
-                        attachmentID = image.imageAttachmentID.toString(),
+                        attachmentID = image.imageAttachmentID,
                         reviewID = image.reviewID,
                         thumbnailUrl = image.uriThumbnail.orEmpty(),
                         fullSizeUrl = image.uriLarge.orEmpty(),
@@ -419,7 +419,7 @@ object DynamicProductDetailMapper {
             } else {
                 ReviewMediaImageThumbnailUiModel(
                     uiState = ReviewMediaImageThumbnailUiState.Showing(
-                        attachmentID = image.imageAttachmentID.toString(),
+                        attachmentID = image.imageAttachmentID,
                         reviewID = image.reviewID,
                         thumbnailUrl = image.uriThumbnail.orEmpty(),
                         fullSizeUrl = image.uriLarge.orEmpty()
