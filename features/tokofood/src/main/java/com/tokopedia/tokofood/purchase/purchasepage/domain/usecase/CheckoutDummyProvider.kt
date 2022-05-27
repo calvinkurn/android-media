@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
 
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
@@ -28,7 +29,7 @@ object CheckoutDummyProvider {
 
     fun getShopClosedResponse(): CheckoutTokoFoodResponse {
         return CheckoutTokoFoodResponse(
-            status = 1,
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
                     name = "Kedai Kopi, Mantapp",
@@ -193,7 +194,7 @@ object CheckoutDummyProvider {
 
     fun getAddressNotAvailableResponse(): CheckoutTokoFoodResponse {
         return CheckoutTokoFoodResponse(
-            status = 1,
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
                     name = "Kedai Kopi, Mantapp",

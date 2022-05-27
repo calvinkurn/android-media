@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
@@ -119,8 +120,11 @@ class LoadCartTokoFoodUseCase @Inject constructor(
             val param = generateParams(additionalAttributes.generateString(), params)
             val response =
                 repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
-            emit(response)
-
+            if (response.isSuccess()) {
+                emit(response)
+            } else {
+                throw MessageErrorException(response.getMessageIfError())
+            }
         }
     }
 

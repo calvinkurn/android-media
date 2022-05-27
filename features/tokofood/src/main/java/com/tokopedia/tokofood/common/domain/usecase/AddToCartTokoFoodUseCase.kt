@@ -5,6 +5,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
@@ -103,13 +105,17 @@ class AddToCartTokoFoodUseCase @Inject constructor(
             )
             val response =
                 repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-            emit(response)
+            if (response.isSuccess()) {
+                emit(response)
+            } else {
+                throw MessageErrorException(response.getMessageIfError())
+            }
         }
     }
 
     private fun getDummyResponse(): CartTokoFoodResponse {
         return CartTokoFoodResponse(
-            success = 1
+            success = TokoFoodCartUtil.SUCCESS_STATUS
         )
     }
 

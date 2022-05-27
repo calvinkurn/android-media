@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.response
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CheckoutTokoFoodResponse(
@@ -11,13 +12,20 @@ data class CheckoutTokoFoodResponse(
     val message: String = "",
     @SerializedName("status")
     @Expose
-    val status: Int = 0,
+    val status: String = "",
     @SerializedName("data")
     @Expose
     val data: CheckoutTokoFoodData = CheckoutTokoFoodData()
 ) {
 
     fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
+    fun getMessageIfError(): String {
+        return if (status == TokoFoodCartUtil.ERROR_STATUS) {
+            message
+        } else {
+            String.EMPTY
+        }
+    }
 
     /**
      * Get whether the components in the checkout page can be interactable

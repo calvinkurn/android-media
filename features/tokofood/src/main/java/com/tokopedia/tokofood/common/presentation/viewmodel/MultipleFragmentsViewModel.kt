@@ -86,6 +86,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             }
         }, onError = {
             miniCartLoadingQueue.value?.minus(Int.ONE)
+            miniCartUiModelState.emit(Result.Failure(it))
             Timber.e(it)
         })
     }

@@ -217,7 +217,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
-                // TODO: Check for success status
                 val isEnabled = it.isSuccess()
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,

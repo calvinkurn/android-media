@@ -3,13 +3,14 @@ package com.tokopedia.tokofood.common.domain.response
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
 
 data class CartTokoFoodResponse(
     @SerializedName("success")
     @Expose
-    val success: Int = 0,
+    val success: String = "",
     @SerializedName("message")
     @Expose
     val message: String = "",
@@ -17,7 +18,15 @@ data class CartTokoFoodResponse(
     @Expose
     val data: CartTokoFoodData = CartTokoFoodData()
 ) {
-    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS
+    fun isSuccess(): Boolean =
+        success == TokoFoodCartUtil.SUCCESS_STATUS && data.success == TokoFoodCartUtil.SUCCESS_STATUS_INT
+    fun getMessageIfError(): String {
+        return when {
+            success == TokoFoodCartUtil.ERROR_STATUS -> message
+            data.success != TokoFoodCartUtil.SUCCESS_STATUS_INT -> data.message
+            else -> String.EMPTY
+        }
+    }
 }
 
 data class CartTokoFoodData(

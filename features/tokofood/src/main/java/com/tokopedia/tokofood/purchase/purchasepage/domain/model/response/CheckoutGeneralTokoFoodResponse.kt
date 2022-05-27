@@ -43,7 +43,7 @@ data class CheckoutGeneralTokoFoodData(
     val data: CheckoutGeneralTokoFoodMainData = CheckoutGeneralTokoFoodMainData()
 ) {
 
-    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS
+    fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS_INT
 
     fun getErrorMetadataObject(): CheckoutErrorMetadata {
         return Gson().fromJson(errorMetadata, CheckoutErrorMetadata::class.java)
