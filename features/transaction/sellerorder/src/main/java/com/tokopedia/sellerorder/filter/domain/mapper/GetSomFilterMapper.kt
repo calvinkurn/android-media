@@ -4,8 +4,6 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
-import com.tokopedia.sellerorder.common.util.SomConsts.CHIPS_SORT_ASC
-import com.tokopedia.sellerorder.common.util.SomConsts.CHIPS_SORT_DESC
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
@@ -14,8 +12,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.NOT_YET_PRINTED
 import com.tokopedia.sellerorder.common.util.SomConsts.NOT_YET_PRINTED_LABEL
-import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
-import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -33,7 +29,7 @@ object GetSomFilterMapper {
 
     fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
         return mutableListOf<SomFilterUiModel>().apply {
-            add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany = false, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(data), canSelectMany = false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderTypeList), canSelectMany = true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany = true, isDividerVisible = true))
@@ -41,10 +37,9 @@ object GetSomFilterMapper {
         }
     }
 
-    private fun mapToFilterSortUiModel(): List<SomFilterChipsUiModel> {
-        return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_DESC, key = CHIPS_SORT_DESC, id = SORT_DESCENDING.toLong()))
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_ASC, key = CHIPS_SORT_ASC, id = SORT_ASCENDING.toLong()))
+    private fun mapToFilterSortUiModel(data: SomFilterResponse): List<SomFilterChipsUiModel> {
+        return data.orderFilterSom.sortList.map {
+            SomFilterChipsUiModel(name = it.text, key = it.text, id = it.value)
         }
     }
 

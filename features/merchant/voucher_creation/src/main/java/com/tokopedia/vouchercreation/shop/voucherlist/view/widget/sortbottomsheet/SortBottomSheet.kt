@@ -12,10 +12,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcSortBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.SortUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.SortAdapter
-import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
 
 /**
  * Created By @ilhamsuaib on 20/04/20
@@ -38,6 +39,9 @@ class SortBottomSheet : BottomSheetUnify() {
             )
         }
     }
+
+    private var binding by autoClearedNullable<BottomsheetMvcSortBinding>()
+
     private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
 
     private var onSortClicked: (SortUiModel?) -> Unit = {}
@@ -65,21 +69,22 @@ class SortBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
+            binding = BottomsheetMvcSortBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_sort))
-
-            val childView = View.inflate(this, R.layout.bottomsheet_mvc_sort, null)
-            setChild(childView)
+            setChild(binding?.root)
         }
     }
 
     private fun setupView(view: View) = with(view) {
-        rvMcvSort.layoutManager = LinearLayoutManager(view.context)
-        rvMcvSort.adapter = sortAdapter
-        rvMcvSort.addItemDecoration(getSortItemDecoration())
+        binding?.apply {
+            rvMcvSort.layoutManager = LinearLayoutManager(view.context)
+            rvMcvSort.adapter = sortAdapter
+            rvMcvSort.addItemDecoration(getSortItemDecoration())
 
-        btnMvcApplySort.btnMvcApplySort.setOnClickListener {
-            applySort = true
-            applySort()
+            btnMvcApplySort.setOnClickListener {
+                applySort = true
+                applySort()
+            }
         }
     }
 

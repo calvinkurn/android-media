@@ -1,9 +1,10 @@
 package com.tokopedia.product.addedit.preview.data.model.params.add
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 @Parcelize
@@ -12,6 +13,7 @@ data class Product (
         @SerializedName("combination")
         @Expose
         var combination: List<Int> = emptyList(),
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
         @Expose
         var price: BigInteger = 0.toBigInteger(),

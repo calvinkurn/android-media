@@ -55,7 +55,7 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
                 val aspectRatio = 2 / 1
                 layoutParams.height = (layoutParams.width / aspectRatio)
             myCouponImage.layoutParams = layoutParams
-            myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
+            myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
         } catch (exception: NumberFormatException) {
             exception.printStackTrace()
         }

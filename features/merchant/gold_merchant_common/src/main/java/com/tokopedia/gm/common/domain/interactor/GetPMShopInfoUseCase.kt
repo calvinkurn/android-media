@@ -46,6 +46,7 @@ class GetPMShopInfoUseCase @Inject constructor(
               is_30_days_first_monday
               is_kyc
               shop_age
+              shop_level
               kyc_status_id
               shop_score_threshold
               shop_score_pm_pro_threshold

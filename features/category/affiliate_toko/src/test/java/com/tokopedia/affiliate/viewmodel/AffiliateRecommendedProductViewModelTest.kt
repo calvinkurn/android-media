@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
@@ -50,12 +51,18 @@ class AffiliateRecommendedProductViewModelTest{
     /**************************** getAffiliateRecommendedProduct() *******************************************/
     @Test
     fun `Get Affiliate Recommended Product Success`() {
-        val affiliateRecommendedProduct : AffiliateRecommendedProductData = mockk(relaxed = true)
-        val card :AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card = mockk(relaxed = true)
+        val cardItem :AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item = mockk(relaxed = true)
+        val cardList = MutableList(2){
+            cardItem
+        }
+        val card = AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card (null,cardList,null)
+        val list = MutableList(2){
+            card
+        }
         val data = AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data(
-            arrayListOf(card),null,null
+            list,null,null
         )
-        affiliateRecommendedProduct.recommendedAffiliateProduct?.data = data
+        val affiliateRecommendedProduct = AffiliateRecommendedProductData(AffiliateRecommendedProductData.RecommendedAffiliateProduct(data,null))
         coEvery { affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(any(),any(),any()) } returns affiliateRecommendedProduct
 
         val response = affiliateRecommendedProductViewModel.convertDataToVisitable(affiliateRecommendedProduct.recommendedAffiliateProduct?.data)
@@ -63,7 +70,7 @@ class AffiliateRecommendedProductViewModelTest{
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
             AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER, PAGE_ZERO
         )
-        assertEquals(affiliateRecommendedProductViewModel.getAffiliateDataItems().value,response)
+        assertEquals(Gson().toJson(affiliateRecommendedProductViewModel.getAffiliateDataItems().value),Gson().toJson(response))
         assertEquals(affiliateRecommendedProductViewModel.getAffiliateItemCount().value,affiliateRecommendedProduct.recommendedAffiliateProduct?.data?.pageInfo)
         assertEquals(affiliateRecommendedProductViewModel.isUserBlackListed,false)
     }

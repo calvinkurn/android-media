@@ -1,6 +1,7 @@
 package com.tokopedia.otp.verification.view.fragment.inactivephone
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.otp.verification.view.fragment.SmsVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 
@@ -29,7 +30,8 @@ open class InactivePhoneSmsVerificationFragment : SmsVerificationFragment() {
             mode = modeListData.modeText,
             userIdEnc = otpData.userIdEnc,
             validateToken = otpData.accessToken,
-            msisdn = otpData.msisdn
+            msisdn = otpData.msisdn,
+            userId = otpData.userId.toIntOrZero()
         )
     }
 
