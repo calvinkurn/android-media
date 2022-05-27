@@ -230,11 +230,12 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)){
-            cardViewProductCard?.animateOnPress = if(productCardModel.cardInteraction){
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        cardViewProductCard?.animateOnPress =
+            if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)){
+                if(productCardModel.cardInteraction){
+                    CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                } else CardUnify2.ANIMATE_OVERLAY
             } else CardUnify2.ANIMATE_OVERLAY
-        } else cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
