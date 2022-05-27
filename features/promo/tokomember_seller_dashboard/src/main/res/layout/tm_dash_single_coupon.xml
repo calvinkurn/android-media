@@ -44,7 +44,7 @@
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textFieldPercentCashback"
         android:layout_width="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"

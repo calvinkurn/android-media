@@ -22,7 +22,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashPreviewFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberKuponCreateFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
 
 class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
@@ -53,7 +53,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 intent.extras?.let { TokomemberProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
             COUPON ->{
-                intent.extras?.let { TokomemberKuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+                intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 intent.extras?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -142,7 +142,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 bundle.let { TokomemberProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             COUPON ->{
-                bundle.let { TokomemberKuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
+                bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 bundle.let { TokomemberDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }

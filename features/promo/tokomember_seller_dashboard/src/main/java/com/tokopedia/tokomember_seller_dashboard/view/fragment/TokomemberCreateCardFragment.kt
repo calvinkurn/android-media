@@ -195,7 +195,8 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         val bundle = Bundle()
         val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-        TokomemberBottomsheet.show(bundle, childFragmentManager)
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.show(childFragmentManager,"")
         retryCount +=1
     }
 

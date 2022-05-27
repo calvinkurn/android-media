@@ -82,20 +82,11 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
             <com.tokopedia.accordion.AccordionUnify
                 android:id="@+id/accordionUnifyVIP"
                 android:layout_width="match_parent"
-                app:layout_constraintBottom_toTopOf="@+id/containerSingleCoupon"
+                app:layout_constraintBottom_toTopOf="@+id/viewDividerTwo"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/accordionUnifyPremium"
                 android:layout_height="match_parent"
                 tools:ignore="MissingConstraints" />
-
-            <include
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/containerSingleCoupon"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@+id/accordionUnifyVIP"
-                layout="@layout/tm_dash_single_coupon"/>
 
             <View
                 android:id="@+id/viewDividerTwo"
@@ -103,7 +94,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 android:layout_height="8dp"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/containerSingleCoupon" />
+                app:layout_constraintTop_toBottomOf="@+id/accordionUnifyVIP" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitleProgram"

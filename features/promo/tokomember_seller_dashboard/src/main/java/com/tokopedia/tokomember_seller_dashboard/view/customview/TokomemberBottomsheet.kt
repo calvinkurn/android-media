@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.customview
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -14,46 +15,48 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.tm_dash_intro_bottomsheet.*
 
 class TokomemberBottomsheet : BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
+    private var mBottomSheetClickListener: BottomSheetClickListener? = null
     private lateinit var imgBottomsheet: ImageUnify
     private lateinit var tvHeading: Typography
     private lateinit var tvDesc: Typography
     private lateinit var btnProceed: UnifyButton
-    private var mBottomSheetClickListener:BottomSheetClickListener?=null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setDefaultParams()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(
-            childLayoutRes,
-            null, false
-        )
-        setChild(childView)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        val view = View.inflate(context,childLayoutRes,null)
         imgBottomsheet = view.findViewById(R.id.img_bottom_sheet)
         tvHeading = view.findViewById(R.id.tv_heading)
         tvDesc = view.findViewById(R.id.tv_desc)
         btnProceed = view.findViewById(R.id.btn_proceed)
+        setDefaultParams()
+        setChild(view)
+        setData()
+    }
 
-        val tmIntroBottomsheetModel = Gson().fromJson(arguments?.getString(ARG_BOTTOMSHEET, ""), TmIntroBottomsheetModel::class.java)
-
-        tvHeading.text = tmIntroBottomsheetModel.title
-        tvDesc.text = tmIntroBottomsheetModel.desc
-        imgBottomsheet.loadImage(tmIntroBottomsheetModel.image)
-        btnProceed.text = tmIntroBottomsheetModel.ctaName
+   private fun setData() {
+        val tmIntroBottomSheetModel = Gson().fromJson(
+            arguments?.getString(ARG_BOTTOMSHEET, ""),
+            TmIntroBottomsheetModel::class.java
+        )
+        tvHeading.text = tmIntroBottomSheetModel.title
+        tvDesc.text = tmIntroBottomSheetModel.desc
+        imgBottomsheet.loadImage(tmIntroBottomSheetModel.image)
+        btnProceed.text = tmIntroBottomSheetModel.ctaName
         btnProceed.setOnClickListener {
-            mBottomSheetClickListener?.onButtonClick(tmIntroBottomsheetModel.errorCount)
+            mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
         }
     }
 
@@ -70,22 +73,18 @@ class TokomemberBottomsheet : BottomSheetUnify() {
         const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val ARG_BOTTOMSHEET = "arg_bottomsheet"
 
-        fun show(
-            bundle: Bundle,
-            childFragmentManager: FragmentManager
-        ) {
-            val tokomemberIntroBottomsheet = TokomemberBottomsheet().apply {
+        fun createInstance(bundle: Bundle): TokomemberBottomsheet {
+            return TokomemberBottomsheet().apply {
                 arguments = bundle
             }
-            tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
     }
 
-    fun setUpBottomSheetListener(bottomSheetClickListener:BottomSheetClickListener){
+    fun setUpBottomSheetListener(bottomSheetClickListener: BottomSheetClickListener) {
         mBottomSheetClickListener = bottomSheetClickListener
     }
 }
 
-interface BottomSheetClickListener{
-    fun onButtonClick(errorCount:Int)
+interface BottomSheetClickListener {
+    fun onButtonClick(errorCount: Int)
 }

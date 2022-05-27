@@ -185,13 +185,13 @@ class TokomemberDashCreateViewModel @Inject constructor(
         },tmMerchantCouponUnifyRequest)
     }
 
-    fun getInitialCouponData(actionType: String, couponType: CouponType){
+    fun getInitialCouponData(actionType: String, couponType: String){
         tmKuponInitialUsecase.cancelJobs()
         tmKuponInitialUsecase.getInitialCoupon( {
             _tmCouponInitialLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tmCouponInitialLiveData.postValue(TokoLiveDataResult.error(it))
-        }, actionType, couponType.toString())
+        }, actionType, couponType)
     }
 
     fun validateProgram(shopId: String, startTime:String ,endTime:String){

@@ -18,6 +18,6 @@
         app:title="Buat Kupon" />
 
     <include
-        layout="@layout/tm_dash_kupon_create_multiple" />
+        layout="@layout/tm_kupon_create_single" />
 
 </LinearLayout>

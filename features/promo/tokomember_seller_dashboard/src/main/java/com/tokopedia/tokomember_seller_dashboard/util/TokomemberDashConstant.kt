@@ -75,3 +75,34 @@ const val PROGRAM_AUTO_DATE = ""
 
 const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui " + "<br>" +
         "syarat & ketentuan TokoMember."
+const val TERMS = "syarat"
+const val TERNS_AND_CONDITION = "syarat & ketentuan"
+
+const val DATE_TITLE  = "Pilih tanggal mulai"
+const val DATE_DESC = "Tentukan tanggal mulai untuk kupon TokoMember yang sudah kamu buat."
+const val TIME_TITLE = "Pilih jam mulai"
+const val TIME_DESC = "Tentukan jam mulai untuk kupon TokoMember yang sudah kamu buat."
+
+const val PROGRAM_VALIDATION_ERROR_TITLE = "Oops, tanggal aktif kupon ada di luar periode program"
+const val PROGRAM_VALIDATION_ERROR_DESC = "Pastikan tanggal aktif kupon ada di dalam periode Program TokoMember, ya!"
+const val PROGRAM_VALIDATION_CTA_TEXT = "Ubah Tanggal"
+
+const val PROGRAM_TYPE_AUTO = "Sesuai Periode Program"
+const val PROGRAM_TYPE_MANUAL = "Atur Manual"
+
+const val ACCORDION_TITLE_VIP = "Untuk member VIP"
+const val ACCORDION_SUBTITLE_VIP = "Cashback Rp10.000"
+const val ACCORDION_TITLE_PREMIUM = "Untuk member Premium"
+const val ACCORDION_SUBTITLE_PREMIUM= "Cashback Rp10.000"
+
+const val IDR = "idr"
+const val ANDROID = "android"
+
+const val COUPON_HEADER_TITLE = "Daftar Tokomember"
+const val COUPON_HEADER_TITLE_SINGLE = "Buat Kupon Membership"
+const val COUPON_HEADER_SUBTITLE = "Langkah 3 dari 4"
+
+const val RETRY = "Coba Lagi"
+const val PREMIUM = "premium"
+const val VIP = "vip"
+const val CREATE = "create"

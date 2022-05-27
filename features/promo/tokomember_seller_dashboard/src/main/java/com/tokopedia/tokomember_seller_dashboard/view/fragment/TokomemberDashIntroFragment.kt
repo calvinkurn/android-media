@@ -125,7 +125,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
             val bundle = Bundle()
             val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", "")
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-            TokomemberBottomsheet.show(bundle, childFragmentManager)
+            val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+            bottomsheet.show( childFragmentManager,"")
         }
 
         val animation: Animation =
