@@ -100,7 +100,7 @@ data class SomFilterResponse(
     data class OrderType(
             @Expose
             @SerializedName("id")
-            val id: String = "",
+            val id: Long = 0,
             @Expose
             @SerializedName("key")
             val key: String? = "",
