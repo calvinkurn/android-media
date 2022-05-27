@@ -22,8 +22,9 @@ object AddRemoveWishlistV2Handler {
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_add_to_wishlist)
-        if (result.button.text.isNotEmpty()) ctaText = result.button.text
+        val ctaText = result.button.text.ifEmpty {
+            context.getString(R.string.cta_success_add_to_wishlist)
+        }
 
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
@@ -40,8 +41,9 @@ object AddRemoveWishlistV2Handler {
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !result.isSuccess) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_add_to_wishlist)
-        if (result.ctaTextV2.isNotEmpty()) ctaText = result.ctaTextV2
+        val ctaText = result.ctaTextV2.ifEmpty {
+            context.getString(R.string.cta_success_add_to_wishlist)
+        }
 
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
@@ -58,8 +60,9 @@ object AddRemoveWishlistV2Handler {
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_remove_from_wishlist)
-        if (result.button.text.isNotEmpty()) ctaText = result.button.text
+        val ctaText = result.button.text.ifEmpty {
+            context.getString(R.string.cta_success_remove_from_wishlist)
+        }
 
         var ctaAction = { }
         if (result.button.action == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }
@@ -79,8 +82,9 @@ object AddRemoveWishlistV2Handler {
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !result.isSuccess) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_remove_from_wishlist)
-        if (result.ctaTextV2.isNotEmpty()) ctaText = result.ctaTextV2
+        val ctaText = result.ctaTextV2.ifEmpty {
+            context.getString(R.string.cta_success_remove_from_wishlist)
+        }
 
         var ctaAction = { }
         if (result.ctaActionV2 == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }

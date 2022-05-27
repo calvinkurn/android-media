@@ -259,8 +259,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
             override fun onButtonWishlistClicked() {
                 context?.let {
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
-                    else similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                        similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
+                    } else similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
                 }
             }
 

@@ -1752,21 +1752,18 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (wishlistResult.isUsingWishlistV2) {
-            var errorMsg = if (wishlistResult.isAddWishlist) {
+            val errorMessage = if (wishlistResult.messageV2.isNotEmpty()) {
+                wishlistResult.messageV2
+            } else if (wishlistResult.isAddWishlist) {
                 getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
             } else {
                 getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
             }
-            if (wishlistResult.messageV2.isNotEmpty()) {
-                errorMsg = wishlistResult.messageV2
-            }
-            var ctaText = ""
-            if (wishlistResult.ctaTextV2.isNotEmpty()) {
-                ctaText = wishlistResult.ctaTextV2
-            }
+
+            val ctaText = wishlistResult.ctaTextV2.ifEmpty { "" }
 
             context?.let {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMsg, ctaText, wishlistResult.ctaActionV2, view, it)
+                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, ctaText, wishlistResult.ctaActionV2, view, it)
             }
 
         } else {

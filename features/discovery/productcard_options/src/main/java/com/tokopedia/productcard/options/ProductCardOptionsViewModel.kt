@@ -133,7 +133,11 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun onSuccessRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = false, isUsingWishlistV2 = isUsingWishlistV2)
+        productCardOptionsModel?.wishlistResult = WishlistResult(
+            isUserLoggedIn = true,
+            isSuccess = true,
+            isAddWishlist = false,
+            isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
@@ -151,17 +155,29 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun onErrorRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = false, isUsingWishlistV2 = isUsingWishlistV2)
+        productCardOptionsModel?.wishlistResult = WishlistResult(
+            isUserLoggedIn = true,
+            isSuccess = false,
+            isAddWishlist = false,
+            isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onErrorAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = true, isUsingWishlistV2 = isUsingWishlistV2)
+        productCardOptionsModel?.wishlistResult = WishlistResult(
+            isUserLoggedIn = true,
+            isSuccess = false,
+            isAddWishlist = true,
+            isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onSuccessAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true, isUsingWishlistV2 = isUsingWishlistV2)
+        productCardOptionsModel?.wishlistResult = WishlistResult(
+            isUserLoggedIn = true,
+            isSuccess = true,
+            isAddWishlist = true,
+            isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
