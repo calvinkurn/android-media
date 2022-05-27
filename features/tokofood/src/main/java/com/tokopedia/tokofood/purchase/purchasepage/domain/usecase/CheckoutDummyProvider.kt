@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
 
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
@@ -7,7 +8,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdown
@@ -26,9 +27,9 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 
 object CheckoutDummyProvider {
 
-    fun getShopClosedResponse(): CheckoutTokoFoodResponse {
-        return CheckoutTokoFoodResponse(
-            status = 1,
+    fun getShopClosedResponse(): CheckoutTokoFood {
+        return CheckoutTokoFood(
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
                     name = "Kedai Kopi, Mantapp",
@@ -191,9 +192,9 @@ object CheckoutDummyProvider {
 
 
 
-    fun getAddressNotAvailableResponse(): CheckoutTokoFoodResponse {
-        return CheckoutTokoFoodResponse(
-            status = 1,
+    fun getAddressNotAvailableResponse(): CheckoutTokoFood {
+        return CheckoutTokoFood(
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
                     name = "Kedai Kopi, Mantapp",

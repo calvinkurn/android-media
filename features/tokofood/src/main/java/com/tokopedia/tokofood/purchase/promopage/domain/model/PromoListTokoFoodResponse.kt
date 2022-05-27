@@ -15,7 +15,7 @@ class PromoListTokoFoodResponse(
     @Expose
     val data: PromoListTokoFoodData = PromoListTokoFoodData()
 ) {
-    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
+    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS_INT
 }
 
 class PromoListTokoFoodData(

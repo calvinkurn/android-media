@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
@@ -25,7 +25,7 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     fun mapCheckoutResponseToUiModels(
-        response: CheckoutTokoFoodResponse,
+        response: CheckoutTokoFood,
         isEnabled: Boolean,
         needPinpoint: Boolean
     ): List<Visitable<*>> {
@@ -99,7 +99,7 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     fun mapResponseToPartialUiModel(
-        response: CheckoutTokoFoodResponse,
+        response: CheckoutTokoFood,
         isEnabled: Boolean,
         needPinpoint: Boolean
     ): PartialTokoFoodUiModel {
@@ -131,7 +131,8 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    fun mapUiModelToUpdateParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): UpdateParam {
+    fun mapUiModelToUpdateParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>,
+                                shopId: String): UpdateParam {
         return UpdateParam(
             productList = uiModels.map { uiModel ->
                 UpdateProductParam(
@@ -141,7 +142,8 @@ object TokoFoodPurchaseUiModelMapper {
                     quantity = uiModel.quantity,
                     variants = uiModel.variants
                 )
-            }
+            },
+            shopId = shopId
         )
     }
 

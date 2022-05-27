@@ -44,7 +44,7 @@ import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -105,6 +105,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var loaderDialog: LoaderDialog? = null
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
+
+    private var shopId = ""
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -295,7 +297,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
-                    (it.data as? CheckoutTokoFoodResponse)?.let { response ->
+                    (it.data as? CheckoutTokoFood)?.let { response ->
+                        shopId = response.data.shop.shopId
                         activityViewModel?.loadCartList(response)
                         if (response.data.popupMessage.isNotEmpty()) {
                             showToaster(response.data.popupMessage, getOkayMessage()) {}
@@ -410,15 +413,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
                             cartTokoFoodData.carts.firstOrNull()?.let { product ->
                                 viewModel.updateNotes(updateParams, cartTokoFoodData)
-                                view?.let {
-                                    Toaster.build(
-                                        view = it,
-                                        text = context?.getString(R.string.text_purchase_success_notes).orEmpty(),
-                                        duration = Toaster.LENGTH_SHORT,
-                                        type = Toaster.TYPE_NORMAL,
-                                        actionText = getOkayMessage()
-                                    ).show()
-                                }
+                                showToaster(
+                                    context?.getString(R.string.text_purchase_success_notes).orEmpty(),
+                                    getOkayMessage()
+                                )
                             }
                         }
                     }
@@ -427,15 +425,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             viewModel.updateCartId(updateParams, cartTokoFoodData)
                         }
                         viewModel.refreshPartialCartInformation()
-                        view?.let {
-                            Toaster.build(
-                                view = it,
-                                text = context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
-                                duration = Toaster.LENGTH_SHORT,
-                                type = Toaster.TYPE_NORMAL,
-                                actionText = getOkayMessage()
-                            ).show()
-                        }
+                        showToaster(
+                            context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
+                            getOkayMessage()
+                        )
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
 
@@ -564,15 +557,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun onSuccessRemoveProduct(productCount: Int) {
-        view?.let {
-            Toaster.build(
-                    view = it,
-                    text = getString(R.string.text_purchase_success_delete, productCount),
-                    duration = Toaster.LENGTH_SHORT,
-                    type = Toaster.TYPE_NORMAL,
-                    actionText = getOkayMessage()
-            ).show()
-        }
+        showToaster(
+            context?.getString(R.string.text_purchase_success_delete, productCount).orEmpty(),
+            getOkayMessage()
+        )
     }
 
     private fun navigateToMerchantPage() {
@@ -703,7 +691,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun showToasterError(errorMessage: String,
                                  actionMessage: String,
-                                 onActionClicked: () -> Unit) {
+                                 onActionClicked: () -> Unit = {}) {
         view?.let {
             Toaster.build(
                 view = it,
@@ -720,7 +708,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun showToaster(message: String,
                             actionMessage: String,
-                            onActionClicked: () -> Unit) {
+                            onActionClicked: () -> Unit = {}) {
         view?.let {
             Toaster.build(
                 view = it,
@@ -845,7 +833,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     override fun onSaveNotesClicked(notes: String) {
                         val updateParam =
                             TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(
-                                listOf(element.copy(notes = notes))
+                                listOf(element.copy(notes = notes)),
+                                shopId
                             )
                         activityViewModel?.updateNotes(updateParam, SOURCE)
                     }
