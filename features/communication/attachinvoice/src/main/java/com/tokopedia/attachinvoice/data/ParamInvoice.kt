@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class ParamInvoice(
     @SerializedName("msgId")
-    val msgId: Int,
+    val msgId: String,
 
     @SerializedName("page")
     val page: Int

@@ -11,7 +11,7 @@ data class Invoice(
     @SerializedName("type")
     val type: String = "",
     @SerializedName("typeId")
-    val typeId: Int = 0
+    val typeId: String = ""
 ): Visitable<AttachInvoiceTypeFactory> {
 
     val url get() = attributes.hrefURL
