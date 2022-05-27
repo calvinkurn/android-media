@@ -1,13 +1,14 @@
 package com.tokopedia.officialstore.util
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 
 private const val NAME = "Recycler view has item idling resource"
 
