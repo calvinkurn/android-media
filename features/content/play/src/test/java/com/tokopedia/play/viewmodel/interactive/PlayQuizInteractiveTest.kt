@@ -20,10 +20,12 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.QuizAnsweredEvent
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -73,13 +75,17 @@ class PlayQuizInteractiveTest {
     private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val modelBuilder = UiModelBuilder.get()
+    private val interactiveModelBuilder = PlayInteractiveModelBuilder()
     private val mockInteractiveStorage = object : PlayInteractiveStorage {
         private var hasJoined = false
+        private var hasProcessWinner = false
         override fun setDetail(interactiveId: String, model: PlayCurrentInteractiveModel) {}
         override fun setActive(interactiveId: String) {}
-        override fun setHasProcessedWinner(interactiveId: String) {}
+        override fun setHasProcessedWinner(interactiveId: String) {
+            hasProcessWinner = true
+        }
         override fun save(model: InteractiveUiModel) {}
-        override fun hasProcessedWinner(interactiveId: String): Boolean = false
+        override fun hasProcessedWinner(interactiveId: String): Boolean = hasProcessWinner
         override fun setJoined(id: String) {
             hasJoined = true
         }
@@ -142,8 +148,6 @@ class PlayQuizInteractiveTest {
             it.focusPage(mockChannelData)
             it.setLoggedIn(true)
             it.setUserId("1")
-
-            print(it.viewModel.interactiveData)
 
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
             it.recordEvent {
@@ -270,5 +274,10 @@ class PlayQuizInteractiveTest {
                 }
             }
         }
+    }
+
+
+    @Test
+    fun `given quiz is finish and has no reward, only show leaderboard`() {
     }
 }
