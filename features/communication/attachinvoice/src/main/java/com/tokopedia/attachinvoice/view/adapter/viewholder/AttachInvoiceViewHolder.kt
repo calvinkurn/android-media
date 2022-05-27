@@ -8,7 +8,6 @@ import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.data.OrderStatusCode
 import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceBinding
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
