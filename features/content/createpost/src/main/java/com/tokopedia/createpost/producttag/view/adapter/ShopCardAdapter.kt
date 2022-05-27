@@ -17,6 +17,7 @@ class ShopCardAdapter(
         delegatesManager
             .addDelegate(ShopCardAdapterDelegate.Shop(onSelected))
             .addDelegate(ShopCardAdapterDelegate.Loading())
+            .addDelegate(ShopCardAdapterDelegate.EmptyState())
     }
 
     override fun onBindViewHolder(
@@ -31,6 +32,8 @@ class ShopCardAdapter(
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return if(oldItem is Model.Shop && newItem is Model.Shop) {
             oldItem.shop.shopId == newItem.shop.shopId
+        } else if(oldItem is Model.EmptyState && newItem is Model.EmptyState) {
+            oldItem.hasFilterApplied == newItem.hasFilterApplied
         } else if(oldItem is Model.Loading && newItem is Model.Loading) false
         else oldItem == newItem
     }
@@ -45,5 +48,9 @@ class ShopCardAdapter(
         ) : Model
 
         object Loading: Model
+
+        data class EmptyState(
+            val hasFilterApplied: Boolean,
+        ) : Model
     }
 }

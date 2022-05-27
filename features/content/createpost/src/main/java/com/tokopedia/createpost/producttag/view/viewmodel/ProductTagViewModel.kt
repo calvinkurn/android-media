@@ -3,20 +3,27 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.util.*
 import com.tokopedia.createpost.producttag.util.AUTHOR_ID
 import com.tokopedia.createpost.producttag.util.AUTHOR_TYPE
+import com.tokopedia.createpost.producttag.util.AUTHOR_USER
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.util.extension.combine
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
-import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
-import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.util.extension.removeLast
+import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -35,6 +42,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(AUTHOR_TYPE) private val authorType: String,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: ProductTagPreference,
 ): ViewModel() {
 
     @AssistedFactory
@@ -48,6 +56,15 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     /** Public Getter */
+    val isUser: Boolean
+        get() = authorType == AUTHOR_USER
+
+    val isSeller: Boolean
+        get() = authorType == AUTHOR_SELLER
+
+    val isShowCoachmarkGlobalTag: Boolean
+        get() = sharedPref.isFirstGlobalTag() && isUser
+
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
@@ -69,6 +86,11 @@ class ProductTagViewModel @AssistedInject constructor(
     val selectedShop: ShopUiModel
         get() = _shopProduct.value.shop
 
+    val myShopSortList: List<SortUiModel>
+        get() = _myShopSort.value.map {
+            it.copy(isSelected = _myShopProduct.value.param.isParamFound(it.key, it.value))
+        }
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))
@@ -79,6 +101,8 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
     private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
     private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
+
+    private val _myShopSort = MutableStateFlow<List<SortUiModel>>(emptyList())
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -108,30 +132,39 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
-    private val _myShopProductUiState = _myShopProduct.map {
+
+    private val _myShopProductUiState = combine(
+        _myShopProduct, _myShopSort,
+    ) { myShopProduct, myShopSort ->
         MyShopProductUiState(
-            products = it.products,
-            nextCursor = it.nextCursor,
-            state = it.state,
-            query = it.query,
+            products = myShopProduct.products,
+            sorts = myShopSort,
+            state = myShopProduct.state,
+            param = myShopProduct.param,
         )
     }
 
     private val _globalSearchProductUiState = _globalSearchProduct.map {
         GlobalSearchProductUiState(
             products = it.products,
+            quickFilters = it.quickFilters,
+            sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
+            suggestion = it.suggestion,
+            ticker = it.ticker,
         )
     }
 
     private val _globalSearchShopUiState = _globalSearchShop.map {
         GlobalSearchShopUiState(
             shops = it.shops,
+            quickFilters = it.quickFilters,
+            sortFilters = it.sortFilters,
             nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
         )
     }
 
@@ -139,9 +172,8 @@ class ProductTagViewModel @AssistedInject constructor(
         ShopProductUiState(
             shop = it.shop,
             products = it.products,
-            nextCursor = it.nextCursor,
             state = it.state,
-            query = it.query,
+            param = it.param,
         )
     }
 
@@ -189,7 +221,7 @@ class ProductTagViewModel @AssistedInject constructor(
         when(action) {
             is ProductTagAction.BackPressed -> handleBackPressed()
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
-            ProductTagAction.ClickSearchBar -> handleClickSearchBar()
+            ProductTagAction.OpenAutoCompletePage -> handleOpenAutoCompletePage()
 
             is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
@@ -204,13 +236,27 @@ class ProductTagViewModel @AssistedInject constructor(
             /** My Shop Product */
             ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
             is ProductTagAction.SearchMyShopProduct -> handleSearchMyShopProduct(action.query)
+            ProductTagAction.OpenMyShopSortBottomSheet -> handleOpenMyShopSortBottomSheet()
+            is ProductTagAction.ApplyMyShopSort -> handleApplyMyShopSort(action.selectedSort)
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
+            ProductTagAction.TickerClicked -> handleTickerClicked()
+            ProductTagAction.CloseTicker -> handleCloseTicker()
+            is ProductTagAction.SelectProductQuickFilter -> handleSelectProductQuickFilter(action.quickFilter)
+            ProductTagAction.OpenProductSortFilterBottomSheet -> handleOpenProductSortFilterBottomSheet()
+            is ProductTagAction.RequestProductFilterProductCount -> handleRequestProductFilterProductCount(action.selectedSortFilter)
+            is ProductTagAction.ApplyProductSortFilter -> handleApplyProductSortFilter(action.selectedSortFilter)
+            ProductTagAction.SwipeRefreshGlobalSearchProduct -> handleSwipeRefreshGlobalSearchProduct()
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
             is ProductTagAction.ShopSelected -> handleShopSelected(action.shop)
+            is ProductTagAction.SelectShopQuickFilter -> handleSelectShopQuickFilter(action.quickFilter)
+            ProductTagAction.OpenShopSortFilterBottomSheet -> handleOpenShopSortFilterBottomSheet()
+            is ProductTagAction.RequestShopFilterProductCount -> handleRequestShopFilterProductCount(action.selectedSortFilter)
+            is ProductTagAction.ApplyShopSortFilter -> handleApplyShopSortFilter(action.selectedSortFilter)
+            ProductTagAction.SwipeRefreshGlobalSearchShop -> handleSwipeRefreshGlobalSearchShop()
 
             /** Shop Product */
             ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
@@ -233,12 +279,13 @@ class ProductTagViewModel @AssistedInject constructor(
                     _productTagSourceStack.setValue { removeLast() }
                 }
             }
+            sharedPref.setNotFirstGlobalTag()
         }
     }
 
-    private fun handleClickSearchBar() {
+    private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.query))
+            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
         }
     }
 
@@ -247,23 +294,30 @@ class ProductTagViewModel @AssistedInject constructor(
             when(source) {
                 ProductTagSource.GlobalSearch -> {
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(query = query)
+                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query))
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(query = query)
+                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query))
                     }
                 }
                 ProductTagSource.Shop -> {
-                    val shop = getShopInfo(shopId)
+                    val shop = repo.getShopInfoByID(listOf(shopId.toInt()))
                     _shopProduct.setValue {
                         ShopProductUiModel.Empty.copy(
                             shop = shop,
-                            query = query,
+                            param = param.copy().apply { this.query = query },
                         )
                     }
                 }
+                else -> {}
             }
-        }) { }
+
+            submitAction(ProductTagAction.SelectProductTagSource(source))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
+            })
+        }
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
@@ -350,21 +404,22 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = myShopProduct.nextCursor,
-                query = myShopProduct.query,
-                shopId = userSession.shopId,
-                userId = "",
-                sort = 9 /** TODO: gonna change this later */
-            )
+            val newParam = myShopProduct.param.copy().apply {
+                shopId = userSession.shopId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            /** Update Param */
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _myShopProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    param = newParam,
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     )
                 )
             }
@@ -378,10 +433,55 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSearchMyShopProduct(query: String) {
-        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
-                query = query,
-            )
+        if(_myShopProduct.value.param.query == query) return
+
+        val newParam = _myShopProduct.value.param.apply {
+            resetPagination()
+            this.query = query
         }
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam) }
+
+        handleLoadMyShopProduct()
+    }
+
+    private fun handleOpenMyShopSortBottomSheet() {
+        viewModelScope.launchCatchError(block = {
+            if(_myShopSort.value.isEmpty()) {
+                val query = _myShopProduct.value.param.query
+                val param = initParam(query).apply {
+                    source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
+                }
+
+                repo.getSortFilter(param).data.sort
+                    .map { item ->
+                        SortUiModel(
+                            text = item.name,
+                            key = item.key,
+                            value = item.value,
+                            isSelected = false,
+                        )
+                    }.also { _myShopSort.setValue { it } }
+            }
+
+            _uiEvent.emit(ProductTagUiEvent.OpenMyShopSortBottomSheet)
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+            })
+        }
+    }
+
+    private fun handleApplyMyShopSort(selectedSort: SortUiModel) {
+        val currState = _myShopProduct.value
+        if(currState.param.isParamFound(selectedSort.key, selectedSort.value)) return
+
+        val query = currState.param.query
+        val newParam = initParam(query).apply {
+            addParam(selectedSort.key, selectedSort.value)
+        }
+
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(param = newParam) }
+
         handleLoadMyShopProduct()
     }
 
@@ -395,22 +495,32 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = globalSearchProduct.nextCursor,
-                query = globalSearchProduct.query,
-                shopId = "",
-                userId = userSession.userId,
-                sort = 9 /** TODO: gonna change this later */
+            val quickFilters = repo.getQuickFilter(
+                query = globalSearchProduct.param.query,
+                extraParams = globalSearchProduct.param.joinToString(),
             )
+
+            val newParam = globalSearchProduct.param.copy().apply {
+                userId = userSession.userId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            /** Update Param */
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _globalSearchProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    quickFilters = quickFilters,
+                    nextCursor = nextCursor,
+                    param = newParam,
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
-                    )
+                        hasNextPage = result.pagedData.hasNextPage,
+                    ),
+                    suggestion = result.suggestion,
+                    ticker = result.ticker,
                 )
             }
         }) {
@@ -420,6 +530,103 @@ class ProductTagViewModel @AssistedInject constructor(
                 )
             }
         }
+    }
+
+    private fun handleTickerClicked() {
+        val tickerParam = _globalSearchProduct.value.ticker.query
+        if(tickerParam.isEmpty()) return
+
+        val query = _globalSearchProduct.value.param.query
+        val newParam = initParam(query).apply {
+            tickerParam.toMapParam().forEach {
+                addParam(it.key, it.value)
+            }
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleCloseTicker() {
+        _globalSearchProduct.setValue {
+            copy(ticker = TickerUiModel())
+        }
+    }
+
+    private fun handleSelectProductQuickFilter(quickFilter: QuickFilterUiModel) {
+        val currState = _globalSearchProduct.value
+
+        val newParam = currState.param.copy().apply {
+            resetPagination()
+
+            if(isParamFound(quickFilter.key, quickFilter.value))
+                removeParam(quickFilter.key, quickFilter.value)
+            else addParam(quickFilter.key, quickFilter.value)
+        }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleOpenProductSortFilterBottomSheet() {
+        viewModelScope.launchCatchError(block = {
+            val currState = _globalSearchProduct.value
+
+            val query = currState.param.query
+            val param = initParam(query).apply {
+                source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
+            }
+
+            val sortFilters = if(currState.sortFilters.isEmpty()) {
+                repo.getSortFilter(param).also {
+                    _globalSearchProduct.setValue { copy(sortFilters = it) }
+                }
+            } else currState.sortFilters
+
+            _uiEvent.emit(ProductTagUiEvent.OpenProductSortFilterBottomSheet(currState.param, sortFilters))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
+            })
+        }
+    }
+
+    private fun handleRequestProductFilterProductCount(selectedSortFilter: Map<String, Any>) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.getSortFilterProductCount(SearchParamUiModel(HashMap(selectedSortFilter)))
+
+            _uiEvent.emit(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Success(result)))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Error(it)))
+        }
+    }
+
+    private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
+        val query = _globalSearchProduct.value.param.query
+        val newParam = initParam(query)
+
+        selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
+
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
+    }
+
+    private fun handleSwipeRefreshGlobalSearchProduct() {
+        val newParam = _globalSearchProduct.value.param.apply { resetPagination() }
+        _globalSearchProduct.setValue {
+            GlobalSearchProductUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchProduct()
     }
 
     private fun handleLoadGlobalSearchShop() {
@@ -432,20 +639,31 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceShops(
-                rows = LIMIT_PER_PAGE,
-                start = globalSearchShop.nextCursor,
-                query = globalSearchShop.query,
-                sort = 9 /** TODO: gonna change this later */
+            val newParam = globalSearchShop.param.copy().apply {
+                userId = userSession.userId
+                pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
+            }
+
+            val quickFilters = repo.getQuickFilter(
+                query = newParam.query,
+                extraParams = newParam.joinToString(),
             )
+
+            val result = repo.searchAceShops(param = newParam)
+
+            /** Update Param */
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _globalSearchShop.setValue {
                 copy(
-                    shops = shops + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    shops = shops + result.pagedData.dataList,
+                    quickFilters = quickFilters,
+                    nextCursor = nextCursor,
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
-                    )
+                        hasNextPage = result.pagedData.hasNextPage,
+                    ),
+                    param = newParam,
                 )
             }
         }) {
@@ -464,6 +682,84 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSelectShopQuickFilter(quickFilter: QuickFilterUiModel) {
+        val currState = _globalSearchShop.value
+
+        val newParam = currState.param.copy().apply {
+            resetPagination()
+
+            if(isParamFound(quickFilter.key, quickFilter.value))
+                removeParam(quickFilter.key, quickFilter.value)
+            else addParam(quickFilter.key, quickFilter.value)
+        }
+
+        _globalSearchShop.setValue {
+            GlobalSearchShopUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchShop()
+    }
+
+    private fun handleOpenShopSortFilterBottomSheet() {
+        viewModelScope.launchCatchError(block = {
+            val currState = _globalSearchShop.value
+
+            val query = currState.param.query
+            val param = initParam(query).apply {
+                source = SearchParamUiModel.SOURCE_SEARCH_SHOP
+                pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
+            }
+
+            val sortFilters = if(currState.sortFilters.isEmpty()) {
+                repo.getSortFilter(param).also {
+                    _globalSearchShop.setValue { copy(sortFilters = it) }
+                }
+            } else currState.sortFilters
+
+            _uiEvent.emit(ProductTagUiEvent.OpenShopSortFilterBottomSheet(currState.param, sortFilters))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
+                submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
+            })
+        }
+    }
+
+    private fun handleRequestShopFilterProductCount(selectedSortFilter: Map<String, Any>) {
+        viewModelScope.launchCatchError(block = {
+            /** Need to remove "device" param somehow */
+            val param = SearchParamUiModel(HashMap(selectedSortFilter)).apply {
+                device = ""
+            }
+            val result = repo.searchAceShops(param)
+
+            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Success(result.totalShop.toAmountString())))
+        }) {
+            _uiEvent.emit(ProductTagUiEvent.SetShopFilterProductCount(NetworkResult.Error(it)))
+        }
+    }
+
+    private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
+        val query = _globalSearchShop.value.param.query
+        val newParam = initParam(query)
+
+        selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
+
+        _globalSearchShop.setValue {
+            GlobalSearchShopUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchShop()
+    }
+
+    private fun handleSwipeRefreshGlobalSearchShop() {
+        val newParam = _globalSearchShop.value.param.apply { resetPagination() }
+        _globalSearchShop.setValue {
+            GlobalSearchShopUiModel.Empty.copy(param = newParam)
+        }
+
+        handleLoadGlobalSearchShop()
+    }
+
     private fun handleLoadShopProduct() {
         viewModelScope.launchCatchError(block = {
             val shopProduct = _shopProduct.value
@@ -474,21 +770,21 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
-                rows = LIMIT_PER_PAGE,
-                start = shopProduct.nextCursor,
-                query = shopProduct.query,
-                shopId = shopProduct.shop.shopId,
-                userId = "",
-                sort = 9 /** TODO: gonna change this later */
-            )
+            val newParam = shopProduct.param.copy().apply {
+                shopId = shopProduct.shop.shopId
+            }
+
+            val result = repo.searchAceProducts(param = newParam)
+
+            val nextCursor = result.pagedData.nextCursor.toInt()
+            newParam.start = nextCursor
 
             _shopProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    param = newParam,
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     )
                 )
             }
@@ -502,36 +798,23 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSearchShopProduct(query: String) {
+        if(_shopProduct.value.param.query == query) return
+
         _shopProduct.setValue { ShopProductUiModel.Empty.copy(
                 shop = shop,
-                query = query,
+                param = param.copy().apply { this.query = query }
             )
         }
         handleLoadShopProduct()
     }
 
     /** Util */
-    private suspend fun getShopInfo(shopId: String): ShopUiModel {
-        /** TODO: gonna hit GQL from shop_page || ask BE to modify the applink and provide shopName and shopBadge.
-         * iOS team get it from SuggestionData which we can't use bcs the autocomplete module
-         * forces us to use applink,
-         * the other ways is consume the shopInfo from ace_search_product, but if the product is not found,
-         * we can't get the shopInfo and will leave the breadcrumb empty :(
-         * */
-        return ShopUiModel(
-            shopId = shopId,
-            shopName = "Testing saja",
-            shopImage = "",
-            shopLocation = "",
-            shopGoldShop = 1,
-            shopStatus = 1,
-            isOfficial = true,
-            isPMPro = true,
-        )
+    private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
+        return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
 
-    private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
-        return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.query.isEmpty()
+    private fun initParam(query: String): SearchParamUiModel {
+        return SearchParamUiModel.Empty.apply { this.query = query }
     }
 
     companion object {

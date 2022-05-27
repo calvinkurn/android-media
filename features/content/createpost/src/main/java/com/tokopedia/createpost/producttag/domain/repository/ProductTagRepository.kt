@@ -1,6 +1,9 @@
 package com.tokopedia.createpost.producttag.domain.repository
 
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
@@ -12,26 +15,35 @@ interface ProductTagRepository {
         authorType: String,
         cursor: String,
         limit: Int,
-    ) : PagedDataUiModel<ProductUiModel>
+    ): PagedDataUiModel<ProductUiModel>
 
     suspend fun getLastPurchasedProducts(
         cursor: String,
         limit: Int,
-    ) : LastPurchasedProductUiModel
+    ): LastPurchasedProductUiModel
 
     suspend fun searchAceProducts(
-        rows: Int,
-        start: Int,
-        query: String,
-        shopId: String,
-        userId: String,
-        sort: Int,
-    ) : PagedDataUiModel<ProductUiModel>
+        param: SearchParamUiModel,
+    ): PagedGlobalSearchProductResponse
 
     suspend fun searchAceShops(
-        rows: Int,
-        start: Int,
+        param: SearchParamUiModel,
+    ): PagedGlobalSearchShopResponse
+
+    suspend fun getQuickFilter(
         query: String,
-        sort: Int,
-    ) : PagedDataUiModel<ShopUiModel>
+        extraParams: String,
+    ): List<QuickFilterUiModel>
+
+    suspend fun getSortFilter(
+        param: SearchParamUiModel,
+    ): DynamicFilterModel
+
+    suspend fun getSortFilterProductCount(
+        param: SearchParamUiModel,
+    ): String
+
+    suspend fun getShopInfoByID(
+        shopIds: List<Int>,
+    ): ShopUiModel
 }

@@ -6,18 +6,17 @@ package com.tokopedia.createpost.producttag.view.uimodel
 data class ShopProductUiModel(
     val shop: ShopUiModel,
     val products: List<ProductUiModel>,
-    val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
 
     companion object {
-        val Empty = ShopProductUiModel(
-            shop = ShopUiModel(),
-            products = emptyList(),
-            nextCursor = 0,
-            state = PagedState.Unknown,
-            query = "",
-        )
+        val Empty: ShopProductUiModel
+            get() = ShopProductUiModel(
+                shop = ShopUiModel(),
+                products = emptyList(),
+                state = PagedState.Unknown,
+                param = SearchParamUiModel.Empty,
+            )
     }
 }

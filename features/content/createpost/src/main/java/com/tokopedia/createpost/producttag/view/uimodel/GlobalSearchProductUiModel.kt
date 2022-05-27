@@ -1,21 +1,33 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+import com.tokopedia.filter.common.data.DynamicFilterModel
+
+
 /**
  * Created By : Jonathan Darwin on May 10, 2022
  */
 data class GlobalSearchProductUiModel(
     val products: List<ProductUiModel>,
+    val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
+    val suggestion: String,
+    val ticker: TickerUiModel,
 ) {
 
     companion object {
-        val Empty = GlobalSearchProductUiModel(
-            products = emptyList(),
-            nextCursor = 0,
-            state = PagedState.Unknown,
-            query = "",
-        )
+        val Empty: GlobalSearchProductUiModel
+            get() = GlobalSearchProductUiModel(
+                products = emptyList(),
+                quickFilters = emptyList(),
+                sortFilters = DynamicFilterModel(),
+                nextCursor = 0,
+                state = PagedState.Unknown,
+                param = SearchParamUiModel.Empty,
+                suggestion = "",
+                ticker = TickerUiModel()
+            )
     }
 }

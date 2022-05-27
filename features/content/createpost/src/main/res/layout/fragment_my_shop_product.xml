@@ -18,12 +18,24 @@
         app:search_bar_show_icon="false"
         app:search_bar_placeholder="@string/cc_product_tag_search_hint" />
 
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chip_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:chipSize="small"
+        app:chipText="@string/cc_product_tag_sort_label"
+        app:chipType="normal"
+        app:layout_constraintTop_toBottomOf="@id/sb_shop_product"
+        app:layout_constraintStart_toStartOf="@id/sb_shop_product"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_my_shop_product"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/sb_shop_product"
+        app:layout_constraintTop_toBottomOf="@id/chip_sort"
         app:layout_constraintStart_toStartOf="@id/sb_shop_product"
         app:layout_constraintEnd_toEndOf="@id/sb_shop_product"
         app:layout_constraintBottom_toBottomOf="parent"

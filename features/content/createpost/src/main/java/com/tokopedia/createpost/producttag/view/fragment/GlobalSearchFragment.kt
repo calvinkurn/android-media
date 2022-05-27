@@ -77,24 +77,14 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.clSearch.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickSearchBar)
+            viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collect {
-                renderSearchBar(it.value.globalSearchProduct.query)
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                when(it) {
-                    is ProductTagUiEvent.OpenAutoCompletePage -> {
-                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
-                    }
-                }
+                renderSearchBar(it.value.globalSearchProduct.param.query)
             }
         }
     }
@@ -112,7 +102,14 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
     companion object {
         const val TAG = "GlobalSearchFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): GlobalSearchFragment {

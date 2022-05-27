@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel.state
 
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.filter.common.data.DynamicFilterModel
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -36,37 +37,42 @@ data class LastPurchasedProductUiState(
 
 data class MyShopProductUiState(
     val products: List<ProductUiModel>,
-    val nextCursor: Int,
+    val sorts: List<SortUiModel>,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
     fun hasFilter(): Boolean {
-        return query.isNotEmpty()
+        return param.query.isNotEmpty()
     }
 }
 
 data class GlobalSearchProductUiState(
     val products: List<ProductUiModel>,
+    val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
+    val suggestion: String,
+    val ticker: TickerUiModel,
 )
 
 data class GlobalSearchShopUiState(
     val shops: List<ShopUiModel>,
+    val quickFilters: List<QuickFilterUiModel>,
+    val sortFilters: DynamicFilterModel,
     val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 )
 
 data class ShopProductUiState(
     val shop: ShopUiModel,
     val products: List<ProductUiModel>,
-    val nextCursor: Int,
     val state: PagedState,
-    val query: String,
+    val param: SearchParamUiModel,
 ) {
     fun hasFilter(): Boolean {
-        return query.isNotEmpty()
+        return param.query.isNotEmpty()
     }
 }

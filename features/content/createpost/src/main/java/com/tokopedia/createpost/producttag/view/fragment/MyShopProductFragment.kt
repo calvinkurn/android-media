@@ -1,35 +1,36 @@
 package com.tokopedia.createpost.producttag.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
+import com.tokopedia.createpost.producttag.view.bottomsheet.SortBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.MyShopProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -71,10 +72,29 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(viewModel.myShopStateUnknown)
-            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
         setupView()
         setupObserver()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is SortBottomSheet -> {
+                childFragment.setListener(object : SortBottomSheet.Listener {
+                    override fun onSortSelected(sort: SortUiModel) {
+                        viewModel.submitAction(ProductTagAction.ApplyMyShopSort(sort))
+                    }
+                })
+
+                childFragment.setData(viewModel.myShopSortList)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(viewModel.myShopStateUnknown)
+            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
     }
 
     override fun onDestroyView() {
@@ -95,15 +115,20 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbShopProduct.searchBarTextField.text.toString()
-                viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
+                submitQuery(query)
 
-                textView.apply {
-                    clearFocus()
-                    hideKeyboard()
-                }
                 true
             }
             else false
+        }
+
+        binding.sbShopProduct.clearListener = {
+            submitQuery("")
+        }
+
+        binding.chipSort.apply {
+            setChevronClickListener { submitActionOpenSortBottomSheet() }
+            setOnClickListener { submitActionOpenSortBottomSheet() }
         }
     }
 
@@ -111,6 +136,20 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderMyShopProducts(it.prevValue?.myShopProduct, it.value.myShopProduct)
+                renderChip(it.prevValue?.myShopProduct, it.value.myShopProduct)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    ProductTagUiEvent.OpenMyShopSortBottomSheet -> {
+                        SortBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showNow(childFragmentManager)
+                    }
+                }
             }
         }
     }
@@ -158,6 +197,25 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         }
     }
 
+    private fun renderChip(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
+        if(prev?.param == curr.param) return
+
+        val selectedSort = viewModel.myShopSortList.firstOrNull{ it.isSelected }
+
+        binding.chipSort.chipText = selectedSort?.text ?: getString(R.string.cc_product_tag_sort_label)
+        binding.chipSort.chipType = if(selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+    }
+
+    private fun submitQuery(query: String) {
+        clearSearchFocus()
+        viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
+    }
+
+    private fun submitActionOpenSortBottomSheet() {
+        clearSearchFocus()
+        viewModel.submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+    }
+
     private fun showEmptyState(hasFilter: Boolean) {
         binding.globalError.apply {
             errorTitle.text = getString(
@@ -172,10 +230,25 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         }
     }
 
+
+    private fun clearSearchFocus() {
+        binding.sbShopProduct.searchBarTextField.apply {
+            clearFocus()
+            hideKeyboard()
+        }
+    }
+
     companion object {
         const val TAG = "MyShopProductFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): MyShopProductFragment {

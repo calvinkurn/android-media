@@ -470,8 +470,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.menuOpen = !fab_feed.menuOpen
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
-
-        renderCompleteFab()
     }
 
     override fun onStop() {
@@ -652,6 +650,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             })
         }
+
+        renderCompleteFab()
     }
 
     private fun setFeedBackgroundCrossfader() {

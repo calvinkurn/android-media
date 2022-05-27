@@ -127,4 +127,22 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_shop_closed">Toko Tutup Sementara</string>
     <string name="cc_shop_moderated">Dalam Pengawasan</string>
     <string name="cc_shop_inactive">Toko Sudah Tidak Aktif</string>
+
+    <string name="cc_product_tag_filter_label">Filter</string>
+    <string name="cc_product_tag_sort_label">Urutkan</string>
+    <string name="cc_product_tag_save">Simpan</string>
+    <string name="cc_filter_product_count_template">Tampilkan %s produk</string>
+    <string name="cc_filter_product_count_label">Tampilkan produk</string>
+    <string name="cc_filter_shop_count_template">Tampilkan %s Toko</string>
+    <string name="cc_filter_shop_count_label">Tampilkan Toko</string>
+
+    <string name="cc_global_search_product_filter_not_found_title">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="cc_global_search_product_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_product_query_not_found_title">Oops, barangnya nggak ketemu</string>
+    <string name="cc_global_search_product_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
+
+    <string name="cc_global_search_shop_filter_not_found_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="cc_global_search_shop_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_shop_query_not_found_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="cc_global_search_shop_query_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
 </resources>

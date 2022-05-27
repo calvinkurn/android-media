@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.ProductTagCardViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
@@ -12,6 +13,52 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  * Created By : Jonathan Darwin on April 26, 2022
  */
 internal class ProductTagCardAdapterDelegate private constructor() {
+
+    internal class Suggestion: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.Suggestion,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Suggestion>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.Suggestion,
+            holder: ProductTagCardViewHolder.Suggestion
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.Suggestion {
+            return ProductTagCardViewHolder.Suggestion.create(
+                parent
+            )
+        }
+    }
+
+    internal class Ticker: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.Ticker,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Ticker>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.Ticker,
+            holder: ProductTagCardViewHolder.Ticker
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.Ticker {
+            return ProductTagCardViewHolder.Ticker.create(
+                parent
+            )
+        }
+    }
 
     internal class Product(
         private val onSelected: (ProductUiModel) -> Unit,
@@ -41,19 +88,42 @@ internal class ProductTagCardAdapterDelegate private constructor() {
     internal class Loading : TypedAdapterDelegate<
             ProductTagCardAdapter.Model.Loading,
             ProductTagCardAdapter.Model,
-            ProductTagCardViewHolder.Loading>(
+            LoadingViewHolder>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: ProductTagCardAdapter.Model.Loading,
-            holder: ProductTagCardViewHolder.Loading
+            holder: LoadingViewHolder
         ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): ProductTagCardViewHolder.Loading {
-            return ProductTagCardViewHolder.Loading.create(parent)
+        ): LoadingViewHolder {
+            return LoadingViewHolder.create(parent)
+        }
+    }
+
+    internal class EmptyState: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.EmptyState,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.EmptyState>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.EmptyState,
+            holder: ProductTagCardViewHolder.EmptyState
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.EmptyState {
+            return ProductTagCardViewHolder.EmptyState.create(
+                parent
+            )
         }
     }
 }

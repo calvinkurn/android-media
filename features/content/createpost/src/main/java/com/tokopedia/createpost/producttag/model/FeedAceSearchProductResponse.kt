@@ -17,6 +17,12 @@ data class FeedAceSearchProductResponse(
     data class Data(
         @SerializedName("products")
         val products: List<Product> = emptyList(),
+
+        @SerializedName("suggestion")
+        val suggestion: Suggestion = Suggestion(),
+
+        @SerializedName("ticker")
+        val ticker: Ticker = Ticker(),
     )
 
     data class Product(
@@ -94,5 +100,18 @@ data class FeedAceSearchProductResponse(
 
         @SerializedName("imgUrl")
         val imgUrl: String = "",
+    )
+
+    data class Suggestion(
+        @SerializedName("text")
+        val text: String = "",
+    )
+
+    data class Ticker(
+        @SerializedName("text")
+        val text: String = "",
+
+        @SerializedName("query")
+        val query: String = "",
     )
 }

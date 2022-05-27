@@ -12,16 +12,21 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchProductTabBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecoration
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
+import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.filter.common.helper.getSortFilterCount
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
@@ -38,8 +43,24 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
-            onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) }
+            onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) },
         )
+    }
+    private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
+    private val sortFilterCallback = object : SortFilterBottomSheet.Callback {
+        override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+            applySortFilterModel.apply {
+                viewModel.submitAction(
+                    ProductTagAction.ApplyProductSortFilter(
+                        selectedFilterMapParameter + selectedSortMapParameter
+                    )
+                )
+            }
+        }
+
+        override fun getResultCount(mapParameter: Map<String, String>) {
+            viewModel.submitAction(ProductTagAction.RequestProductFilterProductCount(mapParameter))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,49 +99,70 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     private fun setupView() {
+        binding.rvGlobalSearchProduct.addItemDecoration(ProductTagItemDecoration(requireContext()))
         binding.rvGlobalSearchProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
         binding.rvGlobalSearchProduct.adapter = adapter
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = true
+            viewModel.submitAction(ProductTagAction.SwipeRefreshGlobalSearchProduct)
+        }
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchProduct(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
+                renderQuickFilter(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event) {
+                    is ProductTagUiEvent.OpenProductSortFilterBottomSheet -> {
+                        sortFilterBottomSheet.show(
+                            childFragmentManager,
+                            event.param.value as Map<String, String>,
+                            event.data,
+                            sortFilterCallback,
+                        )
+                    }
+                    is ProductTagUiEvent.SetProductFilterProductCount -> {
+                        val text = when(event.result) {
+                            is NetworkResult.Success -> {
+                                getString(R.string.cc_filter_product_count_template, event.result.data)
+                            }
+                            else -> getString(R.string.cc_filter_product_count_label)
+                        }
+
+                        sortFilterBottomSheet.setResultCountText(text)
+                    }
+                }
             }
         }
     }
 
     private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
-
-        fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
-            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
-
-            if(binding.rvGlobalSearchProduct.isComputingLayout.not())
-                adapter.setItemsAndAnimateChanges(finalProducts)
-
-            binding.rvGlobalSearchProduct.show()
-            binding.globalError.hide()
-        }
-
-        if(prev?.products == curr.products && prev.state == curr.state) return
+        if(prev?.products == curr.products &&
+            prev.state == curr.state &&
+            prev.ticker == curr.ticker &&
+            prev.suggestion == curr.suggestion
+        ) return
 
         when(curr.state) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
+                updateAdapterData(curr, !binding.swipeRefresh.isRefreshing)
             }
             is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
-                    binding.rvGlobalSearchProduct.hide()
-                    binding.globalError.show()
-                }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
+                binding.swipeRefresh.isRefreshing = false
+                binding.sortFilter.showWithCondition(curr.products.isNotEmpty() || (curr.products.isEmpty() && curr.param.hasFilterApplied()))
+                updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.products, false)
+                binding.swipeRefresh.isRefreshing = false
+                updateAdapterData(curr,false)
 
-                /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
                     text = getString(R.string.cc_failed_load_product),
@@ -132,6 +174,53 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             }
             else -> {}
         }
+    }
+
+    private fun renderQuickFilter(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
+        if(prev?.quickFilters == curr.quickFilters) return
+
+        binding.sortFilter.apply {
+            resetAllFilters()
+            sortFilterItems.removeAllViews()
+            addItem(
+                curr.quickFilters.map {
+                    it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
+                        viewModel.submitAction(ProductTagAction.SelectProductQuickFilter(it))
+                    }
+                } as ArrayList<SortFilterItem>
+            )
+            textView?.text = getString(R.string.cc_product_tag_filter_label)
+            parentListener = {
+                viewModel.submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
+            }
+            indicatorCounter = curr.param.getFilterCount()
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun updateAdapterData(currState: GlobalSearchProductUiState, showLoading: Boolean) {
+        val finalProducts = buildList {
+            if(currState.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = currState.suggestion))
+            if(currState.ticker.text.isNotEmpty())
+                add(
+                    ProductTagCardAdapter.Model.Ticker(
+                        text = currState.ticker.text,
+                        onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
+                        onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
+                    )
+                )
+
+            if(currState.products.isEmpty() && currState.state is PagedState.Success)
+                add(ProductTagCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
+            else
+                addAll(currState.products.map { ProductTagCardAdapter.Model.Product(product = it) })
+
+
+            if(showLoading) add(ProductTagCardAdapter.Model.Loading)
+        }
+
+        if(binding.rvGlobalSearchProduct.isComputingLayout.not())
+            adapter.setItemsAndAnimateChanges(finalProducts)
     }
 
     companion object {

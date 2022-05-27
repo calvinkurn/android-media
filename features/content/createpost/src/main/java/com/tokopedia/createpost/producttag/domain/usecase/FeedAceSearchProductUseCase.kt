@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.domain.usecase
 
 import com.tokopedia.createpost.producttag.model.FeedAceSearchProductResponse
+import com.tokopedia.createpost.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,15 +27,6 @@ class FeedAceSearchProductUseCase @Inject constructor(
 
     companion object {
         private const val PARAMS = "params"
-        private const val PARAM_DEVICE = "device"
-        private const val PARAM_FROM = "from"
-        private const val PARAM_ROWS = "rows"
-        private const val PARAM_START = "start"
-        private const val PARAM_QUERY = "q"
-        private const val PARAM_SHOP_ID = "shop_id"
-        private const val PARAM_USER_ID = "user_id"
-        private const val PARAM_SOURCE = "source"
-        private const val PARAM_SORT = "ob"
 
         const val QUERY_NAME = "FeedAceSearchProductUseCaseQuery"
         const val QUERY = """
@@ -93,44 +85,9 @@ class FeedAceSearchProductUseCase @Inject constructor(
         """
 
         fun createParams(
-            rows: Int,
-            start: Int,
-            query: String,
-            shopId: String,
-            userId: String,
-            sort: Int,
-        ): Map<String, Any> {
-            return mapOf<String, Any>(
-                PARAMS to generateParam(rows, start, query, shopId, userId, sort)
-            )
-        }
-
-        private fun generateParam(
-            rows: Int,
-            start: Int,
-            query: String,
-            shopId: String,
-            userId: String,
-            sort: Int,
-        ): String = mutableMapOf<String, Any>(
-            PARAM_DEVICE to "android",
-            PARAM_FROM to "feed_content",
-            PARAM_ROWS to rows,
-            PARAM_START to start,
-            PARAM_QUERY to query.trim(),
-            PARAM_SOURCE to "universe",
-            PARAM_SORT to sort,
-        ).apply {
-
-            if(shopId.isNotEmpty())
-                put(PARAM_SHOP_ID, shopId)
-
-            if(userId.isNotEmpty())
-                put(PARAM_USER_ID, userId)
-
-        }.toString()
-            .replace("{", "")
-            .replace("}", "")
-            .replace(", ", "&")
+            param: SearchParamUiModel,
+        ): Map<String, Any> = mapOf(
+            PARAMS to param.joinToString()
+        )
     }
 }

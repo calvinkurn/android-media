@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
-import com.tokopedia.createpost.createpost.databinding.ItemProductTagShopListBinding
+import com.tokopedia.createpost.createpost.databinding.*
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
@@ -67,8 +66,8 @@ internal class ShopCardViewHolder private constructor() {
         }
     }
 
-    internal class Loading(
-        binding: ItemProductTagLoadingListBinding,
+    internal class EmptyState(
+        private val binding: ItemGlobalSearchEmptyStateListBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -78,10 +77,30 @@ internal class ShopCardViewHolder private constructor() {
             }
         }
 
+        fun bind(item: ShopCardAdapter.Model.EmptyState) {
+            val context = itemView.context
+            binding.emptyState.apply {
+                setImageUrl(context.getString(R.string.img_search_no_shop))
+                setPrimaryCTAText("")
+                setSecondaryCTAText("")
+
+                if(item.hasFilterApplied) {
+                    setTitle(context.getString(R.string.cc_global_search_shop_filter_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_shop_filter_not_found_desc))
+                    setOrientation(EmptyStateUnify.Orientation.VERTICAL)
+                }
+                else {
+                    setTitle(context.getString(R.string.cc_global_search_shop_query_not_found_title))
+                    setDescription(context.getString(R.string.cc_global_search_shop_query_not_found_desc))
+                    setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
+                }
+            }
+        }
+
         companion object {
 
-            fun create(parent: ViewGroup) = Loading(
-                ItemProductTagLoadingListBinding.inflate(
+            fun create(parent: ViewGroup) = EmptyState(
+                ItemGlobalSearchEmptyStateListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

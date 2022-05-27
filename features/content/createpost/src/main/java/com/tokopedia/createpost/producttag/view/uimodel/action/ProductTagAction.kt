@@ -1,8 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel.action
 
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -10,7 +8,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 sealed interface ProductTagAction {
     object BackPressed: ProductTagAction
     object ClickBreadcrumb: ProductTagAction
-    object ClickSearchBar: ProductTagAction
+    object OpenAutoCompletePage: ProductTagAction
 
     data class SetDataFromAutoComplete(val source: ProductTagSource, val query: String, val shopId: String): ProductTagAction
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
@@ -25,13 +23,27 @@ sealed interface ProductTagAction {
     /** My Shop Product */
     object LoadMyShopProduct: ProductTagAction
     data class SearchMyShopProduct(val query: String): ProductTagAction
+    object OpenMyShopSortBottomSheet: ProductTagAction
+    data class ApplyMyShopSort(val selectedSort: SortUiModel): ProductTagAction
 
     /** Global Search Product */
     object LoadGlobalSearchProduct: ProductTagAction
+    object TickerClicked: ProductTagAction
+    object CloseTicker: ProductTagAction
+    data class SelectProductQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
+    object OpenProductSortFilterBottomSheet: ProductTagAction
+    data class RequestProductFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
+    data class ApplyProductSortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
+    object SwipeRefreshGlobalSearchProduct: ProductTagAction
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction
     data class ShopSelected(val shop: ShopUiModel): ProductTagAction
+    data class SelectShopQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
+    object OpenShopSortFilterBottomSheet: ProductTagAction
+    data class RequestShopFilterProductCount(val selectedSortFilter: Map<String, String>): ProductTagAction
+    data class ApplyShopSortFilter(val selectedSortFilter: Map<String, String>): ProductTagAction
+    object SwipeRefreshGlobalSearchShop: ProductTagAction
 
     /** Shop Product */
     object LoadShopProduct: ProductTagAction

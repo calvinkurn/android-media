@@ -2,15 +2,12 @@ package com.tokopedia.createpost.producttag.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchProductUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchShopUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
-import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.domain.usecase.*
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,6 +19,10 @@ class ProductTagRepositoryImpl @Inject constructor(
     private val getFeedLastPurchaseProductUseCase: GetFeedLastPurchaseProductUseCase,
     private val feedAceSearchProductUseCase: FeedAceSearchProductUseCase,
     private val feedAceSearchShopUseCase: FeedAceSearchShopUseCase,
+    private val feedQuickFilterUseCase: FeedQuickFilterUseCase,
+    private val getSortFilterUseCase: GetSortFilterUseCase,
+    private val getSortFilterProductCountUseCase: GetSortFilterProductCountUseCase,
+    private val getShopInfoByIDUseCase: GetShopInfoByIDUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -63,46 +64,82 @@ class ProductTagRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchAceProducts(
-        rows: Int,
-        start: Int,
-        query: String,
-        shopId: String,
-        userId: String,
-        sort: Int
-    ): PagedDataUiModel<ProductUiModel> {
+        param: SearchParamUiModel,
+    ): PagedGlobalSearchProductResponse {
         return withContext(dispatchers.io) {
             val response = feedAceSearchProductUseCase.apply {
                 setRequestParams(FeedAceSearchProductUseCase.createParams(
-                    rows = rows,
-                    start = start,
-                    shopId = shopId,
-                    userId = userId,
-                    query = query,
-                    sort = sort,
+                    param = param,
                 ))
             }.executeOnBackground()
 
-            mapper.mapSearchAceProducts(response, start + rows)
+            mapper.mapSearchAceProducts(response, param.start + param.rows)
         }
     }
 
     override suspend fun searchAceShops(
-        rows: Int,
-        start: Int,
-        query: String,
-        sort: Int
-    ): PagedDataUiModel<ShopUiModel> {
+        param: SearchParamUiModel,
+    ): PagedGlobalSearchShopResponse {
         return withContext(dispatchers.io) {
             val response = feedAceSearchShopUseCase.apply {
                 setRequestParams(FeedAceSearchShopUseCase.createParams(
-                    rows = rows,
-                    start = start,
-                    query = query,
-                    sort = sort,
+                    param = param,
                 ))
             }.executeOnBackground()
 
-            mapper.mapSearchAceShops(response, start + rows)
+            mapper.mapSearchAceShops(response, param.start + param.rows)
+        }
+    }
+
+    override suspend fun getQuickFilter(
+        query: String,
+        extraParams: String
+    ): List<QuickFilterUiModel> {
+        return withContext(dispatchers.io) {
+            val response = feedQuickFilterUseCase.apply {
+                setRequestParams(FeedQuickFilterUseCase.createParams(
+                    query = query,
+                    extraParams = extraParams,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapQuickFilter(response)
+        }
+    }
+
+    override suspend fun getSortFilter(param: SearchParamUiModel): DynamicFilterModel {
+        return withContext(dispatchers.io) {
+            val response = getSortFilterUseCase.apply {
+                setRequestParams(GetSortFilterUseCase.createParams(
+                    param = param,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapSortFilter(response)
+        }
+    }
+
+    override suspend fun getSortFilterProductCount(param: SearchParamUiModel): String {
+        return withContext(dispatchers.io) {
+            val response = getSortFilterProductCountUseCase.apply {
+                setRequestParams(GetSortFilterProductCountUseCase.createParams(
+                    param = param,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapSortFilterProductCount(response)
+        }
+    }
+
+    override suspend fun getShopInfoByID(shopIds: List<Int>): ShopUiModel {
+        return withContext(dispatchers.io) {
+            val response = getShopInfoByIDUseCase.apply {
+                setRequestParams(GetShopInfoByIDUseCase.createParams(
+                    shopIds = shopIds,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapShopInfo(response)
         }
     }
 }

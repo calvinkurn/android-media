@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.createpost.producttag.view.adapter.viewholder.MyShopProductViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
@@ -41,19 +42,19 @@ internal class MyShopProductAdapterDelegate private constructor() {
     internal class Loading : TypedAdapterDelegate<
             MyShopProductAdapter.Model.Loading,
             MyShopProductAdapter.Model,
-            MyShopProductViewHolder.Loading>(
+            LoadingViewHolder>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: MyShopProductAdapter.Model.Loading,
-            holder: MyShopProductViewHolder.Loading
+            holder: LoadingViewHolder
         ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): MyShopProductViewHolder.Loading {
-            return MyShopProductViewHolder.Loading.create(parent)
+        ): LoadingViewHolder {
+            return LoadingViewHolder.create(parent)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.view.fragment.base
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,10 +13,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
+import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
+import com.tokopedia.createpost.producttag.util.AUTHOR_USER
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
@@ -29,6 +36,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -50,6 +58,8 @@ class ProductTagParentFragment @Inject constructor(
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
         get() = _binding!!
+
+    private var coachmark: CoachMark2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +105,11 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        coachmark?.hideCoachMark()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -108,6 +123,13 @@ class ProductTagParentFragment @Inject constructor(
         binding.tvCcProductTagProductSource.setOnClickListener {
             viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
         }
+
+        binding.icCcProductTagChevron1.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+        }
+
+        showBreadcrumb(viewModel.isUser)
+        showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }
 
     private fun setupObserve() {
@@ -141,6 +163,19 @@ class ProductTagParentFragment @Inject constructor(
                             requireActivity().classLoader
                         ).showNow(childFragmentManager)
                     }
+                    is ProductTagUiEvent.OpenAutoCompletePage -> {
+                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
+                    }
+                    is ProductTagUiEvent.ShowError -> {
+                        Toaster.build(
+                            binding.root,
+                            text = getString(R.string.default_request_error_unknown),
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_LONG,
+                            actionText = if(it.action != null) getString(R.string.feed_content_coba_lagi_text) else "",
+                            clickListener = { view -> it.action?.invoke() }
+                        ).show()
+                    }
                 }
             }
         }
@@ -171,7 +206,7 @@ class ProductTagParentFragment @Inject constructor(
             }
             else if(firstSource == ProductTagSource.Shop) {
                 binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
-                binding.icCcProductTagShopBadge1.show()
+                binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
                 binding.imgCcProductTagShopBadge1.hide()
             }
             else {
@@ -223,42 +258,16 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
+        val classLoader = requireActivity().classLoader
         return when(productTagSource) {
-            ProductTagSource.LastTagProduct -> {
-                Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
-                )
-            }
-            ProductTagSource.LastPurchase -> {
-                Pair(
-                    LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastPurchasedProductFragment.TAG,
-                )
-            }
-            ProductTagSource.MyShop -> {
-                Pair(
-                    MyShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    MyShopProductFragment.TAG,
-                )
-            }
-            ProductTagSource.GlobalSearch -> {
-                Pair(
-                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    GlobalSearchFragment.TAG,
-                )
-            }
-            ProductTagSource.Shop -> {
-                Pair(
-                    ShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    ShopProductFragment.TAG,
-                )
-            }
+            ProductTagSource.LastTagProduct -> LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.LastPurchase -> LastPurchasedProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.MyShop -> MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.GlobalSearch -> GlobalSearchFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.Shop -> ShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
             else -> {
-                Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
-                )
+                if(viewModel.isSeller) MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+                else LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
             }
         }
     }
@@ -290,9 +299,39 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
+    private fun showBreadcrumb(isShow: Boolean) {
+        binding.apply {
+            tvCcProductTagProductSourceLabel.showWithCondition(isShow)
+            tvCcProductTagProductSource.showWithCondition(isShow)
+            tvCcProductTagProductSource2.showWithCondition(isShow)
+
+            icCcProductTagShopBadge1.showWithCondition(isShow)
+            icCcProductTagShopBadge2.showWithCondition(isShow)
+
+            icCcProductTagChevron1.showWithCondition(isShow)
+            icCcProductTagChevron2.showWithCondition(isShow)
+
+            imgCcProductTagShopBadge1.showWithCondition(isShow)
+        }
+    }
+
+    private fun showCoachmarkGlobalTag(isShow: Boolean) {
+        if(isShow) {
+            coachmark = CoachMark2(activity as Context)
+
+            coachmark?.showCoachMark(arrayListOf(
+                CoachMark2Item(
+                    binding.tvCcProductTagProductSource,
+                    getString(R.string.content_creation_search_coachmark_header),
+                    getString(R.string.content_creation_search_coachmark_desc),
+                    CoachMark2.POSITION_BOTTOM
+                )
+            ))
+        }
+    }
+
     fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
-        viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
     }
 
     fun onBackPressed() {

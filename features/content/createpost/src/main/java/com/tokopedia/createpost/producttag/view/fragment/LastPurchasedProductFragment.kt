@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastPurchasedProductBinding
+import com.tokopedia.createpost.producttag.util.extension.isNetworkError
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -18,6 +19,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastPurchasedProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
@@ -125,16 +127,18 @@ class LastPurchasedProductFragment : BaseProductTagChildFragment() {
             }
             is PagedState.Error -> {
                 binding.tickerInfo.hide()
-                updateAdapterData(curr.products, false)
+                binding.rvLastPurchasedProduct.hide()
+                binding.globalError.apply {
+                    setType(
+                        if(curr.state.error.isNetworkError) GlobalError.NO_CONNECTION
+                        else GlobalError.SERVER_ERROR
+                    )
 
-                Toaster.build(
-                    binding.root,
-                    text = getString(R.string.cc_failed_load_product),
-                    type = Toaster.TYPE_ERROR,
-                    duration = Toaster.LENGTH_LONG,
-                    actionText = getString(R.string.feed_content_coba_lagi_text),
-                    clickListener = { viewModel.submitAction(ProductTagAction.LoadLastPurchasedProduct) }
-                ).show()
+                    setActionClickListener {
+                        viewModel.submitAction(ProductTagAction.LoadLastPurchasedProduct)
+                    }
+                    show()
+                }
             }
             else -> {}
         }
@@ -143,7 +147,14 @@ class LastPurchasedProductFragment : BaseProductTagChildFragment() {
     companion object {
         const val TAG = "LastPurchasedProductFragment"
 
-        fun getFragment(
+        fun getFragmentPair(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) : Pair<BaseProductTagChildFragment, String> {
+            return Pair(getFragment(fragmentManager, classLoader), TAG)
+        }
+
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): LastPurchasedProductFragment {
