@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmProMembershipCheckListViewBinding
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 /**
@@ -42,12 +43,30 @@ class MembershipPmProCheckListView : LinearLayout {
         )
     }
 
-    fun show(data: Data) {
+    fun show(data: MembershipDataUiModel) {
+        showTitle(data)
         showOrderCheckList(data)
         showNetIncomeCheckList(data)
     }
 
-    private fun showNetIncomeCheckList(data: Data) {
+    private fun showTitle(data: MembershipDataUiModel) {
+        val title = if (data.gradeBenefit.isTabActive) {
+            context.getString(
+                R.string.pm_membership_current_grade_title,
+                data.gradeBenefit.tabLabel
+            )
+        } else {
+            context.getString(
+                R.string.pm_membership_next_grade_title,
+                data.gradeBenefit.getShopLevel(),
+                data.gradeBenefit.tabLabel
+            )
+        }
+
+        binding.tvPmMembershipChecklistTitle.text = title
+    }
+
+    private fun showNetIncomeCheckList(data: MembershipDataUiModel) {
         val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.netIncome.toString())
         val netIncomeThresholdStr = CurrencyFormatHelper.convertToRupiah(
             data.netIncomeThreshold.toString()
@@ -65,7 +84,7 @@ class MembershipPmProCheckListView : LinearLayout {
         }
     }
 
-    private fun showOrderCheckList(data: Data) {
+    private fun showOrderCheckList(data: MembershipDataUiModel) {
         val orderFmt = if (data.isEligibleOrder()) {
             context.getString(
                 R.string.pm_number_of_order,
@@ -85,16 +104,5 @@ class MembershipPmProCheckListView : LinearLayout {
                 R.string.pm_niv_threshold_term, data.orderThreshold.toString()
             )
         }
-    }
-
-    data class Data(
-        val orderThreshold: Long,
-        val netIncomeThreshold: Long,
-        val totalOrder: Long,
-        val netIncome: Long
-    ) {
-        fun isEligibleOrder() = totalOrder >= orderThreshold
-
-        fun isEligibleIncome() = netIncome >= netIncomeThreshold
     }
 }

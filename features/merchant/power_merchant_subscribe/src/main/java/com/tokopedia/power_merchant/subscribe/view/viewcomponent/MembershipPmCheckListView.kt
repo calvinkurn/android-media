@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmMembershipCheckListViewBinding
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 /**
@@ -43,13 +44,20 @@ class MembershipPmCheckListView : LinearLayout {
         )
     }
 
-    fun show(data: Data) {
+    fun show(data: MembershipDataUiModel) {
+        showTitle(data)
         showShopScoreCheckList(data)
         showOrderCheckList(data)
         showNetIncomeCheckList(data)
     }
 
-    private fun showNetIncomeCheckList(data: Data) {
+    private fun showTitle(data: MembershipDataUiModel) {
+        binding.tvPmMembershipChecklistTitle.text = context.getString(
+            R.string.pm_membership_current_grade_pm_title
+        )
+    }
+
+    private fun showNetIncomeCheckList(data: MembershipDataUiModel) {
         val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.netIncome.toString())
         val netIncomeThresholdStr = CurrencyFormatHelper.convertToRupiah(
             data.netIncomeThreshold.toString()
@@ -73,7 +81,7 @@ class MembershipPmCheckListView : LinearLayout {
         }
     }
 
-    private fun showOrderCheckList(data: Data) {
+    private fun showOrderCheckList(data: MembershipDataUiModel) {
         val orderFmt = if (data.isEligibleOrder()) {
             context.getString(
                 R.string.pm_number_of_order,
@@ -101,7 +109,7 @@ class MembershipPmCheckListView : LinearLayout {
         }
     }
 
-    private fun showShopScoreCheckList(data: Data) {
+    private fun showShopScoreCheckList(data: MembershipDataUiModel) {
         val shopScoreFmt = if (data.isEligibleShopScore()) {
             context.getString(
                 R.string.pm_term_shop_score,
@@ -128,20 +136,5 @@ class MembershipPmCheckListView : LinearLayout {
                 data.shopScoreThreshold
             )
         }
-    }
-
-    data class Data(
-        val shopScoreThreshold: Int,
-        val orderThreshold: Long,
-        val netIncomeThreshold: Long,
-        val shopScore: Int,
-        val totalOrder: Long,
-        val netIncome: Long
-    ) {
-        fun isEligibleShopScore() = shopScore >= shopScoreThreshold
-
-        fun isEligibleOrder() = totalOrder >= orderThreshold
-
-        fun isEligibleIncome() = netIncome >= netIncomeThreshold
     }
 }

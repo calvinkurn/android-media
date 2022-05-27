@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -89,18 +90,66 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setViewBackground()
         setupViewPager()
         observePmShopInfo()
+    }
+
+    private fun setViewBackground() {
+
+        binding?.root?.run {
+            val background =
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            setBackgroundColor(background)
+        }
     }
 
     private fun observePmShopInfo() {
         observe(viewModel.membershipBasicInfo) {
             when (it) {
-                is Success -> onSuccessPmShopInfo(it.data)
-                is Fail -> onErrorPmShopInfo(it.throwable)
+                is Success -> {
+                    showSuccessState()
+                    onSuccessPmShopInfo(it.data)
+                }
+                is Fail -> {
+                    showErrorState()
+                    onErrorPmShopInfo(it.throwable)
+                }
             }
         }
+        fetchData()
+    }
+
+    private fun fetchData() {
+        showLoadingState()
         viewModel.getMembershipBasicInfo()
+    }
+
+    private fun showSuccessState() {
+        binding?.run {
+            loaderMembershipDetail.gone()
+            groupMembershipSuccessState.visible()
+            globalErrorMembershipDetail.gone()
+        }
+    }
+
+    private fun showErrorState() {
+        binding?.run {
+            loaderMembershipDetail.gone()
+            groupMembershipSuccessState.gone()
+            globalErrorMembershipDetail.visible()
+            globalErrorMembershipDetail.setActionClickListener {
+                fetchData()
+            }
+        }
+    }
+
+    private fun showLoadingState() {
+        binding?.run {
+            loaderMembershipDetail.visible()
+            groupMembershipSuccessState.gone()
+            globalErrorMembershipDetail.gone()
+        }
     }
 
     private fun onErrorPmShopInfo(throwable: Throwable) {

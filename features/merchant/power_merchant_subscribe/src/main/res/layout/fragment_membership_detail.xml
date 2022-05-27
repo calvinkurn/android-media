@@ -7,8 +7,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Unify_Background">
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupMembershipSuccessState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvPmMembershipPerformancePeriod, tvPmMembershipNextUpdate, footerMembership, dividerPmMembership, rvPmMembership, tabPmMembership" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmMembershipPerformancePeriod"
@@ -16,12 +21,14 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textColor="@color/Unify_N0"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             tools:background="@drawable/bg_pm_membership_detail_header"
-            tools:text="Berdasarkan penjualanmu di [1 Juli - 31 Sep 2022], kamu mendapat paket keuntungan Power Merchant." />
+            tools:text="Berdasarkan penjualanmu di [1 Juli - 31 Sep 2022], kamu mendapat paket keuntungan Power Merchant."
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmMembershipNextUpdate"
@@ -31,47 +38,58 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipPerformancePeriod"
             app:typographyType="body_3"
-            tools:text="Update selanjutnya: 7 Agustus 2022. Tidak ada penurunan paket keuntungan pada update berikutnya." />
+            tools:text="Update selanjutnya: 7 Agustus 2022. Tidak ada penurunan paket keuntungan pada update berikutnya."
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tabPmMembership"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipNextUpdate"
-            tools:layout_height="32dp" />
+            tools:layout_height="32dp"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPmMembership"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tabPmMembership"
-            tools:layout_height="400dp" />
+            tools:layout_height="400dp"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerPmMembership"
             android:layout_width="0dp"
             android:layout_height="8dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvPmMembership" />
+            app:layout_constraintTop_toBottomOf="@+id/rvPmMembership"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footerMembership"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/Unify_Background"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerPmMembership">
+            app:layout_constraintTop_toBottomOf="@+id/dividerPmMembership"
+            tools:visibility="visible">
 
             <View
                 android:id="@+id/dotPmMembership1"
@@ -144,5 +162,27 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvPmMembership2"
                 app:typographyType="small" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/globalErrorMembershipDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderMembershipDetail"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

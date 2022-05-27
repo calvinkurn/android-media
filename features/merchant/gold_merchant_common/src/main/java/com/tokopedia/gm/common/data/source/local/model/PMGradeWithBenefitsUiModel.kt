@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.data.source.local.model
 
 import android.os.Parcelable
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import kotlinx.parcelize.Parcelize
@@ -17,6 +18,8 @@ sealed class PMGradeWithBenefitsUiModel(
     open val benefitList: List<PMBenefitItemUiModel> = emptyList()
 ) : Parcelable {
 
+    abstract fun getShopLevel(): Int
+
     @Parcelize
     data class PM(
         override val gradeName: String = String.EMPTY,
@@ -26,7 +29,9 @@ sealed class PMGradeWithBenefitsUiModel(
         override val benefitList: List<PMBenefitItemUiModel> = emptyList()
     ) : PMGradeWithBenefitsUiModel(
         gradeName, isTabActive, tabLabel, tabResIcon, benefitList
-    ), Parcelable
+    ) {
+        override fun getShopLevel(): Int = PMConstant.ShopLevel.ONE
+    }
 
     @Parcelize
     data class PMProAdvance(
@@ -37,7 +42,9 @@ sealed class PMGradeWithBenefitsUiModel(
         override val benefitList: List<PMBenefitItemUiModel> = emptyList()
     ) : PMGradeWithBenefitsUiModel(
         gradeName, isTabActive, tabLabel, tabResIcon, benefitList
-    ), Parcelable
+    ) {
+        override fun getShopLevel(): Int = PMConstant.ShopLevel.TWO
+    }
 
     @Parcelize
     data class PMProExpert(
@@ -48,7 +55,9 @@ sealed class PMGradeWithBenefitsUiModel(
         override val benefitList: List<PMBenefitItemUiModel> = emptyList()
     ) : PMGradeWithBenefitsUiModel(
         gradeName, isTabActive, tabLabel, tabResIcon, benefitList
-    ), Parcelable
+    ) {
+        override fun getShopLevel(): Int = PMConstant.ShopLevel.THREE
+    }
 
     @Parcelize
     data class PMProUltimate(
@@ -59,5 +68,7 @@ sealed class PMGradeWithBenefitsUiModel(
         override val benefitList: List<PMBenefitItemUiModel> = emptyList()
     ) : PMGradeWithBenefitsUiModel(
         gradeName, isTabActive, tabLabel, tabResIcon, benefitList
-    ), Parcelable
+    ) {
+        override fun getShopLevel(): Int = PMConstant.ShopLevel.FOUR
+    }
 }

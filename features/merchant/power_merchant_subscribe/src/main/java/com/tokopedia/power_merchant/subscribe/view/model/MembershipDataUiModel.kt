@@ -20,4 +20,11 @@ data class MembershipDataUiModel(
     val netIncome: Long = Int.ZERO.toLong(),
     val netIncomeThreshold: Long = PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD,
     val gradeBenefit: PMGradeWithBenefitsUiModel
-) : Parcelable
+) : Parcelable {
+
+    fun isEligibleIncome(): Boolean = netIncome >= netIncomeThreshold
+
+    fun isEligibleOrder(): Boolean = totalOrder >= orderThreshold
+
+    fun isEligibleShopScore(): Boolean = shopScore >= shopScoreThreshold
+}

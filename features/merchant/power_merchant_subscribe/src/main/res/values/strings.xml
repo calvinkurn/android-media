@@ -245,4 +245,8 @@
     <string name="pm_membership_benefit_product_bundling"><![CDATA[<b>%1$d</b> kuota Paket Bundling]]></string>
     <string name="pm_membership_shop_score_threshold">Batas min. skor %1$d</string>
     <string name="pm_shop_label">TOKOMU</string>
+    <string name="pm_membership_passing_grade_info">Selamat! Kamu sudah melewati keanggotaan ini dan berhak mendapatkan paket keuntungan lebih di %1$s.</string>
+    <string name="pm_membership_current_grade_pm_title">Kamu sudah jadi Power Merchant! \nSelanjutnya, penuhi target PM PRO, yuk.</string>
+    <string name="pm_membership_current_grade_title">Kamu sudah jadi %1$s! \nPertahankan, ya.</string>
+    <string name="pm_membership_next_grade_title">Capai Level %1$d untuk jadi %2$s dengan memenuhi target ini!</string>
 </resources>
