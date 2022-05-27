@@ -4,6 +4,7 @@ import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderbo
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.ui.*
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import javax.inject.Inject
 
@@ -11,6 +12,8 @@ import javax.inject.Inject
  * Created by jegul on 02/07/21
  */
 class PlayInteractiveLeaderboardMapper @Inject constructor() {
+
+    private val decodeHtml = DefaultHtmlTextTransformer()
 
     /***
      * New leaderboard
@@ -25,7 +28,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         isChatAllowed: () -> Boolean
     ): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
         PlayLeaderboardUiModel(
-            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) it.question else it.title,
+            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) decodeHtml.transform(it.question) else it.title,
             winners = mapInteractiveWinner(
                 title = it.title,
                 winnersResponse = it.winner,
@@ -36,7 +39,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             choices = mapChoices(it.choices, it.userChoice),
             leaderBoardType = getLeaderboardType(it),
             emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
-            reward = it.reward,
+            reward = decodeHtml.transform(it.reward),
             id = it.interactiveId
         )
     }
@@ -56,7 +59,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         return choices.map { item: QuizResponse.Choice ->
             QuizChoicesUiModel(
                 item.id,
-                item.text,
+                decodeHtml.transform(item.text),
                 if(item.id == userPicksId)
                     PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
                 else
