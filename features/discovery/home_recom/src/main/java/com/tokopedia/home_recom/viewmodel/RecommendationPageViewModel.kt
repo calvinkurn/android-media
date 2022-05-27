@@ -282,28 +282,14 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
-    fun addWishlistV2(productId: String, wishlistUrl: String, isTopAds: Boolean, actionListener: WishlistV2ActionListener){
-        if(isTopAds && wishlistUrl.isNotEmpty()){
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable) {
-                    actionListener.onErrorAddWishList(e, productId)
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null && wishlistModel.data.isSuccess) {
-                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true), productId)
-                    } else {
-                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = false), productId)
-                    }
-                }
+    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
+            onError = {
+                actionListener.onErrorAddWishList(it, productId)
             })
-        } else {
-            doAddToWishlistV2(productId, actionListener)
-        }
     }
 
     private fun doAddToWishlist(productId: String, callback: (Boolean, Throwable?) -> Unit) {
@@ -324,16 +310,6 @@ open class RecommendationPageViewModel @Inject constructor(
                 // do nothing
             }
         })
-    }
-
-    private fun doAddToWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
-            onError = {
-                actionListener.onErrorAddWishList(it, productId)
-            })
     }
 
     /**

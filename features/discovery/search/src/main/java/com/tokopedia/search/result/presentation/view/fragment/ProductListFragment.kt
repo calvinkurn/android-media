@@ -174,6 +174,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
         private const val ON_BOARDING_DELAY_MS: Long = 200
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -1734,7 +1735,7 @@ class ProductListFragment: BaseDaggerFragment(),
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
-                productCardOptionsModel.topAdsClickUrl,
+                productCardOptionsModel.topAdsClickUrl+ CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,
                 productCardOptionsModel.productName,
                 productCardOptionsModel.productImageUrl

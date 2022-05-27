@@ -127,6 +127,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_CODE_LOGIN = 283
         private const val SPACING_30 = 30
         private const val PRIMARY_PRODUCT_POS = 0
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
@@ -518,7 +519,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if(recommendationWidgetViewModel.isLoggedIn()){
             if (isAddWishlist) {
-                recommendationWidgetViewModel.addWishlistV2(item.productId.toString(), item.wishlistUrl, item.isTopAds, object : WishlistV2ActionListener{
+                recommendationWidgetViewModel.addWishlistV2(item.productId.toString(), object : WishlistV2ActionListener{
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                         val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
                         view?.let { v ->
@@ -534,6 +535,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             context?.let { context ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                             }
+                        }
+                        if (item.isTopAds) {
+                            hitWishlistTopadsClickUrl(item)
                         }
                     }
 
@@ -585,6 +589,18 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             } else {
                 RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
             }
+        }
+    }
+
+    private fun hitWishlistTopadsClickUrl(item: RecommendationItem) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+            )
         }
     }
 
@@ -736,7 +752,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 } else {
                     if (isUsingWishlistV2) {
                         recommendationWidgetViewModel.addWishlistV2(productDetailData.id.toString(),
-                            productDetailData.wishlistUrl, productDetailData.isTopads, object : WishlistV2ActionListener{
+                            productDetailData.clickUrl, productDetailData.isTopads, object : WishlistV2ActionListener{
                                 override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                                     val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
                                     view?.let { v ->
