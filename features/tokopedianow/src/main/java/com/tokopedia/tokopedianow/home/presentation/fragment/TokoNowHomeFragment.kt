@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -114,6 +113,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -126,12 +126,12 @@ import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoach
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
@@ -220,8 +220,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
-                mixLeftComponentListener = createMixLeftComponentCallback(),
-                homeSwitcherListener = createHomeSwitcherListener()
+                homeSwitcherListener = createHomeSwitcherListener(),
+                homeLeftCarouselListener = createLeftCarouselCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -246,6 +246,7 @@ class TokoNowHomeFragment: Fragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
+    private var carouselParallaxState = mutableMapOf<String, Float>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
@@ -485,8 +486,16 @@ class TokoNowHomeFragment: Fragment(),
         carouselScrollState[adapterPosition] = scrollState
     }
 
+    override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
+        carouselParallaxState = mapParallaxState.toMutableMap()
+    }
+
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
+    }
+
+    override fun getParallaxState(): Map<String, Float> {
+        return carouselParallaxState
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -789,6 +798,7 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
+        carouselParallaxState.clear()
         isRefreshed = true
         loadLayout()
     }
@@ -1042,6 +1052,11 @@ class TokoNowHomeFragment: Fragment(),
                     it.cartId,
                     it.data
                 )
+                is HomeLeftCarouselProductCardUiModel -> trackLeftCarouselAddToCart(
+                    it.quantity,
+                    it.cartId,
+                    it.data
+                )
             }
         }
 
@@ -1128,6 +1143,14 @@ class TokoNowHomeFragment: Fragment(),
             recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
             position = position.toString(),
             cartId = cartId
+        )
+    }
+
+    private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselProductCardUiModel) {
+        analytics.onClickLeftCarouselAddToCart(
+            quantity = quantity.toString(),
+            homeLeftCarouselProductCardUiModel = product,
+            cartId = cartId,
         )
     }
 
@@ -1631,10 +1654,6 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun createMixLeftComponentCallback(): MixLeftComponentListener {
-        return MixLeftCarouselCallback(this, analytics)
-    }
-
     private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
@@ -1649,6 +1668,16 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
+    }
+
+    private fun createLeftCarouselCallback(): HomeLeftCarouselCallback {
+        return HomeLeftCarouselCallback(
+            context = requireContext(),
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
+        )
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
@@ -61,6 +62,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerD
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateLeftCarouselProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
@@ -85,9 +87,11 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -694,6 +698,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         homeLayoutItemList.updateRepurchaseProductQuantity(miniCart)
         homeLayoutItemList.updateProductRecomQuantity(miniCart)
+        homeLayoutItemList.updateLeftCarouselProductQuantity(miniCart)
     }
 
     private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
@@ -706,10 +711,10 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String,
         cartId: String
     ) {
-        if(type == REPURCHASE_PRODUCT) {
-            trackRepurchaseAddToCart(productId, quantity, cartId)
-        } else if (type ==  PRODUCT_RECOM) {
-            trackRecentProductRecomAddToCart(productId, quantity, cartId)
+        when (type) {
+            REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
+            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
+            MIX_LEFT_CAROUSEL -> trackLeftCarouselAddToCart(productId, quantity, cartId)
         }
     }
 
@@ -755,6 +760,26 @@ class TokoNowHomeViewModel @Inject constructor(
 
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
+        }
+    }
+
+    private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
+        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }?.apply {
+            val repurchase = layout as HomeLeftCarouselUiModel
+            val productList = repurchase.productList
+            val product = productList.firstOrNull {
+                if (it is HomeLeftCarouselProductCardUiModel) {
+                    it.id == productId
+                } else {
+                    false
+                }
+            }
+
+            product?.let {
+                val position = productList.indexOf(it)
+                val data = HomeAddToCartTracker(position, quantity,cartId, it)
+                _homeAddToCartTracker.postValue(data)
+            }
         }
     }
 
