@@ -1782,12 +1782,16 @@ class PlayViewModel @AssistedInject constructor(
                 showLeaderBoard()
             } else {
                 delay(interactive.interactive.waitingDuration)
-                if(isFinished) winnerStatus?.let { processWinnerStatus(it, interactiveType) }
+                if(isFinished) {
+                    if(winnerStatus == null) showLeaderBoard() else processWinnerStatus(winnerStatus, interactiveType)
+                }
             }
             /**
              * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
-             * processWinnerStatus() if we use both there's a case when the delay is still on but the socket
+             * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
              * is coming, seller create another quiz it'll ruin the current flow.
+             *
+             * if winner status still didn't come after delay, just showLeaderBoard
              * */
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
