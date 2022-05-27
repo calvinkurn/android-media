@@ -628,6 +628,7 @@ class ChatbotPresenter @Inject constructor(
         onSendingMessage: () -> Unit
     ) {
         if(isValidReply(sendMessage)) {
+            onSendingMessage()
             if (parentReply == null) {
                 RxWebSocket.send(
                     ChatbotSendWebsocketParam.generateParamSendMessage(
@@ -643,7 +644,6 @@ class ChatbotPresenter @Inject constructor(
                     ), listInterceptor
                 )
             }
-            onSendingMessage()
         }
     }
 

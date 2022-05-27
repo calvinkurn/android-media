@@ -140,7 +140,6 @@ private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down 
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
-private const val FIRST_PAGE = 1
 private const val RESEND = 1
 private const val DELETE = 0
 private const val REPLY = 0
@@ -711,12 +710,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
-    private fun onSuccessGetExistingChatFirstTime(
-        onReplyClick: Boolean = false,
-        sendMessage: String = "",
-        startTime: String = "",
-        parentReply: ParentReply? = null
-    ): (ChatroomViewModel, ChatReplies) -> Unit {
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
             val list = chatroomViewModel.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
@@ -726,13 +720,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             updateViewData(chatroomViewModel)
             renderList(list)
             getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
-            if (onReplyClick){
-                getViewState()?.onSendingMessage(
-                    messageId, getUserSession().userId, getUserSession()
-                        .name, sendMessage, startTime, parentReply
-                )
-                getViewState()?.scrollToBottom()
-            }
+
             updateHasNextState(chatReplies)
             updateHasNextAfterState(chatReplies)
             //TODO review this
@@ -742,6 +730,26 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    private fun onSuccessResetChatToFirstPage(): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroomViewModel, chatReplies ->
+            val list = chatroomViewModel.listChat.filter {
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
+            }
+            if (list.isNotEmpty()) {
+                val filteredList = getViewState()?.clearDuplicate(list)
+                filteredList?.let { renderList ->
+                    renderList(renderList)
+                }
+                getViewState()?.scrollToBottom()
+                updateHasNextState(chatReplies)
+                updateHasNextAfterState(chatReplies)
+                enableLoadMore()
+                replyBubbleContainer?.setReplyListener(this)
+            }
+
+        }
+    }
 
     fun checkShowLoading(canLoadMore: Boolean) {
         if (canLoadMore) super.showLoading()
@@ -1048,7 +1056,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             if (rvScrollListener?.hasNextAfterPage == true) {
                 resetData()
                 showTopLoading()
-                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(true,sendMessage,startTime,parentReply), onGetChatRatingListMessageError)
+                presenter.getExistingChat(messageId, onError(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
             } else {
                 getViewState()?.onSendingMessage(
                     messageId, getUserSession().userId, getUserSession()
@@ -1350,7 +1358,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun showReplyOption(messageUiModel: MessageUiModel) {
       //  if (replyBubbleEnabled)
         //TODO change this change this , BE issue
-        if (true) {
+        if (replyBubbleEnabled) {
             val bottomSheetPage = BottomSheetUnify()
             val viewBottomSheetPage =
                 View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
@@ -1473,7 +1481,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishTopLoadingState()
@@ -1482,7 +1489,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 }
                 if (fromOnClick && replyTime.isNotEmpty()) {
                     updateHasNextAfterState(chatReplies)
-
                 }
                 updateHasNextState(chatReplies)
             }else{
@@ -1497,13 +1503,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-            //TODO fix this
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishBottomLoadingState()
                 if (filteredList?.isNotEmpty()==true) {
                     renderBottomList(filteredList)
-                }else{
+                } else{
                     presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
                 }
                 updateHasNextAfterState(chatReplies)

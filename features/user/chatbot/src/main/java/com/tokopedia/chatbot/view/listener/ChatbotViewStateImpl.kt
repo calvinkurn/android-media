@@ -143,7 +143,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         sendMessage: String,
         startTime: String
     ) {
-        TODO("Not yet implemented")
+
     }
 
     override fun loadAvatar(avatarUrl: String) {
