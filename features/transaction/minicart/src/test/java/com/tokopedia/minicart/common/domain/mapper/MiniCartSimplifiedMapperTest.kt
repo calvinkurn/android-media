@@ -1,10 +1,14 @@
 package com.tokopedia.minicart.common.domain.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryHeaderUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryProductUiModel
 import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummarySeparatorUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryTotalTransactionUiModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -136,7 +140,7 @@ class MiniCartSimplifiedMapperTest {
     }
 
     @Test
-    fun `WHEN map mini cart data with shopping summary THEN should separate each shop data with separator`() {
+    fun `WHEN map mini cart data with shopping summary THEN should return each shop data with correct number of separator`() {
         // GIVEN
         val data = MiniCartData(
             data = Data(
@@ -163,6 +167,16 @@ class MiniCartSimplifiedMapperTest {
         val miniCartSimplifiedData = mapper.mapMiniCartSimplifiedData(data)
 
         // THEN
+        assertEquals(listOf<Visitable<*>>(
+            ShoppingSummaryHeaderUiModel("", "Shop 1", "Desc 1"),
+            ShoppingSummaryProductUiModel("Item 1", "Rp 10000"),
+            ShoppingSummaryProductUiModel("Item 2", "Rp 25000"),
+            ShoppingSummaryHeaderUiModel("", "Shop 2", "Desc 2"),
+            ShoppingSummaryProductUiModel("Item 1", "Rp 30000"),
+            ShoppingSummaryProductUiModel("Item 2", "Rp 15000"),
+            ShoppingSummaryTotalTransactionUiModel("Total Harga (12 Barang)", "<b>Rp5.000.000</b>"),
+        ), miniCartSimplifiedData.shoppingSummaryBottomSheetData.items
+            .filterNot { it is ShoppingSummarySeparatorUiModel })
         assertEquals(2, miniCartSimplifiedData.shoppingSummaryBottomSheetData.items
             .filterIsInstance(ShoppingSummarySeparatorUiModel::class.java).size)
     }
