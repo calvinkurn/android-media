@@ -119,25 +119,39 @@ data class SearchParamUiModel(
     }
 
     fun joinToString(): String {
-        return value.map {
-            it.toString()
-        }.joinToString(separator = DEFAULT_PARAM_SEPARATOR).replace("#",",")
+        return getCleanMap().map {
+                it.toString()
+            }
+            .joinToString(separator = DEFAULT_PARAM_SEPARATOR)
+            .replace("#",",")
     }
 
     fun toTrackerString(): String {
-        return value.map {
-            it.toString()
-        }.joinToString(separator = ";")
+        return getCleanMap().map {
+                it.toString()
+            }
+            .joinToString(separator = ";")
             .replace("#",",")
             .replace("=", ":")
     }
 
     fun getFilterCount(): Int {
-        return getSortFilterCount(value)
+        return getSortFilterCount(getCleanMap())
     }
 
     fun hasFilterApplied(): Boolean {
         return getFilterCount() > 0
+    }
+
+    /** remove special param for feed */
+    private fun getCleanMap(): HashMap<String, Any> {
+        val copyMap = HashMap(value)
+
+        feedAdditionalKey.forEach {
+            copyMap.remove(it)
+        }
+
+        return copyMap
     }
 
     private fun setDefaultParam() {
@@ -145,6 +159,8 @@ data class SearchParamUiModel(
         value[KEY_FROM] = "feed_content"
         value[KEY_SOURCE] = "universe"
     }
+
+    private val feedAdditionalKey = listOf(KEY_PREV_QUERY)
 
     companion object {
         private const val KEY_DEVICE = "device"
