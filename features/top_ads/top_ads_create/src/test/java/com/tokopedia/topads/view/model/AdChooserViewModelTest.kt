@@ -49,7 +49,9 @@ class AdChooserViewModelTest {
     fun `test result in getShopAdsInfo`() {
         val expected = "categoryDesc"
         var actual = ""
-        val data = AdCreationOption(AdCreationOption.TopAdsGetShopInfo(data = AdCreationOption.TopAdsGetShopInfo.Data(expected)))
+        val data =
+            AdCreationOption(AdCreationOption.TopAdsGetShopInfo(data = AdCreationOption.TopAdsGetShopInfo.Data(
+                expected)))
         val response: GraphqlResponse = mockk(relaxed = true)
 
         mockkStatic(GraphqlHelper::class)
@@ -66,11 +68,24 @@ class AdChooserViewModelTest {
     }
 
     @Test
-    fun `test result in postAutoAds`() {
+    fun `test exception in getShopAdsInfo`() {
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } throws Throwable()
 
+        var actual: AdCreationOption? = null
+        viewModel.getAdsState {
+            actual = it
+        }
+
+        Assert.assertEquals(null, actual)
+    }
+
+    @Test
+    fun `test result in postAutoAds`() {
         val expected = "status_desc"
-        var actual: String?
-        val data = TopAdsAutoAdsCreate.Response(TopAdsAutoAdsCreate(TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData(statusDesc = expected)))
+        val data =
+            TopAdsAutoAdsCreate.Response(TopAdsAutoAdsCreate(TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData(
+                statusDesc = expected)))
         val response: GraphqlResponse = mockk(relaxed = true)
 
         every { userSession.shopId } returns "12"
@@ -83,10 +98,21 @@ class AdChooserViewModelTest {
 
         viewModel.postAutoAds("toggle_status", budget = 1000)
 
-        actual = viewModel.autoAdsData.value?.statusDesc
+        val actual = viewModel.autoAdsData.value?.statusDesc
 
         Assert.assertEquals(expected, actual)
+    }
 
+    @Test
+    fun `test exception in postAutoAds`() {
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } throws Throwable()
+
+        viewModel.postAutoAds("toggle_status", budget = 1000)
+
+        val actual = viewModel.autoAdsData.value?.statusDesc
+
+        Assert.assertEquals(null, actual)
     }
 
     @Test
@@ -94,7 +120,9 @@ class AdChooserViewModelTest {
 
         val expected = "status_desc"
         var actual: String? = ""
-        val data = AutoAdsResponse(AutoAdsResponse.TopAdsGetAutoAds(AutoAdsResponse.TopAdsGetAutoAds.Data(statusDesc = expected)))
+        val data =
+            AutoAdsResponse(AutoAdsResponse.TopAdsGetAutoAds(AutoAdsResponse.TopAdsGetAutoAds.Data(
+                statusDesc = expected)))
         val response: GraphqlResponse = mockk(relaxed = true)
 
         mockkStatic(GraphqlHelper::class)
@@ -108,6 +136,19 @@ class AdChooserViewModelTest {
         }
 
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `test exception in getAutoAdsStatus`() {
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } throws Throwable()
+
+        var actual: AutoAdsResponse? = null
+        viewModel.getAutoAdsStatus {
+            actual = it
+        }
+
+        Assert.assertEquals(null, actual)
     }
 
     @After

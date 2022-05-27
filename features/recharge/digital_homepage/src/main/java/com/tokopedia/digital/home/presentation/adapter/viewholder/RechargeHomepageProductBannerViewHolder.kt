@@ -20,8 +20,8 @@ import com.tokopedia.kotlin.extensions.view.*
  */
 
 class RechargeHomepageProductBannerViewHolder(
-        val view: View,
-        val listener: RechargeHomepageItemListener
+    val view: View,
+    val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeHomepageProductBannerModel>(view) {
 
     companion object {
@@ -33,11 +33,11 @@ class RechargeHomepageProductBannerViewHolder(
         val bind = ViewRechargeHomeProductBannerBinding.bind(itemView)
         val section = element.section
         if (section.items.isNotEmpty()) {
-            setBackground(bind,section)
-            setHeader(bind,element.channelModel, element.visitableId())
-            setProduct(bind,section)
+            setBackground(bind, section)
+            setHeader(bind, element.channelModel, element.visitableId())
+            setProduct(bind, section)
 
-            
+
             bind.viewRechargeHomeProductBannerShimmering.root.hide()
             bind.viewRechargeHomeProductBannerLayout.show()
         } else {
@@ -54,16 +54,16 @@ class RechargeHomepageProductBannerViewHolder(
         sectionId: String
     ) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                bind.viewRechargeHomeProductBannerHeader, channel,
-                object : HeaderListener {
-                    override fun onSeeAllClick(link: String) {
+            bind.viewRechargeHomeProductBannerHeader, channel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
 
-                    }
-
-                    override fun onChannelExpired(channelModel: ChannelModel) {
-                        listener.onRechargeSectionEmpty(sectionId)
-                    }
                 }
+
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    listener.onRechargeSectionEmpty(sectionId)
+                }
+            }
         )
     }
 
@@ -72,7 +72,19 @@ class RechargeHomepageProductBannerViewHolder(
         section: RechargeHomepageSections.Section
     ) {
         try {
-            bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(Color.parseColor(section.label1))
+            if (section.label1.isNotEmpty())
+                bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(
+                    Color.parseColor(
+                        section.label1
+                    )
+                )
+            else
+                bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(
+                    MethodChecker.getColor(
+                        bind.root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+                )
         } catch (e: Throwable) {
             /* do nothing */
         }
@@ -102,7 +114,7 @@ class RechargeHomepageProductBannerViewHolder(
             btnRechargeHomeProductBannerBuy.setOnClickListener {
                 listener.onRechargeSectionItemClicked(item)
             }
-           root.addOnImpressionListener(section) {
+            root.addOnImpressionListener(section) {
                 listener.onRechargeSectionItemImpression(section)
             }
             ivRechargeHomeProductBannerCloseButton.setOnClickListener {

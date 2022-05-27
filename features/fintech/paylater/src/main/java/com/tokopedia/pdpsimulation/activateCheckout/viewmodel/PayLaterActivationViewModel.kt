@@ -131,7 +131,7 @@ class PayLaterActivationViewModel @Inject constructor(
         paylaterGetOptimizedModel.let {
             if (it.checkoutData.isNotEmpty()) {
                 it.checkoutData.map { checkoutData ->
-                    gatewayToChipMap[checkoutData.gateway_id] = checkoutData
+                    gatewayToChipMap[checkoutData.gateway_id.toInt()] = checkoutData
                 }
                 _payLaterActivationDetailLiveData.postValue(Success(it))
 

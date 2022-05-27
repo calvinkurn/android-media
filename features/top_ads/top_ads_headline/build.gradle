@@ -45,6 +45,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -54,4 +59,6 @@ project.ext {
     artifactName = "top_ads_headline-release"
 }
 
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'

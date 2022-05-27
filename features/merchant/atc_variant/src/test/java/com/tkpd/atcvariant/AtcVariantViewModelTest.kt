@@ -849,32 +849,40 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(defaultItem, data?.defaultItem)
         Assert.assertEquals(items, data?.items)
         Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
     }
 
     @Test
-    fun `variant image clicked fallback test with almost everything null`(){
+    fun `variant image clicked fallback test with empty images and available default image`(){
         val imageUrl = "url1234"
         val productId = "2147818570"
         val userId = "123"
         val mainImageTag = "some tag"
 
-        val defaultItem = ProductDetailGallery.Item(
-            id = "",
-            url = imageUrl,
-            tag = mainImageTag,
-            type = ProductDetailGallery.Item.Type.Image
-        )
-        val items = emptyList<ProductDetailGallery.Item>()
-        val selectedId = null
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
+
+        val data = viewModel.variantImagesData.value
+
+        Assert.assertEquals(imageUrl, data?.defaultItem?.url)
+        Assert.assertEquals(emptyList<ProductDetailGallery.Item>(), data?.items)
+        Assert.assertEquals(ProductDetailGallery.Page.VariantBottomSheet, data?.page)
+    }
+
+    @Test
+    fun `variant image clicked fallback test with empty images and empty default image`(){
+        val imageUrl = ""
+        val productId = "2147818570"
+        val userId = "123"
+        val mainImageTag = "some tag"
 
         viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
 
         val data = viewModel.variantImagesData.value
 
-        Assert.assertEquals(defaultItem, data?.defaultItem)
-        Assert.assertEquals(items, data?.items)
-        Assert.assertEquals(selectedId, data?.selectedId)
+        Assert.assertEquals(null, data)
     }
+
+
     //endregion
 
     private fun verifyAtcUsecase(verifyAtc: Boolean = false, verifyOcs: Boolean = false, verifyOcc: Boolean = false, verifyUpdateAtc: Boolean = false) {

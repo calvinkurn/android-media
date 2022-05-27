@@ -74,7 +74,7 @@ data class ProductEditParam (
         var variant: Variant? = null,
         @SerializedName("cpl")
         @Expose
-        var cpl: CPLData = CPLData(),
+        var cpl: CPLData? = null,
         @SerializedName("annotations")
         @Expose
         var annotations: List<String>? = null

@@ -5,18 +5,20 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/spacing_lvl4">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl9"
         android:layout_height="@dimen/layout_lvl1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl1"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
