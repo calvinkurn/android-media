@@ -32,6 +32,8 @@ data class Data(
         val totalProductPrice: Long = 0L,
         @SerializedName("total_product_error")
         val totalProductError: Int = 0,
+        @SerializedName("bottom_bar")
+        val bottomBar: BottomBar = BottomBar(),
         @SerializedName("simplified_shopping_summary")
         val simplifiedShoppingSummary: SimplifiedShoppingSummary = SimplifiedShoppingSummary(),
 )

@@ -24,12 +24,10 @@ import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactor
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.widget.general.MiniCartGeneralViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-// TODO: Update name
 class MiniCartChatListBottomSheetV2 @Inject constructor(
     private var miniCartChatProductDecoration: MiniCartChatListDecoration,
     private var analytics: MiniCartAnalytics
@@ -44,7 +42,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
     private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartChatListAdapter? = null
-    private var viewModel: MiniCartGeneralViewModel? = null
+    private var viewModel: MiniCartChatListViewModel? = null
     private var mContext: Context? = null
     private var miniCartListUiModel: MiniCartListUiModel? = null
     private var elements: ArrayList<MiniCartChatProductUiModel> = arrayListOf()
@@ -63,7 +61,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
     fun show(context: Context?,
              fragmentManager: FragmentManager,
              lifecycleOwner: LifecycleOwner,
-             viewModel: MiniCartGeneralViewModel,
+             viewModel: MiniCartChatListViewModel,
     ) {
         context?.let {
             mContext = context
@@ -81,7 +79,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
 
     private fun resetObserver() {
         bottomSheetUiModelObserver?.let {
-            viewModel?.miniCartChatListBottomSheetUiModel?.removeObserver(it)
+            viewModel?.getMiniCartChatListBottomSheetUiModel()?.removeObserver(it)
             bottomSheetUiModelObserver = null
         }
     }
@@ -132,7 +130,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         }
     }
 
-    private fun initializeViewModel(viewBinding: LayoutBottomsheetMiniCartChatListBinding, viewModel: MiniCartGeneralViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun initializeViewModel(viewBinding: LayoutBottomsheetMiniCartChatListBinding, viewModel: MiniCartChatListViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         initializeBottomSheetUiModelObserver(viewBinding)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
@@ -148,7 +146,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         viewBinding.rvMiniCartChatList.itemAnimator = null
     }
 
-    private fun initializeCartData(viewModel: MiniCartGeneralViewModel) {
+    private fun initializeCartData(viewModel: MiniCartChatListViewModel) {
         adapter?.clearAllElements()
         showLoading()
         viewModel.getCartList(isFirstLoad = true)
@@ -211,7 +209,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
             viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)))
             viewBinding.btnChat.text = getString(R.string.mini_cart_chat_btn_label)
             viewBinding.btnChat.setOnClickListener {
-                val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
+                val shopId = viewModel?.getCurrentShopIds()?.firstOrNull().orEmpty()
                 if (elements.isEmpty()) {
                     openChatPageWithoutProduct(shopId)
                     analytics.eventClickBtnDirectChatBottomSheet()
@@ -252,9 +250,9 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         adapter?.hideLoading()
     }
 
-    private fun observeMiniCartListUiModel(viewModel: MiniCartGeneralViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun observeMiniCartListUiModel(viewModel: MiniCartChatListViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver?.let {
-            viewModel.miniCartChatListBottomSheetUiModel.observe(lifecycleOwner, it)
+            viewModel.getMiniCartChatListBottomSheetUiModel()?.observe(lifecycleOwner, it)
         }
     }
 }
