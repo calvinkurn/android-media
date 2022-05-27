@@ -1775,17 +1775,14 @@ class PlayViewModel @AssistedInject constructor(
 
             val winnerStatus = _winnerStatus.value
             val interactiveType = interactive.interactive
+            val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
             val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
 
             if (!isRewardAvailable) {
                 showLeaderBoard()
             } else {
                 delay(interactive.interactive.waitingDuration)
-                if (winnerStatus != null) {
-                    processWinnerStatus(winnerStatus, interactiveType)
-                } else {
-                    showLeaderBoard()
-                }
+                if(isFinished) winnerStatus?.let { processWinnerStatus(it, interactiveType) }
             }
             /**
              * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
