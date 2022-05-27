@@ -12,7 +12,7 @@ import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokoFoodUseCase
@@ -84,11 +84,15 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             }
         }, onError = {
             miniCartLoadingQueue.value?.minus(Int.ONE)
-            Timber.e(it)
+            miniCartUiModelState.emit(Result.Failure(it))
+            cartDataValidationState.emit(UiEvent(
+                state = UiEvent.EVENT_FAILED_LOAD_CART,
+                throwable = it
+            ))
         })
     }
 
-    fun loadCartList(response: CheckoutTokoFoodResponse) {
+    fun loadCartList(response: CheckoutTokoFood) {
         cartDataState.value = response.data
     }
 

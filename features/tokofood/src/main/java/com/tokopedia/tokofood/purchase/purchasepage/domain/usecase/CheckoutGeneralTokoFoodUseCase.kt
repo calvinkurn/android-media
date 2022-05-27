@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.metadata.TokoFoodCheckoutMetadata
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartParam
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class CheckoutGeneralTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : FlowUseCase<CheckoutTokoFoodResponse, CheckoutGeneralTokoFoodResponse>(dispatchers.io) {
+) : FlowUseCase<CheckoutTokoFood, CheckoutGeneralTokoFoodResponse>(dispatchers.io) {
 
     private val isDebug = false
 
@@ -37,6 +37,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
               success
               error
               error_state
+              error_metadata
               message
               data{
                 callback_url
@@ -48,7 +49,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: CheckoutTokoFoodResponse): Flow<CheckoutGeneralTokoFoodResponse> =
+    override suspend fun execute(params: CheckoutTokoFood): Flow<CheckoutGeneralTokoFoodResponse> =
         flow {
             if (isDebug) {
                 kotlinx.coroutines.delay(1000)
@@ -94,24 +95,24 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
 
         private const val PARAMS_KEY = "params"
 
-        private fun generateParam(tokoFoodResponse: CheckoutTokoFoodResponse): Map<String, Any> {
+        private fun generateParam(tokoFood: CheckoutTokoFood): Map<String, Any> {
             val checkoutMetadata = TokoFoodCheckoutMetadata(
-                shop = tokoFoodResponse.data.shop,
-                userAddress = tokoFoodResponse.data.userAddress,
-                availableSection = tokoFoodResponse.data.availableSection,
-                unavailableSection = tokoFoodResponse.data.unavailableSection,
-                shipping = tokoFoodResponse.data.shipping,
-                shoppingSummary = tokoFoodResponse.data.shoppingSummary
+                shop = tokoFood.data.shop,
+                userAddress = tokoFood.data.userAddress,
+                availableSection = tokoFood.data.availableSection,
+                unavailableSection = tokoFood.data.unavailableSection,
+                shipping = tokoFood.data.shipping,
+                shoppingSummary = tokoFood.data.shoppingSummary
             )
             val metadataString = checkoutMetadata.generateString()
             val param =
                 CheckoutGeneralTokoFoodParam(
                     carts = CheckoutGeneralTokoFoodCartParam(
-                        businessType = tokoFoodResponse.data.checkoutAdditionalData.checkoutBusinessId.toIntOrNull() ?: TokoFoodCartUtil.TOKOFOOD_BUSINESS_TYPE,
+                        businessType = tokoFood.data.checkoutAdditionalData.checkoutBusinessId.toIntOrNull() ?: TokoFoodCartUtil.TOKOFOOD_BUSINESS_TYPE,
                         cartInfo = listOf(
                             CheckoutGeneralTokoFoodCartInfoParam(
                                 metadata = metadataString,
-                                dataType = tokoFoodResponse.data.checkoutAdditionalData.dataType
+                                dataType = tokoFood.data.checkoutAdditionalData.dataType
                             )
                         )
                     )

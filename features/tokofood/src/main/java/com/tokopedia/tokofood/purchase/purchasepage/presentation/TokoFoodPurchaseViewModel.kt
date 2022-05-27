@@ -14,9 +14,8 @@ import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
@@ -70,7 +69,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     val visitables: LiveData<MutableList<Visitable<*>>>
         get() = _visitables
 
-    private val checkoutTokoFoodResponse = MutableStateFlow<CheckoutTokoFoodResponse?>(null)
+    private val checkoutTokoFoodResponse = MutableStateFlow<CheckoutTokoFood?>(null)
+    private val shopId = MutableStateFlow("")
     private val isConsentAgreed = MutableStateFlow(false)
 
     // Temporary field to store collapsed unavailable products
@@ -101,7 +101,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     flow {
                         productList?.let {
                             showPartialLoading()
-                            emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(it))
+                            emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(it, shopId.value))
                         }
                     }
                 }
@@ -142,6 +142,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
+                shopId.value = it.data.shop.shopId
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 val isEnabled = it.isEnabled()
                 _visitables.value =
@@ -214,8 +215,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
+                shopId.value = it.data.shop.shopId
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
-                // TODO: Check for success status
                 val isEnabled = it.isSuccess()
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
