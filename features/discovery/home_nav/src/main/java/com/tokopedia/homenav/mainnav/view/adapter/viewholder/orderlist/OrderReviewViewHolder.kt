@@ -49,7 +49,7 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
             layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
             layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_order_transaction_me_page).toInt()
+                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
         }
         binding?.orderReviewCard?.layoutParams = layoutParams
     }

@@ -14,7 +14,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -39,7 +38,7 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
             layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
             layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_order_transaction_me_page).toInt()
+                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
         }
         binding?.orderProductCard?.layoutParams = layoutParams
     }
