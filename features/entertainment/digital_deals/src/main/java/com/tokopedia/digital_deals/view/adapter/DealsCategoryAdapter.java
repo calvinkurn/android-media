@@ -469,8 +469,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
 
             }
-            int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getIdInInt());
-            int prevLikes = Utils.getSingletonInstance().containsUnlikedEvent(productItem.getIdInInt());
+            int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());
+            int prevLikes = Utils.getSingletonInstance().containsUnlikedEvent(productItem.getId());
             if (likes > 0) {
                 setLikes(likes, true);
             } else if (prevLikes >= 0) {
@@ -579,7 +579,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getWebUrl());
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {
                 ProductItem item = categoryItems.get(getIndex());
-                boolean isLoggedIn = mPresenter.setDealLike(item.getIdInInt(), item.isLiked(), getIndex(), item.getLikes());
+                boolean isLoggedIn = mPresenter.setDealLike(item.getId(), item.isLiked(), getIndex(), item.getLikes());
                 if (isLoggedIn) {
                     dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
                     if (categoryItems.get(getIndex()).isLiked()) {
@@ -613,7 +613,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void setLike(int position) {
         if (position < categoryItems.size()) {
             ProductItem item = categoryItems.get(position);
-            mPresenter.setDealLike(item.getIdInInt(), item.isLiked(), position, item.getLikes());
+            mPresenter.setDealLike(item.getId(), item.isLiked(), position, item.getLikes());
             if (item.isLiked()) {
                 categoryItems.get(position).setLikes(item.getLikes() - 1);
                 categoryItems.get(position).setLiked(!item.isLiked());
