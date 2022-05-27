@@ -1612,7 +1612,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onRemoveLastSeenFromWishlist(productId: String) {
         if (isUsingWishlistV2()) dPresenter.processRemoveFromWishlistV2(productId, userSession.userId, getLastSeenWishlistV2ActionListener())
-        dPresenter.processRemoveFromWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
+        else dPresenter.processRemoveFromWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
     }
 
     override fun onRemoveWishlistFromWishlist(productId: String) {
@@ -3230,7 +3230,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                         }
                     }
-                    dPresenter.processGetWishlistData()
+                    dPresenter.processGetWishlistV2Data()
                 }
 
                 override fun onAnimationCancel(animation: Animator) {}
