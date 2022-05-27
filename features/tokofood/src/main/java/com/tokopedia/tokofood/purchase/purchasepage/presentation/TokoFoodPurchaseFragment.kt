@@ -50,6 +50,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
@@ -353,18 +354,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         val paymentData = mainData.queryString
                         val paymentURL = mainData.redirectUrl
                         val callbackUrl = mainData.callbackUrl
-                        if (paymentData.isNotEmpty() || paymentURL.isNotEmpty() || callbackUrl.isNotEmpty()) {
-
-                            val checkoutResultData = PaymentPassData()
-                            checkoutResultData.queryString = paymentData
-                            checkoutResultData.redirectUrl = paymentURL
-                            checkoutResultData.callbackSuccessUrl = callbackUrl
-
-                            val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                            val intent = RouteManager.getIntent(context, paymentCheckoutString)
-                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-                            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
-                        }
+                        goToPaymentPage(paymentData, paymentURL, callbackUrl)
                     }
                 }
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET -> {
@@ -793,13 +783,19 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun Any.getSuccessUpdateResultPair(): Pair<UpdateParam, CartTokoFoodData>? {
-        return (this as? Pair<*, *>)?.let { pair ->
-            (pair.first as? UpdateParam)?.let { updateParams ->
-                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                    updateParams to cartTokoFoodData
-                }
-            }
+    private fun goToPaymentPage(paymentData: String, paymentURL: String, callbackUrl: String) {
+        val isContainsPaymentInformation =
+            paymentData.isNotEmpty() || paymentURL.isNotEmpty() || callbackUrl.isNotEmpty()
+        if (isContainsPaymentInformation) {
+            val checkoutResultData = PaymentPassData()
+            checkoutResultData.queryString = paymentData
+            checkoutResultData.redirectUrl = paymentURL
+            checkoutResultData.callbackSuccessUrl = callbackUrl
+
+            val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+            val intent = RouteManager.getIntent(context, paymentCheckoutString)
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
         }
     }
 

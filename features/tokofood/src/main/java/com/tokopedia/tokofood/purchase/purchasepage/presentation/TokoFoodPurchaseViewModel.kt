@@ -93,8 +93,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _trackerPaymentCheckoutData = MutableSharedFlow<CheckoutTokoFoodData>()
     val trackerPaymentCheckoutData = _trackerPaymentCheckoutData.asSharedFlow()
 
-    val isDebug = true
-
     init {
         viewModelScope.launch {
             _updateQuantityState
@@ -509,22 +507,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
             _visitables.value = dataList
-        }, onError = {
-            // TODO: Add Error
-        })
-    }
-
-    fun updateNotesDebug(product: CartTokoFood, previousCartId: String, notes: String) {
-        launchCatchError(block = {
-            val productData = getVisitablesValue().getProductById(product.productId, previousCartId)
-            productData?.let {
-                val dataList = getVisitablesValue()
-                val newProductData = it.second.copy()
-                newProductData.notes = notes
-                newProductData.cartId = product.cartId
-                dataList[it.first] = newProductData
-                _visitables.value = dataList
-            }
         }, onError = {
             // TODO: Add Error
         })
