@@ -79,8 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_widget_choose_address"
-        tools:visibility="visible"
-        android:visibility="gone"/>
+        tools:visibility="visible" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
@@ -97,7 +96,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         tools:visibility="gone"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tablayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

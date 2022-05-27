@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialFeaturedShopViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialLoadingContentViewHolder
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 
 /**
@@ -41,16 +39,4 @@ fun removeProgressBarOnOsPage(recyclerView: RecyclerView, activity: Activity) {
             checkLoadingView?.let { checkLoadingView.gone() }
         }
     })
-}
-
-fun RecyclerView.disableHomeAnimation() {
-    for (i in 0..this.adapter?.itemCount!!) {
-        val currViewholder = this.findViewHolderForAdapterPosition(i)
-        when (currViewholder) {
-            is OfficialLoadingContentViewHolder,
-            is OfficialFeaturedShopViewHolder -> {
-                currViewholder.itemView.gone()
-            }
-        }
-    }
 }
