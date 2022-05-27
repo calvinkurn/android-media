@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.home.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,9 +24,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -41,6 +45,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
+import com.tokopedia.tokofood.common.presentation.UiEvent
+import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
@@ -60,10 +68,12 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodHomeFragment : BaseDaggerFragment(),
@@ -87,6 +97,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(TokoFoodHomeViewModel::class.java)
     }
 
+    private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
+
+    private val activityViewModel: MultipleFragmentsViewModel?
+        get() = parentActivity?.viewModel()
+
     private val adapter by lazy {
         TokoFoodHomeAdapter(
             typeFactory = TokoFoodHomeAdapterTypeFactory(
@@ -107,7 +122,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
-        private const val REQUEST_CODE_CHANGE_ADDRESS = 111
         private const val REQUEST_CODE_SET_PINPOINT = 112
         private const val REQUEST_CODE_ADD_ADDRESS = 113
         private const val NEW_ADDRESS_PARCELABLE = "EXTRA_ADDRESS_NEW"
@@ -116,6 +130,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val TOTO_LONGITUDE = "106.8184023"
         private const val EMPTY_LOCATION = "0.0"
 
+        private const val MINI_CART_SOURCE = "home_page"
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -127,6 +142,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var rvHome: RecyclerView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private var miniCartHome: TokoFoodMiniCartWidget? = null
     private var localCacheModel: LocalCacheModel? = null
     private var movingPosition = 0
     private val spaceZero: Int
@@ -144,6 +160,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .build()
                 .inject(this)
         }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
     override fun getFragmentTitle(): String? {
@@ -169,13 +190,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        collectValue()
         setupUi()
         setupNavToolbar()
         setupRecycleView()
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
-
         loadLayout()
     }
 
@@ -184,6 +205,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         if (isChooseAddressWidgetDataUpdated()) {
             onRefreshLayout()
         }
+        initializeMiniCartHome()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -297,6 +319,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             navToolbar = binding?.navToolbar
             rvHome = binding?.rvHome
             swipeLayout = binding?.swipeRefreshLayout
+            miniCartHome = binding?.miniCartTokofoodHome
         }
     }
 
@@ -400,6 +423,24 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
                 is Fail -> {
                     showToaster(it.throwable.message)
+                }
+            }
+        }
+    }
+
+    private fun collectValue() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
+                when(uiEvent.state) {
+                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        goToPurchasePage()
+                    }
+                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+                        showMiniCartHome()
+                    }
+                    UiEvent.EVENT_FAILED_LOAD_CART -> {
+                        hideMiniCartHome()
+                    }
                 }
             }
         }
@@ -635,7 +676,26 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun chooseAddressWidgetRemoved() {
+    private fun chooseAddressWidgetRemoved() {}
 
+    private fun initializeMiniCartHome() {
+        activityViewModel?.let {
+            miniCartHome?.initialize(it, viewLifecycleOwner.lifecycleScope, MINI_CART_SOURCE)
+        }
+    }
+
+    private fun showMiniCartHome() {
+        miniCartHome?.show()
+        miniCartHome?.setOnATCClickListener {
+            goToPurchasePage()
+        }
+    }
+
+    private fun hideMiniCartHome() {
+        miniCartHome?.hide()
+    }
+
+    private fun goToPurchasePage() {
+        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
     }
 }
