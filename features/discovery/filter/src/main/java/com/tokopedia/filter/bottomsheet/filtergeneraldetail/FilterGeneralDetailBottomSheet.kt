@@ -232,7 +232,6 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         if (showCloseIcon) bottomSheetClose.setMargin(marginLeft = 16.toPx(), marginTop = 4.toPx(), marginRight = 12.toPx())
         else bottomSheetTitle.setMargin(marginLeft = 16.toPx())
 
-        configureBottomSheetHeight()
         setBottomSheetActionBold()
     }
 

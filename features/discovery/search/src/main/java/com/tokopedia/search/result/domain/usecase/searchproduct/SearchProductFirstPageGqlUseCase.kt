@@ -5,14 +5,13 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
-import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.FilterSortPorductModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
+import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -27,6 +26,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.http.Headers
 import rx.Emitter
 import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
@@ -51,6 +51,7 @@ class SearchProductFirstPageGqlUseCase(
     override val coroutineContext: CoroutineContext
         get() = coroutineDispatchers.main + masterJob
 
+    @Headers("x-device:ios-3.2")
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
@@ -62,7 +63,7 @@ class SearchProductFirstPageGqlUseCase(
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
-            addQuickFilterRequest(params)
+            addQuickFilterRequest(query, params)
             addProductAdsRequest(requestParams, params)
             addHeadlineAdsRequest(requestParams, headlineAdsParams)
             addGlobalNavRequest(requestParams, query, params)
@@ -91,21 +92,22 @@ class SearchProductFirstPageGqlUseCase(
         return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
-    private fun MutableList<GraphqlRequest>.addQuickFilterRequest(params: String) {
+    private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
         val enhancedParam = UrlParamUtils.getParamMap(params)
         enhancedParam["xdevice"] = "ios-3.2"
+        enhancedParam["x-device"] = "ios-3.2"
         enhancedParam[SearchApiConst.SOURCE] = "quick_filter"
 
-        add(createQuickFilterRequest(UrlParamUtils.generateUrlParamString(enhancedParam)))
+        add(createQuickFilterRequest(query = query, params = UrlParamUtils.generateUrlParamString(enhancedParam)))
     }
 
-    @GqlQuery("FilterSortProduct", FILTER_SORT_PRODUCT_QUERY)
-    private fun createQuickFilterRequest(params: String) =
-            GraphqlRequest(
-                FilterSortProduct(),
-                FilterSortPorductModel::class.java,
-                mapOf(GQL.KEY_PARAMS to params)
-            )
+    @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
+    private fun createQuickFilterRequest(query: String, params: String) =
+        GraphqlRequest(
+            QuickFilter(),
+            QuickFilterModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
         if (!requestParams.isSkipGlobalNav()) {
@@ -225,38 +227,36 @@ class SearchProductFirstPageGqlUseCase(
     companion object {
         private const val TDN_TIMEOUT: Long = 2_000
 
-        private const val FILTER_SORT_PRODUCT_QUERY = """
-            query FilterSortProduct(${'$'}params: String!) {
-                filter_sort_product(params: ${'$'}params) {
-                    data {
-                        filter {
-                            title
-                            options {
-                                name
+        private const val QUICK_FILTER_QUERY = """
+            query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
+                quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
+                    filter {
+                        title
+                        options {
+                            name
+                            key
+                            icon
+                            value
+                            is_new
+                            input_type
+                            total_data
+                            val_max
+                            val_min
+                            hex_color
+                            child {
                                 key
-                                icon
                                 value
-                                isNew
-                                inputType
-                                totalData
-                                valMax
-                                valMin
-                                hexColor
+                                name
+                                icon
+                                input_type
+                                total_data
                                 child {
                                     key
                                     value
                                     name
                                     icon
-                                    inputType
-                                    totalData
-                                    child {
-                                        key
-                                        value
-                                        name
-                                        icon
-                                        inputType
-                                        totalData
-                                    }
+                                    input_type
+                                    total_data
                                 }
                             }
                         }
