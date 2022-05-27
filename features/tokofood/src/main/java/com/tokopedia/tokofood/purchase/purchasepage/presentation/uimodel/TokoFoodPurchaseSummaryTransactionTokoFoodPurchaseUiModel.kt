@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 
 data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
     val transactionList: List<Transaction>,
-    val bottomTickerMessage: String
+    val bottomTicker: Pair<Boolean, String>
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {
 
     var isLoading = false

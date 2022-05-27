@@ -18,8 +18,8 @@ class SwitcherCoachMark(private val view: View?, private val onDismiss: () -> Un
             val coachMarkItems = arrayListOf(
                 CoachMark2Item(
                     view,
-                    activity?.getString(R.string.tokopedianow_15m_coachmark_title).orEmpty(),
-                    activity?.getString(R.string.tokopedianow_15m_coachmark_description).orEmpty(),
+                    activity?.getString(R.string.tokopedianow_20m_coachmark_title).orEmpty(),
+                    activity?.getString(R.string.tokopedianow_20m_coachmark_description).orEmpty(),
                     CoachMark2.POSITION_BOTTOM
                 )
             )

@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -18,7 +19,7 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
@@ -35,9 +36,9 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        query UpdateCartTokofood($${PARAMS_KEY}: CartTokoFoodParam!) {
+        mutation UpdateCartTokofood($${PARAMS_KEY}: UpdateCartGeneralParams!) {
           update_cart_general(params: $${PARAMS_KEY}) {
-            error_messages
+            message
             status
             data {
               success
@@ -62,7 +63,10 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse())
         } else {
-            val param = generateParams(params, chosenAddressRequestHelper.getChosenAddress().generateString())
+            val param = generateParams(
+                params,
+                CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
+            )
             val response =
                 repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
             emit(response)

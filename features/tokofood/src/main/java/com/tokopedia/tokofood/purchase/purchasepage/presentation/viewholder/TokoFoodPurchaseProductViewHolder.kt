@@ -25,6 +25,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                                         private val listener: TokoFoodPurchaseActionListener)
     : AbstractViewHolder<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>(viewBinding.root) {
 
+    private var textWatcher: TextWatcher? = null
+
     override fun bind(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
@@ -174,20 +176,23 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 qtyEditorProduct.gone()
                 return
             }
-            var hasSetQuantityListener = false
+            if (textWatcher != null) {
+                qtyEditorProduct.editText.removeTextChangedListener(textWatcher)
+                textWatcher = null
+            }
             qtyEditorProduct.show()
             qtyEditorProduct.autoHideKeyboard = true
             qtyEditorProduct.minValue = element.minQuantity
             qtyEditorProduct.maxValue = element.maxQuantity
             qtyEditorProduct.setValue(element.quantity)
-            qtyEditorProduct.editText.addTextChangedListener(object : TextWatcher {
+            textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val quantity = p0.toString().toIntOrZero()
-                    if (quantity != element.quantity && hasSetQuantityListener) {
+                    if (quantity != element.quantity) {
                         element.quantity = quantity
                         listener.onQuantityChanged()
                     }
@@ -196,8 +201,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 override fun afterTextChanged(p0: Editable?) {
 
                 }
-            })
-            hasSetQuantityListener = true
+            }
+            qtyEditorProduct.editText.addTextChangedListener(textWatcher)
             qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             qtyEditorProduct.editText.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {

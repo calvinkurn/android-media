@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,7 +13,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
@@ -58,13 +58,13 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         )
     }
 
-
+    @GqlQuery(QUERY_SHIPMENT_ADDRESS_FORM, SHIPMENT_ADDRESS_FORM_V3_QUERY)
     override suspend fun executeOnBackground(): CartShipmentAddressFormData {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(getQueryShipmentAddressFormV3(), ShipmentAddressFormGqlResponse::class.java, params)
+        val request = GraphqlRequest(ShipmentAddressFormQuery(), ShipmentAddressFormGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
 
         if (response.shipmentAddressFormResponse.status == "OK") {
@@ -79,13 +79,15 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
     }
 
     companion object {
-        const val PARAM_KEY_LANG = "lang"
-        const val PARAM_KEY_IS_ONE_CLICK_SHIPMENT = "is_ocs"
-        const val PARAM_KEY_CORNER_ID = "corner_id"
-        const val PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE = "skip_onboarding"
-        const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
-        const val PARAM_KEY_DEVICE_ID = "dev_id"
-        const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
+        private const val PARAM_KEY_LANG = "lang"
+        private const val PARAM_KEY_IS_ONE_CLICK_SHIPMENT = "is_ocs"
+        private const val PARAM_KEY_CORNER_ID = "corner_id"
+        private const val PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE = "skip_onboarding"
+        private const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
+        private const val PARAM_KEY_DEVICE_ID = "dev_id"
+        private const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
+
+        private const val QUERY_SHIPMENT_ADDRESS_FORM = "ShipmentAddressFormQuery"
     }
 
 }

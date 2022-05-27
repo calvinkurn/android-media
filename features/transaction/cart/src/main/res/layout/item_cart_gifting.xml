@@ -5,13 +5,13 @@
     android:id="@+id/cl_cart_gifting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_rounded_grey">
+    android:background="@drawable/bg_gifting_addon_rounded_grey">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_addon_left"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/desc_gifting"
         app:layout_constraintTop_toTopOf="@id/desc_gifting"
@@ -32,11 +32,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iu_chevron_right"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:contentDescription="@string/promo_checkout_icon_chev_desc"
         app:layout_constraintTop_toTopOf="@id/desc_gifting"

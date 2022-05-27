@@ -1,5 +1,8 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -28,7 +31,7 @@ object RefreshLeaderboard: PlayViewerNewAction()
  * Partner
  */
 object ClickFollowAction : PlayViewerNewAction()
-object ClickPartnerNameAction : PlayViewerNewAction()
+data class ClickPartnerNameAction(val appLink: String) : PlayViewerNewAction()
 
 /**
  * Like
@@ -59,5 +62,16 @@ data class SharePermissionAction(val label: String): PlayViewerNewAction()
  * Product
  */
 object RetryGetTagItemsAction : PlayViewerNewAction()
+data class BuyProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+data class BuyProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
+data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+data class AtcProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
+data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
+
+object OpenKebabAction: PlayViewerNewAction()
+object OpenUserReport: PlayViewerNewAction()
+data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
+
+data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()

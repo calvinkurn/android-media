@@ -1,0 +1,17 @@
+{
+  "readme": "Home Nav click shop and affiliate",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on profile section - login",
+      "eventCategory": "global menu",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "clientId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

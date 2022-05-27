@@ -32,6 +32,7 @@ import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
+import com.tokopedia.tokofood.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
@@ -242,6 +243,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             it.recyclerViewPurchasePromo.show()
             it.totalAmountPurchasePromo.show()
         }
+        TokoFoodPurchaseAnalytics.sendLoadPromoPageTracking()
     }
 
     private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {

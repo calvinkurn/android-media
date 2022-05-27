@@ -17,23 +17,20 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: [self-hosted, linux, x64, auto-scale, aws, dev18]
+    runs-on: [self-hosted, Linux, X64, auto-scale, aws, cluster2]
 
     strategy:
       fail-fast: false
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['java', 'python', 'javascript']
+        language: ['python', 'javascript', 'java']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - run: rm -rf /home/ec2-user/actions-runner/_work/_temp/codeql_databases
-    - run: eval "$(ssh-agent -s)"
-       ssh-add /home/ec2-user/.ssh/id_ed25519
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
 
     # Initializes the CodeQL tools for scanning.

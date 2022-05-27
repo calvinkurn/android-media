@@ -1,6 +1,8 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
@@ -62,6 +64,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_81
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_82
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_83
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_87
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DISPLAY_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_WIDGET
@@ -129,11 +132,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_DONATION_BY_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.MULTIPLE_BUNDLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.MULTIPLE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_BUNDLE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SINGLE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION
@@ -161,6 +167,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_DIGITAL_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_ADD_ONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_REMINDER
@@ -176,6 +183,8 @@ import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.view.model.NotifyMeAction
@@ -302,11 +311,11 @@ class ShopPageHomeTracking(
 
     fun impressionProductPersonalization(
             isOwner: Boolean,
-            isLogin: Boolean,
             productName: String,
             productId: String,
             productDisplayedPrice: String,
             recommendationType: String,
+            categoryBreadcrumbs: String,
             userId: String,
             shopName: String,
             horizontalPosition: Int,
@@ -315,27 +324,15 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val widgetType = getShopPersoWidgetType(widgetName)
-        val eventAction = IMPRESSION_PRODUCT_RECOMMENDATION
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
+        val eventAction = joinDash(IMPRESSION_PRODUCT_RECOMMENDATION, LOGIN)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
+        val actionFieldList = joinDash(
+                SHOPPAGE,
+                LOGIN,
+                BUYER_RECOMMENDATION,
+                recommendationType,
                 widgetType
         )
-        val actionFieldList = if(isLogin) {
-            joinDash(
-                    SHOPPAGE,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        } else {
-            joinDash(
-                    SHOPPAGE,
-                    NON_LOGIN,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to PRODUCT_VIEW,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
@@ -354,9 +351,11 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
+                        categoryBreadcrumbs,
                         horizontalPosition,
                         actionFieldList
-                )))
+                ))
+        )
         sendDataLayerEvent(eventMap)
     }
 
@@ -371,7 +370,8 @@ class ShopPageHomeTracking(
             shopName: String,
             horizontalPosition: Int,
             widgetHeaderTitle: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            categoryBreadcrumbs: String
     ) {
         val eventAction = IMPRESSION_PRODUCT_RECOMMENDATION
         var eventLabel = joinDash(widgetHeaderTitle, WIDGET_TYPE_REMINDER)
@@ -405,6 +405,7 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
+                        categoryBreadcrumbs,
                         horizontalPosition,
                         actionFieldList
                 )))
@@ -415,6 +416,7 @@ class ShopPageHomeTracking(
         return when (widgetName) {
             BUY_AGAIN -> WIDGET_TYPE_BUY_AGAIN
             RECENT_ACTIVITY -> WIDGET_TYPE_CAROUSELL
+            ADD_ONS -> WIDGET_TYPE_ADD_ONS
             else -> ""
         }
     }
@@ -516,11 +518,11 @@ class ShopPageHomeTracking(
 
     fun clickProductPersonalization(
             isOwner: Boolean,
-            isLogin: Boolean,
             productName: String,
             productId: String,
             productDisplayedPrice: String,
             recommendationType: String,
+            categoryBreadcrumbs: String,
             shopName: String,
             userId: String,
             horizontalPosition: Int,
@@ -529,31 +531,15 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val widgetType = getShopPersoWidgetType(widgetName)
-        val eventAction = if(isLogin) {
-            CLICK_PRODUCT_RECOMMENDATION
-        } else {
-            joinDash(CLICK_PRODUCT_RECOMMENDATION, NON_LOGIN)
-        }
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
+        val eventAction = joinDash(CLICK_PRODUCT_RECOMMENDATION, LOGIN)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
+        val actionFieldList = joinDash(
+                SHOPPAGE,
+                LOGIN,
+                BUYER_RECOMMENDATION,
+                recommendationType,
                 widgetType
         )
-        val actionFieldList = if(isLogin) {
-            joinDash(
-                    SHOPPAGE,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        } else {
-            joinDash(
-                    SHOPPAGE,
-                    NON_LOGIN,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to PRODUCT_CLICK,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
@@ -574,6 +560,7 @@ class ShopPageHomeTracking(
                                 productId,
                                 productDisplayedPrice,
                                 shopName,
+                                categoryBreadcrumbs,
                                 horizontalPosition,
                                 actionFieldList
                         ))
@@ -593,7 +580,8 @@ class ShopPageHomeTracking(
             userId: String,
             horizontalPosition: Int,
             widgetHeaderTitle: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            categoryBreadcrumbs: String
     ) {
         val eventAction = CLICK_PRODUCT_RECOMMENDATION
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -628,6 +616,7 @@ class ShopPageHomeTracking(
                                 productId,
                                 productDisplayedPrice,
                                 shopName,
+                                categoryBreadcrumbs,
                                 horizontalPosition,
                                 actionFieldList
                         ))
@@ -753,21 +742,18 @@ class ShopPageHomeTracking(
             userId: String,
             widgetHeaderTitle: String,
             widgetName: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            recommendationType: String,
+            categoryBreadcrumbs: String
     ) {
 
         val widgetType = getShopPersoWidgetType(widgetName)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
         val eventAction = when(widgetType){
-            WIDGET_TYPE_CAROUSELL -> CLICK_ATC_RECOMMENDATION
+            WIDGET_TYPE_CAROUSELL, WIDGET_TYPE_ADD_ONS -> CLICK_ATC_RECOMMENDATION
             WIDGET_TYPE_BUY_AGAIN -> CLICK_OCC_RECOMMENDATION
             else -> ""
         }
-
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
-                widgetType
-        )
-
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to ADD_TO_CART,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
@@ -787,7 +773,9 @@ class ShopPageHomeTracking(
                                 productQuantity,
                                 customDimensionShopPage.shopId.orEmpty(),
                                 shopName,
-                                customDimensionShopPage.shopType.orEmpty()
+                                customDimensionShopPage.shopType.orEmpty(),
+                                recommendationType,
+                                categoryBreadcrumbs
                         ))
                 )
         )
@@ -960,6 +948,7 @@ class ShopPageHomeTracking(
             productId: String,
             productDisplayedPrice: String,
             shopName: String,
+            categoryBreadcrumbs: String,
             horizontalPosition: Int,
             actionList: String
     ): Map<String, Any> {
@@ -968,7 +957,7 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to NONE,
+                CATEGORY to categoryBreadcrumbs,
                 VARIANT to NONE,
                 LIST to actionList,
                 POSITION to horizontalPosition,
@@ -1054,6 +1043,8 @@ class ShopPageHomeTracking(
             shopId: String,
             shopName: String,
             shopType: String,
+            recommendationType: String,
+            categoryBreadcrumbs: String
     ): Map<String, Any> {
 
         return mutableMapOf(
@@ -1061,8 +1052,8 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to NONE,
-                CATEGORY_ID to NONE,
+                CATEGORY to categoryBreadcrumbs,
+                CATEGORY_ID to recommendationType,
                 VARIANT to NONE,
                 QUANTITY to productQuantity,
                 DIMENSION_45 to "45",
@@ -2071,10 +2062,11 @@ class ShopPageHomeTracking(
             userId: String,
             bundleId: String,
             bundleName: String,
-            bundlePriceCut: String
+            bundlePriceCut: String,
+            bundlePrice: Long
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                EVENT to CLICK_PG,
+                EVENT to ADD_TO_CART,
                 EVENT_ACTION to joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART),
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut),
@@ -2082,6 +2074,25 @@ class ShopPageHomeTracking(
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
                 SHOP_ID to shopId,
                 USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CURRENCY_CODE to IDR,
+                ADD to mutableMapOf(
+                        PRODUCTS to mutableListOf(mutableMapOf(
+                                CATEGORY_ID to NONE,
+                                DIMENSION_117 to MULTIPLE_BUNDLE_WIDGET,
+                                DIMENSION_118 to bundleId,
+                                DIMENSION_40 to joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE),
+                                DIMENSION_87 to SHOP_PAGE,
+                                BRAND to NONE,
+                                CATEGORY to NONE,
+                                VARIANT to NONE,
+                                NAME to bundleName,
+                                ID to bundleId,
+                                PRICE to bundlePrice,
+                                QUANTITY to ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
+                        ))
+                )
         )
         sendDataLayerEvent(eventMap)
     }
@@ -2092,11 +2103,12 @@ class ShopPageHomeTracking(
             bundleId: String,
             bundleName: String,
             bundlePriceCut: String,
+            bundlePrice: Long,
             selectedPackage: String,
             productId: String
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                EVENT to CLICK_PG,
+                EVENT to ADD_TO_CART,
                 EVENT_ACTION to joinDash(CLICK, SINGLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART),
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_LABEL to joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage),
@@ -2105,6 +2117,25 @@ class ShopPageHomeTracking(
                 PRODUCT_ID to productId,
                 SHOP_ID to shopId,
                 USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CURRENCY_CODE to IDR,
+                ADD to mutableMapOf(
+                        PRODUCTS to mutableListOf(mutableMapOf(
+                                CATEGORY_ID to NONE,
+                                DIMENSION_117 to SINGLE_BUNDLE_WIDGET,
+                                DIMENSION_118 to bundleId,
+                                DIMENSION_40 to joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE),
+                                DIMENSION_87 to SHOP_PAGE,
+                                BRAND to NONE,
+                                CATEGORY to NONE,
+                                VARIANT to NONE,
+                                NAME to bundleName,
+                                ID to bundleId,
+                                PRICE to bundlePrice,
+                                QUANTITY to ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
+                        ))
+                )
         )
         sendDataLayerEvent(eventMap)
     }
@@ -2332,7 +2363,7 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
-                        productPrice = productCardUiModel.displayedPrice.orEmpty()
+                        productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong()
                     )
                 )
             }
@@ -2363,7 +2394,7 @@ class ShopPageHomeTracking(
                         position = position,
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
-                        productPrice = product.displayedPrice.orEmpty()
+                        productPrice = product.displayedPrice?.getDigits().orZero().toLong()
                 )
             ))
         }
@@ -2426,7 +2457,7 @@ class ShopPageHomeTracking(
         }
     }
 
-    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String,  productPrice: String, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
+    private fun getItemsCampaignBundle(position: Int, productId: String, productName: String,  productPrice: Long, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
             putString(ITEM_BRAND, productBrand)
@@ -2434,7 +2465,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, productId)
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, productVariant)
-            putString(PRICE, productPrice)
+            putLong(PRICE, productPrice)
         }
     }
 }

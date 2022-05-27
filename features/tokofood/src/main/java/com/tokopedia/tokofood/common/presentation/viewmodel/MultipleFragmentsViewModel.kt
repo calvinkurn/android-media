@@ -37,8 +37,6 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 ) : ViewModel(), CoroutineScope {
     val inputFlow = MutableSharedFlow<String>(Int.ONE)
 
-    val isDebug = true
-
     private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
     val cartDataFlow = cartDataState.asStateFlow()
 
@@ -151,23 +149,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
-                        if (isDebug) {
-                            updateParam.productList.firstOrNull().let { param ->
-                                UiEvent(
-                                    state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
-                                    data = updateParam to it.data.copy(carts = listOf(
-                                        CartTokoFood(
-                                            productId = param?.productId.orEmpty(),
-                                            cartId = param?.cartId.orEmpty())
-                                    ))
-                                )
-                            }
-                        } else {
-                            UiEvent(
-                                state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
-                                data = updateParam to it.data
-                            )
-                        }
+                        UiEvent(
+                            state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                            data = updateParam to it.data
+                        )
                     )
                 }
             }
@@ -186,7 +171,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             updateCartTokoFoodUseCase(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
+                    cartDataValidationState.emit(UiEvent(
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY,
+                        data = updateParam to it.data
+                    ))
                 }
             }
         }, onError = {
@@ -204,7 +192,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             updateCartTokoFoodUseCase(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_CART))
+                    cartDataValidationState.emit(UiEvent(
+                        state = UiEvent.EVENT_SUCCESS_UPDATE_CART,
+                        data = updateParam to it.data
+                    ))
                 }
             }
         }, onError = {
@@ -248,7 +239,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                         )
                     } else {
                         loadCartList(source)
-                        cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_ADD_TO_CART))
+                        cartDataValidationState.emit(UiEvent(
+                            state = UiEvent.EVENT_SUCCESS_ADD_TO_CART,
+                            data = updateParam to it.data
+                        ))
                     }
                 }
             }
@@ -267,8 +261,8 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         return MiniCartUiModel(
             shopName = cartData.shop.name,
             totalPrice = cartData.shoppingSummary.total.cost,
-            totalPriceFmt = cartData.shoppingSummary.summaryDetail.totalPrice,
-            totalProductQuantity = cartData.shoppingSummary.summaryDetail.totalItems
+            totalPriceFmt = cartData.summaryDetail.totalPrice,
+            totalProductQuantity = cartData.summaryDetail.totalItems
         )
     }
 

@@ -46,6 +46,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
@@ -215,7 +216,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
             it.renderLoadGetCartDataFinish()
             it.renderErrorInitialGetCartListData(throwable)
-            it.stopCartPerformanceTrace()
+            it.stopCartPerformanceTrace(false)
             CartLogger.logOnErrorLoadCartPage(throwable)
             CartIdlingResource.decrement()
         }
@@ -236,7 +237,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
-            it.stopCartPerformanceTrace()
+            it.stopCartPerformanceTrace(true)
             CartIdlingResource.decrement()
         }
     }
@@ -1155,7 +1156,12 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopBoAffordabilityData.tickerText.isNotBlank()) {
-                setBoAffordability("${cartItemHolderData.shopBoAffordabilityData.tickerText}_${cartItemHolderData.shopBoMetadata.boType}")
+                val fulfillText = if (cartItemHolderData.shopBoAffordabilityData.state == CartShopBoAffordabilityState.SUCCESS_AFFORD) {
+                    ConstantTransactionAnalytics.EventLabel.BO_FULFILL
+                } else {
+                    ConstantTransactionAnalytics.EventLabel.BO_UNFULFILL
+                }
+                setBoAffordability("${fulfillText}_${cartItemHolderData.shopBoMetadata.boType}")
             } else {
                 setBoAffordability("")
             }
@@ -1658,6 +1664,18 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     view?.updateCartBoAffordability(cartShopHolderData)
                 }
             }
+        }
+    }
+
+    override fun getPromoFlag(): Boolean {
+        val cartListData = cartListData
+        val lastValidateUseResponse = lastValidateUseResponse
+        return if (isLastApplyResponseStillValid && cartListData != null) {
+            cartListData.promo.lastApplyPromo.lastApplyPromoData.additionalInfo.pomlAutoApplied
+        } else if (!isLastApplyResponseStillValid && lastValidateUseResponse != null) {
+            lastValidateUseResponse.promoUiModel.additionalInfoUiModel.pomlAutoApplied
+        } else {
+            false
         }
     }
 }

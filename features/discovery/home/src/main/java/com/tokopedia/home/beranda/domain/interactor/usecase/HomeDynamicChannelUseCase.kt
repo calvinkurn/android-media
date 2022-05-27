@@ -570,19 +570,27 @@ class HomeDynamicChannelUseCase @Inject constructor(
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
      *    2.1 Get home flag response
-     * 3. Save immediately to produce shimmering for ATF data
-     * 4. Get above the fold content
-     * 5. Submit current data to database, to trigger HomeViewModel flow
-     *      if there is no cache, then submit immediately
-     *      if cache exist, don't submit to database because it will trigger jumpy experience
-     * 6. Get dynamic channel data
-     *    6.1. If channel cache is empty, proceed to channel pagination
-     *    6.2. If channel cache is not empty, proceed to full channel request
-     *      if there is token and cache is not exist
-     *      if cache is exist
-     * 7. Submit current data to database, to trigger HomeViewModel flow
-     *    7.1 Emit error pagination only when atf is empty
-     *      Because there is no content that we can show, we showing error page
+     * 3. Get above the fold content
+     * 4. Get dynamic channel data
+     *    4.1. If remote config pagination enabled, proceed with pagination
+     *      4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+     *      4.1.2 If get dynamic channel with page = 1 failed, then emit error
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.3 If channel cache is not empty, proceed to full channel request
+     *              - if there is token and cache is not exist
+     *              - if cache is exist
+     *      4.1.4. If full channel request is success
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.5 If full channel request is failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
+     *    4.2. If remote config pagination disabled, proceed with no pagination
+     *      4.2.1 If full dynamic channel request succeed
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *      4.2.2 If full dynamic channel request failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
@@ -641,7 +649,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 4. Get above the fold content
+             * 3. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
                 var nonTickerResponseFinished = false
@@ -688,7 +696,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
                                         } else {
-                                            atfData.status = AtfKey.STATUS_ERROR
+                                            atfData.status = AtfKey.STATUS_EMPTY
                                         }
                                     }
                                     homeData.atfData?.isProcessingAtf = false
@@ -777,113 +785,177 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 6. Get dynamic channel data
+             * 4. Get dynamic channel data
              */
-            val dynamicChannelResponseValue = try {
-                val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
-                        Bundle().apply {
-                            putInt(
-                                    HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION
+            paginationRemoteConfigCondition(
+                remoteConfigPaginationEnabled = {
+                    /**
+                     * 4.1. If remote config pagination enabled, proceed with pagination
+                     */
+                    if (!isCacheExistForProcess) {
+                        val dynamicChannelResponseValue = try {
+                            val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
+                                Bundle().apply {
+                                    putInt(
+                                        HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION
+                                    )
+                                    putString(
+                                        HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
+                                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                    )
+                                }
                             )
-                            putString(
-                                    HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                            )
+                            dynamicChannelResponse
+                        } catch (e: Exception) {
+                            if (!isAtfSuccess && !isCacheExistForProcess) {
+                                null
+                            } else {
+                                HomeChannelData()
+                            }
                         }
-                )
-                dynamicChannelResponse
-            } catch (e: Exception) {
-                if (!isAtfSuccess && !isCacheExistForProcess) {
-                    null
-                } else {
-                    HomeChannelData()
-                }
-            }
 
-            /**
-             * 6.1. If channel cache is empty, proceed to channel pagination
-             */
-            if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
-                val extractPair = extractToken(dynamicChannelResponseValue)
+                        if (dynamicChannelResponseValue != null) {
+                            /**
+                             * 4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+                             */
+                            val extractPair = extractToken(dynamicChannelResponseValue)
 
-                homeData.let {
-                    val combinedChannel = combineChannelWith(it.dynamicHomeChannel, extractPair.second.dynamicHomeChannel)
-                    it.dynamicHomeChannel = combinedChannel
-                    it.token = extractPair.first
-                    it.dynamicHomeChannel.channels.forEach { channel ->
-                        channel.timestamp = currentTimeMillisString
-                    }
-                    currentToken = it.token
-                }
+                            homeData.let {
+                                val combinedChannel = combineChannelWith(it.dynamicHomeChannel, extractPair.second.dynamicHomeChannel)
+                                it.dynamicHomeChannel = combinedChannel
+                                it.token = extractPair.first
+                                it.dynamicHomeChannel.channels.forEach { channel ->
+                                    channel.timestamp = currentTimeMillisString
+                                }
+                                currentToken = it.token
+                            }
 
-                homeData.isProcessingDynamicChannel = false
-                if (isAtfSuccess) {
-                    saveToDatabase(homeData, true)
-                } else {
-                    saveToDatabase(homeData, false)
-                }
-            } else if (dynamicChannelResponseValue == null) {
-
-                /**
-                 * 7.1 Emit error pagination only when atf is empty
-                 * Because there is no content that we can show, we showing error page
-                 */
-                if (!isCacheExistForProcess &&
-                        (homeData.atfData == null ||
-                                (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
-                                homeData.atfData?.dataList?.isEmpty() == true)) {
-                    emit(Result.errorGeneral(Throwable(),null))
-                } else {
-                    emit(Result.error(Throwable(), null))
-                }
-                saveToDatabase(homeData)
-            }
-
-            /**
-             * 6.2. If channel cache is not empty, proceed to full channel request
-             * - if there is token and cache is not exist
-             * - if cache is exist
-             *
-             */
-            if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
-                    isCacheExistForProcess) {
-                try {
-                    homeData = processFullPageDynamicChannel(
-                            homeDataResponse = homeData)
-                            ?: HomeData()
-                    homeData.dynamicHomeChannel.channels.forEach {
-                        it.timestamp = currentTimeMillisString
-                    }
-                    homeData.let {
-                        emit(Result.success(null))
-
-                        /**
-                         * 7. Submit current data to database, to trigger HomeViewModel flow
-                         */
-                        homeData.isProcessingDynamicChannel = false
-                        if (isAtfSuccess) {
-                            saveToDatabase(it, true)
+                            homeData.isProcessingDynamicChannel = false
+                            if (isAtfSuccess) {
+                                saveToDatabase(homeData, true)
+                            } else {
+                                saveToDatabase(homeData, false)
+                            }
                         } else {
-                            saveToDatabase(it, false)
+                            /**
+                             * 4.1.2 If get dynamic channel with page = 1 failed, then emit error
+                             * Because there is no content that we can show, we showing error page
+                             */
+                            if (!isCacheExistForProcess &&
+                                (homeData.atfData == null ||
+                                        (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
+                                        homeData.atfData?.dataList?.isEmpty() == true)) {
+                                emit(Result.errorGeneral(Throwable(),null))
+                            } else {
+                                emit(Result.error(Throwable(), null))
+                            }
+                            saveToDatabase(homeData)
                         }
                     }
-                } catch (e: Exception) {
 
                     /**
-                     * 7.1 Emit error pagination only when atf is empty
-                     * Because there is no content that we can show, we showing error page
+                     * 4.1.3 If channel cache is not empty, proceed to full channel request
+                     * - if there is token and cache is not exist
+                     * - if cache is exist
+                     *
                      */
-                    if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
-                        emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                    if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
+                        isCacheExistForProcess) {
+                        try {
+                            homeData = processFullPageDynamicChannel(homeDataResponse = homeData)
+                                ?: HomeData()
+                            homeData.dynamicHomeChannel.channels.forEach {
+                                it.timestamp = currentTimeMillisString
+                            }
+                            homeData.let {
+                                emit(Result.success(null))
+
+                                /**
+                                 * 4.1.4. If full channel request is success
+                                 * Then submit current data to database, to trigger HomeViewModel flow
+                                 */
+                                homeData.isProcessingDynamicChannel = false
+                                if (isAtfSuccess) {
+                                    saveToDatabase(it, true)
+                                } else {
+                                    saveToDatabase(it, false)
+                                }
+                            }
+                        } catch (e: Exception) {
+
+                            /**
+                             * 4.1.5 If full channel request is failed
+                             * Then emit error pagination
+                             * Because there is no content that we can show, we showing error page
+                             */
+                            if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                                emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                            }
+                            cacheCondition(
+                                isCacheExistForProcess,
+                                isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                }
+                            )
+                        }
                     }
-                    cacheCondition(
+                },
+                remoteConfigPaginationDisabled = {
+                    /**
+                     * 4.2. If remote config pagination disabled, proceed with no pagination
+                     */
+                    try {
+                        homeData = processFullPageDynamicChannel(
+                            homeDataResponse = homeData)
+                            ?: HomeData()
+                        homeData.dynamicHomeChannel.channels.forEach {
+                            it.timestamp = currentTimeMillisString
+                        }
+                        homeData.let {
+                            emit(Result.success(null))
+
+                            /**
+                             * 4.2.1 If full dynamic channel request succeed
+                             * Then submit current data to database, to trigger HomeViewModel flow
+                             */
+                            it.isProcessingDynamicChannel = false
+                            if (isAtfSuccess) {
+                                saveToDatabase(it, true)
+                            } else {
+                                saveToDatabase(it, false)
+                            }
+                        }
+                    } catch (e: Exception) {
+
+                        /**
+                         * 4.2.2 If full dynamic channel request failed
+                         * Then emit error pagination
+                         * Because there is no content that we can show, we showing error page
+                         */
+                        if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                            emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                        }
+                        cacheCondition(
                             isCacheExistForProcess,
                             isCacheEmptyAction = {
                                 saveToDatabase(homeData)
                             }
-                    )
+                        )
+                    }
                 }
-            }
+            )
+        }
+    }
+
+    private suspend fun paginationRemoteConfigCondition(
+        remoteConfigPaginationDisabled: suspend () -> Unit,
+        remoteConfigPaginationEnabled: suspend () -> Unit
+    ) {
+        val disablePagination = remoteConfig.getBoolean(RemoteConfigKey.HOME_REMOVE_PAGINATION, true)
+        if (disablePagination) {
+            remoteConfigPaginationDisabled.invoke()
+        } else {
+            remoteConfigPaginationEnabled.invoke()
         }
     }
 

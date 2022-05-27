@@ -44,7 +44,7 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    override fun sendSmiley(reputationId: String, score: String, role: Int) {
+    override fun sendSmiley(reputationId: String, score: String, role: String) {
         viewListener?.showLoadingDialog()
         sendSmileyReputationUseCase.execute(
             SendSmileyReputationUseCase.getParam(

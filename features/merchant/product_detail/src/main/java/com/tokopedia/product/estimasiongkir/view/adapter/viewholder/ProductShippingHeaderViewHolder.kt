@@ -60,6 +60,7 @@ class ProductShippingHeaderViewHolder(view: View,
             element.freeOngkirTokoNowText,
             element.freeOngkirPriceOriginal,
             element.freeOngkirDesc,
+            element.isFreeOngkirQuotaEmpty
         )
         renderWeight(element.weight)
     }
@@ -105,12 +106,13 @@ class ProductShippingHeaderViewHolder(view: View,
         shouldShowTxtTokoNow: Boolean,
         freeOngkirTokoNowText: String,
         freeOngkirPriceOriginal: Double,
-        freeOngkirDesc: String
+        freeOngkirDesc: String,
+        isFreeOngkirQuotaEmpty: Boolean
     ) {
         if (shouldShowTxtTokoNow) {
             renderBoTokoNow(shouldShowTxtTokoNow, freeOngkirEstimation, freeOngkirPrice, freeOngkirTokoNowText)
         } else {
-            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc)
+            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc, isFreeOngkirQuotaEmpty)
         }
     }
 
@@ -120,9 +122,10 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirImageUrl: String,
         freeOngkirPrice: String,
         freeOngkirPriceOriginal: Double,
-        freeOngkirDesc: String
+        freeOngkirDesc: String,
+        isFreeOngkirQuotaEmpty: Boolean
     ) = with(itemView) {
-        txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && freeOngkirPrice.isNotEmpty()) {
+        txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
         }
 
@@ -137,7 +140,7 @@ class ProductShippingHeaderViewHolder(view: View,
             text = freeOngkirDesc
         }
 
-        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && freeOngkirPriceOriginal > 0){
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > 0){
             text = freeOngkirPriceOriginal.getCurrencyFormatted()
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }

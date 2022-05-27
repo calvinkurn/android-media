@@ -32,7 +32,20 @@
     <string name="text_purchase_choose_payment">Pilih Pembayaran</string>
     <string name="text_purchase_payment_total">Total Tagihan</string>
     <string name="text_purchase_dash">-</string>
-    <string name="text_purchase_use_promo">Pakai Promo (%s)</string>
+    <string name="text_purchase_use_promo">Pakai Promo (%d)</string>
+    <string name="text_purchase_delete_item">Hapus %s item yang tidak bisa diproses?</string>
+    <string name="text_purchase_delete_all">Semua item ini akan dihapus dari keranjangmu.</string>
+    <string name="text_purchase_success_delete">%d item berhasil dihapus.</string>
+    <string name="text_purchase_delete">Hapus</string>
+    <string name="text_purchase_back">Kembali</string>
+    <string name="text_purchase_no_pinpoint">Kamu belum set pinpoint lokasi</string>
+    <string name="text_purchase_pinpoint_benefit">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
+    <string name="text_purchase_set_pinpoint">Set pin point</string>
+    <string name="text_purchase_success_notes">Sip! Catatan berhasil disimpan.</string>
+    <string name="text_purchase_success_quantity">Quantity berhasil diubah</string>
+    <string name="text_purchase_okay">Oke</string>
+    <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
+    <string name="text_purchase_try_again">Coba Lagi</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

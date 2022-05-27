@@ -30,13 +30,15 @@ import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet.Companion.STATE_PERFORMA_INFO
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_HOME
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -180,9 +182,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private fun setAffiliateGreeting() {
         view?.findViewById<Typography>(R.id.affiliate_greeting)?.text = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 6..10 -> getString(R.string.affiliate_morning)
-            in 11..15 -> getString(R.string.affiliate_noon)
-            in 16..18 -> getString(R.string.affiliate_afternoon)
+            in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
+            in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
+            in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
             else ->getString(R.string.affiliate_night)
         }
     }
@@ -280,22 +282,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
             }
         })
-        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
-            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
-                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
-            }else {
-                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
-                    try {
-                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                    }catch (e : Exception){
-                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
-                    }
-                }
-                activity?.finish()
-            }
-        })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
             adapter.removeShimmer(listSize)
@@ -342,6 +328,22 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                         onGetAnnouncementError()
                     }
                 }
+            }
+        })
+        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
+            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+            }else {
+                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
+                    try {
+                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }catch (e : Exception){
+                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
+                    }
+                }
+                activity?.finish()
             }
         })
     }
@@ -503,7 +505,17 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         )
     }
 
-    override fun onInfoClick(title: String?, desc: String?) {
-        AffiliateHowToPromoteBottomSheet.newInstance(STATE_PERFORMA_INFO,title,desc).show(childFragmentManager, "")
+    override fun onInfoClick(title: String?, desc: String?, metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?,type: String?,tickerInfo: String?) {
+            sendInfoClickEvent(type)
+            AffiliateRecylerBottomSheet.newInstance(TYPE_HOME,title,desc,metrics,affiliateHomeViewModel.getSelectedDate(),tickerInfo = tickerInfo).show(childFragmentManager, "")
+    }
+
+    private fun sendInfoClickEvent(type: String?) {
+        var action = ""
+        when(type){
+            CLICK_TYPE -> action = AffiliateAnalytics.ActionKeys.CLICK_KLIK_CARD
+            COMMISSION_TYPE -> action = AffiliateAnalytics.ActionKeys.CLICK_TOTAL_KOMISI_CARD
+        }
+        if(action.isNotEmpty()) AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.CLICK_CONTENT,action,AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,"",userSessionInterface.userId)
     }
 }
