@@ -72,4 +72,9 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Typo Correction
+    const val SEARCH_TYPO_CORRECTION_ADS = "typo_correction_ads2"
+    const val SEARCH_TYPO_CORRECTION_ADS_VARIANT = "typo2"
+
 }
