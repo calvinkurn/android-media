@@ -11,6 +11,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftListAdapter
 import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 
 class DraftListBottomSheet: BottomSheetUnify() {
@@ -44,11 +45,20 @@ class DraftListBottomSheet: BottomSheetUnify() {
         rvDraft?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvDraft?.adapter = DraftListAdapter().apply {
             setItems(listOf(
-                DraftItemModel("1", "title 1", "desc1", Date(), Date()),
+                DraftItemModel("1", "title 1", "desc1",
+                    Date(),
+                    Date().addTimeToSpesificDate(Calendar.YEAR, 1)
+                        .addTimeToSpesificDate(Calendar.HOUR, 2)
+                ),
                 DraftItemModel("2", "title 2", "desc2", Date(), Date()),
             ))
+            setDeleteIconClickListener(::onDeleteIconClick)
         }
 
+    }
+
+    private fun onDeleteIconClick(draftItemModel: DraftItemModel) {
+        println(draftItemModel.toString())
     }
 
     fun show(manager: FragmentManager?) {
