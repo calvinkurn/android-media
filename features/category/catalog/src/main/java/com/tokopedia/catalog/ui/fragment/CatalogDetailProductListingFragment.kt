@@ -573,7 +573,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 deleteWishlistV2UseCase.execute(
                     onSuccess = { result ->
                         if (result is Success) {
-                            productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+                            productNavListAdapter?.updateWishlistStatus(productId, false)
                             enableWishListButton(productId)
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result.data, context, v)
