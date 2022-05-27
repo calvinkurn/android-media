@@ -27,7 +27,10 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.ContainerUnify
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")
