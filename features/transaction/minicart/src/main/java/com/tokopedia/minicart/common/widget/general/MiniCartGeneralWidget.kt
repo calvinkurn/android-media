@@ -52,7 +52,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
 
-    private var progressDialog: AlertDialog? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
     private var viewModel: MiniCartGeneralViewModel? = null
@@ -96,13 +95,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             showMiniCartChatListBottomSheet(fragment)
         }
         binding.chatIcon.setImageDrawable(chatIcon)
-        // Init Progress Dialog
-        context?.let {
-            progressDialog = AlertDialog.Builder(it)
-                .setView(R.layout.mini_cart_progress_dialog_view)
-                .setCancelable(true)
-                .create()
-        }
     }
 
     private fun initializeListener(listener: MiniCartWidgetListener) {
