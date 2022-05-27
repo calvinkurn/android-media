@@ -96,6 +96,18 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
               total_product_count
               total_product_error
               total_product_price
+              simplified_shopping_summary {
+                text
+                sections {
+                  title
+                  description
+                  icon_url
+                  details {
+                    name
+                    value
+                  }
+                }
+              }
               available_section {
                 available_group {
                   cart_string

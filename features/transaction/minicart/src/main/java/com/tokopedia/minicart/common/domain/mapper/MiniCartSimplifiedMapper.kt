@@ -210,7 +210,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
     private fun mapShoppingSummaryData(miniCartData: MiniCartData): ShoppingSummaryBottomSheetData {
         val shoppingSummaryItems = mutableListOf<Visitable<*>>()
         miniCartData.data.simplifiedShoppingSummary.sections.forEachIndexed { idx, section ->
-            if (section.title.isNotBlank()) {
+            if (section.title.isNotBlank() && section.details.isNotEmpty()) {
                 shoppingSummaryItems.add(ShoppingSummaryHeaderUiModel(section.iconUrl, section.title, section.description))
                 section.details.forEach { sectionDetailItem ->
                     shoppingSummaryItems.add(ShoppingSummaryProductUiModel(sectionDetailItem.name, sectionDetailItem.value))
