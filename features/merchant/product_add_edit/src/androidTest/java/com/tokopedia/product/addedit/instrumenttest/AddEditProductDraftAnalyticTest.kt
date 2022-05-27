@@ -28,6 +28,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import androidx.room.Room
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
+
 
 class AddEditProductDraftAnalyticTest {
 
@@ -38,15 +42,19 @@ class AddEditProductDraftAnalyticTest {
         private const val PRODUCT_DRAFT_PAGE_OPEN = "tracker/merchant/product_add_edit/add/product_draft_page_open.json"
     }
 
+
     @get:Rule
     var activityRule: IntentsTestRule<AddEditProductDraftActivityStub> = IntentsTestRule(
         AddEditProductDraftActivityStub::class.java, false, false)
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private var draftDb: AddEditProductDraftDb? = null
 
     @Before
     fun beforeTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+        draftDb = Room.inMemoryDatabaseBuilder(context, AddEditProductDraftDb::class.java).build()
+        draftDb?.getDraftDao()?.insertDraft(AddEditProductDraftEntity())
         setupGraphqlMockResponse(AddEditProductAddingMockResponseConfig())
 
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
@@ -56,6 +64,7 @@ class AddEditProductDraftAnalyticTest {
     @After
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+        draftDb?.clearAllTables()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
