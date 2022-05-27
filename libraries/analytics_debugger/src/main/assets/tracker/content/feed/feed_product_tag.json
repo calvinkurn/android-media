@@ -289,6 +289,36 @@
       ],
       "sessionIris":".*",
       "userId": ".*"
+    },
+    {
+      "event":"clickTopNav",
+      "eventAction":"general search",
+      "eventCategory":"top nav",
+      "eventLabel":".*|.*|.*|.*|(feed_product|feed_shop)|.*|.*",
+      "businessUnit":"physical goods",
+      "component": ".*\\..*\\..*\\..*",
+      "currentSite":"tokopediamarketplace",
+      "keyword": ".*",
+      "pageSource": "feed\\.(feed_product|feed_shop)\\.local_search\\.*.",
+      "relatedKeyword": ".* - none",
+      "searchFilter": ".*",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickTopNav",
+      "eventAction":"general search shop",
+      "eventCategory":"top nav",
+      "eventLabel":".*|.*|.*|.*|(feed_product|feed_shop)|.*|.*",
+      "businessUnit":"physical goods",
+      "component": ".*\\..*\\..*\\..*",
+      "currentSite":"tokopediamarketplace",
+      "keyword": ".*",
+      "pageSource": "feed\\.(feed_product|feed_shop)\\.local_search\\.*.",
+      "relatedKeyword": ".* - none",
+      "searchFilter": ".*",
+      "sessionIris":".*",
+      "userId": ".*"
     }
   ]
 }

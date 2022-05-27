@@ -284,6 +284,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_SRP_RELATED_KEYWORD to "$prevKeyword - none",
                 KEY_SRP_SEARCH_FILTER to param.toTrackerString(),
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userSession.userId,
             )
         )
     }
