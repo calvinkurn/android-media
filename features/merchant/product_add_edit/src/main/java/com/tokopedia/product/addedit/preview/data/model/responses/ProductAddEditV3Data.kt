@@ -10,7 +10,5 @@ data class ProductAddEditV3Data(
         val header: ProductAddEditV3Header = ProductAddEditV3Header(),
         @SerializedName("isSuccess")
         @Expose
-        val isSuccess: Boolean = false,
-
-        var productId: String = ""
+        val isSuccess: Boolean = false
 )
