@@ -9,7 +9,6 @@ data class GlobalEvent(
     companion object {
         const val OBSERVER_MINI_CART_WIDGET = 1
         const val OBSERVER_MINI_CART_LIST_BOTTOM_SHEET = 2
-        const val OBSERVER_MINI_CART_GENERAL_WIDGET = 3
 
         const val STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET = 11
         const val STATE_FAILED_LOAD_MINI_CART_SIMPLIFIED_SUMMARY_BOTTOM_SHEET = 12
