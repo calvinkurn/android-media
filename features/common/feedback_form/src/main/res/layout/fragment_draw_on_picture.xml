@@ -4,7 +4,7 @@
     android:id="@+id/containerDOP"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/Unify_Static_Black">
 
     <com.tokopedia.feedback_form.drawonpicture.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center_vertical"
-            android:background="@color/grey_800"
+            android:background="@color/Unify_N700_44"
             android:clipToPadding="false" />
 
     </androidx.cardview.widget.CardView>

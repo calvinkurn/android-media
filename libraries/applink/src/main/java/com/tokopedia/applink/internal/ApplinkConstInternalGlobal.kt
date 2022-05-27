@@ -464,4 +464,6 @@ object ApplinkConstInternalGlobal {
 
     //DataExplorerActivity
     const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
+
+    const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
 }

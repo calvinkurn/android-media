@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
@@ -38,7 +38,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 26/02/19.
  */
-class SubmitPostService : JobIntentService() {
+class SubmitPostService : JobIntentServiceX() {
 
     @Inject
     lateinit var submitPostUseCase: SubmitPostUseCase
@@ -56,7 +56,7 @@ class SubmitPostService : JobIntentService() {
 
     companion object {
         private const val JOB_ID = 13131313
-
+        private const val DURATION = 7
         fun startService(context: Context, draftId: String) {
             val work = Intent(context, SubmitPostService::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
@@ -144,7 +144,7 @@ class SubmitPostService : JobIntentService() {
                 }
 
                 val cacheManager = SaveInstanceCacheManager(context, true)
-                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(DURATION.toLong()))
 
                 val intent = RouteManager.getIntent(
                         context,
