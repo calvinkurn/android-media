@@ -50,7 +50,6 @@ data class GlobalSearchProductUiState(
     val products: List<ProductUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
     val sortFilters: DynamicFilterModel,
-    val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
     val suggestion: String,
@@ -61,7 +60,6 @@ data class GlobalSearchShopUiState(
     val shops: List<ShopUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
     val sortFilters: DynamicFilterModel,
-    val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
 )

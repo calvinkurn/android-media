@@ -152,7 +152,6 @@ class ProductTagViewModel @AssistedInject constructor(
             products = it.products,
             quickFilters = it.quickFilters,
             sortFilters = it.sortFilters,
-            nextCursor = it.nextCursor,
             state = it.state,
             param = it.param,
             suggestion = it.suggestion,
@@ -165,7 +164,6 @@ class ProductTagViewModel @AssistedInject constructor(
             shops = it.shops,
             quickFilters = it.quickFilters,
             sortFilters = it.sortFilters,
-            nextCursor = it.nextCursor,
             state = it.state,
             param = it.param,
         )
@@ -418,8 +416,7 @@ class ProductTagViewModel @AssistedInject constructor(
             val result = repo.searchAceProducts(param = newParam)
 
             /** Update Param */
-            val nextCursor = result.pagedData.nextCursor.toInt()
-            newParam.start = nextCursor
+            newParam.start = result.pagedData.nextCursor.toInt()
 
             _myShopProduct.setValue {
                 copy(
@@ -518,14 +515,12 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             /** Update Param */
-            val nextCursor = result.pagedData.nextCursor.toInt()
-            newParam.start = nextCursor
+            newParam.start = result.pagedData.nextCursor.toInt()
 
             _globalSearchProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
                     quickFilters = quickFilters,
-                    nextCursor = nextCursor,
                     param = newParam,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
@@ -667,14 +662,12 @@ class ProductTagViewModel @AssistedInject constructor(
             }
 
             /** Update Param */
-            val nextCursor = result.pagedData.nextCursor.toInt()
-            newParam.start = nextCursor
+            newParam.start = result.pagedData.nextCursor.toInt()
 
             _globalSearchShop.setValue {
                 copy(
                     shops = shops + result.pagedData.dataList,
                     quickFilters = quickFilters,
-                    nextCursor = nextCursor,
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
                     ),
