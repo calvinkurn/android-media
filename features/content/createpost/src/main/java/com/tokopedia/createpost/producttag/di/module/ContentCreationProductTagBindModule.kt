@@ -2,11 +2,8 @@ package com.tokopedia.createpost.producttag.di.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalyticImpl
-import com.tokopedia.createpost.producttag.analytic.srp.SRPProductTagAnalytic
-import com.tokopedia.createpost.producttag.analytic.srp.SRPProductTagAnalyticImpl
 import com.tokopedia.createpost.producttag.data.ProductTagRepositoryImpl
 import com.tokopedia.createpost.producttag.di.key.FragmentKey
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
@@ -78,9 +75,6 @@ abstract class ContentCreationProductTagBindModule {
     abstract fun bindProductTagRepository(productTagRepositoryImpl: ProductTagRepositoryImpl): ProductTagRepository
 
     /** Analytic */
-    @Binds
-    abstract fun bindSRPProductTagAnalytic(srpProductTagAnalytic: SRPProductTagAnalyticImpl): SRPProductTagAnalytic
-
     @Binds
     abstract fun bindProductTagAnalytic(productTagAnalytic: ProductTagAnalyticImpl): ProductTagAnalytic
 }
