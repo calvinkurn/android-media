@@ -1,4 +1,4 @@
-package com.tokopedia.liveness.view.revamp
+package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.Detector.DetectionFailedType.*
@@ -15,12 +15,11 @@ import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.databinding.FragmentRevampLivenessErrorBinding
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class RevampLivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
+class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
@@ -109,7 +108,7 @@ class RevampLivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
 
     companion object {
         fun newInstance(bundle: Bundle): Fragment {
-            return RevampLivenessErrorFragment().apply {
+            return LivenessErrorFragment().apply {
                 arguments = bundle
             }
         }

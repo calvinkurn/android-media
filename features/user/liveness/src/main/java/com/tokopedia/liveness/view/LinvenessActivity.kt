@@ -1,4 +1,4 @@
-package com.tokopedia.liveness.view.revamp
+package com.tokopedia.liveness.view
 
 import ai.advance.common.utils.ScreenUtil
 import ai.advance.core.PermissionActivity
@@ -18,9 +18,8 @@ import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.OnBackListener
 
-open class RevampLinvenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
+open class LinvenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
 
     private var fragment: Fragment? = null
 
@@ -70,7 +69,7 @@ open class RevampLinvenessActivity: PermissionActivity(), HasComponent<LivenessD
             if (livenessSdk.isDeviceSupportLiveness()) {
                 if (fragment == null) {
                     fragment = intent?.extras?.let {
-                        RevampLivenessFragment.newInstance(it)
+                        LivenessFragment.newInstance(it)
                     }
                 }
 
@@ -86,7 +85,7 @@ open class RevampLinvenessActivity: PermissionActivity(), HasComponent<LivenessD
     }
 
     open fun replaceFragment(fragment: Fragment) {
-        if (fragment is RevampLivenessErrorFragment) {
+        if (fragment is LivenessErrorFragment) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
 

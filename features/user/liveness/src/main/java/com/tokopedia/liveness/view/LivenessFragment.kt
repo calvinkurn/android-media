@@ -1,9 +1,10 @@
-package com.tokopedia.liveness.view.revamp
+package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.Detector.WarnCode.*
 import ai.advance.liveness.lib.Detector.WarnCode.FACEMISSING
 import ai.advance.liveness.lib.LivenessResult
+import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.http.entity.ResultEntity
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
@@ -25,7 +26,6 @@ import com.tokopedia.liveness.databinding.FragmentRevampLivenessBinding
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
 import com.tokopedia.liveness.utils.LivenessDetectionLogTracker
-import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -35,7 +35,7 @@ import java.io.FileOutputStream
 import java.lang.Exception
 import javax.inject.Inject
 
-class RevampLivenessFragment: BaseDaggerFragment(),
+class LivenessFragment: BaseDaggerFragment(),
     OnBackListener,
     LivenessCallback,
     LivenessGetFaceDataCallback {
@@ -225,7 +225,7 @@ class RevampLivenessFragment: BaseDaggerFragment(),
 
     private fun alertDialogDeviceNotSupported() {
         activity?.let {
-            (it as RevampLinvenessActivity).alertDialogDeviceNotSupported()
+            (it as LinvenessActivity).alertDialogDeviceNotSupported()
         }
     }
 
@@ -302,13 +302,15 @@ class RevampLivenessFragment: BaseDaggerFragment(),
     }
 
     override fun onGetFaceDataFailed(resultEntity: ResultEntity?) {
-        if (resultEntity?.success == false) {
+        if (resultEntity?.success == false && resultEntity.code == LivenessView.NO_RESPONSE) {
             LivenessDetectionLogTracker.sendLog(
                 LivenessDetectionLogTracker.LogType.LIBRARY,
                 this::class.simpleName.orEmpty(),
                 message = "[${resultEntity.code}] ${resultEntity.message}",
                 throwable = resultEntity.exception
             )
+
+            setFailedResultData(Detector.DetectionFailedType.TIMEOUT)
         }
     }
 
@@ -337,8 +339,8 @@ class RevampLivenessFragment: BaseDaggerFragment(),
         bundle.putSerializable(LivenessConstants.ARG_FAILED_TYPE, detectionFailedType)
 
         activity?.let {
-            val fragment = RevampLivenessErrorFragment.newInstance(bundle)
-            (it as RevampLinvenessActivity).replaceFragment(fragment)
+            val fragment = LivenessErrorFragment.newInstance(bundle)
+            (it as LinvenessActivity).replaceFragment(fragment)
         }
     }
 
@@ -394,8 +396,8 @@ class RevampLivenessFragment: BaseDaggerFragment(),
     companion object {
         private const val FILE_NAME_KYC = "/KYC"
 
-        fun newInstance(bundle: Bundle): RevampLivenessFragment {
-            val fragment = RevampLivenessFragment().apply {
+        fun newInstance(bundle: Bundle): LivenessFragment {
+            val fragment = LivenessFragment().apply {
                 arguments = bundle
             }
             return fragment
