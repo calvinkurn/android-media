@@ -462,9 +462,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun onShowHomeLayout(data: TokoFoodListUiModel) {
         showHomeLayout(data)
         getLayoutComponentData()
+        initializeMiniCartHome()
     }
 
     private fun onLoadingHomelayout(data: TokoFoodListUiModel) {
+        hideMiniCartHome()
         showHomeLayout(data)
         checkAddressDataAndServiceArea()
     }
