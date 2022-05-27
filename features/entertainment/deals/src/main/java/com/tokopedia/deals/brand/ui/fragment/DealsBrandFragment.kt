@@ -283,7 +283,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     private fun hideTitleShimmering() {
-        //binding.shimmeringTitle.hide()
+        binding.shimmeringTitle.hide()
     }
 
     companion object {
