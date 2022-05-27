@@ -35,7 +35,7 @@ class ChatbotViewModel @Inject constructor(
     }
 
     private fun onTicketListDataFail(throwable: Throwable) {
-        _ticketList.value = Fail(throwable)
+        _ticketList.postValue(Fail(throwable))
     }
 
     override fun onCleared() {
