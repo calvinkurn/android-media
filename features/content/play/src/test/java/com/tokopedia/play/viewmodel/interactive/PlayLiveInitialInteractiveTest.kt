@@ -29,7 +29,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 /**
  * Created by jegul on 15/07/21
@@ -217,9 +216,7 @@ class PlayLiveInitialInteractiveTest {
 
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Quiz"
-        val endTime = Calendar.getInstance().apply {
-            add(Calendar.MINUTE, 3)
-        }
+        val endTime = 3000L.millisFromNow()
         val model = InteractiveUiModel.Quiz(
             status = InteractiveUiModel.Quiz.Status.Ongoing(endTime),
             title = title,
@@ -355,9 +352,7 @@ class PlayLiveInitialInteractiveTest {
 
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Quiz"
-        val endTime = Calendar.getInstance().apply {
-            add(Calendar.MINUTE, 3)
-        }
+        val endTime = 3000L.millisFromNow()
         val model = InteractiveUiModel.Quiz(
             status = InteractiveUiModel.Quiz.Status.Ongoing(endTime),
             title = title,
