@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,13 +9,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class Outlet implements Parcelable {
 
-
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     @Expose
     private int productId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("location_id")
     @Expose
     private int locationId;

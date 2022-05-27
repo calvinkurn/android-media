@@ -487,7 +487,7 @@ public class DealsAnalytics {
             HashMap<String, Object> ecommerce = new HashMap<>();
 
             for (Brand brand : brands) {
-                bannerMap.put(ID, String.valueOf(brand.getId()));
+                bannerMap.put(ID, brand.getId());
                 bannerMap.put(NAME, name);
                 bannerMap.put(POSITION, String.valueOf(position));
                 bannerMap.put(CREATIVE, brand.getTitle());
@@ -517,7 +517,7 @@ public class DealsAnalytics {
             HashMap<String, Object> ecommerce = new HashMap<>();
 
             for (Brand brand : brands) {
-                bannerMap.put(ID, String.valueOf(brand.getId()));
+                bannerMap.put(ID, brand.getId());
                 bannerMap.put(NAME, name);
                 bannerMap.put(POSITION, String.valueOf(position));
                 bannerMap.put(CATEGORY, DEALS);
@@ -550,7 +550,7 @@ public class DealsAnalytics {
                 action = EVENT_CLICK_BRAND;
             }
             HashMap<String, Object> bannerMap = new HashMap<>();
-            bannerMap.put(ID, String.valueOf(brand.getId()));
+            bannerMap.put(ID, brand.getId());
             bannerMap.put(NAME, brand.getTitle());
             bannerMap.put(POSITION, String.valueOf(position));
             bannerMap.put(CATEGORY, DEALS);

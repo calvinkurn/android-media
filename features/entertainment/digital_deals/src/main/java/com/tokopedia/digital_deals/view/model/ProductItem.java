@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -90,6 +91,7 @@ public class ProductItem extends BaseItem implements Parcelable {
     @SerializedName("media")
     @Expose
     private Object media;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;
@@ -98,10 +100,10 @@ public class ProductItem extends BaseItem implements Parcelable {
     private int isSearchable;
     @SerializedName("category_id")
     @Expose
-    private int categoryId;
+    private String categoryId;
     @SerializedName("provider_id")
     @Expose
-    private int providerId;
+    private String providerId;
     @SerializedName("provider_product_id")
     @Expose
     private String providerProductId;
@@ -185,8 +187,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         likes = in.readInt();
         id = in.readInt();
         isSearchable = in.readInt();
-        categoryId = in.readInt();
-        providerId = in.readInt();
+        categoryId = in.readString();
+        providerId = in.readString();
         providerProductId = in.readString();
         providerProductName = in.readString();
         saleStartTime = in.readString();
@@ -525,8 +527,8 @@ public class ProductItem extends BaseItem implements Parcelable {
         dest.writeInt(likes);
         dest.writeInt(id);
         dest.writeInt(isSearchable);
-        dest.writeInt(categoryId);
-        dest.writeInt(providerId);
+        dest.writeString(categoryId);
+        dest.writeString(providerId);
         dest.writeString(providerProductId);
         dest.writeString(providerProductName);
         dest.writeString(saleStartTime);

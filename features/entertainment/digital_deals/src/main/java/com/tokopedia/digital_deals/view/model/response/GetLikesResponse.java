@@ -7,7 +7,7 @@ public class GetLikesResponse {
 
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("average_rating")
     @Expose
     private int averageRating;
@@ -19,11 +19,11 @@ public class GetLikesResponse {
     private boolean isLiked;
 
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

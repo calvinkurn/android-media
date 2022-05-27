@@ -45,7 +45,7 @@ data class ItemMapCheckout(
         val basePrice:Int = 0,
         @SerializedName("category_id")
         @Expose
-        val categoryId:Int = 0,
+        val categoryId:String = "0",
         @SerializedName("child_category_ids")
         @Expose
         val childCategoryIds:String = "",
@@ -72,16 +72,16 @@ data class ItemMapCheckout(
         val error:String = "",
         @SerializedName("flag_id")
         @Expose
-        val flagId:Int = 0,
+        val flagId:String = "0",
         @SerializedName("id")
         @Expose
-        val id:Int = 0,
+        val id:String = "0",
         @SerializedName("invoice_id")
         @Expose
-        val invoiceId:Int = 0,
+        val invoiceId:String = "0",
         @SerializedName("invoice_item_id")
         @Expose
-        val invoiceItemId:Int = 0,
+        val invoiceItemId:String = "0",
         @SerializedName("invoice_status")
         @Expose
         val invoiceStatus:String = "",
@@ -102,7 +102,7 @@ data class ItemMapCheckout(
         val orderTraceId:String = "",
         @SerializedName("package_id")
         @Expose
-        val packageId:Int = 0,
+        val packageId:String = "0",
         @SerializedName("package_name")
         @Expose
         val packageName:String = "",
@@ -117,7 +117,7 @@ data class ItemMapCheckout(
         val productAppUrl:String = "",
         @SerializedName("product_id")
         @Expose
-        val productId:Int = 0,
+        val productId: String = "0",
         @SerializedName("product_image")
         @Expose
         val productImage:String = "",
@@ -126,7 +126,7 @@ data class ItemMapCheckout(
         val productName:String = "",
         @SerializedName("provider_id")
         @Expose
-        val providerId:Int = 0,
+        val providerId:String = "0",
         @SerializedName("provider_invoice_code")
         @Expose
         val providerInvoiceCode:String = "",

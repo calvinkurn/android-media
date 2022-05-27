@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.nsqevents;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class NsqMessage implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     @Expose
     private int userId;
@@ -20,6 +22,7 @@ public class NsqMessage implements Parcelable {
     @Expose
     private String useCase;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     @Expose
     private Integer productId;

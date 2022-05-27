@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.cart;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MetaData implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("entity_product_id")
     private Integer entityProductId;
 
@@ -16,9 +18,9 @@ public class MetaData implements Parcelable {
     @SerializedName("entity_start_time")
     private String entityStartTime;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("entity_category_id")
     private Integer entityCategoryId;
-
 
     @SerializedName("total_ticket_price")
     private Integer totalTicketPrice;
@@ -26,9 +28,9 @@ public class MetaData implements Parcelable {
     @SerializedName("entity_category_name")
     private String entityCategoryName;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("entity_group_id")
     private Integer entityGroupId;
-
 
     @SerializedName("total_ticket_count")
     private Integer totalTicketCount;

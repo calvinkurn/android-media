@@ -10,10 +10,10 @@ public class Catalog implements Parcelable {
 
     @SerializedName("digital_category_id")
     @Expose
-    private int digitalCategoryId;
+    private String digitalCategoryId;
     @SerializedName("digital_product_id")
     @Expose
-    private int digitalProductId;
+    private String digitalProductId;
     @SerializedName("digital_product_code")
     @Expose
     private String digitalProductCode;
@@ -34,27 +34,35 @@ public class Catalog implements Parcelable {
     };
 
     protected Catalog(Parcel in) {
-        this.digitalCategoryId = in.readInt();
-        this.digitalProductId = in.readInt();
+        this.digitalCategoryId = in.readString();
+        this.digitalProductId = in.readString();
         this.digitalProductCode = in.readString();
     }
 
     public Catalog() {
     }
 
-    public int getDigitalCategoryId() {
+    public String getDigitalCategoryId() {
         return digitalCategoryId;
     }
 
-    public void setDigitalCategoryId(int digitalCategoryId) {
+    public int getDigitalCategoryIdInInt() {
+        return Integer.parseInt(digitalCategoryId);
+    }
+
+    public void setDigitalCategoryId(String digitalCategoryId) {
         this.digitalCategoryId = digitalCategoryId;
     }
 
-    public int getDigitalProductId() {
+    public String getDigitalProductId() {
         return digitalProductId;
     }
 
-    public void setDigitalProductId(int digitalProductId) {
+    public int getDigitalProductIdInInt() {
+        return Integer.parseInt(digitalProductId);
+    }
+
+    public void setDigitalProductId(String digitalProductId) {
         this.digitalProductId = digitalProductId;
     }
 
@@ -67,8 +75,8 @@ public class Catalog implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(digitalCategoryId);
-        dest.writeInt(digitalProductId);
+        dest.writeString(digitalCategoryId);
+        dest.writeString(digitalProductId);
         dest.writeString(digitalProductCode);
     }
 

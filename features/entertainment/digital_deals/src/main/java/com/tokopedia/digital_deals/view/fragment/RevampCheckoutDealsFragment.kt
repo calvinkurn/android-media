@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
@@ -359,7 +360,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
         intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
-        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntOrZero())
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
@@ -369,7 +370,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
         intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
-        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntOrZero())
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)

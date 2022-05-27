@@ -11,7 +11,7 @@ public class Brand implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -50,7 +50,7 @@ public class Brand implements Parcelable {
     };
 
     protected Brand(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
@@ -63,11 +63,11 @@ public class Brand implements Parcelable {
     public Brand() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

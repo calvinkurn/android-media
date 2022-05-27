@@ -133,7 +133,7 @@ data class ItemMapResponse(
         val orderTraceId:String = "",
         @SerializedName("package_id")
         @Expose
-        val packageId:String = "",
+        val packageId:String = "0",
         @SerializedName("package_name")
         @Expose
         val packageName:String = "",

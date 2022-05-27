@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.cart;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,7 @@ public class CartItem implements Parcelable {
     @SerializedName("configuration")
     private Configuration configuration;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     private Integer productId;
 
