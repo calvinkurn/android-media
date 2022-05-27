@@ -39,17 +39,12 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.topads.sdk.domain.model.Image
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.just
-import io.mockk.runs
-import io.mockk.mockkObject
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import kotlinx.coroutines.delay
 import org.junit.Assert
 import org.junit.Rule
@@ -152,6 +147,22 @@ class TestRecommendationPageViewModel {
             status = state
         }
         assert(status == true)
+    }
+
+    @Test
+    fun addToWishListV2() {
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommendation.productId.toString(), userSession.userId, recommendation.isTopAds, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test

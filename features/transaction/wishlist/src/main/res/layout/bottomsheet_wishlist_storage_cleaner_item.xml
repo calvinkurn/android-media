@@ -30,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:icon_name="CHECK_BIG"
-        app:icon_color_light_enable="@color/unify_G500"
-        app:icon_color_night_enable="@color/unify_G500"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@id/wishlist_cleaner_option_title"
         android:layout_alignBottom="@id/wishlist_cleaner_option_desc"/>

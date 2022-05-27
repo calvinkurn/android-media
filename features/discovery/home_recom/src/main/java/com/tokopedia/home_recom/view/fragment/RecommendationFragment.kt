@@ -61,16 +61,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import org.xml.sax.ErrorHandler
 import javax.inject.Inject
 
 /**
@@ -381,7 +376,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 errorMsg = wishlistResult.messageV2,
                 ctaText = wishlistResult.ctaTextV2,
                 ctaAction = wishlistResult.ctaActionV2,
-                v, v.context
+                view = v,
+                context = v.context
             )
         }
     }

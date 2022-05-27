@@ -42,7 +42,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import java.util.HashMap
 import javax.inject.Inject
 
