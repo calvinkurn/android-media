@@ -223,6 +223,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             isDeletable = canDeleteComment
         )
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.setIsCommentPage(true)
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
