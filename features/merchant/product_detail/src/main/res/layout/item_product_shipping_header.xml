@@ -153,10 +153,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_bo_desc"
         app:typographyType="display_3"
         tools:text="Estimasi tiba 23-25 Nov" />
+
+    <LinearLayout
+        android:id="@+id/view_pdp_shipping_bo_etas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_bo_desc" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/div_pdp_shipping_bo"

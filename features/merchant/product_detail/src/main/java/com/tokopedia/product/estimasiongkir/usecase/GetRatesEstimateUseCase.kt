@@ -78,6 +78,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               title
                               desc
                               raw_shipping_rate
+                              free_shipping_bottomsheet{
+                                shipping_price
+                                eta_text
+                                raw_shipping_rate
+                              }
                               is_quota_empty
                           }
                           address {
