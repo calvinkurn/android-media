@@ -16,7 +16,7 @@ class TickerMapper @Inject constructor() {
                     type = Ticker.TYPE_INFORMATION,
                     isFromHtml = true,
                     itemData = SomListTickerUiModel(
-                            id = it.id.toIntOrZero(),
+                            id = it.id,
                             body = it.body.removeParagraphTag().removeExtraLines(),
                             shortDesc = it.shortDesc.removeParagraphTag().removeExtraLines(),
                             isActive = it.isActive
