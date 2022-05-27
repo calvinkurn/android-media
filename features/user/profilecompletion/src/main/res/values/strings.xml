@@ -9,8 +9,8 @@
     <string name="error_name_min_3">Minimum 3 karakter</string>
     <string name="error_name_cant_empty">Wajib diisi.</string>
     <string name="error_name_max_35">Maksimal 35 karakter</string>
-    <string name="change_name_note">Kamu hanya dapat mengubah nama %1$s kali. Pastikan nama sudah benar.</string>
-    <string name="change_name_fullname">Nama Lengkap</string>
+    <string name="change_name_note">Pakai nama asli untuk memudahkan verifikasi. Nama ini akan tampil di beberapa halaman.</string>
+    <string name="change_name_fullname">Nama</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
     <string name="change_name_success_v2">Yay! Nama kamu berhasil diubah.</string>
