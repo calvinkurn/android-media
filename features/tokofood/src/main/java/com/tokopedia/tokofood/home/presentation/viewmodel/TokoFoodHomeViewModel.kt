@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
@@ -42,7 +43,6 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiMode
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -117,6 +117,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun getLoadingState() {
+        setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = TokoFoodListUiModel(

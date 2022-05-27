@@ -18,7 +18,7 @@ object TokofoodRouteManager {
         if (uri.host == "food") {
             val f: Fragment? =
                 when (uri.path) {
-                    "/home" -> TokoFoodHomeFragment() // tokopedia://tokofood/home
+                    "/home" -> TokoFoodHomeFragment.createInstance() // tokopedia://tokofood/home
                     "/purchase" -> TokoFoodPurchaseFragment.createInstance() // tokopedia://tokofood/purchase
                     "/category" -> TokoFoodCategoryFragment.createInstance() // tokopedia://tokofood/category
                     else -> null

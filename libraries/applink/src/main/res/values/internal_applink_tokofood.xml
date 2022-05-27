@@ -3,7 +3,7 @@
     <string name="title_tokofood" translatable="false">TokoFood</string>
 
     <!--host-->
-    <string name="host_tokofood" translatable="false">tokofood</string>
+    <string name="host_tokofood" translatable="false">food</string>
 
     <!--path-->
     <string name="path_tokofood_discovery" translatable="false">/discovery</string>
