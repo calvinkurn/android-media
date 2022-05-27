@@ -294,13 +294,14 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
+                    val prevQuery = _globalSearchProduct.value.param.query
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query).copy().apply {
+                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query, prevQuery).copy().apply {
                             this.componentId = componentId
                         })
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query).copy().apply {
+                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query, prevQuery).copy().apply {
                             this.componentId = componentId
                         })
                     }
@@ -615,7 +616,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleApplyProductSortFilter(selectedSortFilter: Map<String, String>) {
         val query = _globalSearchProduct.value.param.query
-        val newParam = initParam(query)
+        val prevQuery = _globalSearchProduct.value.param.prevQuery
+
+        val newParam = initParam(query, prevQuery)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -748,7 +751,8 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleApplyShopSortFilter(selectedSortFilter: Map<String, String>) {
         val query = _globalSearchShop.value.param.query
-        val newParam = initParam(query)
+        val prevQuery = _globalSearchShop.value.param.prevQuery
+        val newParam = initParam(query, prevQuery)
 
         selectedSortFilter.forEach { newParam.addParam(it.key, it.value) }
 
@@ -821,9 +825,9 @@ class ProductTagViewModel @AssistedInject constructor(
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.param.query.isEmpty()
     }
 
-    private fun initParam(query: String): SearchParamUiModel {
+    private fun initParam(query: String, prevQuery: String = ""): SearchParamUiModel {
         return SearchParamUiModel.Empty.apply {
-            this.prevQuery = this.query
+            this.prevQuery = prevQuery
             this.query = query
         }
     }
