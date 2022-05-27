@@ -36,6 +36,8 @@ import javax.inject.Inject
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.digital_deals.data.DealsGeneral
+import com.tokopedia.digital_deals.data.DealsInstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -291,11 +293,29 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, verifyData.metadata.quantity, dealsDetail.salesPrice,
                     dealsDetail.displayName, dealsDetail.brand.title, promoApplied, userSession.userId)
             if (verifyData.gatewayCode.isNullOrEmpty()) {
-                viewModel.checkoutGeneral(viewModel.mapCheckoutDeals(dealsDetail, verifyData, listOf(promoCode)))
+                viewModel.checkoutGeneral(validatePromoCodesCheckoutGeneral(listOf(promoCode)))
             } else {
-                viewModel.checkoutGeneralInstant(viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData, listOf(promoCode)))
+                viewModel.checkoutGeneralInstant(validatePromoCodesCheckoutInstant(listOf(promoCode)))
             }
             showProgressBar()
+        }
+    }
+
+    private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral{
+        return if (promoCodes.isNotEmpty()){
+           if (promoCodes[0].isNotEmpty()) viewModel.mapCheckoutDeals(dealsDetail, verifyData, listOf(promoCode))
+           else viewModel.mapCheckoutDeals(dealsDetail, verifyData)
+        } else{
+            viewModel.mapCheckoutDeals(dealsDetail, verifyData)
+        }
+    }
+
+    private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant{
+        return if (promoCodes.isNotEmpty()){
+            if (promoCodes[0].isNotEmpty()) viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData, listOf(promoCode))
+            else viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData)
+        } else{
+            viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData)
         }
     }
 

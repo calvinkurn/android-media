@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.UnifyButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/buttonSeeSimilarProductWishlist"
+    android:contentDescription="@string/content_desc_buttonSeeSimilarProduct"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/product_card_button_primary_height"
+    android:text="@string/product_card_text_similar_product_grid"
+    android:foreground="?attr/selectableItemBackground"
+    android:visibility="gone"
+    android:clickable="true"
+    android:focusable="true"
+    app:typographyType="heading_6"
+    app:unifyButtonType="alternate"
+    app:unifyButtonVariant="ghost"
+    app:unifyButtonSize="small"
+    tools:visibility="visible" />

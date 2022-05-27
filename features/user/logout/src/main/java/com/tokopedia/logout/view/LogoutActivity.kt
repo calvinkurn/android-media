@@ -188,6 +188,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
+        clearRegisterPushNotificationPref()
 
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
@@ -257,6 +258,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
+    private fun clearRegisterPushNotificationPref() {
+        getSharedPreferences(REGISTER_PUSH_NOTIFICATION_PREFERENCE, Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+    }
+
     private fun showLoading() {
         logoutLoading?.visibility = View.VISIBLE
     }
@@ -288,5 +294,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
+
+        /**
+         * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]
+         */
+        private const val REGISTER_PUSH_NOTIFICATION_PREFERENCE = "registerPushNotification"
     }
 }

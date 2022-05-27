@@ -176,9 +176,15 @@
     <string name="content_desc_ovo_success">OvoSuccess</string>
     <string name="external_account_success_btn_text">Mulai Belanja</string>
     <string name="desc_banner_register">banner_register</string>
-
     <string name="color_ticker_default">#cde4c3</string>
     <string name="color_ticker_warning">#ecdb77</string>
-  
+
     <string name="text_loading_please_wait">please wait…</string>
+
+    <!-- INVALID PHONE NUMBER -->
+    <string name="loginregister_need_help">Butuh Bantuan?</string>
+    <string name="loginregister_title_forgot_password">Lupa Kata Sandi</string>
+    <string name="loginregister_title_phone_number_inactive">Nomor HP Tidak Aktif</string>
+    <string name="loginregister_what_help_do_you_need">Butuh bantuan apa?</string>
+    <string name="loginregister_need_another_help">Butuh bantuan lain? Hubungi Tokopedia Care</string>
 </resources>

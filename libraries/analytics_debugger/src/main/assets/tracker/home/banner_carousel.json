@@ -34,6 +34,7 @@
       "userId": ".*",
       "eventAction": "slider banner click",
       "sessionIris": ".*",
+      "campaignCode": ".*",
       "eventLabel": ".*"
     }
   ]
