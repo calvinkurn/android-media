@@ -117,8 +117,10 @@ class ShopInfoViewHolder(
                     }
                 }
                 showShopScore(uiModel)
-                showTicker(uiModel.shopInfo.shopStatusUiModel
-                    ?.userShopInfoWrapper?.userShopInfoUiModel?.statusInfoUiModel)
+                showTicker(
+                    uiModel.shopInfo.shopStatusUiModel
+                        ?.userShopInfoWrapper?.userShopInfoUiModel?.statusInfoUiModel
+                )
             }
         }
     }
@@ -128,9 +130,8 @@ class ShopInfoViewHolder(
             val title = statusInfoUiModel?.statusTitle.orEmpty()
             val message = statusInfoUiModel?.statusMessage.orEmpty()
 
-            if (title.isNotEmpty() && message.isNotEmpty()){
-
-                tickerShopInfo.tickerTitle= title
+            if (title.isNotEmpty() && message.isNotEmpty()) {
+                tickerShopInfo.tickerTitle = title
                 tickerShopInfo.setHtmlDescription(message)
                 val tickerType: Int = when (statusInfoUiModel?.tickerType) {
                     TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
@@ -138,17 +139,18 @@ class ShopInfoViewHolder(
                     else -> Ticker.TYPE_ANNOUNCEMENT
                 }
                 tickerShopInfo.tickerType = tickerType
-                tickerShopInfo.setDescriptionClickEvent(object : TickerCallback{
+                tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         RouteManager.route(context, linkUrl.toString())
 
                     }
+
                     override fun onDismiss() {
                     }
 
                 })
                 tickerShopInfo.show()
-            }else{
+            } else {
                 tickerShopInfo.hide()
             }
 
@@ -265,7 +267,8 @@ class ShopInfoViewHolder(
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
-        val pmProEligibleIcon = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
+        val pmProEligibleIcon =
+            shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel?.getPowerMerchantProEligibleIcon()
         val itemView: View? = shopType?.getLayoutRes()?.let {
             LayoutInflater.from(context).inflate(it, null, false)
         }
@@ -467,7 +470,8 @@ class ShopInfoViewHolder(
     ) {
         eligiblePmIconView.hide()
         regularMerchantStatus.run {
-            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
+            text =
+                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -488,7 +492,8 @@ class ShopInfoViewHolder(
             setImage(pmIcon)
         }
         regularMerchantStatus.run {
-            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
+            text =
+                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -677,7 +682,7 @@ class ShopInfoViewHolder(
     }
 
     private fun ShopType?.getLayoutRes(): Int {
-        return when(this) {
+        return when (this) {
             is RegularMerchant -> R.layout.setting_shop_status_regular
             is PowerMerchantStatus -> R.layout.setting_shop_status_pm
             is PowerMerchantProStatus -> R.layout.setting_shop_status_pm_pro
