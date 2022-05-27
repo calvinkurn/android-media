@@ -27,7 +27,7 @@ internal object MediaLoaderApi {
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    private fun LazyHeaders.Builder.requestHeaders(accessToken: String, userId: String) {
+    fun LazyHeaders.Builder.requestHeaders(accessToken: String, userId: String) {
         // Accounts-Authorization
         addHeader(HEADER_KEY_AUTH, "$PREFIX_BEARER %s".format(accessToken))
 

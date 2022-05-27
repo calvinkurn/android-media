@@ -122,8 +122,22 @@ class TopchatImageUploadViewHolder(
 
     override fun bindClickListener(element: ImageUploadUiModel) {
         attachmentUnify?.setOnClickListener { view ->
-            if (element.imageUrl != null && element.replyTime != null) {
-                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            if (element.replyTime != null) {
+                if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE
+                    && element.imageSecureUrl != null
+                ) {
+                    listener.onImageUploadClicked(
+                        element.imageSecureUrl!!,
+                        element.replyTime!!,
+                        true
+                    )
+                } else if (element.imageUrl != null) {
+                    listener.onImageUploadClicked(
+                        element.imageUrl!!,
+                        element.replyTime!!,
+                        false
+                    )
+                }
             }
         }
     }
@@ -193,7 +207,7 @@ class TopchatImageUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
         if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
-            element.imageUrl?.let {
+            element.imageSecureUrl?.let {
                 attachmentUnify?.loadSecureImage(it, userSession)
             }
         } else {
