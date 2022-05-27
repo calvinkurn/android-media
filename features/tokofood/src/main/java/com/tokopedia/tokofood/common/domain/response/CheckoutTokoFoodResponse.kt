@@ -42,7 +42,7 @@ data class CheckoutTokoFoodData(
     @SerializedName("error_tickers")
     @Expose
     val errorTickers: CheckoutTokoFoodTicker = CheckoutTokoFoodTicker(),
-    @SerializedName("errors_unblocking")
+    @SerializedName("error_unblocking")
     @Expose
     val errorsUnblocking: String = "",
     @SerializedName("user_address")

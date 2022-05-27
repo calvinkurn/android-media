@@ -40,7 +40,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
@@ -92,7 +92,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   page
                 }
               }
-              errors_unblocking
+              error_unblocking
               user_address {
                 address_id
                 address_name
