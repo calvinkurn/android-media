@@ -21,15 +21,14 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
     override fun bind(catalogProductItem: CatalogProductItem?) {
         if (catalogProductItem == null) return
 
-        itemView.setOnClickListener {
-            catalogProductCardListener.onItemClicked(catalogProductItem, adapterPosition)
-        }
-
         itemView.findViewById<ProductCardListView>(R.id.product_card).apply {
             setProductModel(
                     CatalogProductCard.toCatalogProductModel(catalogProductItem))
             setThreeDotsOnClickListener {
                 catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)
+            }
+            setOnClickListener {
+                catalogProductCardListener.onItemClicked(catalogProductItem, adapterPosition)
             }
         }
     }
