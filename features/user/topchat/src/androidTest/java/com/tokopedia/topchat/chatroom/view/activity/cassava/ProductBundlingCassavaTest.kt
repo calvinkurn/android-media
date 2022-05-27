@@ -36,6 +36,7 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
     private fun track_multiple_product_bundling() {
         // Given
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentMultipleChat
+        chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
         //Close
@@ -45,6 +46,7 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
     private fun track_single_product_bundling() {
         // Given
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentSingleChat
+        chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
         //Close
@@ -54,6 +56,7 @@ class ProductBundlingCassavaTest: TopchatRoomTest() {
     private fun track_click_product_bundling() {
         // Given
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentMultipleChat
+        chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
         //When
