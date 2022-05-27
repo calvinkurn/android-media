@@ -589,9 +589,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     userId, this)
             }
         }
-
-        removeWishlistActionUseCase.createObservable(productId,
-            userId, this)
     }
 
     private fun addWishList(productId: String, userId: String) {
