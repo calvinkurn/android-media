@@ -230,16 +230,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        interactionRemoteConfigCondition(
-            remoteConfigInteractionEnabled = {
-                cardViewProductCard?.animateOnPress = if(productCardModel.cardInteraction){
-                    CardUnify2.ANIMATE_OVERLAY_BOUNCE
-                } else CardUnify2.ANIMATE_OVERLAY
-            },
-            remoteConfigInteractionDisabled = {
-                cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
-            }
-        )
+        if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)){
+            cardViewProductCard?.animateOnPress = if(productCardModel.cardInteraction){
+                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            } else CardUnify2.ANIMATE_OVERLAY
+        } else cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -375,17 +370,5 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         super.setOnLongClickListener(l)
-    }
-
-    private fun interactionRemoteConfigCondition(
-        remoteConfigInteractionEnabled: () -> Unit,
-        remoteConfigInteractionDisabled: () -> Unit
-    ) {
-        val enableInteraction = remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
-        if (enableInteraction) {
-            remoteConfigInteractionEnabled.invoke()
-        } else {
-            remoteConfigInteractionDisabled.invoke()
-        }
     }
 }
