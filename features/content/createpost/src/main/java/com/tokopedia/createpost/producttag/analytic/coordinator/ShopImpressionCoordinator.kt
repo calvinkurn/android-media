@@ -15,7 +15,6 @@ class ShopImpressionCoordinator @Inject constructor(
     private val mShopImpress = mutableListOf<Pair<ShopUiModel, Int>>()
 
     private var mTagSource: ProductTagSource = ProductTagSource.Unknown
-    private var mIsGlobalSearch: Boolean = false
 
     fun setInitialData(source: ProductTagSource) {
         mTagSource = source
@@ -28,11 +27,9 @@ class ShopImpressionCoordinator @Inject constructor(
     fun sendShopImpress() {
         val finalShop = mShopImpress.distinctBy { it.first.shopId + 1}
 
-        analytic.impressShopCard(
-            mTagSource,
-            "",
-            finalShop,
-        )
+        if(finalShop.isEmpty()) return
+
+        analytic.impressShopCard(mTagSource, finalShop)
         analytic.sendAll()
 
         mShopImpress.clear()

@@ -31,14 +31,14 @@ class ProductImpressionCoordinator @Inject constructor(
     fun sendProductImpress() {
         val finalProduct = mProductImpress.distinctBy { it.first.id }
 
+        if(finalProduct.isEmpty()) return
+
         if(mTagSource == ProductTagSource.Shop) {
-            analytic.impressProductCardOnShop("", "", finalProduct)
+            analytic.impressProductCardOnShop(finalProduct)
         }
         else {
             analytic.impressProductCard(
                 mTagSource,
-                "",
-                "",
                 finalProduct,
                 mIsGlobalSearch,
             )

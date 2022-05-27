@@ -15,8 +15,6 @@ interface ProductTagAnalytic {
 
     fun impressProductCard(
         source: ProductTagSource,
-        shopId: String,
-        productId: String,
         products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
     )
@@ -36,7 +34,6 @@ interface ProductTagAnalytic {
 
     fun impressShopCard(
         source: ProductTagSource,
-        shopId: String,
         shops: List<Pair<ShopUiModel, Int>>,
     )
 
@@ -48,8 +45,6 @@ interface ProductTagAnalytic {
     fun clickSearchBarOnShop()
 
     fun impressProductCardOnShop(
-        shopId: String,
-        productId: String,
         products: List<Pair<ProductUiModel, Int>>,
     )
 

@@ -39,8 +39,6 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun impressProductCard(
         source: ProductTagSource,
-        shopId: String,
-        productId: String,
         products: List<Pair<ProductUiModel, Int>>,
         isGlobalSearch: Boolean
     ) {
@@ -49,7 +47,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "productView",
                 category = "content feed post creation - product tagging",
                 action = if(isGlobalSearch) "impression - product card" else "impression - entry point product card",
-                label = "${source.labelAnalytic} - {shop_id} - {product_id}" /** TODO: shopId? */
+                label = "${source.labelAnalytic} - ${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -79,7 +77,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "productClick",
                 category = "content feed post creation - product tagging",
                 action = if(isGlobalSearch) "click - product card" else "click - entry point product card",
-                label = "${source.labelAnalytic} - {shop_id} - ${product.id}" /** TODO: shopId? */
+                label = "${source.labelAnalytic} - ${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -115,7 +113,6 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     override fun impressShopCard(
         source: ProductTagSource,
-        shopId: String,
         shops: List<Pair<ShopUiModel, Int>>,
     ) {
         trackingQueue.putEETracking(
@@ -123,7 +120,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "promoView",
                 category = "content feed post creation - product tagging",
                 action = "impression - toko product tagging search result",
-                label = "{shop_id}" /** TODO: shop id siapa? */
+                label = userSession.shopId
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -152,7 +149,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "promoClick",
                 category = "content feed post creation - product tagging",
                 action = "click - toko product tagging search result",
-                label = shop.shopId
+                label = userSession.shopId
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -175,8 +172,6 @@ class ProductTagAnalyticImpl @Inject constructor(
     }
 
     override fun impressProductCardOnShop(
-        shopId: String,
-        productId: String,
         products: List<Pair<ProductUiModel, Int>>
     ) {
         trackingQueue.putEETracking(
@@ -184,7 +179,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "productView",
                 category = "content feed post creation - product tagging",
                 action = "impression - product card on toko",
-                label = "{shop_id} - {product_id}" /** TODO: shopId? */
+                label = "${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -212,7 +207,7 @@ class ProductTagAnalyticImpl @Inject constructor(
                 event = "productClick",
                 category = "content feed post creation - product tagging",
                 action = "click - product card on toko",
-                label = "{shop_id} - ${product.id}" /** TODO: shopId? */
+                label = "${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
