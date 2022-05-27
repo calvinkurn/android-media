@@ -62,12 +62,11 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
 
     private fun mapLocation(localCacheModel: LocalCacheModel?): String {
         val stringBuilder = StringBuilder()
-        localCacheModel?.run {
-            stringBuilder.append(lat)
+        if (!localCacheModel?.lat.isNullOrEmpty() && !localCacheModel?.long.isNullOrEmpty()){
+            stringBuilder.append(localCacheModel?.lat)
             stringBuilder.append(",")
-            stringBuilder.append(long)
+            stringBuilder.append(localCacheModel?.long)
         }
-
         return stringBuilder.toString()
     }
 

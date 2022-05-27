@@ -37,6 +37,7 @@ import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseC
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
@@ -200,8 +201,9 @@ class TokoFoodHomeViewModel @Inject constructor(
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
+        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
 
-        if(scrolledToLastItem && hasNextPage && !isLoading) {
+        if(scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown) {
             showProgressBar()
             getMerchantList(localCacheModel = localCacheModel)
         }
@@ -221,15 +223,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
             setPageKey(categoryResponse.data.nextPageKey)
             homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
-            homeLayoutItemList.removeProgressBar()
-            val data = TokoFoodListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoFoodLayoutState.LOAD_MORE
-            )
-
-            _homeLayoutList.postValue(Success(data))
+            merchantListUpdate()
         }){
-
+            merchantListUpdate()
         }
     }
 
@@ -282,5 +278,15 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private fun isInitialPageKey(): Boolean {
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
+    }
+
+    private fun merchantListUpdate() {
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+
+        _homeLayoutList.postValue(Success(data))
     }
 }
