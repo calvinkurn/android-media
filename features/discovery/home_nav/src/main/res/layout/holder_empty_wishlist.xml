@@ -16,6 +16,7 @@
             android:text="@string/empty_state_wishlist"
             app:typographyWeight="reguler"
             app:typographyType="display_3"
+            android:textColor="@color/Unify_NN600"
             android:gravity="center_vertical"
             android:layout_marginVertical="20dp"
             android:layout_marginStart="20dp"
