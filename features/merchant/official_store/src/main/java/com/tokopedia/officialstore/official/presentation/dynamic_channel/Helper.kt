@@ -41,12 +41,3 @@ internal object OfficialStoreDateHelper {
         return Date().time - timestampMilliseconds
     }
 }
-
-fun isRunningTest(): Boolean {
-    return try {
-        Class.forName("org.junit.Test")
-        true
-    } catch (e: ClassNotFoundException) {
-        false
-    }
-}
