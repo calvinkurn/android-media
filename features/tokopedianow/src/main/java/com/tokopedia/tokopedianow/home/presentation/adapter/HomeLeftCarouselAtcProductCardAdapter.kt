@@ -3,12 +3,12 @@ package com.tokopedia.tokopedianow.home.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselProductCardDiffer
+import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselAtcProductCardDiffer
 
-open class HomeLeftCarouselProductCardAdapter(
-    baseListAdapterTypeFactory: HomeLeftCarouselProductCardTypeFactoryImpl,
-    private val differ: HomeLeftCarouselProductCardDiffer
-): BaseListAdapter<Visitable<*>, HomeLeftCarouselProductCardTypeFactoryImpl>(baseListAdapterTypeFactory) {
+open class HomeLeftCarouselAtcProductCardAdapter(
+    baseListAdapterTypeFactory: HomeLeftCarouselAtcProductCardTypeFactoryImpl,
+    private val differ: HomeLeftCarouselAtcProductCardDiffer
+): BaseListAdapter<Visitable<*>, HomeLeftCarouselAtcProductCardTypeFactoryImpl>(baseListAdapterTypeFactory) {
 
     fun submitList(items: List<Visitable<*>>) {
         val diffUtilCallback = differ.create(visitables, items)
