@@ -93,10 +93,6 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-        val categoryLoading = activityRule.activity.findViewById<LinearLayout>(R.id.view_category_tab_loading)
-        categoryLoading.gone()
-        val contentLoading = activityRule.activity.findViewById<LinearLayout>(R.id.view_content_loading)
-        contentLoading.gone()
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
             activity = activityRule.activity,
