@@ -26,7 +26,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.http.Headers
 import rx.Emitter
 import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
@@ -51,7 +50,6 @@ class SearchProductFirstPageGqlUseCase(
     override val coroutineContext: CoroutineContext
         get() = coroutineDispatchers.main + masterJob
 
-    @Headers("x-device:ios-3.2")
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
@@ -93,12 +91,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
-        val enhancedParam = UrlParamUtils.getParamMap(params)
-        enhancedParam["xdevice"] = "ios-3.2"
-        enhancedParam["x-device"] = "ios-3.2"
-        enhancedParam[SearchApiConst.SOURCE] = "quick_filter"
-
-        add(createQuickFilterRequest(query = query, params = UrlParamUtils.generateUrlParamString(enhancedParam)))
+        add(createQuickFilterRequest(query = query, params = params))
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
