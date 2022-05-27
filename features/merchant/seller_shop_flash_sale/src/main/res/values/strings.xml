@@ -1,3 +1,13 @@
 <resources>
+    <!--Common-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
+    <string name="action_back">Kembali</string>
+
+    <!--Draft-->
+    <string name="draftlist_title_full">Draft campaign penuh</string>
+    <string name="draftlist_title_available">Draft campaign-mu</string>
+    <string name="draftlist_description_full">Klik salah satu draft untuk melanjutkan campaign atau hapus untuk membuat campaign baru.</string>
+    <string name="draftlist_description_available">Klik salah satu draft untuk melanjutkan campaign.</string>
+    <string name="draftlist_date_delimiter">﹣</string>
+
 </resources>

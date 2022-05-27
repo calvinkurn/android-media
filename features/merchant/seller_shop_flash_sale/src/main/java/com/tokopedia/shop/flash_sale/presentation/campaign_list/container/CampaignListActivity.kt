@@ -38,6 +38,6 @@ class CampaignListActivity: BaseSimpleActivity() {
         setupDependencyInjection()
         setContentView(R.layout.ssfs_activity_campaign_list)
 
-        DraftListBottomSheet().show(supportFragmentManager)
+        DraftListBottomSheet.showDummy(supportFragmentManager)
     }
 }
