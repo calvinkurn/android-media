@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.databinding.ViewmodelOfficialLoadingContentBinding
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.isRunningTest
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfficialLoadingContentViewHolder(itemView: View) : AbstractViewHolder<OfficialLoadingDataModel>(itemView) {
@@ -19,6 +20,7 @@ class OfficialLoadingContentViewHolder(itemView: View) : AbstractViewHolder<Offi
     }
 
     override fun bind(element: OfficialLoadingDataModel) {
-        binding?.containerLoadingContent?.visible()
+        if (!isRunningTest())
+            binding?.containerLoadingContent?.visible()
     }
 }
