@@ -482,6 +482,8 @@ data class DataItem(
 
         var tabName: String? = "",
 
+        var componentPromoName: String? = "",
+
         var hasNotifyMe: Boolean = false,
 
         var departmentID: Int = 0,

@@ -212,11 +212,11 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             if ((it as Switch).isChecked) {
                 sendToggleEvent(TOGGLE_BUTTON_ON)
                 viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
-                    listOf(adId), resources, null)
+                    listOf(adId), null)
             } else {
                 sendToggleEvent(TOGGLE_BUTTON_OFF)
                 viewModel.setProductAction(::onSuccessPost, ACTION_DEACTIVATE,
-                    listOf(adId), resources, null)
+                    listOf(adId), null)
             }
 
         }
