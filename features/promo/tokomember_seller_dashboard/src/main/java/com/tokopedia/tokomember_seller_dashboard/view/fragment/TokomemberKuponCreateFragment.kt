@@ -92,6 +92,7 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment(), BottomSheetClickList
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
+        tokomemberDashCreateViewModel.getInitialCouponData("create",3,"")
         renderProgram()
         if (arguments?.getBoolean(IS_SINGLE_COUPON,false) == true){
             renderSingleCoupon()
@@ -112,7 +113,17 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment(), BottomSheetClickList
     private fun observeViewModel() {
 
         tokomemberDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner,{
-
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
+                    containerViewFlipper.displayedChild = 2
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    containerViewFlipper.displayedChild = 0
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
+                    containerViewFlipper.displayedChild = 1
+                }
+            }
         })
 
         tokomemberDashCreateViewModel.tmCouponPreValidateSingleCouponLiveData.observe(viewLifecycleOwner,{

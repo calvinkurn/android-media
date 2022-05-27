@@ -70,8 +70,8 @@ class TokomemberDashCreateViewModel @Inject constructor(
     val tmProgramValidateLiveData: LiveData<TokoLiveDataResult<MemberShipValidateResponse>> =
         _tmProgramValidateLiveData
 
-    private val _tmCouponInitialLiveData = MutableLiveData<Result<TmCouponInitialResponse>>()
-    val tmCouponInitialLiveData: LiveData<Result<TmCouponInitialResponse>> =
+    private val _tmCouponInitialLiveData = MutableLiveData<TokoLiveDataResult<TmCouponInitialResponse>>()
+    val tmCouponInitialLiveData: LiveData<TokoLiveDataResult<TmCouponInitialResponse>> =
         _tmCouponInitialLiveData
 
     private val _tmCouponUploadLiveData = MutableLiveData<TokoLiveDataResult<UploadResult>>()
@@ -153,22 +153,23 @@ class TokomemberDashCreateViewModel @Inject constructor(
         },tmCardModifyInput)
     }
 
-    fun createCoupon(tmCouponCreateRequest: TmCouponCreateRequest){
+    fun createCoupon(tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest){
         tmKuponCreateUsecase.cancelJobs()
         tmKuponCreateUsecase.createKupon( {
             _tmCouponCreateLiveData.postValue(Success(it))
         }, {
             _tmCouponCreateLiveData.postValue(Fail(it))
-        },tmCouponCreateRequest)
+        },tmMerchantCouponUnifyRequest)
     }
 
-    fun getInitialCouponData(){
+    fun getInitialCouponData(actionType: String, targetBuyer:Int, couponType:String ){
         tmKuponInitialUsecase.cancelJobs()
+        _tmCouponInitialLiveData.postValue(TokoLiveDataResult.loading())
         tmKuponInitialUsecase.getInitialCoupon( {
-            _tmCouponInitialLiveData.postValue(Success(it))
+            _tmCouponInitialLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
-            _tmCouponInitialLiveData.postValue(Fail(it))
-        })
+            _tmCouponInitialLiveData.postValue(TokoLiveDataResult.error(it))
+        }, actionType, targetBuyer, couponType)
     }
 
     fun validateProgram(shopId: String, startTime:String ,endTime:String){

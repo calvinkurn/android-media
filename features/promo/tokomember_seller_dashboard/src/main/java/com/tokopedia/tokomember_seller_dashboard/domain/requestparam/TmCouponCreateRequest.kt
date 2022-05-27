@@ -34,17 +34,11 @@ data class TmCouponCreateRequest(
 	@SerializedName("date_end")
 	val dateEnd: String? = null,
 
-	@SerializedName("source")
-	val source: String? = null,
-
 	@SerializedName("image_square")
 	val imageSquare: String? = null,
 
 	@SerializedName("coupon_name")
 	val couponName: String? = null,
-
-	@SerializedName("token")
-	val token: String? = null,
 
 	@SerializedName("benefit_type")
 	val benefitType: String? = null,
@@ -68,8 +62,5 @@ data class TmCouponCreateRequest(
 	val couponType: String? = null,
 
 	@SerializedName("hour_start")
-	val hourStart: String? = null,
-
-	@SerializedName("warehouse_id")
-	val warehouseId: Int? = null
+	val hourStart: String? = null
 ) : Parcelable

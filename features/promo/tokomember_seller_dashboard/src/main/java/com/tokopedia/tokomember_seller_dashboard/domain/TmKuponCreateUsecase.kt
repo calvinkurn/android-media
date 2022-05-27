@@ -3,7 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
 import javax.inject.Inject
 
@@ -14,9 +14,10 @@ class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
     fun createKupon(
         success: (TmKuponCreateMVResponse) -> Unit,
         onFail: (Throwable) -> Unit,
-        tmCouponCreateRequest: TmCouponCreateRequest,
+        tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest,
     ) {
         this.setTypeClass(TmKuponCreateMVResponse::class.java)
+        this.setRequestParams(getRequestParams(tmMerchantCouponUnifyRequest))
         this.setGraphqlQuery(TmKuponCreate.GQL_QUERY)
         this.execute({
             success(it)
@@ -25,11 +26,15 @@ class TmKuponCreateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
         })
     }
 
+    private fun getRequestParams(tmMerchantCouponUnifyRequest: TmMerchantCouponUnifyRequest): Map<String, Any> {
+        return mapOf("merchantVoucherMultipleData" to tmMerchantCouponUnifyRequest)
+    }
+
 }
 
 const val KUPON_CREATE = """
-     mutation merchantPromotionCreateMV(${'$'}merchantVoucherData: MVCreateData!) {
-  merchantPromotionCreateMV(merchantVoucherData: ${'$'}merchantVoucherData) {
+     mutation merchantPromotionCreateMultipleMV(${'$'}merchantVoucherMultipleData: TmMerchantCouponUnifyRequest!) {
+  merchantPromotionCreateMultipleMV(merchantVoucherMultipleData: ${'$'}merchantVoucherMultipleData) {
   status
   message
   process_time

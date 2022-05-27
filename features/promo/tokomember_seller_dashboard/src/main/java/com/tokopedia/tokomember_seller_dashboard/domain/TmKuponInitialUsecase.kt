@@ -3,9 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCreateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
 import javax.inject.Inject
 
 class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
@@ -15,14 +13,22 @@ class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlReposi
     fun getInitialCoupon(
         success: (TmCouponInitialResponse) -> Unit,
         onFail: (Throwable) -> Unit,
+        actionType: String,
+        targetBuyer: Int,
+        couponType: String,
     ) {
         this.setTypeClass(TmCouponInitialResponse::class.java)
+        this.setRequestParams(getRequestParams(actionType,targetBuyer,couponType))
         this.setGraphqlQuery(TmKuponInitial.GQL_QUERY)
         this.execute({
             success(it)
         }, {
             onFail(it)
         })
+    }
+
+    private fun getRequestParams(actionType: String , targetBuyer: Int , couponType: String): Map<String, Any> {
+        return mapOf("Action" to actionType , "TargetBuyer" to targetBuyer , "CouponType" to couponType )
     }
 
 }

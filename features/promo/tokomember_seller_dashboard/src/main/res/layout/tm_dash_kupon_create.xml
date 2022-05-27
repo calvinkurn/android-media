@@ -310,4 +310,6 @@ syarat  ketentuan TokoMember." />
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <include layout="@layout/tm_coupon_creation_shimmer"/>
+
 </ViewFlipper>
