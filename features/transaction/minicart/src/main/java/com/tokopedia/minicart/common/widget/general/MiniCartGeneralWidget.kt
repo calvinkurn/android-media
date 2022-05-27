@@ -69,6 +69,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     init {
         binding = WidgetMiniCartBinding.inflate(LayoutInflater.from(context))
+        addView(binding.root)
+
         val application = (context as? Activity)?.application
         initializeInjector(application)
     }
@@ -451,8 +453,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
         isShopDirectPurchase: Boolean = true, source: MiniCartSource
     ) {
-        removeAllViews()
-
         if (viewModel == null) {
             initializeView(fragment)
             initializeListener(listener)
@@ -462,8 +462,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             viewModel?.initializeShopIds(shopIds)
         }
         updateData()
-
-        addView(binding.root)
     }
 
     /**
