@@ -18,5 +18,6 @@ annotation class TokoFoodHomeStaticLayoutId {
         const val EMPTY_STATE_NO_ADDRESS = "4"
         const val LOADING_STATE = "5"
         const val PROGRESS_BAR = "6"
+        const val MERCHANT_TITLE = "7"
     }
 }

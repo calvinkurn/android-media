@@ -40,6 +40,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeI
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeMerchantTitleViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
@@ -47,6 +48,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
@@ -77,6 +79,7 @@ class TokoFoodHomeAdapterTypeFactory (
     override fun type(uiModel: TokoFoodHomeIconsUiModel): Int = TokoFoodHomeIconsViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeChooseAddressWidgetUiModel): Int = TokoFoodHomeChooseAddressViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodProgressBarUiModel): Int = TokoFoodProgressBarViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeMerchantTitleUiModel): Int = TokoFoodHomeMerchantTitleViewHolder.LAYOUT
     // endregion
 
 
@@ -109,6 +112,7 @@ class TokoFoodHomeAdapterTypeFactory (
             TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view, homeIconListener)
             TokoFoodHomeChooseAddressViewHolder.LAYOUT -> TokoFoodHomeChooseAddressViewHolder(view, tokoFoodView, chooseAddressWidgetListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
+            TokoFoodHomeMerchantTitleViewHolder.LAYOUT -> TokoFoodHomeMerchantTitleViewHolder(view)
             // endregion
 
             // region Global Home Component

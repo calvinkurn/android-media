@@ -20,6 +20,7 @@ import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgr
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addMerchantTitle
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoPinPointState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addProgressBar
@@ -78,10 +79,10 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
-    private var pageKey = PAGE_KEY_MERCHANT
+    private var pageKey = INITIAL_PAGE_KEY_MERCHANT
 
     companion object {
-        private const val PAGE_KEY_MERCHANT = "1"
+        private const val INITIAL_PAGE_KEY_MERCHANT = "1"
     }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
@@ -213,6 +214,10 @@ class TokoFoodHomeViewModel @Inject constructor(
                     pageKey = pageKey)
             }
 
+            if (isInitialPageKey()){
+                homeLayoutItemList.addMerchantTitle()
+            }
+
             setPageKey(categoryResponse.data.nextPageKey)
             homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
             homeLayoutItemList.removeProgressBar()
@@ -272,5 +277,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private fun setPageKey(pageNew:String) {
         pageKey = pageNew
+    }
+
+    private fun isInitialPageKey(): Boolean {
+        return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
     }
 }

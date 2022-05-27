@@ -16,6 +16,8 @@
     <string name="home_out_of_coverafe_button">Ubah Alamat</string>
     <string name="home_back_to_home">Kembali ke Home</string>
     <string name="home_merchant_closed">Toko Tutup</string>
+    <string name="home_merchant_title">Eksplor Makanan &amp; Minuman Lainnya!</string>
+    <string name="home_merchant_desc">Banyak pilihan yang bikin kamu ketagihan</string>
 
 
     <!-- Purchase -->

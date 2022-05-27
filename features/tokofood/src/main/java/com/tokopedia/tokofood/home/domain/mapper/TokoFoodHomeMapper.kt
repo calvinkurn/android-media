@@ -33,13 +33,13 @@ import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.Merchant
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
@@ -92,9 +92,9 @@ object TokoFoodHomeMapper {
         }
     }
 
-    fun MutableList<TokoFoodItemUiModel>.addLoadingCategoryIntoList() {
-        val loadingLayout = TokoFoodCategoryLoadingStateUiModel(id = TokoFoodHomeStaticLayoutId.LOADING_STATE)
-        add(TokoFoodItemUiModel(loadingLayout, TokoFoodLayoutItemState.LOADED))
+    fun MutableList<TokoFoodItemUiModel>.addMerchantTitle() {
+        val merchantTitle = TokoFoodHomeMerchantTitleUiModel(id = TokoFoodHomeStaticLayoutId.MERCHANT_TITLE)
+        add(TokoFoodItemUiModel(merchantTitle, TokoFoodLayoutItemState.LOADED))
     }
 
     fun MutableList<TokoFoodItemUiModel>.addProgressBar() {
