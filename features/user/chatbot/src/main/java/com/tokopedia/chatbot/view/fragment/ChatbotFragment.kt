@@ -711,7 +711,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
-    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
+    private fun onSuccessGetExistingChatFirstTime(
+        onReplyClick: Boolean = false,
+        sendMessage: String = "",
+        startTime: String = "",
+        parentReply: ParentReply? = null
+    ): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
             val list = chatroomViewModel.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
@@ -721,8 +726,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             updateViewData(chatroomViewModel)
             renderList(list)
             getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
+            if (onReplyClick){
+                getViewState()?.onSendingMessage(
+                    messageId, getUserSession().userId, getUserSession()
+                        .name, sendMessage, startTime, parentReply
+                )
+                getViewState()?.scrollToBottom()
+            }
             updateHasNextState(chatReplies)
             updateHasNextAfterState(chatReplies)
+            //TODO review this
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
@@ -1032,9 +1045,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSendingMessage(sendMessage: String, startTime: String,parentReply: ParentReply?): () -> Unit {
         return {
-            getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                    .name, sendMessage, startTime, parentReply)
-            getViewState()?.scrollToBottom()
+            if (rvScrollListener?.hasNextAfterPage == true) {
+                resetData()
+                showTopLoading()
+                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(true,sendMessage,startTime,parentReply), onGetChatRatingListMessageError)
+            } else {
+                getViewState()?.onSendingMessage(
+                    messageId, getUserSession().userId, getUserSession()
+                        .name, sendMessage, startTime, parentReply
+                )
+                getViewState()?.scrollToBottom()
+            }
         }
     }
 
@@ -1461,16 +1482,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 }
                 if (fromOnClick && replyTime.isNotEmpty()) {
                     updateHasNextAfterState(chatReplies)
-
-                    //TODO this part not working
-
-//                    val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
-//                        replyTime
-//                    )
-//                    if (bubblePosition != RecyclerView.NO_POSITION) {
-//                        smoothScroll?.targetPosition = bubblePosition
-//                        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
-//                    }
 
                 }
                 updateHasNextState(chatReplies)

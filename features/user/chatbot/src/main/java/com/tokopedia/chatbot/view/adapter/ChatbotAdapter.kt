@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.adapter
 
 import android.util.Log
 import android.view.ViewGroup
-import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -44,8 +43,6 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     fun getBubblePosition(replyTime: String): Int {
         return visitables.indexOfFirst {
-            if (it is BaseChatUiModel)
-            Log.d("FATAL", "getBubblePosition: " + it.replyTime + " Params : " + replyTime)
             it is BaseChatUiModel && it.replyTime == replyTime
         }
     }

@@ -244,14 +244,13 @@ class ChatbotPresenter @Inject constructor(
                         mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
-                    //TODO add this again
-//                    if(attachmentType == SESSION_CHANGE) {
-//                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
-//                            chatResponse.attachment?.attributes,
-//                            ReplyBubbleAttributes::class.java
-//                        )
-//                        handleReplyBubble(agentMode)
-//                    }
+                    if(attachmentType == SESSION_CHANGE) {
+                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
+                            chatResponse.attachment?.attributes,
+                            ReplyBubbleAttributes::class.java
+                        )
+                        handleReplyBubble(agentMode)
+                    }
 
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
@@ -628,14 +627,23 @@ class ChatbotPresenter @Inject constructor(
         parentReply: ParentReply?,
         onSendingMessage: () -> Unit
     ) {
-        if(parentReply==null){
-            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
-                startTime, opponentId),
-                listInterceptor)
-        }else{
-            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
-                messageId,sendMessage,startTime, parentReply
-            ),listInterceptor)
+        if(isValidReply(sendMessage)) {
+            if (parentReply == null) {
+                RxWebSocket.send(
+                    ChatbotSendWebsocketParam.generateParamSendMessage(
+                        messageId, sendMessage,
+                        startTime, opponentId
+                    ),
+                    listInterceptor
+                )
+            } else {
+                RxWebSocket.send(
+                    ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                        messageId, sendMessage, startTime, parentReply
+                    ), listInterceptor
+                )
+            }
+            onSendingMessage()
         }
     }
 

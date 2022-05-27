@@ -10,7 +10,8 @@ abstract class RecyclerViewScrollListener(
 
     private val threshold = 2
     private var hasNextPage = false
-    private var hasNextAfterPage = false
+    var hasNextAfterPage = false
+        get() = field
     private var isLoadingTop = false
     private var isLoadingBottom = false
 
