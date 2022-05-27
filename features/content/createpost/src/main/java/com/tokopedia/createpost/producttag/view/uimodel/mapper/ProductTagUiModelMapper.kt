@@ -129,7 +129,7 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int): PagedGlobalSearchShopResponse {
+    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int, param: SearchParamUiModel): PagedGlobalSearchShopResponse {
         return PagedGlobalSearchShopResponse(
             totalShop = response.wrapper.totalShop,
             pagedData = PagedDataUiModel(
@@ -153,7 +153,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                 totalDataText = response.wrapper.header.totalDataText,
                 responseCode = response.wrapper.header.responseCode,
                 keywordProcess = response.wrapper.header.keywordProcess,
-                componentId = "",
+                componentId = param.componentId,
             )
         )
     }

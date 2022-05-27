@@ -60,6 +60,21 @@ data class SearchParamUiModel(
             value[KEY_DEVICE] = newValue
         }
 
+    var componentId: String
+        get() = value[KEY_COMPONENT_ID]?.toString() ?: ""
+        set(newValue) {
+            value[KEY_COMPONENT_ID] = newValue
+        }
+
+    var prevQuery: String
+        get() = value[KEY_PREV_QUERY]?.toString() ?: ""
+        set(newValue) {
+            value[KEY_PREV_QUERY] = newValue
+        }
+
+    val isFirstPage: Boolean
+        get() = start == 0
+
     /** Add param 1 by 1, if exists then param will be appended */
     fun addParam(key: String, value: Any) {
         val newValue = if(this.value.containsKey(key))
@@ -109,6 +124,14 @@ data class SearchParamUiModel(
         }.joinToString(separator = DEFAULT_PARAM_SEPARATOR).replace("#",",")
     }
 
+    fun toTrackerString(): String {
+        return value.map {
+            it.toString()
+        }.joinToString(separator = ";")
+            .replace("#",",")
+            .replace("=", ":")
+    }
+
     fun getFilterCount(): Int {
         return getSortFilterCount(value)
     }
@@ -129,11 +152,11 @@ data class SearchParamUiModel(
         private const val KEY_SOURCE = "source"
         private const val KEY_PAGE_SOURCE = "page_source"
 
-        private const val KEY_QUERY = "q"
         private const val KEY_START = "start"
         private const val KEY_ROWS = "rows"
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_USER_ID = "user_id"
+        private const val KEY_PREV_QUERY = "prev_query"
 
         private const val LIMIT_PER_PAGE = 20
 
@@ -142,6 +165,8 @@ data class SearchParamUiModel(
 
         const val SOURCE_SEARCH_PRODUCT = "search_product"
         const val SOURCE_SEARCH_SHOP = "search_shop"
+        const val KEY_QUERY = "q"
+        const val KEY_COMPONENT_ID = "srp_component_id"
 
         val Empty: SearchParamUiModel
             get() = SearchParamUiModel(value = hashMapOf()).apply {

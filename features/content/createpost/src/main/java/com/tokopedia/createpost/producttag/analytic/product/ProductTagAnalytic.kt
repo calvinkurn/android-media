@@ -1,13 +1,21 @@
 package com.tokopedia.createpost.producttag.analytic.product
 
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
  * Created By : Jonathan Darwin on May 23, 2022
  */
 interface ProductTagAnalytic {
+
+    fun trackGlobalSearchProduct(
+        header: SearchHeaderUiModel,
+        param: SearchParamUiModel,
+    )
+
+    fun trackGlobalSearchShop(
+        header: SearchHeaderUiModel,
+        param: SearchParamUiModel,
+    )
 
     fun clickBreadcrumb(isOnShop: Boolean)
 

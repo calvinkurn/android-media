@@ -341,8 +341,8 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {
-        viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
+    fun onNewIntent(source: ProductTagSource, query: String, shopId: String, componentId: String) {
+        viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
     }
 
     fun onBackPressed() {

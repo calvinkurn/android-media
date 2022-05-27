@@ -21,6 +21,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -105,8 +106,22 @@ class GlobalSearchFragment @Inject constructor(
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collect {
+            viewModel.uiState.withCache().collectLatest {
                 renderSearchBar(it.value.globalSearchProduct.param.query)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    is ProductTagUiEvent.HitGlobalSearchProductTracker -> {
+                        analytic.trackGlobalSearchProduct(it.header, it.param)
+                    }
+                    is ProductTagUiEvent.HitGlobalSearchShopTracker -> {
+                        analytic.trackGlobalSearchShop(it.header, it.param)
+                    }
+                    else -> {}
+                }
             }
         }
     }

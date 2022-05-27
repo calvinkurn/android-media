@@ -9,9 +9,7 @@ import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_CATEGORY
 import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_LABEL
 import com.tokopedia.createpost.producttag.analytic.KEY_SESSION_IRIS
 import com.tokopedia.createpost.producttag.analytic.VAL_CURRENT_SITE
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -25,6 +23,20 @@ class ProductTagAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
 ) : ProductTagAnalytic {
+
+    override fun trackGlobalSearchProduct(
+        header: SearchHeaderUiModel,
+        param: SearchParamUiModel,
+    ) {
+        hitGlobalSearchTracker(VAL_FEED_PRODUCT, header, param)
+    }
+
+    override fun trackGlobalSearchShop(
+        header: SearchHeaderUiModel,
+        param: SearchParamUiModel,
+    ) {
+        hitGlobalSearchTracker(VAL_FEED_SHOP, header, param)
+    }
 
     override fun clickBreadcrumb(isOnShop: Boolean) {
         sendClickEvent(
@@ -241,6 +253,37 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userSession.userId,
+            )
+        )
+    }
+
+    private fun hitGlobalSearchTracker(
+        type: String,
+        header: SearchHeaderUiModel,
+        param: SearchParamUiModel,
+    ) {
+        val action = when(type) {
+            VAL_FEED_PRODUCT -> "general search"
+            VAL_FEED_SHOP -> "general search shop"
+            else -> ""
+        }
+        val prevKeyword = if(param.prevQuery.isNotEmpty()) param.prevQuery else "none"
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to "clickTopNav",
+                KEY_EVENT_ACTION to action,
+                KEY_EVENT_CATEGORY to "top nav",
+                /** TODO: srp page title ? */
+                KEY_EVENT_LABEL to "${param.query}|${header.keywordProcess}|${header.responseCode}|physical goods|$type|{}|${header.totalData}",
+                KEY_BUSINESS_UNIT to "physical goods",
+                KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                KEY_SRP_COMPONENT to header.componentId,
+                KEY_SRP_KEYWORD to param.query,
+                KEY_SRP_PAGE_SOURCE to "feed.$type.local_search.{}", /** TODO: srp page title ? */
+                KEY_SRP_RELATED_KEYWORD to "$prevKeyword - none",
+                KEY_SRP_SEARCH_FILTER to param.toTrackerString(),
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
             )
         )
     }

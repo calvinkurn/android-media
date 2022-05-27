@@ -226,7 +226,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
             ProductTagAction.OpenAutoCompletePage -> handleOpenAutoCompletePage()
 
-            is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId)
+            is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId, action.componentId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
@@ -292,15 +292,19 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSetDataFromAutoComplete(source: ProductTagSource, query: String, shopId: String) {
+    private fun handleSetDataFromAutoComplete(source: ProductTagSource, query: String, shopId: String, componentId: String) {
         viewModelScope.launchCatchError(block = {
             when(source) {
                 ProductTagSource.GlobalSearch -> {
                     _globalSearchProduct.setValue {
-                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query))
+                        GlobalSearchProductUiModel.Empty.copy(param = initParam(query).copy().apply {
+                            this.componentId = componentId
+                        })
                     }
                     _globalSearchShop.setValue {
-                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query))
+                        GlobalSearchShopUiModel.Empty.copy(param = initParam(query).copy().apply {
+                            this.componentId = componentId
+                        })
                     }
                 }
                 ProductTagSource.Shop -> {
@@ -318,7 +322,7 @@ class ProductTagViewModel @AssistedInject constructor(
             submitAction(ProductTagAction.SelectProductTagSource(source))
         }) {
             _uiEvent.emit(ProductTagUiEvent.ShowError(it) {
-                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
             })
         }
     }
@@ -509,6 +513,10 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val result = repo.searchAceProducts(param = newParam)
 
+            if(newParam.isFirstPage) {
+                _uiEvent.emit(ProductTagUiEvent.HitGlobalSearchProductTracker(result.header, newParam))
+            }
+
             /** Update Param */
             val nextCursor = result.pagedData.nextCursor.toInt()
             newParam.start = nextCursor
@@ -653,6 +661,10 @@ class ProductTagViewModel @AssistedInject constructor(
             )
 
             val result = repo.searchAceShops(param = newParam)
+
+            if(newParam.isFirstPage) {
+                _uiEvent.emit(ProductTagUiEvent.HitGlobalSearchShopTracker(result.header, newParam))
+            }
 
             /** Update Param */
             val nextCursor = result.pagedData.nextCursor.toInt()
@@ -817,7 +829,10 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun initParam(query: String): SearchParamUiModel {
-        return SearchParamUiModel.Empty.apply { this.query = query }
+        return SearchParamUiModel.Empty.apply {
+            this.prevQuery = this.query
+            this.query = query
+        }
     }
 
     companion object {
