@@ -422,6 +422,8 @@ class PlayLiveInitialInteractiveTest {
             )
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
 
         createPlayViewModelRobot(
             playChannelWebSocket = socket,
@@ -430,6 +432,7 @@ class PlayLiveInitialInteractiveTest {
             remoteConfig = mockRemoteConfig,
         ).use {
             val state = it.recordState {
+                setUserId("1")
                 createPage(mockChannelData)
                 focusPage(mockChannelData)
             }
@@ -488,6 +491,9 @@ class PlayLiveInitialInteractiveTest {
             )
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
 
         createPlayViewModelRobot(
             playChannelWebSocket = socket,
@@ -496,6 +502,7 @@ class PlayLiveInitialInteractiveTest {
             remoteConfig = mockRemoteConfig,
         ).use {
             val state = it.recordState {
+                setUserId("7")
                 createPage(mockChannelData)
                 focusPage(mockChannelData)
             }
@@ -552,6 +559,13 @@ class PlayLiveInitialInteractiveTest {
             )
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+            leaderboardWinners = listOf(
+                interactiveModelBuilder.buildLeaderboard(winners = listOf(
+                    PlayWinnerUiModel(name = "Koi Rainbow", imageUrl = "", topChatMessage = "", rank = 1, allowChat = { false }, id = "22")
+                ))
+            )
+        )
 
         createPlayViewModelRobot(
             playChannelWebSocket = socket,
@@ -563,10 +577,9 @@ class PlayLiveInitialInteractiveTest {
                 createPage(mockChannelData)
                 focusPage(mockChannelData)
             }
-            val event = it.recordEvent {
+            it.recordEvent {
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
             state.winnerBadge.shouldShow.assertTrue()
         }
     }
