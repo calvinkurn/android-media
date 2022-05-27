@@ -394,7 +394,9 @@ object HomeLayoutMapper {
             MIX_LEFT_CAROUSEL -> {
                 filter { it.layout is HomeLeftCarouselUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselUiModel
-                    val cartProductIds = miniCartData.miniCartItems.map { it.productId }
+                    val miniCartItems = miniCartData.miniCartItems.values
+                        .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    val cartProductIds = miniCartItems.map { it.productId }
                     val deletedProducts: MutableList<HomeLeftCarouselProductCardUiModel> = mutableListOf()
                     layout.productList.forEach {
                         if((it is HomeLeftCarouselProductCardUiModel) && it.id !in cartProductIds ) {
@@ -402,7 +404,7 @@ object HomeLayoutMapper {
                         }
                     }
 
-                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
+                    val variantGroup = miniCartItems.groupBy { it.productParentId }
 
                     deletedProducts.forEach { item ->
                         if (item.parentProductId != DEFAULT_PARENT_ID) {
