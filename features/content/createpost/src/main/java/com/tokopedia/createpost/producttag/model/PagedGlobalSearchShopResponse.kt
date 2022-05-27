@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.model
 
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.SearchHeaderUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
 /**
@@ -9,4 +10,5 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 data class PagedGlobalSearchShopResponse(
     val totalShop: Int,
     val pagedData: PagedDataUiModel<ShopUiModel>,
+    val header: SearchHeaderUiModel,
 )

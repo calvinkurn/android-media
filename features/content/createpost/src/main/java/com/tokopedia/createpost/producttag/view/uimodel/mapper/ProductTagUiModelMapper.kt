@@ -114,6 +114,13 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.data.products.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
+            header = SearchHeaderUiModel(
+                totalData = response.wrapper.header.totalData,
+                totalDataText = response.wrapper.header.totalDataText,
+                responseCode = response.wrapper.header.responseCode,
+                keywordProcess = response.wrapper.header.keywordProcess,
+                componentId = response.wrapper.header.componentId,
+            ),
             suggestion = response.wrapper.data.suggestion.text,
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
@@ -141,6 +148,13 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.shops.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
+            header = SearchHeaderUiModel(
+                totalData = response.wrapper.header.totalData,
+                totalDataText = response.wrapper.header.totalDataText,
+                responseCode = response.wrapper.header.responseCode,
+                keywordProcess = response.wrapper.header.keywordProcess,
+                componentId = "",
+            )
         )
     }
 

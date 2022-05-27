@@ -10,8 +10,28 @@ data class FeedAceSearchProductResponse(
     val wrapper: Wrapper = Wrapper(),
 ) {
     data class Wrapper(
+        @SerializedName("header")
+        val header: Header = Header(),
+
         @SerializedName("data")
         val data: Data = Data(),
+    )
+
+    data class Header(
+        @SerializedName("totalData")
+        val totalData: Int = 0,
+
+        @SerializedName("totalDataText")
+        val totalDataText: String = "",
+
+        @SerializedName("responseCode")
+        val responseCode: Int = 0,
+
+        @SerializedName("keywordProcess")
+        val keywordProcess: String = "",
+
+        @SerializedName("componentId")
+        val componentId: String = "",
     )
 
     data class Data(
