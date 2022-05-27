@@ -70,4 +70,6 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="driver_not_found_title">Masih menunggu driver nih.</string>
     <string name="driver_not_found_subtitle">Tunggu sebentar ya.</string>
     <string name="driver_section_tracking_title">Driver</string>
+    <string name="content_desc_empty_tracking">empty tracking history</string>
+    <string name="info_icon_tracking_page">info icon tracking page</string>
 </resources>

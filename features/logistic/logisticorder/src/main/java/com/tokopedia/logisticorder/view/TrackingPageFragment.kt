@@ -386,7 +386,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun startSuccessCountdown() {
         binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
-        Observable.timer(5, TimeUnit.SECONDS)
+        Observable.timer(NEW_DRIVER_COUNT_DOWN, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Subscriber<Long>() {
@@ -412,7 +412,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setHistoryView(model: TrackOrderModel) {
-        if (model.invalid || model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        if (model.invalid || model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.trackingHistory?.visibility = View.GONE
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
@@ -467,7 +467,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.notificationHelpStep?.visibility = View.VISIBLE
             binding?.notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
-        } else if (model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        } else if (model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.emptyUpdateNotification?.visibility = View.VISIBLE
             binding?.notificationText?.text = getString(R.string.warning_no_courier_change)
             binding?.notificationHelpStep?.visibility = View.GONE
@@ -504,6 +504,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     companion object {
         private const val PER_SECOND = 1000
         private const val LIVE_TRACKING_VIEW_REQ = 1
+        private const val NEW_DRIVER_COUNT_DOWN = 5L
+        private const val INVALID_ORDER_STATUS = 501
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
