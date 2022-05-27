@@ -921,15 +921,6 @@ class PlayUserInteractionFragment @Inject constructor(
                             actionText = getString(R.string.play_sharing_refresh),
                         )
                     }
-                    is QuizAnsweredEvent -> {
-                        if(event.isTrue){
-                            //anim when answer is true
-                        }  else{
-                            //anim when answer is false
-                        }
-                        delay(FADE_TRANSITION_DELAY)
-                        InteractiveDialogFragment.get(childFragmentManager)?.dismiss()
-                    }
                     OpenKebabEvent -> {
                         playViewModel.onShowKebabMenuSheet()
                         showMoreActionBottomSheet()

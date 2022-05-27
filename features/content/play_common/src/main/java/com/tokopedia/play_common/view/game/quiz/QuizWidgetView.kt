@@ -21,7 +21,7 @@ import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
-import java.util.Calendar
+import java.util.*
 
 /**
  * @author by astidhiyaa on 18/04/22
@@ -82,18 +82,6 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setTitle(title: String) {
         binding.quizHeader.setupQuiz(title)
-
-        binding.quizHeader.setOnClickListener {
-            clickAnimator.addListener(animationListener)
-            clickAnimator.duration = 100L
-            clickAnimator.start()
-        }
-
-        binding.viewGameReward.root.setOnClickListener {
-            answerTrueAnimator.addListener(animationListener)
-            answerTrueAnimator.duration = 100L
-            answerTrueAnimator.start()
-        }
     }
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
@@ -119,6 +107,26 @@ class QuizWidgetView : ConstraintLayout {
         binding.viewGameReward.root.shouldShowWithAction(reward.isNotBlank()){
             binding.viewGameReward.tvGameReward.text = reward
         }
+    }
+
+    fun animateAnswer(isCorrect: Boolean){
+        if(isCorrect){
+            animateCorrectAnswer()
+        } else {
+            animateWrongAnswer()
+        }
+    }
+
+    private fun animateCorrectAnswer(){
+        answerTrueAnimator.addListener(animationListener)
+        answerTrueAnimator.duration = 100L
+        answerTrueAnimator.start()
+    }
+
+    private fun animateWrongAnswer(){
+        clickAnimator.addListener(animationListener)
+        clickAnimator.duration = 100L
+        clickAnimator.start()
     }
 
     interface Listener {

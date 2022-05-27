@@ -1877,6 +1877,7 @@ class PlayViewModel @AssistedInject constructor(
             updateQuizOptionUi(selectedId = option.id, correctId = response)
             _uiEvent.emit(QuizAnsweredEvent(option.id == response))
         }) {
+            _uiEvent.emit(QuizAnsweredEvent(false))
             setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
                 ShowErrorEvent(it)
