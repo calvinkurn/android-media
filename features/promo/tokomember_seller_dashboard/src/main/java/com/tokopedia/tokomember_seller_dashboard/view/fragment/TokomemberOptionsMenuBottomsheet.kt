@@ -19,6 +19,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
@@ -39,6 +41,8 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
     private var shopId = 0
     private var programId = 0
     private var voucherId = ""
+    private var voucherType = ""
+    private var voucherQuota = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,6 +52,12 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         }
         arguments?.getString(BUNDLE_VOUCHER_ID)?.let {
             voucherId = it
+        }
+        arguments?.getString(BUNDLE_VOUCHER_TYPE)?.let {
+            voucherType = it
+        }
+        arguments?.getInt(BUNDLE_VOUCHER_QUOTA)?.let {
+            voucherQuota = it
         }
         arguments?.getInt(BUNDLE_SHOP_ID)?.let {
             shopId = it
@@ -117,7 +127,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
                     it.option(type, shopId = shopId, programId = programId)
                 }
                 if(it is TmCouponActions){
-                    it.option(type, voucherId = voucherId)
+                    it.option(type, voucherId = voucherId, voucherType, voucherQuota)
                 }
             }
             dismiss()
@@ -161,11 +171,15 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             actions: String,
             childFragmentManager: FragmentManager,
             tmCouponActions: TmCouponActions,
-            voucherId: String
+            voucherId: String,
+            voucherType: String,
+            voucherQuota: Int
         ){
             val bundle = Bundle()
             bundle.putString(BUNDLE_OPTION_MENU, actions)
             bundle.putString(BUNDLE_VOUCHER_ID, voucherId)
+            bundle.putString(BUNDLE_VOUCHER_TYPE, voucherType)
+            bundle.putInt(BUNDLE_VOUCHER_QUOTA, voucherQuota)
             val tokomemberIntroBottomsheet = TokomemberOptionsMenuBottomsheet().apply {
                 arguments = bundle
             }

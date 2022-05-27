@@ -6,7 +6,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmCouponListResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmMVFilter
 import javax.inject.Inject
 
-class TmCouponUsecase@Inject constructor(graphqlRepository: GraphqlRepository) :
+class TmCouponUsecase@Inject constructor(
+    graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<TmCouponListResponse>(graphqlRepository) {
 
     fun getCouponList(

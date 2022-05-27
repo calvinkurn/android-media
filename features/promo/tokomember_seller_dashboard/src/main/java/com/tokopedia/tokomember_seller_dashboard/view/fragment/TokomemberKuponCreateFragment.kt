@@ -545,10 +545,20 @@ class TokomemberKuponCreateFragment : BaseDaggerFragment(), BottomSheetClickList
         when(selectedChipPositionDate){
             ProgramDateType.AUTO -> {
 
-                textFieldProgramStartDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.startTime.toString()))
-                textFieldProgramStartTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.startTime.toString()))
-                textFieldProgramEndDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.endTime.toString()))
-                textFieldProgramEndTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.endTime.toString()))
+                if(programData!= null) {
+                    textFieldProgramStartDate.editText.setText(
+                        ProgramUpdateMapper.setDate(
+                            programData?.timeWindow?.startTime.toString()
+                        )
+                    )
+                    textFieldProgramStartTime.editText.setText(
+                        ProgramUpdateMapper.setTime(
+                            programData?.timeWindow?.startTime.toString()
+                        )
+                    )
+                    textFieldProgramEndDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.endTime.toString()))
+                    textFieldProgramEndTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.endTime.toString()))
+                }
                 textFieldProgramStartDate.isEnabled = false
                 textFieldProgramStartDate.iconContainer.isEnabled = false
                 textFieldProgramStartTime.isEnabled  = false

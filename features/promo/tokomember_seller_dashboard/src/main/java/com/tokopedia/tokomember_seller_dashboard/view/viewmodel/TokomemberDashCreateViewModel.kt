@@ -6,11 +6,34 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.tokomember_common_widget.util.CouponType
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.tokomember_seller_dashboard.domain.*
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.*
-import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateValidateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponInitialUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponProgramValidateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
+import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.MemberShipValidateResponse
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmVoucherValidationPartialResponse
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
@@ -162,14 +185,13 @@ class TokomemberDashCreateViewModel @Inject constructor(
         },tmMerchantCouponUnifyRequest)
     }
 
-    fun getInitialCouponData(actionType: String, targetBuyer:Int, couponType:String ){
+    fun getInitialCouponData(actionType: String, couponType: CouponType){
         tmKuponInitialUsecase.cancelJobs()
-        _tmCouponInitialLiveData.postValue(TokoLiveDataResult.loading())
         tmKuponInitialUsecase.getInitialCoupon( {
             _tmCouponInitialLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
             _tmCouponInitialLiveData.postValue(TokoLiveDataResult.error(it))
-        }, actionType, targetBuyer, couponType)
+        }, actionType, couponType.toString())
     }
 
     fun validateProgram(shopId: String, startTime:String ,endTime:String){

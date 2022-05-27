@@ -15,7 +15,6 @@
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="number"
         app:unify_text_field_label="Kuota Kupon"
-        app:unify_text_field_message="Rekomendasi kuota: 500"
         app:unify_text_field_label_static="false" />
 
 

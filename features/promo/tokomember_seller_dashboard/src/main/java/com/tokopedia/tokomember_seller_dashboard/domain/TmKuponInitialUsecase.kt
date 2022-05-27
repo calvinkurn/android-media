@@ -14,12 +14,11 @@ class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlReposi
         success: (TmCouponInitialResponse) -> Unit,
         onFail: (Throwable) -> Unit,
         actionType: String,
-        targetBuyer: Int,
-        couponType: String,
+        couponType: String
     ) {
         this.setTypeClass(TmCouponInitialResponse::class.java)
-        this.setRequestParams(getRequestParams(actionType,targetBuyer,couponType))
         this.setGraphqlQuery(TmKuponInitial.GQL_QUERY)
+        setRequestParams(getRequestParams(actionType, couponType))
         this.execute({
             success(it)
         }, {
@@ -27,11 +26,19 @@ class TmKuponInitialUsecase @Inject constructor(graphqlRepository: GraphqlReposi
         })
     }
 
-    private fun getRequestParams(actionType: String , targetBuyer: Int , couponType: String): Map<String, Any> {
-        return mapOf("Action" to actionType , "TargetBuyer" to targetBuyer , "CouponType" to couponType )
+    private fun getRequestParams(action: String, couponType: String): Map<String, Any> {
+        val reqMap = mutableMapOf<String, Any>()
+        reqMap[ACTION] = action
+        reqMap[TARGET_BUYER] = 3
+        reqMap[COUPON_TYPE] = couponType
+        return reqMap
     }
 
 }
+
+const val ACTION = "Action"
+const val TARGET_BUYER = "TargetBuyer"
+const val COUPON_TYPE = "CouponType"
 
 const val KUPON_INITIAL = """
     

@@ -7,6 +7,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberDashModule
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberViewmodelModule
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmAddQuotaBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCouponFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeFragment
@@ -28,6 +29,7 @@ interface TokomemberDashComponent {
     fun inject(tokomemberDashProgramDetailFragment: TokomemberDashProgramDetailFragment)
     fun inject(tokomemberDashProgramFragment: TokomemberDashProgramListFragment)
     fun inject(tokomemberDashCouponFragment: TokomemberDashCouponFragment)
+    fun inject(tmAddQuotaBottomsheet: TmAddQuotaBottomsheet)
     fun inject(tokomemberMainFragment: TokomemberMainFragment)
     fun inject(tokomemberDashIntroFragment: TokomemberDashIntroFragment)
     fun inject(tokomemberCreateCardFragment: TokomemberCreateCardFragment)
