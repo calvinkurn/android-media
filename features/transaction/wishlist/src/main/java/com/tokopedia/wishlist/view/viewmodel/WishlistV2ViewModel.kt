@@ -115,7 +115,6 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     fun getCountDeletionWishlistV2() {
-        println("++ call getCountDeletionWishlistV2")
         launch {
             try {
                 countDeletionWishlistV2UseCase.execute(
@@ -163,16 +162,15 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         } else {
             if (wishlistV2Response.page == 1) {
-                if (wishlistV2Response.ticker.message.isNotEmpty()) {
+                recommPosition = if (wishlistV2Response.ticker.message.isNotEmpty()) {
                     val bundleTickerData = WishlistV2TickerCleanerData(
                         tickerCleanerData = wishlistV2Response.ticker,
                         bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet,
                         countRemovableItems = wishlistV2Response.countRemovableItems)
                     listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
-                    isTickerShow = true
-                    recommPosition = recommWithTickerPosition
+                    recommWithTickerPosition
                 } else {
-                    recommPosition = recommPositionDefault
+                    recommPositionDefault
                 }
 
             }
@@ -376,6 +374,5 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
-        private var isTickerShow = false
     }
 }

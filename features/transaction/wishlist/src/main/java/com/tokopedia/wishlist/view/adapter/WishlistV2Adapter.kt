@@ -32,11 +32,10 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
-    private var listTypeData: ArrayList<WishlistV2TypeLayoutData> = arrayListOf()
+    private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
     private var isShowCheckbox = false
     private var isTickerCloseClicked = false
     var isRefreshing = false
-    var hasDeletionProgressWidgetShow = false
     private var isAutoSelected = false
 
     companion object {
@@ -81,10 +80,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onTickerCloseIconClicked()
     }
 
+    init { setHasStableIds(true) }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             LAYOUT_COUNT_MANAGE_ROW  -> {
-                val binding = WishlistV2CountManageRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = WishlistV2StickyItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistV2CountManageRowItemViewHolder(binding, actionListener)
             }
             LAYOUT_LOADER_LIST -> {
@@ -253,6 +254,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return listTypeData.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
             TYPE_COUNT_MANAGE_ROW -> LAYOUT_COUNT_MANAGE_ROW
@@ -336,32 +341,21 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun hideTicker() {
-        isTickerCloseClicked = true
-        notifyDataSetChanged()
-        // listTypeData.removeAt(0)
-        // notifyItemRemoved(0)
-    }
-
-    fun resetTicker() {
-        isTickerCloseClicked = false
-        notifyDataSetChanged()
-    }
-
-    fun addDeletionProgressWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+    /*fun addDeletionProgressWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
         hasDeletionProgressWidgetShow = true
-        notifyItemInserted(0)
+        notifyDataSetChanged()
     }
 
     fun updateDeletionWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         listTypeData[0] = WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET)
+        notifyItemChanged(0)
     }
 
     fun hideDeletionProgressWidget() {
         listTypeData.removeAt(0)
         notifyItemRemoved(0)
-    }
+    }*/
 
     fun getCountData(): Int {
         return listTypeData.size

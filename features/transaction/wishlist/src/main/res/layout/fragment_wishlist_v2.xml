@@ -63,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_wishlist_header"
         android:visibility="visible"
-        layout="@layout/wishlist_v2_count_manage_row_item" />
+        layout="@layout/wishlist_v2_sticky_item" />
 
     <View
         android:id="@+id/top_layout_shadow"

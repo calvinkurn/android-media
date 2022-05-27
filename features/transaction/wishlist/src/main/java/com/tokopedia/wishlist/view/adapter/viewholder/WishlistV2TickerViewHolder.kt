@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,14 +28,7 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
             binding.root.layoutParams = params
         } else {
             if (item.dataObject is WishlistV2TickerCleanerData) {
-                binding.root.visible()
-                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    isFullSpan = true
-                }
-                binding.root.layoutParams = params
-                binding.wishlistv2TickerMaxQty.run {
+                binding.wishlistv2TickerMaxQty.apply {
                     val tickerData = item.dataObject.tickerCleanerData
                     val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
                     when (tickerData.type) {
@@ -66,11 +60,18 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                         }
 
                         override fun onDismiss() {
-                            actionListener?.onTickerCloseIconClicked()
+                            // actionListener?.onTickerCloseIconClicked()
                         }
                     })
                 }
             }
+            binding.root.visible()
+            val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+                width = ViewGroup.LayoutParams.WRAP_CONTENT
+                isFullSpan = true
+            }
+            binding.root.layoutParams = params
         }
     }
 }

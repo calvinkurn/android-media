@@ -58,7 +58,8 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistCheckbox.isChecked = item.isChecked
         binding.wishlistCheckbox.skipAnimation()
         binding.wishlistCheckbox.setOnClickListener {
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()

@@ -14,7 +14,9 @@ class WishlistV2DeletionProgressWidgetItemViewHolder(private val binding: Wishli
                 if (item.dataObject.message.isNotEmpty()) message = item.dataObject.message
                 wishlistV2CountDeletionMessage.text = message
                 wishlistV2LabelProgressBar.text = "${item.dataObject.successfullyRemovedItems}/${item.dataObject.totalItems}"
-                wishlistV2CountDeletionProgressbar.setValue(item.dataObject.successfullyRemovedItems, true)
+
+                val indicatorProgressBar = (item.dataObject.successfullyRemovedItems/item.dataObject.totalItems)*100
+                wishlistV2CountDeletionProgressbar.setValue(indicatorProgressBar, false)
             }
         }
     }
