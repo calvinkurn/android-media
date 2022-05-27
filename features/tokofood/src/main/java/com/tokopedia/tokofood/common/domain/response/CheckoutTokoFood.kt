@@ -7,6 +7,18 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CheckoutTokoFoodResponse(
+    @SerializedName("cart_list_tokofood")
+    @Expose
+    val cartListTokofood: CheckoutTokoFood
+)
+
+data class MiniCartTokoFoodResponse(
+    @SerializedName("mini_cart_tokofood")
+    @Expose
+    val cartListTokofood: CheckoutTokoFood
+)
+
+data class CheckoutTokoFood(
     @SerializedName("message")
     @Expose
     val message: String = "",

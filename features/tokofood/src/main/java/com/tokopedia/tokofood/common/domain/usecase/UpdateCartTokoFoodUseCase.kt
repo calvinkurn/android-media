@@ -4,11 +4,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.UpdateCartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 class UpdateCartTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatchers.io) {
 
@@ -70,18 +71,18 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
                 CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
             )
             val response =
-                repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.isSuccess()) {
-                emit(response)
+                repository.request<Map<String, Any>, UpdateCartTokoFoodResponse>(graphqlQuery(), param)
+            if (response.cartResponse.isSuccess()) {
+                emit(response.cartResponse)
             } else {
-                throw MessageErrorException(response.getMessageIfError())
+                throw MessageErrorException(response.cartResponse.getMessageIfError())
             }
         }
     }
 
     private fun getDummyResponse(): CartTokoFoodResponse {
         return CartTokoFoodResponse(
-            success = TokoFoodCartUtil.SUCCESS_STATUS
+            status = TokoFoodCartUtil.SUCCESS_STATUS
         )
     }
 

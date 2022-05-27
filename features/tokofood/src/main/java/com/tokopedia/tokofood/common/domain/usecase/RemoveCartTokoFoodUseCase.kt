@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.RemoveCartTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -57,18 +58,18 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
         } else {
             val param = generateParams(params)
             val response =
-                repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.isSuccess()) {
-                emit(response)
+                repository.request<Map<String, Any>, RemoveCartTokoFoodResponse>(graphqlQuery(), param)
+            if (response.cartResponse.isSuccess()) {
+                emit(response.cartResponse)
             } else {
-                throw MessageErrorException(response.getMessageIfError())
+                throw MessageErrorException(response.cartResponse.getMessageIfError())
             }
         }
     }
 
     private fun getDummyResponse(productId: String): CartTokoFoodResponse {
         return CartTokoFoodResponse(
-            success = TokoFoodCartUtil.SUCCESS_STATUS,
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CartTokoFoodData(
                 carts = listOf(
                     CartTokoFood(

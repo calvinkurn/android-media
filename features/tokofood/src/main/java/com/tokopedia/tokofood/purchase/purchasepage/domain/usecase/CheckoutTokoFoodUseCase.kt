@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
@@ -16,6 +16,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
@@ -38,9 +39,9 @@ import javax.inject.Inject
 
 class CheckoutTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
-): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
+): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
 
     private val isDebug = false
 
@@ -260,7 +261,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
+    override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse())
@@ -272,16 +273,16 @@ class CheckoutTokoFoodUseCase @Inject constructor(
             val param = generateParams(additionalAttributes.generateString(), params)
             val response =
                 repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
-            if (response.isSuccess()) {
-                emit(response)
+            if (response.cartListTokofood.isSuccess()) {
+                emit(response.cartListTokofood)
             } else {
-                throw MessageErrorException(response.getMessageIfError())
+                throw MessageErrorException(response.cartListTokofood.getMessageIfError())
             }
         }
     }
 
-    private fun getDummyResponse(): CheckoutTokoFoodResponse {
-        return CheckoutTokoFoodResponse(
+    private fun getDummyResponse(): CheckoutTokoFood {
+        return CheckoutTokoFood(
             status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
