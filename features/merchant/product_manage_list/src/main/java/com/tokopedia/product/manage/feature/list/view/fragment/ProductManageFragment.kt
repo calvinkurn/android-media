@@ -1595,8 +1595,8 @@ open class ProductManageFragment :
             return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
-                val textLinkLength = 5
-                val textLinkStart = 1
+                val textLinkLength = TEXT_LINK_LENGTH_END
+                val textLinkStart = TEXT_LINK_LENGTH_START
                 spanText.setSpan(object : ClickableSpan() {
                     override fun onClick(v: View) {
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
@@ -3097,10 +3097,10 @@ open class ProductManageFragment :
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
 
         private const val START_SPAN_INDEX = 5
-
         private const val RV_TOP_POSITION = 0
-
         private const val TICKER_MARGIN_TOP = 8
+        private const val TEXT_LINK_LENGTH_START = 0
+        private const val TEXT_LINK_LENGTH_END = 5
     }
 
 
