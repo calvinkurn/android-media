@@ -27,6 +27,7 @@ class TokoFoodHomeIconsViewHolder(
         val LAYOUT = R.layout.item_tokofood_icons
 
         private const val GRID_ITEM = 4
+        private const val MAX_ICON_ITEM = 8
     }
 
     private val binding: ItemTokofoodIconsBinding? by viewBinding()
@@ -41,7 +42,7 @@ class TokoFoodHomeIconsViewHolder(
         val icons = element.listIcons
         iconRecyclerView = binding?.tokofoodIconRecyclerView
         if (!icons.isNullOrEmpty()){
-            adapter.submitList(element)
+            adapter.submitList(element.listIcons)
         }
         iconRecyclerView?.adapter = adapter
         iconRecyclerView?.layoutManager = GridLayoutManager(itemView.context, GRID_ITEM, GridLayoutManager.VERTICAL, false)
@@ -69,10 +70,10 @@ class TokoFoodHomeIconsViewHolder(
             return iconList.size
         }
 
-        fun submitList(list: TokoFoodHomeIconsUiModel) {
-            list.listIcons?.let {
+        fun submitList(list: List<DynamicIcon>) {
+            list?.let {
                 iconList.clear()
-                iconList.addAll(list.listIcons)
+                iconList.addAll(it.take(MAX_ICON_ITEM))
             }
         }
     }
