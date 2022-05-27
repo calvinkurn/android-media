@@ -24,6 +24,6 @@ data class HomeLeftCarouselAtcUiModel(
     }
 
     override fun equals(other: Any?): Boolean {
-        return (other as? HomeLeftCarouselAtcUiModel)?.id == id
+        return (other as? HomeLeftCarouselAtcUiModel)?.id == id && (other as? HomeLeftCarouselAtcUiModel)?.productList == productList
     }
 }

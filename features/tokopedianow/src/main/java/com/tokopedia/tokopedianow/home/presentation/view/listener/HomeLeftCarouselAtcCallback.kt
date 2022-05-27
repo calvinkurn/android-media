@@ -115,6 +115,8 @@ class HomeLeftCarouselAtcCallback (
     }
 
     override fun onProductCardSeeMoreClickListener(product: HomeLeftCarouselAtcProductCardSeeMoreUiModel) {
+        openAppLink(product.appLink)
+
         trackClickViewAllEvent(
             channelId = product.channelId,
             channelHeaderName = product.channelHeaderName
