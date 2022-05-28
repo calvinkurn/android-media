@@ -41,6 +41,7 @@ import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.topads.sdk.domain.model.Image
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -150,7 +151,7 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun addToWishListV2() {
+    fun `verify add to wishlistV2`(){
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
@@ -163,6 +164,22 @@ class TestRecommendationPageViewModel {
 
         verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify remove wishlistV2`(){
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommendation.productId.toString(), mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
