@@ -100,7 +100,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         })
         circularViewPager.setAdapter(adapter)
         circularViewPager.setItemList(list)
-        if (list.size > 5) {
+        if (list.size > SIZE_INDICATOR) {
             indicatorView.setIndicator(list.size)
         } else {
             indicatorView.setIndicator(list.size)
