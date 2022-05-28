@@ -89,6 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:visibility="invisible"
+                tools:visibility="visible"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginBottom="@dimen/unify_space_8"
                 android:text="@string/sfs_placeholder_remaining_quota"

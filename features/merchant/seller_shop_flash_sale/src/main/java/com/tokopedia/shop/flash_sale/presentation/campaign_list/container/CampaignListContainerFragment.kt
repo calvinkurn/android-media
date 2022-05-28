@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.seller_shop_flash_sale.R
 
 class CampaignListContainerFragment: BaseDaggerFragment() {
 
@@ -95,6 +96,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         setupView()
         setupTabs()
         observeTabsMeta()
+        observeRemainingQuota()
     }
 
     private fun observeTabsMeta() {
@@ -112,6 +114,20 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
 
+                    displayError(result.throwable)
+                }
+            }
+        }
+
+    }
+
+    private fun observeRemainingQuota() {
+        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayRemainingQuota(result.data.remainingCampaignQuota)
+                }
+                is Fail -> {
                     displayError(result.throwable)
                 }
             }
@@ -143,6 +159,16 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
             })
         }
     }
+
+    private fun displayRemainingQuota(remainingQuota : Int) {
+        val wording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            remainingQuota
+        )
+        binding?.tpgRemainingQuota?.text = wording
+        binding?.tpgRemainingQuota?.visible()
+    }
+
     private fun displayError(throwable: Throwable) {
         binding?.run {
             globalError.visible()
@@ -164,6 +190,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         binding?.groupContent?.gone()
         binding?.globalError?.gone()
         viewModel.getTabsMeta()
+        viewModel.getCampaignAttribute(4, 2022)
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit =

@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignAttribute
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
+import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListMetaUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 class CampaignListContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase
+    private val getSellerCampaignListMetaUseCase: GetSellerCampaignListMetaUseCase,
+    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
 ) : BaseViewModel(dispatchers.main) {
 
     private var selectedTabPosition = 0
@@ -22,6 +25,10 @@ class CampaignListContainerViewModel @Inject constructor(
     private val _tabsMeta = MutableLiveData<Result<List<TabMeta>>>()
     val tabsMeta: LiveData<Result<List<TabMeta>>>
         get() = _tabsMeta
+
+    private val _campaignAttribute = MutableLiveData<Result<CampaignAttribute>>()
+    val campaignAttribute: LiveData<Result<CampaignAttribute>>
+        get() = _campaignAttribute
 
     fun getTabsMeta() {
         launchCatchError(
@@ -45,4 +52,17 @@ class CampaignListContainerViewModel @Inject constructor(
         return selectedTabPosition
     }
 
+    fun getCampaignAttribute(month: Int, year: Int) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val attribute = getSellerCampaignAttributeUseCase.execute(month = month, year = year)
+                _campaignAttribute.postValue(Success(attribute))
+            },
+            onError = { error ->
+                _campaignAttribute.postValue(Fail(error))
+            }
+        )
+
+    }
 }
