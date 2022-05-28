@@ -235,6 +235,7 @@ class RecommendationLifeCycleAware constructor(
                     context?.let {
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, view)
                     }
+                    if (item.isTopAds) onClickTopAdsWishlistItem(item)
                 }
 
                 override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -267,6 +268,13 @@ class RecommendationLifeCycleAware constructor(
 
             })
         }
+    }
+
+    private fun onClickTopAdsWishlistItem(item: RecommendationItem) {
+        TopAdsUrlHitter(context).hitClickUrl(
+            fragment?.activity?.javaClass?.name, item.clickUrl+CLICK_TYPE_WISHLIST, item.productId.toString(),
+            item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
+        )
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
@@ -311,5 +319,6 @@ class RecommendationLifeCycleAware constructor(
         private const val REQUEST_FROM_PDP = 138
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads"
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
     }
 }

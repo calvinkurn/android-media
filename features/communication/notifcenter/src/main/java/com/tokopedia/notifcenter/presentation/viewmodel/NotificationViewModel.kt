@@ -346,31 +346,28 @@ class NotificationViewModel @Inject constructor(
     override fun addWishlistV2(
         model: RecommendationItem,
         actionListener: WishlistV2ActionListener) {
-        if (model.isTopAds) addWishListV2TopAds(model, actionListener)
+        doAddToWishlistV2(model.productId.toString(), actionListener)
+    }
 
-        addWishListV2Normal(model.productId.toString(), object : WishlistV2ActionListener {
-            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                actionListener.onErrorAddWishList(throwable, productId)
-            }
-
-            override fun onSuccessAddWishlist(
-                result: AddToWishlistV2Response.Data.WishlistAddV2,
-                productId: String
-            ) {
-                actionListener.onSuccessAddWishlist(result, productId)
-            }
-
-            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-            override fun onSuccessRemoveWishlist(
-                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                productId: String) {}
-        })
+    fun doAddToWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
+        addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
+        addWishListV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) {
+                    actionListener.onSuccessAddWishlist(result.data, productId)}
+            },
+            onError = {
+                actionListener.onErrorAddWishList(it, productId) })
     }
 
     override fun removeWishlistV2(
         model: RecommendationItem,
         actionListener: WishlistV2ActionListener) {
-        doRemoveWishlistV2(model.productId.toString(), actionListener)
+        deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+        deleteWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString()) },
+            onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
     fun clearNotifCounter(
@@ -411,55 +408,12 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    fun addWishListV2TopAds(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
-        launchCatchError(dispatcher.io,
-            {
-                val params = RequestParams.create()?.apply {
-                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-                }
-                val response = topAdsWishlishedUseCase.createObservable(params)
-                    .toBlocking().single()
-                if (response.data != null) {
-                    wishlistV2ActionListener.onSuccessAddWishlist(
-                        AddToWishlistV2Response.Data.WishlistAddV2(success = true),
-                        model.productId.toString())
-                }
-            },
-            {
-                wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
-            }
-        )
-    }
-
     fun addWishListNormal(
         productId: String,
         wishListActionListener: WishListActionListener
     ) {
         addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
     }
-
-    fun addWishListV2Normal(
-            productId: String,
-            callback: WishlistV2ActionListener
-    ) {
-        addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
-        addWishListV2UseCase.execute(
-                onSuccess = { result ->
-                    if (result is Success) {
-                        callback.onSuccessAddWishlist(result.data, productId)}
-                    },
-                onError = {
-                    callback.onErrorAddWishList(it, productId) })
-    }
-
-    private fun doRemoveWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, productId) },
-            onError = { actionListener.onErrorRemoveWishlist(it, productId) })
-    }
-
 
     fun loadTopAdsBannerData() {
         launchCatchError(

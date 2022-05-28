@@ -41,6 +41,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -69,6 +74,8 @@ class NotificationViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
 
@@ -91,8 +98,10 @@ class NotificationViewModelTest {
             topAdsImageViewUseCase,
             getRecommendationUseCase,
             addWishListUseCase,
-            topAdsWishlishedUseCase,
             removeWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
+            topAdsWishlishedUseCase,
             userSessionInterface,
             addToCartUseCase,
             notifOrderListUseCase,
@@ -662,6 +671,40 @@ class NotificationViewModelTest {
         verify(exactly = 1) {
             viewModelSpyk.addWishListNormal(recommItem.productId.toString(), any())
         }
+    }
+
+    @Test
+    fun `verify add to wishlistV2` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify remove wishlistV2`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test

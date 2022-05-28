@@ -696,7 +696,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     ) {
         context?.let { context ->
             if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                viewModel.addWishListV2Normal(product.productId,
+                viewModel.doAddToWishlistV2(product.productId,
                     object : WishlistV2ActionListener {
                         override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                             val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
@@ -712,6 +712,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                         ) {
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                            if (product.isTopads) {
+                                product.imageUrl
                             }
                         }
 
