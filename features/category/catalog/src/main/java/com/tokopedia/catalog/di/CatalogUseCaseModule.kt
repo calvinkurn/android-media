@@ -110,17 +110,19 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphQlRepository(@ApplicationContext repository: GraphqlRepository): GraphqlRepository {
+        return repository
+    }
 
     @CatalogScope
     @Provides
-    fun addWishListV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+    fun addWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @CatalogScope
     @Provides
-    fun deleteWishListV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun deleteWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 

@@ -25,11 +25,11 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase;
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase;
-import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase;
 
 import java.util.concurrent.TimeUnit;
 
