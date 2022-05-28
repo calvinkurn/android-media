@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
 import android.view.ViewStub
@@ -16,7 +17,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -25,7 +25,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
-import com.tokopedia.home.databinding.HomePopularKeywordBinding
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
@@ -46,6 +45,11 @@ class PopularKeywordViewHolder (val view: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
+        private const val ROTATE_TO_DEGREES = 360f
+        private const val PIVOT_X_VALUE = 0.5f
+        private const val PIVOT_Y_VALUE = 0.5f
+        private const val ROTATE_FROM_DEGREES = 0f
+        private const val ROTATE_DURATION = 500L
     }
 
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -59,10 +63,7 @@ class PopularKeywordViewHolder (val view: View,
     var channelSubtitle: TextView? = null
 
     private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
-    private val rotateToDegrees = 360f
-    private val pivotXValue = 0.5f
-    private val pivotYValue = 0.5f
-    private val rotateAnimation = RotateAnimation(0f, rotateToDegrees, Animation.RELATIVE_TO_SELF, pivotXValue, Animation.RELATIVE_TO_SELF, pivotYValue)
+    private val rotateAnimation = RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
     private val homeComponentDividerHeader = view.findViewById<DividerUnify>(R.id.home_component_divider_header)
     private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
@@ -70,7 +71,7 @@ class PopularKeywordViewHolder (val view: View,
     private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
 
     init{
-        rotateAnimation.duration = 500
+        rotateAnimation.duration = ROTATE_DURATION
         rotateAnimation.interpolator = LinearInterpolator()
         performanceMonitoring = PerformanceMonitoring()
     }
@@ -110,6 +111,7 @@ class PopularKeywordViewHolder (val view: View,
         performanceMonitoring = null
     }
 
+    @SuppressLint("ResourcePackage")
     private fun initStub(element: PopularKeywordListDataModel) {
         try {
             val channelTitleStub: View? = itemView.findViewById(R.id.channel_title)

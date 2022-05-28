@@ -41,7 +41,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         seeAllPromo.unlockFeature = true
         val labelColorHexString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.home_dms_color_banner_label_type))}"
         seeAllPromo.setLabelType(labelColorHexString)
-        seeAllPromo.opacityLevel = 0.9f
+        seeAllPromo.opacityLevel = SEE_ALL_PROMO_OPACITY
     }
 
     override fun bind(element: HomepageBannerDataModel) {
@@ -65,7 +65,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList = element.slides
             this.isCache = element.isCache
             element.slides?.let {
-                if (it.size > 5) {
+                if (it.size > SIZE_INDICATOR) {
                     indicatorView.setIndicator(it.size)
                 } else {
                     indicatorView.setIndicator(it.size)
@@ -148,5 +148,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_banner
+        private const val SEE_ALL_PROMO_OPACITY = 0.9f
+        private const val SIZE_INDICATOR = 5
     }
 }

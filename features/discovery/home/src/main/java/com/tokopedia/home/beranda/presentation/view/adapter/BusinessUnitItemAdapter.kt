@@ -54,9 +54,9 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
 
     private fun type(itemTab: HomeWidget.ContentItemTab?): Int {
         return when (itemTab?.templateId) {
-            1 -> SizeSmallBusinessViewHolder.LAYOUT
-            2 -> SizeMiddleBusinessViewHolder.LAYOUT
-            3 -> SizeLargeBusinessViewHolder.LAYOUT
+            TEMPLATE_ID_1 -> SizeSmallBusinessViewHolder.LAYOUT
+            TEMPLATE_ID_2 -> SizeMiddleBusinessViewHolder.LAYOUT
+            TEMPLATE_ID_3 -> SizeLargeBusinessViewHolder.LAYOUT
             else -> SizeSmallBusinessViewHolder.LAYOUT
         }
     }
@@ -72,4 +72,9 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
 
     private fun getItem(listPosition: Int): BusinessUnitItemDataModel = list[listPosition]
 
+    companion object {
+        private const val TEMPLATE_ID_1 = 1
+        private const val TEMPLATE_ID_2 = 2
+        private const val TEMPLATE_ID_3 = 3
+    }
 }

@@ -51,16 +51,13 @@ class BannerComponentViewHolder(itemView: View,
 
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var interval = 5000
-    private var currentPagePosition = 0
+    private var currentPagePosition = INITIAL_PAGE_POSITION
 
-    private val state_running = 0
-    private val state_paused = 1
-    private var autoScrollState = state_paused
+    private var autoScrollState = STATE_PAUSED
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
-        while (autoScrollState == state_running) {
-            delay(interval.toLong())
+        while (autoScrollState == STATE_RUNNING) {
+            delay(INTERVAL.toLong())
             autoScrollCoroutine()
         }
     }
@@ -141,16 +138,16 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun resumeAutoScroll() {
-        if (autoScrollState == state_paused) {
+        if (autoScrollState == STATE_PAUSED) {
             autoScrollLauncher()
-            autoScrollState = state_running
+            autoScrollState = STATE_RUNNING
         }
     }
 
     private fun pauseAutoScroll() {
-        if (autoScrollState == state_running) {
+        if (autoScrollState == STATE_RUNNING) {
             masterJob.cancelChildren()
-            autoScrollState = state_paused
+            autoScrollState = STATE_PAUSED
         }
     }
 
@@ -263,5 +260,9 @@ class BannerComponentViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
+        private const val INTERVAL = 5000
+        private const val STATE_RUNNING = 0
+        private const val STATE_PAUSED = 1
+        private const val INITIAL_PAGE_POSITION = 0
     }
 }
