@@ -47,18 +47,6 @@ class NotificationModule {
         return RemoveWishListUseCase(context)
     }
 
-    @Provides
-    @NotificationScope
-    fun addWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
-        return AddToWishlistV2UseCase(graphqlRepository)
-    }
-
-    @Provides
-    @NotificationScope
-    fun deleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
-        return DeleteWishlistV2UseCase(graphqlRepository)
-    }
-
     @NotificationScope
     @Provides
     internal fun provideNotificationCacheManager(
