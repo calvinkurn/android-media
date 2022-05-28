@@ -52,9 +52,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
-import kotlin.reflect.KFunction4
 
 /**
  * @author by yoasfs on 2019-09-18
