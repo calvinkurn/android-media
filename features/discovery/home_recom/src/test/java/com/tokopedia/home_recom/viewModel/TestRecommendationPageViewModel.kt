@@ -159,7 +159,7 @@ class TestRecommendationPageViewModel {
         }
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
-        viewModel.addWishlistV2(recommendation.productId.toString(), userSession.userId, recommendation.isTopAds, mockListener)
+        viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
 
         verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { addToWishlistV2UseCase.execute(any(), any()) }

@@ -366,32 +366,14 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun addWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener){
-        if(model.isTopAds){
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable) {
-                    actionListener.onErrorAddWishList(e, model.productId.toString())
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null) {
-                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true), model.productId.toString())
-                    }
-                }
+    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
+            onError = {
+                actionListener.onErrorAddWishList(it, productId)
             })
-        } else {
-            addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-            addToWishlistV2UseCase.execute(
-                onSuccess = { result ->
-                    if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
-                onError = {
-                    actionListener.onErrorAddWishList(it, model.productId.toString())
-                })
-        }
     }
 
     /**

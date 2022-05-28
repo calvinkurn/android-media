@@ -52,6 +52,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.T
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
@@ -94,6 +95,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 399
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         @SuppressLint("SyntheticAccessor")
         fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "", @FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = SimilarProductRecommendationFragment().apply {
@@ -527,7 +529,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         if(recommendationViewModel.isLoggedIn()){
             SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
             if(isAddWishlist){
-                recommendationViewModel.addWishlistV2(item, object : WishlistV2ActionListener{
+                recommendationViewModel.addWishlistV2(item.productId.toString(), object : WishlistV2ActionListener{
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                         val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
                         view?.let { v ->
@@ -543,6 +545,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                             }
+                        }
+
+                        if (item.isTopAds) {
+                            hitWishlistClickUrl(item)
                         }
                     }
 
@@ -649,6 +655,18 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         productCardOptionsModel.productPosition = position
         productCardOptionsModel.screenName = recommendationItem.header
         return productCardOptionsModel
+    }
+
+    private fun hitWishlistClickUrl(item: RecommendationItem) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+            )
+        }
     }
 
     override fun onDestroyView() {

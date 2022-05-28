@@ -537,7 +537,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             }
                         }
                         if (item.isTopAds) {
-                            hitWishlistTopadsClickUrl(item)
+                            hitWishlistTopadsClickUrl(
+                                clickUrl = item.clickUrl, productId = item.productId.toString(),
+                                productName = item.name, imageUrl = item.imageUrl)
                         }
                     }
 
@@ -592,15 +594,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
     }
 
-    private fun hitWishlistTopadsClickUrl(item: RecommendationItem) {
+    private fun hitWishlistTopadsClickUrl(clickUrl: String, productId: String, productName: String, imageUrl: String) {
         context?.let {
             TopAdsUrlHitter(it).hitClickUrl(
-                this::class.java.simpleName,
-                item.clickUrl+CLICK_TYPE_WISHLIST,
-                item.productId.toString(),
-                item.name,
-                item.imageUrl
-            )
+                this::class.java.simpleName, clickUrl+CLICK_TYPE_WISHLIST,
+                productId, productName, imageUrl)
         }
     }
 
@@ -751,31 +749,36 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 } else {
                     if (isUsingWishlistV2) {
-                        recommendationWidgetViewModel.addWishlistV2(productDetailData.id.toString(),
-                            productDetailData.clickUrl, productDetailData.isTopads, object : WishlistV2ActionListener{
-                                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                                    val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        recommendationWidgetViewModel.addWishlistV2(productDetailData.id.toString(), object : WishlistV2ActionListener{
+                            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                                val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                                }
+                            }
+
+                            override fun onSuccessAddWishlist(
+                                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                                productId: String
+                            ) {
+                                context?.let { context ->
                                     view?.let { v ->
-                                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                                     }
                                 }
-
-                                override fun onSuccessAddWishlist(
-                                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                                    productId: String
-                                ) {
-                                    context?.let { context ->
-                                        view?.let { v ->
-                                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-                                        }
-                                    }
+                                if (productDetailData.isTopads) {
+                                    hitWishlistTopadsClickUrl(
+                                        clickUrl = productDetailData.clickUrl, productId = productId,
+                                        productName = productDetailData.name, imageUrl = productDetailData.imageUrl
+                                    )
                                 }
+                            }
 
-                                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
 
-                                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
 
-                            })
+                        })
                     } else {
                         recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads, callback = { state: Boolean, throwable: Throwable? ->
                             callback(state, throwable)

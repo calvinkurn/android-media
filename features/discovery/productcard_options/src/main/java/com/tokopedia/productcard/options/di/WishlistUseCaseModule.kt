@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.productcard.options.ADD_REMOVE_WISHLIST_V2
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -47,7 +46,6 @@ internal class WishlistUseCaseModule {
 
     @ProductCardOptionsScope
     @Provides
-    @Named(ADD_REMOVE_WISHLIST_V2)
     fun provideFlagIsUsingWishlistV2(@ApplicationContext context: Context): Boolean {
         return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
     }
