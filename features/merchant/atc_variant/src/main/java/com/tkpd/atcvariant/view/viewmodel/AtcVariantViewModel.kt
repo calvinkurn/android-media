@@ -648,9 +648,4 @@ class AtcVariantViewModel @Inject constructor(
 
         _variantImagesData.postValue(productDetailGalleryData)
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        addToWishlistV2UseCase.cancelJobs()
-    }
 }
