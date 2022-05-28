@@ -227,10 +227,11 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
     private fun createFragments(tabs: List<TabMeta>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
+
         tabs.forEach { tab ->
             val fragment = CampaignListFragment.newInstance(
                 tab.name,
-                0,
+                tab.status.toIntArray(),
                 tab.totalCampaign
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }

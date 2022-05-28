@@ -15,6 +15,28 @@ infix fun View?.showError(throwable : Throwable) {
     Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
 }
 
+infix fun View?.showError(errorMessage : String) {
+    Toaster.build(this ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+}
+
+infix fun View?.showToaster(message : String) {
+    Toaster.build(
+        this ?: return,
+        message,
+        Toaster.LENGTH_LONG,
+        Toaster.TYPE_NORMAL
+    ).show()
+}
+
+fun View.enable() {
+    this.isEnabled = true
+}
+
+fun View.disable() {
+    this.isEnabled = false
+}
+
+
 fun View?.slideUp(duration: Int = 350) {
     this?.let {
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)

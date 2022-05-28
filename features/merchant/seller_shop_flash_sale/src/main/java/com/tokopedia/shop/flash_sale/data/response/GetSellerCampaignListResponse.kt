@@ -79,8 +79,26 @@ data class GetSellerCampaignListResponse(
             @SerializedName("thematic_participation")
             val thematicParticipation: Boolean = false,
             @SerializedName("use_upcoming_widget")
-            val useUpcomingWidget: Boolean = false
-        )
+            val useUpcomingWidget: Boolean = false,
+            @SerializedName("product_summary")
+            val productSummary: ProductSummary = ProductSummary()
+        ) {
+            data class ProductSummary(
+                @SerializedName("total_item")
+                val totalItem: Int = 0,
+                @SerializedName("sold_item")
+                val soldItem: Int = 0,
+                @SerializedName("reserved_product")
+                val reservedProduct: Int = 0,
+                @SerializedName("submitted_product")
+                val submittedProduct: Int = 0,
+                @SerializedName("deleted_product")
+                val deletedProduct: Int = 0,
+                @SerializedName("visible_product_count")
+                val visibleProductCount: Int = 0
+            )
+
+        }
 
         data class ResponseHeader(
             @SerializedName("processTime")

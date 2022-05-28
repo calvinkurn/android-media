@@ -5,25 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
+import com.tokopedia.shop.flash_sale.common.Constant.ZERO
+import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragment
+import com.tokopedia.shop.flash_sale.common.extension.showError
+import com.tokopedia.shop.flash_sale.common.extension.slideDown
+import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerViewModel
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
 import javax.inject.Inject
 
-class CampaignListFragment: BaseDaggerFragment() {
+class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
 
     companion object {
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
-        private const val BUNDLE_KEY_PRODUCT_COUNT = "product_count"
+        private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
@@ -34,14 +44,14 @@ class CampaignListFragment: BaseDaggerFragment() {
         @JvmStatic
         fun newInstance(
             campaignStatusName : String,
-            campaignStatusId: Int,
-            productCount : Int,
+            campaignStatusIds: IntArray,
+            campaignCount : Int,
         ): CampaignListFragment {
             val fragment = CampaignListFragment()
             fragment.arguments = Bundle().apply {
                 putString(BUNDLE_KEY_CAMPAIGN_STATUS_NAME, campaignStatusName)
-                putInt(BUNDLE_KEY_CAMPAIGN_STATUS_ID, campaignStatusId)
-                putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
+                putIntArray(BUNDLE_KEY_CAMPAIGN_STATUS_ID, campaignStatusIds)
+                putInt(BUNDLE_KEY_CAMPAIGN_COUNT, campaignCount)
             }
             return fragment
         }
@@ -52,16 +62,23 @@ class CampaignListFragment: BaseDaggerFragment() {
         arguments?.getString(BUNDLE_KEY_CAMPAIGN_STATUS_NAME).orEmpty()
     }
 
-    private val campaignStatusId by lazy {
-        arguments?.getInt(BUNDLE_KEY_CAMPAIGN_STATUS_ID).orZero()
+    private val campaignStatusIds by lazy {
+        arguments?.getIntArray(BUNDLE_KEY_CAMPAIGN_STATUS_ID)
     }
 
-    private val productCount by lazy {
-        arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
+    private val totalCampaign by lazy {
+        arguments?.getInt(BUNDLE_KEY_CAMPAIGN_COUNT).orZero()
+    }
+
+    private val campaignAdapter by lazy {
+        CampaignAdapter(
+            onCampaignClicked,
+            onOverflowMenuClicked
+        )
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignListBinding>()
-
+    private var isFirstLoad = true
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -93,8 +110,8 @@ class CampaignListFragment: BaseDaggerFragment() {
         observeCampaigns()
         observeCampaignAttribute()
         observeCampaignCreation()
-        viewModel.getCampaigns(10, 1, emptyList(), "", false)
-        viewModel.getCampaignAttribute(5, 2022)
+        
+        //viewModel.getCampaignAttribute(5, 2022)
         /*viewModel.createCampaign(
             "campaign-test",
             GregorianCalendar(2022, 7, 10, 13, 0, 0).time,
@@ -108,12 +125,13 @@ class CampaignListFragment: BaseDaggerFragment() {
 
     private fun observeCampaigns() {
         viewModel.campaigns.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
-                    val campaigns = result.data
+                    displayCampaigns(result.data)
                 }
                 is Fail -> {
-
+                    binding?.root showError result.throwable
+                    binding?.searchBar?.gone()
                 }
             }
         }
@@ -153,4 +171,120 @@ class CampaignListFragment: BaseDaggerFragment() {
         this.onScrollUp = onScrollUp
     }
 
+    private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
+
+    }
+
+
+    private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
+
+    }
+
+    override fun createAdapter(): CampaignAdapter {
+        return campaignAdapter
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView? {
+        return binding?.recyclerView
+    }
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return null
+    }
+
+    override fun getPerPage(): Int {
+        return PAGE_SIZE
+    }
+
+    override fun addElementToAdapter(list: List<CampaignUiModel>) {
+        adapter?.addData(list)
+    }
+
+    override fun loadData(page: Int) {
+        binding?.globalError?.gone()
+
+
+        viewModel.getCampaigns(10, page * 10, campaignStatusIds?.toList().orEmpty(), "", false)
+
+    }
+
+    override fun clearAdapterData() {
+        adapter?.clearData()
+    }
+
+    override fun onShowLoading() {
+        adapter?.showLoading()
+    }
+
+    override fun onHideLoading() {
+        adapter?.hideLoading()
+    }
+
+    override fun onDataEmpty() {
+    }
+
+    override fun onGetListError(message: String) {
+        displayError(message)
+    }
+
+
+    private fun handleScrollDownEvent() {
+        binding?.searchBar.slideDown()
+
+
+    }
+
+    private fun handleScrollUpEvent() {
+        binding?.searchBar.slideUp()
+
+
+    }
+
+    private fun displayCampaigns(data: CampaignMeta) {
+        if (data.totalCampaign == ZERO) {
+            handleEmptyState(data.totalCampaign)
+        } else {
+            if (isFirstLoad) {
+                binding?.searchBar?.visible()
+            }
+            renderList(data.campaigns, data.campaigns.size == getPerPage())
+        }
+
+        isFirstLoad = false
+    }
+
+    private fun handleEmptyState(totalCampaign : Int) {
+        if (totalCampaign == ZERO) {
+            showEmptyState()
+        } else {
+            hideEmptyState()
+        }
+    }
+
+    private fun displayError(errorMessage: String) {
+        binding?.run {
+            globalError.visible()
+            globalError.setType(GlobalError.SERVER_ERROR)
+            globalError.setActionClickListener { loadInitialData() }
+            root showError errorMessage
+        }
+
+    }
+
+    private fun showEmptyState() {
+        val title = getString(R.string.sfs_no_campaign_title)
+        val description = getString(R.string.sfs_no_campaign_description)
+        
+        binding?.searchBar?.gone()
+        binding?.recyclerView?.gone()
+
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
+    }
+
+    private fun hideEmptyState() {
+        binding?.emptyState?.gone()
+    }
 }

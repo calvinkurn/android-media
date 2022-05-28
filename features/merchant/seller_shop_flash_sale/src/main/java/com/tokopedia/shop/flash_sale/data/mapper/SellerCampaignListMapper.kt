@@ -2,46 +2,38 @@ package com.tokopedia.shop.flash_sale.data.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.shop.flash_sale.common.constant.DateConstant
+import com.tokopedia.shop.flash_sale.common.extension.formatTo
+import com.tokopedia.shop.flash_sale.common.extension.toDate
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
-import com.tokopedia.shop.flash_sale.domain.entity.Campaign
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import javax.inject.Inject
 
 class SellerCampaignListMapper @Inject constructor() {
 
     fun map(data: GetSellerCampaignListResponse): CampaignMeta {
         val campaigns = data.getSellerCampaignList.campaign.map {
-            Campaign(
-                it.bitmaskIsSet,
+            CampaignUiModel(
                 it.campaignId.toLongOrZero(),
                 it.campaignName,
-                it.campaignTypeId.toIntOrZero(),
-                it.campaignTypeName,
-                it.coverImg,
-                it.endDate,
-                it.etalasePrefix,
-                it.finishedWidgetTime,
-                it.finishedWidgetTimeInMins,
-                it.isCampaignRelation,
-                it.isCampaignRuleSubmit,
+                it.endDate.toDate().formatTo(DateConstant.DATE),
+                it.endDate.toDate().formatTo(DateConstant.TIME),
                 it.isCancellable,
                 it.isShareable,
-                it.isUniqueBuyer,
-                it.maxProductSubmission,
                 it.notifyMeCount,
-                it.paymentType,
-                it.redirectUrl,
-                it.redirectUrlApp,
-                it.reviewEndDate,
-                it.reviewStartDate,
-                it.startDate,
-                it.statusDetail,
+                it.startDate.toDate().formatTo(DateConstant.DATE),
+                it.startDate.toDate().formatTo(DateConstant.TIME),
                 it.statusId.toIntOrZero(),
-                it.statusText,
-                it.submissionEndDate,
-                it.submissionStartDate,
                 it.thematicParticipation,
-                it.useUpcomingWidget
+                CampaignUiModel.ProductSummary(
+                    it.productSummary.totalItem,
+                    it.productSummary.soldItem,
+                    it.productSummary.reservedProduct,
+                    it.productSummary.submittedProduct,
+                    it.productSummary.deletedProduct,
+                    it.productSummary.visibleProductCount
+                )
             )
         }
         return CampaignMeta(

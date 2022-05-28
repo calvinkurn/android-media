@@ -4,5 +4,5 @@ data class CampaignMeta(
     val totalCampaign : Int,
     val totalCampaignActive: Int,
     val totalCampaignFinished : Int,
-    val campaigns : List<Campaign>
+    val campaigns : List<CampaignUiModel>
 )
