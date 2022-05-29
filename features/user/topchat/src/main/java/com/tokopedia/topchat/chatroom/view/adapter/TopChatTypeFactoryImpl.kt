@@ -36,7 +36,6 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl constructor(
@@ -47,7 +46,6 @@ open class TopChatTypeFactoryImpl constructor(
     private val imageDualAnnouncementListener: DualAnnouncementListener,
     private val voucherListener: TopChatVoucherListener,
     private val invoiceThumbnailListener: InvoiceThumbnailListener,
-    private val quotationListener: QuotationViewHolder.QuotationListener,
     private val deferredAttachment: DeferredViewHolderAttachment,
     private val commonListener: CommonViewHolderListener,
     private val searchListener: SearchListener,
@@ -108,10 +106,6 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun type(roomSettingFraudAlertUiModel: RoomSettingFraudAlertUiModel): Int {
         return RoomSettingFraudAlertViewHolder.LAYOUT
-    }
-
-    override fun type(quotationViewModel: QuotationUiModel): Int {
-        return QuotationViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EmptyModel): Int {
@@ -255,11 +249,6 @@ open class TopChatTypeFactoryImpl constructor(
                 productAttachmentListener
             )
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
-            QuotationViewHolder.LAYOUT -> QuotationViewHolder(
-                parent,
-                chatLinkHandlerListener,
-                quotationListener
-            )
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(
                 parent,

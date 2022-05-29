@@ -16,5 +16,13 @@
             android:name=".list.ProductCardListActivityTest"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name=".grid.ProductCardGridViewStubActivityTest"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".list.ProductCardListViewStubActivityTest"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>

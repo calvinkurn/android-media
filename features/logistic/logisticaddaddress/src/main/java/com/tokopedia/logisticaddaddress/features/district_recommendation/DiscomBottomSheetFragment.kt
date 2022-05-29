@@ -195,7 +195,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
-    override fun showToasterError() {
+    override fun showToasterError(message: String) {
         // no-op
     }
 
