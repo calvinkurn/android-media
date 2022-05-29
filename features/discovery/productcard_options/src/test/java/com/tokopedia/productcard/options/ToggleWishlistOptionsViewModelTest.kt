@@ -7,14 +7,9 @@ import com.tokopedia.productcard.options.testutils.error
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.CapturingSlot
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.slot
+import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
@@ -87,9 +82,10 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         val userId = "123456"
         val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
 
+        `Given using wishlistV2 is true`()
         `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
         `Given user is logged in`(userId)
-        `Given add wishlistV2 GQL will be successful`(userId)
+        `Given add wishlistV2 GQL will be successful`()
 
         `When Click save to wishlist`()
 
@@ -112,15 +108,17 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         }
     }
 
-    private fun `Given add wishlistV2 GQL will be successful`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+    private fun `Given add wishlistV2 GQL will be successful`() {
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
-        coEvery {
-            addToWishlistV2UseCase.setParams(productId, userId)
-            addToWishlistV2UseCase.executeOnBackground()
-        }.coAnswers {
-            Success(AddToWishlistV2Response.Data.WishlistAddV2(success = true))
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
         }
+    }
+
+    private fun `Given using wishlistV2 is true`() {
+        setIsUsingWishlistV2(true)
     }
 
     private fun `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`() {
@@ -162,9 +160,10 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         val userId = "123456"
         val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
 
+        `Given using wishlistV2 is true`()
         `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
         `Given user is logged in`(userId)
-        `Given add wishlistV2 GQL will fail`(userId)
+        `Given add wishlistV2 GQL will fail`()
 
         `When Click save to wishlist`()
 
@@ -182,14 +181,12 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         }
     }
 
-    private fun `Given add wishlistV2 GQL will fail`(userId: String) {
-        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+    private fun `Given add wishlistV2 GQL will fail`() {
+        val mockThrowable = mockk<Throwable>("fail")
 
-        coEvery {
-            addToWishlistV2UseCase.setParams(productId, userId)
-            addToWishlistV2UseCase.executeOnBackground()
-        }.coAnswers {
-            Success(AddToWishlistV2Response.Data.WishlistAddV2(success = false))
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
     }
 

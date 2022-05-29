@@ -25,7 +25,7 @@ internal open class ProductCardOptionsViewModelTestFixtures {
     protected val topAdsWishlistUseCase = mockk<UseCase<Boolean>>(relaxed = true)
     protected val addToCartUseCase = mockk<UseCase<AddToCartDataModel>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
-    protected val isUsingWishlistV2 = true
+    protected var isUsingWishlistV2 = false
     protected lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
 
     protected open fun createProductCardOptionsViewModel(productCardOptionsModel: ProductCardOptionsModel?) {
@@ -41,5 +41,9 @@ internal open class ProductCardOptionsViewModelTestFixtures {
                 userSession,
                 isUsingWishlistV2
         )
+    }
+
+    protected open fun setIsUsingWishlistV2(isWishlistV2: Boolean) {
+        isUsingWishlistV2 = isWishlistV2
     }
 }
