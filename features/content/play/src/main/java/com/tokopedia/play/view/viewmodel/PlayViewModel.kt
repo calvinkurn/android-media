@@ -1384,14 +1384,11 @@ class PlayViewModel @AssistedInject constructor(
             val cal = Calendar.getInstance().apply {
                 add(Calendar.MINUTE, 2)
             }
-            val interactive = InteractiveUiModel.Quiz(
-                status = InteractiveUiModel.Quiz.Status.Ongoing(cal),
+            val interactive = InteractiveUiModel.Giveaway(
+                status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
                 waitingDuration = 5000L,
                 id = "1261",
                 title = "GA sendal",
-                reward = "a",
-                listOfChoices = listOf(QuizChoicesUiModel(id = "1", text = "APA", type = PlayQuizOptionState.Default('a')),
-                    QuizChoicesUiModel(id = "2", text = "YA", type = PlayQuizOptionState.Default('b')))
             )
             setupInteractive(interactive)
         }) {
