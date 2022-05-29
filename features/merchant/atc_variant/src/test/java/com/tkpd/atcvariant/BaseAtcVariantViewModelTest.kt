@@ -19,6 +19,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -48,6 +49,9 @@ abstract class BaseAtcVariantViewModelTest {
     lateinit var addWishListUseCase: AddWishListUseCase
 
     @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
 
     @RelaxedMockK
@@ -62,7 +66,9 @@ abstract class BaseAtcVariantViewModelTest {
     val viewModel by lazy {
         AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
                 addToCartUseCase, addToCartOcsUseCase,
-                addToCartOccUseCase, addWishListUseCase, updateCartUseCase, deleteCartUseCase, toggleFavoriteUseCase)
+                addToCartOccUseCase, addWishListUseCase,
+                addToWishlistV2UseCase, updateCartUseCase,
+                deleteCartUseCase, toggleFavoriteUseCase)
     }
 
     @Before
