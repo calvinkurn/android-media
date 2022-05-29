@@ -268,9 +268,11 @@ class PdpDialogViewModelTest {
 
     @Test
     fun `verify add to wishlistv2 returns success` () {
+        prepareViewModel()
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
+        every { userSessionInterface.userId} returns "1"
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
             firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
@@ -279,15 +281,17 @@ class PdpDialogViewModelTest {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addToWishlistV2(recommendationItem, mockListener)
 
-        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
         coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
     fun `verify add to wishlistv2 returns fail` () {
+        prepareViewModel()
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val mockThrowable = mockk<Throwable>("fail")
 
+        every { userSessionInterface.userId} returns "1"
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -296,15 +300,17 @@ class PdpDialogViewModelTest {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addToWishlistV2(recommendationItem, mockListener)
 
-        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
         coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
     fun `verify remove wishlistV2 returns success`(){
+        prepareViewModel()
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
+        every { userSessionInterface.userId} returns "1"
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
             firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
@@ -313,15 +319,17 @@ class PdpDialogViewModelTest {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeFromWishlistV2(recommendationItem, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
         coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 
     @Test
     fun `verify remove wishlistV2 returns fail`(){
+        prepareViewModel()
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val mockThrowable = mockk<Throwable>("fail")
 
+        every { userSessionInterface.userId} returns "1"
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -330,7 +338,7 @@ class PdpDialogViewModelTest {
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeFromWishlistV2(recommendationItem, mockListener)
 
-        verify { deleteWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        verify { deleteWishlistV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
         coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 }
