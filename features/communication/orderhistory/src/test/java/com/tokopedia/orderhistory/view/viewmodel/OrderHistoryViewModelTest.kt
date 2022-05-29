@@ -102,7 +102,7 @@ class OrderHistoryViewModelTest {
     }
 
     @Test
-    fun addToWishListV2() {
+    fun `addToWishListV2 returns Success`() {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
         val productId = "1"
         val userId = "1234"
@@ -117,6 +117,23 @@ class OrderHistoryViewModelTest {
         viewModel.addToWishListV2(productId, userId, mockListener)
 
         verify { addToWishlistV2UseCase.setParams(productId, userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addToWishListV2(productId, "", mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, "") }
         coVerify { addToWishlistV2UseCase.execute(any(), any()) }
     }
 
