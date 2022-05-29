@@ -5,7 +5,7 @@ object AddEditProductDraftConstant {
     const val DB_VERSION_7 = 7
     const val DB_VERSION_8 = 8
     const val DB_VERSION_9 = 9
-    const val DB_TABLE = "ProductDraftDataBase"
+    const val DB_TABLE = "product_draft"
     const val DB_AUTOGENERATE = true
     const val DB_COLUMN_DATA = "data"
     const val DB_COLUMN_IS_UPLOADING = "is_uploading"
