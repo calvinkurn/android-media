@@ -13,7 +13,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.data = json
         draft.isUploading = isUploading
         draft.shopId = shopId
-        draft.version = AddEditProductDraftConstant.DB_VERSION_9
+        draft.version = AddEditProductDraftConstant.DB_VERSION_10
         return draftDao.insertDraft(draft)
     }
 
@@ -49,7 +49,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         val draft = getDraft(productId) ?: AddEditProductDraftEntity()
         draft.apply {
             this.data = data
-            this.version =AddEditProductDraftConstant.DB_VERSION_9
+            this.version =AddEditProductDraftConstant.DB_VERSION_10
         }
         draftDao.updateDraft(draft)
         return productId
@@ -60,7 +60,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.apply {
             this.data = data
             this.isUploading = isUploading
-            this.version = AddEditProductDraftConstant.DB_VERSION_9
+            this.version = AddEditProductDraftConstant.DB_VERSION_10
         }
         draftDao.updateDraft(draft)
         return productId

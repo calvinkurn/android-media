@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditP
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.entity.UploadStatusEntity
 
-@Database(entities = [AddEditProductDraftEntity::class, UploadStatusEntity::class], version = AddEditProductDraftConstant.DB_VERSION_9, exportSchema = false)
+@Database(entities = [AddEditProductDraftEntity::class, UploadStatusEntity::class], version = AddEditProductDraftConstant.DB_VERSION_10, exportSchema = false)
 abstract class AddEditProductDraftDb : RoomDatabase(){
 
     abstract fun getDraftDao(): AddEditProductDraftDao

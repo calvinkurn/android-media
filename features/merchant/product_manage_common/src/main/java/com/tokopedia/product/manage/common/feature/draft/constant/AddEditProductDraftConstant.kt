@@ -2,9 +2,7 @@ package com.tokopedia.product.manage.common.feature.draft.constant
 
 object AddEditProductDraftConstant {
     const val DB_NAME = "tkpd_seller.db"
-    const val DB_VERSION_7 = 7
-    const val DB_VERSION_8 = 8
-    const val DB_VERSION_9 = 9
+    const val DB_VERSION_10 = 10
     const val DB_TABLE = "product_draft"
     const val DB_AUTOGENERATE = true
     const val DB_COLUMN_DATA = "data"
