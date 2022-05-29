@@ -730,7 +730,6 @@ open class ProductManageFragment :
         observe(viewModel.uploadStatus) {
             if (it.status == UploadStatusType.STATUS_DONE.name) {
                 viewModel.getPopupsInfo(it.productId)
-                shouldScrollToTop = true
                 getFiltersTab(withDelay = true)
                 getProductList(withDelay = true, isRefresh = true)
                 viewModel.clearUploadStatus()
