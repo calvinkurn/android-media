@@ -60,6 +60,7 @@
             >
 
             <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iv_tap"
                 android:layout_width="@dimen/play_giveaway_tap_icon_size"
                 android:layout_height="@dimen/play_giveaway_tap_icon_size"
                 android:layout_gravity="center"
