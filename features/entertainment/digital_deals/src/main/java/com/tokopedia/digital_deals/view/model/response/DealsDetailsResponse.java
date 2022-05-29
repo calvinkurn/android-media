@@ -56,6 +56,7 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("mrp")
     @Expose
     private int mrp;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
     private int salesPrice;
