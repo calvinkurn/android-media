@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
+<com.tokopedia.unifycomponents.CardUnify2
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:card_type="border"
-    android:elevation="0dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
@@ -40,4 +39,4 @@
 
     </LinearLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>
+</com.tokopedia.unifycomponents.CardUnify2>
