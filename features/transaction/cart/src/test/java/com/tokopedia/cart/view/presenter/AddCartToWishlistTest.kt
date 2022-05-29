@@ -2,8 +2,12 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.every
-import io.mockk.verify
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import org.junit.Test
 import rx.Observable
 
@@ -105,4 +109,74 @@ class AddCartToWishlistTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processAddToWishlistV2(productId, userSessionInterface.userId, mockListener)
+
+        verify { addToWishListV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { addToWishListV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processAddToWishlistV2(productId, userSessionInterface.userId, mockListener)
+
+        verify { addToWishListV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishListV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(
+                Success(resultWishlistRemoveV2)
+            )
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processRemoveFromWishlistV2(productId, userSessionInterface.userId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processRemoveFromWishlistV2(productId, userSessionInterface.userId, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+    }
 }
