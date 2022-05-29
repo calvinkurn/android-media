@@ -35,12 +35,12 @@ import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapt
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 class PdpGamificationView : LinearLayout {
@@ -62,7 +62,7 @@ class PdpGamificationView : LinearLayout {
     var shopId = ""
     var userId: String? = null
     var errorListener: PdpErrorListener? = null
-
+    private val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -295,6 +295,7 @@ class PdpGamificationView : LinearLayout {
 
                             override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, this@PdpGamificationView)
+                                if (item.isTopAds) hitWishlistClickUrl(item)
                             }
 
                             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -322,6 +323,18 @@ class PdpGamificationView : LinearLayout {
             }
         }
         return listener
+    }
+
+    private fun hitWishlistClickUrl(item: RecommendationItem) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+            )
+        }
     }
 
     private fun prepareShimmer() {

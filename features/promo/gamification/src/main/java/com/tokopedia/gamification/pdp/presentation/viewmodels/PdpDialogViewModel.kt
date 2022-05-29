@@ -72,20 +72,19 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         model: RecommendationItem,
         actionListener: WishlistV2ActionListener
     ) {
-        if (model.isTopAds) {
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, getSubscriberV2(actionListener, model.productId.toString()))
-        } else {
-            doAddWishlistV2(model, actionListener)
-        }
+        addToWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
+            onError = {
+                actionListener.onErrorAddWishList(it, model.productId.toString())})
     }
 
     private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, getWishListActionListener(callback))
     }
 
-    private fun getWishListActionListener(callback: ((Boolean, Throwable?) -> Unit)): WishListActionListener {
+    fun getWishListActionListener(callback: ((Boolean, Throwable?) -> Unit)): WishListActionListener {
         return object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 callback.invoke(false, Throwable(errorMessage))
@@ -103,15 +102,6 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
                 // do nothing
             }
         }
-    }
-
-    private fun doAddWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
-            onError = {
-                actionListener.onErrorAddWishList(it, model.productId.toString())})
     }
 
     fun getSubscriber(callback: ((Boolean, Throwable?) -> Unit)): Subscriber<WishlistModel> {
@@ -148,7 +138,7 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         }
     }
 
-    private fun getWishListActionListenerForRemoveFromWishList(wishlistCallback: (((Boolean, Throwable?) -> Unit))):WishListActionListener{
+    fun getWishListActionListenerForRemoveFromWishList(wishlistCallback: (((Boolean, Throwable?) -> Unit))):WishListActionListener{
         return object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
