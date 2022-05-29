@@ -253,12 +253,16 @@ class PdpDialogViewModelTest {
     fun testOnCleared(){
         prepareViewModel()
         every { recommendationProductUseCase.unsubscribe() } just runs
+        every { addToWishlistV2UseCase.cancelJobs() } just runs
+        every { deleteWishlistV2UseCase.cancelJobs() } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")
         method.isAccessible = true
         method.invoke(viewModel)
 
         verify { recommendationProductUseCase.unsubscribe() }
+        verify { addToWishlistV2UseCase.cancelJobs() }
+        verify { deleteWishlistV2UseCase.cancelJobs() }
     }
 
     @After
