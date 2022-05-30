@@ -4,16 +4,14 @@ import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderbo
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.ui.*
-import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import javax.inject.Inject
 
 /**
  * Created by jegul on 02/07/21
  */
-class PlayInteractiveLeaderboardMapper @Inject constructor() {
-
-    private val decodeHtml = DefaultHtmlTextTransformer()
+class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
 
     /***
      * New leaderboard

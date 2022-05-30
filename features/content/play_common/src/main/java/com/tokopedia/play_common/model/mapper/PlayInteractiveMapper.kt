@@ -5,7 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -14,9 +14,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class PlayInteractiveMapper @Inject constructor() {
-
-    private val decodeHtml = DefaultHtmlTextTransformer()
+class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
         val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong())
