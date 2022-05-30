@@ -39,6 +39,7 @@ object TrackingConstant {
     const val PM_PRO_ACTIVATION_PAGE = "PM Pro Activation Page"
 
     const val IMPRESSION_PM_PRO_LEARN_MORE = "impression pelajari selengkapnya PM Pro"
+    const val IMPRESSION_FEE_SERVICE= "impression biaya layanan"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT_PRO = "click upgrade power merchant pro"
@@ -65,10 +66,14 @@ object TrackingConstant {
     const val ACTION_CLICK_STOP_PM_BECOME_PM = "click stop power merchant - become pm"
     const val ACTION_CLICK_STOP_PM_CONFIRM_TO_STOP = "stop power merchant - confirm to stop"
     const val ACTION_CLICK_DETAIL_TERM_MEMBERSHIP = "click lihat detail - syarat keanggotaan"
-    const val ACTION_CLICK_LEARN_MORE_PM = "click pelajari power merchant selengkapnya - keuntungan"
+    const val ACTION_CLICK_LEARN_MORE_PM_BENEFIT = "click pelajari power merchant selengkapnya - keuntungan"
+    const val ACTION_CLICK_LEARN_MORE_PM = "click pelajari selengkapnya PM Pro"
     const val ACTION_CLICK_SEE_CATEGORY = "click lihat kategori"
+    const val ACTION_CLICK_PROGRESS_BAR = "click progress bar"
+    const val ACTION_CLICK_FEE_SERVICE = "click biaya layanan"
 
     const val EVENT_CLICK_PG = "clickPG"
+    const val VIEW_PG_IRIS= "viewPGIris"
 
     fun getPowerMerchantCategory(): String = if (GlobalConfig.isSellerApp()) {
         "$CATEGORY_SELLER_APP - $POWER_MERCHANT_PRO"

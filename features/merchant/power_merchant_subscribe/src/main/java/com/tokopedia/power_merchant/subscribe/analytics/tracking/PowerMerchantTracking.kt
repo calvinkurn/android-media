@@ -308,7 +308,7 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.CLICK_LEARN_MORE_PM_PRO,
-            label = getEventLabelCTAPmUpgrade(shopScore)
+            label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
         event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
@@ -320,6 +320,17 @@ class PowerMerchantTracking @Inject constructor(
             event = TrackingConstant.EVENT_CLICK_PG,
             category = TrackingConstant.getPowerMerchantCategory(),
             action = TrackingConstant.ACTION_CLICK_DETAIL_TERM_MEMBERSHIP,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickLearnMorePMBenefit(shopScore:String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.ACTION_CLICK_LEARN_MORE_PM_BENEFIT,
             label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
@@ -348,20 +359,63 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventImpressUpsellPmPro(shopScore: String) {
-        val event = createEventMapPmPro(
-            event = TrackingConstant.VIEW_POWER_MERCHANT_IRIS,
+
+    fun sendEventClickProgressBar(currentGrade:String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_PROGRESS_BAR,
             category = TrackingConstant.getPowerMerchantCategory(),
-            action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
-            label = getEventLabelCTAPmUpgrade(shopScore)
+            label = currentGrade
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickFeeService(shopScore: String) {
+        val event = createEvent(
+            event = TrackingConstant.EVENT_CLICK_PG,
+            action = TrackingConstant.ACTION_CLICK_FEE_SERVICE,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventImpressFeeService(shopScore: String) {
+        val event = createEventMapPmPro(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.IMPRESSION_FEE_SERVICE,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
         )
 
         event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
         sendEvent(event)
     }
 
-    private fun getEventLabelCTAPmUpgrade(shopScore: String): String {
-        return "${TrackingConstant.SHOP_TYPE}: ${getShopStatus()} - ${TrackingConstant.SHOP_SCORE}: $shopScore"
+    fun sendEventImpressUpliftPmPro(shopScore: String) {
+        val event = createEventMapPmPro(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        sendEvent(event)
+    }
+
+    fun sendEventImpressUpsellPmPro(shopScore: String) {
+        val event = createEventMapPmPro(
+            event = TrackingConstant.VIEW_POWER_MERCHANT_IRIS,
+            category = TrackingConstant.getPowerMerchantCategory(),
+            action = TrackingConstant.IMPRESSION_PM_PRO_LEARN_MORE,
+            label = getLabelWithShopStatusAndShopScore(shopScore)
+        )
+
+        event[TrackingConstant.KEY_PAGE_SOURCE] = TrackingConstant.PM_PRO_ACTIVATION_PAGE
+        sendEvent(event)
     }
 
     private fun getShopStatus(): String {
@@ -375,8 +429,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     private fun getLabelWithShopStatusAndShopScore(shopScore: String) =
-        "shop_type: ${getShopStatus()} - shop_score: $shopScore"
-
+        "${TrackingConstant.SHOP_TYPE}: ${getShopStatus()} - ${TrackingConstant.SHOP_SCORE}: $shopScore"
 
     private fun createEventMapPmPro(
         event: String, category: String,

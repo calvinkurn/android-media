@@ -642,7 +642,7 @@ open class PowerMerchantSubscriptionFragment :
             )
         }
         widgets.add(WidgetDividerUiModel)
-        widgets.add(WidgetFeeServiceUiModel)
+        widgets.add(WidgetFeeServiceUiModel(pmBasicInfo?.shopInfo?.shopScore.orZero()))
         if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)

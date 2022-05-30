@@ -97,7 +97,8 @@ class ShopGradeWidget(
         }
 
         binding?.chevron?.setOnClickListener {
-
+            listener.goToMembershipDetail(getPmProStatusInfo(element))
+            powerMerchantTracking.sendEventClickProgressBar(element.shopGrade)
         }
 
     }
