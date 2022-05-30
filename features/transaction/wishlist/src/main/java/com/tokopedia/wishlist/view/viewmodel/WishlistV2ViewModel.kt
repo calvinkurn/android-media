@@ -118,8 +118,13 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             try {
                 countDeletionWishlistV2UseCase.execute(
-                    onSuccess = {
-                        _countDeletionWishlistV2.value = it
+                    onSuccess = { result ->
+                        if (result is Success) {
+                            val successRemoved = result.data.data.successfullyRemovedItems
+                            val totalItems = result.data.data.totalItems
+                            println("++ getCountDeletionWishlistV2 - success removed = $successRemoved, totalItems = $totalItems")
+                            _countDeletionWishlistV2.value = result
+                        }
                     },
                     onError = {
                         _countDeletionWishlistV2.value = Fail(it)

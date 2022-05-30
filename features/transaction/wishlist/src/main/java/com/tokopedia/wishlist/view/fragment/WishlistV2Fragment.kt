@@ -30,7 +30,6 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -130,7 +129,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
     private val progressDeletionRunnable = Runnable {
-        getAndUpdateCountDeletionProgress()
+        getCountDeletionProgress()
     }
 
     private val wishlistViewModel by lazy {
@@ -247,6 +246,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
         observingAtc()
+        observingCountDeletion()
     }
 
     private fun observingWishlistV2() {
@@ -261,7 +261,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.showDeleteProgress) {
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
-                                handler.postDelayed(progressDeletionRunnable, DELAY_REFETCH_PROGRESS_DELETION)
+                                getCountDeletionProgress()
                             }
                             hideTotalLabel()
                             showStickyDeletionProgress()
@@ -693,9 +693,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    private fun getAndUpdateCountDeletionProgress() {
+    private fun getCountDeletionProgress() {
         wishlistViewModel.getCountDeletionWishlistV2()
-        observingCountDeletion()
     }
 
     override fun onPause() {
@@ -709,7 +708,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun observingCountDeletion() {
         if (wishlistV2Adapter.getCountData() > 0) {
-            wishlistViewModel.countDeletionWishlistV2.observeOnce(viewLifecycleOwner) { result ->
+            wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
                         if (result.data.status == OK) {
@@ -719,6 +718,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                     finishDeletionWidget(data)
                                 } else {
                                     updateDeletionWidget(data)
+                                    handler.postDelayed(progressDeletionRunnable, DELAY_REFETCH_PROGRESS_DELETION)
                                 }
                                 doRefresh()
                             } else {
@@ -848,7 +848,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         println("++ make widget deletion visible")
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
-            // wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(50, true)
         }
     }
 
@@ -1386,15 +1385,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.setCheckbox(position, isChecked)
         binding?.run {
             containerDelete.visible()
-            deleteButton.apply {
-                isEnabled = true
-                if (listExcludedBulkDelete.isNotEmpty()) {
-                    val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
-                    text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
-                    setOnClickListener {
-                        bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
-                        showPopupBulkDeleteConfirmation(countExistingRemovable)
-                    }
+            deleteButton.isEnabled = true
+
+            if (listExcludedBulkDelete.isNotEmpty()) {
+                val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
+                deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
+                deleteButton.setOnClickListener {
+                    bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
+                    showPopupBulkDeleteConfirmation(countExistingRemovable)
                 }
             }
         }

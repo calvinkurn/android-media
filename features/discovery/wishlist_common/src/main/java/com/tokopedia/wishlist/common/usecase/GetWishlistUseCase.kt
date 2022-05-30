@@ -21,7 +21,7 @@ import javax.inject.Inject
  */
 
 @Deprecated(
-    message = "This usecase will be deleted, use new dependency implementation projectOrAar(rootProject.ext.features.wishlistcommon)",
+    message = "This usecase will be deleted, use new dependency implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)",
     replaceWith = ReplaceWith("GetWishlistV2UseCase",
         imports = ["import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase"])
 )
