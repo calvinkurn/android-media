@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">upload_prescription</string>
+    <string name="label_prescription">Prescription</string>
+
+</resources>
