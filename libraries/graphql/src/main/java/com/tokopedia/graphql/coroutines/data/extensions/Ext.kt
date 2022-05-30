@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.extensions
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -29,8 +30,37 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
     return response.getSuccessData()
 }
 
+@Suppress("UNCHECKED_CAST")
+suspend inline fun <P, reified R> GraphqlRepository.request(
+    query: GqlQueryInterface,
+    params: P
+): R {
+    val variables = when (params) {
+        is Map<*, *> -> params as Map<String, Any>
+        is Unit -> emptyMap()
+        is GqlParam -> params.toMapParam()
+        else -> throw IllegalArgumentException(
+            "Graphql only supports Map<String, Any>, Unit, and GqlParam as the parameters"
+        )
+
+    }
+    val request = GraphqlRequest(query, R::class.java, variables)
+    val response = response(listOf(request))
+
+    return response.getSuccessData()
+}
+
 inline fun <P, reified R> GraphqlRepository.requestAsFlow(
     query: String,
+    params: P
+): Flow<R> {
+    return flow {
+        emit(request(query, params))
+    }
+}
+
+inline fun <P, reified R> GraphqlRepository.requestAsFlow(
+    query: GqlQueryInterface,
     params: P
 ): Flow<R> {
     return flow {

@@ -2,6 +2,7 @@ package com.tokopedia.catalog.viewholder.components
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
 import com.tokopedia.catalog.model.util.CatalogConstant
@@ -12,6 +13,10 @@ import kotlinx.android.synthetic.main.item_catalog_specification.view.*
 
 class SpecificationsViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     fun bind(model: TopSpecificationsComponentData?, catalogDetailListener : CatalogDetailListener) {
+        catalogDetailListener.sendWidgetImpressionEvent(
+            CatalogDetailAnalytics.ActionKeys.SPECIFICATION_WIDGET_IMPRESSION,
+            CatalogDetailAnalytics.ActionKeys.SPECIFICATION_WIDGET_IMPRESSION_ITEM_NAME,
+            adapterPosition)
         itemView.run {
             if(model != null){
                 specification_iv.show()

@@ -319,7 +319,15 @@ class UpdateCouponPeriodBottomSheet : BottomSheetUnify() {
         binding.btnSave.isLoading = true
         binding.btnSave.loadingText = getString(R.string.mvc_please_wait)
 
-        viewModel.updateCoupon()
+        val newPeriod = CouponInformation.Period(viewModel.getSelectedStartDate(), viewModel.getSelectedEndDate())
+
+        val coupon = viewModel.getCoupon() ?: return
+        val updatedCouponInformation = coupon.information.copy(period = newPeriod)
+        val updatedCoupon = coupon.copy(information = updatedCouponInformation)
+
+        val updatedCouponParentProductIds = coupon.productIds.map { it.parentProductId }
+
+        viewModel.updateCoupon(updatedCoupon, updatedCouponParentProductIds)
     }
 
 

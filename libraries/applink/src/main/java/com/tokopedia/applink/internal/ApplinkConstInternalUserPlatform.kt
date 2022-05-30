@@ -40,7 +40,6 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_PIN_COMPLETE = "${NEW_INTERNAL_USER}/add-pin-complete"
 
     // SettingFingerprintActivity
-
     const val BIOMETRIC_SETTING = "${NEW_INTERNAL_USER}/biometric-setting"
 
     // VerifyFingerprintActivity
@@ -52,8 +51,14 @@ object ApplinkConstInternalUserPlatform {
     // InactivePhoneActivity
     const val CHANGE_INACTIVE_PHONE = "${NEW_INTERNAL_USER}/change-inactive-phone"
 
+    //InputOldPhoneNumberActivity
+    const val INPUT_OLD_PHONE_NUMBER = "${NEW_INTERNAL_USER}/input-old-phone-number"
+
     // HomeAccountUserActivity
     const val NEW_HOME_ACCOUNT = "${NEW_INTERNAL_USER}/new-home-account"
+
+    // BiometricOfferingActivity
+    const val BIOMETRIC_OFFERING = "${NEW_INTERNAL_USER}/biometric-offering"
 
     /**
      * LogoutActivity
@@ -71,10 +76,16 @@ object ApplinkConstInternalUserPlatform {
     // tokopedia-android-internal://user/link-acc-reminder
     const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
 
-
     const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
     const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
 
     // SettingProfileActivity
     const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
+
+    /**
+     * ExplicitProfileActivity
+     * @Applink : tokopedia-android-internal://user/explicit-profile
+     **/
+    const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
+
 }
