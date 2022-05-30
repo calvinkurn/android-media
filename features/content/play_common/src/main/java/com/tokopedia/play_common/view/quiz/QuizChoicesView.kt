@@ -168,6 +168,6 @@ class QuizChoicesView : ConstraintLayout {
 
     companion object{
         private const val QUIZ_OPTION_RADIUS = 20f
-        private const val QUIZ_OPTION_STROKE_WIDTH = 1
+        private const val QUIZ_OPTION_STROKE_WIDTH = 2
     }
 }

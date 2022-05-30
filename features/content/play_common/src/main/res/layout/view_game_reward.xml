@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/play_dp_12"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
     android:background="@drawable/bg_play_quiz_header">
@@ -36,12 +36,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_game_reward"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@+id/tv_reward_type"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tv_reward_type"
         app:layout_constraintTop_toTopOf="@+id/tv_reward_type"
         app:layout_constraintVertical_bias="0.0"
