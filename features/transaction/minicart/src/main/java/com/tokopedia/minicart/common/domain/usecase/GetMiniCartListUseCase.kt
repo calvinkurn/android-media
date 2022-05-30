@@ -52,6 +52,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         const val PARAM_KEY_PROMO_ID = "promo_id"
         const val PARAM_KEY_PROMO_CODE = "promo_code"
         const val PARAM_KEY_SOURCE = "source"
+        const val PARAM_KEY_SHOP_DIRECT_PURCHASE = "is_shop_direct_purchase"
 
         const val PARAM_VALUE_ID = "id"
 
