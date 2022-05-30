@@ -202,6 +202,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             } else {
                 amountView.gone()
             }
+            totalAmountAdditionalButton.layoutParams.width = 0
+            totalAmountAdditionalButton.requestLayout()
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
             enableAmountChevron(false)
