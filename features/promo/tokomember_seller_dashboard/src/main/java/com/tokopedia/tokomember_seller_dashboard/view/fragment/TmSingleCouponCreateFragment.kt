@@ -127,7 +127,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
                     if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
-                        tokomemberDashCreateViewModel.validateProgram(arguments?.getString(
+                        tokomemberDashCreateViewModel.validateProgram(arguments?.getInt(
                             BUNDLE_SHOP_ID).toString(),programData?.timeWindow?.startTime?:"",programData?.timeWindow?.endTime?:"")
                     }
                     else {

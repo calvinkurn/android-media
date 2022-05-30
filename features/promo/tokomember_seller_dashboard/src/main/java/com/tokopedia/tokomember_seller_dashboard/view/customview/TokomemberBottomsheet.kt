@@ -70,7 +70,6 @@ class TokomemberBottomsheet : BottomSheetUnify() {
 
     companion object {
 
-        const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val ARG_BOTTOMSHEET = "arg_bottomsheet"
 
         fun createInstance(bundle: Bundle): TokomemberBottomsheet {

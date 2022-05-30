@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper
 
+import android.annotation.SuppressLint
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
@@ -17,7 +18,14 @@ object ProgramUpdateMapper {
         periodInMonth: Int
     ): ProgramUpdateDataInput {
         var actionType = ""
-        val timeWindow = TimeWindow(id = 0, startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime, periodInMonth = periodInMonth)
+        val timeWindow = TimeWindow(
+            id = 0,
+            startTime = convertStartDuration(
+                membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: ""
+            ),
+            endTime = addDuration(membershipGetProgramForm?.programForm?.timeWindow?.startTime ?: "", periodInMonth),
+            periodInMonth = periodInMonth
+        )
         val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
         programAttributes.apply {
             this?.forEach {
@@ -100,10 +108,34 @@ object ProgramUpdateMapper {
         return "$selectedTime WIB"
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun convertDateTime(t: Date): String {
-        var time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
-        time = time.substring(0, time.length-2)
-        return time
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun addDuration(time: String , duration: Int):String {
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(time)
+        val calendar = Calendar.getInstance()
+        parseTime?.let {
+            calendar.time = it
+            calendar.add(Calendar.MONTH , duration )
+        }
+        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(calendar.time)
+        requireTime = requireTime.substring(0, time.length-2)
+        return requireTime
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun convertStartDuration(time: String):String{
+        val parseTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(time)
+        val calendar = Calendar.getInstance()
+        parseTime?.let {
+            calendar.time = it
+        }
+        var requireTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(calendar.time)
+        requireTime = requireTime.substring(0, time.length-2)
+        return requireTime
     }
 
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
@@ -16,6 +17,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,6 +30,9 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
     private var tokomemberShopCardModel = TokomemberShopCardModel()
+    private val tmCouponPreviewAdapter: TmCouponPreviewAdapter by lazy {
+        TmCouponPreviewAdapter(arrayListOf())
+    }
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -49,6 +54,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
+        initRecyclerView()
         renderPreviewUI(
             arguments?.getParcelable(BUNDLE_CARD_DATA),
             arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
@@ -59,14 +65,16 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+        DaggerTokomemberDashComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
 
-            when(it){
-                is Success ->{
+            when (it) {
+                is Success -> {
                     //Open Dashboard
                 }
                 is Fail -> {
@@ -91,6 +99,13 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             progressBarHeight = ProgressBarUnify.SIZE_SMALL
             setValue(90, false)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initRecyclerView(){
+        rvPreview.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        rvPreview.adapter = tmCouponPreviewAdapter
+        tmCouponPreviewAdapter.notifyDataSetChanged()
     }
 
     private fun renderPreviewUI(
@@ -130,8 +145,8 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
                 freeMode = false
                 centerMode = true
                 autoplay = false
-                addItem(shopViewPremium?: TokomemberShopView(context))
-                addItem(shopViewVip?: TokomemberShopView(context))
+                addItem(shopViewPremium ?: TokomemberShopView(context))
+                addItem(shopViewVip ?: TokomemberShopView(context))
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
 
@@ -146,12 +161,18 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun renderCouponList() {
+
+    }
+
     @SuppressLint("SetTextI18n")
     private fun renderProgramPreview(programUpdateDataInput: ProgramUpdateDataInput) {
         tvProgramMulaiValue.text = programUpdateDataInput.timeWindow?.startTime
         tvProgramBerakhirValue.text = programUpdateDataInput.timeWindow?.endTime
-        tvProgramMinTransaksiPremiumValue.text ="Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(0)?.threshold.toString())}"
-        tvProgramMinTransaksiVipValue.text = "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(1)?.threshold.toString())}"
+        tvProgramMinTransaksiPremiumValue.text =
+            "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(0)?.threshold.toString())}"
+        tvProgramMinTransaksiVipValue.text =
+            "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(1)?.threshold.toString())}"
     }
 
     companion object {

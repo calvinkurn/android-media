@@ -29,15 +29,15 @@ class TmKuponProgramValidateUsecase @Inject constructor(graphqlRepository: Graph
     }
 
     private fun getRequestParams(shopId: String,startTime: String,endTime: String): Map<String, Any> {
-        return mapOf("shopID" to shopId ,"StartTimeUnix" to startTime , "EndTimeUnix" to endTime , "Source" to "" )
+        return mapOf("shopID" to shopId ,"startTimeUnix" to startTime , "endTimeUnix" to endTime , "source" to "" )
     }
 
 }
 
 
 const val IS_MEMBERSHIP_VALIDATE = """
-    query membershipValidateBenefit(${'$'}shopID: String!, ${'$'}StartTimeUnix: String! , ${'$'}EndTimeUnix: String! , ${'$'}Source: String! ){
-        membershipValidateBenefit(shopID: ${'$'}shopID, StartTimeUnix: ${'$'}StartTimeUnix, EndTimeUnix: ${'$'}EndTimeUnix, Source: ${'$'}Source){
+    query membershipValidateBenefit(${'$'}shopID: String!, ${'$'}startTimeUnix: String! , ${'$'}endTimeUnix: String! , ${'$'}source: String! ){
+        membershipValidateBenefit(shopID: ${'$'}shopID, startTimeUnix: ${'$'}startTimeUnix, endTimeUnix: ${'$'}endTimeUnix, source: ${'$'}source){
       resultStatus {
       code
       message

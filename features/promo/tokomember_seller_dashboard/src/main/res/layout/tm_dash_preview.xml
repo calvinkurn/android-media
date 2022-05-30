@@ -1,221 +1,384 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerViewFlipper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="@color/Unify_Background"
+    android:clickable="true"
     tools:ignore="MissingDefaultResource">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/headerPreview"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_back_button="true" />
+        android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ProgressBarUnify
-        android:id="@+id/progressPreview"
-        android:layout_width="wrap_content"
-        android:layout_height="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@color/Unify_Background"
+            tools:ignore="MissingDefaultResource">
 
-    <View
-        android:id="@+id/viewBgPreview"
-        android:layout_width="match_parent"
-        android:layout_height="232dp"
-        android:background="@color/Unify_NN50"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressPreview" />
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/headerPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_header_is_show_back_button="true" />
 
-    <com.tokopedia.carousel.CarouselUnify
-        android:id="@+id/carouselPreview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/progressPreview"
+                android:layout_width="wrap_content"
+                android:layout_height="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iconInfoProgram"
-        android:layout_width="@dimen/unify_space_16"
-        android:layout_height="20dp"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewBgPreview" />
+            <View
+                android:id="@+id/viewBgPreview"
+                android:layout_width="match_parent"
+                android:layout_height="232dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressPreview" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_4"
-        android:text="Ringkasan program"
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="@+id/iconInfoProgram"
-        app:layout_constraintStart_toEndOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toTopOf="@+id/iconInfoProgram"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold" />
+            <com.tokopedia.carousel.CarouselUnify
+                android:id="@+id/carouselPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
 
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconInfoProgram"
+                android:layout_width="@dimen/unify_space_16"
+                android:layout_height="20dp"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewBgPreview" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="Ubah"
-        android:textColor="@color/Unify_GN500"
-        app:layout_constraintBottom_toBottomOf="@+id/iconInfoProgram"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iconInfoProgram"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMulai"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:text="Program mulai"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/iconInfoProgram"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMulaiValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        tools:text=" 12 Jan 2022, 00:30 WIB "
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
-        app:layout_constraintTop_toTopOf="@+id/tvProgramMulai"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:text="Ringkasan program"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toBottomOf="@+id/iconInfoProgram"
+                app:layout_constraintStart_toEndOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toTopOf="@+id/iconInfoProgram"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramBerakhir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Program mulai"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:text="Ubah"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintBottom_toBottomOf="@+id/iconInfoProgram"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iconInfoProgram"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramBerakhirValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        tools:text=" 12 Jan 2022, 00:30 WIB "
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir"
-        app:layout_constraintTop_toTopOf="@+id/tvProgramBerakhir"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMulai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="Program mulai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/iconInfoProgram"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
 
-    <View
-        android:id="@+id/viewDivider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/Unify_NN50"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_24"
-        android:text="Premium (Level 1)"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/viewDivider"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMinTransaksiPremium"
-        android:layout_width="132dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Program mulai"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramLevel"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMinTransaksiPremiumValue"
-        android:layout_width="132dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="4dp"
-        android:text="Rp 0"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiPremium"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramLevel"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMulaiValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
+                app:layout_constraintTop_toTopOf="@+id/tvProgramMulai"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text=" 12 Jan 2022, 00:30 WIB " />
 
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramLevelVip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Premium (Level 1)"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramMinTransaksiPremium"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramBerakhir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Program mulai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMinTransaksiVip"
-        android:layout_width="132dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Program mulai"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramLevelVip"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramBerakhirValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir"
+                app:layout_constraintTop_toTopOf="@+id/tvProgramBerakhir"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text=" 12 Jan 2022, 00:30 WIB " />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvProgramMinTransaksiVipValue"
-        android:layout_width="132dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="4dp"
-        android:text="Rp 0"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiVip"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramLevelVip"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+            <View
+                android:id="@+id/viewDivider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir" />
 
-    <View
-        android:id="@+id/viewDividerTwo"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/Unify_NN50"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProgramMinTransaksiVip" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_24"
+                android:text="Premium (Level 1)"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/viewDivider"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMinTransaksiPremium"
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Program mulai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramLevel"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMinTransaksiPremiumValue"
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="4dp"
+                android:text="Rp 0"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiPremium"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramLevel"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramLevelVip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Premium (Level 1)"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramMinTransaksiPremium"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMinTransaksiVip"
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Program mulai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramLevelVip"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvProgramMinTransaksiVipValue"
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="4dp"
+                android:text="Rp 0"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toEndOf="@+id/tvProgramMinTransaksiVip"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramLevelVip"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <View
+                android:id="@+id/viewDividerTwo"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProgramMinTransaksiVip" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iconCoupon"
+                android:layout_width="20dp"
+                android:layout_height="@dimen/unify_space_16"
+                android:layout_marginTop="28dp"
+                app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
+                app:layout_constraintTop_toBottomOf="@id/viewDividerTwo" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Kupon TokoMember"
+                app:layout_constraintBottom_toBottomOf="@id/iconCoupon"
+                app:layout_constraintStart_toEndOf="@+id/iconCoupon"
+                app:layout_constraintTop_toTopOf="@id/iconCoupon"
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:text="Ubah"
+                android:textColor="@color/Unify_GN500"
+                app:layout_constraintBottom_toBottomOf="@id/iconCoupon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/iconCoupon"
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="26dp"
+                app:layout_constraintTop_toBottomOf="@id/iconCoupon" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvCouponMulai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="Mulai"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconCoupon"
+                app:layout_constraintTop_toBottomOf="@+id/rvPreview"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvCouponMulaiValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCouponMulai"
+                app:layout_constraintTop_toTopOf="@+id/tvCouponMulai"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text=" 12 Jan 2022, 00:30 WIB " />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvCouponBerakhir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Berakhir"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@+id/iconCoupon"
+                app:layout_constraintTop_toBottomOf="@+id/tvCouponMulai"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvCouponBerakhirValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCouponBerakhir"
+                app:layout_constraintTop_toTopOf="@+id/tvCouponBerakhir"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text=" 12 Jan 2022, 00:30 WIB " />
+
+            <View
+                android:id="@+id/viewDividerThree"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCouponBerakhir" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvMaxTransaction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_24"
+                android:ellipsize="end"
+                android:maxWidth="120dp"
+                android:maxLines="2"
+                android:text="Estimasi Maks. Pengeluaran"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="@id/iconCoupon"
+                app:layout_constraintTop_toBottomOf="@id/viewDividerThree"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvMaxTransactionValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:text="Rp2.000.000"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintBottom_toBottomOf="@id/tvMaxTransaction"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvMaxTransaction" />
+
+            <View
+                android:id="@+id/viewDividerFour"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMaxTransactionValue" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/unify_space_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewDividerFour"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</ViewFlipper>

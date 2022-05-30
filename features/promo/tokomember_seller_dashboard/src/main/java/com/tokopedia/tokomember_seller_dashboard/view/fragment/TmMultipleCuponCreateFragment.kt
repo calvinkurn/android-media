@@ -20,6 +20,7 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -29,9 +30,11 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponVal
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
+import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
@@ -51,15 +54,26 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var tmCouponVip: TmSingleCouponView? = null
     private var selectedCalendar: Calendar? = null
     private var selectedTime = ""
-    private var startTime : Calendar? = null
+    private var startTime: Calendar? = null
     private var programData: ProgramUpdateDataInput? = null
-    private var couponPremiumData :TmSingleCouponData? = null
-    private var couponVip : TmSingleCouponData? = null
-    private var shopName=""
-    private var shopAvatar=""
+    private var couponPremiumData: TmSingleCouponData? = null
+    private var couponVip: TmSingleCouponData? = null
+    private var shopName = ""
+    private var shopAvatar = ""
     private var retryCount = 0
     private val errorState = ErrorState()
-    private var loaderDialog: LoaderDialog?=null
+    private var loaderDialog: LoaderDialog? = null
+    private var tmCouponListVipItemPreview=  TmCouponListItemPreview()
+    private var tmCouponListPremiumItemPreview=  TmCouponListItemPreview()
+    private var tmCouponStartDateUnix : Calendar? = null
+    private var tmCouponEndDateUnix : Calendar? = null
+    private var tmCouponStartTimeUnix : Calendar? = null
+    private var tmCouponEndTimeUnix : Calendar? = null
+    private var tmCouponPremiumUploadId  = ""
+    private var tmCouponVipUploadId = ""
+    private var tmToken = ""
+    private var imageSquare = ""
+    private var imagePortrait = ""
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -83,10 +97,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         renderHeader()
         renderButton()
         observeViewModel()
-        shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
-        shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
+        shopName = arguments?.getString(BUNDLE_SHOP_NAME) ?: ""
+        shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR) ?: ""
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
-        tmDashCreateViewModel.getInitialCouponData(CREATE,"")
+        tmDashCreateViewModel.getInitialCouponData(CREATE, "")
         renderProgram()
         renderMultipleCoupon()
     }
@@ -102,12 +116,15 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
 
-        tmDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                TokoLiveDataResult.STATUS.LOADING ->{
+        tmDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
                     containerViewFlipper.displayedChild = 2
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
+                    tmToken = it.data?.getInitiateVoucherPage?.data?.token?:""
+                    imageSquare = it.data?.getInitiateVoucherPage?.data?.imgBannerIgPost?:""
+                    imagePortrait = it.data?.getInitiateVoucherPage?.data?.imgBannerIgStory?:""
                     containerViewFlipper.displayedChild = 0
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -116,22 +133,24 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
         })
 
-        tmDashCreateViewModel.tmCouponPreValidateSingleCouponLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                TokoLiveDataResult.STATUS.LOADING ->{
+        tmDashCreateViewModel.tmCouponPreValidateSingleCouponLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
                     openLoadingDialog()
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     errorState.isPreValidateVipError = false
-                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 1){
-                     preValidateCouponVip(couponVip)
-                    }
-                    else {
-                        handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"premium")
+                    if (it.data?.voucherValidationPartial?.header?.messages?.size == 1) {
+                        preValidateCouponVip(couponVip)
+                    } else {
+                        handleProgramValidateError(
+                            it.data?.voucherValidationPartial?.data?.validationError,
+                            "premium"
+                        )
                         setButtonState()
                     }
                 }
-                TokoLiveDataResult.STATUS.ERROR  -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     setButtonState()
                     errorState.isPreValidateVipError = true
                     closeLoadingDialog()
@@ -140,32 +159,41 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
         })
 
-        tmDashCreateViewModel.tmCouponPreValidateMultipleCouponLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                     errorState.isPreValidatePremiumError = false
-                     if (it.data?.voucherValidationPartial?.header?.messages?.size == 1) {
-                         tmDashCreateViewModel.validateProgram(arguments?.getString(
-                            BUNDLE_SHOP_ID).toString(),programData?.timeWindow?.startTime?:"",programData?.timeWindow?.endTime?:"")
+        tmDashCreateViewModel.tmCouponPreValidateMultipleCouponLiveData.observe(viewLifecycleOwner,
+            {
+                when (it.status) {
+                    TokoLiveDataResult.STATUS.SUCCESS -> {
+                        errorState.isPreValidatePremiumError = false
+                        if (it.data?.voucherValidationPartial?.header?.messages?.size == 1) {
+                            tmDashCreateViewModel.validateProgram(
+                                arguments?.getInt(
+                                    BUNDLE_SHOP_ID
+                                ).toString(),
+                                programData?.timeWindow?.startTime ?: "",
+                                programData?.timeWindow?.endTime ?: ""
+                            )
+                        } else {
+                            setButtonState()
+                            handleProgramValidateError(
+                                it.data?.voucherValidationPartial?.data?.validationError,
+                                "vip"
+                            )
+                        }
                     }
-                    else {
-                         setButtonState()
-                         handleProgramValidateError(it.data?.voucherValidationPartial?.data?.validationError,"vip")
+                    TokoLiveDataResult.STATUS.ERROR -> {
+                        errorState.isPreValidatePremiumError = true
+                        setButtonState()
+                        closeLoadingDialog()
+                        handleProgramValidateNetworkError()
+                    }
+                    else -> {
                     }
                 }
-                 TokoLiveDataResult.STATUS.ERROR -> {
-                     errorState.isPreValidatePremiumError = true
-                     setButtonState()
-                     closeLoadingDialog()
-                     handleProgramValidateNetworkError()
-                }
-                else->{}
-            }
-        })
+            })
 
-        tmDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                 TokoLiveDataResult.STATUS.SUCCESS -> {
+        tmDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.SUCCESS -> {
                     if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
                         uploadImagePremium()
@@ -174,51 +202,100 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         handleProgramPreValidateError()
                     }
                 }
-                TokoLiveDataResult.STATUS.ERROR-> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isValidateCouponError = false
                     setButtonState()
                     closeLoadingDialog()
                     handleProgramValidateServerError()
                 }
-                else->{}
+                else -> {
+                }
             }
         })
 
-        tmDashCreateViewModel.tmCouponUploadLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
+        tmDashCreateViewModel.tmCouponUploadLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    errorState.isUploadPremium = false
-                    uploadImageVip()
+                    when(it.data){
+                        is UploadResult.Success -> {
+                            errorState.isUploadPremium = false
+                            tmCouponPremiumUploadId =  it.data .uploadId
+                            uploadImageVip()
+                        }
+                        is UploadResult.Error -> {
+                            closeLoadingDialog()
+                            view?.let { it1 ->
+                                Toaster.build(
+                                    it1,
+                                    it.data.message,
+                                    Toaster.TYPE_ERROR,
+                                    Toaster.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
                 }
-                TokoLiveDataResult.STATUS.ERROR-> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isUploadPremium = true
                     setButtonState()
                     closeLoadingDialog()
-                    view?.let { it1 -> Toaster.build(it1, RETRY,Toaster.TYPE_ERROR,Toaster.LENGTH_LONG).show() }
+                    view?.let { it1 ->
+                        Toaster.build(
+                            it1,
+                            RETRY,
+                            Toaster.TYPE_ERROR,
+                            Toaster.LENGTH_LONG
+                        ).show()
+                    }
                 }
-                else->{}
+                else -> {
+                }
             }
         })
 
-        tmDashCreateViewModel.tmCouponUploadMultipleLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
+        tmDashCreateViewModel.tmCouponUploadMultipleLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    errorState.isUploadVipError = false
-                    closeLoadingDialog()
-                    openPreviewPage()
+                    when(it.data){
+                        is UploadResult.Success -> {
+                            errorState.isUploadVipError = false
+                            tmCouponVipUploadId = it.data .uploadId
+                            closeLoadingDialog()
+                            openPreviewPage()
+                        }
+                        is UploadResult.Error -> {
+                            closeLoadingDialog()
+                            view?.let { it1 ->
+                                Toaster.build(
+                                    it1,
+                                    it.data.message,
+                                    Toaster.TYPE_ERROR,
+                                    Toaster.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
                 }
-                TokoLiveDataResult.STATUS.ERROR-> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     errorState.isUploadVipError = true
                     setButtonState()
                     closeLoadingDialog()
-                    view?.let { it1 -> Toaster.build(it1, RETRY,Toaster.TYPE_ERROR,Toaster.LENGTH_LONG).show() }
+                    view?.let { it1 ->
+                        Toaster.build(
+                            it1,
+                            RETRY,
+                            Toaster.TYPE_ERROR,
+                            Toaster.LENGTH_LONG
+                        ).show()
+                    }
                 }
-                else->{}
+                else -> {
+                }
             }
         })
     }
 
-    private fun openLoadingDialog(){
+    private fun openLoadingDialog() {
         loaderDialog = context?.let { LoaderDialog(it) }
         loaderDialog?.loaderText?.apply {
             setType(Typography.DISPLAY_2)
@@ -227,12 +304,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         loaderDialog?.show()
     }
 
-    private fun closeLoadingDialog(){
+    private fun closeLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
     }
 
-    private fun handleProgramValidateNetworkError(){
-        view?.let { Toaster.build(it,RETRY , Toaster.LENGTH_LONG , Toaster.TYPE_ERROR ).show() }
+    private fun handleProgramValidateNetworkError() {
+        view?.let { Toaster.build(it, RETRY, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
         btnContinue.apply {
             isEnabled = true
             isClickable = true
@@ -240,62 +317,79 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun handleProgramValidateError(validationError: ValidationError?, couponType: String) {
-        when(couponType){
+        when (couponType) {
 
             PREMIUM -> {
-                tmCouponPremium?.setErrorMaxBenefit(validationError?.benefitMax?:"")
-                tmCouponPremium?.setErrorCashbackPercentage(validationError?.benefitPercent?:"")
-                tmCouponPremium?.setErrorMinTransaction(validationError?.minPurchase?:"")
-                tmCouponPremium?.setErrorQuota(validationError?.quota?:"")
+                tmCouponPremium?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                tmCouponPremium?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
+                tmCouponPremium?.setErrorMinTransaction(validationError?.minPurchase ?: "")
+                tmCouponPremium?.setErrorQuota(validationError?.quota ?: "")
                 accordionUnifyPremium.expandAllGroup()
             }
 
             VIP -> {
-                tmCouponVip?.setErrorMaxBenefit(validationError?.benefitMax?:"")
-                tmCouponVip?.setErrorCashbackPercentage(validationError?.benefitPercent?:"")
-                tmCouponVip?.setErrorMinTransaction(validationError?.minPurchase?:"")
-                tmCouponVip?.setErrorQuota(validationError?.quota?:"")
+                tmCouponVip?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                tmCouponVip?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
+                tmCouponVip?.setErrorMinTransaction(validationError?.minPurchase ?: "")
+                tmCouponVip?.setErrorQuota(validationError?.quota ?: "")
                 accordionUnifyVIP.expandAllGroup()
             }
         }
     }
 
-    private fun setButtonState(){
+    private fun setButtonState() {
         btnContinue.apply {
             isClickable = true
             isEnabled = true
         }
     }
 
-    private fun handleProgramPreValidateError(){
+    private fun handleProgramPreValidateError() {
         setButtonState()
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(PROGRAM_VALIDATION_ERROR_TITLE, PROGRAM_VALIDATION_ERROR_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", PROGRAM_VALIDATION_CTA_TEXT )
-        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
+            PROGRAM_VALIDATION_ERROR_TITLE,
+            PROGRAM_VALIDATION_ERROR_DESC,
+            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+            PROGRAM_VALIDATION_CTA_TEXT
+        )
+        bundle.putString(
+            TokomemberBottomsheet.ARG_BOTTOMSHEET,
+            Gson().toJson(tmIntroBottomSheetModel)
+        )
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 bottomSheet.dismiss()
             }
         })
-        bottomSheet.show(childFragmentManager,"")
+        bottomSheet.show(childFragmentManager, "")
     }
 
-    private fun handleProgramValidateServerError(){
+    private fun handleProgramValidateServerError() {
 
-        val title = when(retryCount){
-            0-> ERROR_CREATING_TITLE
+        val title = when (retryCount) {
+            0 -> ERROR_CREATING_TITLE
             else -> ERROR_CREATING_TITLE_RETRY
         }
-        val cta = when(retryCount){
-            0-> ERROR_CREATING_CTA
+        val cta = when (retryCount) {
+            0 -> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
         val bundle = Bundle()
-        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
-        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomSheetModel))
+        val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
+            title,
+            ERROR_CREATING_DESC,
+            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+            cta,
+            errorCount = retryCount
+        )
+        bundle.putString(
+            TokomemberBottomsheet.ARG_BOTTOMSHEET,
+            Gson().toJson(tmIntroBottomSheetModel)
+        )
         val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
-        bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+        bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 when (errorCount) {
                     0 -> tmDashCreateViewModel.validateProgram("", "", "")
@@ -307,13 +401,29 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         ))
                     }
                 }
-            }})
-        bottomSheet.show(childFragmentManager,"")
-        retryCount +=1
+            }
+        })
+        bottomSheet.show(childFragmentManager, "")
+        retryCount += 1
     }
 
-    private fun openPreviewPage(){
+    private fun openPreviewPage() {
 
+        //Map data
+        val maxBenefit =
+            (couponPremiumData?.maxCashback.toIntSafely() * couponPremiumData?.quota.toIntSafely()) +
+        (couponVip?.maxCashback.toIntSafely() * couponVip?.quota.toIntSafely())
+        TmCouponCreateMapper.mapCreateData(
+            couponPremiumData,
+            couponVip,
+            tmCouponPremiumUploadId,
+            tmCouponVipUploadId,
+            tmCouponStartDateUnix,
+            tmCouponEndDateUnix,
+            tmCouponStartTimeUnix,
+            tmCouponEndTimeUnix,
+            tmToken,imageSquare,imagePortrait ,maxBenefit
+        )
     }
 
     private fun renderHeader() {
@@ -339,7 +449,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val bottomSheetUnify = BottomSheetUnify()
         bottomSheetUnify.apply {
             setTitle(TERNS_AND_CONDITION)
-            showCloseIcon  = true
+            showCloseIcon = true
             isDragable = true
             setCloseClickListener {
                 dismiss()
@@ -348,15 +458,21 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val ss = SpannableString(COUPON_TERMS_CONDITION)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                bottomSheetUnify.show(childFragmentManager,"")
+                bottomSheetUnify.show(childFragmentManager, "")
             }
+
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
         }
         val firstIndex = COUPON_TERMS_CONDITION.indexOf(TERMS)
-        ss.setSpan(clickableSpan, firstIndex, firstIndex  + TERNS_AND_CONDITION.length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(
+            clickableSpan,
+            firstIndex,
+            firstIndex + TERNS_AND_CONDITION.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         tvTermsAndCondition.text = Html.fromHtml(ss.toString())
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
@@ -390,27 +506,37 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 targetBuyer = 3,
                 benefitType = IDR,
                 couponType = couponPremiumData?.typeCoupon,
-                benefitMax = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.maxCashback?:""),
+                benefitMax = CurrencyFormatHelper.convertRupiahToInt(
+                    couponPremiumData?.maxCashback ?: ""
+                ),
                 benefitPercent = couponPremiumData?.cashBackPercentage,
-                minPurchase = CurrencyFormatHelper.convertRupiahToInt(couponPremiumData?.minTransaki?:""),
+                minPurchase = CurrencyFormatHelper.convertRupiahToInt(
+                    couponPremiumData?.minTransaki ?: ""
+                ),
                 source = ANDROID
             )
         )
     }
 
-    private fun uploadImagePremium(){
-        context?.let { ctx->
-            val file =  tmCouponPremium?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
+    private fun uploadImagePremium() {
+        context?.let { ctx ->
+            val file =
+                tmCouponPremium?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
             if (file != null) {
+                tmCouponListPremiumItemPreview = TmCouponListItemPreview(
+                    file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
+                )
                 tmDashCreateViewModel.uploadImagePremium(file)
             }
         }
     }
 
-    private fun uploadImageVip(){
-        context?.let { ctx->
-            val file =  tmCouponVip?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
+    private fun uploadImageVip() {
+        context?.let { ctx ->
+            val file = tmCouponVip?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
             if (file != null) {
+                tmCouponListVipItemPreview = TmCouponListItemPreview(
+                    file.absolutePath, "VIP", couponVip?.quota ?: "")
                 tmDashCreateViewModel.uploadImageVip(file)
             }
         }
@@ -418,7 +544,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private fun renderMultipleCoupon() {
         tmCouponPremium = this.context?.let { TmSingleCouponView(it) }
-        tmCouponPremium?.setShopData(shopName,shopAvatar)
+        tmCouponPremium?.setShopData(shopName, shopAvatar)
         val itemAccordionPremium = tmCouponPremium?.let {
             AccordionDataUnify(
                 title = ACCORDION_TITLE_PREMIUM,
@@ -432,7 +558,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
         }
         tmCouponVip = this.context?.let { TmSingleCouponView(it) }
-        tmCouponVip?.setShopData(shopName,shopAvatar)
+        tmCouponVip?.setShopData(shopName, shopAvatar)
         val itemAccordionVip = tmCouponVip?.let {
             AccordionDataUnify(
                 title = ACCORDION_TITLE_VIP,
@@ -457,16 +583,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     }
 
-    private fun handleAccordionClickPremium(position:Int, expanded: Boolean){
-        if (expanded){
+    private fun handleAccordionClickPremium(position: Int, expanded: Boolean) {
+        if (expanded) {
             accordionUnifyPremium.expandGroup(position)
         } else {
             accordionUnifyPremium.collapseGroup(position)
         }
     }
 
-    private fun handleAccordionClickVip(position:Int, expanded: Boolean){
-        if (expanded){
+    private fun handleAccordionClickVip(position: Int, expanded: Boolean) {
+        if (expanded) {
             accordionUnifyVIP.expandGroup(position)
         } else {
             accordionUnifyVIP.collapseGroup(position)
@@ -490,27 +616,27 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate)
+            clickDatePicker(textFieldProgramStartDate , 0)
         }
 
         textFieldProgramStartTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramStartTime)
+            clickTimePicker(textFieldProgramStartTime, 0)
         }
 
         textFieldProgramEndDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramEndDate)
+            clickDatePicker(textFieldProgramEndDate ,1)
         }
 
         textFieldProgramEndTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramEndTime)
+            clickTimePicker(textFieldProgramEndTime, 1)
         }
     }
 
-    private fun setProgramDateAuto(){
-        when(selectedChipPositionDate){
+    private fun setProgramDateAuto() {
+        when (selectedChipPositionDate) {
             ProgramDateType.AUTO -> {
 
-                if(programData!= null) {
+                if (programData != null) {
                     textFieldProgramStartDate.editText.setText(
                         ProgramUpdateMapper.setDate(
                             programData?.timeWindow?.startTime.toString()
@@ -526,32 +652,32 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
                 textFieldProgramStartDate.isEnabled = false
                 textFieldProgramStartDate.iconContainer.isEnabled = false
-                textFieldProgramStartTime.isEnabled  = false
+                textFieldProgramStartTime.isEnabled = false
                 textFieldProgramStartTime.iconContainer.isEnabled = false
                 textFieldProgramEndDate.isEnabled = false
                 textFieldProgramEndDate.iconContainer.isEnabled = false
-                textFieldProgramEndTime.isEnabled  = false
+                textFieldProgramEndTime.isEnabled = false
                 textFieldProgramEndTime.iconContainer.isEnabled = false
             }
             ProgramDateType.MANUAL -> {
                 textFieldProgramStartDate.isEnabled = true
                 textFieldProgramStartDate.iconContainer.isEnabled = true
-                textFieldProgramStartTime.isEnabled  = true
+                textFieldProgramStartTime.isEnabled = true
                 textFieldProgramStartTime.iconContainer.isEnabled = true
                 textFieldProgramEndDate.isEnabled = true
                 textFieldProgramEndDate.iconContainer.isEnabled = true
-                textFieldProgramEndTime.isEnabled  = true
+                textFieldProgramEndTime.isEnabled = true
                 textFieldProgramEndTime.iconContainer.isEnabled = true
             }
         }
 
     }
 
-    private fun clickDatePicker(textField: TextFieldUnify2) {
+    private fun clickDatePicker(textField: TextFieldUnify2, type: Int) {
         var date = ""
         var month = ""
         var year = ""
-        context?.let{
+        context?.let {
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.YEAR, TokomemberProgramFragment.MAX_YEAR)
             val yearMax = calMax.get(Calendar.YEAR)
@@ -577,23 +703,31 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         selectedCalendar = getDate()
                         selectedTime = selectedCalendar?.time.toString()
                         date = selectedCalendar?.get(Calendar.DATE).toString()
-                        month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
+                        month = selectedCalendar?.getDisplayName(
+                            Calendar.MONTH,
+                            Calendar.LONG,
+                            LocaleUtils.getIDLocale()
+                        ).toString()
                         year = selectedCalendar?.get(Calendar.YEAR).toString()
+                        when (type) {
+                            0 -> { tmCouponStartDateUnix = selectedCalendar }
+                            1 -> { tmCouponEndDateUnix = selectedCalendar }
+                        }
                         dismiss()
                     }
                 }
             }
-            childFragmentManager.let {fragmentManager->
+            childFragmentManager.let { fragmentManager ->
                 datepickerObject.show(fragmentManager, "")
             }
             datepickerObject.setOnDismissListener {
                 selectedTime = selectedCalendar?.time.toString()
-                textField.textInputLayout.editText?.setText(( "$date $month $year"))
+                textField.textInputLayout.editText?.setText(("$date $month $year"))
             }
         }
     }
 
-    private fun clickTimePicker(textField: TextFieldUnify2){
+    private fun clickTimePicker(textField: TextFieldUnify2, i: Int) {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
@@ -603,9 +737,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 30)
                 }
             val defaultTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx))
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
             val maxTime =
-                GregorianCalendar( LocaleUtils.getCurrentLocale(ctx)).apply {
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 30)
                 }
@@ -624,15 +758,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     startTime = getDate()
                     selectedHour = timePicker.hourPicker.activeValue
                     selectedMinute = timePicker.minutePicker.activeValue
+                    when (type) {
+                        0 -> { tmCouponStartTimeUnix = selectedCalendar }
+                        1 -> { tmCouponEndTimeUnix = selectedCalendar }
+                    }
                     dismiss()
                 }
             }
 
             childFragmentManager.let {
-                timerPickerUnify.show(it,"")
+                timerPickerUnify.show(it, "")
             }
             timerPickerUnify.setOnDismissListener {
-                textField.textInputLayout.editText?.setText(( "$selectedHour : $selectedMinute WIB"))
+                textField.textInputLayout.editText?.setText(("$selectedHour : $selectedMinute WIB"))
             }
         }
     }
