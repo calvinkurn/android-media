@@ -15,7 +15,7 @@ class PlaySlotTabViewAdapterDelegate private constructor() {
 
     internal class SlotTab :
         TypedAdapterDelegate<PlayWidgetSlotTabUiModel, PlayFeedUiModel, PlaySlotTabViewHolder.SlotTab>(
-            R.layout.item_play_slot_tab
+            R.layout.item_play_slot_tab_sample
         ) {
         override fun onBindViewHolder(
             item: PlayWidgetSlotTabUiModel,

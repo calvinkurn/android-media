@@ -2,11 +2,12 @@ package com.tokopedia.productcard.test.list
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.productCardModelMatcherData
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
@@ -15,10 +16,16 @@ import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
 import org.hamcrest.Matcher
 
-internal val productCardListTestData = productCardModelMatcherData + mutableListOf<ProductCardModelMatcher>().also {
+internal val productCardListTestData = getProductCardModelMatcherData(false) + mutableListOf<ProductCardModelMatcher>().also {
     it.add(testAddToCartAndRemoveFromWishlist())
     it.add(testDeleteProductButton())
-    it.add(testSimilarProductButton())
+    it.add(testSimilarProductButton(false))
+}
+
+internal val productCardListViewStubTestData= getProductCardModelMatcherData(true) + mutableListOf<ProductCardModelMatcher>().also {
+    it.add(testAddToCartAndRemoveFromWishlist())
+    it.add(testDeleteProductButton())
+    it.add(testSimilarProductButton(true))
 }
 
 private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
@@ -101,7 +108,7 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testSimilarProductButton(): ProductCardModelMatcher {
+private fun testSimilarProductButton(useViewStub: Boolean): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
         productName = "Similar Product Button",
         productImageUrl = productImageUrl,
@@ -115,7 +122,8 @@ private fun testSimilarProductButton(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
+        if (useViewStub) it[R.id.buttonSeeSimilarProductStub] = isEnabled()
+        else it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
