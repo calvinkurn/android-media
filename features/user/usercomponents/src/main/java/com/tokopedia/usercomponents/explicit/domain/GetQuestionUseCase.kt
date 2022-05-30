@@ -16,6 +16,9 @@ class GetQuestionUseCase @Inject constructor(
         """
             query explicitprofileGetQuestion(${'$'}templateName: String) {
               explicitprofileGetQuestion(templateName: ${'$'}templateName) {
+                activeConfig {
+                    value
+                }
                 template {
                   id
                   name

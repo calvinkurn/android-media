@@ -42,8 +42,17 @@ data class QuestionDataModel(
 )
 
 data class ExplicitprofileGetQuestion(
+
+    @SerializedName("activeConfig")
+    val activeConfig: ActiveConfig = ActiveConfig(),
+
     @SerializedName("template")
     val template: Template = Template()
+)
+
+data class ActiveConfig(
+    @SerializedName("value")
+    val value: Boolean = false
 )
 
 data class SectionsItem(

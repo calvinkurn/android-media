@@ -10,17 +10,19 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
+import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.domain.model.*
 import javax.inject.Inject
 
 class ExplicitViewModel @Inject constructor(
     private val getQuestionUseCase: GetQuestionUseCase,
     private val saveAnswerUseCase: SaveAnswerUseCase,
+    private val updateStateUseCase: UpdateStateUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _explicitContent = MutableLiveData<Result<Property>>()
-    val explicitContent: LiveData<Result<Property>> get() = _explicitContent
+    private val _explicitContent = MutableLiveData<Result<Pair<Boolean, Property?>>>()
+    val explicitContent: LiveData<Result<Pair<Boolean, Property?>>> get() = _explicitContent
 
     private val _statusSaveAnswer = MutableLiveData<Result<String>>()
     val statusSaveAnswer: LiveData<Result<String>> get() = _statusSaveAnswer
@@ -29,17 +31,23 @@ class ExplicitViewModel @Inject constructor(
     val isQuestionLoading: LiveData<Boolean> get() = _isQuestionLoading
 
     private val preferenceAnswer = InputParam()
+    private val preferenceUpdateState = UpdateStateParam()
     private var optionAnswer = mutableListOf<OptionsItem>()
 
     fun getExplicitContent(templateName: String) {
         _isQuestionLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getQuestionUseCase(templateName)
-            val property = response.explicitprofileGetQuestion.template.sections[0].questions[0].property
+            val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
 
-            _explicitContent.value = Success(property)
+            if (activeConfig) {
+                val property = response.explicitprofileGetQuestion.template.sections[0].questions[0].property
+                _explicitContent.value = Success(Pair(activeConfig, property))
+                setPreferenceAnswer(response.explicitprofileGetQuestion.template)
+            } else {
+                _explicitContent.value = Success(Pair(activeConfig, null))
+            }
             _isQuestionLoading.value = false
-            setPreferenceAnswer(response.explicitprofileGetQuestion.template)
         }, {
             _explicitContent.value = Fail(it)
             _isQuestionLoading.value = false
@@ -47,6 +55,7 @@ class ExplicitViewModel @Inject constructor(
     }
 
     private fun setPreferenceAnswer(template: Template) {
+        preferenceUpdateState.template.name = template.name
         preferenceAnswer.apply {
             templateId = template.id
             templateName = template.name
@@ -70,6 +79,12 @@ class ExplicitViewModel @Inject constructor(
         }, {
             _statusSaveAnswer.value = Fail(it)
         })
+    }
+
+    fun updateState() {
+        launchCatchError(coroutineContext, {
+            updateStateUseCase(preferenceUpdateState)
+        }, {})
     }
 
 }

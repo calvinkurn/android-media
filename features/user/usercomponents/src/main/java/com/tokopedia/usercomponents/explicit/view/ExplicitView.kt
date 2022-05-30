@@ -116,8 +116,12 @@ class ExplicitView : CardUnify2 {
         viewModel?.explicitContent?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
-                    setViewQuestion(it.data)
-                    onQuestion()
+                    if (it.data.first) {
+                        setViewQuestion(it.data.second)
+                        onQuestion()
+                    } else {
+                        dismiss()
+                    }
                 }
                 is Fail -> {
                     onFailed()
@@ -139,18 +143,21 @@ class ExplicitView : CardUnify2 {
         }
     }
 
-    private fun setViewQuestion(data: Property) {
+    private fun setViewQuestion(data: Property?) {
         bindingQuestion.apply {
-            txtTitle.text = data.title
-            txtDescription.text = data.subtitle
-            imgIcon.urlSrc = data.image
-            btnPositifAction.text = data.options[0].caption
-            btnNegatifAction.text = data.options[1].caption
+            txtTitle.text = data?.title
+            txtDescription.text = data?.subtitle
+            imgIcon.urlSrc = data?.image ?: ""
+            btnPositifAction.text = data?.options?.get(0)?.caption
+            btnNegatifAction.text = data?.options?.get(1)?.caption
         }
     }
 
     private fun initListener() {
-        bindingQuestion.imgDismiss.setOnClickListener { dismiss() }
+        bindingQuestion.imgDismiss.setOnClickListener {
+            viewModel?.updateState()
+            dismiss()
+        }
 
         bindingSuccess.imgSuccessDismiss.setOnClickListener { dismiss() }
 
