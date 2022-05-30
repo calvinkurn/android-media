@@ -16,6 +16,7 @@ buildscript {
 dependencies {
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore
+    api rootProject.ext.miscDependencies.googleTink
 }
 
 project.ext {
