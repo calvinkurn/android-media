@@ -59,4 +59,14 @@
   <string name="expedited_title_success_page">Nomor HP-mu sudah diubah!</string>
   <string name="expedited_description_success_page">Kamu bisa pakai nomor ini buat verifikasi atau masuk ke Tokopedia.</string>
 
+  <!-- INPUT OLD PHONE NUMBER -->
+  <string name="ipn_required">Wajib diisi.</string>
+  <string name="ipn_too_short">Min. 9 digit.</string>
+  <string name="ipn_too_long">Maks. 15 digit.</string>
+  <string name="ipn_number_not_registered">Nomor ini tidak terdaftar di Tokopedia.</string>
+  <string name="ipn_toolbar_title">Ubah Nomor HP</string>
+  <string name="ipn_title">Masukkan nomor HP lama</string>
+  <string name="ipn_old_phone_number">Nomor HP lama</string>
+  <string name="ipn_next">Lanjut</string>
+
 </resources>

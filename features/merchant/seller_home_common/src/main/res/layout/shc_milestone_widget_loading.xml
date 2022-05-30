@@ -22,31 +22,34 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Misi berjualan tokopedia" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tvShcMilestoneLoadingItem1"
         android:layout_width="@dimen/shc_dimen_260dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvShcMilestoneErrorTitle" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tvShcMilestoneLoadingItem2"
         android:layout_width="@dimen/shc_dimen_125dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem1"
         app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tvShcMilestoneLoadingItem3"
         android:layout_width="@dimen/shc_dimen_312dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem2"
         app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem2" />
 

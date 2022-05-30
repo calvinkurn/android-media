@@ -83,6 +83,7 @@ class Utils {
         const val RPC_PAGE_NUMBER = "rpc_page_number"
         const val RPC_PAGE__SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
+        const val DARK_MODE = "dark_mode"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {

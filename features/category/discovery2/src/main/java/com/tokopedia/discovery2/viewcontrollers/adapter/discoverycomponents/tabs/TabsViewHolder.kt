@@ -4,7 +4,6 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -23,11 +22,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
 
 private const val TAB_START_PADDING = 20
+private const val DELAY_400 : Long = 400
 private const val SHOULD_HIDE_L1 = false
 private const val SOURCE = "best-seller"
 
@@ -70,13 +69,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        if(selectedPosition>=0 && (fragment.activity as DiscoveryActivity).isFromCategory()) {
-                            tabsHolder.gone()
-                            tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                            Handler().postDelayed({
-                                tabsHolder.show()
-                            },400)
-                            selectedPosition = -1
+                        fragment.activity?.let { activity ->
+                            if (selectedPosition >= 0 && (activity as DiscoveryActivity).isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                Handler().postDelayed({
+                                    tabsHolder.show()
+                                }, DELAY_400)
+                                selectedPosition = -1
+                            }
                         }
                     }
                 })
@@ -85,7 +86,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
+                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
                 tabMode = TabLayout.MODE_SCROLLABLE
                 removeAllTabs()
                 setBackgroundResource(0)
