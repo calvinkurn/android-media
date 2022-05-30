@@ -29,9 +29,12 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.C
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.Merchant
+import com.tokopedia.tokofood.home.domain.data.TickerItem
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
+import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeTickerResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -40,9 +43,12 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiMode
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 object TokoFoodHomeMapper {
 
@@ -77,12 +83,16 @@ object TokoFoodHomeMapper {
 
 
     fun MutableList<TokoFoodItemUiModel>.mapHomeLayoutList(
-        responses: List<HomeLayoutResponse>
+        responses: List<HomeLayoutResponse>,
+        hasTickerBeenRemoved: Boolean,
     ){
         if(isOutOfCoverage(responses)) {
             addOutOfCoverageState()
         } else {
             addChooseAddressWidget()
+            if (!hasTickerBeenRemoved) {
+               addTickerWidget()
+            }
             responses.filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }
                 .forEach { homeLayoutResponse ->
                     mapToHomeUiModel(homeLayoutResponse)?.let { item ->
@@ -112,6 +122,20 @@ object TokoFoodHomeMapper {
         responses.forEach {
             val merchant = TokoFoodMerchantListUiModel(it.id, it)
             add(TokoFoodItemUiModel(merchant, TokoFoodLayoutItemState.LOADED))
+        }
+    }
+
+    fun MutableList<TokoFoodItemUiModel>.mapTickerData(
+        item: TokoFoodHomeTickerUiModel,
+        tickerResponse: TokoFoodHomeTickerResponse
+    ){
+        updateItemById(item.visitableId) {
+            val ticker = TokoFoodHomeTickerUiModel(
+                item.visitableId,
+                mapTickerData(tickerResponse.ticker.tickerList),
+                TokoFoodLayoutState.SHOW
+            )
+            TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.LOADED)
         }
     }
 
@@ -148,7 +172,11 @@ object TokoFoodHomeMapper {
         val chooseAddressUiModel =
             TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(TokoFoodItemUiModel(chooseAddressUiModel, TokoFoodLayoutItemState.LOADED))
+    }
 
+    fun MutableList<TokoFoodItemUiModel>.addTickerWidget() {
+        val ticker = TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList(), TokoFoodLayoutState.LOADING)
+        add(TokoFoodItemUiModel(ticker, TokoFoodLayoutItemState.NOT_LOADED))
     }
 
     fun MutableList<TokoFoodItemUiModel>.setStateToLoading(item: TokoFoodItemUiModel) {
@@ -352,4 +380,17 @@ object TokoFoodHomeMapper {
         return responses.isNullOrEmpty()
     }
 
+    private fun mapTickerData(tickerList: List<TickerItem>): List<TickerData> {
+            val uiTickerList = mutableListOf<TickerData>()
+            tickerList.map { tickerData ->
+                    uiTickerList.add(
+                        TickerData(
+                            title = tickerData.title,
+                            description = tickerData.message,
+                            type = Ticker.TYPE_ANNOUNCEMENT
+                        )
+                    )
+            }
+            return uiTickerList
+    }
 }

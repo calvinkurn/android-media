@@ -61,6 +61,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeTickerViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
@@ -86,6 +87,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
         TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
         TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
+        TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
         ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     @Inject
@@ -113,6 +115,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 emptyStateLocationListener = this,
                 homeIconListener = this,
                 merchantListListener = this,
+                tickerListener = this
             ),
             differ = TokoFoodListDiffer(),
         )
@@ -271,9 +274,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickMerchant(merchant: Merchant) {
-        context?.let {
-            RouteManager.route(it, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
-        }
+        RouteManager.route(context, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
+    }
+
+    override fun onTickerDismissed(id: String) {
+        viewModel.removeTickerWidget(id)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -295,7 +300,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun getLayoutComponentData() {
-        viewModel.getLayoutComponentData()
+        viewModel.getLayoutComponentData(localCacheModel)
     }
 
     private fun loadLayout() {

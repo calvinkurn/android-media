@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 
 interface TokoFoodHomeTypeFactory {
@@ -14,4 +15,5 @@ interface TokoFoodHomeTypeFactory {
     fun type(uiModel: TokoFoodHomeIconsUiModel): Int
     fun type(uiModel: TokoFoodHomeChooseAddressWidgetUiModel): Int
     fun type(uiModel: TokoFoodHomeMerchantTitleUiModel): Int
+    fun type(uiModel: TokoFoodHomeTickerUiModel): Int
 }

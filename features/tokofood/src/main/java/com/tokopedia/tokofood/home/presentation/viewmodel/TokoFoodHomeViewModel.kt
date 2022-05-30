@@ -17,9 +17,6 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
-import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
-import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
-import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addMerchantTitle
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
@@ -29,18 +26,21 @@ import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.getVisitable
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapDynamicIcons
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapTickerData
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapUSPData
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeItem
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.setStateToLoading
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
+import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeTickerUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
@@ -55,6 +55,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
+    private val tokoFoodHomeTickerUseCase: TokoFoodHomeTickerUseCase,
     private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
@@ -81,6 +82,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
+    private var hasTickerBeenRemoved = false
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "1"
@@ -148,16 +150,32 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
+    fun removeTickerWidget(id: String) {
+        launchCatchError(block = {
+            hasTickerBeenRemoved = true
+            homeLayoutItemList.removeItem(id)
+
+            val data = TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {}
+    }
+
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-
             homeLayoutItemList.clear()
 
             val homeLayoutResponse = withContext(dispatchers.io) {
                 tokoFoodDynamicChanelUseCase.execute(localCacheModel)
             }
 
-            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
+            homeLayoutItemList.mapHomeLayoutList(
+                homeLayoutResponse.response.data,
+                hasTickerBeenRemoved
+            )
 
             val data = TokoFoodListUiModel(
                 items = getHomeVisitableList(),
@@ -165,19 +183,18 @@ class TokoFoodHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-
             }){
 
         }
     }
 
-    fun getLayoutComponentData(){
+    fun getLayoutComponentData(localCacheModel: LocalCacheModel?){
         launchCatchError(block = {
             homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
                 when (val item = it.layout){
-                    is TokoFoodHomeLayoutUiModel -> getTokoFoodHomeComponent(item)
+                    is TokoFoodHomeLayoutUiModel -> getTokoFoodHomeComponent(item, localCacheModel)
                     else -> {}
                 }
 
@@ -238,11 +255,21 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel) {
+    private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
         when (item) {
+            is TokoFoodHomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
             is TokoFoodHomeIconsUiModel -> getIconListDataAsync(item).await()
             else -> removeUnsupportedLayout(item)
+        }
+    }
+
+    private suspend fun getTickerDataAsync(item: TokoFoodHomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val uspData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
+            homeLayoutItemList.mapTickerData(item, uspData)
+        }){
+            homeLayoutItemList.removeItem(item.id)
         }
     }
 
