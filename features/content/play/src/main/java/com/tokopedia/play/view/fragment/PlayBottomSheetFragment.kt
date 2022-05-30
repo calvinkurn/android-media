@@ -327,7 +327,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun showLoadingView() {
         getLoadingDialogFragment()
-            .show(childFragmentManager)
+            .showNow(childFragmentManager)
     }
 
     private fun hideLoadingView() {
@@ -515,16 +515,24 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun observeUiEvent(){
-            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                playViewModel.uiEvent.collect { event ->
-                    when (event) {
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
                         is BuySuccessEvent -> {
                             val bottomInsetsType = if (event.isVariant) {
-                            BottomInsetsType.VariantSheet
-                        } else BottomInsetsType.ProductSheet //TEMPORARY
+                                BottomInsetsType.VariantSheet
+                            } else BottomInsetsType.ProductSheet //TEMPORARY
 
-                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.Buy,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                            )
                         }
                         is ShowInfoEvent -> {
                             doShowToaster(

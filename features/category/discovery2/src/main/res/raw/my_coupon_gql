@@ -6,6 +6,8 @@ query Discovery_myCoupons($categoryID: Int, $page: Int, $limit: Int, $serviceID:
          code
          imageURL
          imageURLMobile
+         imageHalfURL
+         imageHalfURLMobile
          minimumUsage
          minimumUsageLabel
          redirectURL
