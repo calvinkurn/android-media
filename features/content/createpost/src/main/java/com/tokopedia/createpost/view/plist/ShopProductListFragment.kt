@@ -219,11 +219,9 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-//        showLoader()
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-//        hideLoader()
     }
 
     override fun onError(pageNumber: Int) {
