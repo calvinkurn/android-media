@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -112,7 +113,7 @@ import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -130,6 +131,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalIn
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -220,6 +222,7 @@ class TokoNowHomeFragment: Fragment(),
                 homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
+                homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback()
             ),
             differ = HomeListDiffer()
@@ -1051,7 +1054,7 @@ class TokoNowHomeFragment: Fragment(),
                     it.cartId,
                     it.data
                 )
-                is HomeLeftCarouselProductCardUiModel -> trackLeftCarouselAddToCart(
+                is HomeLeftCarouselAtcProductCardUiModel -> trackLeftCarouselAddToCart(
                     it.quantity,
                     it.cartId,
                     it.data
@@ -1145,10 +1148,10 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselProductCardUiModel) {
+    private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselAtcProductCardUiModel) {
         analytics.onClickLeftCarouselAddToCart(
             quantity = quantity.toString(),
-            homeLeftCarouselProductCardUiModel = product,
+            uiModel = product,
             cartId = cartId,
         )
     }
@@ -1668,14 +1671,18 @@ class TokoNowHomeFragment: Fragment(),
         return HomeSwitcherListener(requireContext(), viewModelTokoNow)
     }
 
-    private fun createLeftCarouselCallback(): HomeLeftCarouselCallback {
-        return HomeLeftCarouselCallback(
+    private fun createLeftCarouselAtcCallback(): HomeLeftCarouselAtcCallback {
+        return HomeLeftCarouselAtcCallback(
             context = requireContext(),
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
             startActivityForResult = this::startActivityForResult
         )
+    }
+
+    private fun createLeftCarouselCallback(): MixLeftComponentListener {
+        return HomeLeftCarouselCallback(this, analytics)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
