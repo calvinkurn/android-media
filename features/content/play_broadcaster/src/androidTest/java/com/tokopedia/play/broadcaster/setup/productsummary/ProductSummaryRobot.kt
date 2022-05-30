@@ -43,14 +43,15 @@ class ProductSummaryRobot(
                 else -> ProductSummaryBottomSheet(
                     analytic = PlayBroadcastAnalytic(
                         analyticUserSession,
-                        mockk(relaxed = true),
-                        mockk(relaxed = true),
-                        mockk(relaxed = true),
-                        mockk(relaxed = true),
-                        mockk(relaxed = true),
                         setupProductAnalytic = PlayBroSetupProductAnalyticImpl(
                             userSession = analyticUserSession,
                         ),
+                        interactiveAnalytic = mockk(relaxed = true),
+                        setupMenuAnalytic = mockk(relaxed = true),
+                        setupTitleAnalytic = mockk(relaxed = true),
+                        setupCoverAnalytic = mockk(relaxed = true),
+                        summaryAnalytic = mockk(relaxed = true),
+                        scheduleAnalytic = mockk(relaxed = true),
                     )
                 )
             }
