@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.model
 
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022
@@ -40,4 +41,16 @@ class CommonModelBuilder {
             bebasOngkirURL = "",
         )
     }
+
+    fun buildSortModel(
+        text: String = "Sort",
+        key: String = "key",
+        value: String = "value",
+        isSelected: Boolean = true,
+    ) = SortUiModel(
+        text = text,
+        key = key,
+        value = value,
+        isSelected = true,
+    )
 }

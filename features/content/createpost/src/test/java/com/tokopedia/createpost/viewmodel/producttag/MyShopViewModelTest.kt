@@ -262,4 +262,51 @@ class MyShopViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user apply sort, it should reload new products based on sort`() {
+        val response = globalSearchModelBuilder.buildResponseModel()
+        val responseWithSortApplied = globalSearchModelBuilder.buildResponseModel()
+        val responseProve = globalSearchModelBuilder.buildResponseModel(size = 1)
+        val selectedSort = commonModelBuilder.buildSortModel()
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+        )
+
+        robot.use {
+            /** Setup State */
+            coEvery { mockRepo.searchAceProducts(any()) } returns response
+
+            it.recordState {
+                submitAction(ProductTagAction.LoadMyShopProduct)
+            }.andThen {
+                myShopProduct.products.assertEqualTo(response.pagedData.dataList)
+                myShopProduct.param.isParamFound(selectedSort.key, selectedSort.value).assertEqualTo(false)
+            }
+
+            /** Apply Sort */
+            coEvery { mockRepo.searchAceProducts(any()) } returns responseWithSortApplied
+
+            it.recordState {
+                submitAction(ProductTagAction.ApplyMyShopSort(selectedSort))
+            }.andThen {
+                myShopProduct.products.assertEqualTo(responseWithSortApplied.pagedData.dataList)
+                myShopProduct.param.isParamFound(selectedSort.key, selectedSort.value).assertEqualTo(true)
+            }
+
+            /** Apply Same Sort and it should not reload new products
+             * To prove it, we change the searchAceProducts response
+             * */
+            coEvery { mockRepo.searchAceProducts(any()) } returns responseProve
+
+            it.recordState {
+                submitAction(ProductTagAction.ApplyMyShopSort(selectedSort))
+            }.andThen {
+                myShopProduct.products.assertEqualTo(responseWithSortApplied.pagedData.dataList)
+                myShopProduct.param.isParamFound(selectedSort.key, selectedSort.value).assertEqualTo(true)
+            }
+        }
+    }
 }
