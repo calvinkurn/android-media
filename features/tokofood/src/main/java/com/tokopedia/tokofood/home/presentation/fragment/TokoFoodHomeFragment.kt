@@ -52,6 +52,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.home.domain.data.Merchant
 import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
@@ -61,6 +62,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeC
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
@@ -83,8 +85,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
         TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
         TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
-        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
-{
+        TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
+        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,6 +112,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 chooseAddressWidgetListener = this,
                 emptyStateLocationListener = this,
                 homeIconListener = this,
+                merchantListListener = this,
             ),
             differ = TokoFoodListDiffer(),
         )
@@ -265,6 +268,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onClickHomeIcon(applink: String) {
         RouteManager.route(context, applink)
+    }
+
+    override fun onClickMerchant(merchant: Merchant) {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

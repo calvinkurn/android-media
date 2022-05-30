@@ -9,27 +9,6 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
 
     private val context by lazy { view.getFragmentPage().context }
 
-    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {}
-
-    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {}
-
-    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
-    }
-
-    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {}
-
-    override fun onClickGridFourImage(
-        channelModel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int,
-        parentPosition: Int
-    ) {}
-
     override fun onClickGridSixImage(
         channelModel: ChannelModel,
         channelGrid: ChannelGrid,
@@ -48,6 +27,31 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
         RouteManager.route(context, channelGrid.applink)
     }
 
+    override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
+        RouteManager.route(context, channelModel.channelHeader.applink)
+    }
+
+    override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
+        RouteManager.route(context, channelModel.channelHeader.applink)
+    }
+
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {} //TODO Impress
+
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {} //TODO Impress
+
+    override fun getDynamicLegoBannerData(channelModel: ChannelModel) {}
+
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {}
+
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {}
+
+    override fun onClickGridFourImage(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        parentPosition: Int
+    ) {}
+
     override fun onClickGridTwoImage(
         channelModel: ChannelModel,
         channelGrid: ChannelGrid,
@@ -64,14 +68,6 @@ class TokoFoodHomeLegoComponentCallback(private val view: TokoFoodView): Dynamic
     override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {}
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {}
-
-    override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context, channelModel.channelHeader.applink)
-    }
-
-    override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        RouteManager.route(context, channelModel.channelHeader.applink)
-    }
 
     override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {}
 }

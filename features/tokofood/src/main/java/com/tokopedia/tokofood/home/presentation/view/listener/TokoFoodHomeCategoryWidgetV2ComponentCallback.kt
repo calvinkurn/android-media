@@ -17,10 +17,9 @@ class TokoFoodHomeCategoryWidgetV2ComponentCallback(private val view: TokoFoodVi
         RouteManager.route(context, grid.applink)
     }
 
-    override fun onImpressCategoryWidget(channelModel: ChannelModel) {
-    }
-
     override fun onSeeAllCategoryWidget(channelModel: ChannelModel) {
         RouteManager.route(context, channelModel.channelHeader.applink)
     }
+
+    override fun onImpressCategoryWidget(channelModel: ChannelModel) {} //TODO Impress
 }

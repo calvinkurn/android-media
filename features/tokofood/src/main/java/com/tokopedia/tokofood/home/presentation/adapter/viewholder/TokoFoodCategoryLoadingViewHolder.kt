@@ -15,7 +15,5 @@ class TokoFoodCategoryLoadingViewHolder(
         val LAYOUT = R.layout.item_tokofood_category_loading_state
     }
 
-    override fun bind(element: TokoFoodCategoryLoadingStateUiModel) {
-
-    }
+    override fun bind(element: TokoFoodCategoryLoadingStateUiModel) {}
 }

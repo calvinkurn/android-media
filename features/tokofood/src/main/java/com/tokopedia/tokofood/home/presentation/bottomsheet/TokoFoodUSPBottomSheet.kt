@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.databinding.BottomsheetTokofoodUspBinding
 import com.tokopedia.tokofood.home.domain.data.USPResponse

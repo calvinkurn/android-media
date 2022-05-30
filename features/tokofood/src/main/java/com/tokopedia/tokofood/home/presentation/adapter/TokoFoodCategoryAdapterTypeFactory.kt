@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 
 class TokoFoodCategoryAdapterTypeFactory(
     private val tokoFoodView: TokoFoodView? = null,
+    private val merchantListListener: TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener? = null
 ):  BaseAdapterTypeFactory(),
     TokoFoodCategoryTypeFactory,
     TokoFoodMerchantListTypeFactory,
@@ -26,7 +27,7 @@ class TokoFoodCategoryAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
-            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view)
+            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view, merchantListListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

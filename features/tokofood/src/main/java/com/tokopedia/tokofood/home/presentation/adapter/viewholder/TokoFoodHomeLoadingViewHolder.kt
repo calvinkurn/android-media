@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.home.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 
@@ -16,7 +15,5 @@ class TokoFoodHomeLoadingViewHolder (
         val LAYOUT = R.layout.item_tokofood_loading_state
     }
 
-    override fun bind(element: TokoFoodHomeLoadingStateUiModel) {
-        itemView.show()
-    }
+    override fun bind(element: TokoFoodHomeLoadingStateUiModel) {}
 }

@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
@@ -43,10 +45,12 @@ import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.home.domain.data.Merchant
 import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodCategoryViewModel
@@ -58,7 +62,9 @@ import javax.inject.Inject
 
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
-    TokoFoodView {
+    TokoFoodView,
+    TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,7 +79,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private val adapter by lazy {
         TokoFoodCategoryAdapter(
             typeFactory = TokoFoodCategoryAdapterTypeFactory(
-                this
+                tokoFoodView = this,
+                merchantListListener = this
             ),
             differ = TokoFoodListDiffer()
         )
@@ -141,7 +148,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
-        initializeMiniCartHome()
+        initializeMiniCartCategory()
     }
 
     override fun getFragmentTitle(): String? {
@@ -190,6 +197,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun onClickMerchant(merchant: Merchant) {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
+        }
+    }
+
     private fun onRefreshLayout() {
         loadLayout()
     }
@@ -202,10 +215,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        showMiniCartHome()
+                        showMiniCartCategory()
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
-                        hideMiniCartHome()
+                        hideMiniCartCategory()
                     }
                 }
             }
@@ -358,7 +371,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun initializeMiniCartHome() {
+    private fun initializeMiniCartCategory() {
         activityViewModel?.let {
             miniCartCategory?.initialize(it, viewLifecycleOwner.lifecycleScope,
                 MINI_CART_SOURCE
@@ -366,14 +379,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showMiniCartHome() {
+    private fun showMiniCartCategory() {
         miniCartCategory?.show()
         miniCartCategory?.setOnATCClickListener {
             goToPurchasePage()
         }
     }
 
-    private fun hideMiniCartHome() {
+    private fun hideMiniCartCategory() {
         miniCartCategory?.hide()
     }
 

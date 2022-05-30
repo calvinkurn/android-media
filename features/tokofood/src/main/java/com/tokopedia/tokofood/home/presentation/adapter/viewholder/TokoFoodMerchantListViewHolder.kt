@@ -20,14 +20,13 @@ import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.StringBuilder
 
 class TokoFoodMerchantListViewHolder (
-    itemView: View
+    itemView: View,
+    private val listener: TokoFoodMerchantListListener? = null
 ): AbstractViewHolder<TokoFoodMerchantListUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_merchant_list_card
-        val DUMMY_FARE_COUNT = 2
-        val DUMMY_FARE_STRING = "$"
         const val COUNT_MAX_LEVEL_PRICE = 3
     }
 
@@ -68,6 +67,9 @@ class TokoFoodMerchantListViewHolder (
         setMerchantCategory(merchant.merchantCategories)
         setPriceLevel(merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
+        binding?.root?.setOnClickListener {
+            listener?.onClickMerchant(merchant)
+        }
     }
 
     private fun setImageMerchant(imageUrl: String) {
@@ -153,13 +155,13 @@ class TokoFoodMerchantListViewHolder (
 
     private fun getPriceLevelString(priceLevel: PriceLevel): String {
         val price = StringBuilder()
-        if (DUMMY_FARE_COUNT.isMoreThanZero()){
+        if (priceLevel.fareCount.isMoreThanZero()){
             price.append("<b>")
         }
 
         for (i in 0..COUNT_MAX_LEVEL_PRICE){
-            price.append(DUMMY_FARE_STRING)
-            if(i == (DUMMY_FARE_COUNT - 1) && DUMMY_FARE_COUNT.isMoreThanZero()){
+            price.append(priceLevel.icon)
+            if(i == (priceLevel.fareCount - 1) && priceLevel.fareCount.isMoreThanZero()){
                 price.append("</b>")
             }
         }
@@ -167,4 +169,7 @@ class TokoFoodMerchantListViewHolder (
         return price.toString()
     }
 
+    interface TokoFoodMerchantListListener {
+        fun onClickMerchant(merchant: Merchant)
+    }
 }

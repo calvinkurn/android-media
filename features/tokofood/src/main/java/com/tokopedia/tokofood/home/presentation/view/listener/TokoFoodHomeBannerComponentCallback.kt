@@ -9,22 +9,6 @@ class TokoFoodHomeBannerComponentCallback(private val view: TokoFoodView): Banne
 
     private val context by lazy { view.getFragmentPage().context }
 
-    override fun onPromoScrolled(
-        channelModel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int
-    ) {
-
-    }
-
-    override fun isBannerImpressed(id: String): Boolean {
-        return false //TODO FIRMAN Impress
-    }
-
-    override fun isMainViewVisible(): Boolean {
-        return false //TODO FIRMAN Impress
-    }
-
     override fun onBannerClickListener(
         position: Int,
         channelGrid: ChannelGrid,
@@ -33,13 +17,27 @@ class TokoFoodHomeBannerComponentCallback(private val view: TokoFoodView): Banne
         RouteManager.route(context, channelGrid.applink)
     }
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-    }
-
-    override fun onPageDragStateChanged(isDrag: Boolean) {
-    }
-
     override fun onPromoAllClick(channelModel: ChannelModel) {
         RouteManager.route(context, channelModel.channelHeader.applink)
     }
+
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {}
+
+    override fun onPageDragStateChanged(isDrag: Boolean) {}
+
+    override fun onPromoScrolled(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int
+    ) {} //TODO FIRMAN Impress
+
+    override fun isBannerImpressed(id: String): Boolean {
+        return false  //TODO Firman Change to True
+    }
+
+    override fun isMainViewVisible(): Boolean {
+        return false
+    }
+
+
 }
