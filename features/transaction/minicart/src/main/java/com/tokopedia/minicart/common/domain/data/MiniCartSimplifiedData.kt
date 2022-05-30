@@ -1,9 +1,9 @@
 package com.tokopedia.minicart.common.domain.data
 
 data class MiniCartSimplifiedData(
-        var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
-        var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
-        var isShowMiniCartWidget: Boolean = false
+    var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
+    var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
+    var isShowMiniCartWidget: Boolean = false
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {
@@ -29,13 +29,16 @@ fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, M
 }
 
 data class MiniCartWidgetData(
-        var totalProductCount: Int = 0,
-        var totalProductPrice: Long = 0,
-        var totalProductError: Int = 0,
-        var containsOnlyUnavailableItems: Boolean = false,
-        var unavailableItemsCount: Int = 0,
-        var isOCCFlow: Boolean = false,
-        var buttonBuyWording: String = ""
+    var totalProductCount: Int = 0,
+    var totalProductPrice: Long = 0,
+    var totalProductError: Int = 0,
+    var containsOnlyUnavailableItems: Boolean = false,
+    var unavailableItemsCount: Int = 0,
+    var isOCCFlow: Boolean = false,
+    var buttonBuyWording: String = "",
+    var headlineWording: String = "",
+    var totalProductPriceWording: String = "",
+    var isShopActive: Boolean = false
 )
 
 data class MiniCartItemKey(
