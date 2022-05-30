@@ -88,7 +88,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private var stepModel: CreateManualAdsStepperModel? = null
 
     companion object {
-
+        private const val KEYWORD_SELECTION_LIMIT = 50
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
             fragment.arguments = extras
@@ -174,7 +174,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         if (count == 0)
             selectedInfo?.text =
                 getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_dipilih_no_keyword)
-        btnNext?.isEnabled = count < 50
+        btnNext?.isEnabled = count < KEYWORD_SELECTION_LIMIT
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
