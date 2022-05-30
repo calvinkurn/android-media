@@ -5,6 +5,7 @@ import com.tokopedia.createpost.model.LastTaggedModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
+import com.tokopedia.createpost.util.andThen
 import com.tokopedia.createpost.util.assertEqualTo
 import com.tokopedia.createpost.util.assertError
 import com.tokopedia.createpost.util.isSuccess
@@ -43,11 +44,9 @@ class LastTaggedProductViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastTaggedProduct.state.isSuccess()
                 lastTaggedProduct.products.assertEqualTo(pagedData.dataList)
                 lastTaggedProduct.nextCursor.assertEqualTo(nextCursor)
@@ -65,11 +64,9 @@ class LastTaggedProductViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastTaggedProduct.state.assertError(mockException)
             }
         }
@@ -89,25 +86,23 @@ class LastTaggedProductViewModelTest {
         )
 
         robot.use {
+            /** Setup: Load First Page */
             coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns pagedData1
 
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastTaggedProduct.state.isSuccess()
                 lastTaggedProduct.products.assertEqualTo(pagedData1.dataList)
                 lastTaggedProduct.nextCursor.assertEqualTo(nextCursor1)
             }
 
+            /** Test: Load Next Page */
             coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns pagedData2
 
-            val state2 = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state2) {
+            }.andThen {
                 lastTaggedProduct.state.isSuccess()
                 lastTaggedProduct.products.assertEqualTo(pagedData1.dataList + pagedData2.dataList)
                 lastTaggedProduct.nextCursor.assertEqualTo(nextCursor2)
@@ -128,21 +123,17 @@ class LastTaggedProductViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastTaggedProduct.state.isSuccess()
                 lastTaggedProduct.products.assertEqualTo(pagedData.dataList)
                 lastTaggedProduct.nextCursor.assertEqualTo(nextCursor)
             }
 
-            val state2 = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastTaggedProduct)
-            }
-
-            with(state2) {
+            }.andThen {
                 lastTaggedProduct.state.isSuccess()
                 lastTaggedProduct.products.assertEqualTo(pagedData.dataList)
                 lastTaggedProduct.nextCursor.assertEqualTo(nextCursor)

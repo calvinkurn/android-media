@@ -2,14 +2,10 @@ package com.tokopedia.createpost.viewmodel.producttag
 
 import com.tokopedia.createpost.model.CommonModelBuilder
 import com.tokopedia.createpost.model.LastPurchasedModelBuilder
-import com.tokopedia.createpost.model.LastTaggedModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.assertEqualTo
-import com.tokopedia.createpost.util.assertError
-import com.tokopedia.createpost.util.isError
-import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -46,11 +42,9 @@ class LastPurchasedViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastPurchasedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastPurchasedProduct.state.isSuccess()
                 lastPurchasedProduct.products.assertEqualTo(pagedData.products)
                 lastPurchasedProduct.coachmark.assertEqualTo(coachmark)
@@ -69,11 +63,9 @@ class LastPurchasedViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            it.recordState {
                 submitAction(ProductTagAction.LoadLastPurchasedProduct)
-            }
-
-            with(state) {
+            }.andThen {
                 lastPurchasedProduct.state.assertError(mockException)
             }
         }

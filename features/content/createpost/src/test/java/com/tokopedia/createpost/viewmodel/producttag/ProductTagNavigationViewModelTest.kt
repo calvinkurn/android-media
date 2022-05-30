@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.viewmodel.producttag
 
 import com.tokopedia.createpost.model.CommonModelBuilder
-import com.tokopedia.createpost.model.LastTaggedModelBuilder
 import com.tokopedia.createpost.model.ShopModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
@@ -46,25 +45,27 @@ class ProductTagNavigationViewModelTest {
         )
 
         /** Setup State */
-        robot.recordState {
-            submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.GlobalSearch))
-            submitAction(ProductTagAction.ShopSelected(selectedShop))
-        }.andThen {
-            productTagSource.productTagSourceStack.size.assertEqualTo(2)
-        }
+        robot.use {
+            robot.recordState {
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.GlobalSearch))
+                submitAction(ProductTagAction.ShopSelected(selectedShop))
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(2)
+            }
 
-        /** Test State 1 */
-        robot.recordState {
-            submitAction(ProductTagAction.BackPressed)
-        }.andThen {
-            productTagSource.productTagSourceStack.size.assertEqualTo(1)
-        }
+            /** Test State 1 */
+            robot.recordState {
+                submitAction(ProductTagAction.BackPressed)
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(1)
+            }
 
-        /** Test State 2 */
-        robot.recordState {
-            submitAction(ProductTagAction.BackPressed)
-        }.andThen {
-            productTagSource.productTagSourceStack.size.assertEqualTo(0)
+            /** Test State 2 */
+            robot.recordState {
+                submitAction(ProductTagAction.BackPressed)
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(0)
+            }
         }
     }
 
@@ -76,11 +77,13 @@ class ProductTagNavigationViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.recordEvent {
-            submitAction(ProductTagAction.ClickBreadcrumb)
-        }.andThen {
-            last().assertEqualTo(ProductTagUiEvent.ShowSourceBottomSheet)
-            verify{ mockSharedPref.setNotFirstGlobalTag() }
+        robot.use {
+            robot.recordEvent {
+                submitAction(ProductTagAction.ClickBreadcrumb)
+            }.andThen {
+                last().assertEqualTo(ProductTagUiEvent.ShowSourceBottomSheet)
+                verify{ mockSharedPref.setNotFirstGlobalTag() }
+            }
         }
     }
 
@@ -95,17 +98,19 @@ class ProductTagNavigationViewModelTest {
         )
 
         /** Setup State */
-        robot.getViewModel().apply {
-            submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.GlobalSearch))
-            submitAction(ProductTagAction.ShopSelected(selectedShop))
-        }
+        robot.use {
+            robot.getViewModel().apply {
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.GlobalSearch))
+                submitAction(ProductTagAction.ShopSelected(selectedShop))
+            }
 
-        /** Test State */
-        robot.recordState {
-            submitAction(ProductTagAction.ClickBreadcrumb)
-        }.andThen {
-            productTagSource.productTagSourceStack.size.assertEqualTo(1)
-            verify{ mockSharedPref.setNotFirstGlobalTag() }
+            /** Test State */
+            robot.recordState {
+                submitAction(ProductTagAction.ClickBreadcrumb)
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(1)
+                verify{ mockSharedPref.setNotFirstGlobalTag() }
+            }
         }
     }
 
@@ -119,16 +124,18 @@ class ProductTagNavigationViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        /** Setup State */
-        robot.getViewModel().apply {
-            submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
-        }
+        robot.use {
+            /** Setup State */
+            robot.getViewModel().apply {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+            }
 
-        /** Test State */
-        robot.recordEvent {
-            submitAction(ProductTagAction.OpenAutoCompletePage)
-        }.andThen {
-            last().assertEqualTo(ProductTagUiEvent.OpenAutoCompletePage(query))
+            /** Test State */
+            robot.recordEvent {
+                submitAction(ProductTagAction.OpenAutoCompletePage)
+            }.andThen {
+                last().assertEqualTo(ProductTagUiEvent.OpenAutoCompletePage(query))
+            }
         }
     }
 
@@ -143,11 +150,13 @@ class ProductTagNavigationViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.recordState {
-            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, ""))
-        }.andThen {
-            productTagSource.productTagSourceStack.last().assertEqualTo(source)
-            globalSearchProduct.param.query.assertEqualTo(query)
+        robot.use {
+            robot.recordState {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, ""))
+            }.andThen {
+                productTagSource.productTagSourceStack.last().assertEqualTo(source)
+                globalSearchProduct.param.query.assertEqualTo(query)
+            }
         }
     }
 
@@ -166,11 +175,13 @@ class ProductTagNavigationViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.recordState {
-            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
-        }.andThen {
-            productTagSource.productTagSourceStack.last().assertEqualTo(source)
-            shopProduct.param.query.assertEqualTo(query)
+        robot.use {
+            robot.recordState {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+            }.andThen {
+                productTagSource.productTagSourceStack.last().assertEqualTo(source)
+                shopProduct.param.query.assertEqualTo(query)
+            }
         }
     }
 
@@ -188,15 +199,17 @@ class ProductTagNavigationViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.recordEvent {
-            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
-        }.andThen {
-            val lastEvent = last()
-            if(lastEvent is ProductTagUiEvent.ShowError) {
-                lastEvent.throwable.assertEqualTo(mockException)
-            }
-            else {
-                fail("Event should be ProductTagUiEvent.ShowError")
+        robot.use {
+            robot.recordEvent {
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+            }.andThen {
+                val lastEvent = last()
+                if(lastEvent is ProductTagUiEvent.ShowError) {
+                    lastEvent.throwable.assertEqualTo(mockException)
+                }
+                else {
+                    fail("Event should be ProductTagUiEvent.ShowError")
+                }
             }
         }
     }
