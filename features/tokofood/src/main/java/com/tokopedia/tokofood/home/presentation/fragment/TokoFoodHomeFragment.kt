@@ -374,7 +374,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onClickListTransactionButton() {
-        RouteManager.route(context, ApplinkConst.ORDER_LIST)
+        RouteManager.route(context, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
     }
 
     private fun observeLiveData() {
