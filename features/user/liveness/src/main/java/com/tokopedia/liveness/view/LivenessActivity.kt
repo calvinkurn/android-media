@@ -48,10 +48,10 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         )
 
         intent?.data?.let {
-            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)
+            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
 
             intent?.extras?.apply {
-                putString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+                putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId.toInt())
             }
         }
 

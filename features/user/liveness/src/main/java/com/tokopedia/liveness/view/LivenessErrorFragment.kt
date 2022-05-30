@@ -38,7 +38,7 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toString()
             detectionFailedType = it.getSerializable(LivenessConstants.ARG_FAILED_TYPE) as Detector.DetectionFailedType
         }
     }

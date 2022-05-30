@@ -67,7 +67,7 @@ class LivenessFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toString()
         }
     }
 
