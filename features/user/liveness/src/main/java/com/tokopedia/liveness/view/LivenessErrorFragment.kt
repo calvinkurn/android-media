@@ -91,9 +91,9 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
 
     override fun trackOnBackPressed() {
         when(detectionFailedType) {
-            TIMEOUT -> { analytics.eventClickBackConnectionTimeout(projectId) }
+            TIMEOUT -> { analytics.eventClickBackTimeout(projectId) }
             else -> {
-                analytics.eventClickBackTimeout(projectId)
+                analytics.eventClickBackConnectionTimeout(projectId)
             }
         }
     }
