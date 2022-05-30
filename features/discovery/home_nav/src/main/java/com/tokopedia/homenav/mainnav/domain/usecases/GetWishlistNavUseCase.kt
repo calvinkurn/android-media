@@ -143,11 +143,27 @@ class GetWishlistNavUseCase @Inject constructor (
 
         putInt(PARAM_PAGE, page)
         putInt(PARAM_LIMIT, limit)
+        putString(PARAM_SOURCE, PARAM_SOURCE_VALUE)
+        putObject(PARAM_SORT_FILTER, constructFilter())
+    }
+
+    private fun constructFilter() : HashMap<String, Any> {
+        return HashMap<String, Any>().apply {
+            put(PARAM_FILTER_NAME, PARAM_FILTER_NAME_VALUE)
+            put(PARAM_FILTER_SELECTED, listOf(PARAM_FILTER_SELECTED_VALUE))
+        }
     }
 
     companion object{
         private const val PARAM_PAGE = "page"
         private const val PARAM_LIMIT = "limit"
+        private const val PARAM_SOURCE = "source"
+        private const val PARAM_SOURCE_VALUE = "navigation"
+        private const val PARAM_SORT_FILTER = "sort_filters"
+        private const val PARAM_FILTER_NAME = "name"
+        private const val PARAM_FILTER_NAME_VALUE = "stock"
+        private const val PARAM_FILTER_SELECTED = "selected"
+        private const val PARAM_FILTER_SELECTED_VALUE = "2"
         private const val PARAM_PAGE_VALUE = 1
         private const val PARAM_LIMIT_VALUE = 5
         private const val LABEL_CASHBACK = "cashback"
