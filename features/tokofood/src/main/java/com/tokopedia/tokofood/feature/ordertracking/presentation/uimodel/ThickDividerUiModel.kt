@@ -1,0 +1,22 @@
+package com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel
+
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
+
+
+class ThickDividerUiModel: BaseOrderTrackingTypeFactory {
+
+    override fun type(typeFactory: OrderTrackingAdapterTypeFactoryImpl): Int {
+        return typeFactory.type(this)
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return true
+    }
+}
