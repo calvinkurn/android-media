@@ -18,10 +18,10 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
-import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmDeactivationQuestionnaireBinding
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.QuestionnaireAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -79,7 +79,7 @@ class DeactivationQuestionnaireBottomSheet :
 
     private val questionnaireAdapter by lazy {
         BaseListAdapter<QuestionnaireUiModel, QuestionnaireAdapterFactoryImpl>(
-            QuestionnaireAdapterFactoryImpl()
+            QuestionnaireAdapterFactoryImpl(::setOnQuestionnaireSelected)
         )
     }
     private var onDeactivationSuccess: (() -> Unit)? = null
@@ -221,11 +221,11 @@ class DeactivationQuestionnaireBottomSheet :
         view?.let {
             Toaster.toasterCustomBottomHeight =
                 it.context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
-            Toaster.build(it.rootView, message, duration, Toaster.TYPE_ERROR, ctaText,
-                View.OnClickListener {
-                    action()
-                }
-            ).show()
+            Toaster.build(
+                it.rootView, message, duration, Toaster.TYPE_ERROR, ctaText
+            ) {
+                action()
+            }.show()
         }
     }
 
@@ -248,7 +248,34 @@ class DeactivationQuestionnaireBottomSheet :
             ).parseAsHtml()
             nestedScrollPmDeactivation.visible()
             containerPmFooterDeactivation.visible()
+            tvPmDeactivateTnc.text = getString(
+                R.string.pm_tnc_description_pm_deactivation
+            ).parseAsHtml()
+            tvPmDeactivateTnc.setOnClickListener {
+                showTncBottomSheet()
+            }
         }
+    }
+
+    private fun showTncBottomSheet() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun setOnQuestionnaireSelected() {
+        var isNoAnswer = false
+        questionnaireAdapter.data.forEach {
+            if (!isNoAnswer) {
+                isNoAnswer = it.isNoAnswer()
+            }
+        }
+
+        binding?.btnPmDeactivationSubmit?.isEnabled = !isNoAnswer
+        isNoAnswer = false
     }
 
     private fun submitDeactivationPm() {

@@ -10,20 +10,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+        app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelinePmShopGradeRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+        app:layout_constraintGuide_end="16dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clCurrentGrade"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="@+id/containerPmShopGrade"
         app:layout_constraintStart_toStartOf="@+id/containerPmShopGrade"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,8 +44,8 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/badge_pm"
-                    android:layout_width="@dimen/unify_space_24"
-                    android:layout_height="@dimen/unify_space_24"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     app:icon_enable_state="false"
                     app:icon_name="BADGE_PM_FILLED"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -54,9 +54,9 @@
 
                 <View
                     android:id="@+id/separator"
-                    android:layout_width="@dimen/unify_space_16"
-                    android:layout_height="@dimen/unify_space_2"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="16dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="4dp"
                     android:background="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/badge_pm"
@@ -64,9 +64,9 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/badge_pm_pro_advanced"
-                    android:layout_width="@dimen/unify_space_24"
-                    android:layout_height="@dimen/unify_space_24"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
                     app:icon_enable_state="true"
                     app:icon_name="BADGE_PMPRO_FILLED"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -78,20 +78,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_marginStart="4dp"
                     android:text="@string/pm_power_merchant_step_pro_advanced"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_advanced"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="display_3"
-                    app:typographyWeight="bold" />
+                    app:typographyType="body_3" />
 
                 <View
                     android:id="@+id/separator2"
-                    android:layout_width="@dimen/unify_space_16"
-                    android:layout_height="@dimen/unify_space_2"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="16dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="4dp"
                     android:background="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/text_pm_pro_advanced"
@@ -99,9 +98,9 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/badge_pm_pro_expert"
-                    android:layout_width="@dimen/unify_space_24"
-                    android:layout_height="@dimen/unify_space_24"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
                     app:icon_enable_state="true"
                     app:icon_name="BADGE_PMPRO_FILLED"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -113,20 +112,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_marginStart="4dp"
                     android:text="@string/pm_power_merchant_step_pro_expert"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_expert"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="display_3"
-                    app:typographyWeight="bold" />
+                    app:typographyType="body_3" />
 
                 <View
                     android:id="@+id/separator3"
-                    android:layout_width="@dimen/unify_space_16"
-                    android:layout_height="@dimen/unify_space_2"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="16dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="4dp"
                     android:background="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/text_pm_pro_expert"
@@ -135,9 +133,9 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/badge_pm_pro_ultimate"
-                    android:layout_width="@dimen/unify_space_24"
-                    android:layout_height="@dimen/unify_space_24"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
                     app:icon_enable_state="true"
                     app:icon_name="BADGE_PMPRO_FILLED"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -149,7 +147,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_marginStart="4dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@string/pm_power_merchant_step_pro_ultimate"
@@ -157,31 +155,30 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/badge_pm_pro_ultimate"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="display_3"
-                    app:typographyWeight="bold" />
+                    app:typographyType="body_3" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </HorizontalScrollView>
 
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevronPmGrade"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_color_light_disabled="@color/Unify_NN900"
             app:icon_color_light_enable="@color/Unify_NN900"
             app:icon_enable_state="true"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="@id/svGrade"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/svGrade"
-             />
+            app:layout_constraintTop_toTopOf="@id/svGrade" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPmShopGradeBackground"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/containerPmShopGrade"
         app:layout_constraintEnd_toEndOf="@+id/containerPmShopGrade"
@@ -191,9 +188,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPmShopGrade"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@id/clCurrentGrade">
@@ -202,8 +199,8 @@
             android:id="@+id/tvPmShopGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="@string/power_merchant_status_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -215,7 +212,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/bg_pm_status_label_active"
             android:paddingStart="@dimen/spacing_lvl2"
             android:paddingTop="@dimen/spacing_lvl1"
@@ -232,7 +229,7 @@
             android:id="@+id/imgPmShopGrade"
             android:layout_width="@dimen/gmc_dimen_54dp"
             android:layout_height="@dimen/gmc_dimen_54dp"
-            android:layout_margin="@dimen/layout_lvl2"
+            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:unify_image_placeholder="@android:color/transparent"
@@ -258,7 +255,7 @@
         android:id="@+id/wrapperPmShopScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@+id/containerPmShopGrade">
@@ -290,10 +287,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmShopGradeThreshold"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
@@ -306,10 +303,10 @@
 
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PMProStatusInfoView
         android:id="@+id/pmProStatusInfoView"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
@@ -321,8 +318,8 @@
         android:id="@+id/icPmShopScoreTips"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_name="LIGHT_BULB"
@@ -333,7 +330,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmShopScoreTips"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:text="@string/power_merchant_performance_tips"

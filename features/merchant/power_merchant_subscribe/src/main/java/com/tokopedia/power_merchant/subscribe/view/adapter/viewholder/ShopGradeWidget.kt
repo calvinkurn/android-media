@@ -1,9 +1,10 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
-import android.graphics.*
-import android.os.Build
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
@@ -11,7 +12,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
@@ -20,14 +27,10 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmShopGradeBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
-import android.R.color
-import android.util.TypedValue
-import androidx.core.content.ContextCompat
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.unifyprinciples.Typography
 
 
 /**
@@ -64,7 +67,7 @@ class ShopGradeWidget(
 
 
         when {
-            isPm ->{
+            isPm -> {
                 stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
                 stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
                 stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
@@ -77,6 +80,7 @@ class ShopGradeWidget(
                 stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
                 binding?.separator?.stepSeparatorInActive()
                 binding?.separator3?.stepSeparatorInActive()
+                binding?.textPmProAdvanced?.setWeight(Typography.BOLD)
 
             }
             isPmProExpert -> {
@@ -85,6 +89,7 @@ class ShopGradeWidget(
                 stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
                 binding?.separator?.stepSeparatorInActive()
                 binding?.separator2?.stepSeparatorInActive()
+                binding?.textPmProExpert?.setWeight(Typography.BOLD)
             }
             isPmProUltimate -> {
                 stepInActive(binding?.badgePm)
@@ -93,6 +98,7 @@ class ShopGradeWidget(
                 binding?.separator?.stepSeparatorInActive()
                 binding?.separator2?.stepSeparatorInActive()
                 binding?.separator3?.stepSeparatorInActive()
+                binding?.textPmProUltimate?.setWeight(Typography.BOLD)
             }
         }
 
@@ -108,11 +114,9 @@ class ShopGradeWidget(
         val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
         stepIcon?.iconImg?.colorFilter = colorMatrixColorFilter
         stepIcon?.layoutParams?.height =
-            itemView.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-                .toInt()
+            itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         stepIcon?.layoutParams?.width =
-            itemView.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-                .toInt()
+            itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
 
         text?.setTextColor(
             ContextCompat.getColor(
@@ -120,10 +124,10 @@ class ShopGradeWidget(
                 com.tokopedia.unifyprinciples.R.color.Unify_NN400
             )
         )
-        text?.setWeight(Typography.BOLD)
 
     }
-    private fun View?.stepSeparatorInActive(){
+
+    private fun View?.stepSeparatorInActive() {
         this?.setBackgroundColor(
             ContextCompat.getColor(
                 itemView.context,

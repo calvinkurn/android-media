@@ -30,12 +30,22 @@ class FeeServiceWidget(
     private val binding: ItemFeeServiceBinding? by viewBinding()
 
     override fun bind(element: WidgetFeeServiceUiModel) {
-        binding?.chevron?.setOnClickListener {
-            listener.showServiceFeeByCategory()
-            powerMerchantTracking.sendEventClickFeeService(element.shopScore.orZero().toString())
+        binding?.run {
+
+            tvPmLearnFee.setOnClickListener {
+                onLearnFeeClicked(element)
+            }
+            chevron.setOnClickListener {
+                onLearnFeeClicked(element)
+            }
+            root.addOnImpressionListener(element.impressHolder){
+                powerMerchantTracking.sendEventImpressFeeService(element.shopScore.toString())
+            }
         }
-        binding?.root?.addOnImpressionListener(element.impressHolder){
-            powerMerchantTracking.sendEventImpressFeeService(element.shopScore.toString())
-        }
+    }
+
+    private fun onLearnFeeClicked(element: WidgetFeeServiceUiModel) {
+        listener.showServiceFeeByCategory()
+        powerMerchantTracking.sendEventClickFeeService(element.shopScore.orZero().toString())
     }
 }
