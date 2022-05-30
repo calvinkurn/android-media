@@ -14,7 +14,7 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
-import com.tokopedia.createpost.common.TYPE_USER
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
@@ -111,7 +111,7 @@ class SubmitPostServiceNew : JobIntentService() {
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
-    private fun isTypeBuyer(authorType: String) = authorType == TYPE_USER
+    private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
     private fun getProgressManager(viewModel: CreatePostViewModel): com.tokopedia.createpost.common.view.util.PostUpdateProgressManager {
         val firstImage = ""
