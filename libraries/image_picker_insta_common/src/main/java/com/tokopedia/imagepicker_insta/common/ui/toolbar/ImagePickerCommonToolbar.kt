@@ -83,6 +83,9 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     fun getToolbarParentView(): ConstraintLayout {
         return toolbarParent
     }
+    fun showHideExpandIcon(shouldShowExpandIcon: Boolean){
+        toolbarExpandIcon.visibility = if(shouldShowExpandIcon) View.VISIBLE else View.GONE
+    }
 
     fun setOnBackClickListener(listener: AccountClickListener?) {
         mOnBackListener = listener

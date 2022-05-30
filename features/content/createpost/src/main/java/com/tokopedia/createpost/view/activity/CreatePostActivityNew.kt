@@ -277,6 +277,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
+        createPostViewModel.authorType = selectedFeedAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
@@ -311,11 +312,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
         selectedFeedAccount = if(mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: mFeedAccountList.first()
+        val createPostViewModel =
+            (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
+            createPostViewModel?.let {
+                showHideExpandIcon(!createPostViewModel.isEditState)
+            }
+
 
             setOnBackClickListener {
                 onBackPressed()
