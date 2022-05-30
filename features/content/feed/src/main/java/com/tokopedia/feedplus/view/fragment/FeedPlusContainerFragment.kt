@@ -80,6 +80,7 @@ import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedplus.view.customview.FeedFloatingButton
 
 
 /**
@@ -138,6 +139,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
+    
+    /** View */
+    private lateinit var fabFeed: FloatingButtonUnify
+    private lateinit var feedFloatingButton: FeedFloatingButton
 
     private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -202,11 +207,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        setupView(view)
         initNavRevampAbTest()
         initToolbar()
         initView()
         requestFeedTab()
         initFab()
+    }
+    
+    private fun setupView(view: View) {
+        fabFeed = view.findViewById(R.id.fab_feed)
+        feedFloatingButton = view.findViewById(R.id.feed_floating_button)
     }
 
     private fun initNavRevampAbTest() {
@@ -279,14 +290,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         hideAllFab()
         shouldHitFeedTracker = true
         unRegisterNewFeedReceiver()
-        feed_floating_button.stopTimer()
+        feedFloatingButton.stopTimer()
     }
 
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        feed_floating_button.checkFabMenuStatusWithTimer {
-            fab_feed.menuOpen
+        feedFloatingButton.checkFabMenuStatusWithTimer {
+            fabFeed.menuOpen
         }
 
         if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
@@ -470,24 +481,24 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
 
     private fun initFab() {
-        fab_feed.type = FloatingButtonUnify.BASIC
-        fab_feed.color = FloatingButtonUnify.COLOR_GREEN
-        fab_feed.circleMainMenu.visibility = View.INVISIBLE
+        fabFeed.type = FloatingButtonUnify.BASIC
+        fabFeed.color = FloatingButtonUnify.COLOR_GREEN
+        fabFeed.circleMainMenu.visibility = View.INVISIBLE
 
-        feed_floating_button.setOnClickListener {
-            fab_feed.menuOpen = !fab_feed.menuOpen
-            if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
+        feedFloatingButton.setOnClickListener {
+            fabFeed.menuOpen = !fabFeed.menuOpen
+            if (fabFeed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
     }
 
     override fun expandFab() {
-        if(!fab_feed.menuOpen) {
-            feed_floating_button.expand()
+        if(!fabFeed.menuOpen) {
+            feedFloatingButton.expand()
         }
     }
 
     override fun shrinkFab() {
-        feed_floating_button.shrink()
+        feedFloatingButton.shrink()
     }
 
     override fun onStop() {
@@ -606,7 +617,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     title = getString(R.string.feed_fab_create_post),
                     listener = {
                         try {
-                            fab_feed.menuOpen = false
+                            fabFeed.menuOpen = false
                             entryPointAnalytic.clickCreatePostEntryPoint()
                             val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
                             if (shouldShowNewContentCreationFlow) {
@@ -639,10 +650,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
 
         if (items.isNotEmpty()) {
-            fab_feed.addItem(items)
-            feed_floating_button.show()
+            fabFeed.addItem(items)
+            feedFloatingButton.show()
         } else {
-            feed_floating_button.hide()
+            feedFloatingButton.hide()
         }
     }
 
@@ -651,7 +662,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
             title = getString(R.string.feed_fab_create_live),
             listener = {
-                fab_feed.menuOpen = false
+                fabFeed.menuOpen = false
                 entryPointAnalytic.clickCreateLiveEntryPoint()
 
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
@@ -751,7 +762,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             return
         }
 
-        fab_feed.menuOpen = false
+        fabFeed.menuOpen = false
     }
 
     private fun onGoToLink(link: String) {
@@ -768,17 +779,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun showCreatePostOnBoarding() {
-        feed_floating_button.addOneTimeGlobalLayoutListener {
+        feedFloatingButton.addOneTimeGlobalLayoutListener {
             val location = IntArray(2)
-            feed_floating_button.getLocationOnScreen(location)
+            feedFloatingButton.getLocationOnScreen(location)
 
             val x1 = location[0]
             val y1 = location[1]
-            val x2 = x1 + feed_floating_button.width
-            val y2 = y1 + feed_floating_button.height
+            val x2 = x1 + feedFloatingButton.width
+            val y2 = y1 + feedFloatingButton.height
 
             coachMarkItem = CoachMarkItem(
-                feed_floating_button,
+                feedFloatingButton,
                 getString(R.string.feed_onboarding_create_post_title),
                 getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
@@ -790,7 +801,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized
             && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
-            && feed_floating_button.visibility == View.VISIBLE) {
+            && feedFloatingButton.visibility == View.VISIBLE) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }

@@ -76,6 +76,9 @@ class DynamicFeedFragment:
 
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+    
+    /** View */
+    private lateinit var rvDynamicFeed: RecyclerView
 
     private var isLoading = false
     private var isForceRefresh = false
@@ -86,26 +89,28 @@ class DynamicFeedFragment:
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
+        initView(view)
         initViewListener()
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_dynamic_feed.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        rvDynamicFeed.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.cancel()
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
+        rvDynamicFeed = view.findViewById(R.id.rv_dynamic_feed)
+            
         feedFloatingButtonManager.setInitialData(requireParentFragment())
         feedKey = arguments?.getString(KEY_FEED) ?: ""
         presenter.attachView(this)
-        rv_dynamic_feed.addOnScrollListener(feedFloatingButtonManager.scrollListener)
-        rv_dynamic_feed.adapter = adapter
-        rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
+        rvDynamicFeed.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+        rvDynamicFeed.adapter = adapter
+        rvDynamicFeed.layoutManager = LinearLayoutManager(activity)
         feedAnalyticTracker.eventOpenTrendingPage()
-        feedFloatingButtonManager.setDelayForExpandFab(rv_dynamic_feed)
+        feedFloatingButtonManager.setDelayForExpandFab(rvDynamicFeed)
     }
 
     private fun initViewListener() {
@@ -124,7 +129,7 @@ class DynamicFeedFragment:
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return rv_dynamic_feed
+        return rvDynamicFeed
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
