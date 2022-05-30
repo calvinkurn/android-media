@@ -71,7 +71,7 @@ class GetMerchantCampaignTNCUseCase @Inject constructor(
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(
-            QUERY,
+            GetMerchantCampaignTNC(),
             GetMerchantCampaignTNCResponse::class.java,
             params
         )
