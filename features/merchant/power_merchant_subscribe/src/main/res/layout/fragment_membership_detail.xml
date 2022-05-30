@@ -131,11 +131,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/pm_membership_detail_info_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dotPmMembership2"
                 app:layout_constraintTop_toBottomOf="@+id/tvPmMembership1"
-                app:typographyType="small" />
+                app:typographyType="small"
+                tools:text="@string/pm_membership_detail_info_2" />
 
             <View
                 android:id="@+id/dotPmMembership3"

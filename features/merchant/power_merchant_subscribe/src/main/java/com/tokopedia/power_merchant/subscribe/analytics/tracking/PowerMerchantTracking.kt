@@ -450,18 +450,10 @@ class PowerMerchantTracking @Inject constructor(
         event: String, category: String,
         action: String, label: String
     ): MutableMap<String, Any> {
-        val map = TrackAppUtils.gtmData(
-            event, category, action, label
-        )
-        map[TrackingConstant.KEY_BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
-        map[TrackingConstant.KEY_CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
-        map[TrackingConstant.KEY_SHOP_ID] = userSession.shopId
-        map[TrackingConstant.KEY_USER_ID] = userSession.userId
-
-        return map
+        return TrackerUtils.createEvent(userSession, event, category, action, label)
     }
 
     private fun sendEvent(map: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+        TrackerUtils.sendEvent(map)
     }
 }

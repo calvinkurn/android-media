@@ -237,7 +237,7 @@
     <string name="pm_info_benefit_increase_title">Level Toko naik, keuntungan bertambah!</string>
     <string name="pm_submit_activation_success">Hore! Kamu berhasil gabung di program Power Merchant.</string>
     <string name="pm_membership_detail_info_1">PM PRO Advanced, Expert, dan Ultimate dievaluasi berdasarkan Level Toko.</string>
-    <string name="pm_membership_detail_info_2">Level toko akan diperbarui setiap bulan di hari Senin pertama. Pelajari Performa Toko</string>
+    <string name="pm_membership_detail_info_2"><![CDATA[Level toko akan diperbarui setiap bulan di hari Senin pertama. <br><font color="#03AC0E">Pelajari Performa Toko</font>]]></string>
     <string name="pm_membership_detail_info_3">Kenaikan paket keuntungan dilakukan tiap bulan &amp; penurunan setiap kuartal.</string>
     <string name="pm_membership_benefit_topads"><![CDATA[Ekstra kredit TopAds <b>%1$s</b>]]></string>
     <string name="pm_membership_benefit_broad_cast_chat"><![CDATA[Kuota Broadcast Chat hingga <b>%1$s</b>]]></string>

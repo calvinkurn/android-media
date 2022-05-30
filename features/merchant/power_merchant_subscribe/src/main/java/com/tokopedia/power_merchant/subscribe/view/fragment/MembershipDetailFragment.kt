@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
@@ -32,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.MembershipDetailTracker
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentMembershipDetailBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
@@ -63,6 +66,9 @@ class MembershipDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker: MembershipDetailTracker
 
     private val viewModel: MembershipDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -153,7 +159,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorPmShopInfo(throwable: Throwable) {
-
+        Timber.e(throwable)
     }
 
     private fun onSuccessPmShopInfo(data: MembershipBasicInfoUiModel) {
@@ -161,6 +167,28 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         showHeaderInfo(data.headerData)
         setupPagerItems(data.pmShopInfo, data.headerData.gradeName)
         setupTabs()
+        sendImpressionTrackerEvent()
+        showShopPerformanceFooterInfo()
+    }
+
+    private fun showShopPerformanceFooterInfo() {
+        binding?.run {
+            tvPmMembership2.text = getString(R.string.pm_membership_detail_info_2).parseAsHtml()
+            tvPmMembership2.setOnClickListener {
+                RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+                sendClickShopPerformanceEvent()
+            }
+        }
+    }
+
+    private fun sendClickShopPerformanceEvent() {
+        val currentGrade = basicInfo?.headerData?.gradeName.orEmpty()
+        tracker.sendClickLearnShopPerformanceEvent(currentGrade)
+    }
+
+    private fun sendImpressionTrackerEvent() {
+        val currentGrade = basicInfo?.headerData?.gradeName.orEmpty()
+        tracker.sendImpressionMembershipPageEvent(currentGrade)
     }
 
     private fun setupViewPager() {
@@ -218,6 +246,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     setOnTabSelected()
+                    sendTrackerOnTabClicked()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -245,6 +274,14 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             } catch (e: Exception) {
                 setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
             }
+        }
+    }
+
+    private fun sendTrackerOnTabClicked() {
+        binding?.run {
+            val position = tabPmMembership.tabLayout.selectedTabPosition
+            val tabLabel = pagerAdapter.getPmGradeList().getOrNull(position)?.tabLabel.orEmpty()
+            tracker.sendClickPmGradeTabEvent(tabLabel)
         }
     }
 
