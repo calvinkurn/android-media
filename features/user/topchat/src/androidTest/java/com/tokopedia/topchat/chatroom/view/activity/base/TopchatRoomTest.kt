@@ -348,6 +348,11 @@ abstract class TopchatRoomTest {
         activity = activityTestRule.activity
     }
 
+    protected fun finishChatRoomActivity() {
+        pressBackUnconditionally()
+        activityTestRule.finishActivity()
+    }
+
     protected fun changeResponseStartTime(
         response: WebSocketResponse,
         exStartTime: String

@@ -73,6 +73,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
+    //Product Card Single
+    ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
+    ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
+
     //Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
     NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
@@ -92,6 +96,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
+    ProductListNetworkErrorLoad(R.layout.discovery_list_2_buttons_empty_state, ComponentNames.ProductListNetworkErrorLoad.componentName),
 
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
