@@ -452,14 +452,13 @@ open class PowerMerchantSubscriptionFragment :
         }
 
         view?.run {
-            val actionText = getString(R.string.power_merchant_ok_label)
             Toaster.toasterCustomBottomHeight =
                 context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+            val message = getString(R.string.pm_cancel_pm_deactivation_message)
             Toaster.build(
-                rootView, data.message, Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL, actionText
-            )
-                .show()
+                rootView, message, Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            ).show()
         }
 
         fetchPowerMerchantBasicInfo()

@@ -249,4 +249,7 @@
     <string name="pm_membership_current_grade_pm_title">Kamu sudah jadi Power Merchant! \nSelanjutnya, penuhi target PM PRO, yuk.</string>
     <string name="pm_membership_current_grade_title">Kamu sudah jadi %1$s! \nPertahankan, ya.</string>
     <string name="pm_membership_next_grade_title">Capai Level %1$d untuk jadi %2$s dengan memenuhi target ini!</string>
+    <string name="pm_tnc_description_pm_deactivation"><![CDATA[Dengan kembali jadi Regular Merchant, saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku]]></string>
+    <string name="pm_new_label">Baru</string>
+    <string name="pm_cancel_pm_deactivation_message">Permintaan untuk berhenti dari program Power Merchant dibatalkan.</string>
 </resources>

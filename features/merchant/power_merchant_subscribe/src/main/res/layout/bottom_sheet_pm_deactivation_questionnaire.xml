@@ -63,28 +63,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
+        android:orientation="vertical"
         android:visibility="invisible"
         tools:visibility="visible">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnPmDeactivationCancel"
-            android:layout_width="@dimen/layout_lvl0"
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmDeactivateTnc"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_weight="1"
-            android:text="@string/pm_later"
-            app:unifyButtonVariant="ghost" />
+            android:layout_marginTop="12dp"
+            app:typographyType="small"
+            tools:text="@string/pm_tnc_description_pm_deactivation" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnPmDeactivationSubmit"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_weight="1"
-            android:text="@string/label_send_answer" />
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="@string/label_send_answer"
+            app:unifyButtonSize="medium" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPmDeactivationCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/pm_later"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify

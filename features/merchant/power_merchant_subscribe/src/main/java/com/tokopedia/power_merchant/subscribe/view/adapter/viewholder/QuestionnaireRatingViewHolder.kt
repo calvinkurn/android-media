@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmQuestionnaireRatingBinding
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -13,7 +14,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class QuestionnaireRatingViewHolder(
-        itemView: View
+    itemView: View,
+    private val onAnswerSelected: () -> Unit
 ) : BaseViewHolder<QuestionnaireUiModel.QuestionnaireRatingUiModel>(itemView) {
 
     companion object {
@@ -26,9 +28,9 @@ class QuestionnaireRatingViewHolder(
     private fun Context.getRatingStatusList(): Lazy<Array<String>> {
         return lazy {
             arrayOf(
-                    getString(R.string.pm_rate_1_star), getString(R.string.pm_rate_2_star),
-                    getString(R.string.pm_rate_3_star), getString(R.string.pm_rate_4_star),
-                    getString(R.string.pm_rate_5_star)
+                getString(R.string.pm_rate_1_star), getString(R.string.pm_rate_2_star),
+                getString(R.string.pm_rate_3_star), getString(R.string.pm_rate_4_star),
+                getString(R.string.pm_rate_5_star)
             )
         }
     }
@@ -39,15 +41,17 @@ class QuestionnaireRatingViewHolder(
 
     private fun showItem(element: QuestionnaireUiModel.QuestionnaireRatingUiModel) = binding?.run {
         tvPmDeactivationRatingQuestion.text = element.question
-        ratingPmDeactivation.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
+        ratingPmDeactivation.setListener(object :
+            AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onRatingSelected(rating: Int) {
                 element.givenRating = rating
                 setRatingStatusText(rating)
+                onAnswerSelected()
             }
         })
     }
 
     private fun ItemPmQuestionnaireRatingBinding.setRatingStatusText(rating: Int) {
-        tvPmRatingStatus.text = ratingStatusList.getOrNull(rating.minus(1)).orEmpty()
+        tvPmRatingStatus.text = ratingStatusList.getOrNull(rating.minus(Int.ONE)).orEmpty()
     }
 }
