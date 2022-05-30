@@ -172,6 +172,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.observe(fragment.viewLifecycleOwner) {
             renderWidget(it)
+            miniCartWidgetListener?.onCartItemsUpdated(it)
         }
     }
 
