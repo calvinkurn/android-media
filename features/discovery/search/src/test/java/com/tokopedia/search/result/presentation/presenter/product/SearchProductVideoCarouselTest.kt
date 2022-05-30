@@ -9,9 +9,9 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -95,7 +95,7 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
     private fun `Then verify visitable list has video widget and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -116,8 +116,8 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 9 -> {
@@ -210,7 +210,7 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
     private fun `Then verify visitable list has product sequence and no video widget on first page`() {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -222,7 +222,7 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
         // 9 -> product
         // 10 -> product
         // 11 -> product
-        // 12 -> product
+        // 12 -> productØ
         // 13 -> product
         // 14 -> product
         visitableList.size shouldBe 15
@@ -230,8 +230,8 @@ internal class SearchProductVideoCarouselTest: ProductListPresenterTestFixtures(
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataView"
                     )
                 }
                 else -> {

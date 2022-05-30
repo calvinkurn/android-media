@@ -11,35 +11,43 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.topads.freeclaim.R
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.style.WebViewURLSpan
-import kotlinx.android.synthetic.main.widget_ticker_free_claim.view.*
 
 class TopAdsWidgetFreeClaim @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr){
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
+) : FrameLayout(context, attrs, defStyleAttr) {
+
+    private var imgTopAdsAnnouncement: ImageUnify? = null
+    private var contentText: Typography? = null
+
     init {
         instatiateView()
     }
 
     private fun instatiateView() {
         inflate(context, R.layout.widget_ticker_free_claim, this)
-        img_top_ads_announcement.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_top_ads_announcement))
+        imgTopAdsAnnouncement = findViewById(R.id.img_top_ads_announcement)
+        contentText = findViewById(R.id.content_text)
+        imgTopAdsAnnouncement?.setImageDrawable(AppCompatResources.getDrawable(context,
+            R.drawable.ic_top_ads_announcement))
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        content_text.movementMethod = LinkMovementMethod.getInstance()
+        contentText?.movementMethod = LinkMovementMethod.getInstance()
         invalidate()
         requestLayout()
     }
 
-    fun setContent(spanned: Spanned){
+    fun setContent(spanned: Spanned) {
         val spannable = spanned as Spannable
         spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
             val start = spannable.getSpanStart(it)
             val end = spannable.getSpanEnd(it)
             spannable.removeSpan(it)
-            val urlSpan = WebViewURLSpan( it.url).apply {
+            val urlSpan = WebViewURLSpan(it.url).apply {
                 listener = object : WebViewURLSpan.OnClickListener {
                     override fun onClick(url: String) {
                         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -51,7 +59,7 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
             }
             spannable.setSpan(urlSpan, start, end, 0)
         }
-        content_text.setText(spannable)
+        contentText?.setText(spannable)
         invalidate()
         requestLayout()
     }

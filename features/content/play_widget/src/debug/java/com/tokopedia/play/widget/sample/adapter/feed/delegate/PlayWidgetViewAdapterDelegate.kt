@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.sample.adapter.feed.viewholder.PlayWidgetViewHolder
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayFeedUiModel
@@ -21,7 +20,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         private val coordinator: PlayWidgetCoordinator
     ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Jumbo>(
-            R.layout.item_play_widget_jumbo
+            R.layout.item_play_widget_jumbo_sample
         ) {
 
         override fun onCreateViewHolder(
@@ -43,7 +42,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         private val coordinator: PlayWidgetCoordinator
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayWidgetViewHolder.Large>(
-            R.layout.item_play_widget_large
+            R.layout.item_play_widget_large_sample
         ) {
         override fun onBindViewHolder(
             item: PlayWidgetLargeUiModel,

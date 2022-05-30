@@ -10,10 +10,19 @@ import com.tokopedia.track.TrackApp
  * Created by dhaba
  */
 class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventHandler): MerchantVoucherComponentListener {
-    override fun onViewAllClicked(headerName: String, seeMoreAppLink: String, userId: String) {
+    override fun onViewAllCardClicked(headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String) {
         val tracking = OSMerchantVoucherTracking.getClickViewAll(headerName, userId, dcEventHandler.getOSCategory()?.title ?: "")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         dcEventHandler.goToApplink(seeMoreAppLink)
+    }
+
+    override fun onViewAllClicked(
+        headerName: String,
+        seeMoreAppLink: String,
+        userId: String,
+        campaignCode: String
+    ) {
+        onViewAllCardClicked(headerName, seeMoreAppLink, userId, campaignCode)
     }
 
     override fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {

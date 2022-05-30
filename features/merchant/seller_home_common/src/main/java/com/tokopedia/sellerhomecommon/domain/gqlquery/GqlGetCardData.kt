@@ -17,6 +17,7 @@ object GqlGetCardData : GqlQueryInterface {
               value
               state
               description
+              descriptionSecondary
               error
               errorMsg
               showWidget

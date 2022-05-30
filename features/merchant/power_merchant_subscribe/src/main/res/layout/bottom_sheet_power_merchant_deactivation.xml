@@ -31,27 +31,6 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle"
             app:typographyType="body_2" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/imagePowerMerchant"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/gmc_dimen_18dp"
-            app:icon_name="BADGE_PM_FILLED"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textDescription" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textPowerMerchant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:gravity="center_vertical"
-            android:text="@string/pm_badge_power_merchant"
-            android:textColor="@color/Unify_N700"
-            app:layout_constraintBottom_toBottomOf="@id/imagePowerMerchant"
-            app:layout_constraintLeft_toRightOf="@id/imagePowerMerchant"
-            app:layout_constraintTop_toTopOf="@id/imagePowerMerchant"
-            app:typographyType="body_2" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageTopAds"
@@ -61,7 +40,7 @@
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="SHOP_FAVORITE"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagePowerMerchant" />
+            app:layout_constraintTop_toBottomOf="@id/textDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTopAds"
@@ -122,13 +101,36 @@
             app:layout_constraintTop_toTopOf="@id/imageBroadcastChat"
             app:typographyType="body_2" />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/imageExcellentFeature"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/gmc_dimen_20dp"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_name="PROMO"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textBroadcastChat" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textExcellentFeature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:gravity="center_vertical"
+            android:text="@string/pm_get_excellent_feature"
+            android:textColor="@color/Unify_N700"
+            app:layout_constraintBottom_toBottomOf="@id/imageExcellentFeature"
+            app:layout_constraintLeft_toRightOf="@id/imageExcellentFeature"
+            app:layout_constraintTop_toTopOf="@id/imageExcellentFeature"
+            app:typographyType="body_2" />
+
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/gmc_dimen_18dp"
             app:closeButtonVisibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/textBroadcastChat"
+            app:layout_constraintTop_toBottomOf="@+id/textExcellentFeature"
             app:tickerShapeType="loose"
             app:tickerType="warning" />
 

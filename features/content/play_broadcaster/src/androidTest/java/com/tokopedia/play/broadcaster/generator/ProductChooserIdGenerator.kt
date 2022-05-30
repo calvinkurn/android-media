@@ -14,13 +14,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
-import com.tokopedia.play.broadcaster.helper.FileWriter
-import com.tokopedia.play.broadcaster.helper.PrintCondition
-import com.tokopedia.play.broadcaster.helper.ViewHierarchyPrinter
 import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -40,12 +38,15 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogC
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.test.application.id_generator.FileWriter
+import com.tokopedia.test.application.id_generator.PrintCondition
+import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
+import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -175,7 +176,9 @@ class ProductChooserIdGenerator {
         }
     )
 
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
     private val fileWriter = FileWriter()
 
     init {
@@ -200,8 +203,7 @@ class ProductChooserIdGenerator {
         scenario.onFragment {
             val bottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "product_chooser.csv",
                 text = info
             )
@@ -224,8 +226,7 @@ class ProductChooserIdGenerator {
             val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val sortBottomSheet = ProductSortBottomSheet.getFragment(chooserBottomSheet.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = sortBottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "product_sort.csv",
                 text = info
             )
@@ -247,8 +248,7 @@ class ProductChooserIdGenerator {
         scenario.onFragment {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "etalase_list.csv",
                 text = info
             )
@@ -263,11 +263,5 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
-    }
-
-    companion object {
-
-        private val dateFormatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
-        private val folderName = dateFormatter.format(Date())
     }
 }

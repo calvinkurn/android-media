@@ -10,6 +10,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 
@@ -42,7 +43,8 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
             otpType = otpData.otpType.toString(),
             mode = modeListData.modeText,
             userIdEnc = otpData.userIdEnc,
-            validateToken = otpData.accessToken
+            validateToken = otpData.accessToken,
+            userId = otpData.userId.toIntOrZero()
         )
     }
 
@@ -69,36 +71,11 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
                 this.indexOf(message),
-                this.length,
-                0
-            )
-        }
-    }
-
-    private fun getEmailFooterSpan(): SpannableString {
-        val msgMeta = context?.getString(R.string.inactive_phone_text_footer_email_challenge_meta).orEmpty()
-        val msgAction = context?.getString(R.string.inactive_phone_text_footer_email_challenge_action).orEmpty()
-
-        return SpannableString("$msgMeta \n $msgAction").apply {
-            setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        analytics.trackClickRequestChangePhoneNumberOnPin()
-                        gotoRegularFlow()
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                this.indexOf(msgAction),
                 this.length,
                 0
             )

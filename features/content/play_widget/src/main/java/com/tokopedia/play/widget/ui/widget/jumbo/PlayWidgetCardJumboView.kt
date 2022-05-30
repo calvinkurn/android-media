@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.widget.jumbo
 
 import android.content.Context
+import android.graphics.Matrix
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,10 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -60,7 +64,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
     private val ratio: Double
-        get() = 4.0/5.0
+        get() = WIDTH_RATIO/ HEIGHT_RATIO
 
     private lateinit var mModel: PlayWidgetChannelUiModel
 
@@ -84,6 +88,23 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
+
+        thumbnail.onUrlLoaded = { isSuccess ->
+            if (isSuccess) {
+                thumbnail.post {
+                    //need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
+                    //without post, the drawable will be null most of the time
+                    val drawable = thumbnail.drawable ?: return@post
+                    val wScale = (thumbnail.width / drawable.intrinsicWidth).toFloat()
+                    val hScale = (thumbnail.height / drawable.intrinsicHeight).toFloat()
+
+                    val scale = wScale.coerceAtLeast(hScale)
+                    thumbnail.imageMatrix = Matrix().apply {
+                        postScale(scale,scale)
+                    }
+                }
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -227,5 +248,10 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
         )
+    }
+
+    companion object {
+        private const val WIDTH_RATIO = 4.0
+        private const val HEIGHT_RATIO = 5.0
     }
 }
