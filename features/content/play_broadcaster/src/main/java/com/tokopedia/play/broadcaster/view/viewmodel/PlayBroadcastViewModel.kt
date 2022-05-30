@@ -166,6 +166,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             } else "0"
         )
 
+    var hasLeaderBoard: Boolean = false
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -730,14 +731,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun showInteractiveGameResultWidget() {
-        viewModelScope.launchCatchError(dispatcher.io, block = {
-            _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
-        }) { err ->
-            err.printStackTrace()
-        }
-    }
-
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
@@ -1011,6 +1004,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            hasLeaderBoard = leaderboardSlots.isNotEmpty()
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
@@ -1020,10 +1014,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
-            if (leaderboardSlots.isNotEmpty())
-                showInteractiveGameResultWidget()
+            if (leaderboardSlots.isNotEmpty()) {
+                hasLeaderBoard = true
+                _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
+            }
         }) {
-
+            it.printStackTrace()
         }
     }
 
@@ -1282,7 +1278,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 delay(interactive.waitingDuration)
             else
                 delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            showInteractiveGameResultWidget()
+            displayGameResultWidgetIfHasLeaderBoard()
             _interactive.value = InteractiveUiModel.Unknown
         }) {
             _interactive.value = InteractiveUiModel.Unknown
@@ -1302,7 +1298,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 delay(interactive.waitingDuration)
             else
                 delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            showInteractiveGameResultWidget()
+            displayGameResultWidgetIfHasLeaderBoard()
             _interactive.value = InteractiveUiModel.Unknown
         }) {
             _interactive.value = InteractiveUiModel.Unknown

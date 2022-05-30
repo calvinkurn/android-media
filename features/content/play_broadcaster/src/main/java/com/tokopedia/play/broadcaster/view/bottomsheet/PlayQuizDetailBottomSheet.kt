@@ -7,7 +7,10 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -18,6 +21,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -26,8 +30,9 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class PlayQuizDetailBottomSheet @Inject constructor(
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
-) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val analytic: PlayBroadcastAnalytic,
+    ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
@@ -172,6 +177,23 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         dismiss()
     }
 
+    override fun onChatWinnerButtonClicked(
+        view: PlayInteractiveLeaderboardViewComponent,
+        winner: PlayWinnerUiModel,
+        position: Int
+    ) {
+        analytic.onClickChatWinnerIcon(
+            parentViewModel.channelId,
+            parentViewModel.interactiveId,
+            parentViewModel.activeInteractiveTitle
+        )
+        RouteManager.route(
+            requireContext(),
+            "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
+            winner.id,
+            winner.topChatMessage
+        )    }
+
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
@@ -201,9 +223,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     companion object {
         private const val ARG_TYPE = "ARG_TYPE"
         private const val ARG_SIZE = "ARG_SIZE"
+        private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
 
         private const val TAG = "PlayQuizDetailBottomSheet"
-        fun getFragment(
+        private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             type: Type,
@@ -219,6 +242,27 @@ class PlayQuizDetailBottomSheet @Inject constructor(
                     putString(ARG_SIZE, size.toString())
                 }
             }
+        }
+
+        fun setupQuizDetail(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) :PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager,classLoader,Type.QUIZ_DETAIL,Size.HALF)
+        }
+
+        fun setupOngoingLeaderboard(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) :PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager,classLoader,Type.LEADERBOARD,Size.HALF)
+        }
+
+        fun setupReportLeaderboard(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ) :PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager,classLoader,Type.LEADERBOARD,Size.FULL)
         }
     }
 

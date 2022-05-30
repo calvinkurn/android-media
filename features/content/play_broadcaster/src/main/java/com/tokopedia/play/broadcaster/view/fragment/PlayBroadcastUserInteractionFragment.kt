@@ -1044,20 +1044,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //    }
 
     private fun openQuizDetailSheet() {
-        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.QUIZ_DETAIL)
+        val quizDetailBottomSheet = PlayQuizDetailBottomSheet.setupQuizDetail(
+            childFragmentManager,
+            requireContext().classLoader
+        )
+        quizDetailBottomSheet.show(childFragmentManager)
     }
 
     private fun openLeaderboardSheet() {
-        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.LEADERBOARD)
-    }
-
-    private fun openInteractiveBottomSheet(type: PlayQuizDetailBottomSheet.Type) {
-        val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
+        val ongoingLeaderboardBottomSheet = PlayQuizDetailBottomSheet.setupOngoingLeaderboard(
             childFragmentManager,
-            requireContext().classLoader,
-            type
+            requireContext().classLoader
         )
-        playQuizDetailBottomSheet.show(childFragmentManager)
+        ongoingLeaderboardBottomSheet.show(childFragmentManager)
     }
 
     companion object {

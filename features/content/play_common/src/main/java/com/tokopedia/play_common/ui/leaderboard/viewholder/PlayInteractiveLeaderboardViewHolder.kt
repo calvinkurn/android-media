@@ -108,7 +108,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         tvEmpty.text = leaderboard.emptyLeaderBoardCopyText
         tvOtherParticipant.hide()
         rvWinner.hide()
-        tvEmpty.show()
+        tvEmpty.showWithCondition(leaderboard.emptyLeaderBoardCopyText.isNotBlank())
     }
 
     private fun showQuiz(leaderboard: PlayLeaderboardUiModel){

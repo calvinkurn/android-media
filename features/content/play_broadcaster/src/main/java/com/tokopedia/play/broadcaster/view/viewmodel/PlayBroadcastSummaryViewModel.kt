@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
@@ -12,7 +13,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
@@ -22,7 +22,6 @@ import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.util.extension.setValue
@@ -30,8 +29,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * @author by jessica on 27/05/20
@@ -40,7 +41,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
-    @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
+    @Assisted private val hasLeaderBoard: Boolean,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
@@ -58,7 +59,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
             productSectionList: List<ProductTagSectionUiModel>,
-            summaryLeaderboardInfo: SummaryLeaderboardInfo,
+            hasLeaderBoard: Boolean,
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -263,7 +264,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                     )
 
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if(participantResponse.playInteractiveGetSummaryLivestream.participantCount > 0) {
+                if (hasLeaderBoard) {
                     add(TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
                             count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString(),

@@ -60,7 +60,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle,
                         parentViewModel.productSectionList,
-                        parentViewModel.summaryLeaderboardInfo,
+                        parentViewModel.hasLeaderBoard
                     ) as T
                 }
             }

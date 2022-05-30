@@ -160,9 +160,8 @@ class PlayInteractiveLeaderboardViewComponent(
         fun onChatWinnerButtonClicked(
             view: PlayInteractiveLeaderboardViewComponent,
             winner: PlayWinnerUiModel,
-            position: Int
-        ) {
-        }
+            position: Int,
+        ){}
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
         fun onChoiceItemClicked(item: QuizChoicesUiModel) {}
     }
