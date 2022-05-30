@@ -3,7 +3,7 @@ package com.tokopedia.digital_deals.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PackageViewModel implements Parcelable {
+public class PackageModel implements Parcelable {
 
     private int id;
     private int productId;
@@ -156,7 +156,7 @@ public class PackageViewModel implements Parcelable {
     }
 
 
-    public PackageViewModel() {
+    public PackageModel() {
     }
 
     @Override
@@ -185,7 +185,7 @@ public class PackageViewModel implements Parcelable {
         dest.writeInt(this.brandId);
     }
 
-    protected PackageViewModel(Parcel in) {
+    protected PackageModel(Parcel in) {
         this.id = in.readInt();
         this.productId = in.readInt();
         this.convenienceFee = in.readInt();
@@ -205,15 +205,15 @@ public class PackageViewModel implements Parcelable {
         this.brandId = in.readInt();
     }
 
-    public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {
+    public static final Creator<PackageModel> CREATOR = new Creator<PackageModel>() {
         @Override
-        public PackageViewModel createFromParcel(Parcel source) {
-            return new PackageViewModel(source);
+        public PackageModel createFromParcel(Parcel source) {
+            return new PackageModel(source);
         }
 
         @Override
-        public PackageViewModel[] newArray(int size) {
-            return new PackageViewModel[size];
+        public PackageModel[] newArray(int size) {
+            return new PackageModel[size];
         }
     };
 }

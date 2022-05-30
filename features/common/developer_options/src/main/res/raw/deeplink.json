@@ -1943,12 +1943,7 @@
           "destination_activity": "com.tokopedia.digital_deals.view.activity.DealDetailsActivity", 
           "deeplink": "tokopedia-android-internal://global/deals-slug/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.digital_deals.view.activity.BrandDetailsActivity", 
-          "deeplink": "tokopedia-android-internal://global/deals-brand/.*\\/", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.search.activity.EventSearchActivity", 
           "deeplink": "tokopedia-android-internal://event/search", 
