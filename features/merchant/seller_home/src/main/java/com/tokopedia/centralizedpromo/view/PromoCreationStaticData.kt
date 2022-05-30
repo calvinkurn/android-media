@@ -24,7 +24,8 @@ object PromoCreationStaticData {
         isProductCouponFirstTime: Boolean,
         isTokopediaPlayFirstTime: Boolean,
         isProductCouponEnabled: Boolean,
-        isSlashPriceEnabled: Boolean
+        isSlashPriceEnabled: Boolean,
+        isSlashPriceEligible: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -41,13 +42,19 @@ object PromoCreationStaticData {
         )
 
         if (isSlashPriceEnabled) {
+            val slashPriceApplink =
+                if (isSlashPriceEligible) {
+                    ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+                } else {
+                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                }
             promoItems.add(
                 PromoCreationUiModel(
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
                     resourceProvider.getPromoCreationExtraSlashPrice(),
-                    ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+                    slashPriceApplink
                 )
             )
         }
