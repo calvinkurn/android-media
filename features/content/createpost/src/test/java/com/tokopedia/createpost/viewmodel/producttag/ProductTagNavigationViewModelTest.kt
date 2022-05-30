@@ -282,4 +282,23 @@ class ProductTagNavigationViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user selects a product, it should emit product selected event`() {
+        val selectedProduct = commonModelBuilder.buildProduct()
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.use {
+            robot.recordEvent {
+                submitAction(ProductTagAction.ProductSelected(selectedProduct))
+            }.andThen {
+                last().assertEqualTo(ProductTagUiEvent.ProductSelected(selectedProduct))
+            }
+        }
+    }
 }
