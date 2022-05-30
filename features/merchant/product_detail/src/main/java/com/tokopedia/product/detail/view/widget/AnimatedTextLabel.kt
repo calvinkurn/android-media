@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.getTypeface
 
 class AnimatedTextLabel : FrameLayout {
     constructor(context: Context) : super(context)
@@ -47,7 +46,7 @@ class AnimatedTextLabel : FrameLayout {
     }
 
     fun showView(desc: String) {
-        val processText = elipsisText(desc)
+        val processText = ellipsisText(desc)
         if (processText.isNotEmpty()) {
             if (previousText.isNotEmpty() && previousText != processText) {
                 animationHelper?.animateFadeOut(animatorSet)
@@ -74,7 +73,7 @@ class AnimatedTextLabel : FrameLayout {
         }
     }
 
-    private fun elipsisText(desc: String): String {
+    private fun ellipsisText(desc: String): String {
         return if (desc.length > 15) {
             desc.take(15) + "..."
         } else {
@@ -89,7 +88,6 @@ class AnimatedTextLabel : FrameLayout {
 
     private fun getWidth(text: String, txtSize: Float): Int {
         val paint = Paint()
-        paint.typeface = getTypeface(context, "OpenSauceOneRegular.ttf")
         paint.textSize = txtSize
 
         return (paint.measureText(text, 0, text.length) + 16.dpToPx(resources.displayMetrics)).toInt()
@@ -102,6 +100,17 @@ class TextLabelAnimator(private val txtView: Typography) {
         private const val CUBIC_BEZIER_X2 = 0.29f
         private const val CUBIC_BEZIER_Y1 = 0.01f
         private const val CUBIC_BEZIER_Y2 = 1f
+
+        private const val SWIPE_DURATION = 200L
+        private const val WIDTH_DURATION = 200L
+        private const val ALPHA_300_DURATION = 300L
+        private const val ALPHA_100_DURATION = 100L
+
+        private const val TRANSLATION_DURATION = 150L
+        private const val TRANSLATION_MULTIPLY_VALUE = 100
+        private const val TRANSLATION_X_BOTTOM_VALUE = 0.1F
+
+        private const val OFFSET_HEIGHT_VALUE = 50
     }
 
     fun animateChangeText(desc: String,
@@ -112,15 +121,15 @@ class TextLabelAnimator(private val txtView: Typography) {
                     txtView.text = desc
                 }) {
 
-                }).with(createAlphaAnimator(txtView.alpha, 1F, 300L))
+                }).with(createAlphaAnimator(txtView.alpha, 1F, ALPHA_300_DURATION))
         animatorSet.start()
     }
 
     fun animateFadeOut(animatorSet: AnimatorSet) {
-        animatorSet.play(createAlphaAnimator(1F, 0F, 100L))
+        animatorSet.play(createAlphaAnimator(1F, 0F, ALPHA_100_DURATION))
         txtView.text = ""
         txtView.width = 0
-        txtView.translationX = -0.1F
+        txtView.translationX = -TRANSLATION_X_BOTTOM_VALUE
         txtView.alpha = 0F
         txtView.show()
     }
@@ -133,7 +142,7 @@ class TextLabelAnimator(private val txtView: Typography) {
         containerLabel.y = parentHeight
         containerLabel.animate()
                 .y(0F)
-                .setDuration(200L)
+                .setDuration(SWIPE_DURATION)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(p0: Animator?) {
@@ -160,10 +169,10 @@ class TextLabelAnimator(private val txtView: Typography) {
         txtView.show()
         containerLabel.show()
         containerLabel.y = 0F
-        val parentHeight = measureParentHeight(containerLabel).toFloat() + 50
+        val parentHeight = measureParentHeight(containerLabel).toFloat() + OFFSET_HEIGHT_VALUE
         containerLabel.animate()
                 .y(parentHeight)
-                .setDuration(200L)
+                .setDuration(SWIPE_DURATION)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(p0: Animator?) {
@@ -192,7 +201,7 @@ class TextLabelAnimator(private val txtView: Typography) {
 
     private fun createWidthAnimator(start: Int, end: Int): Animator {
         return ValueAnimator.ofInt(start, end).apply {
-            duration = 200L
+            duration = WIDTH_DURATION
             interpolator = PathInterpolatorCompat.create(CUBIC_BEZIER_X1, CUBIC_BEZIER_Y1, CUBIC_BEZIER_X2, CUBIC_BEZIER_Y2)
             addUpdateListener { newValue ->
                 val layoutParamsCopy = txtView.layoutParams
@@ -213,12 +222,12 @@ class TextLabelAnimator(private val txtView: Typography) {
     private fun createTranslationXAnimator(onAnimationStart: () -> Unit,
                                            onAnimationEnd: () -> Unit): Animator {
         val x = txtView.x
-        return ValueAnimator.ofFloat(0.1F, 0F).apply {
-            duration = 150L
+        return ValueAnimator.ofFloat(TRANSLATION_X_BOTTOM_VALUE, 0F).apply {
+            duration = TRANSLATION_DURATION
             interpolator = LinearInterpolator()
             addUpdateListener { newValue ->
                 val t = this.animatedValue as Float
-                txtView.translationX = x + t * 100
+                txtView.translationX = x + t * TRANSLATION_MULTIPLY_VALUE
             }
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator?) {

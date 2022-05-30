@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
@@ -62,6 +64,12 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?)
         private val binding = ItemImgThumbnailViewHolderBinding.bind(view)
 
         override fun bind(element: ThumbnailDataModel) {
+            if (element.media.isVideoType()) {
+                binding.pdpVideoThumbnail.show()
+            } else {
+                binding.pdpVideoThumbnail.hide()
+            }
+
             binding.pdpImgThumbnail.loadImage(element.media.urlOriginal)
             setupBackground(element)
             view.setOnClickListener {

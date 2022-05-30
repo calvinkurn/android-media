@@ -19,12 +19,12 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
-import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailAdapter
 import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailListener
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -41,6 +41,10 @@ class VideoPictureView @JvmOverloads constructor(
     private var animator: ThumbnailAnimator? = null
     private var binding: WidgetVideoPictureBinding = WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
     private var lastPosition = 0
+    private var smoothScroller = ThumbnailSmoothScroller(
+            context,
+            binding.pdpMainThumbnailRv
+    )
 
     init {
         addView(binding.root)
@@ -84,7 +88,7 @@ class VideoPictureView @JvmOverloads constructor(
         } ?: Int.ZERO
 
         updateThumbnail(selectedPosition)
-        scrollToPosition(selectedPosition)
+        scrollToPosition(selectedPosition, true)
         renderVideoOnceAtPosition(selectedPosition)
     }
 
@@ -104,7 +108,7 @@ class VideoPictureView @JvmOverloads constructor(
             val isSelected = selectedPosition == index
             data.copy(isSelected = isSelected)
         } ?: listOf())
-        binding.pdpMainThumbnailRv.smoothScrollToPosition(selectedPosition)
+        smoothScroller.scrollThumbnail(selectedPosition)
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
@@ -122,7 +126,7 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpMainThumbnailRv.layoutParams.height = 0
 
         thumbnailAdapter = ProductMainThumbnailAdapter(this)
-        binding.pdpMainThumbnailRv.layoutManager = CenterLayoutManager(context,
+        binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL,
                 false)
         binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
