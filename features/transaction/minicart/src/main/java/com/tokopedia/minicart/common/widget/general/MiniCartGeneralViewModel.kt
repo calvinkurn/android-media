@@ -90,6 +90,7 @@ class MiniCartGeneralViewModel @Inject constructor(
         }
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
+                it.isShowMiniCartWidget = it.miniCartWidgetData.totalProductCount > 0 && it.miniCartWidgetData.isShopActive
                 _miniCartSimplifiedData.value = it
             },
             onError = {
