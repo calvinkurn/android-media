@@ -58,7 +58,7 @@ class CMHomeWidgetPaymentCardViewHolder(
     }
 
     private fun setActionButtonText(text: String?) {
-        binding.btnCmHomeWidgetProduct.text = text
+        binding.btnCmHomeWidgetPayment.text = text
     }
 
     private fun setTimer(time: Long) {
@@ -86,7 +86,7 @@ class CMHomeWidgetPaymentCardViewHolder(
     }
 
     private fun setOnClickListeners(dataItem: CMHomeWidgetPaymentData) {
-        binding.btnCmHomeWidgetProduct.setOnClickListener {
+        binding.btnCmHomeWidgetPayment.setOnClickListener {
             listener.onPaymentBtnClick(dataItem)
         }
         binding.root.setOnClickListener {

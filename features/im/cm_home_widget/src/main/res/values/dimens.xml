@@ -12,4 +12,5 @@
     <dimen name="cm_home_widget_dp_80">80dp</dimen>
     <dimen name="cm_home_widget_dp_40">40dp</dimen>
     <dimen name="cm_home_widget_dp_20">20dp</dimen>
+    <dimen name="cm_home_widget_dp_36">36dp</dimen>
 </resources>

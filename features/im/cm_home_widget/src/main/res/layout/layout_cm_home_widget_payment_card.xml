@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_cm_home_widget_payment_card"
-    android:layout_width="248dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:card_type="shadow">
 
@@ -39,7 +39,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cm_home_widget_payment_account_no"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/cm_home_widget_dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
@@ -56,10 +56,9 @@
             android:layout_marginTop="@dimen/unify_space_4"
             android:text="@string/total_pembayaran"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_cm_home_widget_payment_amt"
             app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment"
-            app:layout_constraintEnd_toStartOf="@+id/v_cm_home_widget_divider"
             app:typographyType="body_3"
             tools:text="@string/total_pembayaran" />
 
@@ -75,14 +74,15 @@
             app:typographyWeight="bold"
             tools:text="Rp1.799.000'" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/v_cm_home_widget_divider"
-            android:layout_width="1dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="9dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_product"
+            android:layout_width="@dimen/cm_home_widget_dp_1"
+            android:layout_height="@dimen/cm_home_widget_dp_36"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_payment"
             app:layout_constraintStart_toEndOf="@+id/tv_cm_home_widget_payment_amt_label"
             app:layout_constraintEnd_toStartOf="@+id/timer"
             android:background="#BFC9D9"/>
@@ -92,12 +92,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginTop="@dimen/unify_space_8"
             android:text="@string/sisa_waktu"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
             app:layout_constraintBottom_toTopOf="@+id/timer"
+            app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_payment_amt_label"
             app:typographyType="body_3"
             tools:text="@string/sisa_waktu" />
 
@@ -107,21 +106,23 @@
             android:layout_height="wrap_content"
             app:timer_unify_single_variant="general"
             app:timer_unify_single_textWidth="wrap"
-            android:layout_marginStart="@dimen/dp_14"
             app:timer_unify_single_type="hour"
+            app:layout_constraintStart_toStartOf="@+id/tv_cm_home_widget_payment_timer_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
-            app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
             />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_cm_home_widget_product"
-            android:layout_width="match_parent"
+            android:id="@+id/btn_cm_home_widget_payment"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/cm_home_widget_dp_6"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_amt"
             app:unifyButtonSize="small"
             app:unifyButtonVariant="ghost"
-            tools:text="Lihat Cara Bayar" />
+            tools:text="Lihat Cara Bayar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
