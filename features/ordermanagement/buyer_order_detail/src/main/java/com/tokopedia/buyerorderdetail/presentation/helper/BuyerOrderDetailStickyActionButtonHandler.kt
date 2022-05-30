@@ -65,6 +65,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 onRespondToSubmissionOrderExtensionClicked()
                 ""
             }
+            BuyerOrderDetailActionButtonKey.SEE_POD -> {
+                onSeePODButtonClicked(button.url)
+                ""
+            }
             else -> ""
         }
         if (buttonName.isNotBlank()) {
@@ -163,5 +167,9 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 )
             }
         }
+    }
+
+    private fun onSeePODButtonClicked(url: String) {
+        navigator.openAppLink(url, false)
     }
 }
