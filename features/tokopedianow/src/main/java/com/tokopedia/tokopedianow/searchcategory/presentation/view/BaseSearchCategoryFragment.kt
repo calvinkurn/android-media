@@ -106,10 +106,10 @@ import javax.inject.Inject
 import kotlin.collections.set
 
 abstract class BaseSearchCategoryFragment:
-        BaseDaggerFragment(),
-        ChooseAddressListener,
-        BannerComponentListener,
-        TitleListener,
+    BaseDaggerFragment(),
+    ChooseAddressListener,
+    BannerComponentListener,
+    TitleListener,
     CategoryFilterListener,
     QuickFilterListener,
     SortFilterBottomSheet.Callback,

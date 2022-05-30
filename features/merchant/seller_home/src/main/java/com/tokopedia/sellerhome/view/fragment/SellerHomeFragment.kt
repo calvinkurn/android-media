@@ -451,6 +451,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
     }
 
+    override fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationTickerCtaClickEvent(element)
+    }
+
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
         showCoachMarkShopScore()
@@ -1285,8 +1289,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 newWidget.apply {
                                     data = oldWidget.data.also {
                                         if (it is LastUpdatedDataInterface && newData != null) {
-                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
-                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                            it.lastUpdated.lastUpdatedInMillis =
+                                                newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated =
+                                                newData.lastUpdated.needToUpdated
                                         }
                                     }
                                     isLoaded = oldWidget.isLoaded
@@ -1515,8 +1521,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE,
-                        it.data.firstOrNull()?.isFromCache
-                            ?: false
+                        it.data.firstOrNull()?.isFromCache.orFalse()
                     )
                     onSuccessGetTickers(it.data)
                 }
