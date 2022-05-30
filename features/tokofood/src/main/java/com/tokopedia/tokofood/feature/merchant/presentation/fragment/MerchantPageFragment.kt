@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -50,6 +49,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPa
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -63,7 +63,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     MerchantCarouseItemViewHolder.OnCarouselItemClickListener,
     ProductCardViewHolder.OnProductCardItemClickListener,
     OrderNoteBottomSheet.OnSaveNoteButtonClickListener,
-    CategoryFilterBottomSheet.CategoryFilterListener {
+    CategoryFilterBottomSheet.CategoryFilterListener,
+    ProductDetailBottomSheet.Listener {
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -85,6 +86,10 @@ class MerchantPageFragment : BaseMultiFragment(),
     private val viewModel by lazy {
         viewModelProvider.get(MerchantPageViewModel::class.java)
     }
+
+    private val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
+
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
     private var orderNoteBottomSheet: OrderNoteBottomSheet? = null
@@ -126,7 +131,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                Toast.makeText(requireContext(), "click on share", Toast.LENGTH_LONG).show()
+                shareMerchantPage()
                 true
             }
             R.id.action_open_global_menu -> {
@@ -231,7 +236,6 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun fetchMerchantData() {
-        val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
         val dummyLatLong = "-6.2,106.816666"
         showLoader()
         viewModel.getMerchantData(dummyMerchantId, dummyLatLong, "")
@@ -244,6 +248,14 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
+    }
+
+    private fun shareMerchantPage() {
+
+    }
+
+    private fun shareFoodItem() {
+
     }
 
     private fun observeLiveData() {
@@ -368,7 +380,10 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onProductCardClicked(productUiModel: ProductUiModel) {
-        ProductDetailBottomSheet.createInstance(productUiModel).show(childFragmentManager)
+        ProductDetailBottomSheet.createInstance(productUiModel).apply {
+            setListener(this@MerchantPageFragment)
+            show(childFragmentManager)
+        }
     }
 
     override fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
@@ -377,7 +392,9 @@ class MerchantPageFragment : BaseMultiFragment(),
             CustomOrderDetailBottomSheet.createInstance(
                 productName = productUiModel.name,
                 customOrderDetails = productUiModel.customOrderDetails
-            ).show(childFragmentManager)
+            ).apply {
+                show(childFragmentManager)
+            }
         } else if (productUiModel.isCustomizable) {
             val orderCustomizationFragment =
                 OrderCustomizationFragment.createInstance(productUiModel)
@@ -431,5 +448,11 @@ class MerchantPageFragment : BaseMultiFragment(),
             productListAdapter?.updateOrderNote(orderNote, this)
         }
         orderNoteBottomSheet?.dismiss()
+    }
+
+    override fun onFoodItemShareClicked() {
+        universalShareBottomSheet = UniversalShareBottomSheet().apply {
+
+        }
     }
 }

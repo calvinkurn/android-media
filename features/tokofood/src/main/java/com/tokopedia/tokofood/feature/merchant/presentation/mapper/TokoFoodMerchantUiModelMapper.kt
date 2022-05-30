@@ -48,6 +48,14 @@ object TokoFoodMerchantUiModelMapper {
         return CategoryFilterWrapperUiModel(categoryFilterListUiModel)
     }
 
+//    fun mapMerchantDataToMerchantShareComponentUiModel(tokoFoodMerchantProfile: TokoFoodMerchantProfile, merchantId: String): MerchantShareComponentUiModel {
+//        return MerchantShareComponentUiModel(
+//            merchantName = tokoFoodMerchantProfile.name,
+//            merchantLocation = tokoFoodMerchantProfile.address,
+//            merchantUrl = MerchantConstants.MERCHANT_URL
+//        )
+//    }
+
     private fun mapCustomListItemsToVariantParams(addOnUiModels: List<AddOnUiModel>): List<UpdateProductVariantParam> {
         val variantParams = mutableListOf<UpdateProductVariantParam>()
         // selected variant e.g. sugar level

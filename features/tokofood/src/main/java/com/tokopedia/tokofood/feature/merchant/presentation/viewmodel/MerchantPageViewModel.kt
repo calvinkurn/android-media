@@ -53,6 +53,8 @@ class MerchantPageViewModel @Inject constructor(
 
     var filterList = listOf<TokoFoodCategoryFilter>()
 
+    var merchantData: TokoFoodMerchantProfile? = null
+
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -65,6 +67,7 @@ class MerchantPageViewModel @Inject constructor(
                 getMerchantDataUseCase.executeOnBackground()
             }
             filterList = result.tokofoodGetMerchantData.filters
+            merchantData = result.tokofoodGetMerchantData.merchantProfile
             getMerchantDataResultLiveData.value = Success(result)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)

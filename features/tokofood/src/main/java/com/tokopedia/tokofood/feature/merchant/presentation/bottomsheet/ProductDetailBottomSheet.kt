@@ -29,6 +29,8 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
 
     private var binding: BottomsheetProductDetailLayoutBinding? = null
 
+    private var listener: Listener? = null
+
     private val productUiModel: ProductUiModel by lazy {
         arguments?.getParcelable(PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
@@ -57,7 +59,7 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
 
         }
         binding?.iuShareButton?.setOnClickListener {
-
+            listener?.onFoodItemShareClicked()
         }
     }
 
@@ -79,5 +81,13 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
 
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    interface Listener {
+        fun onFoodItemShareClicked()
     }
 }
