@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.camera
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
@@ -7,6 +8,8 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,6 +27,16 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
+    }
+
+    @Before
+    fun setIdlingResource(){
+        IdlingRegistry.getInstance().register(Robot.countingIdlingResource)
+    }
+
+    @After
+    fun releaseIdlingResource(){
+        IdlingRegistry.getInstance().unregister(Robot.countingIdlingResource)
     }
 
     @Test

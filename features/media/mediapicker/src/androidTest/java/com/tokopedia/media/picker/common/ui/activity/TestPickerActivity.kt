@@ -5,7 +5,6 @@ import com.tokopedia.media.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.picker.ui.core.CameraPageTest
 import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
 
 class TestPickerActivity : PickerActivity() {
@@ -22,10 +21,5 @@ class TestPickerActivity : PickerActivity() {
         startActivityForResult(Intent(this, TestPreviewActivity::class.java).apply {
             putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
         }, REQUEST_PREVIEW_PAGE)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        CameraPageTest.Robot.resumeThread()
     }
 }

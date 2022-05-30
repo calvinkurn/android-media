@@ -6,6 +6,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import com.otaliastudios.cameraview.CameraView
+import com.tokopedia.media.picker.ui.core.CameraPageTest
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.Matcher
 
@@ -58,6 +59,7 @@ object PickerCameraViewActions {
                 view?.performClick()
 
                 Handler().postDelayed({
+                    CameraPageTest.Robot.countingIdlingResource.increment()
                     view?.performClick()
                 },duration)
             }

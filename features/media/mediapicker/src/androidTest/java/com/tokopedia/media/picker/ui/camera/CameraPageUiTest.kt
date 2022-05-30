@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.camera
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
@@ -7,6 +8,8 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,6 +28,16 @@ class CameraPageUiTest : CameraPageTest() {
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
+    }
+
+    @Before
+    fun setIdlingResource(){
+        IdlingRegistry.getInstance().register(Robot.countingIdlingResource)
+    }
+
+    @After
+    fun releaseIdlingResource(){
+        IdlingRegistry.getInstance().unregister(Robot.countingIdlingResource)
     }
 
     @Test
@@ -91,17 +104,6 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @Test
-    fun should_open_video_preview_activity_onLanjutClicked() {
-        // When
-        startCameraPage()
-        Robot.clickCaptureVideo(CAPTURED_VIDEO_DURATION)
-        Robot.clickLanjutButton()
-
-        // Then
-        Assert.verifyOpenPreviewActivity()
-    }
-
-    @Test
     fun should_update_flash_state_onFlashButtonClicked() {
         // When
         startCameraPage()
@@ -147,7 +149,7 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     private companion object {
-        private const val CAPTURED_VIDEO_DURATION = 2000L
+        private const val CAPTURED_VIDEO_DURATION = 3000L
         private const val VIDEO_MIN_DURATION = 1000
     }
 }

@@ -1,9 +1,12 @@
 package com.tokopedia.media.picker.ui.core
 
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -16,18 +19,20 @@ import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
 import okhttp3.internal.notify
+import org.junit.After
+import org.junit.Before
 
 abstract class CameraPageTest : PickerTest() {
 
     object Robot {
-        fun clickCapturePhoto() {
-            synchronized(this){
-                onView(
-                    withId(R.id.btn_take_camera)
-                ).perform(click())
+        val countingIdlingResource = CountingIdlingResource("CameraPageIdlingResource")
 
-                threadPause()
-            }
+        fun clickCapturePhoto() {
+            onView(
+                withId(R.id.btn_take_camera)
+            ).perform(click())
+
+            countingIdlingResource.increment()
         }
 
         fun clickFlipCameraButton() {
@@ -49,13 +54,11 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun clickCloseButton() {
-            synchronized(this){
-                onView(
-                    withId(R.id.btn_action)
-                ).perform(click())
+            onView(
+                withId(R.id.btn_action)
+            ).perform(click())
 
-                threadPause()
-            }
+            Thread.sleep(1000)
         }
 
         fun clickFlashButton(): Pair<Int, Int>? {
@@ -84,14 +87,10 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun clickCaptureVideo(duration: Long) {
-            synchronized(this){
-                onView(
-                    withId(R.id.btn_take_camera)
-                ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
-                Thread.sleep(duration)
-
-                threadPause()
-            }
+            onView(
+                withId(R.id.btn_take_camera)
+            ).perform(PickerCameraViewActions.getRecordVideoViewAction(duration))
+            Thread.sleep(duration)
         }
 
         fun clickGalleryTab() {
@@ -109,14 +108,7 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun resumeThread() {
-            synchronized(this){
-                Thread.sleep(THUMBNAIL_LOADED_DELAY)
-                notify()
-            }
-        }
-
-        private fun threadPause() {
-            (this as Object).wait(TIMEOUT_DURATION)
+            if (!countingIdlingResource.isIdleNow) countingIdlingResource.decrement()
         }
     }
 
@@ -146,10 +138,5 @@ abstract class CameraPageTest : PickerTest() {
                 withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
-    }
-
-    companion object{
-        const val TIMEOUT_DURATION = 5000L
-        const val THUMBNAIL_LOADED_DELAY = 1000L
     }
 }
