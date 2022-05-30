@@ -6,6 +6,7 @@ import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepositor
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.assertEqualTo
+import com.tokopedia.createpost.util.assertError
 import com.tokopedia.createpost.util.isError
 import com.tokopedia.createpost.util.isSuccess
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -70,7 +71,7 @@ class LastTaggedProductViewModelTest {
             }
 
             with(state) {
-                lastTaggedProduct.state.isError()
+                lastTaggedProduct.state.assertError(mockException)
             }
         }
     }

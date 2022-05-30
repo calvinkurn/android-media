@@ -23,3 +23,13 @@ inline fun PagedState.isError() {
         .assertThat(this)
         .isInstanceOf(PagedState.Error::class.java)
 }
+
+inline fun PagedState.assertError(error: Exception) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(PagedState.Error::class.java)
+
+    Assertions
+        .assertThat((this as PagedState.Error).error)
+        .isEqualTo(error)
+}
