@@ -36,28 +36,48 @@ object RechargeBUWidgetTracking : BaseTracking() {
     fun homeRechargeBUWidgetImpressionTracker(
         trackingQueue: TrackingQueue,
         data: RechargeBUWidgetDataModel,
-        userId: String
+        userId: String,
+        position: Int
     ) {
-        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
-        val promotions = data.data.items.mapIndexed { index, item ->
-            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
-            Promotion(
-                id = "${data.channel.id}_0_0_$persoType",
-                creative = "${getHeaderName(data.channel)} - $productName",
-                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                position = (index + 1).toString()
+        if (position < data.data.items.size){
+            val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
+            val promotions = data.data.items.mapIndexed { index, item ->
+                val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
+                Promotion(
+                    id = "${data.channel.id}_0_0_$persoType",
+                    creative = "${getHeaderName(data.channel)} - $productName",
+                    name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
+                    position = (index + 1).toString()
+                )
+            }
+
+            val item = data.data.items[position]
+
+            val eventLabel = String.format("%s - %s - %s - %s - %s - %s - %s - %s - %s - %s - %s",
+                item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.itemType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                position + 1,
+                item.trackingData.categoryId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.operatorId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.productId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.label1.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.label2.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.categoryName.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES }
             )
+
+            trackingQueue.putEETracking(getBasicPromotionView(
+                Event.PROMO_VIEW,
+                RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+                Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
+                eventLabel,
+                promotions,
+                userId,
+                currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
+                businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
+            ) as? HashMap<String, Any>)
         }
-        trackingQueue.putEETracking(getBasicPromotionView(
-            Event.PROMO_VIEW,
-            RECHARGE_BU_WIDGET_EVENT_CATEGORY,
-            Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-            "",
-            promotions,
-            userId,
-            currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-            businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-        ) as? HashMap<String, Any>)
     }
 
     fun homeRechargeBUWidgetProductCardClickTracker(
@@ -68,15 +88,16 @@ object RechargeBUWidgetTracking : BaseTracking() {
     ) {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
-            //empty supposed to be userType next dev.
-            val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
-                DEFAULT_TRACKING_LABEL_VALUES,
-                if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
-                if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
+
+            val eventLabel = String.format("%s - %s - %s - %s - %s - %s - %s - %s - %d",
+                item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.itemType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 position + 1,
-                if (item.trackingData.categoryId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.categoryId,
-                if (item.trackingData.operatorId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.operatorId,
-                if (item.trackingData.productId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.productId,
+                item.trackingData.categoryId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.operatorId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.productId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 convertRupiahToInt(item.label2)
             )
             val bundle = DataLayer.mapOf(
@@ -101,15 +122,16 @@ object RechargeBUWidgetTracking : BaseTracking() {
 
         if (position < data.data.items.size) {
             val item = data.data.items[position]
-            //empty supposed to be userType next dev.
-            val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
-                DEFAULT_TRACKING_LABEL_VALUES,
-                if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
-                if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
+
+            val eventLabel = String.format("%s - %s - %s - %s - %d - %s - %s - %s - %d",
+                item.trackingData.channelId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                data.data.trackingData.userType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                getHeaderName(data.channel).ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.itemType.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 position + 1,
-                if (item.trackingData.categoryId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.categoryId,
-                if (item.trackingData.operatorId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.operatorId,
-                if (item.trackingData.productId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.productId,
+                item.trackingData.categoryId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.operatorId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
+                item.trackingData.productId.ifNullOrBlank { DEFAULT_TRACKING_LABEL_VALUES },
                 convertRupiahToInt(item.label2)
             )
 
@@ -242,5 +264,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
 
     private fun getHeaderName(channel: ChannelModel): String {
         return channel.widgetParam.removePrefix("?section=")
+    }
+
+    private fun String?.ifNullOrBlank(defaultValue : () -> String): String{
+        return if (this.isNullOrBlank()){ defaultValue() } else this
     }
 }
