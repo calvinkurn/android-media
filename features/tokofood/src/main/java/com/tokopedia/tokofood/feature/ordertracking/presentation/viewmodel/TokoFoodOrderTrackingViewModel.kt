@@ -151,7 +151,5 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     companion object {
         const val DELAY_ORDER_STATE = 5000L
-
-        const val ORDER_ID_CANCELLED_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
     }
 }

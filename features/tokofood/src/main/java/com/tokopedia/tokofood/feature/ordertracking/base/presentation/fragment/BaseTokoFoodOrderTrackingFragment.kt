@@ -178,7 +178,7 @@ class BaseTokoFoodOrderTrackingFragment :
             hideError()
             showLoadingShimmer(LoadingModel())
         }
-        viewModel.fetchOrderDetail(TokoFoodOrderTrackingViewModel.ORDER_ID_CANCELLED_DUMMY)
+        viewModel.fetchOrderDetail(orderId)
     }
 
     private fun observeOrderDetail() {
