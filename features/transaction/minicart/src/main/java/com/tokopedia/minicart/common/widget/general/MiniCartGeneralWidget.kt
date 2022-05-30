@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -112,10 +111,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private fun observeGlobalStateEvent(fragment: Fragment) {
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) { globalEvent ->
             when (globalEvent.state) {
-                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_SIMPLIFIED_SUMMARY_BOTTOM_SHEET -> {
-                    onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
-                }
-                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_CHAT_BOTTOM_SHEET -> {
+                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
                 }
             }

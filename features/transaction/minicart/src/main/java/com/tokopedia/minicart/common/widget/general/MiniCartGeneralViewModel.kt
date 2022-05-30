@@ -57,7 +57,7 @@ class MiniCartGeneralViewModel @Inject constructor(
     private fun onSuccessGetCartList(isFirstLoad: Boolean, miniCartData: MiniCartData) {
         if (isFirstLoad && miniCartData.data.outOfService.id.isNotBlank() && miniCartData.data.outOfService.id != "0") {
             _globalEvent.value = GlobalEvent(
-                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_CHAT_BOTTOM_SHEET,
+                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
                 data = miniCartData
             )
         } else {
@@ -72,7 +72,7 @@ class MiniCartGeneralViewModel @Inject constructor(
     private fun onErrorGetCartList(isFirstLoad: Boolean, throwable: Throwable) {
         if (isFirstLoad) {
             _globalEvent.value = GlobalEvent(
-                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_CHAT_BOTTOM_SHEET,
+                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
                 throwable = throwable
             )
         }
