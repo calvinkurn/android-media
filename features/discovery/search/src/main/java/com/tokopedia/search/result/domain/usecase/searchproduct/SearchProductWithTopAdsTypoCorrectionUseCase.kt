@@ -12,8 +12,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 
-class SearchProductTopAdsCorrectionFirstPageUseCase(
-    private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
+class SearchProductWithTopAdsTypoCorrectionUseCase(
+    private val searchProductUseCase: UseCase<SearchProductModel>,
     private val searchProductTopAdsUseCase: UseCase<TopAdsModel>,
     private val remoteConfig: RemoteConfig,
     schedulersProvider: SchedulersProvider = ProductionSchedulersProvider()
@@ -49,7 +49,7 @@ class SearchProductTopAdsCorrectionFirstPageUseCase(
     override fun createObservable(
         requestParams: RequestParams
     ): Observable<SearchProductModel> {
-        return searchProductFirstPageUseCase.createObservable(requestParams)
+        return searchProductUseCase.createObservable(requestParams)
             .switchMap { searchProductModel ->
                 if (shouldCallTopAdsGqlForTypoCorrection(searchProductModel)) {
                     callTopAdsUseCase(requestParams, searchProductModel)

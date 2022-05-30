@@ -40,7 +40,7 @@ class SearchProductUseCaseModule {
             topAdsIrisSession
         )
         val topAdsGqlUseCase = provideSearchProductTopAddsUseCase()
-        return SearchProductTopAdsCorrectionFirstPageUseCase(
+        return SearchProductWithTopAdsTypoCorrectionUseCase(
             firstPageGqlUseCase,
             topAdsGqlUseCase,
             remoteConfigAbTest,
@@ -81,7 +81,7 @@ class SearchProductUseCaseModule {
     ): UseCase<SearchProductModel> {
         val loadMoreGqlUseCase = provideSearchProductLoadMoreUseCase(searchProductModelMapper)
         val topAdsGqlUseCase = provideSearchProductTopAddsUseCase()
-        return SearchProductTopAdsCorrectionFirstPageUseCase(
+        return SearchProductWithTopAdsTypoCorrectionUseCase(
             loadMoreGqlUseCase,
             topAdsGqlUseCase,
             remoteConfigAbTest,

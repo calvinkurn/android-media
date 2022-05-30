@@ -42,6 +42,8 @@ internal open class ProductListPresenterTestFixtures {
     protected open val searchFirstPageUseCase: UseCase<SearchProductModel>
         get() = searchProductFirstPageUseCase
     protected val searchProductLoadMoreUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
+    protected open val searchLoadMoreUseCase: UseCase<SearchProductModel>
+        get() = searchProductLoadMoreUseCase
     protected val searchProductTopAdsUseCase = mockk<UseCase<TopAdsModel>>(relaxed = true)
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
@@ -69,7 +71,7 @@ internal open class ProductListPresenterTestFixtures {
     open fun setUp() {
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
-            searchProductLoadMoreUseCase,
+            searchLoadMoreUseCase,
             recommendationUseCase,
             userSession,
             searchCoachMarkLocalCache,
