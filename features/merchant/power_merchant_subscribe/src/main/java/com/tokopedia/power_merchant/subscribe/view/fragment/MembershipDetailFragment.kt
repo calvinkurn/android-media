@@ -39,7 +39,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.MembershipViewPagerAd
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipBasicInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
-import com.tokopedia.power_merchant.subscribe.view.viewmodel.MembershipActivityViewModel
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.MembershipDetailViewModel
 import com.tokopedia.unifycomponents.setIconUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,9 +64,9 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: MembershipActivityViewModel by lazy {
+    private val viewModel: MembershipDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
-            .get(MembershipActivityViewModel::class.java)
+            .get(MembershipDetailViewModel::class.java)
     }
     private var binding: FragmentMembershipDetailBinding? = null
     private val pagerAdapter by lazy { MembershipViewPagerAdapter() }

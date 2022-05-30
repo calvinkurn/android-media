@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Created by @ilhamsuaib on 24/05/22.
  */
 
-class MembershipActivityViewModel @Inject constructor(
+class MembershipDetailViewModel @Inject constructor(
     private val getMembershipBasicInfo: Lazy<GetMembershipBasicInfoUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
