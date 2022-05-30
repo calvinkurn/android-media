@@ -83,6 +83,9 @@
     <string name="product_detail_multiple_product_title">Ada diskon di %1s varian</string>
     <string name="product_detail_single_product_title">Diskon Produk</string>
     <string name="shop_discount_product_detail_delete_product_dialog_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
+    <string name="product_detail_error_button_text">Muat Ulang</string>
+    <string name="product_detail_error_title">Yaah, lagi ada gangguan</string>
+    <string name="product_detail_error_description">Kamu bisa muat ulang atau coba lagi nanti, ya</string>
 
     <!--  Seller Info Bottomsheet  -->
     <string name="seller_info_bottom_sheet_title">Info dan kuota Diskon Toko</string>
