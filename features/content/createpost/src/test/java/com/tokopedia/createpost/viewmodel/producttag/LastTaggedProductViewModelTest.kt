@@ -73,7 +73,7 @@ class LastTaggedProductViewModelTest {
     }
 
     @Test
-    fun `when user load next page, it should emit success state along with appended products`() {
+    fun `when user load last tagged next page, it should emit success state along with appended products`() {
         val nextCursor1 = "2"
         val pagedData1 = modelBuilder.buildPagedDataModel(nextCursor = nextCursor1)
 
@@ -111,8 +111,8 @@ class LastTaggedProductViewModelTest {
     }
 
     @Test
-    fun `when user load next page but it has no next page, it shouldnt do anything`() {
-        val nextCursor = ""
+    fun `when user load last tagged next page but it has no next page, it shouldnt do anything`() {
+        val nextCursor = "1"
         val pagedData = modelBuilder.buildPagedDataModel(nextCursor = nextCursor, hasNextPage = false)
 
         coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns pagedData
