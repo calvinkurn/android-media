@@ -96,12 +96,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokoFoodHomeViewModel::class.java)
     }
-
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
-
     private val activityViewModel: MultipleFragmentsViewModel?
         get() = parentActivity?.viewModel()
-
     private val adapter by lazy {
         TokoFoodHomeAdapter(
             typeFactory = TokoFoodHomeAdapterTypeFactory(
@@ -117,7 +114,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             differ = TokoFoodListDiffer(),
         )
     }
-
     private val loadMoreListener by lazy { createLoadMoreListener() }
 
     companion object {
@@ -125,12 +121,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_SET_PINPOINT = 112
         private const val REQUEST_CODE_ADD_ADDRESS = 113
         private const val NEW_ADDRESS_PARCELABLE = "EXTRA_ADDRESS_NEW"
-
         private const val TOTO_LATITUDE = "-6.2216771"
         private const val TOTO_LONGITUDE = "106.8184023"
         private const val EMPTY_LOCATION = "0.0"
-
         private const val MINI_CART_SOURCE = "home_page"
+
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
