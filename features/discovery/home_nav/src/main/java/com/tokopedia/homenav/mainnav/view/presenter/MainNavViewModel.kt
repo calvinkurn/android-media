@@ -774,7 +774,13 @@ class MainNavViewModel @Inject constructor(
                 )
             } else {
                 transactionDataList = mutableListOf(
-                        EmptyStateNonLoggedInDataModel()
+                    it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                    TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant),
+                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                    EmptyStateWishlistDataModel(),
+                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                    EmptyStateFavoriteShopDataModel(),
+                    SeparatorDataModel()
                 )
             }
             return transactionDataList
