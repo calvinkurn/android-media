@@ -67,7 +67,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
             }
             BuyerOrderDetailActionButtonKey.SEE_POD -> {
                 onSeePODButtonClicked(button.url)
-                ""
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_SEE_POD
             }
             else -> ""
         }

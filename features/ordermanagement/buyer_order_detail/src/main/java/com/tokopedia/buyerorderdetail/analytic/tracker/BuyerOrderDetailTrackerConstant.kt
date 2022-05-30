@@ -75,6 +75,7 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER = "selesai"
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT = "ajukan komplain"
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
+    const val BUTTON_NAME_SEE_POD = "lihat bukti pengiriman"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
