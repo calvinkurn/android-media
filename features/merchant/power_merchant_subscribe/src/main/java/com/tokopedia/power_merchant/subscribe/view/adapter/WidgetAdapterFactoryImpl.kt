@@ -97,7 +97,11 @@ class WidgetAdapterFactoryImpl(
                 parent, widgetListener
             )
             BannerPMRegistrationViewHolder.LAYOUT -> BannerPMRegistrationViewHolder(parent)
-            FeeServiceWidget.RES_LAYOUT -> FeeServiceWidget(parent,widgetListener)
+            FeeServiceWidget.RES_LAYOUT -> FeeServiceWidget(
+                parent,
+                widgetListener,
+                powerMerchantTracking
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
