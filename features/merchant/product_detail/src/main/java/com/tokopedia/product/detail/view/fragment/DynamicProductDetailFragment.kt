@@ -2352,7 +2352,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val errorMessage = String.format(
                     getString(R.string.on_error_p1_string_builder),
                     viewModel.userSessionInterface.userId,
-                    viewModel.userSessionInterface.email,
                     t.message
             )
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
