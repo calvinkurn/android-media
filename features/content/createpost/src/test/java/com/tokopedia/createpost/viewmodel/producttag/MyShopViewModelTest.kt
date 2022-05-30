@@ -2,9 +2,7 @@ package com.tokopedia.createpost.viewmodel.producttag
 
 import com.tokopedia.createpost.model.CommonModelBuilder
 import com.tokopedia.createpost.model.GlobalSearchModelBuilder
-import com.tokopedia.createpost.model.ShopModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
@@ -25,10 +23,8 @@ class MyShopViewModelTest {
 
     private val testDispatcher = rule.dispatchers
     private val mockRepo: ProductTagRepository = mockk(relaxed = true)
-    private val mockSharedPref: ProductTagPreference = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
-    private val shopModelBuilder = ShopModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
 
     private val mockException = commonModelBuilder.buildException()
