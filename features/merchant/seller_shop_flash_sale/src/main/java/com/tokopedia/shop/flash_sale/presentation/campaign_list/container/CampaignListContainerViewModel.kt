@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignAttribute
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
+import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListMetaUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListUseCase
@@ -63,7 +64,8 @@ class CampaignListContainerViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val attribute = getSellerCampaignAttributeUseCase.execute(month = month, year = year)
+                val attribute =
+                    getSellerCampaignAttributeUseCase.execute(month = month, year = year)
                 _campaignAttribute.postValue(Success(attribute))
             },
             onError = { error ->
@@ -78,7 +80,11 @@ class CampaignListContainerViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaignMeta = getSellerCampaignListUseCase.execute(rows = rows, offset = offset)
+                val campaignMeta = getSellerCampaignListUseCase.execute(
+                    rows = rows,
+                    offset = offset,
+                    statusId = listOf(CampaignStatus.DRAFT.id)
+                )
                 _campaignDrafts.postValue(Success(campaignMeta))
             },
             onError = { error ->

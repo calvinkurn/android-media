@@ -178,13 +178,25 @@
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelRegisteredToAnEvent"
             android:layout_width="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_marginStart="@dimen/unify_space_8"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:labelTitle="@string/sfs_registered_to_an_event"
+            android:layout_marginStart="@dimen/unify_space_8"
             app:labelType="highlight_dark_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/tpgCampaignName"
+            app:layout_constraintStart_toEndOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toTopOf="@+id/tpgCampaignName"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="@+id/tpgCampaignStatus"
+            app:layout_constraintEnd_toStartOf="@+id/imgMore"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:unify_timer_background_color="@color/Unify_TN50"
             app:layout_constraintStart_toEndOf="@+id/tpgCampaignStatus"
             app:layout_constraintTop_toTopOf="@+id/tpgCampaignStatus" />
 

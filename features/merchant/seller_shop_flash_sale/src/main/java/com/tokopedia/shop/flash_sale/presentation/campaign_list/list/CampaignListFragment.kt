@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
+import com.tokopedia.shop.flash_sale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flash_sale.common.extension.showError
@@ -35,7 +36,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
-        private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
@@ -86,7 +86,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
-    
+
     override fun getScreenName(): String = CampaignListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopFlashSaleComponent.builder()
@@ -110,13 +110,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         observeCampaigns()
         observeCampaignAttribute()
         observeCampaignCreation()
-        
-        //viewModel.getCampaignAttribute(5, 2022)
-        /*viewModel.createCampaign(
-            "campaign-test",
-            GregorianCalendar(2022, 7, 10, 13, 0, 0).time,
-            GregorianCalendar(2022, 7, 15, 13, 0, 0).time
-        )*/
     }
 
     private fun setupView() {
@@ -203,9 +196,21 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     override fun loadData(page: Int) {
         binding?.globalError?.gone()
 
+        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
 
-        viewModel.getCampaigns(10, page * 10, campaignStatusIds?.toList().orEmpty(), "", false)
+        val offset = if (isFirstLoad) {
+            isFirstLoad = false
+            FIRST_PAGE
+        } else {
+            page * PAGE_SIZE
+        }
 
+        viewModel.getCampaigns(
+            PAGE_SIZE,
+            offset,
+            campaignStatusIds?.toList().orEmpty(),
+            searchKeyword
+        )
     }
 
     override fun clearAdapterData() {
@@ -244,13 +249,8 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         if (data.totalCampaign == ZERO) {
             handleEmptyState(data.totalCampaign)
         } else {
-            if (isFirstLoad) {
-                binding?.searchBar?.visible()
-            }
             renderList(data.campaigns, data.campaigns.size == getPerPage())
         }
-
-        isFirstLoad = false
     }
 
     private fun handleEmptyState(totalCampaign : Int) {

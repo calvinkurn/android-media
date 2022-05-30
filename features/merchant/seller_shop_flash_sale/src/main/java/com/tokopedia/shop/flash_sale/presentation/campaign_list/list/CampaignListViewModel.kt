@@ -46,20 +46,18 @@ class CampaignListViewModel @Inject constructor(
         rows: Int,
         offset: Int,
         statusId: List<Int>,
-        campaignName: String,
-        thematicParticipation: Boolean
+        campaignName: String
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaignMeta = getSellerCampaignListUseCase.execute(
+                val campaigns = getSellerCampaignListUseCase.execute(
                     rows = rows,
                     offset = offset,
                     statusId = statusId,
-                    campaignName = campaignName,
-                    thematicParticipation = thematicParticipation
+                    campaignName = campaignName
                 )
-                _campaigns.postValue(Success(campaignMeta))
+                _campaigns.postValue(Success(campaigns))
             },
             onError = { error ->
                 _campaigns.postValue(Fail(error))
