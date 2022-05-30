@@ -37,7 +37,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user press back press, it should remove the most top fragment from stack`() {
-        val selectedShop = shopModelBuilder.buildUiModelList().first()
+        val selectedShop = shopModelBuilder.buildUiModel()
 
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
@@ -89,7 +89,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user click breadcrumb but the stack is more than 1, it should pop the most top fragment from stack`() {
-        val selectedShop = shopModelBuilder.buildUiModelList().first()
+        val selectedShop = shopModelBuilder.buildUiModel()
 
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
@@ -210,6 +210,75 @@ class ProductTagNavigationViewModelTest {
                 else {
                     fail("Event should be ProductTagUiEvent.ShowError")
                 }
+            }
+        }
+    }
+
+    @Test
+    fun `when user select product tag source, it should emit new state of stack`() {
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.use {
+            robot.recordState {
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.LastTagProduct))
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(1)
+                productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.LastTagProduct)
+            }
+
+            robot.recordState {
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.LastPurchase))
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(1)
+                productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.LastPurchase)
+            }
+        }
+    }
+
+    @Test
+    fun `when user try to select product tag source when the stack is more than 1, it should not emit any new state`() {
+        val selectedShop = shopModelBuilder.buildUiModel()
+        val query = "pokemon"
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.use {
+            robot.recordState {
+                /** Building up stack */
+                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+                submitAction(ProductTagAction.ShopSelected(selectedShop))
+
+                /** Select another tag source */
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.LastTagProduct))
+            }.andThen {
+                productTagSource.productTagSourceStack.size.assertEqualTo(2)
+                productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.GlobalSearch)
+                productTagSource.productTagSourceStack.last().assertEqualTo(ProductTagSource.Shop)
+            }
+        }
+    }
+
+    @Test
+    fun `when user try forcing to open global search without query, it should emit last tagged fragment`() {
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.use {
+            robot.recordState {
+                submitAction(ProductTagAction.SelectProductTagSource(ProductTagSource.GlobalSearch))
+            }.andThen {
+                productTagSource.productTagSourceStack.first().assertEqualTo(ProductTagSource.LastTagProduct)
             }
         }
     }
