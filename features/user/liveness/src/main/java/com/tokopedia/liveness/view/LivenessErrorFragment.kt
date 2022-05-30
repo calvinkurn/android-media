@@ -1,7 +1,7 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.DetectionFailedType.*
+import ai.advance.liveness.lib.Detector.DetectionFailedType.TIMEOUT
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater

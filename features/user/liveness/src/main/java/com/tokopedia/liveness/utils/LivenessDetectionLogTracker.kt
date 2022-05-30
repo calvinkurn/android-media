@@ -1,7 +1,7 @@
 package com.tokopedia.liveness.utils
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.DetectionType.*
+import ai.advance.liveness.lib.Detector.DetectionType.NONE
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import timber.log.Timber

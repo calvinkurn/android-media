@@ -1,8 +1,15 @@
 package com.tokopedia.liveness.view
 
 import ai.advance.liveness.lib.Detector
-import ai.advance.liveness.lib.Detector.WarnCode.*
+import ai.advance.liveness.lib.Detector.WarnCode.FACELARGE
+import ai.advance.liveness.lib.Detector.WarnCode.FACECAPTURE
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTCENTER
+import ai.advance.liveness.lib.Detector.WarnCode.FACESMALL
+import ai.advance.liveness.lib.Detector.WarnCode.FACEINACTION
 import ai.advance.liveness.lib.Detector.WarnCode.FACEMISSING
+import ai.advance.liveness.lib.Detector.WarnCode.WARN_MULTIPLEFACES
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTFRONTAL
+import ai.advance.liveness.lib.Detector.WarnCode.FACENOTSTILL
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.http.entity.ResultEntity
@@ -35,7 +42,7 @@ import java.io.FileOutputStream
 import java.lang.Exception
 import javax.inject.Inject
 
-class LivenessFragment: BaseDaggerFragment(),
+class LivenessFragment : BaseDaggerFragment(),
     OnBackListener,
     LivenessCallback,
     LivenessGetFaceDataCallback {
@@ -64,7 +71,11 @@ class LivenessFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         viewBinding = FragmentRevampLivenessBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
@@ -127,9 +138,12 @@ class LivenessFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onActionRemainingTimeChanged(remainingTimeMills: Long) { }
+    override fun onActionRemainingTimeChanged(remainingTimeMills: Long) {}
 
-    override fun onDetectionFailed(detectionFailedType: Detector.DetectionFailedType?, detectionType: Detector.DetectionType?) {
+    override fun onDetectionFailed(
+        detectionFailedType: Detector.DetectionFailedType?,
+        detectionType: Detector.DetectionType?,
+    ) {
         LivenessDetectionLogTracker.sendLog(
             LivenessDetectionLogTracker.LogType.FAILED,
             this::class.simpleName.orEmpty(),
@@ -147,7 +161,7 @@ class LivenessFragment: BaseDaggerFragment(),
         livenessActionState?.let {
             if (it == Detector.DetectionType.BLINK) {
                 analytics.eventSuccessBlinkDetection(projectId, true)
-            } else if(it == Detector.DetectionType.MOUTH) {
+            } else if (it == Detector.DetectionType.MOUTH) {
                 analytics.eventSuccessMouthDetection(projectId, true)
             }
         }
@@ -158,18 +172,24 @@ class LivenessFragment: BaseDaggerFragment(),
         if (warnCode != null) {
             when (warnCode) {
                 FACEMISSING -> {
-                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_no_people_face))
+                    analytics.eventViewFaceInCenter(projectId,
+                        false,
+                        getString(R.string.liveness_no_people_face))
                     changeTipTextView(R.string.liveness_no_people_face)
                 }
                 FACESMALL -> {
-                    analytics.eventViewCloserFaceToScreen(projectId, false, getString(R.string.liveness_tip_move_closer))
+                    analytics.eventViewCloserFaceToScreen(projectId,
+                        false,
+                        getString(R.string.liveness_tip_move_closer))
                     changeTipTextView(R.string.liveness_tip_move_closer)
                 }
                 FACELARGE -> {
                     changeTipTextView(R.string.liveness_tip_move_furthre)
                 }
                 FACENOTCENTER -> {
-                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_move_face_center))
+                    analytics.eventViewFaceInCenter(projectId,
+                        false,
+                        getString(R.string.liveness_move_face_center))
                     changeTipTextView(R.string.liveness_move_face_center)
                 }
                 FACENOTFRONTAL -> {
@@ -179,14 +199,16 @@ class LivenessFragment: BaseDaggerFragment(),
                     changeTipTextView(R.string.liveness_still)
                 }
                 WARN_MULTIPLEFACES -> {
-                    analytics.eventViewMultipleFaces(projectId, false, getString(R.string.liveness_failed_reason_multipleface))
+                    analytics.eventViewMultipleFaces(projectId,
+                        false,
+                        getString(R.string.liveness_failed_reason_multipleface))
                     changeTipTextView(R.string.liveness_failed_reason_multipleface)
                 }
                 FACEINACTION -> {
                     livenessWarnState = null
                     showActionTipUIView()
                 }
-                else -> { }
+                else -> {}
             }
         }
     }
@@ -218,7 +240,7 @@ class LivenessFragment: BaseDaggerFragment(),
     }
 
     private fun changeTipTextView(strResId: Int) {
-        if(livenessActionState==null){
+        if (livenessActionState == null) {
             viewBinding?.textTipView?.setText(strResId)
         }
     }
@@ -236,7 +258,7 @@ class LivenessFragment: BaseDaggerFragment(),
                 Detector.DetectionType.POS_YAW -> lottieFile = LivenessConstants.ANIMATION_YAW
                 Detector.DetectionType.MOUTH -> lottieFile = LivenessConstants.ANIMATION_MOUTH
                 Detector.DetectionType.BLINK -> lottieFile = LivenessConstants.ANIMATION_BLINK
-                else -> { }
+                else -> {}
             }
         }
         return lottieFile
@@ -248,7 +270,8 @@ class LivenessFragment: BaseDaggerFragment(),
             clearAnimation()
             invalidate()
 
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(requireContext(), url)
+            val lottieCompositionLottieTask =
+                LottieCompositionFactory.fromUrl(requireContext(), url)
             lottieCompositionLottieTask.addListener { result ->
                 setComposition(result)
             }
@@ -260,22 +283,34 @@ class LivenessFragment: BaseDaggerFragment(),
     override fun trackOnBackPressed() {
         if (livenessWarnState != null) {
             when (livenessWarnState) {
-                FACESMALL -> { analytics.eventClickBackCloserFaceToScreen(projectId) }
-                FACENOTCENTER, FACEMISSING -> { analytics.eventClickBackFaceInCenter(projectId) }
-                WARN_MULTIPLEFACES -> { analytics.eventClickBackMultipleFaces(projectId) }
-                else -> { }
+                FACESMALL -> {
+                    analytics.eventClickBackCloserFaceToScreen(projectId)
+                }
+                FACENOTCENTER, FACEMISSING -> {
+                    analytics.eventClickBackFaceInCenter(projectId)
+                }
+                WARN_MULTIPLEFACES -> {
+                    analytics.eventClickBackMultipleFaces(projectId)
+                }
+                else -> {}
             }
         } else if (livenessActionState != null) {
             when (livenessActionState) {
-                Detector.DetectionType.MOUTH -> { analytics.eventClickBackMouthDetection(projectId) }
-                Detector.DetectionType.BLINK -> { analytics.eventClickBackBlinkDetection(projectId) }
-                Detector.DetectionType.POS_YAW -> { analytics.eventClickBackHeadDetection(projectId) }
-                else -> { }
+                Detector.DetectionType.MOUTH -> {
+                    analytics.eventClickBackMouthDetection(projectId)
+                }
+                Detector.DetectionType.BLINK -> {
+                    analytics.eventClickBackBlinkDetection(projectId)
+                }
+                Detector.DetectionType.POS_YAW -> {
+                    analytics.eventClickBackHeadDetection(projectId)
+                }
+                else -> {}
             }
         }
     }
 
-    override fun onGetFaceDataStart() { }
+    override fun onGetFaceDataStart() {}
 
     @SuppressLint("DeprecatedMethod")
     override fun onGetFaceDataSuccess(resultEntity: ResultEntity?) {
@@ -353,7 +388,7 @@ class LivenessFragment: BaseDaggerFragment(),
 
     private fun getTkpdCacheDir(): File {
         val cacheDir = File(context?.externalCacheDir, FILE_NAME_KYC)
-        if(!cacheDir.exists()) {
+        if (!cacheDir.exists()) {
             cacheDir.mkdirs()
         }
         return cacheDir
@@ -362,7 +397,7 @@ class LivenessFragment: BaseDaggerFragment(),
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
         val cacheDir = getTkpdCacheDir()
         val fileName = FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT
-        val cacheFile = File(cacheDir,  fileName)
+        val cacheFile = File(cacheDir, fileName)
         val cachePath = cacheFile.absolutePath
         val file = File(cachePath)
 
