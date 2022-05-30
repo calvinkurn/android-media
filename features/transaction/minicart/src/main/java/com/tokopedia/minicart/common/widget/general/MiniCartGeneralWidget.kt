@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
@@ -186,26 +187,23 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         binding.miniCartTotalAmount.apply {
-            labelTitleView.setWeight(Typography.BOLD)
-            labelTitleView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
-            val labelText = miniCartSimplifiedData.miniCartWidgetData.headlineWording.ifBlank {
-                context.getString(R.string.mini_cart_widget_label_purchase_summary)
+            val labelText = miniCartSimplifiedData.miniCartWidgetData.headlineWording
+            if (labelText.isNotBlank()) {
+                labelTitleView.setWeight(Typography.BOLD)
+                labelTitleView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+                setLabelTitle(labelText)
+            } else {
+                labelTitleView.gone()
             }
-            setLabelTitle(labelText)
-            amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-            val labelAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording.ifBlank {
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    miniCartSimplifiedData.miniCartWidgetData.totalProductPrice,
-                    false
-                ).removeDecimalSuffix()
+            val labelAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording
+            if (labelAmountText.isNotBlank()) {
+                amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                setAmount(labelAmountText)
+            } else {
+                amountView.gone()
             }
-            setAmount(labelAmountText)
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
-            amountCtaView.isEnabled = true
-            amountCtaView.layoutParams.width =
-                resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-            amountCtaView.requestLayout()
             enableAmountChevron(false)
         }
     }
@@ -225,10 +223,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             setAmount(totalAmountText)
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
-            amountCtaView.isEnabled = true
-            amountCtaView.layoutParams.width =
-                resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-            amountCtaView.requestLayout()
             enableAmountChevron(true)
         }
     }
@@ -246,6 +240,10 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun setAmountViewLayoutParams() {
+        binding.miniCartTotalAmount.amountCtaView.layoutParams.width =
+            resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+        binding.miniCartTotalAmount.amountCtaView.requestLayout()
+
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
