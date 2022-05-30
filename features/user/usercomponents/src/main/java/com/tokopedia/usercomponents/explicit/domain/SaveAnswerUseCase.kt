@@ -1,0 +1,31 @@
+package com.tokopedia.usercomponents.explicit.domain
+
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.usercomponents.explicit.domain.model.AnswerDataModel
+import com.tokopedia.usercomponents.explicit.domain.model.InputParam
+import javax.inject.Inject
+
+class SaveAnswerUseCase @Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<InputParam, AnswerDataModel>(dispatchers.io) {
+    override fun graphqlQuery(): String =
+        """
+            mutation explicitprofileSaveMultiAnswers(${'$'}input: SaveMultiAnswersRequest!) {
+              explicitprofileSaveMultiAnswers(input: ${'$'}input) {
+                message
+              }
+            }
+        """.trimIndent()
+
+    override suspend fun execute(params: InputParam): AnswerDataModel {
+        val parameters = mapOf(
+            "input" to params
+        )
+
+        return repository.request(graphqlQuery(), parameters)
+    }
+}
