@@ -66,10 +66,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'sticky-login'
+    artifactId = 'user-components'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.2"
-    artifactName ="stickylogin-release"
+    versionName = "0.0.3"
+    artifactName ="usercomponents-release"
 }
 
 apply from: '../../../publish_local.gradle'
