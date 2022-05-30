@@ -264,7 +264,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                 getCountDeletionProgress()
                             }
                             hideTotalLabel()
-                            showStickyDeletionProgress()
+                            // showStickyDeletionProgress()
                         } else {
                             hideStickyDeletionProgress()
                         }
@@ -746,6 +746,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
         if (data.totalItems > 0) {
             val finishData = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress(
                 totalItems = data.totalItems,
@@ -777,11 +778,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(indicatorProgressBar.roundToInt(), true)
             wishlistV2StickyCountManageLabel.wishlistV2LabelProgressBar.text = "${progressData.successfullyRemovedItems}/${progressData.totalItems}"
         }
-
-        /*binding?.run {
-            wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
-            wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(50, true)
-        }*/
     }
 
     private fun observingAtc() {
@@ -841,13 +837,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun hideTotalLabel() {
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2Manage.gone()
-        }
-    }
-
-    private fun showStickyDeletionProgress() {
-        println("++ make widget deletion visible")
-        binding?.run {
-            wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
         }
     }
 
