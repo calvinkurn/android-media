@@ -13,13 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
 
-open class LinvenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
+open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
 
     private var fragment: Fragment? = null
 
@@ -45,6 +46,14 @@ open class LinvenessActivity: PermissionActivity(), HasComponent<LivenessDetecti
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
         )
+
+        intent?.data?.let {
+            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)
+
+            intent?.extras?.apply {
+                putString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            }
+        }
 
         if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
             requestPermissions()

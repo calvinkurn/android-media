@@ -225,7 +225,7 @@ class LivenessFragment: BaseDaggerFragment(),
 
     private fun alertDialogDeviceNotSupported() {
         activity?.let {
-            (it as LinvenessActivity).alertDialogDeviceNotSupported()
+            (it as LivenessActivity).alertDialogDeviceNotSupported()
         }
     }
 
@@ -340,7 +340,7 @@ class LivenessFragment: BaseDaggerFragment(),
 
         activity?.let {
             val fragment = LivenessErrorFragment.newInstance(bundle)
-            (it as LinvenessActivity).replaceFragment(fragment)
+            (it as LivenessActivity).replaceFragment(fragment)
         }
     }
 
