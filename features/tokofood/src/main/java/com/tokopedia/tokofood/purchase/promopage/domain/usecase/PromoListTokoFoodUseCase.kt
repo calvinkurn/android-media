@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.requestAsFlow
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.purchase.promopage.domain.model.PromoListTokoFoodCoupon
 import com.tokopedia.tokofood.purchase.promopage.domain.model.PromoListTokoFoodData
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class PromoListTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
     dispatcher: CoroutineDispatchers
 ): FlowUseCase<Unit, PromoListTokoFoodResponse>(dispatcher.io) {
 

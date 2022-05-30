@@ -68,8 +68,11 @@ object UohAnalytics {
     private const val DIMENSION87 = "dimension87"
     private const val DIMENSION88 = "dimension88"
     private const val ORDER_MANAGEMENT = "order management"
+    private const val BUSINESS_UNIT_PAYMENT = "payment"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
+    private const val VIEW_PAYMENT_IRIS = "viewPaymentIris"
+    private const val CLICK_PAYMENT = "clickPayment"
     private const val ITEM_LIST = "item_list"
     private const val VIEW_ITEM_LIST = "view_item_list"
     private const val PRODUCT_CLICK = "productClick"
@@ -86,6 +89,7 @@ object UohAnalytics {
     private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
     private const val ORDER_LIST_EVENT_CATEGORY = "order list"
     private const val PURCHASE_LIST_EVENT_CATEGORY = "my purchase list - mp"
+    private const val UOH_PAGE_CATEGORY = "uoh page"
     private const val SUBMIT_SEARCH = "submit search from cari transaksi"
     private const val CLICK_DATE_FILTER_CHIPS = "click date filter chips"
     private const val CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS = "click terapkan on date filter chips"
@@ -103,6 +107,9 @@ object UohAnalytics {
     private const val CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click selesai on bottom sheet finish transaction"
     private const val CLICK_AJUKAN_KOMPLAIN_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click ajukan komplain on bottom sheet finish transaction"
     private const val CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL = "click kirim on bottom sheet send email "
+    private const val IMPRESSION_MENUNGGU_PEMBAYARAN_UOH = "impression menunggu pembayaran UOH"
+    private const val CLICK_MENUNGGU_PEMBAYARAN_UOH = "click menunggu pembayaran UOH"
+    private const val LABEL_BUTTON_MENUNGGU_PEMBAYARAN = "button menunggu pembayaran"
     private const val TRUE = "true"
 
     @JvmStatic
@@ -531,5 +538,33 @@ object UohAnalytics {
             putString(IS_LOGGED_IN_STATUS, TRUE)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, bundle)
+    }
+
+    // TrackerId: 28658
+    fun impressionMenungguPembayaran() {
+        val event = TrackAppUtils.gtmData(
+                VIEW_PAYMENT_IRIS,
+                UOH_PAGE_CATEGORY,
+                IMPRESSION_MENUNGGU_PEMBAYARAN_UOH,
+                LABEL_BUTTON_MENUNGGU_PEMBAYARAN
+        )
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[BUSINESS_UNIT] = BUSINESS_UNIT_PAYMENT
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    // TrackerId: 28659
+    fun clickMenungguPembayaran() {
+        val event = TrackAppUtils.gtmData(
+                CLICK_PAYMENT,
+                UOH_PAGE_CATEGORY,
+                CLICK_MENUNGGU_PEMBAYARAN_UOH,
+                LABEL_BUTTON_MENUNGGU_PEMBAYARAN
+        )
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[BUSINESS_UNIT] = BUSINESS_UNIT_PAYMENT
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 }

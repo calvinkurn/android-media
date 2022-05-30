@@ -7,8 +7,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
 
     data class PartialTopAdsSettingSuccessInfo(
-            val othersBalance: OthersBalance,
-            val topAdsBalance: Float) : PartialSettingSuccessInfoType()
+            val othersBalance: OthersBalance) : PartialSettingSuccessInfoType()
 
     data class PartialShopSettingSuccessInfo(
             val userShopInfoWrapper: UserShopInfoWrapper,

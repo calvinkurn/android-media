@@ -4,10 +4,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.RemoveCartTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -17,7 +20,7 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<CartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
@@ -28,9 +31,9 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        query RemoveCartTokofood($${PARAMS_KEY}: CartTokoFoodParam!) {
+        mutation RemoveCartTokofood($${PARAMS_KEY}: RemoveCartGeneralParams!) {
           remove_cart_general(params: $${PARAMS_KEY}) {
-            error_messages
+            message
             status
             data {
               success
@@ -55,14 +58,18 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
         } else {
             val param = generateParams(params)
             val response =
-                repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-            emit(response)
+                repository.request<Map<String, Any>, RemoveCartTokoFoodResponse>(graphqlQuery(), param)
+            if (response.cartResponse.isSuccess()) {
+                emit(response.cartResponse)
+            } else {
+                throw MessageErrorException(response.cartResponse.getMessageIfError())
+            }
         }
     }
 
     private fun getDummyResponse(productId: String): CartTokoFoodResponse {
         return CartTokoFoodResponse(
-            success = 1,
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CartTokoFoodData(
                 carts = listOf(
                     CartTokoFood(

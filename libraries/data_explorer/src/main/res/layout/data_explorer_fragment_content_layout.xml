@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="horizontal">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchInputView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        app:layout_constraintEnd_toStartOf="@id/searchBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_placeholder="Search by column"
+        app:search_bar_show_icon="false" />
+
+    <Button
+        android:id="@+id/searchBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="Search"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/searchInputView" />
+
+    <HorizontalScrollView
+        android:id="@+id/tableView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchInputView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+
+    </HorizontalScrollView>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/dataExplorerEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateDescription="Page request Cannot be Handled"
+        app:unifyEmptyStateTitle="Data Request Error"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/pageNumberEditor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableView" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tableGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pageNumberEditor, tableView, searchInputView, searchBtn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,61 @@
+[
+  {
+    "data": {
+      "getProductV3": {
+        "productName": "tas travel - S",
+        "url": "https://staging.tokopedia.com/cobacobasatu/tas-travel-s",
+        "stock": 989,
+        "shop": {
+          "id": "481108"
+        },
+        "price": 800000,
+        "campaign": {
+          "originalPrice": 0,
+          "discountedPrice": 0
+        },
+        "variant": {
+          "selections": [
+            {
+              "options": [
+                {
+                  "value": "S"
+                },
+                {
+                  "value": "M"
+                },
+                {
+                  "value": "L"
+                }
+              ]
+            }
+          ],
+          "products": [
+            {
+              "productID": "2147954780",
+              "combination": [
+                0
+              ]
+            },
+            {
+              "productID": "2147954781",
+              "combination": [
+                1
+              ]
+            },
+            {
+              "productID": "2147954782",
+              "combination": [
+                2
+              ]
+            }
+          ]
+        },
+        "pictures": [
+          {
+            "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/22/7972faf8-f1c4-4f9d-b4ed-b59a85c42160.jpg"
+          }
+        ]
+      }
+    }
+  }
+]

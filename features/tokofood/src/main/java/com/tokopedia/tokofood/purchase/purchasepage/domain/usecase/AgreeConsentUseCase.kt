@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.requestAsFlow
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.AgreeConsentData
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.AgreeConsentResponse
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +45,7 @@ class AgreeConsentUseCase @Inject constructor(
     private fun getDummyResponse(): AgreeConsentResponse {
         return AgreeConsentResponse(
             data = AgreeConsentData(
-                success = 1,
+                success = TokoFoodCartUtil.SUCCESS_STATUS,
                 message = ""
             )
         )

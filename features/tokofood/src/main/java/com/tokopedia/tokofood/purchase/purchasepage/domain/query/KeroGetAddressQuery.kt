@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.KeroAddressParamData
 
 object KeroGetAddressQuery : GqlQueryInterface {
 

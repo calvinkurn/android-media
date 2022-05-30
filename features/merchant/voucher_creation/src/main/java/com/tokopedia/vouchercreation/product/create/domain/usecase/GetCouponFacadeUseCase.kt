@@ -9,13 +9,13 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponWithMetadata
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetCouponFacadeUseCase @Inject constructor(
     private val getCouponDetailUseCase: GetCouponDetailUseCase,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface,
     private val couponMapper: CouponMapper,
     private val initiateCouponUseCase: InitiateCouponUseCase
@@ -26,30 +26,33 @@ class GetCouponFacadeUseCase @Inject constructor(
         private const val IS_UPDATE_MODE = true
     }
 
-    suspend fun execute(scope: CoroutineScope, couponId: Long, isToCreateNewCoupon : Boolean): CouponWithMetadata {
-        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE, isToCreateNewCoupon) }
+    suspend fun execute(couponId: Long, isToCreateNewCoupon : Boolean): CouponWithMetadata {
+        return coroutineScope {
+            val initiateVoucherDeferred = async { initiateVoucher(IS_UPDATE_MODE, isToCreateNewCoupon) }
 
-        val couponDetailDeferred = scope.async { getCouponDetail(couponId) }
-        val couponDetail = couponDetailDeferred.await()
+            val couponDetailDeferred = async { getCouponDetail(couponId) }
+            val couponDetail = couponDetailDeferred.await()
 
-        val parentProductIds = couponDetail.products.map { it.parentProductId }
-        val productsDeferred = scope.async { getProducts(parentProductIds) }
-        val products = productsDeferred.await()
+            val parentProductIds = couponDetail.products.map { it.parentProductId }
+            val productsDeferred = async { getMostSoldProducts(parentProductIds) }
+            val products = productsDeferred.await()
 
-        val voucher = initiateVoucherDeferred.await()
+            val voucher = initiateVoucherDeferred.await()
 
-        val couponProducts = mutableListOf<CouponProduct>()
+            val couponProducts = mutableListOf<CouponProduct>()
 
-        couponDetail.productIds.forEach { productId ->
-            val pair = getCouponImageUrlAndSoldCount(productId.toString(), products.data)
-            couponProducts.add(CouponProduct(productId.toString(), pair.first, pair.second))
+            couponDetail.productIds.forEach { productId ->
+                val pair = getCouponImageUrlAndSoldCount(productId.toString(), products.data)
+                couponProducts.add(CouponProduct(productId.toString(), pair.first, pair.second))
+            }
+
+            val coupon = couponMapper.map(couponDetail, couponProducts)
+
+            val selectedWarehouseId = products.data.firstOrNull()?.warehouses?.firstOrNull()?.id ?: ""
+
+            return@coroutineScope CouponWithMetadata(coupon, voucher.maxProducts, selectedWarehouseId)
         }
 
-        val coupon = couponMapper.map(couponDetail, couponProducts)
-
-        val selectedWarehouseId = products.data.firstOrNull()?.warehouses?.firstOrNull()?.id ?: ""
-
-        return CouponWithMetadata(coupon, voucher.maxProducts, selectedWarehouseId)
     }
 
 
@@ -59,9 +62,9 @@ class GetCouponFacadeUseCase @Inject constructor(
     }
 
 
-    private suspend fun getProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getProductsUseCase.params = GetProductsUseCase.createParams(userSession.shopId, productIds)
-        return getProductsUseCase.executeOnBackground()
+    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
+        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        return getMostSoldProductsUseCase.executeOnBackground()
     }
 
     private fun getCouponImageUrlAndSoldCount(

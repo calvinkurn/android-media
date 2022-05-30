@@ -11,6 +11,8 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecomServerLogger
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -142,6 +144,15 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     }
 
     private fun onProductImpression(productInfoDataModel: ProductInfoDataModel){
+        if (listener?.getFragmentRemoteConfig()?.getBoolean(RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS, true) == true) {
+            impressWithoutViewportValidation(productInfoDataModel)
+        } else {
+            impressWithViewportValidation(productInfoDataModel)
+        }
+        listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
+    }
+
+    private fun impressWithViewportValidation(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let {
             itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
                 override fun onViewHint() {
@@ -157,6 +168,21 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
                     listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
                 }
             })
+        }
+    }
+
+    private fun impressWithoutViewportValidation(productInfoDataModel: ProductInfoDataModel) {
+        if (!productInfoDataModel.isInvoke) {
+            if (productInfoDataModel.productDetailData?.isTopads == true) {
+                listener?.onProductAnchorImpression(productInfoDataModel)
+            } else {
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_IS_NOT_ADS,
+                    productId = productInfoDataModel.productDetailData?.toString()?:"",
+                    queryParam = listener?.getProductQueryParam()?:""
+                )
+            }
+            productInfoDataModel.invoke()
         }
     }
 
@@ -209,5 +235,6 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         fun onProductAnchorClickWishlist(productInfoDataModel: ProductInfoDataModel, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit)
 
         fun getProductQueryParam(): String
+        fun getFragmentRemoteConfig(): RemoteConfig?
     }
 }

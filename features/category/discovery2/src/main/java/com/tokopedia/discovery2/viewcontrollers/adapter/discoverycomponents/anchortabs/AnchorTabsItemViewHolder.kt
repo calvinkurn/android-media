@@ -50,10 +50,7 @@ class AnchorTabsItemViewHolder(itemView: View, val fragment: Fragment) :
                 val sectionID = viewModel.getSectionID()
                 if (sectionID.isNotEmpty()) {
                     (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackAnchorTabClick(viewModel.components)
-                    (fragment as DiscoveryFragment).scrollToSection(
-                        sectionID,
-                        viewModel.parentPosition()
-                    )
+                    fragment.scrollToSection(sectionID)
                 }
             }
         }

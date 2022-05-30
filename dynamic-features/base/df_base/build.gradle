@@ -113,7 +113,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
-    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
 
     //Operational
 
@@ -153,6 +153,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
     implementation projectOrAar(rootProject.ext.features.wishlist)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
@@ -160,6 +161,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
+    implementation projectOrAar(rootProject.ext.features.people)
 
     //TokoFood
     implementation projectOrAar(rootProject.ext.features.tokofood)

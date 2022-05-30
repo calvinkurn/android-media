@@ -84,6 +84,7 @@ class VoucherGameListViewModelTest {
     fun getVoucherGameMenuDetail_Success() {
         val telcoCatalogMenuDetailData = TelcoCatalogMenuDetailData(TopupBillsMenuDetail(
                 TopupBillsCatalog("1"),
+                TopupBillsUserPerso(),
                 listOf(TopupBillsRecommendation(title = "recommendation")),
                 listOf(TopupBillsPromo("1")),
                 listOf(TopupBillsTicker(1)),

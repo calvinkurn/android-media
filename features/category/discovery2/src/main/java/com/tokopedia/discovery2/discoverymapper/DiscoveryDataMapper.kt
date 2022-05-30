@@ -153,7 +153,8 @@ class DiscoveryDataMapper {
         properties: Properties?,
         creativeName: String? = "",
         parentComponentPosition: Int? = null,
-        parentListSize:Int = 0
+        parentListSize:Int = 0,
+        parentSectionId:String? = ""
     ): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
@@ -170,6 +171,8 @@ class DiscoveryDataMapper {
             it.creativeName = creativeName
             dataItem.add(it)
             componentsItem.data = dataItem
+            if (parentSectionId?.isNotEmpty() == true)
+                componentsItem.parentSectionId = parentSectionId
             list.add(componentsItem)
         }
         return list
@@ -284,6 +287,8 @@ class DiscoveryDataMapper {
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots,
+                hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
+                hasAddToCartWishlist = dataItem.hasATCWishlist,
                 variant = variantProductCard(dataItem),
                 nonVariant = nonVariantProductCard(dataItem)
         )

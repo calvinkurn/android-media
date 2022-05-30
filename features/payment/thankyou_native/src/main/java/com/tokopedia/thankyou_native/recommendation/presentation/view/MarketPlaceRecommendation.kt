@@ -107,7 +107,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.loadRecommendationData()
+        viewModel.loadRecommendationData(thanksPageData)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

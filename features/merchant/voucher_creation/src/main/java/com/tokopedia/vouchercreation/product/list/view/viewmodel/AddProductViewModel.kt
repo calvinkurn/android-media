@@ -4,10 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
@@ -18,9 +22,12 @@ import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductL
 import com.tokopedia.vouchercreation.product.list.domain.usecase.*
 import com.tokopedia.vouchercreation.product.list.view.model.*
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AddProductViewModel @Inject constructor(
+        private val resourceProvider: ResourceProvider,
         private val dispatchers: CoroutineDispatchers,
         private val getProductListUseCase: GetProductListUseCase,
         private val validateVoucherUseCase: ValidateVoucherUseCase,
@@ -39,6 +46,7 @@ class AddProductViewModel @Inject constructor(
         const val COUPON_TYPE_CASHBACK = "cashback"
         const val COUPON_TYPE_SHIPPING = "shipping"
         const val SORT_DEFAULT = "DEFAULT"
+        private const val PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY = 1
     }
 
     private var productUiModels: List<ProductUiModel> = listOf()
@@ -62,7 +70,7 @@ class AddProductViewModel @Inject constructor(
     // PRODUCT SELECTIONS
     var isSelectAllMode = true
     var isFiltering = false
-    var isSelectionChanged = false
+    var isLocationSelectionChanged = false
 
     // LIVE DATA
     private val getProductListResultLiveData = MutableLiveData<Result<ProductListResponse>>()
@@ -176,18 +184,32 @@ class AddProductViewModel @Inject constructor(
 
     fun mapProductDataToProductUiModel(productDataList: List<ProductData>): List<ProductUiModel> {
         return productDataList.map { productData ->
-            // TODO: implement proper string formatting
             ProductUiModel(
                     imageUrl = productData.pictures.first().urlThumbnail,
                     id = productData.id,
                     productName = productData.name,
-                    sku = "SKU : " + productData.sku,
-                    price = "Rp " + productData.price.max.toString(),
+                    sku = getFormattedSku(productData.sku),
+                    price =  getFormattedProductPrice(productData.price.max),
                     sold = productData.txStats.sold,
-                    soldNStock = "Terjual " + productData.txStats.sold + " | " + "Stok " + productData.stock.toString(),
+                    soldNStock = getFormattedStatisticText(productData.txStats.sold, productData.stock),
                     hasVariant = productData.isVariant
             )
         }
+    }
+
+    private fun getFormattedSku(sku: String): String {
+        val skuTemplate = resourceProvider.getFormattedSku()
+        return skuTemplate.format(sku)
+    }
+
+    private fun getFormattedStatisticText(sold: Int, stock: Int): String {
+        val formattedSoldCount = sold.thousandFormatted(PRODUCT_SOLD_COUNT_LAST_DIGIT_TO_DISPLAY)
+        val statisticTemplate = resourceProvider.getFormattedProductStatistic()
+        return statisticTemplate.format(formattedSoldCount, stock.splitByThousand(Locale.ENGLISH))
+    }
+
+    private fun getFormattedProductPrice(productPrice: Long): String {
+        return String.format(resourceProvider.getProductPrice(), productPrice.splitByThousand())
     }
 
     fun mapWarehouseLocationToSelections(warehouses: List<Warehouses>,
@@ -276,14 +298,36 @@ class AddProductViewModel @Inject constructor(
                     isSelected = isSelectAll && data.is_eligible,
                     variantId = data.productId,
                     variantName = data.productName,
-                    sku = "SKU : " + data.sku,
+                    sku = getFormattedSku(data.sku),
                     price = data.price.toString(),
                     priceTxt = data.priceFormat,
-                    soldNStock = "Terjual " + sold.toString() + " | " + "Stok " + data.stock.toString(),
+                    soldNStock = getFormattedStatisticText(sold, data.stock),
                     isError = !data.is_eligible,
                     errorMessage = data.reason
             )
         }
+    }
+
+    fun applyUserSelections(userSelections: List<ProductUiModel>,
+                            productData: List<ProductUiModel>): List<ProductUiModel> {
+        val productDataWithSelections = productData.toMutableList()
+        productDataWithSelections.forEach { productUiModel ->
+            val selectedProductMatch = userSelections.firstOrNull() { selection ->
+                selection.id == productUiModel.id
+            }
+            if (selectedProductMatch != null) {
+                productUiModel.isSelected = true
+                val mutableVariants = productUiModel.variants.toMutableList()
+                mutableVariants.forEach { variantUiModel ->
+                    val variantMatch = selectedProductMatch.variants.firstOrNull {
+                        variantUiModel.variantId == it.variantId
+                    }
+                    variantUiModel.isSelected = variantMatch?.isSelected ?: false
+                }
+                productUiModel.variants = mutableVariants.toList()
+            }
+        }
+        return productDataWithSelections.toList()
     }
 
     // dont confuse this with selected warehouse id
@@ -300,7 +344,22 @@ class AddProductViewModel @Inject constructor(
     }
 
     fun setSelectedProducts(productList: List<ProductUiModel>) {
-        this.selectedProductListLiveData.value = productList
+        this.selectedProductListLiveData.value = productList.toMutableList()
+    }
+
+    fun addSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        val matched = selectedProducts.firstOrNull { it.id == productUiModel.id }
+        if (matched == null) selectedProducts.add(productUiModel)
+        this.selectedProductListLiveData.value = selectedProducts
+    }
+
+    fun removeSelectedProduct(productUiModel: ProductUiModel) {
+        val selectedProducts = this.selectedProductListLiveData.value?.toMutableList()?: mutableListOf()
+        selectedProducts.removeFirst {
+            it.id == productUiModel.id
+        }
+        this.selectedProductListLiveData.value = selectedProducts
     }
 
     fun getSelectedProducts(): List<ProductUiModel> {
@@ -476,7 +535,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    fun isSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
+    fun isLocationSelectionChanged(origin: Int?, warehouseSelection: Int?): Boolean {
         return origin != warehouseSelection
     }
 }

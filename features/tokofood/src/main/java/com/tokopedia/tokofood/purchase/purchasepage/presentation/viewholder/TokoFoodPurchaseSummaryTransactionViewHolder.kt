@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBindi
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: ItemPurchaseSummaryTransactionBinding,
                                                    private val listener: TokoFoodPurchaseActionListener)
@@ -43,8 +44,17 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
                 }
                 containerTransactionItem.show()
             }
-            tickerCancellationInfo.showWithCondition(element.bottomTickerMessage.isNotEmpty())
-            tickerCancellationInfo.setHtmlDescription(element.bottomTickerMessage)
+            tickerCancellationInfo.run {
+                val (isTickerError, tickerMessage) = element.bottomTicker
+                tickerType =
+                    if (isTickerError) {
+                        Ticker.TYPE_ERROR
+                    } else {
+                        Ticker.TYPE_ANNOUNCEMENT
+                    }
+                showWithCondition(tickerMessage.isNotEmpty())
+                setHtmlDescription(tickerMessage)
+            }
         }
     }
 

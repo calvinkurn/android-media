@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="food_order_detail_dms_secondary_action_button_color_filter">#525A67</color>
+    <color name="food_order_detail_dms_secondary_action_button_stroke_color">#9FA6B0</color>
+</resources>
