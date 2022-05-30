@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.common
+package com.tokopedia.shop.flash_sale.common.constant
 
 object Constant {
     const val ZERO = 0

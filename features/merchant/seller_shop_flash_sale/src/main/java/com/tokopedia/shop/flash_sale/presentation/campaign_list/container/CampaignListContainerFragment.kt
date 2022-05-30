@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
@@ -31,12 +29,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flash_sale.common.util.DateManager
 
 class CampaignListContainerFragment: BaseDaggerFragment() {
 
     companion object {
         private const val NOT_SET = 0
         private const val DELAY_IN_MILLIS: Long = 300
+        private const val DRAFT_COUNT = 3
+        private const val FIRST_PAGE = 0
         private const val TAB_POSITION_FIRST = 0
         private const val TAB_POSITION_SECOND = 1
         private const val BUNDLE_KEY_PREVIOUS_CAMPAIGN_STATUS_ID = "previous_discount_status_id"
@@ -69,6 +70,9 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var dateManager: DateManager
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignListContainerViewModel::class.java) }
 
@@ -97,6 +101,10 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         observeRemainingQuota()
+        observeCampaignDrafts()
+        viewModel.getTabsMeta()
+        viewModel.getCampaignAttribute(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        viewModel.getCampaignDrafts(DRAFT_COUNT, FIRST_PAGE)
     }
 
     private fun observeTabsMeta() {
@@ -113,7 +121,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
                     binding?.loader?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
-
+                    binding?.cardView?.gone()
                     displayError(result.throwable)
                 }
             }
@@ -125,10 +133,27 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    binding?.cardView?.visible()
                     displayRemainingQuota(result.data.remainingCampaignQuota)
                 }
                 is Fail -> {
+                    binding?.cardView?.gone()
                     displayError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeCampaignDrafts() {
+        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val draftCount = result.data.campaigns.size
+                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
+                    handleDraftCount(draftCount)
+                }
+                is Fail -> {
+                    binding?.btnDraft?.gone()
                 }
             }
         }
@@ -137,7 +162,6 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
-        getTabsMetadata()
     }
 
     private fun setupView() {
@@ -160,6 +184,11 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun handleDraftCount(draftCount : Int) {
+        val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
+        binding?.btnDraft?.text = wording
+    }
+
     private fun displayRemainingQuota(remainingQuota : Int) {
         val wording = String.format(
             getString(R.string.sfs_placeholder_remaining_quota),
@@ -173,7 +202,7 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { getTabsMetadata() }
+            globalError.setActionClickListener { reload() }
             root showError throwable
         }
 
@@ -185,12 +214,11 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
     }
 
 
-    private fun getTabsMetadata() {
+    private fun reload() {
         binding?.loader?.visible()
         binding?.groupContent?.gone()
         binding?.globalError?.gone()
         viewModel.getTabsMeta()
-        viewModel.getCampaignAttribute(4, 2022)
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit =

@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.flash_sale.common.Constant.EMPTY_STRING
-import com.tokopedia.shop.flash_sale.common.Constant.ZERO
+import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
+import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.data.mapper.SellerCampaignListMapper
 import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignListRequest
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
