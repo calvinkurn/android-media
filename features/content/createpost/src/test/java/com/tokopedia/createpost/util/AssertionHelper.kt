@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.util
 
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import org.assertj.core.api.Assertions
 
 /**
@@ -31,5 +32,15 @@ inline fun PagedState.assertError(error: Exception) {
 
     Assertions
         .assertThat((this as PagedState.Error).error)
+        .isEqualTo(error)
+}
+
+fun ProductTagUiEvent.assertEventError(error: Exception) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(ProductTagUiEvent.ShowError::class.java)
+
+    Assertions
+        .assertThat((this as ProductTagUiEvent.ShowError).throwable)
         .isEqualTo(error)
 }

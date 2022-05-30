@@ -8,10 +8,7 @@ import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.andThen
-import com.tokopedia.createpost.util.assertEqualTo
-import com.tokopedia.createpost.util.assertError
-import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -244,6 +241,24 @@ class MyShopViewModelTest {
                 }
 
                 events.last().assertEqualTo(ProductTagUiEvent.OpenMyShopSortBottomSheet)
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants to open sort bottomsheet and error happens, it should emit error event`() {
+        coEvery { mockRepo.getSortFilter(any()) } throws mockException
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+        )
+
+        robot.use {
+            it.recordEvent {
+                submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+            }.andThen {
+                last().assertEventError(mockException)
             }
         }
     }
