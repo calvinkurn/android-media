@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 object TokoFoodPurchaseUiModelMapper {
 
@@ -35,15 +36,18 @@ object TokoFoodPurchaseUiModelMapper {
         return mutableListOf<Visitable<*>>().apply {
             val tickerErrorMessage = response.data.errorTickers.top.message.takeIf { it.isNotEmpty() }
             if (tickerErrorMessage == null) {
-                response.data.tickers.top.let { topTicker ->
-                    add(mapGeneralTickerUiModel(topTicker.message, false))
+                response.data.tickers.top.message.let { topTickerMessage ->
+                    if (topTickerMessage.isNotEmpty()) {
+                        add(mapGeneralTickerUiModel(topTickerMessage, false))
+                    }
                 }
             } else {
                 add(mapGeneralTickerUiModel(tickerErrorMessage, true))
             }
             add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
             add(mapAddressUiModel(response.data.userAddress))
-            val shouldShippingShown = response.data.shipping.name.isNotEmpty()
+            val shouldShippingShown =
+                response.data.shipping.name.isNotEmpty() || response.data.shipping.eta.isNotEmpty()
             if (shouldShippingShown) {
                 add(
                     mapShippingUiModel(
@@ -53,8 +57,8 @@ object TokoFoodPurchaseUiModelMapper {
                     )
                 )
             }
-            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
             if (response.data.availableSection.products.isNotEmpty()) {
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
                 add(mapProductListHeaderUiModel(isEnabled))
                 response.data.errorsUnblocking.takeIf { it.isNotEmpty() }?.let { message ->
                     add(mapTickerErrorShopLevelUiModel(isEnabled, message))
@@ -62,9 +66,9 @@ object TokoFoodPurchaseUiModelMapper {
                 addAll(response.data.availableSection.products.map {
                     mapProductUiModel(it, isEnabled, true)
                 })
-                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
             }
             response.data.unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
                 add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
                 add(mapProductUnavailableReasonUiModel(isEnabled, response.data.unavailableSection.title))
                 addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
@@ -106,6 +110,8 @@ object TokoFoodPurchaseUiModelMapper {
         val shouldShippingShown = response.data.shipping.name.isNotEmpty()
         val shouldPromoShown = !response.data.promo.hidePromo
         val shouldSummaryShown = !response.data.summaryDetail.hideSummary
+        val shouldTickerShopLevelShown =
+            response.data.errorsUnblocking.isNotEmpty() && response.data.availableSection.products.isNotEmpty()
         val isBottomTickerError = response.data.errorTickers.bottom.message.isNotEmpty()
         val bottomTickerMessage =
             if (isBottomTickerError) {
@@ -127,7 +133,11 @@ object TokoFoodPurchaseUiModelMapper {
             totalAmountUiModel = mapTotalAmountUiModel(
                 isEnabled && shouldSummaryShown,
                 response.data.shoppingSummary.total
-            )
+            ),
+            tickerErrorShopLevelUiModel = mapTickerErrorShopLevelUiModel(
+                isEnabled,
+                response.data.errorsUnblocking
+            ).takeIf { shouldTickerShopLevelShown }
         )
     }
 
@@ -172,8 +182,8 @@ object TokoFoodPurchaseUiModelMapper {
             shippingCourierName = shipping.name
             shippingEta = shipping.eta
             shippingLogoUrl = shipping.logoUrl
-            // TODO: Use fmt instead
-            shippingPrice = shipping.price.toLong()
+            shippingPriceFmt = shipping.priceFmt.takeIf { it.isNotEmpty() }
+                ?: CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.price, false)
             isNeedPinpoint = needPinpoint
             isShippingAvailable = isEnabled
             this.isEnabled = isEnabled
@@ -183,38 +193,27 @@ object TokoFoodPurchaseUiModelMapper {
     private fun mapProductListHeaderUiModel(isEnabled: Boolean,
                                             unavailableSectionHeader: String? = null): TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel {
         return if (unavailableSectionHeader == null) {
-            // TODO: Static for available products
-            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
-                title = "Daftar Pesanan"
-                action = "Tambah Pesanan"
-                isAvailableHeader = true
-                this.isEnabled = isEnabled
-            }
+            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel(isAvailableHeader = true)
         } else {
-            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
-                title = unavailableSectionHeader
-                action = "Hapus"
+            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel(
+                title = unavailableSectionHeader,
                 isAvailableHeader = false
-                this.isEnabled = isEnabled
-            }
+            )
+        }.apply {
+            this.isEnabled = isEnabled
         }
     }
 
     private fun mapProductUnavailableReasonUiModel(isEnabled: Boolean,
                                                    reason: String): TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel().apply {
-            this.reason = reason
-            // TODO: Remove detail
-            detail = ""
+        return TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel(reason = reason).apply {
             this.isEnabled = isEnabled
         }
     }
 
     private fun mapTickerErrorShopLevelUiModel(isEnabled: Boolean,
                                                tickerMessage: String): TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel().apply {
-            // TODO: Hardcoded 'lihat' action
-            message = tickerMessage
+        return TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel(message = tickerMessage).apply {
             this.isEnabled = isEnabled
         }
     }
@@ -289,9 +288,6 @@ object TokoFoodPurchaseUiModelMapper {
     private fun mapAccordionUiModel(isEnabled: Boolean): TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel().apply {
             isCollapsed = false
-            // TODO: Put to res
-            showMoreWording = "Tampilkan Lebih Banyak"
-            showLessWording = "Tampilkan Lebih Sedikit"
             this.isEnabled = isEnabled
         }
     }

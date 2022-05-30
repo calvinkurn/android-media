@@ -4,5 +4,6 @@ class PartialTokoFoodUiModel(
     val shippingUiModel: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel?,
     val promoUiModel: TokoFoodPurchasePromoTokoFoodPurchaseUiModel?,
     val summaryUiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel?,
-    val totalAmountUiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
+    val totalAmountUiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel,
+    val tickerErrorShopLevelUiModel: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel?
 )

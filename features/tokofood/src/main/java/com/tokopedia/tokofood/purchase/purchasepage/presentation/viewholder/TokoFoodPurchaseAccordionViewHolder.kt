@@ -18,10 +18,10 @@ class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseA
     override fun bind(element: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isCollapsed) {
-                textAccordion.text = element.showMoreWording
+                textAccordion.text = itemView.context.getString(R.string.text_purchase_show_less)
                 imageChevron.rotation = 0f
             } else {
-                textAccordion.text = element.showLessWording
+                textAccordion.text = itemView.context.getString(R.string.text_purchase_show_all)
                 imageChevron.rotation = 180f
             }
             itemView.setOnClickListener {

@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
@@ -49,8 +50,13 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun renderBottomDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            val nextItem = listener.getNextItems(adapterPosition, Int.ONE).firstOrNull()
-            nextItem?.let {
+            val nextItem = listener.getNextItems(adapterPosition, Int.ONE).firstOrNull().takeIf {
+                it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+            }
+            if (nextItem == null) {
+                dividerBottom.invisible()
+            } else {
+                dividerBottom.show()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(productCell)
                 if (element.isAvailable) {

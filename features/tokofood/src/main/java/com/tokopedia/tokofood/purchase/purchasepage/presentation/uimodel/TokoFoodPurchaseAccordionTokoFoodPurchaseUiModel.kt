@@ -5,8 +5,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 
 data class TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel(
         var isCollapsed: Boolean = false,
-        var showMoreWording: String = "",
-        var showLessWording: String = ""
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
@@ -60,9 +61,22 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
             containerPinpoint.gone()
             containerLoading.gone()
             imageShippingLogo.setImageUrl(element.shippingLogoUrl)
-            textShippingCourierName.text = element.shippingCourierName
+            textShippingCourierName.text =
+                getShippingCourierInfo(element.shippingCourierName, element.shippingPriceFmt)
             textShippingEta.text = element.shippingEta
         }
+    }
+
+    private fun getShippingCourierInfo(courierName: String,
+                                       shippingPriceFmt: String): String {
+        var shippingInfo = courierName
+        if (shippingPriceFmt.isNotEmpty()) {
+            shippingInfo += String.SPACE + itemView.context.getString(
+                R.string.text_purchase_shipping_price,
+                shippingPriceFmt
+            )
+        }
+        return shippingInfo
     }
 
 

@@ -18,7 +18,7 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
 
     override fun bind(element: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            tickerErrorShopLevel.setHtmlDescription(element.message)
+            tickerErrorShopLevel.setHtmlDescription(element.message.appendWithSeeAction())
             tickerErrorShopLevel.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.onTextShowUnavailableItemClicked()
@@ -31,6 +31,10 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
 
             tickerErrorShopLevel.renderAlpha(element)
         }
+    }
+
+    private fun String.appendWithSeeAction(): String {
+        return itemView.context?.getString(R.string.text_purchase_ticker_unavailable_product, this).orEmpty()
     }
 
 }

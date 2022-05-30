@@ -1,16 +1,12 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.renderAlpha
 
-class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding: ItemPurchaseProductUnavailableReasonBinding,
-                                                         private val listener: TokoFoodPurchaseActionListener)
+class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding: ItemPurchaseProductUnavailableReasonBinding)
     : AbstractViewHolder<TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
@@ -20,13 +16,6 @@ class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding
     override fun bind(element: TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             unavailableSectionType.text = element.reason
-            if (element.detail.isNotBlank()) {
-                textDisabledSubTitle.text = element.detail
-                textDisabledSubTitle.show()
-            } else {
-                textDisabledSubTitle.gone()
-            }
-
             itemView.renderAlpha(element)
         }
     }

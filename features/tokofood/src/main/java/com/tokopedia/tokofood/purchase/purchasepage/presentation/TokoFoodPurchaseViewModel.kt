@@ -139,7 +139,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadData() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
-                // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
                 shopId.value = it.data.shop.shopId
@@ -207,12 +206,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadDataPartial() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
-                // TODO: Improvement Load partial data only from query
                 _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
                     data = it
                 )
-                // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
                 shopId.value = it.data.shop.shopId
@@ -252,6 +249,24 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         if (totalAmountIndex >= Int.ZERO) {
                             removeAt(totalAmountIndex)
                             add(totalAmountIndex, partialData.totalAmountUiModel)
+                        }
+                    }
+                    getUiModelIndex<TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>().let { tickerErrorIndex ->
+                        when {
+                            partialData.tickerErrorShopLevelUiModel == null && tickerErrorIndex >= Int.ZERO -> {
+                                removeAt(tickerErrorIndex)
+                            }
+                            partialData.tickerErrorShopLevelUiModel != null && tickerErrorIndex < Int.ZERO -> {
+                                getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>().let { firstProductIndex ->
+                                    add(firstProductIndex, partialData.tickerErrorShopLevelUiModel)
+                                }
+                            }
+                            else -> {
+                                removeAt(tickerErrorIndex)
+                                partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
+                                    add(tickerErrorIndex, tickerErrorUiModel)
+                                }
+                            }
                         }
                     }
 
@@ -429,22 +444,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         tmpCollapsedUnavailableItems.clear()
     }
 
-    private fun deleteErrorsUnblocking() {
-
-    }
-
-    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
-        val cartList = productList.map {
-            CartItemTokoFoodParam(
-                productId = it.id,
-                quantity = it.quantity
-            )
-        }
-        return CartTokoFoodParam(
-            carts = cartList
-        )
-    }
-
     fun scrollToUnavailableItem() {
         val dataList = getVisitablesValue()
         var targetIndex = -1
@@ -463,53 +462,16 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateNotes(product: CartTokoFood, previousCartId: String) {
-        launchCatchError(block = {
-            val productData = getVisitablesValue().getProductById(product.productId, previousCartId)
-            productData?.let {
-                val dataList = getVisitablesValue()
-                val newProductData = it.second.copy()
-                newProductData.notes = product.getMetadata().notes
-                newProductData.cartId = product.cartId
-                dataList[it.first] = newProductData
-                _visitables.value = dataList
-            }
-        }, onError = {
-            // TODO: Add Error
-        })
-    }
-
-    fun updateNotes(updateParam: UpdateParam, cartData: CartTokoFoodData) {
-        launchCatchError(block = {
+    fun updateNotes(product: CartTokoFood) {
+        val productData = getVisitablesValue().getProductById(product.productId, product.cartId)
+        productData?.let {
             val dataList = getVisitablesValue()
-            updateParam.productList.forEach { param ->
-                getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
-                    val newProductData = productData.second.copy().also { newProduct ->
-                        cartData.carts.find { cartData ->
-                            cartData.productId == newProduct.id && cartData.getMetadata().variants.any { cartVariant ->
-                                var isSameVariants = false
-                                run checkVariant@ {
-                                    newProduct.variants.forEach { productVariant ->
-                                        if (cartVariant.variantId == productVariant.variantId && cartVariant.optionId == productVariant.optionId) {
-                                            isSameVariants = true
-                                            return@checkVariant
-                                        }
-                                    }
-                                }
-                                isSameVariants
-                            }
-                        }?.let {
-                            newProduct.notes = it.getMetadata().notes
-                            newProduct.cartId = it.cartId
-                        }
-                    }
-                    dataList[productData.first] = newProductData
-                }
-            }
+            val newProductData = it.second.copy()
+            newProductData.notes = product.getMetadata().notes
+            newProductData.cartId = product.cartId
+            dataList[it.first] = newProductData
             _visitables.value = dataList
-        }, onError = {
-            // TODO: Add Error
-        })
+        }
     }
 
     fun updateCartId(updateParam: UpdateParam, cartData: CartTokoFoodData) {

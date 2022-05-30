@@ -34,6 +34,12 @@
     <string name="text_purchase_okay">Oke</string>
     <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
     <string name="text_purchase_try_again">Coba Lagi</string>
+    <string name="text_purchase_show_less">Tampilkan Lebih Sedikit</string>
+    <string name="text_purchase_show_all">Tampilkan Semua</string>
+    <string name="text_purchase_shipping_price">(%s)</string>
+    <string name="text_purchase_order_list">Daftar Pesanan</string>
+    <string name="text_purchase_add_order">Tambah Pesanan</string>
+    <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

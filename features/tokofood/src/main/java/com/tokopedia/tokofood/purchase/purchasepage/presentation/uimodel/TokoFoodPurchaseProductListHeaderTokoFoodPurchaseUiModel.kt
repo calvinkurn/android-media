@@ -5,7 +5,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 
 data class TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel(
         var title: String = "",
-        var action: String = "",
         var isAvailableHeader: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 

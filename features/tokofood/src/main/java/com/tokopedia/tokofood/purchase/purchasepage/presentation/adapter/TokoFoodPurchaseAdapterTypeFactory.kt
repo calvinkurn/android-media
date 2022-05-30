@@ -95,7 +95,7 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
             }
             TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseProductUnavailableReasonBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseProductUnavailableReasonViewHolder(viewBinding, listener)
+                TokoFoodPurchaseProductUnavailableReasonViewHolder(viewBinding)
             }
             TokoFoodPurchasePromoViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchasePromoBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

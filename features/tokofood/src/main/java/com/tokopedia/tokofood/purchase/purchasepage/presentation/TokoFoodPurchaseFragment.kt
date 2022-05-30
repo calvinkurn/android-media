@@ -401,18 +401,24 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? String)?.let { previousCartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
-                                    viewModel.deleteProduct(product.productId, previousCartId)
+                                    viewBinding?.recyclerViewPurchase?.post {
+                                        viewModel.deleteProduct(product.productId, previousCartId)
+                                    }
                                 }
                             }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
-                        viewModel.bulkDeleteUnavailableProducts()
+                        viewBinding?.recyclerViewPurchase?.post {
+                            viewModel.bulkDeleteUnavailableProducts()
+                        }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
-                        it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
+                        it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
                             cartTokoFoodData.carts.firstOrNull()?.let { product ->
-                                viewModel.updateNotes(updateParams, cartTokoFoodData)
+                                viewBinding?.recyclerViewPurchase?.post {
+                                    viewModel.updateNotes(product)
+                                }
                                 showToaster(
                                     context?.getString(R.string.text_purchase_success_notes).orEmpty(),
                                     getOkayMessage()
@@ -422,9 +428,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                         it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
-                            viewModel.updateCartId(updateParams, cartTokoFoodData)
+                            viewBinding?.recyclerViewPurchase?.post {
+                                viewModel.updateCartId(updateParams, cartTokoFoodData)
+                            }
                         }
-                        viewModel.refreshPartialCartInformation()
+                        viewBinding?.recyclerViewPurchase?.post {
+                            viewModel.refreshPartialCartInformation()
+                        }
                         showToaster(
                             context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
                             getOkayMessage()
