@@ -10,7 +10,9 @@ import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -35,6 +37,9 @@ class HomeHeaderOvoViewHolder(itemView: View,
         element.headerDataModel?.let {
             resetView()
             when(it.homeBalanceModel.balanceType) {
+                HomeBalanceModel.TYPE_STATE_1 -> {
+                    renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
+                }
                 HomeBalanceModel.TYPE_STATE_2 -> {
                     renderBalanceLayout(
                         it.homeBalanceModel,
@@ -60,6 +65,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun resetView() {
+        itemView.findViewById<OvoWidgetView>(R.id.view_ovo).gone()
         itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).gone()
     }
 
@@ -82,6 +88,18 @@ class HomeHeaderOvoViewHolder(itemView: View,
         emptySpace.invalidate()
     }
 
+    private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {
+        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
+        data?.let {
+            if (it.isUserLogin && needToShowUserWallet) {
+                ovoView.visible()
+                ovoView.bind(it, listener)
+            } else {
+                ovoView.gone()
+            }
+        }
+    }
+
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean, needToShowUserWallet: Boolean) {
         val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
         data?.let {
@@ -92,5 +110,9 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 balanceWidgetView.gone()
             }
         }
+    }
+
+    fun getBalanceWidgetView(): BalanceWidgetView? {
+        return itemView.findViewById(R.id.view_balance_widget)
     }
 }
