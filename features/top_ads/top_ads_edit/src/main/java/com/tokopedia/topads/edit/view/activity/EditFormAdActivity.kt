@@ -261,6 +261,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
 
     private fun showConfirmationDialog() {
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.dialogPrimaryCTA.isEnabled = btnSubmit?.isEnabled == true
         dialog.setTitle(getString(R.string.topads_edit_leave_page_conf_dialog_title))
         dialog.setDescription(getString(R.string.topads_edit_leave_page_conf_dialog_desc))
         dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_save_butt))

@@ -9,12 +9,12 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.SendableUiModel
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
@@ -22,6 +22,12 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.clickSrwQuestion
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
@@ -1414,6 +1420,99 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwPreviewContentIsHidden()
         assertTemplateChatVisibility(isDisplayed())
+    }
+
+    @Test
+    fun should_hide_label_if_label_is_empty() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+        assertSrwTotalQuestion(1)
+        assertSrwLabelVisibility(false, 0)
+    }
+
+    @Test
+    fun should_show_label_if_label_is_not_empty() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwProductBundlingResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTitle(chatSrwProductBundlingResponse.chatSmartReplyQuestion.title)
+        assertSrwTotalQuestion(1)
+        assertSrwLabelVisibility(true, 0)
+        assertSrwLabel(chatSrwProductBundlingResponse.chatSmartReplyQuestion.questions.first().label, 0)
+    }
+
+    @Test
+    fun should_show_coachmark_if_has_not_shown_yet() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwProductBundlingResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwCoachMark(true, context.getString(R.string.coach_product_bundling_title))
+    }
+
+    @Test
+    fun should_not_show_coachmark_if_has_shown() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwProductBundlingResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, true)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
+    }
+
+    @Test
+    fun should_send_SRW_question() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwProductBundlingResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+        generatePreAttachPayload(DEFAULT_PRODUCT_ID)
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        //When
+        clickSrwQuestion(0)
+
+        // Then
+        assertViewInRecyclerViewAt(1, R.id.tvMessage, withText("Min, ada Paket Bundling?"))
     }
 
     // TODO: SRW should hide broadcast handler if visible
