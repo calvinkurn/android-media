@@ -42,9 +42,7 @@ class TokoFoodHomeChooseAddressViewHolder(
                     tokoFoodView.refreshLayoutPage()
                 }
 
-                override fun onLocalizingAddressServerDown() {
-                    tokoFoodChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
-                }
+                override fun onLocalizingAddressServerDown() {}
 
                 override fun getLocalizingAddressHostFragment(): Fragment {
                     return fragment
@@ -64,7 +62,6 @@ class TokoFoodHomeChooseAddressViewHolder(
     }
 
     interface TokoFoodChooseAddressWidgetListener {
-        fun onChooseAddressWidgetRemoved()
         fun onClickChooseAddressWidgetTracker()
     }
 }

@@ -215,28 +215,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun refreshLayoutPage() = onRefreshLayout()
 
-    private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
-        return TokoFoodHomeLegoComponentCallback(this)
-    }
-
-    private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
-        return TokoFoodHomeBannerComponentCallback(this)
-    }
-
-    private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
-        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this)
-    }
-
     override fun onUSPClicked(uspResponse: USPResponse) {
         showUSPBottomSheet(uspResponse)
     }
 
     override fun onClickChooseAddressWidgetTracker() {
-
-    }
-
-    override fun onChooseAddressWidgetRemoved() {
-        chooseAddressWidgetRemoved()
+        //TODO Widget address tracker
     }
 
     override fun onClickSetPinPoin() {
@@ -287,6 +271,18 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_ADD_ADDRESS -> onResultFromAddAddress(resultCode, data)
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
         }
+    }
+
+    private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
+        return TokoFoodHomeLegoComponentCallback(this)
+    }
+
+    private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
+        return TokoFoodHomeBannerComponentCallback(this)
+    }
+
+    private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
+        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this)
     }
 
     private fun showLayout() {
@@ -686,8 +682,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
     }
-
-    private fun chooseAddressWidgetRemoved() {}
 
     private fun initializeMiniCartHome() {
         activityViewModel?.let {
