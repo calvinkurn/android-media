@@ -9,7 +9,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  */
 class LastPurchasedModelBuilder {
 
-    fun buildUiModel(
+    fun buildUiModelList(
         size: Int = 5,
         hasNextPage: Boolean = true,
         nextCursor: String = "",

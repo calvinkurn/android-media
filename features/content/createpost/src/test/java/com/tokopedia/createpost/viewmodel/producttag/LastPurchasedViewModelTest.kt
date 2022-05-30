@@ -36,7 +36,7 @@ class LastPurchasedViewModelTest {
     fun `when user load last purchased product & success, it should emit success state`() {
         val coachmark = "This is coachmark"
         val isCoachmarkShown = true
-        val pagedData = modelBuilder.buildUiModel(coachmark = coachmark, isCoachmarkShown = isCoachmarkShown)
+        val pagedData = modelBuilder.buildUiModelList(coachmark = coachmark, isCoachmarkShown = isCoachmarkShown)
 
         coEvery { mockRepo.getLastPurchasedProducts(any(), any()) } returns pagedData
 

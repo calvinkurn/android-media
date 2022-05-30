@@ -14,3 +14,10 @@ fun ProductTagUiState.andThen(fn: ProductTagUiState.() -> Unit) {
 fun List<ProductTagUiEvent>.andThen(fn: List<ProductTagUiEvent>.() -> Unit) {
     fn()
 }
+
+fun Pair<ProductTagUiState, List<ProductTagUiEvent>>.andThen(
+    fn: Pair<ProductTagUiState, List<ProductTagUiEvent>>.
+        (ProductTagUiState,  List<ProductTagUiEvent>) -> Unit
+) {
+    fn(first, second)
+}

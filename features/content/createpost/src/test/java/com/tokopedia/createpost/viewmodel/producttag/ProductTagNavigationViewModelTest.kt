@@ -12,8 +12,10 @@ import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.andThen
 import com.tokopedia.createpost.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,7 +38,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user press back press, it should remove the most top fragment from stack`() {
-        val selectedShop = shopModelBuilder.buildUiModel().first()
+        val selectedShop = shopModelBuilder.buildUiModelList().first()
 
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
@@ -84,7 +86,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user click breadcrumb but the stack is more than 1, it should pop the most top fragment from stack`() {
-        val selectedShop = shopModelBuilder.buildUiModel().first()
+        val selectedShop = shopModelBuilder.buildUiModelList().first()
 
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
@@ -127,6 +129,75 @@ class ProductTagNavigationViewModelTest {
             submitAction(ProductTagAction.OpenAutoCompletePage)
         }.andThen {
             last().assertEqualTo(ProductTagUiEvent.OpenAutoCompletePage(query))
+        }
+    }
+
+    @Test
+    fun `when user click suggested product and come back from autocomplete page, it should emit state with appropriate page`() {
+        val query = "pokemon"
+        val source = ProductTagSource.GlobalSearch
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.recordState {
+            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, ""))
+        }.andThen {
+            productTagSource.productTagSourceStack.last().assertEqualTo(source)
+            globalSearchProduct.param.query.assertEqualTo(query)
+        }
+    }
+
+    @Test
+    fun `when user click suggested shop and come back from autocomplete page, it should emit state with appropriate page`() {
+        val query = "pokemon"
+        val source = ProductTagSource.Shop
+        val shopId = 1
+        val mockResponse = shopModelBuilder.buildUiModel(shopId.toString())
+
+        coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } returns mockResponse
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.recordState {
+            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+        }.andThen {
+            productTagSource.productTagSourceStack.last().assertEqualTo(source)
+            shopProduct.param.query.assertEqualTo(query)
+        }
+    }
+
+    @Test
+    fun `when user click suggested shop and error happens, it should emit error event`() {
+        val query = "pokemon"
+        val source = ProductTagSource.Shop
+        val shopId = 1
+
+        coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } throws mockException
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+        )
+
+        robot.recordEvent {
+            submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+        }.andThen {
+            val lastEvent = last()
+            if(lastEvent is ProductTagUiEvent.ShowError) {
+                lastEvent.throwable.assertEqualTo(mockException)
+            }
+            else {
+                fail("Event should be ProductTagUiEvent.ShowError")
+            }
         }
     }
 }

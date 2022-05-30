@@ -7,7 +7,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
  */
 class ShopModelBuilder {
 
-    fun buildUiModel(
+    fun buildUiModelList(
         size: Int = 5,
     ): List<ShopUiModel> {
         return List(size) {
@@ -16,5 +16,14 @@ class ShopModelBuilder {
                 shopName = "Shop $it",
             )
         }
+    }
+
+    fun buildUiModel(
+        id: String = "1",
+    ): ShopUiModel {
+        return ShopUiModel(
+            shopId = id,
+            shopName = "Shop $id",
+        )
     }
 }
