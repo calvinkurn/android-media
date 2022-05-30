@@ -1584,8 +1584,7 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
-        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter),
-            if (isChipSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
+        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
 
         setSortFilterItemListener(item, filter, options)
         setSortFilterItemState(item, isChipSelected)
@@ -1593,6 +1592,7 @@ class ProductListPresenter @Inject constructor(
         return item
     }
 
+    @Suppress("MagicNumber")
     private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
         val optionSize = activeOptions.size
 
