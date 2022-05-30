@@ -94,7 +94,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
     }
 
     @Test
-    fun `Response Code 3 and experiment is disabled will not call TopAds GQL again`() {
+    fun `Load More with Response Code 3 and experiment is disabled will not call TopAds GQL again`() {
         val searchProductModelFirstPage = searchProductResponseCode3.jsonToObject<SearchProductModel>()
         val typoCorrectedTopAdsFirstPage = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
         val searchProductModelSecondPage = searchProductResponseCode3SecondPage.jsonToObject<SearchProductModel>()
@@ -184,7 +184,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
     }
 
     @Test
-    fun `Response TopAds error will remove all TopAds products`() {
+    fun `Load More TopAds with error response will remove all TopAds products from current SearchProductModel`() {
         val searchProductModelFirstPage = searchProductResponseCode3.jsonToObject<SearchProductModel>()
         val typoCorrectedTopAdsFirstPage = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
         val searchProductModelSecondPage = searchProductResponseCode3SecondPage.jsonToObject<SearchProductModel>()
