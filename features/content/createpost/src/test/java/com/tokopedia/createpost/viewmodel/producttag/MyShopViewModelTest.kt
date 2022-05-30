@@ -109,8 +109,8 @@ class MyShopViewModelTest {
     }
 
     @Test
-    fun `when user load next page but it has no next page, it shouldnt do anything`() {
-        val nextCursor = ""
+    fun `when user load shop next page but it has no next page, it shouldnt do anything`() {
+        val nextCursor = "2"
         val response = globalSearchModelBuilder.buildResponseModel(nextCursor = nextCursor, hasNextPage = false)
 
         coEvery { mockRepo.searchAceProducts(any()) } returns response
