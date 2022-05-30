@@ -59,7 +59,7 @@ object ProductEducationalTracker {
 
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                "${ProductTrackingConstant.Category.PDP} $typeFlagString",
+                "${ProductTrackingConstant.Category.PDP} - $typeFlagString",
                 "click - cta button on $typeFlagString",
                 "button:$button;title:$eduTitle;description:$eduDesc")
         mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
