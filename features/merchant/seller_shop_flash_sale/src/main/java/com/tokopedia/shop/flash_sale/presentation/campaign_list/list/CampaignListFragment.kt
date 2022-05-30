@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
+import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flash_sale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragment
@@ -113,13 +115,40 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     }
 
     private fun setupView() {
+        setupSearchBar()
+    }
 
+    private fun setupSearchBar() {
+        binding?.run {
+            searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    clearAllData()
+                    onShowLoading()
+                    getCampaigns(FIRST_PAGE)
+                    return@setOnEditorActionListener false
+                }
+                return@setOnEditorActionListener false
+            }
+            searchBar.clearListener = { clearSearchBar() }
+        }
+    }
+
+    private fun clearSearchBar() {
+        clearAllData()
+        onShowLoading()
+        viewModel.getCampaigns(
+            PAGE_SIZE,
+            FIRST_PAGE,
+            campaignStatusIds?.toList().orEmpty(),
+            EMPTY_STRING
+        )
     }
 
     private fun observeCampaigns() {
         viewModel.campaigns.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    isFirstLoad = false
                     displayCampaigns(result.data)
                 }
                 is Fail -> {
@@ -196,14 +225,17 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     override fun loadData(page: Int) {
         binding?.globalError?.gone()
 
-        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+        getCampaigns(page)
+    }
 
-        val offset = if (isFirstLoad) {
-            isFirstLoad = false
+    private fun getCampaigns(page: Int) {
+        val offset = if (isFirstLoad || page == FIRST_PAGE) {
             FIRST_PAGE
         } else {
             page * PAGE_SIZE
         }
+
+        val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
 
         viewModel.getCampaigns(
             PAGE_SIZE,
@@ -265,7 +297,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { loadInitialData() }
+            globalError.setActionClickListener { getCampaigns(FIRST_PAGE) }
             root showError errorMessage
         }
 

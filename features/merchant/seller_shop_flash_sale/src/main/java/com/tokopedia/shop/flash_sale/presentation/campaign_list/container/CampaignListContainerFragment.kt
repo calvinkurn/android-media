@@ -2,7 +2,6 @@ package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -14,8 +13,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
+import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.extension.showError
+import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
@@ -29,10 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
-import com.tokopedia.shop.flash_sale.common.util.DateManager
-import com.tokopedia.unifycomponents.setEnabled
 
 class CampaignListContainerFragment: BaseDaggerFragment() {
 
@@ -278,8 +276,6 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
-                val campaignCount = tabs[position].totalCampaign
-                viewPager.isUserInputEnabled = campaignCount.isMoreThanZero()
 
                 if (isRedirectionFromAnotherPage()) {
                     focusTo(currentCampaignStatusId)
