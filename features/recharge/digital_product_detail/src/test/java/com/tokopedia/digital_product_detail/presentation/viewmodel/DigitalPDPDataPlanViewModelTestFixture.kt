@@ -194,6 +194,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
+    protected fun verifyGetFavoriteNumberPrefillNull() {
+        Assert.assertNull(viewModel.prefillData.value)
+    }
+
     protected fun verifyPrefixOperatorLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertEquals(expectedResponse, actualResponse)

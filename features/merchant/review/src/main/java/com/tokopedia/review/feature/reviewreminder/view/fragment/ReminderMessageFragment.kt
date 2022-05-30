@@ -22,6 +22,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderData
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderList
@@ -279,11 +280,14 @@ class ReminderMessageFragment : BaseDaggerFragment() {
 
     }
 
-    private val observerError = Observer<String> {
+    private val observerError = Observer<Throwable> { throwable ->
         view?.let {
             Toaster.build(
                     it,
-                    getString(R.string.review_reminder_snackbar_error),
+                    throwable.getErrorMessage(
+                        context,
+                        getString(R.string.review_reminder_snackbar_error)
+                    ),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
                     getString(R.string.review_reminder_snackbar_error_action),
