@@ -536,6 +536,10 @@ public interface ApplinkConst {
         String REPURCHASE = "tokopedia://now/repurchase-page";
     }
 
+    interface TokoFood {
+        String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
+    }
+
     interface TokoMart {
         String HOME = "tokopedia://tokomart";
         String SEARCH = "tokopedia://tokomart/search";

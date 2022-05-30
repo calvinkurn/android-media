@@ -39,4 +39,32 @@
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
     <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
     <string name="order_tracking_detail_payment_label">Detail Pembayaran</string>
+    <string name="order_tracking_order_number_label">Order Number</string>
+    <string name="order_tracking_estimation_time"><![CDATA[%1s <b>%2$s</b>]]></string>
+    <string name="order_tracking_detail_order_header_label">Detail Pesanan</string>
+    <string name="order_tracking_shipping_restaurant_label">Dari Restoran</string>
+    <string name="order_tracking_distance_restaurant">%s km dari tujuan</string>
+    <string name="order_detail_shipping_header_label">Detail Pengiriman</string>
+    <string name="order_detail_shipping_destination_label">Dikirim ke</string>
+    <string name="order_detail_payment_header_label">Rincian Pembayaran</string>
+
+    <string name="order_detail_expand_cta_label">Tampilkan Lebih Banyak</string>
+    <string name="order_detail_collapse_cta_label">Tampilkan Lebih Ringkas</string>
+    <string name="order_detail_qty_price_value">%1s x %2s</string>
+
+    <string name="order_tracking_temporary_finish_title">Yay, pesananmu sudah sampai!</string>
+    <string name="order_tracking_temporary_finish_desc">Pesananmu sampai dalam 15 menit. Terima kasih sudah nungguin dan selamat menikmati.</string>
+
+    <string name="order_tracking_help_button_title">Bantuan</string>
+    <string name="order_completed_buy_again_button_title">Beli Lagi</string>
+    <string name="secondary_action_bottomsheet_header">Lainnya</string>
+    <string name="order_tracking_toolbar_desc_with_eta">%1s • %2s</string>
+    <string name="driver_call_title_bottomsheet">Telepon Driver</string>
+    <string name="driver_call_now_button">Telepon Sekarang</string>
+    <string name="driver_call_enabled_title_bottomsheet">Nomor HP-mu akan disamarkan</string>
+    <string name="driver_call_enabled_desc_bottomsheet">Kontakmu aman. Driver tidak bisa lihat nomor HP kamu di panggilan ini.</string>
+
+    <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telp driver</string>
+    <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis</string>
+
 </resources>

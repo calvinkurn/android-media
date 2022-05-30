@@ -1,0 +1,149 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "OTW_PICKUP",
+      "title": "Makanan lagi disiapin",
+      "subtitle": "Driver meluncur ke restoran",
+      "iconName": "cooking"
+    },
+    "eta": null,
+    "merchant": {
+      "displayName": "Kopi Janji Jiwa, Permata Hijau",
+      "distanceInKm": "2.5 km dari tujuan"
+    },
+    "destination": {
+      "label": "Rumah",
+      "phone": "081234567890",
+      "info": "Jl. Prof. DR. Satrio No.3, Karet Semanggi, ..."
+    },
+    "items": [
+      {
+        "displayName": "Milo Macchiato",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Less Sugar"
+          },
+          {
+            "displayName": "Ice level",
+            "optionName": "Normal"
+          },
+          {
+            "displayName": "Size",
+            "optionName": "Large"
+          }
+        ],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "displayName": "Ovomaltine Macchiato",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Less Sugar"
+          }
+        ],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "displayName": "1 Liter Ice Coffee Jelly",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "displayName": "1 Liter Chocolate Coffee Boba",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Normal"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "additionalTickerInfo": [
+      {
+        "level": "info",
+        "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
+      }
+    ],
+    "actionButtons": [
+      {
+        "label": "Bantuan",
+        "actionType": "link",
+        "appUrl": "tokopedia://food/merchant/{merchantId}"
+      }
+    ],
+    "dotMenus": [
+      {
+        "label": "Bantuan",
+        "actionType": "link",
+        "appUrl": "tokopedia://webview?url=https://www.tokopedia.com/help"
+      }
+    ],
+    "driverDetails": {
+      "name": "Pria Kusumawardana",
+      "photoUrl": "https://images.tokopedia.net/img/product-1/2020/2/10/5511683/5511683_98da12b1-2985-459d-946e-275c2e592865_1000_1000?ect=4g",
+      "licensePlateNumber": "B 1234 ABC",
+      "karma": [
+        {
+          "icon": "enum_vaksin",
+          "message": "Drivermu sudah divaksin!"
+        },
+        {
+          "icon": "enum_termometer",
+          "message": "Suhu tubuh normal"
+        },
+        {
+          "icon": "enum_telepon",
+          "message": "Telp. untuk diantar tanpa kontak fisik"
+        }
+      ]
+    },
+    "invoice": {
+      "invoiceNumber": "INV/20181011/XVI/X/55069657",
+      "gofoodOrderNumber": null
+    },
+    "payment": {
+      "paymentMethod": {
+        "label": "Metode Pembayaran",
+        "value": "GoPay"
+      },
+      "paymentDetails": [
+        {
+          "label": "Total Harga",
+          "value": "Rp133.000"
+        },
+        {
+          "label": "Biaya Bungkus dari Restoran",
+          "value": "Rp6.000"
+        },
+        {
+          "label": "Ongkir",
+          "value": "Gratis"
+        },
+        {
+          "label": "Biaya Jasa Aplikasi",
+          "value": "Rp3.000"
+        },
+        {
+          "label": "Diskon",
+          "value": "-Rp50.000"
+        }
+      ],
+      "paymentAmount": {
+        "label": "Total Belanja",
+        "value": "Rp92.000"
+      },
+      "paymentDate": "19 Maret 2022, 20:04"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieOrderTrackingStatus"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingStatusTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Pesananmu sudah dikonfirmasi"
+        app:layout_constraintBottom_toTopOf="@id/tvOrderTrackingStatusDesc"
+        app:layout_constraintTop_toTopOf="@id/lottieOrderTrackingStatus"
+        app:layout_constraintEnd_toStartOf="@id/lottieOrderTrackingStatus"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingStatusDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="2dp"
+        tools:text="Kami bakal segera cariin driver"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingStatusTitle"
+        app:layout_constraintBottom_toBottomOf="@id/lottieOrderTrackingStatus"
+        app:layout_constraintEnd_toStartOf="@id/lottieOrderTrackingStatus"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
