@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.ProductManageInstance
@@ -36,12 +37,15 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Va
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
+class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
         private const val MAIN_TAB_POSITION = 0
@@ -71,12 +75,15 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private val source by lazy {
-        activity?.intent?.getStringExtra(EXTRA_SOURCE)?: DEFAULT_SOURCE
+        activity?.intent?.getStringExtra(EXTRA_SOURCE) ?: DEFAULT_SOURCE
     }
+
 
     private var binding by autoClearedNullable<FragmentCampaignStockBinding>()
 
     private var isVariant: Boolean? = null
+
+    private var tickerPagerAdapter: TickerPagerAdapter? = null
 
     private val onTabSelectedListener by lazy {
         object : TabLayout.OnTabSelectedListener {
@@ -101,7 +108,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentCampaignStockBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -126,9 +137,9 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     override fun initInjector() {
         activity?.run {
             DaggerCampaignStockComponent.builder()
-                    .productManageComponent(ProductManageInstance.getComponent(application))
-                    .build()
-                    .inject(this@CampaignStockFragment)
+                .productManageComponent(ProductManageInstance.getComponent(application))
+                .build()
+                .inject(this@CampaignStockFragment)
         }
     }
 
@@ -150,7 +161,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun observeLiveData() {
         mViewModel.getStockAllocationData.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     applyLayout(result.data)
                     showResult()
@@ -161,22 +172,33 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             }
         })
         mViewModel.productUpdateResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     with(result.data) {
                         if (isSuccess) {
                             val resultIntent = Intent().apply {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productId)
-                                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_PRODUCT_NAME,
+                                    productName
+                                )
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
-                                putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATED_STATUS,
+                                    status.name
+                                )
                                 putExtra(
                                     ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED,
-                                    isStockChanged)
+                                    isStockChanged
+                                )
                                 putExtra(
                                     ProductManageCommonConstant.EXTRA_UPDATE_IS_STATUS_CHANGED,
-                                    isStatusChanged)
-                                putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
+                                    isStatusChanged
+                                )
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP,
+                                    variantsMap
+                                )
                             }
                             activity?.run {
                                 setResult(Activity.RESULT_OK, resultIntent)
@@ -196,6 +218,27 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             binding?.dividerCampaignStock?.showWithCondition(it)
             binding?.btnCampaignStockSave?.showWithCondition(it)
         }
+        observe(mViewModel.tickerData) { tickerData ->
+            var tickerPagerAdapter = tickerPagerAdapter
+            if (tickerPagerAdapter == null) {
+                tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
+                this.tickerPagerAdapter = tickerPagerAdapter.apply {
+                    setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(
+                            linkUrl: CharSequence,
+                            itemData: Any?
+                        ) {
+                            context?.let { RouteManager.route(it, linkUrl.toString()) }
+                        }
+                    })
+                }
+            }
+            binding?.layoutTicker?.root?.let { tickerView ->
+                tickerView.addPagerView(tickerPagerAdapter, tickerData)
+                tickerView.tickerShape = Ticker.SHAPE_FULL
+                tickerView.show()
+            }
+        }
     }
 
     private fun setupView() {
@@ -205,8 +248,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             productIds?.let { productIds ->
                 mViewModel.setShopId(shopId)
                 mViewModel.getStockAllocation(productIds.toList(), isBundling)
+                mViewModel.getTickerData()
+
             }
         }
+
     }
 
     private fun setupButtonOnClick() {
@@ -255,15 +301,18 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    private fun setupProductSummary(summary: GetStockAllocationSummary?,
-                                    productImageUrl: String) {
+    private fun setupProductSummary(
+        summary: GetStockAllocationSummary?,
+        productImageUrl: String
+    ) {
         summary?.run {
             binding?.layoutCampaignStockProductInfo?.run {
                 productImageUrl.let { url ->
                     ImageHandler.loadImageFitCenter(context, imgCampaignStockProduct, url)
                 }
                 tvCampaignStockProductName.text = productName
-                tvCampaignStockProductTotalStockCount.text = totalStock.convertCheckMaximumStockLimit(context)
+                tvCampaignStockProductTotalStockCount.text =
+                    totalStock.convertCheckMaximumStockLimit(context)
             }
         }
     }
@@ -356,7 +405,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 errorMessage?.run {
                     putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, this)
                 }
-                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productIds?.firstOrNull().orEmpty())
+                putExtra(
+                    ProductManageCommonConstant.EXTRA_PRODUCT_ID,
+                    productIds?.firstOrNull().orEmpty()
+                )
             }
             setResult(Activity.RESULT_CANCELED, intent)
             finish()
@@ -368,14 +420,17 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         mViewModel.productUpdateResponseLiveData.removeObservers(viewLifecycleOwner)
     }
 
-    private fun getMainStockFragment(isVariant: Boolean,
-                                     sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                                     isActive: Boolean,
-                                     stock: Int,
-                                     access: ProductManageAccess) =
-            CampaignMainStockFragment.createInstance(
-                    isVariant, sellableProductUIList, isActive,
-                    stock, access, source, this)
+    private fun getMainStockFragment(
+        isVariant: Boolean,
+        sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+        isActive: Boolean,
+        stock: Int,
+        access: ProductManageAccess
+    ) =
+        CampaignMainStockFragment.createInstance(
+            isVariant, sellableProductUIList, isActive,
+            stock, access, source, this
+        )
 
     private fun getNonVariantReservedStockFragment(reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,
                                                    access: ProductManageAccess) =
