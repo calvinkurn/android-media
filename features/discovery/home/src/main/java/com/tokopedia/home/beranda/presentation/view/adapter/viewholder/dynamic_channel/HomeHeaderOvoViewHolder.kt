@@ -93,8 +93,4 @@ class HomeHeaderOvoViewHolder(itemView: View,
             }
         }
     }
-
-    fun getBalanceWidgetView(): BalanceWidgetView? {
-        return itemView.findViewById(R.id.view_balance_widget)
-    }
 }
