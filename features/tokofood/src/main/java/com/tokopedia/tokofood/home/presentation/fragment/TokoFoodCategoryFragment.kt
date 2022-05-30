@@ -19,6 +19,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.PAGE_TITLE_PARAM
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.SORT_BY_PARAM
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -51,7 +55,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import kotlin.math.min
 
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
@@ -79,10 +82,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
-        private const val PAGE_TITLE_PARAM = "pageTitle"
-        private const val OPTION_PARAM = "option"
-        private const val CUISINE_PARAM = "cuisine"
-        private const val SORT_BY_PARAM = "sortBy"
         private const val MINI_CART_SOURCE = "category_page"
 
         fun createInstance(): TokoFoodCategoryFragment {
