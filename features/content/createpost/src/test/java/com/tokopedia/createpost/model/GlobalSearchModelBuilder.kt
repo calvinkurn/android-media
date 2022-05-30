@@ -4,6 +4,10 @@ import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductRespons
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Sort
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022
@@ -51,6 +55,29 @@ class GlobalSearchModelBuilder {
             ),
             suggestion = suggestion,
             ticker = ticker,
+        )
+    }
+
+    fun buildSortFilterResponseModel(
+        sizeFilter: Int = 5,
+        sizeSort: Int = 5,
+    ): DynamicFilterModel {
+        return DynamicFilterModel(
+            data = DataValue(
+                filter = List(sizeFilter) {
+                    Filter(
+                        title = "Filter $it",
+                        subTitle = "Subtitle $it",
+                    )
+                },
+                sort = List(sizeSort) {
+                    Sort(
+                        name = "Sort $it",
+                        key = "key $it",
+                        value = "value $it",
+                    )
+                }
+            )
         )
     }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.createpost.model.ShopModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.andThen
 import com.tokopedia.createpost.util.assertEqualTo
@@ -193,6 +194,56 @@ class MyShopViewModelTest {
                 myShopProduct.products.assertEqualTo(response2.pagedData.dataList)
                 myShopProduct.param.start.assertEqualTo(nextCursor.toInt())
                 myShopProduct.param.query.assertEqualTo(query)
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants to open sort bottomsheet, it should emit event to open bottomsheet along with the data`() {
+        val mockResponse = globalSearchModelBuilder.buildSortFilterResponseModel()
+        val mockResponse2 = globalSearchModelBuilder.buildSortFilterResponseModel(sizeFilter = 10, sizeSort = 10)
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+        )
+
+        robot.use {
+            coEvery { mockRepo.getSortFilter(any()) } returns mockResponse
+
+            it.recordStateAndEvent {
+                submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+            }.andThen { state, events ->
+                state.myShopProduct.sorts.size.assertEqualTo(mockResponse.data.sort.size)
+                state.myShopProduct.sorts.forEachIndexed { idx, element ->
+                    val curr = mockResponse.data.sort[idx]
+
+                    element.text.assertEqualTo(curr.name)
+                    element.key.assertEqualTo(curr.key)
+                    element.value.assertEqualTo(curr.value)
+                }
+
+                events.last().assertEqualTo(ProductTagUiEvent.OpenMyShopSortBottomSheet)
+            }
+
+            /** Trying to open sort bottomsheet again and it should not call GQL to get sortFilter anymore.
+             *  To prove that, mock getSortFilter again and return the diff result.
+             * */
+            coEvery { mockRepo.getSortFilter(any()) } returns mockResponse2
+
+            it.recordStateAndEvent {
+                submitAction(ProductTagAction.OpenMyShopSortBottomSheet)
+            }.andThen { state, events ->
+                state.myShopProduct.sorts.size.assertEqualTo(mockResponse.data.sort.size)
+                state.myShopProduct.sorts.forEachIndexed { idx, element ->
+                    val curr = mockResponse.data.sort[idx]
+
+                    element.text.assertEqualTo(curr.name)
+                    element.key.assertEqualTo(curr.key)
+                    element.value.assertEqualTo(curr.value)
+                }
+
+                events.last().assertEqualTo(ProductTagUiEvent.OpenMyShopSortBottomSheet)
             }
         }
     }
