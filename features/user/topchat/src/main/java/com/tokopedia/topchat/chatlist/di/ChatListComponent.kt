@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.topchat.chatlist.activity.ChatListActivity
-import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
-import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
-import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListFragment
+import com.tokopedia.topchat.chatlist.view.fragment.ChatListInboxFragment
+import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment
 import dagger.Component
 
 /**

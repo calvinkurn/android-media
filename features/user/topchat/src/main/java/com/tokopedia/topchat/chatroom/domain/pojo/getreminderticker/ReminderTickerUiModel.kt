@@ -12,7 +12,7 @@ data class ReminderTickerUiModel(
     @SerializedName("enableClose")
     var enableClose: Boolean = false,
     @SerializedName("featureId")
-    var featureId: Int = 0,
+    var featureId: String = "0",
     @SerializedName("mainText")
     var mainText: String = "",
     @SerializedName("regexMessage")

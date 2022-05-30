@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.di
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.domain.websocket
 
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -12,9 +12,9 @@ class PendingMessageHandler @Inject constructor(
     val pendingMessages = LinkedHashMap<String, PendingMessageOccurrence>()
 
     fun addQueue(
-            @RoleType currentRole: Int,
-            message: IncomingChatWebSocketModel,
-            isReplyFromActiveRoom: Boolean
+        @RoleType currentRole: Int,
+        message: IncomingChatWebSocketModel,
+        isReplyFromActiveRoom: Boolean
     ) {
         if (message.isForOtherRole(currentRole, userSession.userId)) return
         var occurrence = 0
@@ -36,7 +36,7 @@ class PendingMessageHandler @Inject constructor(
 }
 
 data class PendingMessageOccurrence(
-        val message: IncomingChatWebSocketModel,
-        val count: Int = 1,
-        val isReplyFromActiveRoom: Boolean = false
+    val message: IncomingChatWebSocketModel,
+    val count: Int = 1,
+    val isReplyFromActiveRoom: Boolean = false
 )

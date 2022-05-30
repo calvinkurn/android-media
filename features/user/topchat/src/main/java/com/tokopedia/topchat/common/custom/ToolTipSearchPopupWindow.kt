@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 
 class ToolTipSearchPopupWindow constructor(
         private val context: Context?,

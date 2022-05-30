@@ -21,10 +21,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
-import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
@@ -156,21 +152,6 @@ class ChatModule {
     @Provides
     fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
         return retrofit.create(ChatApi::class.java)
-    }
-
-
-    @ChatScope
-    @Provides
-    fun provideMessageFactory(
-            chatApi: ChatApi,
-            deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, deleteMessageMapper)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
-        return MessageRepositoryImpl(messageFactory)
     }
 
     @ChatScope

@@ -1,34 +1,25 @@
-package com.tokopedia.topchat.common;
+package com.tokopedia.topchat.common
 
-/**
- * Created by stevenfredian on 11/15/17.
- */
-
-public interface InboxChatConstant {
-
-    String PARCEL = "parcel";
-
-    String UPLOADING = "Uploaded Image";
-
-    String USER_TAG = "Pengguna";
-    String ADMIN_TAG = "Administrator";
-    String OFFICIAL_TAG = "Official";
-    String SELLER_TAG = "Penjual";
-    String CHATRESPONSEMODEL = "ChatResponseModel";
-    String CHAT_ROLE = "chatRole";
-    String SENDER_NAME = "senderName";
-    String CHAT_ENABLED = "isChatEnabled";
-
-    String MSG_ID = "messageID";
-    String BLOCK_TYPE = "blockType";
-    String BLOKCED = "isBlocked";
-    String CHAT_PROMOTION = "chat promosi";
-    String CHAT_PERSONAL = "chat personal";
-    String CHAT_BOTH = "semua chat";
-    String SHOP_NAME = "shopName";
-    String SHOP_ID = "shopId";
-    String SHOP_LOGO = "shopLogo";
-    String INVOICE = "INVOICE:";
-    String INVOICEURL = "invoiceUrl";
-
+object InboxChatConstant {
+    const val PARCEL = "parcel"
+    const val UPLOADING = "Uploaded Image"
+    const val USER_TAG = "Pengguna"
+    const val ADMIN_TAG = "Administrator"
+    const val OFFICIAL_TAG = "Official"
+    const val SELLER_TAG = "Penjual"
+    const val CHATRESPONSEMODEL = "ChatResponseModel"
+    const val CHAT_ROLE = "chatRole"
+    const val SENDER_NAME = "senderName"
+    const val CHAT_ENABLED = "isChatEnabled"
+    const val MSG_ID = "messageID"
+    const val BLOCK_TYPE = "blockType"
+    const val BLOKCED = "isBlocked"
+    const val CHAT_PROMOTION = "chat promosi"
+    const val CHAT_PERSONAL = "chat personal"
+    const val CHAT_BOTH = "semua chat"
+    const val SHOP_NAME = "shopName"
+    const val SHOP_ID = "shopId"
+    const val SHOP_LOGO = "shopLogo"
+    const val INVOICE = "INVOICE:"
+    const val INVOICEURL = "invoiceUrl"
 }

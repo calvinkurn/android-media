@@ -1,11 +1,6 @@
-package com.tokopedia.topchat.common.di.qualifier;
+package com.tokopedia.topchat.common.di.qualifier
 
-import javax.inject.Qualifier;
-
-/**
- * @author ricoharisin .
- */
+import javax.inject.Qualifier
 
 @Qualifier
-public @interface InboxQualifier {
-}
+annotation class InboxQualifier 

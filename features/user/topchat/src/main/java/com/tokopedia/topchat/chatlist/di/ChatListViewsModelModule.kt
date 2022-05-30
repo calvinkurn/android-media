@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
-import com.tokopedia.topchat.chatlist.viewmodel.ChatListWebSocketViewModel
-import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.WebSocketViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

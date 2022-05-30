@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.domain.subscriber
 
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
+import com.tokopedia.topchat.chatlist.view.uimodel.DeleteChatListUiModel
 import rx.Subscriber
 
 class DeleteMessageAllSubscriber(val onErrorDeleteMessage: (Throwable) -> Unit,

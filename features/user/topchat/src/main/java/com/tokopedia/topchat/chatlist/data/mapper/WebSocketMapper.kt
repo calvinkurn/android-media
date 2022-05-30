@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatlist.data.mapper
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
-import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
-import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
+import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.websocket.WebSocketResponse
 
 object WebSocketMapper {
@@ -13,7 +13,7 @@ object WebSocketMapper {
     fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
         val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
+        val msgId = responseData.msgId
         val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
         val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
 

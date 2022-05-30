@@ -1,90 +1,89 @@
-package com.tokopedia.topchat.common.util;
+package com.tokopedia.topchat.common.util
 
-import android.text.format.DateUtils;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import android.text.format.DateUtils
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by stevenfredian on 9/19/17.
  */
-
-public class ChatTimeConverter {
-
-    public static Calendar unixToCalendar(long unixTime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(unixTime);
-        return calendar;
+object ChatTimeConverter {
+    fun unixToCalendar(unixTime: Long): Calendar {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = unixTime
+        return calendar
     }
 
-    public static String formatTimeStamp(long unixTime) {
-        Locale localeID = new Locale("in", "ID");
-
-        Date postTime = new Date(unixTime);
-
-        Calendar calPostDate = Calendar.getInstance();
-        calPostDate.setTime(postTime);
-
-        Calendar calCurrentTime = Calendar.getInstance();
-        calCurrentTime.setTime(new Date());
-
-        if (DateUtils.isToday(unixTime)) {
-            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
-            return sdfHour.format(postTime);
-        } else if (calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
-                && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
-                && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
-            return YESTERDAY;
-        } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
-            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMM", localeID);
-            return sdfDay.format(postTime);
+    fun formatTimeStamp(unixTime: Long): String {
+        val localeID = Locale("in", "ID")
+        val postTime = Date(unixTime)
+        val calPostDate = Calendar.getInstance()
+        calPostDate.time = postTime
+        val calCurrentTime = Calendar.getInstance()
+        calCurrentTime.time = Date()
+        return if (DateUtils.isToday(unixTime)) {
+            val sdfHour = SimpleDateFormat("HH:mm", localeID)
+            sdfHour.format(postTime)
+        } else if (calCurrentTime[Calendar.MONTH] == calPostDate[Calendar.MONTH] && calCurrentTime[Calendar.YEAR] == calPostDate[Calendar.YEAR] && isYesterday(
+                calCurrentTime[Calendar.DAY_OF_MONTH],
+                calPostDate[Calendar.DAY_OF_MONTH]
+            )
+        ) {
+            YESTERDAY
+        } else if (calCurrentTime[Calendar.YEAR] == calPostDate[Calendar.YEAR]) {
+            val sdfDay = SimpleDateFormat("dd MMM", localeID)
+            sdfDay.format(postTime)
         } else {
-            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMM yyyy", localeID);
-            return sdfYear.format(postTime);
+            val sdfYear = SimpleDateFormat("dd MMM yyyy", localeID)
+            sdfYear.format(postTime)
         }
     }
 
-    private static boolean isYesterday(int currentDay, int postDay) {
-        return currentDay - postDay == 1;
+    private fun isYesterday(currentDay: Int, postDay: Int): Boolean {
+        return currentDay - postDay == 1
     }
 
-    public static String formatTime(long unixTime) {
-        Locale localeID = new Locale("in", "ID");
-        Date postTime = new Date(unixTime);
-        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
-        return sdfHour.format(postTime);
+    fun formatTime(unixTime: Long): String {
+        val localeID = Locale("in", "ID")
+        val postTime = Date(unixTime)
+        val sdfHour = SimpleDateFormat("HH:mm", localeID)
+        return sdfHour.format(postTime)
     }
 
-    public static String formatFullTime(long unixTime) {
-        Locale localeID = new Locale("in", "ID");
-
-        Date postTime = new Date(unixTime);
-
-        Calendar calPostDate = Calendar.getInstance();
-        calPostDate.setTime(postTime);
-
-        Calendar calCurrentTime = Calendar.getInstance();
-        calCurrentTime.setTime(new Date());
-
-        if (DateUtils.isToday(unixTime)) {
-            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
-            return (String.format("%s, %s", TODAY, sdfHour.format(postTime)));
-        } else if (calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
-                && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
-                && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
-            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
-            return (String.format("%s, %s", YESTERDAY, sdfHour.format(postTime)));
-        } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
-            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMM, HH:mm", localeID);
-            return sdfDay.format(postTime);
+    fun formatFullTime(unixTime: Long): String {
+        val localeID = Locale("in", "ID")
+        val postTime = Date(unixTime)
+        val calPostDate = Calendar.getInstance()
+        calPostDate.time = postTime
+        val calCurrentTime = Calendar.getInstance()
+        calCurrentTime.time = Date()
+        return if (DateUtils.isToday(unixTime)) {
+            val sdfHour = SimpleDateFormat("HH:mm", localeID)
+            String.format(
+                "%s, %s",
+                TODAY,
+                sdfHour.format(postTime)
+            )
+        } else if (calCurrentTime[Calendar.MONTH] == calPostDate[Calendar.MONTH] && calCurrentTime[Calendar.YEAR] == calPostDate[Calendar.YEAR] && isYesterday(
+                calCurrentTime[Calendar.DAY_OF_MONTH],
+                calPostDate[Calendar.DAY_OF_MONTH]
+            )
+        ) {
+            val sdfHour = SimpleDateFormat("HH:mm", localeID)
+            String.format(
+                "%s, %s",
+                YESTERDAY,
+                sdfHour.format(postTime)
+            )
+        } else if (calCurrentTime[Calendar.YEAR] == calPostDate[Calendar.YEAR]) {
+            val sdfDay = SimpleDateFormat("dd MMM, HH:mm", localeID)
+            sdfDay.format(postTime)
         } else {
-            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMM yyyy, HH:mm", localeID);
-            return sdfYear.format(postTime);
+            val sdfYear = SimpleDateFormat("dd MMM yyyy, HH:mm", localeID)
+            sdfYear.format(postTime)
         }
     }
 
-    private static String TODAY = "Hari ini";
-    private static String YESTERDAY = "Kemarin";
+    private const val TODAY = "Hari ini"
+    private const val YESTERDAY = "Kemarin"
 }

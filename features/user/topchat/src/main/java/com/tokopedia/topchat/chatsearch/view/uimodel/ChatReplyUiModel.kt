@@ -15,7 +15,7 @@ data class ChatReplyUiModel(
         @SerializedName("createTimeStr")
         val timeStamp: String = "",
         @SerializedName("msgId")
-        val msgId: Long = 0L,
+        val msgId: String = "0",
         @SerializedName("productId")
         val productId: String = ""
 ) : Visitable<ChatSearchTypeFactory> {
