@@ -167,10 +167,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun showSelectMessage() {
         val count = keywordListAdapter.getSelectedItems().count()
         selected_info?.text =
-            MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat),
-                count))
+            MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_lihat),
+                count
+            ))
         if (count == 0)
-            selected_info?.text = getString(R.string.topads_common_kata_kunci_dipilih_no_keyword)
+            selected_info?.text =
+                getString(com.tokopedia.topads.common.R.string.topads_common_kata_kunci_dipilih_no_keyword)
         btn_next?.isEnabled = count < 50
     }
 
@@ -319,10 +322,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun sortFinalList() {
-        keywordListAdapter.items.sortWith(Comparator
-        { lhs, rhs ->
+        keywordListAdapter.items.sortWith { lhs, rhs ->
             (lhs.onChecked.compareTo(rhs.onChecked))
-        })
+        }
         keywordListAdapter.items.reverse()
         keywordListAdapter.notifyDataSetChanged()
     }
@@ -332,9 +334,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             manualAd?.visible()
             manualAdTxt?.visible()
             dividerManual?.visible()
-            manualAdTxt?.text =
-                MethodChecker.fromHtml(String.format(getString(R.string.topads_common_new_manual_key),
-                    searchBar?.searchBarTextField?.text.toString()))
+            manualAdTxt?.text = MethodChecker.fromHtml(String.format(
+                getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
+                    searchBar?.searchBarTextField?.text.toString()
+            ))
             manualAd?.setOnClickListener {
                 addManualKeyword()
                 searchBar?.searchBarTextField?.text?.clear()
