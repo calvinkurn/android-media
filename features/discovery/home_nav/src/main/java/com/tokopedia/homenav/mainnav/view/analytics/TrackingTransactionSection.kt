@@ -41,11 +41,11 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val DIMENSION_125 = "dimension125"
     private const val DIMENSION_40 = "dimension40"
     private const val LIST_WISHLIST = "/global_menu - wishlist_card"
-    private const val IMPRESSION_ON_WISHLIST_CARD = "impression on wishlist card"
+    private const val IMPRESSION_ON_WISHLIST_CARD = "impression wishlist card"
     private const val ACTION_CLICK_ON_WISHLIST_CARD = "click wishlist card"
     private const val ACTION_CLICK_ON_WISHLIST_VIEW_ALL = "click view all wishlist"
     private const val ITEM_NAME_FAVORITE_SHOP = "/global_menu - favorite_shop_card"
-    private const val IMPRESSION_ON_FAVORITE_SHOP_CARD = "impression on favorite shop card"
+    private const val IMPRESSION_ON_FAVORITE_SHOP_CARD = "impression favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
     private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
@@ -164,17 +164,20 @@ object TrackingTransactionSection: BaseTrackerConst() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             ItemList.KEY, LIST_WISHLIST,
-            Items.KEY, listOf(
-                DataLayer.mapOf(
-                    DIMENSION_125, wishlistModel.wishlistId,
-                    DIMENSION_40, LIST_WISHLIST,
-                    Items.INDEX, position+1,
-                    Items.ITEM_BRAND, Value.NONE_OTHER,
-                    Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb,
-                    Items.ITEM_ID, wishlistModel.productId,
-                    Items.ITEM_NAME, wishlistModel.productName,
-                    Items.ITEM_VARIANT, wishlistModel.variant,
-                    Items.PRICE, wishlistModel.priceFmt
+            Ecommerce.KEY, DataLayer.mapOf(
+                "currencyCode", "IDR",
+                "impressions", listOf(
+                    DataLayer.mapOf(
+                        DIMENSION_125, wishlistModel.wishlistId,
+                        DIMENSION_40, LIST_WISHLIST,
+                        Items.INDEX, position+1,
+                        Items.ITEM_BRAND, Value.NONE_OTHER,
+                        Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb,
+                        Items.ITEM_ID, wishlistModel.productId,
+                        Items.ITEM_NAME, wishlistModel.productName,
+                        Items.ITEM_VARIANT, wishlistModel.variant,
+                        Items.PRICE, wishlistModel.priceFmt
+                    )
                 )
             )
         ) as HashMap<String, Any>
@@ -219,23 +222,22 @@ object TrackingTransactionSection: BaseTrackerConst() {
     }
 
     fun getImpressionOnFavoriteShop(userId: String, position: Int, favoriteShopModel: NavFavoriteShopModel): HashMap<String, Any> {
-        return DataLayer.mapOf(
-            Event.KEY, Event.PRODUCT_VIEW,
-            Category.KEY, CATEGORY_GLOBAL_MENU,
-            Action.KEY, IMPRESSION_ON_FAVORITE_SHOP_CARD,
-            Label.KEY, Label.NONE,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            UserId.KEY, userId,
-            Promotion.KEY, listOf(
-                DataLayer.mapOf(
-                    Promotion.CREATIVE_NAME, Value.EMPTY,
-                    Promotion.CREATIVE_SLOT, position+1,
-                    Items.ITEM_ID, ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id),
-                    Items.ITEM_NAME, ITEM_NAME_FAVORITE_SHOP
-                )
-            )
-        ) as HashMap<String, Any>
+        return BaseTrackerBuilder().constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
+            eventCategory = CATEGORY_GLOBAL_MENU,
+            eventAction = IMPRESSION_ON_FAVORITE_SHOP_CARD,
+            eventLabel = "",
+            promotions = listOf(Promotion(
+                creative = Value.EMPTY,
+                id = ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id),
+                name = ITEM_NAME_FAVORITE_SHOP,
+                creativeUrl = "",
+                position = (position + 1).toString()
+            )))
+            .appendCurrentSite(DEFAULT_CURRENT_SITE)
+            .appendUserId(userId)
+            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+            .build() as HashMap<String, Any>
     }
 
     fun clickOnFavoriteShopItem(userId: String, favoriteShopModel: NavFavoriteShopModel, position: Int) {
