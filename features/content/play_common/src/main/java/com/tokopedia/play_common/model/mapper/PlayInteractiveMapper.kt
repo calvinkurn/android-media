@@ -5,6 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -13,7 +14,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class PlayInteractiveMapper @Inject constructor() {
+class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
         val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong())
@@ -24,7 +25,7 @@ class PlayInteractiveMapper @Inject constructor() {
         }
     }
 
-    fun mapGiveaway(data: GiveawayResponse, waitingDuration: Long): InteractiveUiModel.Giveaway {
+    fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
             title = data.title,
@@ -45,14 +46,14 @@ class PlayInteractiveMapper @Inject constructor() {
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
             },
-            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDuration),
+            waitingDuration = waitingDurationInMillis,
         )
     }
 
-    fun mapQuiz(data: QuizResponse, waitingDuration: Long): InteractiveUiModel.Quiz {
+    fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
-            title = data.question,
+            title = decodeHtml.transform(data.question),
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
                     endTime = Calendar.getInstance().apply {
@@ -65,7 +66,7 @@ class PlayInteractiveMapper @Inject constructor() {
             listOfChoices = data.choices.mapIndexed { index: Int, item: QuizResponse.Choice ->
                 QuizChoicesUiModel(
                     item.id,
-                    item.text,
+                    decodeHtml.transform(item.text),
                     when {
                         item.id == data.userChoice -> PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false) //if user has already answered, the option that user chose
                         data.userChoice == "0" || data.userChoice.isEmpty() -> PlayQuizOptionState.Default(alphabet = generateAlphabet(index)) //if user has not choose answer
@@ -73,8 +74,8 @@ class PlayInteractiveMapper @Inject constructor() {
                     }
                 )
             },
-            reward = data.prize,
-            waitingDuration = TimeUnit.SECONDS.toMillis(waitingDuration),
+            reward = decodeHtml.transform(data.prize),
+            waitingDuration = waitingDurationInMillis,
         )
     }
 
