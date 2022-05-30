@@ -196,7 +196,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        setEmptyView()
+        if (stepModel?.selectedKeywordStage?.isNullOrEmpty() == true)
+            setEmptyView()
+        else
+            getAlreadySelected()
         showSelectMessage()
     }
 
