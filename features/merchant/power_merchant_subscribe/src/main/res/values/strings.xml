@@ -167,7 +167,7 @@
          &lt;br /&gt;• Kenaikan paket keuntungan dilakukan tiap bulan &amp; penurunan setiap kuartal.
     </string>
     
-    <string name="pm_date_based_on_your_sell">Berdasarkan penjualanmu di [%s],</string>
+    <string name="pm_date_based_on_your_sell"><![CDATA[Berdasarkan penjualanmu di [%s], kamu dapat paket keuntungan <b>%s</b>]]></string>
     <string name="pm_title_profit_package_section">Kamu dapat paket keuntungan %s</string>
     <string name="pm_next_update_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Tidak ada penurunan paket keuntungan pada update berikutnya.]]></string>
     <string name="pm_learn_more_shop_performance">Pelajari selengkapnya di halaman &lt;a href="#"&gt;Performa Toko&lt;/a&gt;</string>
@@ -236,5 +236,17 @@
     <string name="pm_info_benefit_increase_desc"><![CDATA[Klik ikon <font color=\"%1$s\"> <b> > </b> </font>  di bagian atas halaman ini untuk lihat caranya. Yuk, cek targetmu selanjutnya!]]></string>
     <string name="pm_info_benefit_increase_title">Level Toko naik, keuntungan bertambah!</string>
     <string name="pm_submit_activation_success">Hore! Kamu berhasil gabung di program Power Merchant.</string>
-
+    <string name="pm_membership_detail_info_1">PM PRO Advanced, Expert, dan Ultimate dievaluasi berdasarkan Level Toko.</string>
+    <string name="pm_membership_detail_info_2">Level toko akan diperbarui setiap bulan di hari Senin pertama. Pelajari Performa Toko</string>
+    <string name="pm_membership_detail_info_3">Kenaikan paket keuntungan dilakukan tiap bulan &amp; penurunan setiap kuartal.</string>
+    <string name="pm_membership_benefit_topads"><![CDATA[Ekstra kredit TopAds <b>%1$s</b>]]></string>
+    <string name="pm_membership_benefit_broad_cast_chat"><![CDATA[Kuota Broadcast Chat hingga <b>%1$s</b>]]></string>
+    <string name="pm_membership_benefit_special_release"><![CDATA[Rilisan Spesial sebanyak <b>%1$d kali</b>/bulan]]></string>
+    <string name="pm_membership_benefit_product_bundling"><![CDATA[<b>%1$d</b> kuota Paket Bundling]]></string>
+    <string name="pm_membership_shop_score_threshold">Batas min. skor %1$d</string>
+    <string name="pm_shop_label">TOKOMU</string>
+    <string name="pm_membership_passing_grade_info">Selamat! Kamu sudah melewati keanggotaan ini dan berhak mendapatkan paket keuntungan lebih di %1$s.</string>
+    <string name="pm_membership_current_grade_pm_title">Kamu sudah jadi Power Merchant! \nSelanjutnya, penuhi target PM PRO, yuk.</string>
+    <string name="pm_membership_current_grade_title">Kamu sudah jadi %1$s! \nPertahankan, ya.</string>
+    <string name="pm_membership_next_grade_title">Capai Level %1$d untuk jadi %2$s dengan memenuhi target ini!</string>
 </resources>

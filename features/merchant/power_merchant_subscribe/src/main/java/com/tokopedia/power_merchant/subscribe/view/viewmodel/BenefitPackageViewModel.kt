@@ -33,7 +33,6 @@ class BenefitPackageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 return@withContext benefitPackageUseCase.get().executeOnBackground()
             }
-            _benefitPackage.value = Success(result)
         }, onError = {
             _benefitPackage.value = Fail(it)
         })

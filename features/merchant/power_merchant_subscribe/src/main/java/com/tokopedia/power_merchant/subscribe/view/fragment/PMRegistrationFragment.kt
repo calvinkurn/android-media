@@ -193,8 +193,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             currentIncome = shopInfo?.netItemValueOneMonth.orZero(),
             benefitPages = PMRegistrationBenefitHelper.getPMBenefitList(requireContext(), shopInfo),
             ctaAppLink = Constant.Url.POWER_MERCHANT_EDU,
-            isEligiblePm = shopInfo?.isEligiblePm.orFalse(),
-            isEligiblePmPro = shopInfo?.isEligiblePmPro.orFalse(),
             shopScore = shopInfo?.shopScore.orZero()
         )
     }

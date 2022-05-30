@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            app:layout_constraintEnd_toStartOf="@id/chevron"
+            app:layout_constraintEnd_toStartOf="@id/chevronPmGrade"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -164,7 +164,7 @@
 
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/chevron"
+            android:id="@+id/chevronPmGrade"
             android:layout_width="@dimen/unify_space_24"
             android:layout_height="@dimen/unify_space_24"
             app:icon_color_light_disabled="@color/Unify_NN900"
