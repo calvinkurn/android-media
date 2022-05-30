@@ -287,6 +287,8 @@ class DiscoveryDataMapper {
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots,
+                hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
+                hasAddToCartWishlist = dataItem.hasATCWishlist,
                 variant = variantProductCard(dataItem),
                 nonVariant = nonVariantProductCard(dataItem)
         )

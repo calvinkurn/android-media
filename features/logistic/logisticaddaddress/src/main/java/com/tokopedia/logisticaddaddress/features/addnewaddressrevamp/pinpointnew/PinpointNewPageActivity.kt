@@ -9,9 +9,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,6 +23,7 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
+    private var isEdit: Boolean? = false
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -32,6 +35,7 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
         val bundle = intent.getBundleExtra(EXTRA_BUNDLE)
         var fragment: PinpointNewPageFragment? = null
         if (bundle != null) {
+            isEdit = bundle.getBoolean(EXTRA_IS_EDIT)
             fragment = PinpointNewPageFragment.newInstance(bundle)
         }
         return fragment
@@ -39,7 +43,11 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
 
     override fun onBackPressed() {
         super.onBackPressed()
-        AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+        if (isEdit == true) {
+            EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+        } else {
+            AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+        }
     }
 
     companion object{

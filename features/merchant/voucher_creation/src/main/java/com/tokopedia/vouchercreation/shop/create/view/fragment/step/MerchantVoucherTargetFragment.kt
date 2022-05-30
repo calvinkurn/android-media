@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -33,6 +34,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.databinding.FragmentMerchantVoucherTargetBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
@@ -45,7 +47,6 @@ import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.Vouc
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.shop.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.MerchantVoucherTargetViewModel
-import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
 class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTypeFactory>, VoucherTargetAdapterTypeFactory>() {
@@ -82,6 +83,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var binding by autoClearedNullable<FragmentMerchantVoucherTargetBinding>()
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -137,7 +140,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
+        binding = FragmentMerchantVoucherTargetBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -162,7 +166,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private fun BottomSheetUnify.onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         when(bottomSheetType) {
             CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
-                fillVoucherNameTextfield?.clearFocus()
+                binding?.fillVoucherNameTextfield?.clearFocus()
                 if (shouldReturnToInitialValue) {
                     viewModel.setDefaultVoucherTargetListData()
                     viewModel.setActiveVoucherTargetType(VoucherTargetType.PUBLIC)
@@ -236,7 +240,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                 this@MerchantVoucherTargetFragment.shouldReturnToInitialValue = shouldReturn
             })
             voucherTargetValidationLiveData.observe(viewLifecycleOwner, Observer { result ->
-                voucherTargetNextButton?.isLoading = false
+                binding?.voucherTargetNextButton?.isLoading = false
                 when(result) {
                     is Success -> {
                         val validation = result.data
@@ -248,8 +252,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                         } else {
                             validation.couponNameError.run {
                                 if (isNotBlank()) {
-                                    fillVoucherNameTextfield?.setError(true)
-                                    fillVoucherNameTextfield?.setMessage(this)
+                                    binding?.fillVoucherNameTextfield?.setError(true)
+                                    binding?.fillVoucherNameTextfield?.setMessage(this)
                                     return@Observer
                                 }
                             }
@@ -285,78 +289,82 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     }
 
     private fun setupTextFieldWidget() {
-        alertMinimumMessage = context?.getString(FillVoucherNameViewHolder.TEXFIELD_ALERT_MINIMUM).toBlankOrString()
-        fillVoucherNameTextfield?.run {
-            // Fix blank color when dark mode activated.
-            textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
-            textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
-            (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        binding?.apply {
+            fillVoucherNameTextfield.run {
+                // Fix blank color when dark mode activated.
+                textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
 
-            textFieldInput.clearFocus()
-            val scrollToBottomAction = {
-                voucherTargetScrollView?.run {
-                    postDelayed(
+                textFieldInput.clearFocus()
+                val scrollToBottomAction = {
+                    voucherTargetScrollView.run {
+                        postDelayed(
                             {
                                 val lastChild = getChildAt(childCount - 1)
                                 val delta = lastChild.bottom - (scrollY + height)
                                 scrollBy(0, delta)
                             }, SCROLL_TO_BOTTOM_DELAY_IN_MILLIS)
+                    }
                 }
-            }
-            textFieldInput.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    textFieldInput.setOnClickListener {
+                textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        textFieldInput.setOnClickListener {
+                            scrollToBottomAction()
+                        }
                         scrollToBottomAction()
+                    } else {
+                        textFieldInput.setOnClickListener(null)
                     }
-                    scrollToBottomAction()
-                } else {
-                    textFieldInput.setOnClickListener(null)
                 }
+                textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+                textFieldInput.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        //No op
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        //No op
+                    }
+
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                        when {
+                            s.length < MIN_TEXTFIELD_LENGTH -> {
+                                setError(true)
+                                setMessage(alertMinimumMessage)
+                            }
+                            else -> {
+                                setError(false)
+                                setMessage("")
+                            }
+                        }
+                    }
+                })
             }
-            textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldInput.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    //No op
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    //No op
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    when {
-                        s.length < MIN_TEXTFIELD_LENGTH -> {
-                            setError(true)
-                            setMessage(alertMinimumMessage)
-                        }
-                        else -> {
-                            setError(false)
-                            setMessage("")
-                        }
-                    }
-                }
-            })
         }
+        alertMinimumMessage = context?.getString(FillVoucherNameViewHolder.TEXFIELD_ALERT_MINIMUM).toBlankOrString()
     }
 
     private fun setupNextButton() {
-        voucherTargetNextButton?.run {
-            setOnClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
+        binding?.apply {
+            voucherTargetNextButton.run {
+                setOnClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.TARGET,
                         action = VoucherCreationAnalyticConstant.EventAction.Click.CONTINUE,
                         label =
-                                when (currentTargetType) {
-                                    VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventLabel.PUBLIC
-                                    VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventLabel.PRIVATE
-                                    else -> ""
-                                },
+                        when (currentTargetType) {
+                            VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventLabel.PUBLIC
+                            VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventLabel.PRIVATE
+                            else -> ""
+                        },
                         userId = userSession.userId
-                )
-                if (!isLoading) {
-                    isLoading = true
-                    couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
-                    viewModel.validateVoucherTarget(promoCodeText, couponName)
+                    )
+                    if (!isLoading) {
+                        isLoading = true
+                        couponName = fillVoucherNameTextfield.textFieldInput.text?.toString().toBlankOrString()
+                        viewModel.validateVoucherTarget(promoCodeText, couponName)
+                    }
                 }
             }
         }
@@ -365,7 +373,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private fun setupReloadData() {
         with(getVoucherReviewUiModel()) {
             viewModel.setReloadVoucherTargetData(targetType, promoCode, getPromoCodePrefix())
-            fillVoucherNameTextfield?.textFieldInput?.setText(voucherName)
+            binding?.fillVoucherNameTextfield?.textFieldInput?.setText(voucherName)
         }
     }
 
@@ -395,7 +403,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     }
 
     private fun onRadioButtonClicked(@VoucherTargetType targetType: Int) {
-        fillVoucherNameTextfield?.textFieldInput?.clearFocus()
+        binding?.fillVoucherNameTextfield?.textFieldInput?.clearFocus()
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.TARGET,
                 action =

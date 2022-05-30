@@ -67,6 +67,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -76,6 +77,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +92,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int HALF_PROGRESS = 50;
     private static final int PICTURE_QUALITY = 60;
     private static final String ERR_INTERNET_DISCONNECTED = "ERR_INTERNET_DISCONNECTED";
+    public static final String TOKOPEDIA_COM = ".tokopedia.com";
 
     public TkpdWebView webView;
     ProgressBar progressBar;
@@ -183,8 +186,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
-        String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost();
+        if(uri.getUserInfo()!=null) {
+            ErrorHandler.Builder builder = new ErrorHandler.Builder();
+            builder.sendToScalyr(true);
+            builder.setErrorCode(true);
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+
+        isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -279,10 +291,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected void loadWeb() {
+        String url = getUrl();
         if (isTokopediaUrl) {
-            webView.loadAuthUrl(getUrl(), new UserSession(getContext()));
+            webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
-            webView.loadAuthUrl(getUrl(), null);
+            redirectToNativeBrowser();
+        }
+    }
+
+    private void redirectToNativeBrowser() {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
+            getActivity().finish();
+        } catch (Throwable th) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "browser");
+            messageMap.put("url", url);
+            ServerLogger.log(Priority.P1, "INVALID_WEBVIEW_URL", messageMap);
         }
     }
 

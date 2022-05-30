@@ -6,13 +6,14 @@
     android:orientation="horizontal"
     android:padding="@dimen/layout_lvl2">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/hotel_30dp"
         android:layout_height="@dimen/hotel_30dp"
-        app:corners="45"
+        app:loader_corner_radius="22dp"
+        app:loader_type="rect"
         />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -20,20 +21,28 @@
         android:layout_marginLeft="@dimen/hotel_12dp"
         android:orientation="vertical">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnifyTextView1"
+            android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="4"
-            app:width_weight="0.8"
+            app:loader_corner_radius="2dp"
+            app:loader_type="rect"
+            app:layout_constraintWidth_percent="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnifyTextView2"
+            android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/layout_lvl1"
-            app:corners="4"
-            app:width_weight="0.6" />
+            app:layout_constraintTop_toBottomOf="@id/loaderUnifyTextView1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:loader_corner_radius="2dp"
+            app:loader_type="rect"
+            app:layout_constraintWidth_percent="0.6" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

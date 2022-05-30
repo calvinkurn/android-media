@@ -16,8 +16,8 @@ import com.tokopedia.unifycomponents.UnifyButton
  * @author by furqan on 02/11/2021
  */
 class RechargeOrderDetailActionButtonSectionViewHolder(
-        private val binding: ItemOrderDetailRechargeActionButtonSectionBinding,
-        private val listener: ActionListener?
+    private val binding: ItemOrderDetailRechargeActionButtonSectionBinding,
+    private val listener: ActionListener?
 ) : AbstractViewHolder<RechargeOrderDetailActionButtonListModel>(binding.root) {
 
     override fun bind(element: RechargeOrderDetailActionButtonListModel) {
@@ -25,41 +25,32 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
             if (containerRechargeOrderDetailActionButton.childCount < element.actionButtons.size) {
                 containerRechargeOrderDetailActionButton.removeAllViews()
                 val primaryActionButton = mutableListOf<UnifyButton>()
-                val secondaryActionButton = mutableListOf<UnifyButton>()
 
                 for (item in element.actionButtons) {
                     val button = createActionButton(root.context, item)
-
-                    if (item.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
-                        primaryActionButton.add(button)
-                    } else if (item.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
-                        primaryActionButton.add(button)
-                    }
+                    primaryActionButton.add(button)
                 }
 
                 for (button in primaryActionButton) {
                     containerRechargeOrderDetailActionButton.addView(button)
-                    button.setMargin(0,
-                            root.context.resources.getDimensionPixelSize(
-                                    com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                            0,
-                            0)
-                    button.requestLayout()
-                }
-                for (button in secondaryActionButton) {
-                    containerRechargeOrderDetailActionButton.addView(button)
-                    button.setMargin(0,
-                            root.context.resources.getDimensionPixelSize(
-                                    com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                            0,
-                            0)
+                    button.setMargin(
+                        0,
+                        root.context.resources.getDimensionPixelSize(
+                            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+                        ),
+                        0,
+                        0
+                    )
                     button.requestLayout()
                 }
             }
         }
     }
 
-    private fun createActionButton(context: Context, actionButton: RechargeOrderDetailActionButtonModel): UnifyButton {
+    private fun createActionButton(
+        context: Context,
+        actionButton: RechargeOrderDetailActionButtonModel
+    ): UnifyButton {
         val button = UnifyButton(context)
         button.text = actionButton.label
         button.buttonSize = UnifyButton.Size.MEDIUM
@@ -74,7 +65,11 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
         button.setOnClickListener {
             listener?.onActionButtonClicked(actionButton)
-            onActionButtonClicked(context, actionButton.uri)
+            if (!actionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
+                onActionButtonClicked(context, actionButton.uri)
+            } else {
+                listener?.onVoidButtonClicked()
+            }
         }
 
         return button
@@ -97,10 +92,13 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
     interface ActionListener {
         fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel)
+        fun onVoidButtonClicked()
     }
 
     companion object {
         val LAYOUT = R.layout.item_order_detail_recharge_action_button_section
+
+        const val MAPPING_URI_VOID = "void"
 
         private const val PRIMARY_BUTTON_TYPE = "primary"
         private const val SECONDARY_BUTTON_TYPE = "secondary"

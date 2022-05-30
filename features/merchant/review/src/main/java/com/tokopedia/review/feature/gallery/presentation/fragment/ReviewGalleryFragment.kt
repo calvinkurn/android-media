@@ -26,6 +26,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
@@ -59,11 +60,11 @@ class ReviewGalleryFragment :
         const val KEY_REVIEW_GALLERY_ROUTING_DATA = "reviewGalleryData"
         const val IMAGE_PREVIEW_ACTIVITY_CODE = 200
         fun createNewInstance(productId: String): ReviewGalleryFragment {
-            return ReviewGalleryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
-                }
-            }
+            val fragment = ReviewGalleryFragment()
+            val fragmentArguments = Bundle()
+            fragmentArguments.putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
+            fragment.arguments = fragmentArguments
+            return fragment
         }
     }
 
@@ -276,7 +277,7 @@ class ReviewGalleryFragment :
 
     private fun onFailGetReviewImages(throwable: Throwable) {
         if (isFirstPage()) showFullPageError()
-        showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
+        showToasterError(throwable.getErrorMessage(context)) {
             if (isFirstPage()) loadInitialData() else {
                 loadData(currentPage)
             }

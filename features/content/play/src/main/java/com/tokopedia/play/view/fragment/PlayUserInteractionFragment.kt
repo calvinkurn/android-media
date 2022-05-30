@@ -928,6 +928,8 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowCoachMarkWinnerEvent -> {
                         if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
                         interactiveResultView?.showCoachMark(event.title, event.subtitle)
+                        delay(GAME_LOSER_COACHMARK_DELAY)
+                        interactiveResultView?.hideCoachMark()
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
@@ -1797,5 +1799,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val MASK_NO_CUT_HEIGHT = 0f
 
         private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
+
+        private const val GAME_LOSER_COACHMARK_DELAY = 5000L
     }
 }

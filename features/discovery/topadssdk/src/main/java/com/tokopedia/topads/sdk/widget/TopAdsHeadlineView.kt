@@ -44,8 +44,8 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         topAdsHeadlineViewModel.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
-    fun displayAds(cpmModel: CpmModel) {
-        topadsBannerView.displayAdsWithProductShimmer(cpmModel)
+    fun displayAds(cpmModel: CpmModel, index:Int = 0) {
+        topadsBannerView.displayAdsWithProductShimmer(cpmModel, index = index)
     }
 
     fun setTopAdsBannerClickListener(context: TopAdsBannerClickListener) {
