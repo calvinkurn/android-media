@@ -9,10 +9,14 @@ import java.io.File
 
 object LivenessDetectionLogTracker {
 
-    enum class LogType {
-        SUCCESS,
-        FAILED,
-        LIBRARY
+    enum class LogType(val type: String) {
+        SUCCESS("SUCCESS"),
+        FAILED("FAILED"),
+        LIBRARY("LIBRARY");
+
+        override fun toString(): String {
+            return type
+        }
     }
 
     fun sendLog(
@@ -27,7 +31,7 @@ object LivenessDetectionLogTracker {
     ) {
         ServerLogger.log(
             Priority.P2, "LIVENESS_DETECTION", mapOf(
-                "type" to logType.name,
+                "type" to logType.toString(),
                 "class" to clazz,
                 "detectionType" to detectionType?.name.orEmpty(),
                 "actionStatus" to actionStatus?.name.orEmpty(),
@@ -41,10 +45,14 @@ object LivenessDetectionLogTracker {
         Timber.d(throwable, message)
     }
 
-    enum class ImageFailedProcessType {
-        FailedImageFileNotFound,
-        TryCatchSaveToFile,
-        TryCatchWriteImageToTkpdPath
+    enum class ImageFailedProcessType(val type: String) {
+        FailedImageFileNotFound("FailedImageFileNotFound"),
+        TryCatchSaveToFile("TryCatchSaveToFile"),
+        TryCatchWriteImageToTkpdPath("TryCatchWriteImageToTkpdPath");
+
+        override fun toString(): String {
+            return type
+        }
     }
 
     fun sendLogImageProcess(
@@ -55,7 +63,7 @@ object LivenessDetectionLogTracker {
     ) {
         ServerLogger.log(
             Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf(
-                "type" to type.name,
+                "type" to type.toString(),
                 "cachePath" to cachePath.orEmpty(),
                 "fileExists" to "${file?.exists() == true}",
                 "stack_trace" to "${throwable.message}"
