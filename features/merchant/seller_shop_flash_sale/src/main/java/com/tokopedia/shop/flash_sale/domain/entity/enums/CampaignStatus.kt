@@ -1,13 +1,15 @@
 package com.tokopedia.shop.flash_sale.domain.entity.enums
 
-private const val CAMPAIGN_STATUS_ID_SCHEDULED = 1
-private const val CAMPAIGN_STATUS_ID_DRAFT = 2
-private const val CAMPAIGN_STATUS_ID_PUBLISHED = 3
-private const val CAMPAIGN_STATUS_ID_FINISHED = 8
+const val CAMPAIGN_STATUS_ID_SCHEDULED = 1
+const val CAMPAIGN_STATUS_ID_DRAFT = 2
+const val CAMPAIGN_STATUS_ID_PUBLISHED = 3
+const val CAMPAIGN_STATUS_ID_FINISHED = 8
+const val CAMPAIGN_STATUS_ID_CANCELLED = 11
 
-enum class CampaignStatus(val id : Int) {
+enum class CampaignStatus(val id: Int) {
     SCHEDULED(CAMPAIGN_STATUS_ID_SCHEDULED),
     DRAFT(CAMPAIGN_STATUS_ID_DRAFT),
     PUBLISHED(CAMPAIGN_STATUS_ID_PUBLISHED),
     FINISHED(CAMPAIGN_STATUS_ID_FINISHED),
+    CANCELLED(CAMPAIGN_STATUS_ID_CANCELLED)
 }

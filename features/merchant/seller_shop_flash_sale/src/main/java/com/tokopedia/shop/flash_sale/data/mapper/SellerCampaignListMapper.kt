@@ -4,10 +4,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
 import com.tokopedia.shop.flash_sale.common.extension.formatTo
-import com.tokopedia.shop.flash_sale.common.extension.toDate
+import com.tokopedia.shop.flash_sale.common.extension.epochToDate
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flash_sale.domain.entity.enums.*
 import javax.inject.Inject
 
 class SellerCampaignListMapper @Inject constructor() {
@@ -17,14 +18,14 @@ class SellerCampaignListMapper @Inject constructor() {
             CampaignUiModel(
                 it.campaignId.toLongOrZero(),
                 it.campaignName,
-                it.endDate.toDate().formatTo(DateConstant.DATE),
-                it.endDate.toDate().formatTo(DateConstant.TIME),
+                it.endDate.epochToDate().formatTo(DateConstant.DATE),
+                it.endDate.epochToDate().formatTo(DateConstant.TIME),
                 it.isCancellable,
                 it.isShareable,
                 it.notifyMeCount,
-                it.startDate.toDate().formatTo(DateConstant.DATE),
-                it.startDate.toDate().formatTo(DateConstant.TIME),
-                it.statusId.toIntOrZero(),
+                it.startDate.epochToDate().formatTo(DateConstant.DATE),
+                it.startDate.epochToDate().formatTo(DateConstant.TIME),
+                it.statusId.toIntOrZero().convert(),
                 it.thematicParticipation,
                 CampaignUiModel.ProductSummary(
                     it.productSummary.totalItem,
@@ -42,6 +43,17 @@ class SellerCampaignListMapper @Inject constructor() {
             data.getSellerCampaignList.totalCampaignFinished,
             campaigns
         )
+    }
+
+    private fun Int.convert(): CampaignStatus {
+        return when (this) {
+            CAMPAIGN_STATUS_ID_SCHEDULED -> CampaignStatus.SCHEDULED
+            CAMPAIGN_STATUS_ID_DRAFT -> CampaignStatus.DRAFT
+            CAMPAIGN_STATUS_ID_PUBLISHED -> CampaignStatus.PUBLISHED
+            CAMPAIGN_STATUS_ID_FINISHED -> CampaignStatus.FINISHED
+            CAMPAIGN_STATUS_ID_CANCELLED -> CampaignStatus.CANCELLED
+            else -> CampaignStatus.FINISHED
+        }
     }
 
 }

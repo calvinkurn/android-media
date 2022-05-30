@@ -2,6 +2,7 @@ package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -29,7 +30,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.util.DateManager
+import com.tokopedia.unifycomponents.setEnabled
 
 class CampaignListContainerFragment: BaseDaggerFragment() {
 
@@ -190,9 +193,14 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
     }
 
     private fun displayRemainingQuota(remainingQuota : Int) {
+        val counter = if (remainingQuota.isMoreThanZero()) {
+            remainingQuota
+        } else {
+            ZERO
+        }
         val wording = String.format(
             getString(R.string.sfs_placeholder_remaining_quota),
-            remainingQuota
+            counter
         )
         binding?.tpgRemainingQuota?.text = wording
         binding?.tpgRemainingQuota?.visible()
@@ -270,6 +278,9 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
+                val campaignCount = tabs[position].totalCampaign
+                viewPager.isUserInputEnabled = campaignCount.isMoreThanZero()
+
                 if (isRedirectionFromAnotherPage()) {
                     focusTo(currentCampaignStatusId)
                 } else {
