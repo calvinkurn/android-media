@@ -66,11 +66,13 @@ class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBindin
         rlPrimaryButton.gone()
         binding.pcGridItem.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         binding.root.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
     }
 
