@@ -13,7 +13,7 @@ class GlobalSearchModelBuilder {
     fun buildResponseModel(
         size: Int = 5,
         hasNextPage: Boolean = true,
-        nextCursor: String = "",
+        nextCursor: String = "1",
         suggestion: String = "",
         ticker: TickerUiModel = TickerUiModel(),
     ): PagedGlobalSearchProductResponse {

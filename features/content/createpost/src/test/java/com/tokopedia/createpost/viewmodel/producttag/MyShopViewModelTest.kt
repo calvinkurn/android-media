@@ -144,4 +144,56 @@ class MyShopViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user search query, it should reload new product as well as reset the pagination`() {
+        val query = "pokemon"
+        val nextCursor = "20"
+        val response = globalSearchModelBuilder.buildResponseModel(size = 10, nextCursor = nextCursor)
+        val response2 = globalSearchModelBuilder.buildResponseModel(size = 5, nextCursor = nextCursor)
+        val response3 = globalSearchModelBuilder.buildResponseModel(size = 3, nextCursor = nextCursor)
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+        )
+
+        robot.use {
+            coEvery { mockRepo.searchAceProducts(any()) } returns response
+
+            it.recordState {
+                submitAction(ProductTagAction.LoadMyShopProduct)
+            }.andThen {
+                myShopProduct.state.isSuccess()
+                myShopProduct.products.assertEqualTo(response.pagedData.dataList)
+                myShopProduct.param.start.assertEqualTo(nextCursor.toInt())
+                myShopProduct.param.query.assertEqualTo("")
+            }
+
+            coEvery { mockRepo.searchAceProducts(any()) } returns response2
+
+            it.recordState {
+                submitAction(ProductTagAction.SearchMyShopProduct(query))
+            }.andThen {
+                myShopProduct.state.isSuccess()
+                myShopProduct.products.assertEqualTo(response2.pagedData.dataList)
+                myShopProduct.param.start.assertEqualTo(nextCursor.toInt())
+                myShopProduct.param.query.assertEqualTo(query)
+            }
+
+            /** Trying to search with the same query, state wont change.
+             *  To prove that, mock searchAceProducts again and return the diff result.
+             * */
+            coEvery { mockRepo.searchAceProducts(any()) } returns response3
+
+            it.recordState {
+                submitAction(ProductTagAction.SearchMyShopProduct(query))
+            }.andThen {
+                myShopProduct.state.isSuccess()
+                myShopProduct.products.assertEqualTo(response2.pagedData.dataList)
+                myShopProduct.param.start.assertEqualTo(nextCursor.toInt())
+                myShopProduct.param.query.assertEqualTo(query)
+            }
+        }
+    }
 }
