@@ -225,16 +225,6 @@ class HomeVisitableFactoryImpl(
         else -> TYPE_ANNOUNCEMENT
     }
 
-    override fun addUserWalletVisitable(): HomeVisitableFactory {
-        val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
-        if (needToShowUserWallet) {
-            val headerViewModel = HeaderDataModel()
-            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
-            visitableList.add(headerViewModel)
-        }
-        return this
-    }
-
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
         addDynamicIconData()
         return this
