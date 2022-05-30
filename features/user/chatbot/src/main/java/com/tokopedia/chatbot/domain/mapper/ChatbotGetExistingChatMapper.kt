@@ -53,7 +53,10 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         const val TYPE_CSAT_VIEW = "13"
     }
 
-    override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    override fun mapAttachment(
+        chatItemPojoByDateByTime: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(chatItemPojoByDateByTime)
@@ -66,7 +69,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
-            else -> super.mapAttachment(chatItemPojoByDateByTime)
+            else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
 

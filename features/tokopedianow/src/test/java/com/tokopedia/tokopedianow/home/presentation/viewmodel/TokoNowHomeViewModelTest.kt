@@ -47,10 +47,11 @@ import com.tokopedia.tokopedianow.data.createHomeLayoutListForQuestOnly
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.data.createHomeTickerDataModel
 import com.tokopedia.tokopedianow.data.createKeywordSearch
+import com.tokopedia.tokopedianow.data.createLeftCarouselAtcDataModel
+import com.tokopedia.tokopedianow.data.createLeftCarouselDataModel
 import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createLocalCacheModel
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
-import com.tokopedia.tokopedianow.data.createMixLeftDataModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
@@ -65,11 +66,13 @@ import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -726,8 +729,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     id = "2322",
                     recomWidget = recommendationWidget
                 ),
-                createMixLeftDataModel(
+                createLeftCarouselAtcDataModel(
                     id = "2122",
+                    headerName = "Mix Left Atc Carousel",
+                ),
+                createLeftCarouselDataModel(
+                    id = "2333",
                     groupId = "",
                     headerName = "Mix Left Carousel",
                     layout = "left_carousel"
@@ -1920,6 +1927,110 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.REPURCHASE_PRODUCT)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `when add mix left atc product to cart should track add mix left atc product`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        val productCardUiModel = HomeLeftCarouselAtcProductCardUiModel(
+            id = "2",
+            channelHeaderName = "Mix Left Carousel",
+            shopId = "100",
+            channelId = "2122",
+            productCardModel = ProductCardModel(formattedPrice = "0", nonVariant = NonVariant(quantity=0, minQuantity=0, maxQuantity=0))
+        )
+
+        val expected = HomeAddToCartTracker(
+            position = 1,
+            quantity = 2,
+            cartId = "1999",
+            productCardUiModel
+        )
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected)
+    }
+
+    @Test
+    fun `given product not found when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given layout list does NOT contain mix left when add product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = emptyList<HomeLayoutResponse>()
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyAddToCartUseCaseCalled()
