@@ -961,7 +961,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given using rollence variant when user not logged in should add empty state non logged in`() {
+    fun `given using rollence variant when user not logged in should add empty state for each section`() {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns false
@@ -972,7 +972,12 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateNonLoggedInDataModel } == true)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateWishlistDataModel } == true)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateFavoriteShopDataModel } == true)
+        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
+        Assert.assertTrue(transactionListModel.orderListModel.orderList.isEmpty())
+        Assert.assertTrue(transactionListModel.orderListModel.paymentList.isEmpty())
+        Assert.assertTrue(transactionListModel.orderListModel.reviewList.isEmpty())
     }
 
     @Test

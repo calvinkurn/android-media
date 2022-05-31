@@ -283,6 +283,7 @@ class MainNavViewModel @Inject constructor(
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
         listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
+        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
     }
 
@@ -737,7 +738,6 @@ class MainNavViewModel @Inject constructor(
             var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
-                        SeparatorDataModel(),
                         it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
                         InitialShimmerTransactionDataModel(),
                         it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
@@ -747,7 +747,6 @@ class MainNavViewModel @Inject constructor(
                 )
             } else {
                 transactionDataList = mutableListOf(
-                        SeparatorDataModel(),
                         it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
                         it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
@@ -765,7 +764,6 @@ class MainNavViewModel @Inject constructor(
             var transactionDataList: MutableList<Visitable<*>> = mutableListOf()
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
-                        SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         InitialShimmerTransactionRevampDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
@@ -776,8 +774,13 @@ class MainNavViewModel @Inject constructor(
                 )
             } else {
                 transactionDataList = mutableListOf(
-                        SeparatorDataModel(),
-                        EmptyStateNonLoggedInDataModel()
+                    it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                    TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant),
+                    it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                    EmptyStateWishlistDataModel(),
+                    it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
+                    EmptyStateFavoriteShopDataModel(),
+                    SeparatorDataModel()
                 )
             }
             return transactionDataList
