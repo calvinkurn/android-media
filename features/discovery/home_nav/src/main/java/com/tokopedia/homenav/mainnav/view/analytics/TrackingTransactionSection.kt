@@ -158,32 +158,29 @@ object TrackingTransactionSection: BaseTrackerConst() {
     }
 
     fun getImpressionOnWishlist(userId: String, position: Int, wishlistModel: NavWishlistModel): HashMap<String, Any> {
-        return DataLayer.mapOf(
-            Event.KEY, Event.PRODUCT_VIEW,
-            Category.KEY, CATEGORY_GLOBAL_MENU,
-            Action.KEY, IMPRESSION_ON_WISHLIST_CARD,
-            Label.KEY, Label.NONE,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            UserId.KEY, userId,
-            ItemList.KEY, LIST_WISHLIST,
-            Ecommerce.KEY, DataLayer.mapOf(
-                CURRENCY_CODE, CURRENCY_IDR,
-                IMPRESSIONS_KEY, listOf(
-                    DataLayer.mapOf(
-                        DIMENSION_125, wishlistModel.wishlistId,
-                        DIMENSION_40, LIST_WISHLIST,
-                        Items.INDEX, position+1,
-                        Items.ITEM_BRAND, Value.NONE_OTHER,
-                        Items.ITEM_CATEGORY, wishlistModel.categoryBreadcrumb,
-                        Items.ITEM_ID, wishlistModel.productId,
-                        Items.ITEM_NAME, wishlistModel.productName,
-                        Items.ITEM_VARIANT, wishlistModel.variant,
-                        Items.PRICE, wishlistModel.price
-                    )
-                )
+        return BaseTrackerBuilder().constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = CATEGORY_GLOBAL_MENU,
+                eventAction = IMPRESSION_ON_WISHLIST_CARD,
+                eventLabel = Label.NONE,
+                list = LIST_WISHLIST,
+                products = listOf(Product(
+                    name = wishlistModel.productName,
+                    id = wishlistModel.productId,
+                    variant = wishlistModel.variant,
+                    brand = Value.NONE_OTHER,
+                    productPosition = (position+1).toString(),
+                    productPrice = wishlistModel.price,
+                    wishlistId = wishlistModel.wishlistId,
+                    isFreeOngkir = false,
+                    category =  wishlistModel.categoryBreadcrumb
+                )),
+                buildCustomList = { LIST_WISHLIST }
             )
-        ) as HashMap<String, Any>
+            .appendCurrentSite(DEFAULT_CURRENT_SITE)
+            .appendUserId(userId)
+            .appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+            .build() as HashMap<String, Any>
     }
 
     fun clickOnWishlistItem(userId: String, wishlistModel: NavWishlistModel, position: Int) {
