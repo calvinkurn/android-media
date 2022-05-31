@@ -15,6 +15,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_FAQ_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_SK_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_STOCK_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
@@ -69,8 +71,8 @@ class TokoNowEducationalInfoBottomSheet :
 
                 tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
 
-                convertStringToLink(tpTwentyFourHours, context, R.string.tokopedianow_home_educational_information_twenty_four_hours_bottomsheet)
-                convertStringToLink(tpTermsAndConditions, context, R.string.tokopedianow_home_educational_information_terms_and_conditions_bottomsheet)
+                setTwentyFourHours(localAddressData.service_type, tpTwentyFourHours, context)
+                setTermAndConditions(localAddressData.service_type, tpTermsAndConditions, context)
 
                 Glide.with(context)
                     .load(BACKGROUND_BOTTOMSHEET)
@@ -88,6 +90,18 @@ class TokoNowEducationalInfoBottomSheet :
     private fun setStockText(serviceType: String, boldColor: String) {
         getServiceTypeRes(EDU_BOTTOMSHEET_STOCK_RESOURCE_ID, serviceType)?.let {
             binding?.tpStockAvailable?.text = MethodChecker.fromHtml(getString(it, boldColor))
+        }
+    }
+
+    private fun setTwentyFourHours(serviceType: String, tpTwentyFourHours: Typography, context: Context) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_FAQ_RESOURCE_ID, serviceType)?.let {
+            convertStringToLink(tpTwentyFourHours, context, it)
+        }
+    }
+
+    private fun setTermAndConditions(serviceType: String, tpTermsAndConditions: Typography, context: Context) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_SK_RESOURCE_ID, serviceType)?.let {
+            convertStringToLink(tpTermsAndConditions, context, it)
         }
     }
 

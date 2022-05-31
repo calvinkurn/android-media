@@ -11,6 +11,8 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 object TokoNowServiceTypeUtil {
     const val EDU_BOTTOMSHEET_DURATION_RESOURCE_ID = "edu_bottomsheet_duration_resource_id"
     const val EDU_BOTTOMSHEET_STOCK_RESOURCE_ID = "edu_bottomsheet_stock_resource_id"
+    const val EDU_BOTTOMSHEET_FAQ_RESOURCE_ID = "edu_bottomsheet_faq_resource_id"
+    const val EDU_BOTTOMSHEET_SK_RESOURCE_ID = "edu_bottomsheet_sk_resource_id"
     const val EDU_WIDGET_RESOURCE_ID = "edu_widget_resource_id"
     const val SHARING_WIDGET_RESOURCE_ID = "sharing_widget_resource_id"
     const val REPURCHASE_EMPTY_RESOURCE_ID = "repurchase_empty_resource_id"
@@ -34,8 +36,16 @@ object TokoNowServiceTypeUtil {
             resourceId20m = R.string.tokopedianow_home_educational_information_20m_duration_bottomsheet
         ),
         EDU_BOTTOMSHEET_STOCK_RESOURCE_ID to TokoNowStringResource(
-            resourceId2h = R.string.tokopedianow_home_educational_information_2hr_stock_available_bottomsheet,
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_stock_available_bottomsheet,
             resourceId20m = R.string.tokopedianow_home_educational_information_20m_stock_available_bottomsheet
+        ),
+        EDU_BOTTOMSHEET_FAQ_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_twenty_four_hours_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_twenty_four_hours_bottomsheet
+        ),
+        EDU_BOTTOMSHEET_SK_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_terms_and_conditions_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_terms_and_conditions_bottomsheet
         ),
         EDU_WIDGET_RESOURCE_ID to TokoNowStringResource(
             formattedResourceId = R.string.tokopedianow_home_educational_information_duration
