@@ -96,7 +96,7 @@ class DraftListBottomSheet(
     }
 
     private fun onDeleteIconClick(draftItemModel: DraftItemModel) {
-        println(draftItemModel.toString())
+        DraftDeleteBottomSheet(draftItemModel).show(childFragmentManager)
     }
 
     fun show(manager: FragmentManager?) {
