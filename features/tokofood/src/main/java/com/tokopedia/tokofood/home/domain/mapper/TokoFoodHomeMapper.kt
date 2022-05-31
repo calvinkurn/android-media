@@ -28,6 +28,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.C
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.ERROR_STATE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
@@ -36,6 +37,7 @@ import com.tokopedia.tokofood.home.domain.data.TickerItem
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeTickerResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
@@ -81,6 +83,10 @@ object TokoFoodHomeMapper {
         add(TokoFoodItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_OUT_OF_COVERAGE), TokoFoodLayoutItemState.LOADED))
     }
 
+    fun MutableList<TokoFoodItemUiModel>.addErrorState(throwable: Throwable) {
+        addChooseAddressWidget()
+        add(TokoFoodItemUiModel(TokoFoodErrorStateUiModel(ERROR_STATE, throwable), TokoFoodLayoutItemState.LOADED))
+    }
 
     fun MutableList<TokoFoodItemUiModel>.mapHomeLayoutList(
         responses: List<HomeLayoutResponse>,

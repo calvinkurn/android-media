@@ -17,6 +17,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addErrorState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addMerchantTitle
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
@@ -36,6 +37,7 @@ import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCas
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeTickerUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodItemUiModel
@@ -48,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -150,8 +153,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
+    fun getErrorState(throwable: Throwable) {
+        homeLayoutItemList.clear()
+        homeLayoutItemList.addErrorState(throwable)
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.HIDE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
     fun removeTickerWidget(id: String) {
-        launchCatchError(block = {
+        launch(block = {
             hasTickerBeenRemoved = true
             homeLayoutItemList.removeItem(id)
 
@@ -161,7 +174,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-        }) {}
+        })
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -184,7 +197,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
             }){
-
+            _homeLayoutList.postValue(Fail(it))
         }
     }
 
@@ -205,9 +218,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
                 _homeLayoutList.postValue(Success(data))
             }
-        }){
-
-        }
+        }){}
     }
 
     fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel) {
@@ -219,8 +230,9 @@ class TokoFoodHomeViewModel @Inject constructor(
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
 
-        if(scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown) {
+        if(scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError) {
             showProgressBar()
             getMerchantList(localCacheModel = localCacheModel)
         }

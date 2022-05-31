@@ -58,6 +58,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManage
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
@@ -88,6 +89,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
         TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
         TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
+        TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
         ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     @Inject
@@ -115,7 +117,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 emptyStateLocationListener = this,
                 homeIconListener = this,
                 merchantListListener = this,
-                tickerListener = this
+                tickerListener = this,
+                errorStateListener = this
             ),
             differ = TokoFoodListDiffer(),
         )
@@ -273,6 +276,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onClickRetryError() {
+        loadLayout()
+    }
+
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
         return TokoFoodHomeLegoComponentCallback(this)
     }
@@ -378,6 +385,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             removeAllScrollListener()
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
+                is Fail -> onErrorGetHomeLayout(it.throwable)
             }
 
             rvHome?.post {
@@ -458,6 +466,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             TokoFoodLayoutState.LOADING -> onLoadingHomelayout(data)
             else -> showHomeLayout(data)
         }
+    }
+
+    private fun onErrorGetHomeLayout(throwable: Throwable) {
+        viewModel.getErrorState(throwable)
+        hideMiniCartHome()
     }
 
     private fun onHideHomeLayout(data: TokoFoodListUiModel) {

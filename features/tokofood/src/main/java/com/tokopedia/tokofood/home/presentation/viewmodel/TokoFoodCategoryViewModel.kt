@@ -9,13 +9,16 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addErrorState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addLoadingCategoryIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.mapCategoryLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodCategoryMapper.removeProgressBar
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodMerchantListUseCase
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -47,6 +50,16 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.postValue(Success(data))
     }
 
+    fun getErrorState(throwable: Throwable) {
+        categoryLayoutItemList.clear()
+        categoryLayoutItemList.addErrorState(throwable)
+        val data = TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.HIDE
+        )
+        _categoryLayoutList.postValue(Success(data))
+    }
+
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
                           sortBy: Int = 0, page: String = "") {
         launchCatchError(block = {
@@ -69,7 +82,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
             _categoryLayoutList.postValue(Success(data))
         }){
-
+            _categoryLayoutList.postValue(Fail(it))
         }
     }
 
@@ -82,8 +95,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = categoryLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
 
-        if(scrolledToLastItem && hasNextPage && !isLoading) {
+        if(scrolledToLastItem && hasNextPage && !isLoading && !isError) {
             showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,

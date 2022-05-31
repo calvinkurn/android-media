@@ -50,11 +50,13 @@ import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManage
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -63,7 +65,8 @@ import javax.inject.Inject
 class TokoFoodCategoryFragment: BaseDaggerFragment(),
     IBaseMultiFragment,
     TokoFoodView,
-    TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener
+    TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
+    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener
 {
 
     @Inject
@@ -80,7 +83,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         TokoFoodCategoryAdapter(
             typeFactory = TokoFoodCategoryAdapterTypeFactory(
                 tokoFoodView = this,
-                merchantListListener = this
+                merchantListListener = this,
+                errorStateListener = this
             ),
             differ = TokoFoodListDiffer()
         )
@@ -183,6 +187,10 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     override fun refreshLayoutPage() = onRefreshLayout()
 
+    override fun onClickRetryError() {
+        loadLayout()
+    }
+
     private fun setupSwipeRefreshLayout() {
         context?.let {
             swipeLayout?.setMargin(
@@ -230,6 +238,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
+                is Fail -> onErrorGetCategoryLayout(it.throwable)
             }
 
             addScrollListeners()
@@ -294,6 +303,11 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             TokoFoodLayoutState.LOADING -> onLoadingCategorylayout(data)
             else -> showCategoryLayout(data)
         }
+    }
+
+    private fun onErrorGetCategoryLayout(throwable: Throwable) {
+        viewModel.getErrorState(throwable)
+        hideMiniCartCategory()
     }
 
     private fun onShowCategoryLayout(data: TokoFoodListUiModel) {
