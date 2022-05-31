@@ -13,6 +13,12 @@ fun <T : Any> T.assertEqualTo(expected: T) {
         .isEqualTo(expected)
 }
 
+fun <T : Any> List<T>.assertEmpty() {
+    Assertions
+        .assertThat(this.size)
+        .isEqualTo(0)
+}
+
 inline fun PagedState.isSuccess() {
     Assertions
         .assertThat(this)
