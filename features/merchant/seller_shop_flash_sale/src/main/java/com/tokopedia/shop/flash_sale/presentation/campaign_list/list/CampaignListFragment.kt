@@ -33,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -44,7 +43,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
-        private const val DRAFT_COUNT = 3
+        private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
@@ -131,13 +130,13 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         observeCampaignDrafts()
         viewModel.getRemainingQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
         viewModel.getCampaignDrafts(
-            DRAFT_COUNT,
+            MAX_DRAFT_COUNT,
             FIRST_PAGE
         )
     }
 
     private fun setupView() {
-        binding?.btnCreateCampaign?.setOnClickListener {  }
+        binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
         setupSearchBar()
         setupScrollListener()
         setupTabChangeListener()
@@ -218,7 +217,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
                     handleDraftCount(draftCount)
                 }
                 is Fail -> {
-                    binding?.btnDraft?.gone()
+                    binding?.cardView?.gone()
                 }
             }
         }
@@ -350,6 +349,17 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     private fun handleScrollUpEvent() {
         binding?.searchBar.slideUp()
         binding?.cardView.slideUp()
+    }
+
+    private fun handleCreateCampaign() {
+        val campaignDrafts = viewModel.getCampaignDrafts()
+        if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
+            //TODO: Call bottomsheet draft list
+            println()
+        } else {
+            //TODO: Navigate to info campaign page
+            println()
+        }
     }
 
     private fun displayCampaigns(data: CampaignMeta) {

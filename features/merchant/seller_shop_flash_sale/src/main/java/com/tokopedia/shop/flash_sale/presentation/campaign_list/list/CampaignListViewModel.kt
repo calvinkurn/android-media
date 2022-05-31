@@ -129,7 +129,7 @@ class CampaignListViewModel @Inject constructor(
         this.drafts = drafts
     }
 
-    fun getDrafts(): List<CampaignUiModel> {
+    fun getCampaignDrafts(): List<CampaignUiModel> {
         return drafts
     }
 }
