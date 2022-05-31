@@ -6,7 +6,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductWithTopAdsTypoCorrectionUseCase
+import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductTypoCorrectionUseCase
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -29,7 +29,7 @@ internal class SearchProductTopAdsTypoCorrectionFirstPageTest : ProductListPrese
         get() = visitableListSlot.captured
 
     override val searchFirstPageUseCase: UseCase<SearchProductModel>
-        get() = SearchProductWithTopAdsTypoCorrectionUseCase(
+        get() = SearchProductTypoCorrectionUseCase(
             searchProductFirstPageUseCase,
             searchProductTopAdsUseCase,
             remoteConfigAbTest,

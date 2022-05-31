@@ -12,7 +12,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 
-class SearchProductWithTopAdsTypoCorrectionUseCase(
+class SearchProductTypoCorrectionUseCase(
     private val searchProductUseCase: UseCase<SearchProductModel>,
     private val searchProductTopAdsUseCase: UseCase<TopAdsModel>,
     private val remoteConfig: RemoteConfig,

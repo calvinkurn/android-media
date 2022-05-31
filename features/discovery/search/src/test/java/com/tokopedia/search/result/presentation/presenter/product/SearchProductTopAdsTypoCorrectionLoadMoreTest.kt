@@ -6,7 +6,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductWithTopAdsTypoCorrectionUseCase
+import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductTypoCorrectionUseCase
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -31,14 +31,14 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         get() = visitableListSlot.captured
 
     override val searchFirstPageUseCase: UseCase<SearchProductModel>
-        get() = SearchProductWithTopAdsTypoCorrectionUseCase(
+        get() = SearchProductTypoCorrectionUseCase(
             searchProductFirstPageUseCase,
             searchProductTopAdsUseCase,
             remoteConfigAbTest,
             testSchedulersProvider,
         )
     override val searchLoadMoreUseCase: UseCase<SearchProductModel>
-        get() = SearchProductWithTopAdsTypoCorrectionUseCase(
+        get() = SearchProductTypoCorrectionUseCase(
             searchProductLoadMoreUseCase,
             searchProductTopAdsUseCase,
             remoteConfigAbTest,
@@ -127,7 +127,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
-        every { searchProductFirstPageUseCase.createObservable(capture(requestParamsSlot)) }
+        every { searchProductFirstPageUseCase.createObservable(any()) }
             .returns(Observable.just(searchProductModel))
     }
 
