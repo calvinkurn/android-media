@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokofood.databinding.TokofoodItemAddOnLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderNoteLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
@@ -43,7 +44,7 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
             PRODUCT_ADD_ON.type -> {
                 val viewHolder = holder as ProductAddOnViewHolder
                 val addOnUiModel = customListItems[position].addOnUiModel
-                addOnUiModel?.run { viewHolder.bindData(this) }
+                addOnUiModel?.run { viewHolder.bindData(this, position) }
             }
             ORDER_NOTE_INPUT.type -> {
                 val viewHolder = holder as OrderNoteInputViewHolder
@@ -57,7 +58,7 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
     }
 
     fun getCustomListItems(): List<CustomListItem> {
-        return customListItems
+        return customListItems.toList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -68,9 +69,13 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
 
     fun updateAddOnSelection(isSelected: Boolean, addOnPositions: Pair<Int, Int>) {
         val dataSetPosition = addOnPositions.first
-        val adapterPosition = addOnPositions.second
+        val optionIndex = addOnPositions.second
         customListItems[dataSetPosition].addOnUiModel?.isSelected = isSelected
-        customListItems[dataSetPosition].addOnUiModel?.options?.get(dataSetPosition)?.isSelected = isSelected
-        notifyItemChanged(adapterPosition)
+        customListItems[dataSetPosition].addOnUiModel?.options?.get(optionIndex)?.run {
+            if (selectionControlType == SelectionControlType.SINGLE_SELECTION) {
+                customListItems[dataSetPosition].addOnUiModel?.options?.forEach { it.isSelected = false }
+            }
+            this.isSelected = isSelected
+        }
     }
 }

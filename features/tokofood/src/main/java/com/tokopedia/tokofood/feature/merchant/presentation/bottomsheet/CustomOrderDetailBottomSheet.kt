@@ -9,21 +9,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.tokofood.databinding.BottomsheetOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.OrderDetailAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderDetailViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class CustomOrderDetailBottomSheet : BottomSheetUnify() {
+class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetailClickListener)
+    : BottomSheetUnify(), OrderDetailViewHolder.OnOrderDetailItemClickListener {
+
+    interface OnCustomOrderDetailClickListener {
+        fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String)
+        fun onUpdateCustomOrderQtyButtonClicked(productId: String, quantity: Int, customOrderDetail: CustomOrderDetail)
+        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
+    }
 
     companion object {
 
-        private const val PRODUCT_NAME = "PRODUCT_NAME"
-        private const val CUSTOM_ORDER_DETAILS = "CUSTOM_ORDER_DETAILS"
+        const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
 
         @JvmStatic
-        fun createInstance(productName: String, customOrderDetails: List<CustomOrderDetail>): CustomOrderDetailBottomSheet {
-            return CustomOrderDetailBottomSheet().apply {
+        fun createInstance(productUiModel: ProductUiModel,
+                           clickListener: OnCustomOrderDetailClickListener): CustomOrderDetailBottomSheet {
+            return CustomOrderDetailBottomSheet(clickListener).apply {
                 arguments = Bundle().apply {
-                    putString(PRODUCT_NAME, productName)
-                    putParcelableArrayList(CUSTOM_ORDER_DETAILS, ArrayList(customOrderDetails))
+                    putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 }
             }
         }
@@ -31,14 +39,10 @@ class CustomOrderDetailBottomSheet : BottomSheetUnify() {
 
     private var binding: BottomsheetOrderInfoLayoutBinding? = null
 
-    private var adapter: OrderDetailAdapter = OrderDetailAdapter()
+    private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
 
-    private val productName: String by lazy {
-        arguments?.getString(PRODUCT_NAME) ?: ""
-    }
-
-    private val customOrderDetails: ArrayList<CustomOrderDetail> by lazy {
-        arguments?.getParcelableArrayList(CUSTOM_ORDER_DETAILS) ?: arrayListOf()
+    private val productUiModel: ProductUiModel by lazy {
+        arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,14 +50,14 @@ class CustomOrderDetailBottomSheet : BottomSheetUnify() {
         binding = viewBinding
         setChild(viewBinding.root)
         clearContentPadding = true
-        setTitle(productName)
+        setTitle(productUiModel.name)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(binding)
-        renderData(customOrderDetails)
+        renderData(productUiModel.customOrderDetails)
     }
 
     override fun onDestroyView() {
@@ -63,7 +67,7 @@ class CustomOrderDetailBottomSheet : BottomSheetUnify() {
 
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
-            // TODO: navigate to customization page
+            clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
         }
         binding?.rvOrderInfo?.let {
             it.adapter = adapter
@@ -71,11 +75,35 @@ class CustomOrderDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun renderData(customOrderDetails: ArrayList<CustomOrderDetail>) {
-        adapter.setCustomOrderDetails(customOrderDetails.toList())
+    private fun renderData(customOrderDetails: List<CustomOrderDetail>) {
+        adapter.setCustomOrderDetails(customOrderDetails)
     }
 
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
+    }
+
+    override fun onEditButtonClicked(cartId: String) {
+        clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = productUiModel)
+    }
+
+    override fun onDeleteButtonClicked(cartId: String) {
+        clickListener.onDeleteCustomOrderButtonClicked(cartId, productUiModel.id)
+    }
+
+    override fun onIncreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail) {
+        clickListener.onUpdateCustomOrderQtyButtonClicked(
+                customOrderDetail = customOrderDetail,
+                quantity = quantity,
+                productId = productUiModel.id
+        )
+    }
+
+    override fun onDecreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail) {
+        clickListener.onUpdateCustomOrderQtyButtonClicked(
+                customOrderDetail = customOrderDetail,
+                quantity = quantity,
+                productId = productUiModel.id
+        )
     }
 }

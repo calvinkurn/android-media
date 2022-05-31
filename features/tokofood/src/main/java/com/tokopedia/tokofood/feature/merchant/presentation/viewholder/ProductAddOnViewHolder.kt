@@ -19,7 +19,7 @@ class ProductAddOnViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnAddOnSelectListener {
-        fun onAddOnSelected(isSelected: Boolean, addOnPositions: Pair<Int, Int>)
+        fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>)
     }
 
     private var context: Context? = null
@@ -29,8 +29,7 @@ class ProductAddOnViewHolder(
         context = binding.root.context
     }
 
-    fun bindData(addOnUiModel: AddOnUiModel) {
-
+    fun bindData(addOnUiModel: AddOnUiModel, dataSetPosition: Int) {
         binding.addOnsTypeLabel.text = addOnUiModel.name
         binding.requiredAddOnsLabel.isVisible = addOnUiModel.isRequired
         binding.tpgOptionalWording.isVisible = !addOnUiModel.isRequired
@@ -81,6 +80,31 @@ class ProductAddOnViewHolder(
         binding.luAddOnList.apply {
             setData(addOnItems)
             onLoadFinish {
+                addOnItems.forEachIndexed { index, listItemUnify ->
+
+                    val isSelected = addOnUiModel.options[index].isSelected
+                    listItemUnify.listRightRadiobtn?.isChecked = isSelected
+                    listItemUnify.listRightCheckbox?.isChecked = isSelected
+
+                    // radio button click listener
+                    listItemUnify.listRightRadiobtn?.setOnClickListener {
+                        val type = addOnUiModel.options[index].selectionControlType
+                        setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
+                            val isChecked = it.listRightRadiobtn?.isChecked ?: false
+                            val addOnPrice = addOnUiModel.options[index].price
+                            selectListener.onAddOnSelected(isChecked, addOnPrice, Pair(dataSetPosition, index))
+                        }
+                    }
+                    // check box button click listener
+                    listItemUnify.listRightCheckbox?.setOnClickListener {
+                        val type = addOnUiModel.options[index].selectionControlType
+                        setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
+                            val isChecked = it.listRightCheckbox?.isChecked ?: false
+                            val addOnPrice = addOnUiModel.options[index].price
+                            selectListener.onAddOnSelected(isChecked, addOnPrice, Pair(dataSetPosition, index))
+                        }
+                    }
+                }
                 // list item click listener
                 setOnItemClickListener { _, _, position, _ ->
                     val selectedItem = this.getItemAtPosition(position) as ListItemUnify
@@ -95,25 +119,6 @@ class ProductAddOnViewHolder(
                         }
                     }
                 }
-
-                addOnItems.forEachIndexed { index, listItemUnify ->
-                    // radio button click listener
-                    listItemUnify.listRightRadiobtn?.setOnClickListener {
-                        val type = addOnUiModel.options[index].selectionControlType
-                        setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
-                            val isSelected = it.listRightCheckbox?.isChecked ?: false
-                            selectListener.onAddOnSelected(isSelected, Pair(index, adapterPosition))
-                        }
-                    }
-                    // check box button click listener
-                    listItemUnify.listRightCheckbox?.setOnClickListener {
-                        val type = addOnUiModel.options[index].selectionControlType
-                        setSelected(addOnItems, index, type, addOnUiModel.maxQty) {
-                            selectListener.onAddOnSelected(isSelected, Pair(index, adapterPosition))
-                        }
-                    }
-                }
-
             }
         }
     }
@@ -130,6 +135,7 @@ class ProductAddOnViewHolder(
                 items.filter { it.listRightRadiobtn?.isChecked ?: false }
                         .filterNot { it == selectedItem }
                         .onEach { it.listRightRadiobtn?.isChecked = false }
+                selectedItem.listRightRadiobtn?.isChecked = true
             }
             MULTIPLE_SELECTION -> {
                 val selectedItemCount = items.filter { it.listRightCheckbox?.isChecked == true }.size

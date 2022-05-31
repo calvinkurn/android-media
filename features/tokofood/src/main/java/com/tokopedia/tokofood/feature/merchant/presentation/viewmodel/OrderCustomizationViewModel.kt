@@ -1,13 +1,75 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import javax.inject.Inject
 
 class OrderCustomizationViewModel @Inject constructor(
 ) : ViewModel() {
 
-    fun isCustomOrderContainError(addOnUiModels: List<AddOnUiModel>): Boolean {
+    var subTotalPrice: Double = 0.0
+
+    fun addSubTotalPrice(addOnPrice: Double) {
+        subTotalPrice += addOnPrice
+    }
+
+    fun subtractSubTotalPrice(addOnPrice: Double) {
+        subTotalPrice -= addOnPrice
+    }
+
+    fun getCustomOrderDetails(cartId: String, productUiModel: ProductUiModel): CustomOrderDetail? {
+        return productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }
+    }
+
+    fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {
+        return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) productUiModel.customListItems
+        else productUiModel.customOrderDetails.firstOrNull() { it.cartId == cartId }?.customListItems
+                ?: listOf()
+    }
+
+    fun isEditingCustomOrder(cartId: String): Boolean = cartId.isNotBlank()
+
+    fun validateCustomOrderInput(customListItems: List<CustomListItem>): Pair<Boolean, List<CustomListItem>> {
+        val mutableCustomListItems = customListItems.toMutableList()
+        // exclude the last custom list item which contain order note information
+        mutableCustomListItems.filter { it.addOnUiModel != null }.forEach { customListItem ->
+            customListItem.addOnUiModel?.run {
+                val optionUiModels = this.options
+                this.isError = optionUiModels.filter { it.isSelected }.count() < this.minQty
+            }
+        }
+        val isError = isCustomOrderContainError(
+                mutableCustomListItems
+                        .filter { it.addOnUiModel != null }
+                        .map { it.addOnUiModel?: AddOnUiModel() }
+        )
+        return isError to mutableCustomListItems.toList()
+    }
+
+    private fun isCustomOrderContainError(addOnUiModels: List<AddOnUiModel>): Boolean {
         return addOnUiModels.firstOrNull { it.isError } != null
+    }
+
+    fun generateRequestParam(
+            shopId: String,
+            productUiModel: ProductUiModel,
+            cartId: String,
+            orderNote: String,
+            orderQty: Int,
+            addOnUiModels: List<AddOnUiModel>
+    ): UpdateParam {
+        productUiModel.cartId = cartId
+        productUiModel.orderNote = orderNote
+        productUiModel.orderQty = orderQty
+        return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
+                shopId = shopId,
+                productUiModels = listOf(productUiModel),
+                addOnUiModels = addOnUiModels
+        )
     }
 }

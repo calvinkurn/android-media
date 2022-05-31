@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
@@ -68,17 +72,34 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         notifyDataSetChanged()
     }
 
-    fun updateOrderNote(orderNote: String, cardPositions: Pair<Int, Int>) {
-        val dataSetPosition = cardPositions.first
-        val adapterPosition = cardPositions.second
-        productListItems[dataSetPosition].productUiModel.orderNote = orderNote
+    fun getProductUiModel(dataSetPosition: Int): ProductUiModel {
+        return productListItems[dataSetPosition].productUiModel
+    }
+
+    fun updateProductUiModel(cartTokoFood: CartTokoFood, dataSetPosition: Int, adapterPosition: Int) {
+        productListItems[dataSetPosition].productUiModel.apply {
+            cartId = cartTokoFood.cartId
+            orderQty = cartTokoFood.quantity
+            orderNote = cartTokoFood.getMetadata().notes
+            isAtc = cartTokoFood.quantity.isMoreThanZero()
+        }
         notifyItemChanged(adapterPosition)
     }
 
-    fun updateAtcStatus(isAtc: Boolean, cardPositions: Pair<Int, Int>) {
-        val dataSetPosition = cardPositions.first
-        val adapterPosition = cardPositions.second
+    fun updateAtcStatus(isAtc: Boolean, dataSetPosition: Int, adapterPosition: Int) {
         productListItems[dataSetPosition].productUiModel.isAtc = isAtc
         notifyItemChanged(adapterPosition)
+    }
+
+    fun updateOrderQty(orderQty: Int, dataSetPosition: Int) {
+        productListItems[dataSetPosition].productUiModel.orderQty = orderQty
+    }
+
+    fun updateCustomOrderQty(cartId: String, orderQty: Int, dataSetPosition: Int) {
+        productListItems[dataSetPosition].productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }?.qty = orderQty
+    }
+
+    fun removeCustomOrder(cartId: String, dataSetPosition: Int) {
+        productListItems[dataSetPosition].productUiModel.customOrderDetails.removeFirst { it.cartId == cartId }
     }
 }

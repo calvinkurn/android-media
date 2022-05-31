@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class AddOnUiModel(
         val id: String = "",
         val name: String = "",
+        var isError: Boolean = false,
         val isRequired: Boolean = false,
         var isSelected: Boolean = false,
         val maxQty: Int = 0,
@@ -39,6 +40,9 @@ data class AddOnUiModel(
     @IgnoredOnParcel
     val selectedAddOns = options.filter { it.isSelected }.map { it.name }
 
+//    @IgnoredOnParcel
+//    val isError = options.filter { it.isSelected }.count() < minQty
+
     @IgnoredOnParcel
-    val isError = options.filter { it.isSelected }.count() < minQty && isSelected
+    val selectedCount = options.filter { it.isSelected }.count()
 }

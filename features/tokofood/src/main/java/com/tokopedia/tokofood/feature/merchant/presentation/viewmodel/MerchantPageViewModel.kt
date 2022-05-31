@@ -4,6 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
@@ -17,8 +22,11 @@ import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUse
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.MULTIPLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
+import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
@@ -48,8 +56,18 @@ class MerchantPageViewModel @Inject constructor(
     private val getMerchantDataResultLiveData = MutableLiveData<Result<GetMerchantDataResponse>>()
     val getMerchantDataResult: LiveData<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
 
-    // card positions info <dataset,adapter>
-    var cardPositions: Pair<Int, Int>? = null
+    // map of productId to card positions info <dataset,adapter>
+    val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
+
+    var selectedProducts: List<CheckoutTokoFoodProduct> = listOf()
+
+    fun getDataSetPosition(cardPositions: Pair<Int, Int>): Int {
+        return cardPositions.first
+    }
+
+    fun getAdapterPosition(cardPositions: Pair<Int, Int>): Int {
+        return cardPositions.second
+    }
 
     var filterList = listOf<TokoFoodCategoryFilter>()
 
@@ -230,7 +248,7 @@ class MerchantPageViewModel @Inject constructor(
     private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<TokoFoodCatalogVariantOptionDetail>): List<OptionUiModel> {
         return optionDetails.map { optionDetail ->
             OptionUiModel(
-                    isSelected = true,
+                    isSelected = false,
                     id = optionDetail.id,
                     name = optionDetail.name,
                     price = optionDetail.price,
@@ -238,6 +256,98 @@ class MerchantPageViewModel @Inject constructor(
                     selectionControlType = if (maxQty > ONE) MULTIPLE_SELECTION else SINGLE_SELECTION
             )
         }
+    }
+
+    fun applyProductSelection(productListItems: List<ProductListItem>, selectedProducts: List<CheckoutTokoFoodProduct>): List<ProductListItem> {
+        val mutableProductListItems = productListItems.toMutableList()
+        val selectedProductMap = selectedProducts.groupBy { it.productId }
+        selectedProductMap.forEach { entry ->
+            if (entry.value.size > Int.ONE) {
+                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                    productListItem.productUiModel.id == entry.key
+                }
+                selectedProductListItem?.productUiModel?.apply {
+                    isAtc = true
+                    customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                }
+            } else {
+                // NON-VARIANT PRODUCT ORDER
+                val selectedProduct = entry.value.first()
+                val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
+                    productListItem.productUiModel.id == entry.key
+                }
+                selectedProductListItem?.productUiModel?.apply {
+                    isAtc = true
+                    cartId = selectedProduct.cartId
+                    orderQty = selectedProduct.quantity
+                    orderNote = selectedProduct.notes
+                }
+            }
+        }
+        return mutableProductListItems.toList()
+    }
+
+    private fun mapTokoFoodProductsToCustomOrderDetails(tokoFoodProducts: List<CheckoutTokoFoodProduct>): MutableList<CustomOrderDetail> {
+        return tokoFoodProducts.map { product ->
+            CustomOrderDetail(
+                    cartId = product.cartId,
+                    subTotal = 0.0,
+                    subTotalFmt = "0",
+                    qty = product.quantity,
+                    customListItems = mapTokoFoodVariantsToCustomListItems(
+                            variants = product.variants,
+                            orderNote = product.notes
+                    )
+            )
+        }.toMutableList()
+    }
+
+    private fun mapTokoFoodVariantsToCustomListItems(variants: List<CheckoutTokoFoodProductVariant>, orderNote: String): List<CustomListItem> {
+        val customListItems = mutableListOf<CustomListItem>()
+        val addOns = variants.map { variant ->
+            CustomListItem(
+                    listItemType = CustomListItemType.PRODUCT_ADD_ON,
+                    addOnUiModel = AddOnUiModel(
+                            id = variant.variantId,
+                            name = variant.name,
+                            isRequired = variant.rules.selectionRules.isRequired,
+                            isSelected = variant.options.count { it.isSelected } != Int.ZERO,
+                            maxQty = variant.rules.selectionRules.maxQuantity,
+                            minQty = variant.rules.selectionRules.minQuantity,
+                            options = variant.options.map { option ->
+                                OptionUiModel(
+                                        isSelected = option.isSelected,
+                                        id = option.optionId,
+                                        name = option.name,
+                                        price = option.price,
+                                        priceFmt = option.priceFmt,
+                                        selectionControlType = SelectionControlType.valueOf(variant.rules.selectionRules.type.toString())
+                                )
+                            }
+                    )
+            )
+        }
+        val noteInput = CustomListItem(listItemType = CustomListItemType.ORDER_NOTE_INPUT, orderNote = orderNote, addOnUiModel = null)
+        customListItems.addAll(addOns)
+        customListItems.add(noteInput)
+        return customListItems.toList()
+    }
+
+    fun mapProductUiModelToAtcRequestParam(shopId: String, productUiModel: ProductUiModel): UpdateParam {
+        return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
+                cartId = productUiModel.cartId,
+                shopId = shopId,
+                productUiModels = listOf(productUiModel)
+        )
+    }
+
+    fun mapCustomOrderDetailToAtcRequestParam(shopId: String, productId: String, customOrderDetail: CustomOrderDetail): UpdateParam {
+        return TokoFoodMerchantUiModelMapper.mapCustomOrderDetailToAtcRequestParam(
+                shopId = shopId,
+                cartId = customOrderDetail.cartId,
+                productId = productId,
+                customOrderDetails = listOf(customOrderDetail)
+        )
     }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
