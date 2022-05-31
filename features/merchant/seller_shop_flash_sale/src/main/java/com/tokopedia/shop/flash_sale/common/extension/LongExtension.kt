@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val EPOCH_TO_MILLIS_MULTIPLIER = 1000
-private const val OFFSET_WIB = 7
 
 fun Long.toDate(): Date {
     return Date(this)
@@ -14,9 +13,7 @@ fun Long.toDate(): Date {
 fun Long.epochToDate(): Date {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this * EPOCH_TO_MILLIS_MULTIPLIER)
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val decreased = hour - OFFSET_WIB
-    calendar.set(Calendar.HOUR_OF_DAY, decreased)
+    calendar.timeZone = TimeZone.getTimeZone("GMT")
     return calendar.time
 }
 
