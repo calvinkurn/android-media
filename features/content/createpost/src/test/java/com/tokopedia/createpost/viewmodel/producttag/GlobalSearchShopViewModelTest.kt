@@ -309,4 +309,23 @@ class GlobalSearchShopViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user apply filter sort param, it should reload shops with the new applied param`() {
+        val mockResponse = globalSearchModelBuilder.buildShopResponseModel()
+        val selectedSortFilter = globalSearchModelBuilder.buildSortFilterModel()
+
+        coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.ApplyShopSortFilter(selectedSortFilter))
+            }.andThen {
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                selectedSortFilter.forEach { sortFilter ->
+                    globalSearchShop.param.isParamFound(sortFilter.key, sortFilter.value).assertTrue()
+                }
+            }
+        }
+    }
 }
