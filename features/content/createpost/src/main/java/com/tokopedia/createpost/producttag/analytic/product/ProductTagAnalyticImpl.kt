@@ -269,18 +269,23 @@ class ProductTagAnalyticImpl @Inject constructor(
         }
         val prevKeyword = if(param.prevQuery.isNotEmpty()) param.prevQuery else "none"
 
+        val srpPageTitle = when(type) {
+            VAL_FEED_PRODUCT -> 0
+            VAL_FEED_SHOP -> userSession.shopId
+            else -> 0
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to "clickTopNav",
                 KEY_EVENT_ACTION to action,
                 KEY_EVENT_CATEGORY to "top nav",
-                /** TODO: srp page title ? */
-                KEY_EVENT_LABEL to "${param.query}|${header.keywordProcess}|${header.responseCode}|physical goods|$type|{}|${header.totalData}",
+                KEY_EVENT_LABEL to "${param.query}|${header.keywordProcess}|${header.responseCode}|physical goods|$type|$srpPageTitle|${header.totalData}",
                 KEY_BUSINESS_UNIT to "physical goods",
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
                 KEY_SRP_COMPONENT to header.componentId,
                 KEY_SRP_KEYWORD to param.query,
-                KEY_SRP_PAGE_SOURCE to "feed.$type.local_search.{}", /** TODO: srp page title ? */
+                KEY_SRP_PAGE_SOURCE to "feed.$type.local_search.$srpPageTitle",
                 KEY_SRP_RELATED_KEYWORD to "$prevKeyword - none",
                 KEY_SRP_SEARCH_FILTER to param.toTrackerString(),
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
