@@ -18,6 +18,7 @@ import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.*
@@ -135,6 +136,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                 }
             }
         })
+
+        context?.let {
+            date_in.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+            date_out.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+        }
 
         date_in.keyListener = null
         date_out.keyListener = null

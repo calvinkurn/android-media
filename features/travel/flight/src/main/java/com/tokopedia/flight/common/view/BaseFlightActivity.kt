@@ -21,7 +21,7 @@ import javax.inject.Inject
  * @author by furqan on 10/06/2021
  */
 abstract class BaseFlightActivity : BaseSimpleActivity(),
-        TravelMenuBottomSheet.TravelMenuListener {
+    TravelMenuBottomSheet.TravelMenuListener {
 
     @Inject
     lateinit var flightAnalytics: FlightAnalytics
@@ -78,6 +78,10 @@ abstract class BaseFlightActivity : BaseSimpleActivity(),
     override fun onPromoClicked() {
         navigateToAllPromoPage()
     }
+
+    override fun getToolbarResourceID(): Int = R.id.flight_base_header
+
+    override fun getParentViewResourceID(): Int = R.id.flight_base_fragment_view
 
     open override fun onHelpClicked() {
         navigateToHelpPage()
