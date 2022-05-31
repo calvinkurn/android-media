@@ -73,6 +73,9 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(activity, 2)
+    }
 
     var landedUserName: String? = null
     var displayName: String = ""
@@ -202,7 +205,6 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        val gridLayoutManager =  GridLayoutManager(activity, 2)
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
 

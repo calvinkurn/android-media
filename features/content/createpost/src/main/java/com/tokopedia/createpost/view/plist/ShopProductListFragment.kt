@@ -30,6 +30,9 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
     lateinit var sortListItems: List<ShopPagePListSortItem>
+    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(activity, 2)
+    }
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
     var getImeiBS: ShopPListSortFilterBs? = null
@@ -69,7 +72,6 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
     private fun initViews(view: View) {
 
-        val gridLayoutManager =  GridLayoutManager(activity, 2)
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
         view.recycler_view.apply {
