@@ -49,4 +49,17 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
             onClick()
         }
     }
+
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.fragments.firstOrNull()
+        if (currentFragment != null && currentFragment.isVisible && currentFragment is ManageAddressFragment) {
+            if (currentFragment.isFromEditChosenAddress == true) {
+                currentFragment.setAddressDataOnBackButton()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
+    }
 }

@@ -64,5 +64,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }

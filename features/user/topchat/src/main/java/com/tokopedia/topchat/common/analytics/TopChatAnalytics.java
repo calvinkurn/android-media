@@ -21,7 +21,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -149,7 +148,6 @@ public class TopChatAnalytics {
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
         String CLICK_REPLY_BUTTON = "click on reply button";
-        String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
         String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
@@ -547,16 +545,6 @@ public class TopChatAnalytics {
         payload.put("source", SELLERAPP_PUSH_NOTIF);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
-    }
-
-    // #QT1
-    public void eventClickQuotation(@NotNull QuotationUiModel msg) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                Name.CHAT_DETAIL,
-                Category.CHAT_DETAIL,
-                Action.CLICK_QUOTATION_ATTACHMENT,
-                msg.getQuotationId()
-        );
     }
 
     // #AP11
