@@ -149,7 +149,8 @@ abstract class BaseTrackerConst {
             val shopId:String = "",
             val shopName: String = "",
             val shopType: String = "",
-            val pageName: String = ""
+            val pageName: String = "",
+            val wishlistId: String = "",
     )
 
     object Ecommerce {
@@ -201,6 +202,7 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
+        private const val KEY_DIMENSION_125 = "dimension125"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -319,12 +321,7 @@ abstract class BaseTrackerConst {
             map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
-            map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
-            map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
-            map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
-            map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
             map[KEY_POSITION] = product.productPosition
-            map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
@@ -336,6 +333,14 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
+            if(product.wishlistId.isNotEmpty()) map[KEY_DIMENSION_125] = product.wishlistId
+            else {
+                map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
+                map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
+                map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
+                map[KEY_DIMENSION_83] = checkBebasOngkir(product)
+            }
             return map
         }
 
