@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.topchat.R
@@ -123,19 +124,17 @@ class TopchatImageUploadViewHolder(
     override fun bindClickListener(element: ImageUploadUiModel) {
         attachmentUnify?.setOnClickListener { view ->
             if (element.replyTime != null) {
+                val imageSecureUrl = element.imageSecureUrl.toEmptyStringIfNull()
+                val imageUrl = element.imageUrl.toEmptyStringIfNull()
+                val replyTime = element.replyTime.toEmptyStringIfNull()
                 if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE
-                    && element.imageSecureUrl != null
-                ) {
+                    && imageSecureUrl.isNotEmpty()) {
                     listener.onImageUploadClicked(
-                        element.imageSecureUrl!!,
-                        element.replyTime!!,
-                        true
+                        imageSecureUrl, replyTime, true
                     )
-                } else if (element.imageUrl != null) {
+                } else if (imageUrl.isNotEmpty()) {
                     listener.onImageUploadClicked(
-                        element.imageUrl!!,
-                        element.replyTime!!,
-                        false
+                        imageUrl, replyTime, false
                     )
                 }
             }

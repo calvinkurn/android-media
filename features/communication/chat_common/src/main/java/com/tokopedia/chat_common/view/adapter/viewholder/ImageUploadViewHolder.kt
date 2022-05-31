@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
 
 /**
@@ -60,8 +61,11 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
 
     protected open fun bindClickListener(element: ImageUploadUiModel) {
         view.setOnClickListener { view ->
-            if (element.imageUrl != null && element.replyTime != null) {
-                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!, false)
+            val imageUrl = element.imageUrl.toEmptyStringIfNull()
+            val replyTime = element.replyTime.toEmptyStringIfNull()
+            if (imageUrl.isNotEmpty() && replyTime.isNotEmpty()) {
+                listener.onImageUploadClicked(
+                    imageUrl, replyTime, false)
             }
         }
     }

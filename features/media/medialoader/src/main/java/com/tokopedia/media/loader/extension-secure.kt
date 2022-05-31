@@ -13,11 +13,7 @@ inline fun ImageView.loadSecureImage(
     userSession: UserSessionInterface,
     crossinline properties: Properties.() -> Unit = {}
 ) {
-    if (userSession.accessToken.isEmpty()) {
-        Toast.makeText(context, "(Dev) - access token not found", Toast.LENGTH_SHORT).show()
-        return
-    }
-
+    if (userSession.accessToken.isEmpty()) return
     call(
         url,
         Properties()
