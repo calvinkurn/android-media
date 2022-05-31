@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.flash_sale.common.Constant
+import com.tokopedia.shop.flash_sale.common.constant.Constant
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
 import com.tokopedia.shop.flash_sale.common.extension.formatTo
 import com.tokopedia.shop.flash_sale.common.extension.toCalendar
