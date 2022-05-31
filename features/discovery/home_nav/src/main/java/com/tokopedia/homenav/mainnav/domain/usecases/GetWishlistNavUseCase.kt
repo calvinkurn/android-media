@@ -114,6 +114,7 @@ class GetWishlistNavUseCase @Inject constructor (
                 productId = it.productId.orEmpty(),
                 productName = it.name.orEmpty(),
                 imageUrl = it.imageUrl.orEmpty(),
+                price = it.price.orEmpty(),
                 priceFmt = it.priceFmt.orEmpty(),
                 originalPriceFmt = it.originalPriceFmt.orEmpty(),
                 discountPercentageFmt = it.discountPercentageFmt.orEmpty(),

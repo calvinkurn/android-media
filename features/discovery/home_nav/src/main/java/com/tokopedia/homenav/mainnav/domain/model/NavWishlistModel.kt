@@ -6,6 +6,7 @@ data class NavWishlistModel(
     val productId: String = "",
     val productName: String = "",
     val imageUrl: String = "",
+    val price: String = "",
     val priceFmt: String = "",
     val originalPriceFmt: String = "",
     val discountPercentageFmt: String = "",

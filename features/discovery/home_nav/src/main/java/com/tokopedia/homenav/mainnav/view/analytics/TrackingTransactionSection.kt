@@ -179,7 +179,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                         Items.ITEM_ID, wishlistModel.productId,
                         Items.ITEM_NAME, wishlistModel.productName,
                         Items.ITEM_VARIANT, wishlistModel.variant,
-                        Items.PRICE, wishlistModel.priceFmt
+                        Items.PRICE, wishlistModel.price
                     )
                 )
             )
@@ -206,7 +206,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
                 putString(Items.ITEM_ID, wishlistModel.productId)
                 putString(Items.ITEM_NAME, wishlistModel.productName)
                 putString(Items.ITEM_VARIANT, wishlistModel.variant)
-                putString(Items.PRICE, wishlistModel.priceFmt)
+                putString(Items.PRICE, wishlistModel.price)
             }
         )
         bundle.putParcelableArrayList(Items.KEY, items)
