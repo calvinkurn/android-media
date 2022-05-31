@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -133,7 +134,7 @@ data class ItemMapResponse(
         val orderTraceId:String = "",
         @SerializedName("package_id")
         @Expose
-        val packageId:String = "0",
+        val packageId:String = "",
         @SerializedName("package_name")
         @Expose
         val packageName:String = "",

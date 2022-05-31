@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -43,9 +44,10 @@ data class ItemMapCheckout(
         @SerializedName("base_price")
         @Expose
         val basePrice:Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("category_id")
         @Expose
-        val categoryId:String = "0",
+        val categoryId: Int = 0,
         @SerializedName("child_category_ids")
         @Expose
         val childCategoryIds:String = "",
@@ -70,18 +72,22 @@ data class ItemMapCheckout(
         @SerializedName("error")
         @Expose
         val error:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("flag_id")
         @Expose
-        val flagId:String = "0",
+        val flagId:Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
-        val id:String = "0",
+        val id:Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("invoice_id")
         @Expose
-        val invoiceId:String = "0",
+        val invoiceId:Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("invoice_item_id")
         @Expose
-        val invoiceItemId:String = "0",
+        val invoiceItemId:Int = 0,
         @SerializedName("invoice_status")
         @Expose
         val invoiceStatus:String = "",
@@ -100,9 +106,10 @@ data class ItemMapCheckout(
         @SerializedName("order_trace_id")
         @Expose
         val orderTraceId:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("package_id")
         @Expose
-        val packageId:String = "0",
+        val packageId:Int = 0,
         @SerializedName("package_name")
         @Expose
         val packageName:String = "",
@@ -115,18 +122,20 @@ data class ItemMapCheckout(
         @SerializedName("product_app_url")
         @Expose
         val productAppUrl:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
-        val productId: String = "0",
+        val productId: Int = 0,
         @SerializedName("product_image")
         @Expose
         val productImage:String = "",
         @SerializedName("product_name")
         @Expose
         val productName:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("provider_id")
         @Expose
-        val providerId:String = "0",
+        val providerId:Int = 0,
         @SerializedName("provider_invoice_code")
         @Expose
         val providerInvoiceCode:String = "",
