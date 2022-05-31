@@ -108,6 +108,9 @@ class AnchorTabsViewModel(
                 components.data?.forEach { dataItem ->
                     if (sectionID == dataItem.targetSectionID) {
                         if (sectionID == anchorTabsUseCase.selectedId) {
+                            selectedSectionPos = Integer.MAX_VALUE
+                            selectedSectionId = ""
+                            anchorTabsUseCase.selectedId = ""
                             this.pauseDispatchChanges = false
                             _showMissingSectionToaster.value = true
                         }
