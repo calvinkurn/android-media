@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.math.BigInteger
 
+@SuppressLint("Invalid Data Type")
 data class Product(
         @SerializedName("productID")
         val productID: String = "",
