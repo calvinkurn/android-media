@@ -20,7 +20,7 @@ object TokofoodRouteManager {
             val f: Fragment? =
                 when (uri.path) {
                     "/home" -> TokoFoodHomeFragment.createInstance() // tokopedia://tokofood/home
-                    "/merchant_list" -> MerchantPageFragment.createInstance() // tokopedia://tokofood/merchant_list
+                    "/merchant" -> MerchantPageFragment.createInstance() // tokopedia://tokofood/merchant
                     "/purchase" -> TokoFoodPurchaseFragment.createInstance() // tokopedia://tokofood/purchase
                     "/category" -> TokoFoodCategoryFragment.createInstance() // tokopedia://tokofood/category
                     else -> null
