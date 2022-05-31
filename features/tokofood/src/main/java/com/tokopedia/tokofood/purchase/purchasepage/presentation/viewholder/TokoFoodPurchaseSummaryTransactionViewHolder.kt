@@ -59,7 +59,7 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
     }
 
     private fun ImageUnify.setDetailInfo(detailInfo: CheckoutTokoFoodSummaryItemDetailInfo?) {
-        if (detailInfo == null || detailInfo.imageUrl.isEmpty()) {
+        if (detailInfo == null || detailInfo.imageUrl.isBlank()) {
             hide()
             setOnClickListener(null)
         } else {
