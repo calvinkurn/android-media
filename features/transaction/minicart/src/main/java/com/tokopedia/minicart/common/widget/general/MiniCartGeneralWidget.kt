@@ -121,8 +121,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
-        // TODO: Dismiss simplified summary bottom sheet
-        // miniCartSimplifiedSummaryBottomSheet.dismiss()
+        shoppingSummaryBottomSheet.dismiss()
         miniCartChatListBottomSheet.dismiss()
         if (globalEvent.data != null && globalEvent.data is MiniCartData) {
             val outOfService = (globalEvent.data as MiniCartData).data.outOfService

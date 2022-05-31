@@ -29,7 +29,7 @@ class ShoppingSummaryBottomSheet @Inject constructor() {
                 showHeader = true
                 clearContentPadding = true
                 setTitle(data.title.ifBlank {
-                    context.getString(R.string.mini_cart_title_summary_transaction)
+                    context.getString(R.string.mini_cart_widget_label_purchase_summary)
                 })
             }
 
@@ -49,5 +49,9 @@ class ShoppingSummaryBottomSheet @Inject constructor() {
             rvShoppingSummaryList.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.VERTICAL, false)
             rvShoppingSummaryList.adapter = adapter
         }
+    }
+
+    fun dismiss() {
+        bottomSheet?.dismiss()
     }
 }
