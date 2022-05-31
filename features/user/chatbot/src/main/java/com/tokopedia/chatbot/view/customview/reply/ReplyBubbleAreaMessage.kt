@@ -16,7 +16,10 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
 
@@ -106,6 +109,13 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             replyIcon?.show()
         else
             replyIcon?.hide()
+        if (replyIcon?.isVisible==true){
+            title?.setMargin(
+                left = 8.toPx(),
+                top = 10.toPx(),
+                right = 15.toPx(),
+                bottom = 0)
+        }
     }
 
     private fun bindParentReplyData(parentReply: ParentReply, message : String, from : String) {
