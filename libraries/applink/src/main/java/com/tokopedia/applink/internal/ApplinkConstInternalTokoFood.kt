@@ -13,4 +13,13 @@ object ApplinkConstInternalTokoFood {
     //TokoFoodOrderTrackingActivity
     @JvmField
     val POST_PURCHASE = "$INTERNAL_TOKO_FOOD/postpurchase"
+
+    //TokoFoodHomeFragment
+    @JvmField
+    val HOME = "$INTERNAL_TOKO_FOOD/home"
+
+    //TokoFoodCategoryFragment
+    @JvmField
+    val CATEGORY = "$INTERNAL_TOKO_FOOD/category"
+
 }

@@ -52,7 +52,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
-import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
