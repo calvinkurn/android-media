@@ -92,4 +92,12 @@ class GlobalSearchModelBuilder {
             value = "value$it",
         )
     }
+
+    fun buildTickerModel(
+        text: String = "This is ticker",
+        query: String = "skip_rewrite=true",
+    ) = TickerUiModel(
+        text = text,
+        query = query,
+    )
 }

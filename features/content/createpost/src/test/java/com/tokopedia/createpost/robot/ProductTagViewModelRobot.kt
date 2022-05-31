@@ -39,6 +39,14 @@ class ProductTagViewModelRobot(
         sharedPref = sharedPref,
     )
 
+    fun setup(fn: suspend ProductTagViewModelRobot.() -> Unit) {
+        val scope = CoroutineScope(dispatcher.coroutineDispatcher)
+
+        dispatcher.coroutineDispatcher.runBlockingTest { fn() }
+        dispatcher.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+    }
+
     fun recordState(fn: suspend ProductTagViewModelRobot.() -> Unit): ProductTagUiState {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
         lateinit var uiState: ProductTagUiState
