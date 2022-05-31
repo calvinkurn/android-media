@@ -32,13 +32,12 @@ class ExplicitViewModel @Inject constructor(
 
     private val preferenceAnswer = InputParam()
     private val preferenceUpdateState = UpdateStateParam()
-    private var optionAnswer = mutableListOf<OptionsItem>()
 
     fun getExplicitContent(templateName: String) {
         _isQuestionLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getQuestionUseCase(templateName)
-            val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
+            val activeConfig = true//response.explicitprofileGetQuestion.activeConfig.value
 
             if (activeConfig) {
                 val property = response.explicitprofileGetQuestion.template.sections[0].questions[0].property
@@ -62,15 +61,10 @@ class ExplicitViewModel @Inject constructor(
             sections[0].sectionId = template.sections[0].sectionID
             sections[0].questions[0].questionId = template.sections[0].questions[0].questionId
         }
-        optionAnswer.addAll(template.sections[0].questions[0].property.options)
     }
 
-    fun sendAnswer(answers: Boolean) {
-        preferenceAnswer.sections[0].questions[0].answerValue =
-            if (answers)
-                optionAnswer[0].value
-            else
-                optionAnswer[1].value
+    fun sendAnswer(answersValue: String) {
+        preferenceAnswer.sections[0].questions[0].answerValue = answersValue
 
         launchCatchError(coroutineContext, {
             val response = saveAnswerUseCase(preferenceAnswer)

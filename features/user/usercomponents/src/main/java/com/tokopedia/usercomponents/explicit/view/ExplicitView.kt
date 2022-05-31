@@ -166,7 +166,7 @@ class ExplicitView : CardUnify2 {
                 btnPositifAction.isLoading = true
                 btnNegatifAction.isEnabled = false
             }
-            viewModel?.sendAnswer(true)
+            viewModel?.sendAnswer(bindingQuestion.btnPositifAction.text.toString())
         }
 
         bindingQuestion.btnNegatifAction.setOnClickListener {
@@ -174,7 +174,7 @@ class ExplicitView : CardUnify2 {
                 btnNegatifAction.isLoading = true
                 btnPositifAction.isEnabled = false
             }
-            viewModel?.sendAnswer(false)
+            viewModel?.sendAnswer(bindingQuestion.btnNegatifAction.text.toString())
         }
 
         bindingFailed.containerLocalLoad.refreshBtn?.setOnClickListener {
