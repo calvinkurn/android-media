@@ -50,6 +50,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
@@ -317,6 +318,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
                         showToasterError(throwable)
+                        TokofoodErrorLogger.logExceptionToScalyr(
+                            throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                            userSession.deviceId.orEmpty(),
+                            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR,
+                            mapOf(
+                                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                            )
+                        )
                     }
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE -> {
@@ -324,6 +334,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
                         renderGlobalError(throwable)
+                        TokofoodErrorLogger.logExceptionToScalyr(
+                            throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                            userSession.deviceId.orEmpty(),
+                            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR,
+                            mapOf(
+                                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                            )
+                        )
                     }
                 }
                 PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
@@ -366,6 +385,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     } else {
                         showCheckoutGeneralGlobalError(globalErrorType)
                     }
+                    it.throwable?.let { throwable ->
+                        TokofoodErrorLogger.logExceptionToScalyr(
+                            throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAYMENT,
+                            userSession.deviceId.orEmpty(),
+                            TokofoodErrorLogger.ErrorDescription.PAYMENT_ERROR
+                        )
+                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER -> {
                     consentBottomSheet?.dismiss()
@@ -383,6 +410,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 showDefaultCheckoutGeneralError()
                             }
                         }
+                    }
+                    it.throwable?.let { throwable ->
+                        TokofoodErrorLogger.logExceptionToScalyr(
+                            throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAYMENT,
+                            userSession.deviceId.orEmpty(),
+                            TokofoodErrorLogger.ErrorDescription.PAYMENT_ERROR
+                        )
                     }
                 }
             }
@@ -442,6 +477,45 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
 
+                    }
+                    UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
+                        it.throwable?.let { throwable ->
+                            TokofoodErrorLogger.logExceptionToScalyr(
+                                throwable,
+                                TokofoodErrorLogger.ErrorType.ERROR_REMOVE_FROM_CART,
+                                userSession.deviceId.orEmpty(),
+                                TokofoodErrorLogger.ErrorDescription.REMOVE_FROM_CART_ERROR,
+                                mapOf(
+                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                )
+                            )
+                        }
+                    }
+                    UiEvent.EVENT_FAILED_UPDATE_QUANTITY -> {
+                        it.throwable?.let { throwable ->
+                            TokofoodErrorLogger.logExceptionToScalyr(
+                                throwable,
+                                TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
+                                userSession.deviceId.orEmpty(),
+                                TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
+                                mapOf(
+                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                )
+                            )
+                        }
+                    }
+                    UiEvent.EVENT_FAILED_UPDATE_NOTES -> {
+                        it.throwable?.let { throwable ->
+                            TokofoodErrorLogger.logExceptionToScalyr(
+                                throwable,
+                                TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
+                                userSession.deviceId.orEmpty(),
+                                TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
+                                mapOf(
+                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -900,6 +974,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         const val REQUEST_CODE_PAYMENT = 113
 
         private const val SOURCE = "checkout_page"
+        private const val PAGE_NAME = "checkout_page"
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()

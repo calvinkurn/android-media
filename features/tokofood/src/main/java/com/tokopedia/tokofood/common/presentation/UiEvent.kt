@@ -7,7 +7,6 @@ data class UiEvent(
 ) {
     companion object {
         const val EVENT_LOADING_DIALOG = 1
-        const val EVENT_ERROR_VALIDATE = 2
         const val EVENT_SUCCESS_VALIDATE_CHECKOUT = 3
         const val EVENT_SUCCESS_DELETE_PRODUCT = 4
         const val EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS = 5
@@ -18,5 +17,10 @@ data class UiEvent(
         const val EVENT_SUCCESS_ADD_TO_CART = 10
         const val EVENT_PHONE_VERIFICATION = 11
         const val EVENT_FAILED_LOAD_CART = 12
+        const val EVENT_FAILED_DELETE_PRODUCT = 13
+        const val EVENT_FAILED_UPDATE_NOTES = 14
+        const val EVENT_FAILED_UPDATE_QUANTITY = 15
+        const val EVENT_FAILED_UPDATE_CART = 16
+        const val EVENT_FAILED_ADD_TO_CART = 17
     }
 }

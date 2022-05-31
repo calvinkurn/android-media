@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
@@ -38,6 +39,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoo
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -49,6 +51,9 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var viewBinding by autoClearedNullable<LayoutFragmentPurchasePromoBinding>()
     private val viewModel by lazy {
@@ -62,6 +67,8 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         const val NO_ELEVATION = 0
 
         const val REQUEST_CODE_KYC = 1111
+
+        private const val PAGE_NAME = "promo_page"
 
         fun createInstance(): TokoFoodPromoFragment {
             return TokoFoodPromoFragment()
@@ -224,8 +231,21 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
                 UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
-                UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> renderGlobalError(it.throwable
-                        ?: ResponseErrorException())
+                UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> {
+                    renderGlobalError(it.throwable ?: ResponseErrorException())
+                    it.throwable?.let { throwable ->
+                        renderGlobalError(throwable)
+                        TokofoodErrorLogger.logExceptionToScalyr(
+                            throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                            userSession.deviceId.orEmpty(),
+                            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR,
+                            mapOf(
+                                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                            )
+                        )
+                    }
+                }
                 UiEvent.EVENT_RENDER_GLOBAL_ERROR_KYC -> renderKycError()
                 UiEvent.EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE -> renderIneligiblePromoError()
                 UiEvent.EVENT_SHOW_TOASTER -> {

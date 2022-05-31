@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
@@ -595,7 +596,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     } else {
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER,
-                            data = response.checkoutGeneralTokoFood.data
+                            data = response.checkoutGeneralTokoFood.data,
+                            throwable = MessageErrorException(response.checkoutGeneralTokoFood.data.errorMetadata)
                         )
                     }
                 }
@@ -603,7 +605,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }, onError = {
             _uiEvent.value = PurchaseUiEvent(
                 state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
-                data = it.getGlobalErrorType()
+                data = it.getGlobalErrorType(),
+                throwable = it
             )
         })
     }
