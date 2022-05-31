@@ -1,0 +1,152 @@
+package com.tokopedia.createpost.viewmodel.producttag
+
+import com.tokopedia.createpost.model.CommonModelBuilder
+import com.tokopedia.createpost.model.GlobalSearchModelBuilder
+import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.robot.ProductTagViewModelRobot
+import com.tokopedia.createpost.util.andThen
+import com.tokopedia.createpost.util.assertEqualTo
+import com.tokopedia.createpost.util.assertError
+import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.coEvery
+import io.mockk.mockk
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+/**
+ * Created By : Jonathan Darwin on May 31, 2022
+ */
+class GlobalSearchShopViewModelTest {
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
+
+    private val testDispatcher = rule.dispatchers
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
+
+    private val commonModelBuilder = CommonModelBuilder()
+    private val globalSearchModelBuilder = GlobalSearchModelBuilder()
+
+    private val mockQuickFilter = globalSearchModelBuilder.buildQuickFilterList()
+    private val mockException = commonModelBuilder.buildException()
+
+    private lateinit var robot: ProductTagViewModelRobot
+    private val query = "pokemon"
+
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getQuickFilter(any(), any()) } returns mockQuickFilter
+
+        robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+        )
+
+        robot.getViewModel().apply {
+            submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+        }
+    }
+
+    @Test
+    fun `when user load global search shop and success, it should emit success state along with the shops`() {
+        val mockResponse = globalSearchModelBuilder.buildShopResponseModel()
+
+        coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.quickFilters.assertEqualTo(mockQuickFilter)
+                globalSearchShop.param.query.assertEqualTo(query)
+            }
+        }
+    }
+
+    @Test
+    fun `when user load global search shop and failed, it should emit error state`() {
+        coEvery { mockRepo.searchAceShops(any()) } throws mockException
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.assertError(mockException)
+            }
+        }
+    }
+
+    @Test
+    fun `when user load next page and success, it should emit success state along with the appended shops`() {
+
+        robot.use {
+            /** Load First Page */
+            val nextCursor = "20"
+            val mockResponse = globalSearchModelBuilder.buildShopResponseModel(size = 20, nextCursor = nextCursor)
+            coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.quickFilters.assertEqualTo(mockQuickFilter)
+                globalSearchShop.param.query.assertEqualTo(query)
+                globalSearchShop.param.start.assertEqualTo(nextCursor.toInt())
+            }
+
+            /** Load Second Page */
+            val nextCursor2 = "40"
+            val mockResponse2 = globalSearchModelBuilder.buildShopResponseModel(size = 20, nextCursor = nextCursor2)
+            coEvery { mockRepo.searchAceShops(any()) } returns mockResponse2
+
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList + mockResponse2.pagedData.dataList)
+                globalSearchShop.quickFilters.assertEqualTo(mockQuickFilter)
+                globalSearchShop.param.query.assertEqualTo(query)
+                globalSearchShop.param.start.assertEqualTo(nextCursor2.toInt())
+            }
+        }
+    }
+
+    @Test
+    fun `when user load next page and there's no next page, the state should not change`() {
+
+        robot.use {
+            /** Load First Page */
+            val nextCursor = "20"
+            val mockResponse = globalSearchModelBuilder.buildShopResponseModel(size = 20, nextCursor = nextCursor, hasNextPage = false)
+            coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.quickFilters.assertEqualTo(mockQuickFilter)
+                globalSearchShop.param.query.assertEqualTo(query)
+                globalSearchShop.param.start.assertEqualTo(nextCursor.toInt())
+            }
+
+            /** Load Second Page */
+            it.recordState {
+                submitAction(ProductTagAction.LoadGlobalSearchShop)
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.quickFilters.assertEqualTo(mockQuickFilter)
+                globalSearchShop.param.query.assertEqualTo(query)
+                globalSearchShop.param.start.assertEqualTo(nextCursor.toInt())
+            }
+        }
+    }
+}

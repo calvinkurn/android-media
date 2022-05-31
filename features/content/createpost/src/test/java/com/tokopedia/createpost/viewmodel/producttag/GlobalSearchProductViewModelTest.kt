@@ -32,7 +32,6 @@ class GlobalSearchProductViewModelTest {
 
     private val commonModelBuilder = CommonModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
-    private val modelBuilder = LastPurchasedModelBuilder()
 
     private val mockQuickFilter = globalSearchModelBuilder.buildQuickFilterList()
     private val mockException = commonModelBuilder.buildException()

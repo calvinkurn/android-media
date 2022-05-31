@@ -1,10 +1,8 @@
 package com.tokopedia.createpost.model
 
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.*
 
 /**
@@ -55,6 +53,24 @@ class GlobalSearchModelBuilder {
             ticker = ticker,
         )
     }
+
+    fun buildShopResponseModel(
+        size: Int = 5,
+        hasNextPage: Boolean = true,
+        nextCursor: String = "1",
+    ) = PagedGlobalSearchShopResponse(
+        totalShop = size,
+        pagedData = PagedDataUiModel(
+            dataList = List(size) {
+                ShopUiModel(
+                    shopId = it.toString(),
+                    shopName = "Shop $it",
+                )
+            },
+            hasNextPage = hasNextPage,
+            nextCursor = nextCursor,
+        )
+    )
 
     fun buildSortFilterResponseModel(
         sizeFilter: Int = 5,
