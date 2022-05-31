@@ -57,10 +57,11 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
     }
 
     override fun onDenomGridImpression(
-        denomListGrid: List<DenomData>,
-        layoutType: DenomWidgetEnum
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int
     ) {
-        //do nothing
+        listener?.onDenomGridImpression(denomGrid, layoutType, position)
     }
 
     fun setDenomGridList(listDenom: List<DenomData>) {

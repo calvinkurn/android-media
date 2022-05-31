@@ -50,9 +50,17 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private var livenessWarnState: Detector.WarnCode? = null
     private var livenessActionState: Detector.DetectionType? = null
     private var facePath: String = ""
+    private var projectId = ""
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            projectId = it.getString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_liveness, container, false)
@@ -100,18 +108,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (warnCode != null) {
             when (warnCode) {
                 Detector.WarnCode.FACEMISSING -> {
-                    analytics.eventViewFaceInCenter()
+                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_no_people_face))
                     changeTipTextView(R.string.liveness_no_people_face)
                 }
                 Detector.WarnCode.FACESMALL -> {
-                    analytics.eventViewCloserFaceToScreen()
+                    analytics.eventViewCloserFaceToScreen(projectId, false, getString(R.string.liveness_tip_move_closer))
                     changeTipTextView(R.string.liveness_tip_move_closer)
                 }
                 Detector.WarnCode.FACELARGE -> {
                     changeTipTextView(R.string.liveness_tip_move_furthre)
                 }
                 Detector.WarnCode.FACENOTCENTER -> {
-                    analytics.eventViewFaceInCenter()
+                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_move_face_center))
                     changeTipTextView(R.string.liveness_move_face_center)
                 }
                 Detector.WarnCode.FACENOTFRONTAL -> {
@@ -121,7 +129,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     changeTipTextView(R.string.liveness_still)
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
-                    analytics.eventViewMultipleFaces()
+                    analytics.eventViewMultipleFaces(projectId, false, getString(R.string.liveness_failed_reason_multipleface))
                     changeTipTextView(R.string.liveness_failed_reason_multipleface)
                 }
                 Detector.WarnCode.FACEINACTION -> {
@@ -140,15 +148,15 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             var detectionNameId = 0
             when (currentDetectionType) {
                 Detector.DetectionType.POS_YAW -> {
-                    analytics.eventViewHeadDetection()
+                    analytics.eventViewHeadDetection(projectId, true)
                     detectionNameId = R.string.liveness_pos_raw
                 }
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventViewMouthDetection()
+                    analytics.eventViewMouthDetection(projectId, true)
                     detectionNameId = R.string.liveness_mouse
                 }
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventViewBlinkDetection()
+                    analytics.eventViewBlinkDetection(projectId, true)
                     detectionNameId = R.string.liveness_blink
                 }
                 else -> {}
@@ -236,10 +244,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (livenessActionState != null) {
             when (livenessActionState) {
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventSuccessdBlinkDetection()
+                    analytics.eventSuccessBlinkDetection(projectId, true)
                 }
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventSuccessdMouthDetection()
+                    analytics.eventSuccessMouthDetection(projectId, true)
                 }
                 else -> {
                 }
@@ -248,7 +256,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     override fun onDetectionSuccess() {
-        analytics.eventSuccessdHeadDetection()
+        analytics.eventSuccessHeadDetection(projectId, true)
         livenessView?.getLivenessData(object : LivenessGetFaceDataCallback {
 
             override fun onGetFaceDataStart() {}
@@ -281,6 +289,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private fun setFailedResultData(failedType: Detector.DetectionFailedType) {
         if (activity != null) {
             val intent = Intent(activity, LivenessFailedActivity::class.java)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+
             when (failedType) {
                 Detector.DetectionFailedType.BADNETWORK -> {
                     intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
@@ -376,13 +386,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (livenessWarnState != null) {
             when (livenessWarnState) {
                 Detector.WarnCode.FACESMALL -> {
-                    analytics.eventClickBackCloserFaceToScreen()
+                    analytics.eventClickBackCloserFaceToScreen(projectId)
                 }
                 Detector.WarnCode.FACENOTCENTER, Detector.WarnCode.FACEMISSING -> {
-                    analytics.eventClickBackFaceInCenter()
+                    analytics.eventClickBackFaceInCenter(projectId)
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
-                    analytics.eventClickBackMultipleFaces()
+                    analytics.eventClickBackMultipleFaces(projectId)
                 }
                 else -> {
                 }
@@ -390,13 +400,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         } else if (livenessActionState != null) {
             when (livenessActionState) {
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventClickBackMouthDetection()
+                    analytics.eventClickBackMouthDetection(projectId)
                 }
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventClickBackBlinkDetection()
+                    analytics.eventClickBackBlinkDetection(projectId)
                 }
                 Detector.DetectionType.POS_YAW -> {
-                    analytics.eventClickBackHeadDetection()
+                    analytics.eventClickBackHeadDetection(projectId)
                 }
                 else -> {
                 }

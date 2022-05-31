@@ -4,48 +4,51 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryDetail
+import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class LoadCartTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
-): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
+): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(additionalAttributes: String): Map<String, Any> {
+        private fun generateParams(additionalAttributes: String,
+                                   source: String): Map<String, Any> {
             val params = CheckoutTokoFoodParam(
-                additionalAttributes = additionalAttributes
+                additionalAttributes = additionalAttributes,
+                source = source
             )
             return mapOf(PARAMS_KEY to params)
         }
     }
 
     override fun graphqlQuery(): String = """
-        query LoadCartTokofood($$PARAMS_KEY: CheckoutTokoFoodParam!) {
+        query LoadCartTokofood($$PARAMS_KEY: cartTokofoodParams!) {
           mini_cart_tokofood(params: $$PARAMS_KEY) {
             message
             status
             data {
               shop {
                 shop_id
+                name
               }
               available_section {
                 products {
@@ -58,7 +61,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -84,7 +87,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     variant_id
                     name
                     rules {
-                      selection_rules {
+                      selection_rule {
                         type
                         max_quantity
                         min_quantity
@@ -108,25 +111,25 @@ class LoadCartTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
+    override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse())
         } else {
-            val additionalAttributes = CartAdditionalAttributesTokoFood(
-                chosenAddressRequestHelper.getChosenAddress(),
-                params
-            )
-            val param = generateParams(additionalAttributes.generateString())
+            val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
+            val param = generateParams(additionalAttributes.generateString(), params)
             val response =
-                repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
-            emit(response)
-
+                repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
+            if (response.cartListTokofood.isSuccess()) {
+                emit(response.cartListTokofood)
+            } else {
+                throw MessageErrorException(response.cartListTokofood.getMessageIfError())
+            }
         }
     }
 
-    private fun getDummyResponse(): CheckoutTokoFoodResponse {
-        return CheckoutTokoFoodResponse(
+    private fun getDummyResponse(): CheckoutTokoFood {
+        return CheckoutTokoFood(
             data = CheckoutTokoFoodData(
                 shop = CheckoutTokoFoodShop(
                     name = "Kedai Kopi, Mantapp"
@@ -137,11 +140,9 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                         CheckoutTokoFoodProduct(price = 20000.0)
                     )
                 ),
-                shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    summaryDetail = CheckoutTokoFoodSummaryDetail(
-                        totalPrice = "Rp 10.000",
-                        totalItems = 2
-                    ),
+                summaryDetail = CheckoutTokoFoodSummaryDetail(
+                    totalPrice = "Rp 10.000",
+                    totalItems = 2
                 )
             )
         )

@@ -50,6 +50,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.commonPayment)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -77,6 +78,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dateFilter
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.explore_promo
     implementation rootProject.ext.unifyDependencies.total_amount
     implementation rootProject.ext.unifyDependencies.dialog
@@ -96,6 +98,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

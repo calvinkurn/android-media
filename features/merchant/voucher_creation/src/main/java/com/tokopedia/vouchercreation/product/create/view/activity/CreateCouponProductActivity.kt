@@ -41,7 +41,6 @@ class CreateCouponProductActivity : AppCompatActivity() {
         private const val EMPTY_STRING = ""
         private const val APP_LINK = "create-voucher-product"
         private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-        private const val COUPON_END_DATE_OFFSET_IN_DAYS = 30
     }
 
     @Inject
@@ -121,6 +120,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putBoolean(ManageProductFragment.BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
                 putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
@@ -204,7 +204,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         }
         val endDate = getToday().apply {
             timeInMillis = DateTimeUtils.ROLLOUT_DATE_THRESHOLD_TIME
-            add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+            add(Calendar.DAY_OF_MONTH, DateTimeUtils.EXTRA_DAYS_COUPON)
         }
         return CouponInformation(
             CouponInformation.Target.NOT_SELECTED,
@@ -222,7 +222,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
 
     private fun getCouponDefaultEndDate(): Date {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, COUPON_END_DATE_OFFSET_IN_DAYS)
+        calendar.add(Calendar.DAY_OF_MONTH, DateTimeUtils.EXTRA_DAYS_COUPON)
         return calendar.time
     }
 
@@ -237,6 +237,8 @@ class CreateCouponProductActivity : AppCompatActivity() {
             } else if (requestCode == REQUEST_CODE_MANAGE_PRODUCT) {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 couponPreviewFragment.setProducts(selectedProducts)
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                couponPreviewFragment.setSelectedWarehouseId(selectedWarehouseId ?: "")
             }
         }
     }

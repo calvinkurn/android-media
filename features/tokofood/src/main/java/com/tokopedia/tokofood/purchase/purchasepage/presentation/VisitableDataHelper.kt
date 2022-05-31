@@ -1,8 +1,10 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
@@ -34,12 +36,18 @@ object VisitableDataHelper {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductByUpdateParam(updateParam: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductByUpdateParam(param: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
+            val isMatchingProduct =
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                        && data.id == param.productId
+                        && data.cartId == param.cartId
+                        && data.variants == param.variants
             when {
-                // TODO: Check if that is the product according to variants
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isMatchingProduct(updateParam) -> {
-                    return Pair(index, data)
+                isMatchingProduct -> {
+                    (data as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.let { productVisitable ->
+                        return Pair(index, productVisitable)
+                    }
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
@@ -47,10 +55,6 @@ object VisitableDataHelper {
             }
         }
         return null
-    }
-
-    private fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.isMatchingProduct(updateParam: UpdateProductParam): Boolean {
-        return this.id == updateParam.productId && this.cartId == updateParam.cartId
     }
 
     fun MutableList<Visitable<*>>.getAccordionUiModel(): Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>? {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivTemporaryFinish"
+        android:layout_width="281dp"
+        android:layout_height="211dp"
+        app:unify_image_corner_radius="0"
+        android:layout_marginTop="56dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvTemporaryFinishTitle"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTemporaryFinishTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        app:typographyType="heading_3"
+        android:textColor="@color/Unify_N700_96"
+        android:text="@string/order_tracking_temporary_finish_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivTemporaryFinish"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTemporaryFinishDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
+        android:text="@string/order_tracking_temporary_finish_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTemporaryFinishTitle"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

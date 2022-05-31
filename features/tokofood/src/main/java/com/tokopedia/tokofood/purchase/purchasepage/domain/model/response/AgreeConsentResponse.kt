@@ -13,7 +13,7 @@ data class AgreeConsentResponse(
 data class AgreeConsentData(
     @SerializedName("success")
     @Expose
-    val success: Int = 0,
+    val success: String = "",
     @SerializedName("message")
     @Expose
     val message: String = ""

@@ -11,11 +11,16 @@ import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 
 class ProductItemVariantViewHolder(
         private val binding: ItemProductListVariantLayoutBinding,
-        private val variantItemClickListener: OnVariantItemClickListener
+        private val variantItemClickListener: OnVariantItemClickListener,
+        private val deleteButtonClickListener: OnDeleteButtonClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnVariantItemClickListener {
         fun onVariantCheckBoxClicked(isSelected: Boolean, variantIndex: Int)
+    }
+
+    interface OnDeleteButtonClickListener {
+        fun onDeleteButtonClicked(variantIndex: Int)
     }
 
     var variantIndex: Int = 0
@@ -53,6 +58,10 @@ class ProductItemVariantViewHolder(
         binding.cbuVariantItem.setOnCheckedChangeListener { _, isChecked ->
             val productVariant = binding.root.getTag(R.id.product_variant) as VariantUiModel
             variantItemClickListener.onVariantCheckBoxClicked(isChecked, variantIndex)
+        }
+
+        binding.iuRemoveVariant.setOnClickListener {
+            deleteButtonClickListener.onDeleteButtonClicked(variantIndex)
         }
     }
 }

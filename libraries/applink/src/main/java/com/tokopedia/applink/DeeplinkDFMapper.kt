@@ -4,10 +4,63 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.ApplinkConst.ADD_FINGERPRINT_ONBOARDING
+import com.tokopedia.applink.ApplinkConst.BRAND_LIST
+import com.tokopedia.applink.ApplinkConst.BRAND_LIST_WITH_SLASH
+import com.tokopedia.applink.ApplinkConst.BUYER_ORDER_EXTENSION
+import com.tokopedia.applink.ApplinkConst.CHANGE_INACTIVE_PHONE
+import com.tokopedia.applink.ApplinkConst.CONTACT_US
+import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
+import com.tokopedia.applink.ApplinkConst.DFFALLBACKURL_KEY
+import com.tokopedia.applink.ApplinkConst.DIGITAL_CART
+import com.tokopedia.applink.ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME
+import com.tokopedia.applink.ApplinkConst.FAVORITE
+import com.tokopedia.applink.ApplinkConst.FLIGHT
+import com.tokopedia.applink.ApplinkConst.HAS_PASSWORD
+import com.tokopedia.applink.ApplinkConst.HOTEL
+import com.tokopedia.applink.ApplinkConst.INTEREST_PICK
+import com.tokopedia.applink.ApplinkConst.KOL_YOUTUBE
+import com.tokopedia.applink.ApplinkConst.OPTIMIZED_CHECKOUT
+import com.tokopedia.applink.ApplinkConst.ORDER_HISTORY
+import com.tokopedia.applink.ApplinkConst.ORDER_TRACKING
+import com.tokopedia.applink.ApplinkConst.OTP
+import com.tokopedia.applink.ApplinkConst.OVOP2PTRANSFERFORM_SHORT
+import com.tokopedia.applink.ApplinkConst.OVO_WALLET
+import com.tokopedia.applink.ApplinkConst.PAYLATER
+import com.tokopedia.applink.ApplinkConst.PLAY_BROADCASTER
+import com.tokopedia.applink.ApplinkConst.PLAY_DETAIL
+import com.tokopedia.applink.ApplinkConst.PM_BENEFIT_PACKAGE
+import com.tokopedia.applink.ApplinkConst.POWER_MERCHANT_SUBSCRIBE
+import com.tokopedia.applink.ApplinkConst.PRODUCT_ADD
+import com.tokopedia.applink.ApplinkConst.PRODUCT_MANAGE
+import com.tokopedia.applink.ApplinkConst.PRODUCT_TALK
+import com.tokopedia.applink.ApplinkConst.REFERRAL
+import com.tokopedia.applink.ApplinkConst.REVIEW_REMINDER_PREVIOUS
+import com.tokopedia.applink.ApplinkConst.SELLER_COD_ACTIVATION
+import com.tokopedia.applink.ApplinkConst.SELLER_TRANSACTION
+import com.tokopedia.applink.ApplinkConst.SELLER_WAREHOUSE_DATA
+import com.tokopedia.applink.ApplinkConst.SHOP
+import com.tokopedia.applink.ApplinkConst.SHOP_ETALASE
+import com.tokopedia.applink.ApplinkConst.SHOP_ETALASE_WITH_KEYWORD_AND_SORT
+import com.tokopedia.applink.ApplinkConst.SHOP_HOME
+import com.tokopedia.applink.ApplinkConst.SHOP_INFO
+import com.tokopedia.applink.ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT
+import com.tokopedia.applink.ApplinkConst.SHOP_NOTE
+import com.tokopedia.applink.ApplinkConst.SHOP_PENALTY
+import com.tokopedia.applink.ApplinkConst.SHOP_PENALTY_DETAIL
+import com.tokopedia.applink.ApplinkConst.SHOP_REVIEW
+import com.tokopedia.applink.ApplinkConst.SHOP_SCORE_DETAIL
+import com.tokopedia.applink.ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP
+import com.tokopedia.applink.ApplinkConst.SHOP_SETTINGS_NOTE
+import com.tokopedia.applink.ApplinkConst.SHOP_TALK
+import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.ApplinkConst.TELEPHONY_MASKING
+import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
+import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
+import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
+import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
@@ -30,6 +83,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_FIND
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_HOTLIST_REVAMP
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.AFFILIATE_EDIT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.CONTENT_REPORT
@@ -46,6 +100,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESUL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PDP
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
@@ -73,7 +128,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATI
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
@@ -84,6 +139,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKE
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ADD_ON_GIFTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
@@ -115,6 +172,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATI
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.BELANJA_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DEALS_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DIGITAL_ORDER_LIST_INTERNAL
@@ -134,13 +192,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITA
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
@@ -148,11 +209,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETA
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_HOTEL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -189,9 +253,8 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_BASE = "df_base"
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
-    const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
-    const val DF_MERCHANT_REVIEW = "df_merchant_review"
+    const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
@@ -210,6 +273,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
+    const val DF_ALPHA_TESTING = "df_alpha_testing"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -242,12 +306,12 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
             add(DFP({ it.startsWithPattern(INTEREST_PICK) }, DF_BASE, R.string.applink_ip_title))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
 
@@ -314,8 +378,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
-            add(DFP({ it.startsWith(MERCHANT_PRODUCT_BUNDLE) }, DF_BASE, R.string.title_bundling_selection_page ))
-            add(DFP({ it.startsWith(MERCHANT_GIFTING) }, DF_BASE, R.string.title_gifting_bottomsheet ))
+            add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
+            add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
@@ -377,38 +441,38 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
-            }, DF_MERCHANT_REVIEW, R.string.title_product_review))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_product_review))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_EXPECTED_PATH_SIZE)
-            }, DF_MERCHANT_REVIEW, R.string.title_review_inbox))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_review_inbox))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_DETAIL_EXPECTED_PATH_SIZE)
-            }, DF_MERCHANT_REVIEW, R.string.title_review_detail))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_review_detail))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
-            }, DF_MERCHANT_REVIEW, R.string.title_create_review))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_create_review))
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW) ||
                         it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW)
-            }, DF_MERCHANT_REVIEW, R.string.title_product_review))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_product_review))
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.INBOX_REPUTATION)
-            }, DF_MERCHANT_REVIEW, R.string.title_review_inbox))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_review_inbox))
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.CREATE_REVIEW)
-            }, DF_MERCHANT_REVIEW, R.string.title_create_review))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_create_review))
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.REVIEW_DETAIL)
-            }, DF_MERCHANT_REVIEW, R.string.title_review_detail))
+            }, DF_MERCHANT_NONLOGIN, R.string.title_review_detail))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
@@ -429,6 +493,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(INTERNAL_INBOX_LIST)
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
@@ -504,6 +569,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING)
                         || it.startsWith(ADD_PIN)
                         || it.startsWith(ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
+                        || it.startsWith(ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO)
                         )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
@@ -518,7 +584,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO_SIMPLE) }, DF_USER_SETTINGS, R.string.user_identification_info_simple))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
-                it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
+                it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
             add(DFP({ it.startsWith(INBOX) }, DF_BASE, R.string.title_inbox))
 
@@ -529,7 +595,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ADD_TALK) }, DF_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
-            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWithPattern(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
             add(DFP({
                     it.startsWith(ApplinkConstInternalUserPlatform.VERIFY_BIOMETRIC) ||
                     it.startsWith(ApplinkConstInternalUserPlatform.BIOMETRIC_SETTING)
@@ -542,7 +608,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
-            add(DFP({ it.startsWith(TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
@@ -550,6 +615,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ONE_CLICK_CHECKOUT) }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(WISHLIST_V2) }, DF_BASE, R.string.title_wishlist))
+            add(DFP({ it.startsWith(ADD_ON_GIFTING) }, DF_BASE, R.string.add_on_gifting_module_title_activity_add_on_selection))
 
             // buyerorder
             add(DFP({
@@ -598,11 +664,20 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
+            // Tokofood
+            add(DFP({
+                it.startsWith(ApplinkConstInternalTokoFood.INTERNAL_TOKO_FOOD)
+            }, DF_BASE, R.string.title_tokofood))
+
             // Review Reminder
-            add(DFP({ it.startsWith(REVIEW_REMINDER_PREVIOUS) }, DF_MERCHANT_REVIEW, R.string.title_review_reminder))
+            add(DFP({ it.startsWith(REVIEW_REMINDER_PREVIOUS) }, DF_MERCHANT_NONLOGIN, R.string.title_review_reminder))
 
             // Review Credibility
-            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY)}, DF_MERCHANT_REVIEW, R.string.title_review_credibility))
+            add(DFP({ it.startsWith(ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY)}, DF_MERCHANT_NONLOGIN, R.string.title_review_credibility))
+
+            //Feedback Form
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
+                    it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
         }
     }
 

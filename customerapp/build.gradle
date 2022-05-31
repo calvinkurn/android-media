@@ -142,7 +142,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
-        checkDependencies true
+        checkDependencies false
     }
 
     signingConfigs {
@@ -294,7 +294,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -302,8 +301,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.feedbackForm)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
 
@@ -433,6 +432,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.imageGallery
 }
 
 apply plugin: 'com.google.gms.google-services'
