@@ -73,6 +73,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 /**
  * Created by mzennis on 24/05/20.
@@ -1412,8 +1413,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
             _quizFormData.update {
+                val defaultIndex = max(0, quizConfig.eligibleStartTimeInMs.indexOf(
+                    TimeUnit.MINUTES.toMillis(DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)))
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(defaultIndex) ?: 0,
                     options = initialOptions
                 )
             }
@@ -1506,6 +1509,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
+        private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
 
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
