@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.set_period.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
@@ -14,9 +15,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.Period
-import java.time.ZoneId
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
 class SetPeriodBottomSheetViewModelTest {
@@ -83,43 +83,34 @@ class SetPeriodBottomSheetViewModelTest {
     @Test
     fun `When onOneYearPeriodSelected called, then start date and end date diff should be 1 year`() {
         viewModel.onOneYearPeriodSelected()
-        val liveDataValue = viewModel.startDate.value
-        val liveDataValue2 = viewModel.endDate.value
-        assert(liveDataValue == viewModel.getSelectedStartDate())
-        assert(liveDataValue2 == viewModel.getSelectedEndDate())
-        val yearDiff = Period.between(
-            liveDataValue?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate(),
-            liveDataValue2?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
-        ).years
-        assert(yearDiff == 1)
+        val startDateValue = viewModel.startDate.value
+        val endDateValue = viewModel.endDate.value
+        assert(startDateValue == viewModel.getSelectedStartDate())
+        assert(endDateValue == viewModel.getSelectedEndDate())
+        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
+        assert(daysDiff >= 365)
     }
 
     @Test
     fun `When onSixMonthPeriodSelected called, then start date and end date diff should be 6 months`() {
         viewModel.onSixMonthPeriodSelected()
-        val liveDataValue = viewModel.startDate.value
-        val liveDataValue2 = viewModel.endDate.value
-        assert(liveDataValue == viewModel.getSelectedStartDate())
-        assert(liveDataValue2 == viewModel.getSelectedEndDate())
-        val monthsDiff = Period.between(
-            liveDataValue?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate(),
-            liveDataValue2?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
-        ).months
-        assert(monthsDiff == 6)
+        val startDateValue = viewModel.startDate.value
+        val endDateValue = viewModel.endDate.value
+        assert(startDateValue == viewModel.getSelectedStartDate())
+        assert(endDateValue == viewModel.getSelectedEndDate())
+        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
+        assert(daysDiff >= 180)
     }
 
     @Test
     fun `When onOneYearPeriodSelected called, then start date and end date diff should be 1 month`() {
         viewModel.onOneMonthPeriodSelected()
-        val liveDataValue = viewModel.startDate.value
-        val liveDataValue2 = viewModel.endDate.value
-        assert(liveDataValue == viewModel.getSelectedStartDate())
-        assert(liveDataValue2 == viewModel.getSelectedEndDate())
-        val monthsDiff = Period.between(
-            liveDataValue?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate(),
-            liveDataValue2?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
-        ).months
-        assert(monthsDiff == 1)
+        val startDateValue = viewModel.startDate.value
+        val endDateValue = viewModel.endDate.value
+        assert(startDateValue == viewModel.getSelectedStartDate())
+        assert(endDateValue == viewModel.getSelectedEndDate())
+        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
+        assert(daysDiff >= 30)
     }
 
     @Test
@@ -164,11 +155,8 @@ class SetPeriodBottomSheetViewModelTest {
     @Test
     fun `When defaultMembershipEndDate called, then should return end date 1 year from now`() {
         val defaultMembershipEndDate = viewModel.defaultMembershipEndDate
-        val yearDiff = Period.between(
-            Date().toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate(),
-            defaultMembershipEndDate.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate(),
-        ).years
-        assert(yearDiff == 1)
+        val daysDiff = TimeUnit.MILLISECONDS.toDays(defaultMembershipEndDate.time - Date().time)
+        assert(daysDiff >= 365)
     }
 
 }

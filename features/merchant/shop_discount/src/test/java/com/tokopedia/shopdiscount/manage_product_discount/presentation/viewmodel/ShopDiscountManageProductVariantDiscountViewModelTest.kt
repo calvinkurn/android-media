@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
@@ -22,9 +23,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.Period
-import java.time.ZoneId
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ShopDiscountManageProductVariantDiscountViewModelTest {
 
@@ -162,11 +162,9 @@ class ShopDiscountManageProductVariantDiscountViewModelTest {
         )
         val productData = viewModel.getProductData()
         assert(productData.listProductVariant.all {
-            Period.between(
-                it.slashPriceInfo.startDate.toInstant()?.atZone(ZoneId.systemDefault())
-                    ?.toLocalDate(),
-                it.slashPriceInfo.endDate.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()
-            ).years == 1
+            val daysDiff =
+                TimeUnit.MILLISECONDS.toDays(it.slashPriceInfo.endDate.time.orZero() - it.slashPriceInfo.startDate.time.orZero())
+            daysDiff >= 365
         })
     }
 

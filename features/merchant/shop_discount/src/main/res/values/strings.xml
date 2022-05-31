@@ -70,6 +70,10 @@
     <string name="sd_no_remaining_quota">Kuota diskonmu sudah habis.</string>
     <string name="sd_already_discount">Produk sudah di diskon.</string>
     <string name="sd_discount_created_successfully">Diskon berhasil dibuat.</string>
+    <string name="sd_discount_seller_not_eligible_title">Yah, kamu belum bisa akses ke Diskon Toko</string>
+    <string name="sd_discount_seller_not_eligible_desc">Pelajari dulu agar tokomu bisa pakai Diskon Toko, yuk!</string>
+    <string name="sd_discount_seller_not_eligible_button_text">Pelajari Diskon Toko</string>
+
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
