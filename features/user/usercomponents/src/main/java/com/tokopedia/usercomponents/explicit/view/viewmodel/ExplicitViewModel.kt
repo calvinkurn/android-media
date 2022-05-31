@@ -37,7 +37,7 @@ class ExplicitViewModel @Inject constructor(
         _isQuestionLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getQuestionUseCase(templateName)
-            val activeConfig = true//response.explicitprofileGetQuestion.activeConfig.value
+            val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
 
             if (activeConfig) {
                 val property = response.explicitprofileGetQuestion.template.sections[0].questions[0].property
