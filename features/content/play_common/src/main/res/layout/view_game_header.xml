@@ -31,7 +31,7 @@
             android:gravity="center"
             android:hint="@string/play_game_header_title_hint"
             android:imeOptions="actionNext"
-            android:inputType="textCapWords|textMultiLine"
+            android:inputType="textCapSentences|textMultiLine"
             android:textColor="@color/play_dms_quiz_header_title"
             android:textColorHint="@color/play_dms_quiz_header_title_hint"
             android:textSize="@dimen/fontSize_lvl6"

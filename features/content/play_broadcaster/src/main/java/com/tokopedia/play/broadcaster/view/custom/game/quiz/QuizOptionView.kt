@@ -51,7 +51,7 @@ class QuizOptionView : ConstraintLayout {
         }
 
         binding.etQuizOption.apply {
-            setRawInputType(InputType.TYPE_CLASS_TEXT)
+            setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
 
             afterTextChanged {
                 if(flagTriggerTextChange) {

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.text.InputFilter
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
+import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.showKeyboard
 import kotlinx.android.synthetic.main.view_quiz_gift.view.*
 import kotlin.math.max
@@ -75,8 +77,8 @@ class QuizGiftView : ConstraintLayout {
                 bindingGiftInput.root.hide()
                 bindingGiftInput.etBroQuizGift.setText("")
             }
+            bindingGiftInput.etBroQuizGift.showKeyboard(false)
         }
-
         bindingGiftInput.etBroQuizGift.afterTextChanged {
             mOnChangedListener?.invoke(it)
         }
