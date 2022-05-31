@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.view.coachmark
 import android.content.Context
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.tokopedianow.R
 
 class SwitcherCoachMark(private val context: Context, private val onDismiss: () -> Unit) {
 
@@ -14,6 +15,7 @@ class SwitcherCoachMark(private val context: Context, private val onDismiss: () 
         coachMark?.onDismissListener = {
             onDismiss()
         }
+        coachMark?.stepButtonTextLastChild = context.getString(R.string.tokopedianow_on_boarding_step_button_text_last_child)
         coachMark?.showCoachMark(listItem)
     }
 

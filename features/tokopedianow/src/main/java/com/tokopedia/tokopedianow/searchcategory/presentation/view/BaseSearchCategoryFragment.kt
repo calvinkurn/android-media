@@ -130,6 +130,7 @@ abstract class BaseSearchCategoryFragment:
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
         private const val DEFAULT_POSITION = 0
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW20 = "?service_type=20m"
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -1057,8 +1058,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        hideContent()
-        getViewModel().setUserPreference(NOW_15M)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW20)
     }
 
     override fun onClickSwitcherTo2H() {

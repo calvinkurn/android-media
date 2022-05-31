@@ -163,6 +163,7 @@
     <string name="tokopedianow_on_boarding_second_content_detail_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Belanja produk pilihan.</b></font> Ada ribuan produk yang bisa dikirim cepat ke alamatmu. Jika butuh produk lebih lengkap, kamu bisa pakai layanan 2 jam tiba.]]></string>
     <string name="tokopedianow_on_boarding_cta_try_now_button_bottomsheet">Coba Sekarang</string>
     <string name="tokopedianow_on_boarding_cta_back_to_2h_bottomsheet">Ke Layanan 2 Jam Tiba</string>
+    <string name="tokopedianow_on_boarding_step_button_text_last_child">Oke</string>
 
     <string name="tokopedianow_home_on_boarding_20m_title_first_section_coachmark">Kamu bisa belanja NOW! 20 menit tiba 🚀️</string>
     <string name="tokopedianow_home_on_boarding_20m_description_first_section_coachmark">Belanja produknya di halaman ini, langsung tiba 20 menit ke alamatmu. Tetap gratis ongkir!</string>
