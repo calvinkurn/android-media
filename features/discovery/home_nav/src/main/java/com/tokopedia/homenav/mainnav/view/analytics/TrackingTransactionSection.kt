@@ -49,6 +49,9 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
     private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
+    private const val CURRENCY_CODE = "currencyCode"
+    private const val CURRENCY_IDR = "IDR"
+    private const val IMPRESSIONS_KEY = "impressions"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
@@ -165,8 +168,8 @@ object TrackingTransactionSection: BaseTrackerConst() {
             UserId.KEY, userId,
             ItemList.KEY, LIST_WISHLIST,
             Ecommerce.KEY, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", listOf(
+                CURRENCY_CODE, CURRENCY_IDR,
+                IMPRESSIONS_KEY, listOf(
                     DataLayer.mapOf(
                         DIMENSION_125, wishlistModel.wishlistId,
                         DIMENSION_40, LIST_WISHLIST,
@@ -226,12 +229,12 @@ object TrackingTransactionSection: BaseTrackerConst() {
             event = Event.PROMO_VIEW,
             eventCategory = CATEGORY_GLOBAL_MENU,
             eventAction = IMPRESSION_ON_FAVORITE_SHOP_CARD,
-            eventLabel = "",
+            eventLabel = Value.EMPTY,
             promotions = listOf(Promotion(
                 creative = Value.EMPTY,
                 id = ITEM_ID_FAVORITE_SHOP_FORMAT.format(favoriteShopModel.id),
                 name = ITEM_NAME_FAVORITE_SHOP,
-                creativeUrl = "",
+                creativeUrl = Value.EMPTY,
                 position = (position + 1).toString()
             )))
             .appendCurrentSite(DEFAULT_CURRENT_SITE)
