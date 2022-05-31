@@ -84,7 +84,7 @@ class ErrorLoadViewModel(val application: Application,
                                 )
 
                             ComponentNames.ShopCardInfinite.componentName ->
-                                shopCardInfiniteUseCase.loadFirstPageComponents(
+                                shopCardInfiniteUseCase.getShopCardUseCase(
                                         components.id,
                                         components.pageEndPoint
                                 )
