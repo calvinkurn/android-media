@@ -8,7 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_NAME
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_TABLE
-import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_9
+import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_10
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.Matchers
 
@@ -61,7 +61,7 @@ object InstrumentedTestUtil {
                 InstrumentationRegistry.getInstrumentation().context,
                 DB_NAME,
                 null,
-                DB_VERSION_9
+                DB_VERSION_10
             ) {
                 override fun onCreate(p0: SQLiteDatabase?) {}
                 override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
