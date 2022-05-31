@@ -31,8 +31,10 @@ data class PickerParam(
 
     // getter
     fun pageType() = pageType
+    fun modeType() = modeType
     fun pageSourceName() = pageSource.value
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
+    fun isVideoModeOnly() = modeType == ModeType.VIDEO_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
     fun ratioIsSquare() = cameraRatio == CameraRatio.Square
     fun isMultipleSelectionType() = isMultipleSelection
@@ -50,7 +52,7 @@ data class PickerParam(
     fun minImageResolution() = minImageResolution
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
-    fun withEditor() = withEditor
+    fun isEditorEnabled() = withEditor
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }

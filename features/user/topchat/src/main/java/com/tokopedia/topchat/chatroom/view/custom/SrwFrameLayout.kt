@@ -23,6 +23,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResp
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.onboarding.SrwOnBoarding
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -43,6 +44,7 @@ class SrwFrameLayout : FrameLayout {
     private var srwContentContainer: LinearLayout? = null
 
     private var bgExpanded: Drawable? = null
+    private var onBoarding = SrwOnBoarding()
 
     /**
      * Default state would be expanded
@@ -58,6 +60,7 @@ class SrwFrameLayout : FrameLayout {
     interface Listener {
         fun trackViewSrw()
         fun onExpandStateChanged(isExpanded: Boolean)
+        fun shouldShowOnBoarding(): Boolean
     }
 
     constructor(context: Context) : super(context)
@@ -229,9 +232,25 @@ class SrwFrameLayout : FrameLayout {
         val isPreviouslyVisible = srwContentContainer?.isVisible == true
         if (!isPreviouslyVisible) {
             listener?.trackViewSrw()
+            showOnBoardingSrw()
+        } else {
+            dismissOnBoarding()
         }
         srwContentContainer?.show()
         updateState()
+    }
+
+    private fun showOnBoardingSrw() {
+        if (listener?.shouldShowOnBoarding() == true) {
+            titleContainer?.let {
+                onBoarding.show(context, it)
+
+            }
+        }
+    }
+
+    private fun dismissOnBoarding() {
+        onBoarding.dismiss()
     }
 
     private fun hideSrwContent() {
@@ -254,6 +273,7 @@ class SrwFrameLayout : FrameLayout {
 
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
+        const val TAG = "SRW_COACHMARK"
     }
 }
 

@@ -44,6 +44,8 @@ data class ChatReplies(
         val block: Block = Block(),
         @SerializedName("replyIDsAttachment")
         val replyIDs: String = "",
+        @SerializedName("attachmentIDs")
+        var attachmentIds: String = ""
 ) {
         fun getInterlocutorContact(): Contact {
                 return contacts.firstOrNull { contact -> contact.isInterlocutor } ?: Contact()
@@ -57,7 +59,7 @@ data class ChatReplies(
 data class Contact(
         @Expose
         @SerializedName("role")
-        val role: String = "",
+        var role: String = "",
         @Expose
         @SerializedName("userId")
         val userId: Long = 0L,
@@ -202,7 +204,7 @@ data class Reply(
 data class Attachment(
         @Expose
         @SerializedName("id")
-        val id: String = "",
+        var id: String = "",
         @Expose
         @SerializedName("type")
         val type: Int = 0,

@@ -16,8 +16,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class DataViewMapper @Inject constructor(
-        private val userSession: UserSessionInterface
-) {
+        private val userSession: UserSessionInterface) {
 
     fun mapToProfileDataView(accountDataModel: UserAccountDataModel, isEnableLinkAccount: Boolean = false): ProfileDataView {
         var linkStatus = false

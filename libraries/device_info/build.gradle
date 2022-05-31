@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.ads
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.core
 }
 
 project.ext {
