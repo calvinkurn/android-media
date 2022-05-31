@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CartTokoFoodParam(
-    // TODO: Create correct object for parsed chosenAddress
     @SerializedName("additional_attributes")
     @Expose
     val additionalAttributes: String = "",

@@ -125,3 +125,4 @@ fun String.asCamelCase(): String {
 fun String?.toEmpty(): String = ""
 
 val String.Companion.EMPTY get() = ""
+val String.Companion.SPACE get() = " "

@@ -8,9 +8,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutWidgetPurchaseMiniCartBinding
-import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect

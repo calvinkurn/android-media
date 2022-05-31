@@ -282,7 +282,6 @@ data class CheckoutTokoFoodShipping(
     @SerializedName("eta")
     @Expose
     val eta: String = "",
-    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     val price: Double = 0.0,
