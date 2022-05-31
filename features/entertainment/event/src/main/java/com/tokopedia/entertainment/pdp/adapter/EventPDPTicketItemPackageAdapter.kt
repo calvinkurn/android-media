@@ -64,6 +64,7 @@ class EventPDPTicketItemPackageAdapter(
 
                 txtTitle_ticket.text = items.name
                 txtSubtitle_ticket.text = items.description
+                txtSubtitle_ticket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
                 txtPrice_ticket.text = if(items.salesPrice.toIntOrZero() != ZERO_PRICE) getRupiahFormat(items.salesPrice.toInt())
                 else resources.getString(R.string.ent_free_price)
 
@@ -185,6 +186,7 @@ class EventPDPTicketItemPackageAdapter(
 
                 txtTitle_ticket.text = items.name
                 txtSubtitle_ticket.text = items.description
+                txtSubtitle_ticket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
                 txtPrice_ticket.text = getRupiahFormat(items.salesPrice.toInt())
 
                 txtisRecommeded.show()

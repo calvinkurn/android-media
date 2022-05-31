@@ -27,7 +27,6 @@
             android:contentDescription="@string/deals_image_brand_content_description"
             android:scaleType="fitCenter" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/brandName"
             android:layout_width="wrap_content"
