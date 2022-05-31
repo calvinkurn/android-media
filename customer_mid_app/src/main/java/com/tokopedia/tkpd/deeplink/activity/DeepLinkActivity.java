@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.core.app.TaskStackBuilder;
 
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -22,6 +23,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
@@ -32,6 +34,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.HashMap;
@@ -63,6 +67,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initializationNewRelic();
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
         checkUrlMapToApplink();
@@ -229,6 +234,15 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (data != null) {
             isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(data);
             uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
+        }
+    }
+
+    private void initializationNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .start(this.getApplication());
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
         }
     }
 

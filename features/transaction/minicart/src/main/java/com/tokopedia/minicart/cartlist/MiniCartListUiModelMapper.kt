@@ -122,7 +122,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             cartStringId = availableGroup.cartString,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
-                            notesLength = miniCartData.data.maxCharNote)
+                            notesLength = miniCartData.data.maxCharNote,
+                            placeholderNote = miniCartData.data.placeholderNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -224,6 +225,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                   unavailableActionId: String = "",
                                   unavailableReason: String = "",
                                   notesLength: Int = 0,
+                                  placeholderNote: String = "",
                                   cartStringId: String = ""): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
@@ -256,6 +258,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
+            this.placeholderNote = placeholderNote
             campaignId = cartDetail.product.campaignId
             attribution = cartDetail.product.productTrackerData.attribution
             warehouseId = cartDetail.product.warehouseId

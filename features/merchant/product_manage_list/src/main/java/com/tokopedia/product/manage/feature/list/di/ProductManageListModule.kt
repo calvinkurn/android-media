@@ -14,6 +14,9 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductD
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
@@ -141,6 +144,14 @@ class ProductManageListModule(private val context: Context) {
     @ProductManageListScope
     @Provides
     fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusDao(draftDb: AddEditProductDraftDb): UploadStatusDao = draftDb.uploadStatusDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusRepository(dao: UploadStatusDao): UploadStatusRepository = UploadStatusRepositoryImpl(dao)
 
     @ProductManageListScope
     @Provides

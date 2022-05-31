@@ -51,11 +51,11 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-        // Do nothing
+        listener.onRechargeLegoBannerImpression(channelModel.id)
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-        // Do nothing
+        listener.onRechargeLegoBannerImpression(channelModel.id)
     }
 
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
@@ -77,5 +77,6 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+        listener.onRechargeLegoBannerImpression(channelModel.id)
     }
 }

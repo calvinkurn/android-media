@@ -423,15 +423,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check product info applink with extParam then should return expected applink`() {
+    fun `check product info applink with extParam (encoded format) then should return expected applink`() {
         val productId = "890495024"
         val extParam = "fcity%3D174%2C175%2C176%2C177%2C178%2C179%26shipping%3D10%2C13%2313%26ivf%3D1TRUE"
         val applink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId))
                 .buildUpon()
-                .appendQueryParameter("extParam", extParam)
+                .appendQueryParameter("extParam", extParam.decodeToUtf8())
                 .build()
                 .toString()
-
         val expectedDeeplink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/?extParam=$extParam"
 
         assertEqualsDeepLinkMapper(applink, expectedDeeplink)
@@ -990,20 +989,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check ovo register init then should return tokopedia internal`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/ovo-reg-init"
         assertEqualsDeepLinkMapper(ApplinkConst.OVO_REGISTER_INIT, expectedDeepLink)
-    }
-
-    @Test
-    fun `check ovo upgrade then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://ovo/upgrade"
-        assertEqualsDeepLinkMapper(ApplinkConst.OVOUPGRADE, expectedDeepLink)
-    }
-
-    @Test
-    fun `check ovo upgrade status then should return tokopedia internal`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://ovo/upgradestatus?status=successful&message=Ovo success"
-        val appLink = UriUtil.buildUri(ApplinkConst.OVOUPGRADE_STATUS, "successful", "Ovo success")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
