@@ -1,13 +1,9 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
-import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Bundle
-import androidx.core.app.JobIntentService
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -16,7 +12,6 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPEG
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPG
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
@@ -35,6 +30,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.SetUploadStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
@@ -50,7 +48,7 @@ import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
+abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
@@ -67,6 +65,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
+    @Inject
+    lateinit var setUploadStatusUseCase: SetUploadStatusUseCase
     @Inject
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
     @Inject
@@ -99,14 +99,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         Dispatchers.IO
     }
 
-    fun setUploadProductDataSuccess() {
+    fun setUploadProductDataSuccess(productId: String = "") {
         notificationManager?.onSuccessUpload()
-        sendSuccessBroadcast()
+        setUploadStatus(UploadStatusType.STATUS_DONE.name, productId)
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
-        sendErrorBroadcast()
+        setUploadStatus(UploadStatusType.STATUS_ERROR.name)
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
@@ -271,19 +271,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 .replace("\\<.*?\\>".toRegex(), "")
     }
 
-    private fun sendSuccessBroadcast() {
-        val result = Intent(BROADCAST_ADD_PRODUCT)
-        val bundle = Bundle()
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
-        result.putExtras(bundle)
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
-    }
-
-    private fun sendErrorBroadcast() {
-        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
-        val bundle = Bundle()
-        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
-        result.putExtras(bundle)
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
+    private fun setUploadStatus(status: String, productId: String = "") {
+        launchCatchError(block = {
+            setUploadStatusUseCase.setUploadStatus(
+                UploadStatusModel(
+                    productId = productId,
+                    status = status
+                )
+            )
+        } , onError = {})
     }
 }

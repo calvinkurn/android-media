@@ -44,9 +44,9 @@ class ManageAddressViewModel @Inject constructor(
     val addressList: LiveData<ManageAddressState<AddressListModel>>
         get() = _addressList
 
-    private val _result = MutableLiveData<ManageAddressState<String>>()
-    val result: LiveData<ManageAddressState<String>>
-        get() = _result
+    private val _resultRemovedAddress = MutableLiveData<ManageAddressState<String>>()
+    val resultRemovedAddress: LiveData<ManageAddressState<String>>
+        get() = _resultRemovedAddress
 
     private val _setDefault = MutableLiveData<ManageAddressState<String>>()
     val setDefault: LiveData<ManageAddressState<String>>
@@ -115,9 +115,8 @@ class ManageAddressViewModel @Inject constructor(
     }
 
     fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
-        _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
-            _result.value = ManageAddressState.Success("Success")
+            _resultRemovedAddress.value = ManageAddressState.Success("Success")
             isClearData = true
             getStateChosenAddress("address")
         },  {

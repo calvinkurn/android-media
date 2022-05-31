@@ -34,28 +34,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle">
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="6dp"
-            app:cardBackgroundColor="@color/Unify_N50"
-            app:cardCornerRadius="@dimen/spacing_lvl2"
-            app:cardElevation="@dimen/layout_lvl0">
+            app:card_type="clear"
+            app:card_background_color="@color/Unify_N50">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSizechart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSizechartAddSign"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_plus_gray" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSizechartEditSign"
                 android:layout_gravity="bottom"
                 android:layout_width="@dimen/layout_lvl2"
@@ -66,7 +63,7 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_edit_price" />
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
     </LinearLayout>
 
