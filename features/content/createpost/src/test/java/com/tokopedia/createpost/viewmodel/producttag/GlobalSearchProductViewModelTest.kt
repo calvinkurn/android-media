@@ -358,7 +358,7 @@ class GlobalSearchProductViewModelTest {
     }
 
     @Test
-    fun `when user wants to open but error occurs, it should emit error event`() {
+    fun `when user wants to open sort filter bottomsheet but error occurs, it should emit error event`() {
 
         coEvery { mockRepo.getSortFilter(any()) } throws mockException
 

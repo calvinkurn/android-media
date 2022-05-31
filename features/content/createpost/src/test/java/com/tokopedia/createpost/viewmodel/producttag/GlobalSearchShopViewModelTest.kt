@@ -5,11 +5,13 @@ import com.tokopedia.createpost.model.GlobalSearchModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -216,6 +218,66 @@ class GlobalSearchShopViewModelTest {
                 globalSearchShop.state.isSuccess()
                 globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
                 globalSearchShop.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants to open sort filter bottomsheet, it should load sort filter data and emit open bottomsheet event`() {
+        val mockSortFilter = globalSearchModelBuilder.buildSortFilterResponseModel()
+
+        coEvery { mockRepo.getSortFilter(any()) } returns mockSortFilter
+
+        robot.use {
+            it.recordStateAndEvent {
+                submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
+            }.andThen { state, events ->
+                state.globalSearchShop.sortFilters.assertEqualTo(mockSortFilter)
+                val lastEvent = events.last()
+
+                if(lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
+                    lastEvent.param.assertEqualTo(state.globalSearchShop.param)
+                    lastEvent.data.assertEqualTo(mockSortFilter)
+                }
+                else {
+                    Assert.fail("Event should be OpenShopSortFilterBottomSheet")
+                }
+            }
+
+            /** Open bottom sheet once again and shouldnt hit gql getSortFilter anymore.
+             * To prove that, we mock getSortFilter to throw an error
+             */
+            coEvery { mockRepo.getSortFilter(any()) } throws mockException
+
+            it.recordStateAndEvent {
+                submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
+            }.andThen { state, events ->
+                state.globalSearchShop.sortFilters.assertEqualTo(mockSortFilter)
+                val lastEvent = events.last()
+
+                if(lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
+                    lastEvent.param.assertEqualTo(state.globalSearchShop.param)
+                    lastEvent.data.assertEqualTo(state.globalSearchShop.sortFilters)
+                }
+                else {
+                    Assert.fail("Event should be OpenShopSortFilterBottomSheet")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user wants to open sort filter bottomsheet but error occurs, it should emit error event`() {
+
+        coEvery { mockRepo.getSortFilter(any()) } throws mockException
+
+        robot.use {
+            it.recordStateAndEvent {
+                submitAction(ProductTagAction.OpenShopSortFilterBottomSheet)
+            }.andThen { state, events ->
+                state.globalSearchShop.sortFilters.isEmpty().assertTrue()
+
+                events.last().assertEventError(mockException)
             }
         }
     }
