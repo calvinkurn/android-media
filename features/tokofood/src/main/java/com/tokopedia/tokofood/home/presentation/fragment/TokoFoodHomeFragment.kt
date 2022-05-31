@@ -77,7 +77,7 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener

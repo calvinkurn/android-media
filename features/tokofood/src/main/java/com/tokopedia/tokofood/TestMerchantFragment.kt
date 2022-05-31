@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -17,19 +16,15 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentTokofoodMerchantTestBinding
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
