@@ -71,6 +71,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -417,7 +418,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                     try {
                         super.onLayoutChildren(recycler, state)
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Timber.d(e)
                     }
                 }
             }
@@ -433,7 +434,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 }
             })
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.d(e)
         }
     }
 
@@ -484,9 +485,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             searchView?.setWishlistCount(it)
         })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
-            updateScrollListenerState(
-                    loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage ?: false)
-
+            updateScrollListenerState()
         })
     }
 
@@ -545,11 +544,11 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             }
             recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.d(e)
         }
     }
 
-    private fun updateScrollListenerState(hasNextPage: Boolean) {
+    private fun updateScrollListenerState() {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
