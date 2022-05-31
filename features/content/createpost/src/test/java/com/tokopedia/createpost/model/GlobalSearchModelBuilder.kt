@@ -3,6 +3,7 @@ package com.tokopedia.createpost.model
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -78,6 +79,17 @@ class GlobalSearchModelBuilder {
                     )
                 }
             )
+        )
+    }
+
+    fun buildQuickFilterList(
+        size: Int = 5,
+    ) = List(size) {
+        QuickFilterUiModel(
+            name = "QuickFilter $it",
+            icon = "",
+            key = "key$it",
+            value = "value$it",
         )
     }
 }
