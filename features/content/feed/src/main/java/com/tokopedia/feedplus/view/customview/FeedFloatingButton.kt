@@ -86,6 +86,7 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
     }
 
     fun checkFabMenuStatusWithTimer(isMenuOpenCallback: () -> Boolean) {
+        stopTimer()
         job = scope.launch {
             while (isActive) {
                 delay(TIMER_CHECK_MENU_STATUS_DURATION)
