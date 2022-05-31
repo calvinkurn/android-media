@@ -46,7 +46,7 @@ object TmCouponCreateMapper {
             dateEnd = tmEndDateUnix?.let { DateUtil.getDateFromUnix(it) },
             benefitType = couponPremiumData?.typeCashback
         )
-        voucherList[0] = TmCouponCreateRequest(
+        voucherList[1] = TmCouponCreateRequest(
             benefitIdr = maximumBenefit,
             benefitMax = couponVip?.maxCashback.toIntSafely(),
             targetBuyer = 3,
@@ -78,5 +78,4 @@ object TmCouponCreateMapper {
         //Preview Mapper
 
     }
-
 }

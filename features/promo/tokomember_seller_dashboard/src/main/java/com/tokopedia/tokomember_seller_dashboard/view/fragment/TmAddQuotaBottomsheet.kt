@@ -6,13 +6,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
+import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
@@ -55,12 +58,23 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         arguments?.getInt(BUNDLE_VOUCHER_QUOTA)?.let {
             voucherQuota = it
         }
+        DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
         setDefaultParams()
         initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initBottomSheet() {
@@ -69,8 +83,8 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             null, false
         )
         setChild(childView)
-        tmCouponViewModel.getInitialCouponData("update", voucherType)
         observeViewModel()
+        tmCouponViewModel.getInitialCouponData("update", voucherType)
     }
 
     private fun observeViewModel() {
@@ -124,14 +138,20 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         })
         btnContinue.setOnClickListener {
             if(token.isEmpty()){
-                tmCouponViewModel.getInitialCouponData("update", voucherType)
+                tmCouponViewModel.getInitialCouponData("update", voucherType.lowercase())
             }
             else {
-                tmCouponViewModel.updateQuota(
-                    textFieldQuota.editText.text.toString().toIntOrZero(),
-                    voucherId.toIntOrZero(),
-                    token
-                )
+                val quota = textFieldQuota.editText.text.toString().toIntOrZero()
+                if(quota >= voucherQuota) {
+                    tmCouponViewModel.updateQuota(
+                        quota,
+                        voucherId.toIntOrZero(),
+                        token
+                    )
+                }
+                else{
+                    textFieldQuota.textInputLayout.error = "Minimum kuota: $voucherQuota"
+                }
             }
         }
     }

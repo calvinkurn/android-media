@@ -304,7 +304,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             EDIT ->{
-                TokomemberDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON)
+                TokomemberDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON, voucherId.toInt())
             }
             STOP ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }

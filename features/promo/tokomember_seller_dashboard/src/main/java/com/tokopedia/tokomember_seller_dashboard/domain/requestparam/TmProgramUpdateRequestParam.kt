@@ -18,7 +18,7 @@ data class ProgramUpdateDataInput(
 	var actionType: String? = null,
 	@Expose
 	@SerializedName("timeWindow")
-	val timeWindow: TimeWindow? = null,
+	var timeWindow: TimeWindow? = null,
 	@Expose
 	@SerializedName("apiVersion")
 	val apiVersion: String? = null,

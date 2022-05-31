@@ -104,7 +104,7 @@ object ProgramUpdateMapper {
     }
 
     fun setTime(time: String): String {
-        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
+        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":").substringAfter("T")
         return "$selectedTime WIB"
     }
 

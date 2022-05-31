@@ -72,17 +72,10 @@
                 android:id="@+id/customViewSingleCoupon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
                 app:layout_constraintTop_toBottomOf="@id/chipGroupLevel"/>
-
-            <include
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/containerSingleCoupon"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@+id/customViewSingleCoupon"
-                layout="@layout/tm_dash_single_coupon"/>
 
             <View
                 android:id="@+id/viewDividerTwo"
@@ -90,7 +83,7 @@
                 android:layout_height="8dp"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/containerSingleCoupon" />
+                app:layout_constraintTop_toBottomOf="@+id/customViewSingleCoupon" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitleProgram"

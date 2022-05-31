@@ -106,3 +106,11 @@ const val RETRY = "Coba Lagi"
 const val PREMIUM = "premium"
 const val VIP = "vip"
 const val CREATE = "create"
+const val UPDATE = "update"
+
+const val COUPON_TYPE_SHIPPING = 1
+const val COUPON_TYPE_DISCOUNT = 2
+const val COUPON_TYPE_CASHBACK = 3
+
+const val COUPON_DISCOUNT_TYPE_IDR = 1
+const val COUPON_DISCOUNT_TYPE_PERCENT = 2
