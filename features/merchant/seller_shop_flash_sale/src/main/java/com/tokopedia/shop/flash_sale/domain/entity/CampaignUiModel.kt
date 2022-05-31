@@ -11,12 +11,12 @@ data class CampaignUiModel(
     val isCancellable: Boolean,
     val isShareable: Boolean,
     val notifyMeCount: Int,
-    val startDate: String,
+    val startDateFormatted: String,
     val startTime: String,
     val status: CampaignStatus,
     val thematicParticipation: Boolean,
     val summary: ProductSummary,
-    val startDateCalendar: Calendar
+    val startDate: Date
 ) {
     data class ProductSummary(
         val totalItem: Int,

@@ -190,13 +190,12 @@
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
             android:id="@+id/timer"
+            app:timer_unify_single_type="minute"
+            app:timer_unify_single_variant="informative"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="@+id/tpgCampaignStatus"
-            app:layout_constraintEnd_toStartOf="@+id/imgMore"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:unify_timer_background_color="@color/Unify_TN50"
             app:layout_constraintStart_toEndOf="@+id/tpgCampaignStatus"
             app:layout_constraintTop_toTopOf="@+id/tpgCampaignStatus" />
 

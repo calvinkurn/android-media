@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignBinding
+import com.tokopedia.shop.flash_sale.common.extension.toCalendar
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
-import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -28,7 +28,7 @@ class CampaignViewHolder(private val binding: SsfsItemCampaignBinding) :
         binding.labelRegisteredToAnEvent.isVisible = campaign.thematicParticipation
         binding.root.setOnClickListener { onCampaignClicked(campaign, position) }
         binding.imgMore.setOnClickListener { onOverflowMenuClicked(campaign) }
-        binding.tpgStartDate.text = campaign.startDate
+        binding.tpgStartDate.text = campaign.startDateFormatted
         binding.tpgStartTime.text = campaign.startTime
         binding.tpgEndDate.text = campaign.endDate
         binding.tpgEndTime.text = campaign.endTime
@@ -36,14 +36,14 @@ class CampaignViewHolder(private val binding: SsfsItemCampaignBinding) :
         binding.tpgReminderCount.text = campaign.notifyMeCount.toString()
         binding.tpgSoldCount.text = campaign.summary.soldItem.toString()
         binding.loader.isVisible = isLoading
-        handleTimer(campaign.status, campaign.startDateCalendar)
+        handleTimer(campaign.status, campaign.startDate)
         handleCampaignStatusIndicator(campaign.status)
     }
 
-    private fun handleTimer(campaignStatus: CampaignStatus, startDate : Calendar) {
+    private fun handleTimer(campaignStatus: CampaignStatus, startDate : Date) {
         binding.timer.isVisible = campaignStatus == CampaignStatus.UPCOMING
         if (campaignStatus == CampaignStatus.UPCOMING) {
-            binding.timer.targetDate = startDate
+            binding.timer.targetDate = startDate.toCalendar()
         }
     }
 
