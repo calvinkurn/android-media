@@ -32,6 +32,7 @@ class OtherMenuAdapter(
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
         private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
         private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
+        private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
     }
 
     private val settingList = listOf(
@@ -170,7 +171,8 @@ class OtherMenuAdapter(
         val todayMillis = Date().time
         val expirationDateList = listOf(
             getProductCouponEndDate(),
-            getTokopediaPlayEndDate()
+            getTokopediaPlayEndDate(),
+            getSlashPriceEndDate()
         )
         return expirationDateList.all { expiredDate ->
             todayMillis >= expiredDate
@@ -180,6 +182,8 @@ class OtherMenuAdapter(
     private fun getProductCouponEndDate(): Long = PRODUCT_COUPON_END_DATE
 
     private fun getTokopediaPlayEndDate(): Long = TOKOPEDIA_PLAY_END_DATE
+
+    private fun getSlashPriceEndDate(): Long = SLASH_PRICE_END_DATE
 
     fun populateAdapterData() {
         clearAllElements()

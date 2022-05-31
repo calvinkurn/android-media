@@ -45,7 +45,7 @@ import javax.inject.Inject
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val NOT_SET = -1
+        private const val NOT_SET = 0
         private const val DELAY_IN_MILLIS: Long = 300
         private const val TAB_POSITION_FIRST = 0
         private const val TAB_POSITION_SECOND = 1
@@ -76,12 +76,12 @@ class ProductManageFragment : BaseDaggerFragment() {
             BUNDLE_KEY_TOASTER_WORDING
         ).orEmpty()
     }
-    private val previouslySelectedDiscountStatusId by lazy {
+    private var previouslySelectedDiscountStatusId = 0
+    private val currentDiscountStatusId by lazy {
         arguments?.getInt(
             BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID
         ) ?: NOT_SET
     }
-
     override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
@@ -119,6 +119,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleArguments()
         setupViews()
         observeProductsMeta()
         observeSellerEligibility()
@@ -128,6 +129,12 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupViews() {
         setupHeader()
         setupTabs()
+    }
+
+    private fun handleArguments() {
+        this.previouslySelectedDiscountStatusId = arguments?.getInt(
+            BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID
+        ) ?: NOT_SET
     }
 
 
@@ -286,7 +293,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
                 if (isRedirectionFromAnotherPage()) {
-                    focusTo(previouslySelectedDiscountStatusId)
+                    focusTo(currentDiscountStatusId)
                     displayToaster(toasterWording)
                 } else {
                     focusToPreviousTab(tab, previouslySelectedPosition, position)
@@ -419,6 +426,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val onSwipeRefreshed: () -> Unit = {
         viewModel.getSlashPriceProductsMeta()
+        if (isRedirectionFromAnotherPage()) {
+            previouslySelectedDiscountStatusId = NOT_SET
+        }
     }
 
     fun setTabChangeListener(listener: TabChangeListener) {
