@@ -8,6 +8,10 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 object TokoFoodMerchantUiModelMapper {

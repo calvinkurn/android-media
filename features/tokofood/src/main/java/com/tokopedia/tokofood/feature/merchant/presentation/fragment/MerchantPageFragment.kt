@@ -22,16 +22,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
-import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -49,9 +49,9 @@ import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CustomOr
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.MerchantInfoBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.OrderNoteBottomSheet
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductDetailBottomSheet
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -84,14 +84,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     CustomOrderDetailBottomSheet.OnCustomOrderDetailClickListener,
     CategoryFilterBottomSheet.CategoryFilterListener,
     ProductDetailBottomSheet.Listener,
+    ProductDetailBottomSheet.OnProductDetailClickListener,
     ShareBottomsheetListener {
-
-    companion object {
-        private const val SOURCE = "merchant_page"
-        fun createInstance(): MerchantPageFragment {
-            return MerchantPageFragment()
-        }
-    }
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -408,6 +402,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                         productListItems.firstOrNull()?.productCategory?.title.orEmpty()
                     val finalProductListItems = viewModel.applyProductSelection(productListItems, viewModel.selectedProducts)
                     renderProductList(finalProductListItems)
+                    setCategoryPlaceholder()
                 }
                 is Fail -> {
 
@@ -654,9 +649,13 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
-    override fun onProductCardClicked(productUiModel: ProductUiModel) {
-        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
+    override fun onProductCardClicked(
+        productUiModel: ProductUiModel,
+        cardPositions: Pair<Int, Int>
+    ) {
+        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel, this)
         bottomSheet.setListener(this@MerchantPageFragment)
+        bottomSheet.setSelectedCardPositions(cardPositions)
         bottomSheet.show(childFragmentManager)
     }
 
@@ -822,5 +821,11 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     companion object {
         const val SHARE = "share"
+
+        private const val SOURCE = "merchant_page"
+
+        fun createInstance(): MerchantPageFragment {
+            return MerchantPageFragment()
+        }
     }
 }
