@@ -199,18 +199,17 @@ class MiniCartSimplifiedMapperTest {
                 )
             )
         )
+        val separatorIdx = 3
 
         // WHEN
-        val separatorIdx = 3
         val miniCartSimplifiedData = mapper.mapMiniCartSimplifiedData(data)
-        val separatorModel = miniCartSimplifiedData.shoppingSummaryBottomSheetData.items[separatorIdx]
 
         // THEN
         assertEquals(listOf<Visitable<*>>(
             ShoppingSummaryHeaderUiModel("", "Shop 1", "Desc 1"),
             ShoppingSummaryProductUiModel("Item 1", "Rp 10000"),
             ShoppingSummaryProductUiModel("Item 2", "Rp 25000"),
-            separatorModel,
+            miniCartSimplifiedData.shoppingSummaryBottomSheetData.items[separatorIdx],
             ShoppingSummaryTotalTransactionUiModel("Total Harga (12 Barang)", "<b>Rp5.000.000</b>"),
         ), miniCartSimplifiedData.shoppingSummaryBottomSheetData.items)
     }
