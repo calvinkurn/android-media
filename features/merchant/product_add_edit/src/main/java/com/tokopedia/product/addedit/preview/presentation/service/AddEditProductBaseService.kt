@@ -3,10 +3,10 @@ package com.tokopedia.product.addedit.preview.presentation.service
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
@@ -50,7 +50,7 @@ import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
+abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject

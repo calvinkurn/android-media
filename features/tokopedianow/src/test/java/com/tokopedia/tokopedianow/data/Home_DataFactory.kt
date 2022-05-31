@@ -355,21 +355,14 @@ fun createSliderBannerDataModel(
 
 fun createMixLeftDataModel(
     id: String,
-    groupId: String,
     headerName: String,
-    headerServerTimeUnix: Long = 0,
-    layout: String = "lego_3_image"
-): MixLeftDataModel {
-    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = layout)
-    val channelModel = ChannelModel(
+): HomeLeftCarouselUiModel {
+    return HomeLeftCarouselUiModel(
         id = id,
-        groupId = groupId,
-        layout = layout,
-        channelHeader = channelHeader,
-        channelConfig = channelConfig
+        name = "",
+        header = TokoNowDynamicHeaderUiModel(title = headerName),
+        productList = listOf(HomeLeftCarouselProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
     )
-    return MixLeftDataModel(channelModel = channelModel)
 }
 
 fun createCategoryGridDataModel(
