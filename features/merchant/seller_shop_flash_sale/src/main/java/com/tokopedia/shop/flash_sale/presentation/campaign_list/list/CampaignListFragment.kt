@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
 import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
@@ -23,9 +20,12 @@ import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragme
 import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
+import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -38,29 +38,38 @@ import javax.inject.Inject
 class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
 
     companion object {
+        private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
+        private const val DRAFT_COUNT = 3
+        private const val TAB_POSITION_FIRST = 0
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
+            "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
 
         @JvmStatic
         fun newInstance(
+            tabPosition : Int,
             campaignStatusName : String,
             campaignStatusIds: IntArray,
-            campaignCount : Int,
+            totalCampaign : Int,
         ): CampaignListFragment {
             val fragment = CampaignListFragment()
             fragment.arguments = Bundle().apply {
+                putInt(BUNDLE_KEY_TAB_POSITION, tabPosition)
                 putString(BUNDLE_KEY_CAMPAIGN_STATUS_NAME, campaignStatusName)
                 putIntArray(BUNDLE_KEY_CAMPAIGN_STATUS_ID, campaignStatusIds)
-                putInt(BUNDLE_KEY_CAMPAIGN_COUNT, campaignCount)
+                putInt(BUNDLE_KEY_CAMPAIGN_COUNT, totalCampaign)
             }
             return fragment
         }
 
+    }
+
+    private val tabPosition by lazy {
+        arguments?.getInt(BUNDLE_KEY_TAB_POSITION).orZero()
     }
 
     private val campaignStatusName by lazy {
@@ -82,11 +91,14 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         )
     }
 
-    private var binding by autoClearedNullable<SsfsFragmentCampaignListBinding>()
-    private var isFirstLoad = true
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var dateManager: DateManager
+
+    private var binding by autoClearedNullable<SsfsFragmentCampaignListBinding>()
+    private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
@@ -113,13 +125,21 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeCampaigns()
-        observeCampaignAttribute()
+        observeRemainingQuota()
         observeCampaignCreation()
+        observeCampaignDrafts()
+        viewModel.getRemainingQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        viewModel.getCampaignDrafts(
+            DRAFT_COUNT,
+            FIRST_PAGE
+        )
     }
 
     private fun setupView() {
+        binding?.btnCreateCampaign?.setOnClickListener {  }
         setupSearchBar()
         setupScrollListener()
+        setupTabChangeListener()
     }
 
     private fun setupSearchBar() {
@@ -127,7 +147,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     clearAllData()
-                    onShowLoading()
+                    binding?.loader?.visible()
                     getCampaigns(FIRST_PAGE)
                     return@setOnEditorActionListener false
                 }
@@ -160,7 +180,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun clearSearchBar() {
         clearAllData()
-        onShowLoading()
+        binding?.loader?.visible()
         viewModel.getCampaigns(
             PAGE_SIZE,
             FIRST_PAGE,
@@ -175,23 +195,29 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
                 is Success -> {
                     isFirstLoad = false
                     displayCampaigns(result.data)
+                    binding?.loader?.gone()
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
                     binding?.searchBar?.gone()
+                    binding?.loader?.gone()
                 }
             }
         }
     }
 
-    private fun observeCampaignAttribute() {
-        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
-            when(result) {
+
+    private fun observeCampaignDrafts() {
+        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is Success -> {
-                    val attribute = result.data
+                    val draftCount = result.data.campaigns.size
+                    viewModel.setCampaignDrafts(result.data.campaigns)
+                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
+                    handleDraftCount(draftCount)
                 }
                 is Fail -> {
-
+                    binding?.btnDraft?.gone()
                 }
             }
         }
@@ -210,12 +236,40 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
+    private fun observeRemainingQuota() {
+        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayRemainingQuota(result.data.remainingCampaignQuota)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
     }
 
     fun setOnScrollUpListener(onScrollUp: () -> Unit = {}) {
         this.onScrollUp = onScrollUp
+    }
+
+    private fun setupTabChangeListener() {
+        val listener = object : CampaignListContainerFragment.TabChangeListener{
+            override fun onTabChanged() {
+                if (totalCampaign == ZERO) {
+                    showEmptyState()
+                    binding?.cardView?.gone()
+                } else {
+                    hideEmptyState()
+                    binding?.cardView?.visible()
+                }
+            }
+        }
+        (parentFragment as? CampaignListContainerFragment)?.setTabChangeListener(listener)
     }
 
     private val onCampaignClicked: (CampaignUiModel, Int) -> Unit = { campaign, position ->
@@ -248,8 +302,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     }
 
     override fun loadData(page: Int) {
-        binding?.globalError?.gone()
-
         getCampaigns(page)
     }
 
@@ -286,50 +338,33 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     }
 
     override fun onGetListError(message: String) {
-        displayError(message)
-    }
 
+    }
 
     private fun handleScrollDownEvent() {
         binding?.searchBar.slideDown()
+        binding?.cardView.slideDown()
     }
 
     private fun handleScrollUpEvent() {
         binding?.searchBar.slideUp()
+        binding?.cardView.slideUp()
     }
 
     private fun displayCampaigns(data: CampaignMeta) {
-        if (data.totalCampaign == ZERO) {
-            handleEmptyState(data.totalCampaign)
-        } else {
+        if (data.campaigns.size.isMoreThanZero()) {
             renderList(data.campaigns, data.campaigns.size == getPerPage())
         }
     }
 
-    private fun handleEmptyState(totalCampaign : Int) {
-        if (totalCampaign == ZERO) {
-            showEmptyState()
-        } else {
-            hideEmptyState()
-        }
-    }
-
-    private fun displayError(errorMessage: String) {
-        binding?.run {
-            globalError.visible()
-            globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { getCampaigns(FIRST_PAGE) }
-            root showError errorMessage
-        }
-
-    }
-
     private fun showEmptyState() {
-        val title = getString(R.string.sfs_no_campaign_title)
+        val title = String.format(getString(R.string.sfs_placeholder_no_campaign_title), campaignStatusName.lowercase())
         val description = getString(R.string.sfs_no_campaign_description)
-        
+
         binding?.searchBar?.gone()
         binding?.recyclerView?.gone()
+
+        binding?.btnCreateCampaignEmptyState?.isVisible = tabPosition == TAB_POSITION_FIRST
 
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
@@ -339,6 +374,8 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
+        binding?.btnCreateCampaignEmptyState?.gone()
+        binding?.tpgRemainingQuotaEmptyState?.gone()
     }
 
     private fun doOnDelayFinished(block: () -> Unit) {
@@ -347,5 +384,37 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             block()
         }
     }
+
+
+    private fun handleDraftCount(draftCount: Int) {
+        val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
+        binding?.btnDraft?.text = wording
+    }
+
+    private fun displayRemainingQuota(remainingQuota: Int) {
+        val counter = if (remainingQuota.isMoreThanZero()) {
+            remainingQuota
+        } else {
+            ZERO
+        }
+        val wording = String.format(
+            getString(R.string.sfs_placeholder_remaining_quota),
+            counter
+        )
+
+        binding?.tpgRemainingQuota?.text = wording
+        binding?.tpgRemainingQuota?.visible()
+
+        val shouldVisible = tabPosition == TAB_POSITION_FIRST && totalCampaign == ZERO
+        binding?.tpgRemainingQuotaEmptyState?.isVisible = shouldVisible
+        binding?.tpgRemainingQuotaEmptyState?.text = wording
+
+        if (counter == ZERO) {
+            showNoCampaignQuotaDialog(requireActivity()) {
+
+            }
+        }
+    }
+
 
 }

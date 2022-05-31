@@ -12,17 +12,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
-import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
-import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -40,8 +39,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val NOT_SET = 0
         private const val DELAY_IN_MILLIS: Long = 300
-        private const val DRAFT_COUNT = 3
-        private const val FIRST_PAGE = 0
         private const val TAB_POSITION_FIRST = 0
         private const val TAB_POSITION_SECOND = 1
         private const val BUNDLE_KEY_PREVIOUS_CAMPAIGN_STATUS_ID = "previous_discount_status_id"
@@ -104,11 +101,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupView()
         setupTabs()
         observeTabsMeta()
-        observeRemainingQuota()
-        observeCampaignDrafts()
         viewModel.getTabsMeta()
-        viewModel.getCampaignAttribute(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
-        viewModel.getCampaignDrafts(DRAFT_COUNT, FIRST_PAGE)
+
     }
 
     private fun observeTabsMeta() {
@@ -125,42 +119,11 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
                     binding?.loader?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
-                    binding?.cardView?.gone()
                     displayError(result.throwable)
                 }
             }
         }
 
-    }
-
-    private fun observeRemainingQuota() {
-        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    binding?.cardView?.visible()
-                    displayRemainingQuota(result.data.remainingCampaignQuota)
-                }
-                is Fail -> {
-                    binding?.cardView?.gone()
-                    displayError(result.throwable)
-                }
-            }
-        }
-    }
-
-    private fun observeCampaignDrafts() {
-        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    val draftCount = result.data.campaigns.size
-                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
-                    handleDraftCount(draftCount)
-                }
-                is Fail -> {
-                    binding?.btnDraft?.gone()
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -170,9 +133,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private fun setupView() {
         binding?.run {
-            btnCreateCampaign.setOnClickListener {
-
-            }
             header.setNavigationOnClickListener { activity?.finish() }
         }
     }
@@ -190,30 +150,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleDraftCount(draftCount: Int) {
-        val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
-        binding?.btnDraft?.text = wording
-    }
 
-    private fun displayRemainingQuota(remainingQuota: Int) {
-        val counter = if (remainingQuota.isMoreThanZero()) {
-            remainingQuota
-        } else {
-            ZERO
-        }
-        val wording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            counter
-        )
-        binding?.tpgRemainingQuota?.text = wording
-        binding?.tpgRemainingQuota?.visible()
-
-        if (counter == ZERO) {
-            showNoCampaignQuotaDialog(requireActivity()) {
-
-            }
-        }
-    }
 
     private fun displayError(throwable: Throwable) {
         binding?.run {
@@ -241,14 +178,12 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
             tabsUnify.getUnifyTabLayout().slideDown()
-            cardView.slideDown()
         }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
         binding?.run {
             tabsUnify.getUnifyTabLayout().slideUp()
-            cardView.slideUp()
         }
     }
 
@@ -275,13 +210,13 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             viewPager.adapter = pagerAdapter
             tabsUnify.customTabMode = TabLayout.MODE_FIXED
 
-            TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
-                tab.setCustomText(fragments[position].first)
+            TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
+                tab.setCustomText(fragments[currentPosition].first)
 
                 if (isRedirectionFromAnotherPage()) {
                     focusTo(currentCampaignStatusId)
                 } else {
-                    focusToPreviousTab(tab, previouslySelectedPosition, position)
+                    focusToPreviousTab(tab, previouslySelectedPosition, currentPosition)
                 }
             }
         }
@@ -291,8 +226,9 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
 
-        tabs.forEach { tab ->
+        tabs.forEachIndexed { index, tab ->
             val fragment = CampaignListFragment.newInstance(
+                index,
                 tab.name,
                 tab.status.toIntArray(),
                 tab.totalCampaign

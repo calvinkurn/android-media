@@ -49,40 +49,10 @@ class CampaignAdapter(
         notifyDataSetChanged()
     }
 
-    fun update(campaign: CampaignUiModel, updatedCampaign: CampaignUiModel) {
-        try {
-            val position = campaigns.indexOf(campaign)
-            this.campaigns[position] = updatedCampaign
-            notifyItemChanged(position)
-        } catch (e : Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun updateAll(items: List<CampaignUiModel>) {
-        this.campaigns.clear()
-        this.campaigns.addAll(items)
-        notifyItemRangeChanged(FIRST_ITEM, items.size)
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun refresh(items: List<CampaignUiModel>) {
-        this.campaigns.clear()
-        this.campaigns.addAll(items)
-        notifyDataSetChanged()
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         this.campaigns = mutableListOf()
         notifyDataSetChanged()
-    }
-
-    fun delete(campaign: CampaignUiModel) {
-        val index = campaigns.indexOf(campaign)
-        campaigns.remove(campaign)
-        notifyItemRemoved(index)
-        notifyItemRangeChanged(index, itemCount)
     }
 
     fun showLoading() {
