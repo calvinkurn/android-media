@@ -87,7 +87,6 @@ class CMHomeWidgetPaymentCardViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_cm_home_widget_payment_card
-        const val RATIO_WIDTH = 0.689
         const val SINGLE_ITEM_RATIO_WIDTH = 0.943
         const val FIRST_INDEX = 0
     }

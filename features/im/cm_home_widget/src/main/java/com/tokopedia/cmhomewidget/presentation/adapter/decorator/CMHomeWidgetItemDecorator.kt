@@ -51,6 +51,7 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
         totalItems: Int
     ) {
         var ratio = CMHomeWidgetProductCardViewHolder.RATIO_WIDTH
+
         when (currentViewType) {
             CMHomeWidgetProductCardViewHolder.LAYOUT,
             CMHomeWidgetProductCardShimmerViewHolder.LAYOUT -> {
@@ -60,11 +61,9 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
             CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
             }
+            //this ratio will only applied if single item is there in adapter for Payment HTDW
             CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
-                ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
-                if (totalItems == 1) {
-                    ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
-                }
+                ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
             }
         }
         if(currentViewType != CMHomeWidgetPaymentCardViewHolder.LAYOUT || totalItems == 1) {

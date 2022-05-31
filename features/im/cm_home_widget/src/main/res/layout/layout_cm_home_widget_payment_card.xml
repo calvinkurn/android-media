@@ -5,7 +5,6 @@
     android:id="@+id/layout_cm_home_widget_payment_card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="@dimen/cm_home_widget_dp_260"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,8 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5"
-            />
+            app:layout_constraintGuide_percent="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
