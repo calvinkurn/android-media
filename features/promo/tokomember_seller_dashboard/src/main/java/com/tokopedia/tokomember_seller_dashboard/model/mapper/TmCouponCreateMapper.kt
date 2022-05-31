@@ -27,7 +27,7 @@ object TmCouponCreateMapper {
         //Mutation Mapper
 
         val voucherList = arrayListOf<TmCouponCreateRequest>()
-        voucherList[0] = TmCouponCreateRequest(
+        voucherList.add(0, TmCouponCreateRequest(
             benefitIdr = maximumBenefit,
             benefitMax = couponPremiumData?.maxCashback.toIntSafely(),
             targetBuyer = 3,
@@ -45,8 +45,8 @@ object TmCouponCreateMapper {
             hourEnd = tmEndTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
             dateEnd = tmEndDateUnix?.let { DateUtil.getDateFromUnix(it) },
             benefitType = couponPremiumData?.typeCashback
-        )
-        voucherList[1] = TmCouponCreateRequest(
+        ))
+        voucherList.add(1, TmCouponCreateRequest(
             benefitIdr = maximumBenefit,
             benefitMax = couponVip?.maxCashback.toIntSafely(),
             targetBuyer = 3,
@@ -64,7 +64,7 @@ object TmCouponCreateMapper {
             hourEnd = tmEndTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
             dateEnd = tmEndDateUnix?.let { DateUtil.getDateFromUnix(it) },
             benefitType = couponVip?.typeCashback
-        )
+        ))
 
         return TmMerchantCouponUnifyRequest(
             token = token,
@@ -72,10 +72,5 @@ object TmCouponCreateMapper {
             status = "",
             voucher = voucherList
         )
-    }
-
-    fun mapPreviewData(){
-        //Preview Mapper
-
     }
 }

@@ -58,6 +58,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
+                app:srcCompat="@drawable/tm_icon_system"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/viewBgPreview" />
 
@@ -232,9 +233,10 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconCoupon"
-                android:layout_width="20dp"
-                android:layout_height="@dimen/unify_space_16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
+                app:srcCompat="@drawable/tm_icon_coupon"
                 app:layout_constraintStart_toStartOf="@+id/iconInfoProgram"
                 app:layout_constraintTop_toBottomOf="@id/viewDividerTwo" />
 
