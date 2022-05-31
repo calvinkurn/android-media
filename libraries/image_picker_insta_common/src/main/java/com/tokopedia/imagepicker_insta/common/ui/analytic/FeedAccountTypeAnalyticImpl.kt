@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.common.ui.analytic
 
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -11,7 +12,12 @@ class FeedAccountTypeAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : FeedAccountTypeAnalytic {
 
-    override fun clickAccountTypeItem(type: String) {
+    override fun clickAccountTypeItem(item: FeedAccountUiModel) {
+        val type = when {
+            item.isShop -> "shop"
+            item.isUser -> "user"
+            else -> ""
+        }
         sendClickEvent("click - account types selection", type)
     }
 

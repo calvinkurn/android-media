@@ -28,13 +28,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     private val adapter: FeedAccountTypeAdapter by lazy {
         FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
             override fun onClick(item: FeedAccountUiModel) {
-                mAnalytic?.clickAccountTypeItem(
-                    when {
-                        item.isShop -> "shop"
-                        item.isUser -> "user"
-                        else -> ""
-                    }
-                )
+                mAnalytic?.clickAccountTypeItem(item)
                 dismiss()
                 mListener?.onAccountClick(item)
             }
