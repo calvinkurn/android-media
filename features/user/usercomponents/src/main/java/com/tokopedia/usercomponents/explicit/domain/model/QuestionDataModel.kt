@@ -28,14 +28,6 @@ data class Property(
     val options: List<OptionsItem> = mutableListOf(OptionsItem(), OptionsItem())
 )
 
-data class Detail(
-    @SerializedName("configActive")
-    val configActive: Boolean = false,
-
-    @SerializedName("templateActive")
-    val templateActive: Boolean = false
-)
-
 data class QuestionDataModel(
     @SerializedName("explicitprofileGetQuestion")
     val explicitprofileGetQuestion: ExplicitprofileGetQuestion = ExplicitprofileGetQuestion()
