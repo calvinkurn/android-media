@@ -27,7 +27,6 @@ class LeftChatMessageUnifyViewHolder(
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
-    //   private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
         customChatLayout,
@@ -63,14 +62,6 @@ class LeftChatMessageUnifyViewHolder(
         }
 
     }
-
-//    private fun bindReplyBubbleListener() {
-//        replyBubbleArea?.setReplyListener(replyBubbleListener)
-//    }
-//
-//    private fun bindReplyReference(msg: MessageUiModel) {
-//        replyBubbleArea?.bindReplyData(msg)
-//    }
 
     override fun mapSenderName(parentReply: ParentReply): String {
         if (parentReply.name == ChatbotConstant.TANYA)

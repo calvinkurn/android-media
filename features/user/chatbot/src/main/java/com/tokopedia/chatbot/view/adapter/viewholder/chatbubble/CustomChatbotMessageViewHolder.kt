@@ -26,7 +26,6 @@ abstract class CustomChatbotMessageViewHolder(
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
-    protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
 
     open fun getDateContainerId(): Int = R.id.dateContainer
@@ -39,10 +38,6 @@ abstract class CustomChatbotMessageViewHolder(
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
 
-        //TODO check for msg link
-//        customChatLayout?.message?.setOnClickListener {
-//            replyBubbleListener.showReplyOption(message)
-//        }
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {

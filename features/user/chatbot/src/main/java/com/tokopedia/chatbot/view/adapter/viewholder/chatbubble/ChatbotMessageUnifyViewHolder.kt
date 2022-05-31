@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.REPLY_AGENT_NAME
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
@@ -27,7 +28,6 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout_with_reply)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
-    private val name = "{.Name}"
 
     open fun getDateContainerId(): Int = R.id.dateContainer
 
@@ -50,7 +50,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         var senderName = replyBubbleListener?.getUserName()
         if (parentReply.name == ChatbotConstant.TANYA) {
             return ChatbotConstant.TOKOPEDIA_CARE
-        } else if (parentReply.name == name) {
+        } else if (parentReply.name == REPLY_AGENT_NAME) {
             return senderName
         }
         return parentReply?.name
@@ -89,10 +89,4 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     override fun getDateId(): Int = R.id.date
 
-
-
-    companion object {
-        val TYPE_LEFT = 0
-        val TYPE_RIGHT = 1
-    }
 }

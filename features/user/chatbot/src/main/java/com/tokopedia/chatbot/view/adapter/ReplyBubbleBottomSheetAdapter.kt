@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +18,10 @@ class ReplyBubbleBottomSheetAdapter(private val onReplyBottomSheetItemClicked: (
     }
 
     inner class ReplyBubbleBottomSheetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: Typography = itemView.findViewById(R.id.title)
-        val icon: IconUnify = itemView.findViewById(R.id.icon)
+        private val title: Typography = itemView.findViewById(R.id.title)
+        private val icon: IconUnify = itemView.findViewById(R.id.icon)
         fun bind(item: Pair<String, Int>, position: Int) {
             title.text = item.first
-            //TODO review this
             icon.setImage(item.second)
             itemView.setOnClickListener { onReplyBottomSheetItemClicked(position) }
         }

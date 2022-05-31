@@ -11,6 +11,7 @@ object ChatbotConstant {
     const val MODE_BOT = "bot"
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
+    const val REPLY_AGENT_NAME = "{.Name}"
 
     object CsatRating {
         const val RATING_ONE = 1

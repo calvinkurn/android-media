@@ -1554,18 +1554,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
-        val adapter = chatbotAdapter
-        adapter?.hideBottomLoading()
+        chatbotAdapter?.hideBottomLoading()
         if (listChat.isNotEmpty()) {
-            adapter?.addBottomData(listChat)
+            chatbotAdapter?.addBottomData(listChat)
         }
     }
 
     private fun renderTopList(listChat: List<Visitable<*>>) {
-        val adapter = chatbotAdapter
-        adapter?.hideTopLoading()
+        chatbotAdapter?.hideTopLoading()
         if (listChat.isNotEmpty()) {
-            adapter?.addTopData(listChat)
+            chatbotAdapter?.addTopData(listChat)
         }
     }
 
