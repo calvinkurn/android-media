@@ -419,4 +419,33 @@ class GlobalSearchProductViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user swipe to refresh, it should reset the pagination, reload products, while keeping the applied param`() {
+        val mockResponse = globalSearchModelBuilder.buildResponseModel()
+        val selectedSortFilter = globalSearchModelBuilder.buildSortFilterModel()
+
+        coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.ApplyProductSortFilter(selectedSortFilter))
+                submitAction(ProductTagAction.LoadGlobalSearchProduct)
+            }.andThen {
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList + mockResponse.pagedData.dataList)
+                selectedSortFilter.forEach { sortFilter ->
+                    globalSearchProduct.param.isParamFound(sortFilter.key, sortFilter.value).assertTrue()
+                }
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.SwipeRefreshGlobalSearchProduct)
+            }.andThen {
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                selectedSortFilter.forEach { sortFilter ->
+                    globalSearchProduct.param.isParamFound(sortFilter.key, sortFilter.value).assertTrue()
+                }
+            }
+        }
+    }
 }
