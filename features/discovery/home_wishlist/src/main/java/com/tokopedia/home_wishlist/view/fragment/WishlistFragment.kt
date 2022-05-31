@@ -71,6 +71,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -409,28 +410,32 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun initRecyclerView() {
-        recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
-            override fun supportsPredictiveItemAnimations() = false
+        try {
+            recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+                override fun supportsPredictiveItemAnimations() = false
 
-            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
-                try {
-                    super.onLayoutChildren(recycler, state)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                    try {
+                        super.onLayoutChildren(recycler, state)
+                    } catch (e: Exception) {
+                        Timber.d(e)
+                    }
                 }
             }
+            recyclerView?.adapter = adapter
+            GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
+            recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    navToolbar?.hideKeyboard()
+                    if (coachmarkIsAvailable()) {
+                        coachMark?.dismissCoachMark()
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Timber.d(e)
         }
-        recyclerView?.adapter = adapter
-        GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                navToolbar?.hideKeyboard()
-                if (coachmarkIsAvailable()) {
-                    coachMark?.dismissCoachMark()
-                }
-            }
-        })
     }
 
     private fun observeData() {
@@ -480,9 +485,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             searchView?.setWishlistCount(it)
         })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
-            updateScrollListenerState(
-                    loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage ?: false)
-
+            updateScrollListenerState()
         })
     }
 
@@ -530,18 +533,22 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun renderList(list: List<WishlistDataModel>) {
-        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
-        adapter.submitList(list)
-        if (scrollAfterSubmit) {
-            recyclerView?.addOneTimeGlobalLayoutListener {
-                recyclerView?.scrollToPosition(0)
+        try {
+            val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
+            adapter.submitList(list)
+            if (scrollAfterSubmit) {
+                recyclerView?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.scrollToPosition(0)
+                }
+                scrollAfterSubmit = false
             }
-            scrollAfterSubmit = false
+            recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        } catch (e: Exception) {
+            Timber.d(e)
         }
-        recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
-    private fun updateScrollListenerState(hasNextPage: Boolean) {
+    private fun updateScrollListenerState() {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
