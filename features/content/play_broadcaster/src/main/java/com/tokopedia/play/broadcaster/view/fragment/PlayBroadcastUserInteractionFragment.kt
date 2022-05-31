@@ -542,6 +542,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doShowProductInfo() {
+        gameIconView.cancelCoachMark()
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()
