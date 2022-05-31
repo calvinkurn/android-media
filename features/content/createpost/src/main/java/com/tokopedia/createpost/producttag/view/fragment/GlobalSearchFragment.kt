@@ -96,8 +96,8 @@ class GlobalSearchFragment @Inject constructor(
             ) { }
 
             override fun onPageSelected(position: Int) {
-                if(position == 0) analytic.clickGlobalSearchTab("barang")
-                else analytic.clickGlobalSearchTab("toko")
+                if(position == 0) analytic.clickGlobalSearchTab(TYPE_PRODUCT)
+                else analytic.clickGlobalSearchTab(TYPE_SHOP)
             }
 
             override fun onPageScrollStateChanged(state: Int) { }
@@ -138,6 +138,9 @@ class GlobalSearchFragment @Inject constructor(
 
     companion object {
         const val TAG = "GlobalSearchFragment"
+
+        private const val TYPE_PRODUCT = "barang"
+        private const val TYPE_SHOP = "toko"
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,
