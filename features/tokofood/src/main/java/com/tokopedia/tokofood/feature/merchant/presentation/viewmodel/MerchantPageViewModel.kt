@@ -10,7 +10,14 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
@@ -20,6 +27,14 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionContr
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType.SINGLE_SELECTION
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CarouselData
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,6 +69,10 @@ class MerchantPageViewModel @Inject constructor(
         return cardPositions.second
     }
 
+    var filterList = listOf<TokoFoodCategoryFilter>()
+
+    var merchantData: TokoFoodMerchantProfile? = null
+
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -65,10 +84,16 @@ class MerchantPageViewModel @Inject constructor(
                 getMerchantDataUseCase.setRequestParams(params = params.parameters)
                 getMerchantDataUseCase.executeOnBackground()
             }
+            filterList = result.tokofoodGetMerchantData.filters
+            merchantData = result.tokofoodGetMerchantData.merchantProfile
             getMerchantDataResultLiveData.value = Success(result)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
         })
+    }
+
+    fun updateFilterList(filterList: List<TokoFoodCategoryFilter>) {
+        this.filterList = filterList
     }
 
     fun mapMerchantProfileToCarouselData(merchantProfile: TokoFoodMerchantProfile): List<CarouselData> {

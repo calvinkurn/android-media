@@ -72,6 +72,13 @@
     <string name="text_optional_add_on_wording">Opsional • Pilih maks. %d</string>
     <string name="text_dot_separator">&#160;•&#160;</string>
     <string name="text_add_on_name">%s:&#160;</string>
+    <string name="category_filter_bottom_sheet_title">Mau menu dari kategori apa?</string>
+    <string name="desc_merchant_page_share">Hai, kamu! Jajan dari %1s jadi makin mudah di Tokopedia! Cek makanan-minuman yang kamu suka, yuk.</string>
+    <string name="desc_merchant_food_share">Coba cek ini, deh: %1s %2s %3s di Tokopedia. Bisa langsung sampai, lho.</string>
+
+    <string name="og_desc_merchant_page_share">Jajan dari %1s sekarang bisa di Tokopedia! Checkout cepat, bisa langsung sampai.</string>
+    <string name="og_desc_merchant_food_share">Jajan "%1s" %2s jadi makin mudah di Tokopedia! Pesan hari ini, tiba hari ini.</string>
+
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>

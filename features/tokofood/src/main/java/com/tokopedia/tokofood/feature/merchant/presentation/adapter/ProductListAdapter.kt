@@ -9,7 +9,9 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
@@ -20,6 +22,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
+
+    fun getProductListItems() = productListItems
 
     override fun getItemViewType(position: Int): Int {
         return when (productListItems[position].listItemType) {

@@ -37,6 +37,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     private var binding: BottomsheetProductDetailLayoutBinding? = null
 
+    private var listener: Listener? = null
+
     private val productUiModel: ProductUiModel by lazy {
         arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
@@ -84,7 +86,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
             dismiss()
         }
         binding?.iuShareButton?.setOnClickListener {
-
+            listener?.onFoodItemShareClicked(productUiModel)
         }
     }
 
@@ -110,5 +112,13 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     fun show(fragmentManager: FragmentManager) {
         showNow(fragmentManager, this::class.java.simpleName)
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    interface Listener {
+        fun onFoodItemShareClicked(productUiModel: ProductUiModel)
     }
 }
