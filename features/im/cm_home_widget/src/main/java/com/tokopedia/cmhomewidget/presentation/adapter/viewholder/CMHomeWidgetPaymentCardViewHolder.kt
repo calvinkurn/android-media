@@ -35,7 +35,7 @@ class CMHomeWidgetPaymentCardViewHolder(
             listener.setPaymentCardHeight(binding.root.measuredHeight)
         }
         if (paymentData.isSingleDataItem()) {
-            setDividerMargin()
+//            setDividerMargin()
         }
     }
 
