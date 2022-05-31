@@ -59,7 +59,7 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
 
         }
         binding?.iuShareButton?.setOnClickListener {
-            listener?.onFoodItemShareClicked()
+            listener?.onFoodItemShareClicked(productUiModel)
         }
     }
 
@@ -88,6 +88,6 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onFoodItemShareClicked()
+        fun onFoodItemShareClicked(productUiModel: ProductUiModel)
     }
 }

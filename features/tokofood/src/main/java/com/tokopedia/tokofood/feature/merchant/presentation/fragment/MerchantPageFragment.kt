@@ -25,9 +25,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
+import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponentUtil
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
@@ -41,6 +44,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.ProductD
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantOpsHour
+import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
@@ -50,6 +54,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,7 +70,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     ProductCardViewHolder.OnProductCardItemClickListener,
     OrderNoteBottomSheet.OnSaveNoteButtonClickListener,
     CategoryFilterBottomSheet.CategoryFilterListener,
-    ProductDetailBottomSheet.Listener {
+    ProductDetailBottomSheet.Listener,
+    ShareBottomsheetListener {
 
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
@@ -79,12 +86,19 @@ class MerchantPageFragment : BaseMultiFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var merchantPageAnalytics: MerchantPageAnalytics
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
 
     private val viewModel by lazy {
         viewModelProvider.get(MerchantPageViewModel::class.java)
+    }
+
+    private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy {
+        context?.let { MerchantShareComponentUtil(it) }
     }
 
     private val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
@@ -98,6 +112,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var productListAdapter: ProductListAdapter? = null
 
     private var filterNameSelected: String = ""
+
+    private var merchantShareComponent: MerchantShareComponent? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -131,7 +147,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                shareMerchantPage()
+                shareMerchantPage(viewModel.merchantData)
                 true
             }
             R.id.action_open_global_menu -> {
@@ -250,12 +266,67 @@ class MerchantPageFragment : BaseMultiFragment(),
         binding?.shimmeringMerchantPage?.root?.hide()
     }
 
-    private fun shareMerchantPage() {
+    private fun shareMerchantPage(
+        tokoFoodMerchantProfile: TokoFoodMerchantProfile?
+    ) {
+        merchantShareComponent = merchantShareComponentUtil?.getMerchantShareComponent(
+                tokoFoodMerchantProfile,
+                dummyMerchantId
+            )
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@MerchantPageFragment)
+            setUtmCampaignData(
+                pageName = ShareComponentConstants.TOKOFOOD,
+                userId = userSession.userId.orEmpty(),
+                pageIdConstituents = listOf(
+                    ShareComponentConstants.MERCHANT,
+                    merchantShareComponent?.id.orEmpty()
+                ),
+                feature = SHARE
+            )
+            setMetaData(
+                tnTitle = merchantShareComponent?.previewTitle.orEmpty(),
+                tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
+            )
+            setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+        }
 
+        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 
-    private fun shareFoodItem() {
+    private fun shareFoodItem(
+        tokoFoodMerchantProfile: TokoFoodMerchantProfile?,
+        productUiModel: ProductUiModel
+    ) {
+        merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
+                tokoFoodMerchantProfile,
+                productUiModel,
+                dummyMerchantId
+            )
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@MerchantPageFragment)
+            setUtmCampaignData(
+                pageName = ShareComponentConstants.TOKOFOOD,
+                userId = userSession.userId.orEmpty(),
+                pageIdConstituents = listOf(
+                    ShareComponentConstants.Merchant.FOOD,
+                    merchantShareComponent?.id.orEmpty()
+                ),
+                feature = SHARE
+            )
+            setMetaData(
+                tnTitle = merchantShareComponent?.previewTitle.orEmpty(),
+                tnImage = merchantShareComponent?.previewThumbnail.orEmpty(),
+            )
+            setOgImageUrl(imgUrl = merchantShareComponent?.ogImage.orEmpty())
+        }
 
+        merchantPageAnalytics.impressShareBottomSheet(
+            merchantShareComponent?.id.orEmpty(),
+            userSession.userId.orEmpty()
+        )
+
+        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 
     private fun observeLiveData() {
@@ -380,10 +451,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onProductCardClicked(productUiModel: ProductUiModel) {
-        ProductDetailBottomSheet.createInstance(productUiModel).apply {
-            setListener(this@MerchantPageFragment)
-            show(childFragmentManager)
-        }
+        val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
+        bottomSheet.setListener(this@MerchantPageFragment)
+        bottomSheet.show(childFragmentManager)
     }
 
     override fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
@@ -450,9 +520,38 @@ class MerchantPageFragment : BaseMultiFragment(),
         orderNoteBottomSheet?.dismiss()
     }
 
-    override fun onFoodItemShareClicked() {
-        universalShareBottomSheet = UniversalShareBottomSheet().apply {
+    override fun onFoodItemShareClicked(productUiModel: ProductUiModel) {
+        shareFoodItem(viewModel.merchantData, productUiModel)
+    }
 
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        merchantShareComponent?.let {
+
+            merchantPageAnalytics.clickShareBottomSheet(
+                merchantShareComponent?.id.orEmpty(),
+                userSession.userId.orEmpty()
+            )
+
+            merchantShareComponentUtil?.createShareRequest(
+                shareModel = shareModel,
+                merchantShareComponent = it,
+                activity = activity,
+                view = view,
+                onSuccess = {
+                    universalShareBottomSheet?.dismiss()
+                }
+            )
         }
+    }
+
+    override fun onCloseOptionClicked() {
+        merchantPageAnalytics.closeShareBottomSheet(
+            merchantShareComponent?.id.orEmpty(),
+            userSession.userId.orEmpty()
+        )
+    }
+
+    companion object {
+        const val SHARE = "share"
     }
 }

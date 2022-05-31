@@ -1,18 +1,15 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.adapter
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.databinding.CategoryFilterItemBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CategoryFilterListUiModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class CategoryFilterAdapter(private val listener: Listener): RecyclerView.Adapter<CategoryFilterAdapter.ViewHolder>() {
 
@@ -30,10 +27,9 @@ class CategoryFilterAdapter(private val listener: Listener): RecyclerView.Adapte
             item.isSelected = index == position
             notifyItemChanged(index)
         }
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(DELAY_UPDATE_SELECTED)
+        Handler(Looper.getMainLooper()).postDelayed({
             listener.onCategoryItemSelected(categoryFilterList)
-        }
+        }, DELAY_UPDATE_SELECTED)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,11 +50,7 @@ class CategoryFilterAdapter(private val listener: Listener): RecyclerView.Adapte
 
             fun bind(item: CategoryFilterListUiModel) {
                 with(binding) {
-                    if (adapterPosition > Int.ZERO) {
-                        dividerCategory.show()
-                    } else {
-                        dividerCategory.hide()
-                    }
+                    dividerCategory.showWithCondition(adapterPosition > Int.ZERO)
                     tvCategoryName.text = item.categoryUiModel.title
                     tvTotalMenu.text = item.totalMenu
                     icSelectedItem.isVisible = item.isSelected

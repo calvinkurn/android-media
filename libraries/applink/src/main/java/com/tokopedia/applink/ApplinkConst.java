@@ -538,6 +538,8 @@ public interface ApplinkConst {
 
     interface TokoFood {
         String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
+        String MERCHANT = "tokopedia://food/merchant/{merchantId}";
+        String MERCHANT_FOOD = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
         String TOKOFOOD_ORDER = "tokopedia://food/order";
     }
 
