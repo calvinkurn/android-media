@@ -102,14 +102,6 @@ class CustomChatbotChatLayout : ViewGroup {
             readMoreView = it.findViewById(R.id.read_more_text)
         }
         initCheckMarkVisibility()
-//        message?.setOnClickListener {
-//            Log.d("FATAL", "initView: ON CLICK")
-//        }
-//
-//        message?.setOnLongClickListener {
-//            Log.d("FATAL", "initView: ON LONG CLICK")
-//            return@setOnLongClickListener true
-//        }
     }
 
     private fun initCheckMarkVisibility() {
@@ -183,10 +175,9 @@ class CustomChatbotChatLayout : ViewGroup {
             totalWidth = maxWidth
         }
 
-        setMeasuredDimension(totalWidth, totalHeight)
-        val widthSpec = MeasureSpec.makeMeasureSpec(totalWidth, MeasureSpec.EXACTLY)
-        val heightSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY)
-        super.onMeasure(widthSpec, heightSpec)
+        setMeasuredDimension(
+            resolveSize(totalWidth, widthMeasureSpec),
+            resolveSize(totalHeight,heightMeasureSpec))
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
