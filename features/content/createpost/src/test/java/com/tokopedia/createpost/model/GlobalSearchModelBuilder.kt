@@ -114,4 +114,16 @@ class GlobalSearchModelBuilder {
         text = text,
         query = query,
     )
+
+    fun buildSortFilterModel(
+        size: Int = 2,
+    ) : Map<String, String> {
+        val result = mutableMapOf<String, String>()
+
+        repeat(size) {
+            result["key$it"] = "value$it"
+        }
+
+        return result
+    }
 }
