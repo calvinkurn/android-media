@@ -4,6 +4,7 @@ import com.tokopedia.createpost.model.CommonModelBuilder
 import com.tokopedia.createpost.model.GlobalSearchModelBuilder
 import com.tokopedia.createpost.model.LastPurchasedModelBuilder
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -369,6 +370,33 @@ class GlobalSearchProductViewModelTest {
                 state.globalSearchProduct.sortFilters.isEmpty().assertTrue()
 
                 events.last().assertEventError(mockException)
+            }
+        }
+    }
+
+    @Test
+    fun `when user counts filter product number successfully, it should emit success event`() {
+        val mockResponse = "12"
+        coEvery { mockRepo.getSortFilterProductCount(any()) } returns mockResponse
+
+        robot.use {
+            it.recordEvent {
+                submitAction(ProductTagAction.RequestProductFilterProductCount(emptyMap()))
+            }.andThen {
+                last().assertEvent(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Success(mockResponse)))
+            }
+        }
+    }
+
+    @Test
+    fun `when user counts filter product number unsuccessfully, it should emit error event`() {
+        coEvery { mockRepo.getSortFilterProductCount(any()) } throws mockException
+
+        robot.use {
+            it.recordEvent {
+                submitAction(ProductTagAction.RequestProductFilterProductCount(emptyMap()))
+            }.andThen {
+                last().assertEvent(ProductTagUiEvent.SetProductFilterProductCount(NetworkResult.Error(mockException)))
             }
         }
     }
