@@ -353,8 +353,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 globalErrorWishlistV2.visible()
                 globalErrorWishlistV2.setType(errorType)
                 globalErrorWishlistV2.setActionClickListener {
-                    doRefresh()
-                    refreshLayout()
+                    setRefreshing()
                 }
             }
         }
@@ -495,12 +494,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun setRefreshing() {
-        doRefresh()
-        refreshLayout()
         isBulkDeleteShow = false
         listBulkDelete.clear()
         listExcludedBulkDelete.clear()
+        println("++ setRefreshing listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         wishlistV2Adapter.hideCheckbox()
+        countRemovableAutomaticDelete = 0
+        doRefresh()
+        refreshLayout()
 
         binding?.run {
             containerDelete.gone()
@@ -600,6 +601,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         paramWishlistV2.query = searchQuery
         listBulkDelete.clear()
         listExcludedBulkDelete.clear()
+        println("++ triggerSearch listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         if (isBulkDeleteShow) setDefaultLabelDeleteButton()
         doRefresh()
         rvScrollListener.resetState()
@@ -844,6 +846,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         println("++ make widget deletion gone")
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.gone()
+            wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = ""
+            wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(0)
+            wishlistV2StickyCountManageLabel.wishlistV2LabelProgressBar.text = "0/0"
         }
     }
 
@@ -1371,18 +1376,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         } else {
             listExcludedBulkDelete.remove(productId.toLong())
         }
+        println("++ onUncheckAutomatedBulkDelete listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         wishlistV2Adapter.setCheckbox(position, isChecked)
         binding?.run {
             containerDelete.visible()
             deleteButton.isEnabled = true
 
-            if (listExcludedBulkDelete.isNotEmpty()) {
-                val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
-                deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
-                deleteButton.setOnClickListener {
-                    bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
-                    showPopupBulkDeleteConfirmation(countExistingRemovable)
-                }
+            val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
+            println("++ set button - countRemovableAutomaticDelete = $countRemovableAutomaticDelete, listExcludedBulkDelete = ${listExcludedBulkDelete.size} ==> countExistingRemovable = $countExistingRemovable")
+            deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
+            deleteButton.setOnClickListener {
+                bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
+                showPopupBulkDeleteConfirmation(countExistingRemovable)
             }
         }
     }
@@ -1460,6 +1465,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             disableSwipeRefreshLayout()
             listBulkDelete.clear()
             listExcludedBulkDelete.clear()
+            println("++ onManageClicked listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
             wishlistV2Adapter.showCheckbox(isAutoDeletion)
             binding?.run {
                 clWishlistHeader.gone()
