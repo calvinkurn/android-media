@@ -32,6 +32,7 @@ class ExplicitViewModel @Inject constructor(
 
     private val preferenceAnswer = InputParam()
     private val preferenceUpdateState = UpdateStateParam()
+    private val preferenceOptions = listOf(OptionsItem(), OptionsItem())
 
     fun getExplicitContent(templateName: String) {
         _isQuestionLoading.value = true
@@ -61,10 +62,25 @@ class ExplicitViewModel @Inject constructor(
             sections[0].sectionId = template.sections[0].sectionID
             sections[0].questions[0].questionId = template.sections[0].questions[0].questionId
         }
+
+        val options = template.sections[0].questions[0].property.options
+
+        if (options.isNotEmpty()) {
+            preferenceOptions[0].apply {
+                value = options[0].value
+            }
+        }
+
+        if (options.size > 1) {
+            preferenceOptions[1].apply {
+                value = options[1].value
+            }
+        }
     }
 
-    fun sendAnswer(answersValue: String) {
-        preferenceAnswer.sections[0].questions[0].answerValue = answersValue
+    fun sendAnswer(answers: Boolean) {
+        preferenceAnswer.sections[0].questions[0].answerValue =
+            if (answers) preferenceOptions[0].value else preferenceOptions[1].value
 
         launchCatchError(coroutineContext, {
             val response = saveAnswerUseCase(preferenceAnswer)
