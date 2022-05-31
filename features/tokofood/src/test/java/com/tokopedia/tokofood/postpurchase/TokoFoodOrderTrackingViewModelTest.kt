@@ -49,6 +49,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
             assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
             assertTrue(viewModel.getFoodItems().isNotEmpty())
+            assertTrue(viewModel.userSession.userId.isNullOrBlank())
         }
     }
 
