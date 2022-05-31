@@ -82,6 +82,18 @@ class GlobalSearchModelBuilder {
         )
     }
 
+    fun buildQuickFilterModel(
+        name: String = "QuickFilter",
+        icon: String = "",
+        key: String = "key",
+        value: String = "value",
+    ) = QuickFilterUiModel(
+        name = name,
+        icon = icon,
+        key = key,
+        value = value,
+    )
+
     fun buildQuickFilterList(
         size: Int = 5,
     ) = List(size) {

@@ -8,10 +8,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.andThen
-import com.tokopedia.createpost.util.assertEqualTo
-import com.tokopedia.createpost.util.assertError
-import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -258,6 +255,58 @@ class GlobalSearchProductViewModelTest {
                 globalSearchProduct.state.isSuccess()
                 globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
                 globalSearchProduct.ticker.assertEqualTo(mockEmptyTicker)
+            }
+        }
+    }
+
+    @Test
+    fun `when user select quick filter, it should reload product with selected filter`() {
+        val nextCursor = "20"
+        val mockResponse = globalSearchModelBuilder.buildResponseModel(
+            size = 20,
+            nextCursor = nextCursor,
+        )
+        val selectedQuickFilter = globalSearchModelBuilder.buildQuickFilterModel()
+
+        coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.SelectProductQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertTrue()
+            }
+        }
+    }
+
+    @Test
+    fun `when user select and unselect quick filter, it should reload product with no filter`() {
+        val nextCursor = "20"
+        val mockResponse = globalSearchModelBuilder.buildResponseModel(
+            size = 20,
+            nextCursor = nextCursor,
+        )
+        val selectedQuickFilter = globalSearchModelBuilder.buildQuickFilterModel()
+
+        coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.SelectProductQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertTrue()
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.SelectProductQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertFalse()
             }
         }
     }

@@ -13,6 +13,18 @@ fun <T : Any> T.assertEqualTo(expected: T) {
         .isEqualTo(expected)
 }
 
+fun <T : Boolean> T.assertTrue() {
+    Assertions
+        .assertThat(this)
+        .isEqualTo(true)
+}
+
+fun <T : Boolean> T.assertFalse() {
+    Assertions
+        .assertThat(this)
+        .isEqualTo(false)
+}
+
 fun <T : Any> List<T>.assertEmpty() {
     Assertions
         .assertThat(this.size)
