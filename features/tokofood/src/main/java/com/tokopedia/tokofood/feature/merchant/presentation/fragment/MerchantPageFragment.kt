@@ -21,8 +21,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
@@ -62,6 +62,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
+import kotlin.math.abs
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -182,7 +183,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setBackgroundColor()
+        setBackgroundDefaultColor()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -192,8 +193,25 @@ class MerchantPageFragment : BaseMultiFragment(),
         setupCardSticky()
     }
 
-    private fun setBackgroundColor() {
+    private fun setBackgroundDefaultColor() {
         binding?.toolbarParent?.let {
+            it.setBackgroundColor(
+                ContextCompat.getColor(
+                    it.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
+    }
+
+    private fun setToolbarTransparentColor() {
+        binding?.toolbar?.let {
+            it.background = null
+        }
+    }
+
+    private fun setToolbarWhiteColor() {
+        binding?.toolbar?.let {
             it.setBackgroundColor(
                 ContextCompat.getColor(
                     it.context,
@@ -209,14 +227,16 @@ class MerchantPageFragment : BaseMultiFragment(),
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (appBarLayout == null) return
 
-                if (verticalOffset == Int.ZERO) {
+                val offset = abs(verticalOffset)
+
+                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero())) {
                     //collapsed
-                    binding?.merchantInfoViewGroup?.show()
-                    binding?.cardUnifySticky?.hide()
+                    binding?.cardUnifySticky?.show()
+                    setToolbarWhiteColor()
                 } else {
                     //expanded
-                    binding?.merchantInfoViewGroup?.hide()
-                    binding?.cardUnifySticky?.show()
+                    binding?.cardUnifySticky?.hide()
+                    setToolbarTransparentColor()
                 }
             }
         })
