@@ -62,3 +62,9 @@ fun ProductTagUiEvent.assertEventError(error: Exception) {
         .assertThat((this as ProductTagUiEvent.ShowError).throwable)
         .isEqualTo(error)
 }
+
+fun ProductTagUiEvent.assertEvent(event: ProductTagUiEvent) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(event::class.java)
+}

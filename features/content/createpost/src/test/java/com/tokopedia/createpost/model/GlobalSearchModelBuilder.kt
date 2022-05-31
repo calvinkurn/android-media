@@ -5,10 +5,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.TickerUiModel
-import com.tokopedia.filter.common.data.DataValue
-import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.common.data.*
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022
@@ -69,6 +66,11 @@ class GlobalSearchModelBuilder {
                     Filter(
                         title = "Filter $it",
                         subTitle = "Subtitle $it",
+                        options = List(3) { optionIdx ->
+                            Option(
+                                name = "Option $optionIdx"
+                            )
+                        }
                     )
                 },
                 sort = List(sizeSort) {
