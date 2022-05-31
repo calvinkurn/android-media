@@ -56,6 +56,7 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("mrp")
     @Expose
     private int mrp;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
     private int salesPrice;
@@ -245,6 +246,10 @@ public class DealsDetailsResponse implements Parcelable {
 
     public String getWebUrl() {
         return webUrl;
+    }
+
+    public void setWebUrl(String mWebUrl) {
+        this.webUrl = mWebUrl;
     }
 
     public String getAppUrl() {

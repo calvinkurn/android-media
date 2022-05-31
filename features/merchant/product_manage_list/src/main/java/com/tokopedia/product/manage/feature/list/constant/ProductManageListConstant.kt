@@ -31,7 +31,6 @@ object ProductManageListConstant {
     const val SET_CASHBACK_REQUEST_CODE = 3333
     const val REQUEST_CODE_ADD_PRODUCT = 3697
     const val REQUEST_CODE_EDIT_PRODUCT = 9736
-    const val REQUEST_CODE_DRAFT_PRODUCT = 9737
     const val REQUEST_CODE_PICK_ETALASE = 1945
 
     const val FILTER_ALL_PRODUK = -2
