@@ -10,9 +10,7 @@ import com.tokopedia.tokofood.common.di.DaggerTokoFoodComponent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
-import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 import javax.inject.Inject
 
 class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
@@ -27,7 +25,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     override fun getRootFragment(): Fragment {
-        return MerchantPageFragment()
+        return TokoFoodHomeFragment.createInstance()
     }
 
     override fun mapUriToFragment(uri: Uri): Fragment? {

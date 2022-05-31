@@ -1,21 +1,25 @@
 package com.tokopedia.tokofood.home.domain.query
 
-internal object TokoFoodHomeDynamicChannel {
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodParamMapper.mapLocation
 
-    val QUERY = """
-       query getDynamicHomeChannel(
-         ${'$'}token: String, 
-         ${'$'}numOfChannel: Int, 
+object TokoFoodHomeDynamicChannelQuery: GqlQueryInterface {
+
+    const val PARAM_LOCATION = "location"
+
+    private const val OPERATION_NAME = "getDynamicHomeChannel"
+    private val QUERY = """
+       query $OPERATION_NAME(
          ${'$'}location: String
        ) {
          dynamicHomeChannel {
            channels(
              type:"tokofood", 
-             token:${'$'}token, 
-             numOfChannel:${'$'}numOfChannel, 
              location: ${'$'}location
            ) {
              id
+             widgetParam
              group_id
              galaxy_attribution
              persona
@@ -111,4 +115,13 @@ internal object TokoFoodHomeDynamicChannel {
          }
        }
     """.trimIndent()
+
+    @JvmStatic
+    fun createRequestParams(localCacheModel: LocalCacheModel?) = HashMap<String, Any>().apply {
+        put(PARAM_LOCATION, mapLocation(localCacheModel))
+    }
+
+    override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
+    override fun getQuery(): String = QUERY
+    override fun getTopOperationName(): String = OPERATION_NAME
 }
