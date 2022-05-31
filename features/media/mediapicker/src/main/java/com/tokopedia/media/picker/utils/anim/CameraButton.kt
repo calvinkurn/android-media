@@ -3,10 +3,11 @@ package com.tokopedia.media.picker.utils.anim
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.unifyprinciples.R as principleR
+import com.tokopedia.picker.common.utils.Unify_R500
 
 object CameraButton {
 
@@ -28,7 +29,7 @@ object CameraButton {
     }
 
     private fun View.animate(needToZoomOut: Boolean, init: Float, end: Float) {
-        val rectangle = createRectangle(this)
+        val rectangle = createRectangle(context)
         background = rectangle
 
         AnimatorSet().apply {
@@ -68,10 +69,9 @@ object CameraButton {
         }
     }
 
-    private fun createRectangle(view: View): GradientDrawable {
+    private fun createRectangle(context: Context): GradientDrawable {
         return GradientDrawable().apply {
-            val shapeColor = ContextCompat.getColor(view.context, principleR.color.Unify_RN600)
-            setColor(shapeColor)
+            setColor(ContextCompat.getColor(context, Unify_R500))
             shape = GradientDrawable.RECTANGLE
         }
     }

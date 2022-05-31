@@ -117,7 +117,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProd
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
@@ -547,6 +546,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareBtnReferralSenderClicked(referral: HomeSharingReferralWidgetUiModel) {
+        setupReferralData(referral)
         showUniversalShareBottomSheet(shareHomeTokonow)
         trackClickShareSenderReferralWidget(referral)
     }
@@ -1075,16 +1075,11 @@ class TokoNowHomeFragment: Fragment(),
         }
 
         observe(viewModelTokoNow.getReferralResult) {
-            when(it) {
-                is Success -> {
-                    setupTokoNowShareData(it.data)
-                }
-                is Fail -> {
-                    showToaster(
-                        message = getString(R.string.tokopedianow_home_referral_toaster),
-                        type = TYPE_ERROR
-                    )
-                }
+            if(it is Fail) {
+                showToaster(
+                    message = getString(R.string.tokopedianow_home_referral_toaster),
+                    type = TYPE_ERROR
+                )
             }
         }
 
@@ -1173,7 +1168,7 @@ class TokoNowHomeFragment: Fragment(),
         onRefreshLayout()
     }
 
-    private fun setupTokoNowShareData(referral: HomeReferralDataModel) {
+    private fun setupReferralData(referral: HomeSharingReferralWidgetUiModel) {
         val url = REFERRAL_PAGE_URL + referral.sharingUrlParam
 
         updateShareHomeData(
@@ -1190,6 +1185,7 @@ class TokoNowHomeFragment: Fragment(),
             specificPageName = referral.ogTitle
             specificPageDescription = referral.ogDescription
             ogImageUrl = referral.ogImage
+            thumbNailImage = referral.ogImage
         }
     }
 

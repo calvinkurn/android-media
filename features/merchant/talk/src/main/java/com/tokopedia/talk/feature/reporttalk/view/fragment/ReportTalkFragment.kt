@@ -17,8 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
@@ -117,7 +115,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     override fun onClickOption(talkReportOptionUiModel: TalkReportOptionUiModel) {
         reportTalkAdapter.setChecked(talkReportOptionUiModel)
         checkEnableSendButton()
-
     }
 
     private fun setupView() {
@@ -204,16 +201,16 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
 
-    private fun showLoadingFull() {
-        binding.progressBar.show()
-        binding.mainView.hide()
-        binding.sendButton.hide()
+    private fun showLoadingSendReport() {
+        binding.sendButton.isLoading = true
+        reportTalkAdapter.disableOptions()
+        binding.reason.isEnabled = false
     }
 
-    private fun hideLoadingFull() {
-        binding.progressBar.hide()
-        binding.mainView.show()
-        binding.sendButton.show()
+    private fun hideLoadingSendReport() {
+        binding.sendButton.isLoading = false
+        reportTalkAdapter.enableOptions()
+        binding.reason.isEnabled = true
     }
 
     private fun onErrorReportTalk(throwable: Throwable) {
@@ -233,7 +230,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         } else {
             viewModel.reportComment(commentId, otherReason, selectedOption.position)
         }
-        showLoadingFull()
+        showLoadingSendReport()
     }
 
     private fun onSuccessReportTalk() {
@@ -255,14 +252,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
 
     private fun observeLiveDatas() {
         viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
-            hideLoadingFull()
+            hideLoadingSendReport()
             when(it) {
                 is Success -> onSuccessReportTalk()
                 is Fail -> onErrorReportTalk(it.throwable)
             }
         })
         viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
-            hideLoadingFull()
+            hideLoadingSendReport()
             when(it) {
                 is Success -> onSuccessReportTalk()
                 is Fail -> onErrorReportTalk(it.throwable)
