@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -200,6 +201,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     fetchOrderLiveTracking(orderId)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -213,6 +219,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateDriverCall(it.data)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
+                    )
                     showErrorToaster("")
                 }
             }
@@ -258,6 +269,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateOrderCompleted(it.data)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_COMPLETED_ORDER_POST_PURCHASE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -354,7 +370,10 @@ class BaseTokoFoodOrderTrackingFragment :
         toolbarHandler?.setToolbarScrolling(orderStatus)
     }
 
-    private fun setupStickyButton(actionButtons: ActionButtonsUiModel, merchantData: MerchantDataUiModel) {
+    private fun setupStickyButton(
+        actionButtons: ActionButtonsUiModel,
+        merchantData: MerchantDataUiModel
+    ) {
         binding?.run {
             containerOrderTrackingHelpButton.hide()
             containerOrderTrackingActionsButton.apply {
@@ -389,6 +408,20 @@ class BaseTokoFoodOrderTrackingFragment :
                 ).show()
             }
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            errorType,
+            viewModel.userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     companion object {

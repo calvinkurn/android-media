@@ -19,6 +19,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderSt
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -39,6 +40,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 class TokoFoodOrderTrackingViewModel @Inject constructor(
+    val userSession: UserSessionInterface,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,

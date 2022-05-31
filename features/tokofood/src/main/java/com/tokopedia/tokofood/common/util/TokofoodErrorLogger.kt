@@ -18,12 +18,22 @@ object TokofoodErrorLogger {
 
     internal const val PAGE_KEY = "page"
 
+    object PAGE {
+        internal const val HOME = "HOME"
+        internal const val MERCHANT = "MERCHANT"
+        internal const val PURCHASE = "PURCHASE"
+        internal const val PROMO = "PROMO"
+        internal const val POST_PURCHASE = "POST_PURCHASE"
+    }
+
     object ErrorDescription {
         internal const val RENDER_PAGE_ERROR = "error render page"
         internal const val ADD_TO_CART_ERROR = "error add to cart"
         internal const val REMOVE_FROM_CART_ERROR = "error remove from cart"
         internal const val UPDATE_CART_ERROR = "error update cart"
         internal const val PAYMENT_ERROR = "error go to payment"
+        internal const val POOL_BASED_ERROR = "error of pool based order status"
+        internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
     }
 
     object ErrorType {
@@ -32,20 +42,25 @@ object TokofoodErrorLogger {
         internal const val ERROR_REMOVE_FROM_CART = "error_remove"
         internal const val ERROR_UPDATE_CART = "error_update"
         internal const val ERROR_PAYMENT = "error_payment"
+        internal const val ERROR_POOL_POST_PURCHASE = "error_pool_post_purchase"
+        internal const val ERROR_COMPLETED_ORDER_POST_PURCHASE = "error_completed_order_post_purchase"
+        internal const val ERROR_DRIVER_PHONE_NUMBER = "error_driver_phone_number"
     }
 
-    fun logExceptionToScalyr(
+    fun logExceptionToServerLogger(
+        pageType: String,
         throwable: Throwable,
         errorType: String,
         deviceId: String,
         description: String,
         extras: Map<String, Any> = mapOf()
     ) {
-        val message = createErrorMessage(throwable, errorType, deviceId, description, extras)
+        val message = createErrorMessage(pageType, throwable, errorType, deviceId, description, extras)
         ServerLogger.log(Priority.P2, ERROR_TAG, message)
     }
 
     private fun createErrorMessage(
+        pageType: String,
         throwable: Throwable,
         errorType: String,
         deviceId: String,
@@ -53,6 +68,7 @@ object TokofoodErrorLogger {
         extras: Map<String, Any>
     ): Map<String, String> {
         return mutableMapOf(
+            PAGE_KEY to pageType,
             ERROR_TYPE_KEY to errorType,
             DEVICE_ID_KEY to deviceId,
             MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
