@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.R.color.*
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemCampaignBinding
 import com.tokopedia.shop.flash_sale.common.extension.toCalendar
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
@@ -51,27 +52,27 @@ class CampaignViewHolder(private val binding: SsfsItemCampaignBinding) :
         when(campaignStatus) {
             CampaignStatus.UPCOMING -> {
                 binding.tpgCampaignStatus.setStatus(R.string.sfs_upcoming)
-                binding.tpgCampaignStatus.textColor(R.color.Unify_YN400)
+                binding.tpgCampaignStatus.textColor(Unify_YN400)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
             }
             CampaignStatus.AVAILABLE -> {
                 binding.tpgCampaignStatus.setStatus(R.string.sfs_available)
-                binding.tpgCampaignStatus.textColor(R.color.Unify_NN600)
+                binding.tpgCampaignStatus.textColor(Unify_NN600)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_available)
             }
             CampaignStatus.ONGOING -> {
                 binding.tpgCampaignStatus.setStatus(R.string.sfs_ongoing)
-                binding.tpgCampaignStatus.textColor(R.color.Unify_GN500)
+                binding.tpgCampaignStatus.textColor(Unify_GN500)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_ongoing)
             }
             CampaignStatus.FINISHED -> {
                 binding.tpgCampaignStatus.setStatus(R.string.sfs_finished)
-                binding.tpgCampaignStatus.textColor(R.color.Unify_NN400)
+                binding.tpgCampaignStatus.textColor(Unify_NN400)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
             }
             CampaignStatus.CANCELLED -> {
                 binding.tpgCampaignStatus.setStatus(R.string.sfs_cancelled)
-                binding.tpgCampaignStatus.textColor(R.color.Unify_RN500)
+                binding.tpgCampaignStatus.textColor(Unify_RN500)
                 binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
             }
             CampaignStatus.DRAFT -> {}

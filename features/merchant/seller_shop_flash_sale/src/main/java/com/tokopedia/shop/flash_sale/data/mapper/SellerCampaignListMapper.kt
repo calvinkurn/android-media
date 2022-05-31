@@ -3,35 +3,28 @@ package com.tokopedia.shop.flash_sale.data.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
-import com.tokopedia.shop.flash_sale.common.extension.epochTo
+import com.tokopedia.shop.flash_sale.common.extension.formatTo
 import com.tokopedia.shop.flash_sale.common.extension.epochToDate
-import com.tokopedia.shop.flash_sale.common.extension.toCalendar
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.domain.entity.enums.*
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SellerCampaignListMapper @Inject constructor() {
 
     fun map(data: GetSellerCampaignListResponse): CampaignMeta {
         val campaigns = data.getSellerCampaignList.campaign.map {
-
-            val startDate =   it.startDate.epochToDate()
-
-
             CampaignUiModel(
                 it.campaignId.toLongOrZero(),
                 it.campaignName,
-                it.endDate.epochTo(DateConstant.DATE),
-                it.endDate.epochTo(DateConstant.TIME_WIB),
+                it.endDate.epochToDate().formatTo(DateConstant.DATE),
+                it.endDate.epochToDate().formatTo(DateConstant.TIME_WIB),
                 it.isCancellable,
                 it.isShareable,
                 it.notifyMeCount,
-                it.startDate.epochTo(DateConstant.DATE),
-                it.startDate.epochTo(DateConstant.TIME_WIB),
+                it.startDate.epochToDate().formatTo(DateConstant.DATE),
+                it.startDate.epochToDate().formatTo(DateConstant.TIME_WIB),
                 it.statusId.toIntOrZero().convert(),
                 it.thematicParticipation,
                 CampaignUiModel.ProductSummary(
@@ -42,7 +35,7 @@ class SellerCampaignListMapper @Inject constructor() {
                     it.productSummary.deletedProduct,
                     it.productSummary.visibleProductCount
                 ),
-                startDate
+                it.startDate.epochToDate()
             )
         }
         return CampaignMeta(
