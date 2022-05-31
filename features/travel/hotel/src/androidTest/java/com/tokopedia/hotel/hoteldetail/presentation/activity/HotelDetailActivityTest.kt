@@ -3,6 +3,9 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
+import com.tokopedia.hotel.test.R
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import org.junit.*
@@ -17,8 +20,42 @@ class HotelDetailActivityTest: BaseHotelPDPTest() {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            HotelDetailMockResponseConfig.isPDPNearby = true
-            setupGraphqlMockResponse(HotelDetailMockResponseConfig())
+            setupGraphqlMockResponse{
+                addMockResponse(
+                    HotelDetailMockResponseConfig.KEY_QUERY_GET_HOTEL_DETAIL,
+                    InstrumentationMockHelper.getRawString(
+                        context,
+                        R.raw.response_mock_property_detail
+                    ),
+                    MockModelConfig.FIND_BY_CONTAINS
+                )
+
+                addMockResponse(
+                    HotelDetailMockResponseConfig.KEY_QUERY_GET_HOTEL_ROOM,
+                    InstrumentationMockHelper.getRawString(
+                        context,
+                        R.raw.response_mock_get_room_list
+                    ),
+                    MockModelConfig.FIND_BY_CONTAINS
+                )
+
+                addMockResponse(
+                    HotelDetailMockResponseConfig.KEY_QUERY_GET_PROPERTY_REVIEW,
+                    InstrumentationMockHelper.getRawString(
+                        context,
+                        R.raw.response_mock_property_review
+                    ),
+                    MockModelConfig.FIND_BY_CONTAINS
+                )
+                addMockResponse(
+                    HotelDetailMockResponseConfig.KEY_QUERY_GET_NEARBY_LANDMARK,
+                    InstrumentationMockHelper.getRawString(
+                        context,
+                        R.raw.response_mock_nearby_landmark
+                    ),
+                    MockModelConfig.FIND_BY_CONTAINS
+                )
+            }
         }
 
         override fun getActivityIntent(): Intent {
