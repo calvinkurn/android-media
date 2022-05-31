@@ -24,11 +24,15 @@ import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -38,7 +42,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
-        private const val ONE_PRODUCT = 1
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
@@ -116,6 +119,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun setupView() {
         setupSearchBar()
+        setupScrollListener()
     }
 
     private fun setupSearchBar() {
@@ -130,6 +134,27 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
                 return@setOnEditorActionListener false
             }
             searchBar.clearListener = { clearSearchBar() }
+        }
+    }
+
+    private fun setupScrollListener() {
+        binding?.run {
+            recyclerView.addOnScrollListener(
+                RecyclerViewScrollListener(
+                    onScrollDown = {
+                        doOnDelayFinished {
+                            onScrollDown()
+                            handleScrollDownEvent()
+                        }
+                    },
+                    onScrollUp = {
+                        doOnDelayFinished {
+                            onScrollUp()
+                            handleScrollUpEvent()
+                        }
+                    }
+                )
+            )
         }
     }
 
@@ -267,14 +292,10 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun handleScrollDownEvent() {
         binding?.searchBar.slideDown()
-
-
     }
 
     private fun handleScrollUpEvent() {
         binding?.searchBar.slideUp()
-
-
     }
 
     private fun displayCampaigns(data: CampaignMeta) {
@@ -319,4 +340,12 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
     }
+
+    private fun doOnDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
+            block()
+        }
+    }
+
 }

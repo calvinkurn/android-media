@@ -17,9 +17,12 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.extension.showError
+import com.tokopedia.shop.flash_sale.common.extension.slideDown
+import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -32,7 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CampaignListContainerFragment: BaseDaggerFragment() {
+class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val NOT_SET = 0
@@ -167,7 +170,9 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
 
     private fun setupView() {
         binding?.run {
-            btnCreateCampaign.setOnClickListener { }
+            btnCreateCampaign.setOnClickListener {
+
+            }
             header.setNavigationOnClickListener { activity?.finish() }
         }
     }
@@ -185,12 +190,12 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun handleDraftCount(draftCount : Int) {
+    private fun handleDraftCount(draftCount: Int) {
         val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
         binding?.btnDraft?.text = wording
     }
 
-    private fun displayRemainingQuota(remainingQuota : Int) {
+    private fun displayRemainingQuota(remainingQuota: Int) {
         val counter = if (remainingQuota.isMoreThanZero()) {
             remainingQuota
         } else {
@@ -202,6 +207,12 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         )
         binding?.tpgRemainingQuota?.text = wording
         binding?.tpgRemainingQuota?.visible()
+
+        if (counter == ZERO) {
+            showNoCampaignQuotaDialog(requireActivity()) {
+
+            }
+        }
     }
 
     private fun displayError(throwable: Throwable) {
@@ -227,30 +238,20 @@ class CampaignListContainerFragment: BaseDaggerFragment() {
         viewModel.getTabsMeta()
     }
 
-    private val onDiscountRemoved: (Int, Int) -> Unit =
-        { discountStatusId: Int, newTotalProduct: Int ->
-           /* val currentTab = tabs.find { it.discountStatusId == discountStatusId }
-            val updatedTabName = "${currentTab?.name} ($newTotalProduct)"
-
-            val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-            val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
-
-            val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
-            previouslySelectedTab?.setCustomText(updatedTabName)
-            previouslySelectedTab?.select()*/
-        }
-
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
-
+            tabsUnify.getUnifyTabLayout().slideDown()
+            cardView.slideDown()
         }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
         binding?.run {
-
+            tabsUnify.getUnifyTabLayout().slideUp()
+            cardView.slideUp()
         }
     }
+
 
     fun setTabChangeListener(listener: TabChangeListener) {
         this.listener = listener

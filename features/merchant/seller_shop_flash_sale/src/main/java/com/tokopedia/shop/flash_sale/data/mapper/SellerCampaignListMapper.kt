@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
 import com.tokopedia.shop.flash_sale.common.extension.epochTo
 import com.tokopedia.shop.flash_sale.common.extension.epochToDate
-import com.tokopedia.shop.flash_sale.common.extension.toCalendar
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
@@ -16,6 +15,7 @@ class SellerCampaignListMapper @Inject constructor() {
 
     fun map(data: GetSellerCampaignListResponse): CampaignMeta {
         val campaigns = data.getSellerCampaignList.campaign.map {
+            val cal =   it.startDate.epochToDate()
             CampaignUiModel(
                 it.campaignId.toLongOrZero(),
                 it.campaignName,
@@ -36,7 +36,7 @@ class SellerCampaignListMapper @Inject constructor() {
                     it.productSummary.deletedProduct,
                     it.productSummary.visibleProductCount
                 ),
-                it.startDate.epochToDate().toCalendar()
+                it.startDate.epochToDate()
             )
         }
         return CampaignMeta(
