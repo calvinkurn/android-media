@@ -28,7 +28,6 @@ class PlayMapperBuilder {
         merchantVoucherMapper = merchantVoucherMapper,
         chatMapper = chatMapper,
         channelStatusMapper = channelStatusMapper,
-        channelInteractiveMapper = channelInteractiveMapper,
         interactiveMapper = interactiveMapper,
         realTimeNotificationMapper = realTimeNotificationMapper,
         multipleLikesMapper = multipleLikesMapper,

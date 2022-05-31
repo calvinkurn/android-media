@@ -9,6 +9,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -53,11 +54,13 @@ class PlayInteractiveLeaderboardViewComponent(
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            if (itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+            if (itemCount > 0) layoutManager.scrollToPositionWithOffset(0, 0)
         }
     }
 
     private val impressHolder = ImpressHolder()
+
+    private val layoutManager = LinearLayoutManager(rvLeaderboard.context)
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
@@ -68,7 +71,10 @@ class PlayInteractiveLeaderboardViewComponent(
                 listener.onCloseButtonClicked(this)
             }
 
-        rvLeaderboard.adapter = leaderboardAdapter
+        rvLeaderboard.apply {
+            adapter = leaderboardAdapter
+            layoutManager = layoutManager
+        }
 
         btnRefreshError.setOnClickListener {
             showBtnLoader(shouldShow = true)
