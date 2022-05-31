@@ -232,4 +232,33 @@ class GlobalSearchProductViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user close ticker, it should emit new state with empty ticker`() {
+        val mockTicker = globalSearchModelBuilder.buildTickerModel()
+        val mockEmptyTicker = globalSearchModelBuilder.buildTickerModel(text = "", query = "")
+
+        val nextCursor = "20"
+        val mockResponse = globalSearchModelBuilder.buildResponseModel(
+            size = 20,
+            nextCursor = nextCursor,
+            ticker = mockTicker,
+        )
+
+        coEvery { mockRepo.searchAceProducts(any()) } returns mockResponse
+
+        robot.use {
+            it.setup {
+                submitAction(ProductTagAction.LoadGlobalSearchProduct)
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.CloseTicker)
+            }.andThen {
+                globalSearchProduct.state.isSuccess()
+                globalSearchProduct.products.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchProduct.ticker.assertEqualTo(mockEmptyTicker)
+            }
+        }
+    }
 }
