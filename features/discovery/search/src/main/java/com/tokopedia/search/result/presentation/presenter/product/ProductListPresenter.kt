@@ -1612,6 +1612,7 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
         if (options.size == 1) {
             item.listener = {
