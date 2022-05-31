@@ -11,12 +11,13 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -24,6 +25,7 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
@@ -120,6 +122,8 @@ class ProductManageFragment : BaseDaggerFragment() {
         handleArguments()
         setupViews()
         observeProductsMeta()
+        observeSellerEligibility()
+        checkSellerEligibility()
     }
 
     private fun setupViews() {
@@ -166,10 +170,15 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun setupHeader() {
+        binding?.run {
+            header.setNavigationOnClickListener { activity?.finish() }
+        }
+    }
+
+    private fun addShopInfoIcon() {
         val shopIcon = IconUnify(requireContext(), IconUnify.SHOP_INFO)
         binding?.run {
             header.addCustomRightContent(shopIcon)
-            header.setNavigationOnClickListener { activity?.finish() }
             header.setOnClickListener { showSellerInfoBottomSheet() }
         }
     }
@@ -192,18 +201,84 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
 
-                    displayError(it.throwable)
+                    displayError(it.throwable){
+                        getTabsMetadata()
+                    }
                 }
             }
         }
     }
 
+    private fun observeSellerEligibility() {
+        viewModel.sellerEligibility.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if(it.data.hasBenefitPackage && it.data.isAuthorize) {
+                        hideErrorEligibleView()
+                        addShopInfoIcon()
+                        getTabsMetadata()
+                    }
+                    else {
+                        binding?.ticker?.gone()
+                        binding?.shimmer?.content?.gone()
+                        binding?.groupContent?.gone()
+                        binding?.globalError?.gone()
+                        binding?.globalError?.gone()
+                        if(!it.data.hasBenefitPackage)
+                            showErrorEligibleView()
+                        if(!it.data.isAuthorize)
+                            showRbacBottomSheet()
+                    }
+                }
+                is Fail -> {
+                    binding?.ticker?.gone()
+                    binding?.shimmer?.content?.gone()
+                    binding?.groupContent?.gone()
+                    binding?.globalError?.gone()
+                    hideErrorEligibleView()
+                    displayError(it.throwable){
+                        checkSellerEligibility()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showErrorEligibleView() {
+        binding?.layoutErrorNotEligible?.apply {
+            containerLayoutErrorNotEligible.show()
+            imageErrorNotEligible.loadImage(UrlConstant.URL_IMAGE_NON_ELIGIBLE_SELLER_EDU)
+            buttonNonEligible.setOnClickListener {
+                redirectToNonEligibleSellerEdu()
+            }
+        }
+    }
+
+    private fun redirectToNonEligibleSellerEdu() {
+        RouteManager.route(
+            context, String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW, UrlConstant.SELLER_NON_ELIGIBLE_EDU_URL
+            )
+        )
+    }
+
+    private fun hideErrorEligibleView() {
+        binding?.layoutErrorNotEligible?.containerLayoutErrorNotEligible?.hide()
+    }
+
+    private fun showRbacBottomSheet() {
+        RouteManager.route(context,ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
-        getTabsMetadata()
+        (viewModel.sellerEligibility.value as? Success)?.data?.let {
+            if(it.isAuthorize && it.hasBenefitPackage)
+                getTabsMetadata()
+        }
     }
-
 
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
@@ -288,14 +363,15 @@ class ProductManageFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayError(throwable: Throwable) {
+    private fun displayError(throwable: Throwable, onClickRetry: () -> Unit) {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { getTabsMetadata() }
+            globalError.setActionClickListener {
+                onClickRetry.invoke()
+            }
             root showError throwable
         }
-
     }
 
     private fun getCurrentTabPosition(): Int {
@@ -309,6 +385,14 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.groupContent?.gone()
         binding?.globalError?.gone()
         viewModel.getSlashPriceProductsMeta()
+    }
+
+
+    private fun checkSellerEligibility() {
+        binding?.shimmer?.content?.visible()
+        binding?.groupContent?.gone()
+        binding?.globalError?.gone()
+        viewModel.checkSellerEligibility()
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit =

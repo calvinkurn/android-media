@@ -36,7 +36,6 @@ import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.S
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.ShopDiscountManageProductVariantDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter.viewholder.ShopDiscountManageProductVariantItemViewHolder
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductVariantDiscountViewModel
-import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -179,22 +178,11 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private fun configDiscountPeriodData(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
-        val startDate = viewModel.defaultStartDate
-        val endDate = if (slashPriceBenefitData.isUseVps) {
-            viewModel.getVpsPackageDefaultEndDate(slashPriceBenefitData)
-        } else {
-            viewModel.getMembershipDefaultEndDate()
-        }
-        viewModel.updateProductDiscountPeriodDataBasedOnBenefit(
-            startDate,
-            endDate
-        )
+        viewModel.updateProductVariantDiscountPeriodData(slashPriceBenefitData)
     }
 
     private fun observeLiveData() {
         observeSellerBenefitLiveData()
-        observeUpdatedDiscountPeriodData()
-        observeOnToggleVariantStateUpdated()
         observeIsEnableSubmitButton()
         observeIsEnableBulkApplyVariant()
         observeBulkApplyListVariantItemUiModel()
@@ -215,7 +203,7 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private fun observeIsEnableBulkApplyVariant() {
-        viewModel.isEnableBulkApplyVariant.observe(viewLifecycleOwner, { totalEnabledVariant ->
+        viewModel.totalEnableBulkApplyVariant.observe(viewLifecycleOwner, { totalEnabledVariant ->
             totalEnabledVariant?.let {
                 setLabelBulkApply(it)
             }
@@ -226,26 +214,6 @@ class ShopDiscountManageProductVariantDiscountFragment
         viewModel.isEnableSubmitButton.observe(viewLifecycleOwner, {
             buttonApply?.isEnabled = it
         })
-    }
-
-    private fun observeOnToggleVariantStateUpdated() {
-        viewModel.onToggleVariantStateUpdated.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.updateToggleVariantData(it)
-            }
-        })
-    }
-
-    private fun observeUpdatedDiscountPeriodData() {
-        viewModel.updatedDiscountPeriodData.observe(viewLifecycleOwner, { variantProductData ->
-            variantProductData?.let {
-                updateSelectedDiscountPeriodData(it)
-            }
-        })
-    }
-
-    private fun updateSelectedDiscountPeriodData(variantProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        adapter.updateDiscountPeriodData(variantProductData)
     }
 
     private fun observeSellerBenefitLiveData() {
