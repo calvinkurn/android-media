@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.model
 
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 
 /**
@@ -52,5 +53,11 @@ class CommonModelBuilder {
         key = key,
         value = value,
         isSelected = true,
+    )
+
+    fun buildShopModel(
+        shopStatus: Int = 0,
+    ) = ShopUiModel(
+        shopStatus = shopStatus,
     )
 }

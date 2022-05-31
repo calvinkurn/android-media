@@ -149,4 +149,33 @@ class GlobalSearchShopViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `when user select shop and shop is accessible, it should append shop source to stack`() {
+
+        robot.use {
+            val selectedShop = commonModelBuilder.buildShopModel(shopStatus = 0)
+
+            it.recordState {
+                submitAction(ProductTagAction.ShopSelected(selectedShop))
+            }.andThen {
+                shopProduct.shop.assertEqualTo(selectedShop)
+                productTagSource.productTagSourceStack.last().assertEqualTo(ProductTagSource.Shop)
+            }
+        }
+    }
+
+    @Test
+    fun `when user select shop and shop is not accessible, it should not append shop source to stack`() {
+
+        robot.use {
+            val selectedShop = commonModelBuilder.buildShopModel(shopStatus = 3)
+
+            it.recordState {
+                submitAction(ProductTagAction.ShopSelected(selectedShop))
+            }.andThen {
+                productTagSource.productTagSourceStack.last().assertEqualTo(ProductTagSource.GlobalSearch)
+            }
+        }
+    }
 }
