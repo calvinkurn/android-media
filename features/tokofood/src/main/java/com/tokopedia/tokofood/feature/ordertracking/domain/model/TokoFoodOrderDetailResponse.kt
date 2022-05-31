@@ -137,6 +137,18 @@ data class TokoFoodOrderDetailResponse(
 
         @SuppressLint("Invalid Data Type")
         data class Item(
+            @SerializedName("cartId")
+            @Expose
+            val cartId: String = "",
+            @SerializedName("categoryId")
+            @Expose
+            val categoryId: String = "",
+            @SerializedName("categoryName")
+            @Expose
+            val categoryName: String = "",
+            @SerializedName("itemId")
+            @Expose
+            val itemId: String = "",
             @SerializedName("displayName")
             @Expose
             val displayName: String = "",
@@ -164,6 +176,9 @@ data class TokoFoodOrderDetailResponse(
         }
 
         data class Merchant(
+            @SerializedName("merchantId")
+            @Expose
+            val merchantId: String = "",
             @SerializedName("displayName")
             @Expose
             val displayName: String = "",

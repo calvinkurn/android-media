@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOr
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,6 +66,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         get() = _driverPhoneNumber
 
     private var foodItems = listOf<FoodItemUiModel>()
+    private var merchantData: MerchantDataUiModel? = null
     private var orderId = ""
     private var orderStatusKey = ""
 
@@ -93,6 +95,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getFoodItems() = foodItems
     fun getOrderId() = orderId
+    fun getMerchantData() = merchantData
 
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
@@ -107,8 +110,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.orderStatusKey = orderDetailResult.orderStatusKey
             this@TokoFoodOrderTrackingViewModel.foodItems =
                 orderDetailResult.foodItemList.filterIsInstance<FoodItemUiModel>()
+            this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderDetailResult.value = Success(orderDetailResult)
-
         }, onError = {
             _orderDetailResult.value = Fail(it)
         })
@@ -133,6 +136,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.orderStatusKey = orderDetailResult.orderStatusKey
             this@TokoFoodOrderTrackingViewModel.foodItems =
                 orderDetailResult.foodItemList.filterIsInstance(FoodItemUiModel::class.java)
+            this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderCompletedLiveTracking.value = Success(orderDetailResult)
         }, onError = {
             _orderCompletedLiveTracking.value = Fail(it)

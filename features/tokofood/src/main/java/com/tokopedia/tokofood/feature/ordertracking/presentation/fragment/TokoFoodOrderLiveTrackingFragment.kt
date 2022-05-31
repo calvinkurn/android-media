@@ -40,7 +40,7 @@ class TokoFoodOrderLiveTrackingFragment(
             containerOrderTrackingActionsButton.hide()
             containerOrderTrackingHelpButton.apply {
                 setOrderTrackingNavigator(navigator)
-                setupHelpButton(viewModel.getOrderId(), primaryActionButton)
+                setupHelpButton(viewModel.getOrderId(), primaryActionButton, viewModel.getMerchantData())
                 show()
             }
         }
