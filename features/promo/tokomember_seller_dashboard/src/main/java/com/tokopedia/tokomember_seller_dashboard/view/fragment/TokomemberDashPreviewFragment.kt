@@ -15,9 +15,14 @@ import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
+import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,6 +35,8 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
     private var tokomemberShopCardModel = TokomemberShopCardModel()
+    private var tmCouponPreviewData = TmCouponPreviewData()
+    private var tmCouponCreateUnifyRequest = TmMerchantCouponUnifyRequest()
     private val tmCouponPreviewAdapter: TmCouponPreviewAdapter by lazy {
         TmCouponPreviewAdapter(arrayListOf())
     }
@@ -53,8 +60,12 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tmCouponPreviewData =
+            arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
+        tmCouponCreateUnifyRequest =
+            arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
         renderHeader()
-        initRecyclerView()
+        renderCouponList(tmCouponPreviewData)
         renderPreviewUI(
             arguments?.getParcelable(BUNDLE_CARD_DATA),
             arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
@@ -104,6 +115,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView(){
         rvPreview.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        tmCouponPreviewAdapter.list = tmCouponPreviewData.voucherList
         rvPreview.adapter = tmCouponPreviewAdapter
         tmCouponPreviewAdapter.notifyDataSetChanged()
     }
@@ -161,14 +173,18 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCouponList() {
-
+    @SuppressLint("SetTextI18n")
+    private fun renderCouponList(tmCouponPreviewData: TmCouponPreviewData) {
+        initRecyclerView()
+        tvCouponMulaiValue.text = tmCouponPreviewData.startDate +","+ tmCouponPreviewData.startTime
+        tvCouponBerakhirValue.text = tmCouponPreviewData.endDate +","+ tmCouponPreviewData.endTime
+        tvMaxTransactionValue.text = tmCouponPreviewData.maxValue
     }
 
     @SuppressLint("SetTextI18n")
     private fun renderProgramPreview(programUpdateDataInput: ProgramUpdateDataInput) {
-        tvProgramMulaiValue.text = programUpdateDataInput.timeWindow?.startTime
-        tvProgramBerakhirValue.text = programUpdateDataInput.timeWindow?.endTime
+        tvProgramMulaiValue.text = ProgramUpdateMapper.setDate(programUpdateDataInput.timeWindow?.startTime?:"") + "," + "00:00 WIB"
+        tvProgramBerakhirValue.text = ProgramUpdateMapper.setDate(programUpdateDataInput.timeWindow?.endTime?:"") + "," + "00:00 WIB"
         tvProgramMinTransaksiPremiumValue.text =
             "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(0)?.threshold.toString())}"
         tvProgramMinTransaksiVipValue.text =
