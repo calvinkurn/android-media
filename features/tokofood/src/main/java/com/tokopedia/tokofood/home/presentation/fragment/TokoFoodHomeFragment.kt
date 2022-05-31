@@ -29,6 +29,8 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData.FOOD_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -66,6 +68,9 @@ import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeT
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
+import com.tokopedia.tokofood.home.presentation.share.TokoFoodHomeShare
+import com.tokopedia.tokofood.home.presentation.share.TokoFoodUniversalShareUtil.shareOptionRequest
+import com.tokopedia.tokofood.home.presentation.share.TokoFoodUniversalShareUtil.shareRequest
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -74,6 +79,9 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -90,7 +98,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
         TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
         TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
-        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener,
+        ShareBottomsheetListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -134,7 +144,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val TOTO_LONGITUDE = "106.8184023"
         private const val EMPTY_LOCATION = "0.0"
         private const val MINI_CART_SOURCE = "home_page"
-
+        private const val PAGE_SHARE_NAME = "TokoFood"
+        private const val SHARE = "share"
+        private const val PAGE_TYPE_HOME = "home"
+        private const val SHARE_URL = "https://www.tokopedia.com/gofood"
+        private const val SHARE_DEEPLINK = "tokopedia://food/home"
+        //TODO Dummy OG IMAGE
+        private const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -147,6 +163,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var miniCartHome: TokoFoodMiniCartWidget? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var movingPosition = 0
     private val spaceZero: Int
@@ -181,6 +199,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shareHomeTokoFood = createShareHome()
     }
 
     override fun onCreateView(
@@ -280,6 +303,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         loadLayout()
     }
 
+    override fun onCloseOptionClicked() {
+
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        shareOptionRequest(
+            shareModel = shareModel,
+            shareHomeTokoFood = shareHomeTokoFood,
+            activity = activity,
+            view = view,
+            onSuccess = {
+                universalShareBottomSheet?.dismiss()
+            }
+        )
+    }
+
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
         return TokoFoodHomeLegoComponentCallback(this)
     }
@@ -373,7 +412,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onClickShareButton() {
-        //TODO SHARE FUNC
+        shareClicked()
     }
 
     private fun onClickListTransactionButton() {
@@ -715,5 +754,46 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun goToPurchasePage() {
         navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+    }
+
+    private fun createShareHome(): TokoFoodHomeShare {
+        return TokoFoodHomeShare(
+            sharingText = context?.resources?.getString(R.string.home_share_main_text).orEmpty(),
+            sharingUrl = SHARE_URL,
+            sharingDeeplink = SHARE_DEEPLINK,
+            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            thumbNailTitle = context?.resources?.getString(R.string.home_share_tn_title).orEmpty(),
+            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            specificPageName = context?.resources?.getString(R.string.home_share_title).orEmpty(),
+            specificPageDescription = context?.resources?.getString(R.string.home_share_desc).orEmpty(),
+            linkerType = FOOD_TYPE
+        )
+    }
+
+    private fun shareClicked() {
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            showUniversalShareBottomSheet()
+        } else {
+            LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokoFood))
+        }
+    }
+
+    private fun showUniversalShareBottomSheet() {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@TokoFoodHomeFragment)
+            setUtmCampaignData(
+                pageName = PAGE_SHARE_NAME,
+                userId = userSession.userId,
+                pageId = PAGE_TYPE_HOME,
+                feature = SHARE
+            )
+            setMetaData(
+                tnTitle = shareHomeTokoFood?.thumbNailTitle.orEmpty(),
+                tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
+            )
+            setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
+        }
+
+        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 }
