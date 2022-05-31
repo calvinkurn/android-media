@@ -117,9 +117,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        startActivity(Intent(this, BaseTokofoodActivity::class.java))
-
         val appLink = etAppLink.text.toString()
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)

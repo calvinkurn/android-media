@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -16,12 +17,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
@@ -59,6 +62,13 @@ class MerchantPageFragment : BaseMultiFragment(),
         OrderNoteBottomSheet.OnSaveNoteButtonClickListener,
         ProductDetailBottomSheet.OnProductDetailClickListener, CustomOrderDetailBottomSheet.OnCustomOrderDetailClickListener {
 
+    companion object {
+        private const val SOURCE = "merchant_page"
+        fun createInstance(): MerchantPageFragment {
+            return MerchantPageFragment()
+        }
+    }
+
     private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
 
     private val activityViewModel: MultipleFragmentsViewModel?
@@ -80,6 +90,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModelProvider.get(MerchantPageViewModel::class.java)
     }
 
+    private var merchantId: String = ""
+
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
     private var orderNoteBottomSheet: OrderNoteBottomSheet? = null
 
@@ -96,6 +108,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val bundle = arguments?.getString(Constant.DATA_KEY) ?: ""
+        val uri = Uri.parse(bundle)
+        merchantId = uri.pathSegments.firstOrNull() ?: ""
         setHasOptionsMenu(true)
         initInjector()
     }
@@ -202,9 +217,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         activityViewModel?.cartDataFlow?.collect { cartData ->
                             viewModel.selectedProducts = cartData.availableSection.products
-                            val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
-                            val dummyLatLong = "-6.2,106.816666"
-                            viewModel.getMerchantData(dummyMerchantId, dummyLatLong, "")
+                            context?.run {
+                                ChooseAddressUtils.getLocalizingAddressData(this).let { addressData ->
+                                    viewModel.getMerchantData(merchantId, addressData.latLong, "")
+                                }
+                            }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {

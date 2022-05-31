@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
@@ -19,6 +20,7 @@ object TokofoodRouteManager {
             val f: Fragment? =
                 when (uri.path) {
                     "/home" -> TokoFoodHomeFragment.createInstance() // tokopedia://tokofood/home
+                    "/merchant_list" -> MerchantPageFragment.createInstance() // tokopedia://tokofood/merchant_list
                     "/purchase" -> TokoFoodPurchaseFragment.createInstance() // tokopedia://tokofood/purchase
                     "/category" -> TokoFoodCategoryFragment.createInstance() // tokopedia://tokofood/category
                     else -> null
