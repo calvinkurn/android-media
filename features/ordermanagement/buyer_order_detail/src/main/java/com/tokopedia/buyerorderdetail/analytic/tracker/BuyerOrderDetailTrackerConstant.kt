@@ -24,6 +24,7 @@ object BuyerOrderDetailTrackerConstant {
     // event names
     const val EVENT_NAME_CLICK_PURCHASE_LIST = "clickPurchaseList"
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"

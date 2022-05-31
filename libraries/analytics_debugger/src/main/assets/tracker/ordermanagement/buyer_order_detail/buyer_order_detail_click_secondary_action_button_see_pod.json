@@ -3,11 +3,11 @@
   "mode": "exact",
   "query": [
     {
-      "event": "clickPurchaseList",
+      "event": "clickPG",
       "eventAction": "click on secondary button - lihat bukti pengiriman",
       "eventCategory": "my purchase list detail - mp",
       "eventLabel": "\\d{1,} - \\d{1,}",
-      "businessUnit": "Seller Order Management",
+      "businessUnit": "Physical Goods",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".{1,}"
     }
