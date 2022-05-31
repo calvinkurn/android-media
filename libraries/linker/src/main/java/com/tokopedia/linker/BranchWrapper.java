@@ -464,8 +464,7 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
         } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
-        }
-        else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
@@ -514,6 +513,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
             deeplinkPath = data.getDeepLink();
         }
+
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, LinkerConstants.CHALLENGES_DESKTOP_URL);
         } else if (LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
