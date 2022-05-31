@@ -53,7 +53,6 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         store_type
         logistic_type
         store_name
-        add_ons_section_description
         addon_item {
             name
             quantity

@@ -221,8 +221,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     logisticDiscountStr,
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     shopOrder.address,
-                    // add order level add-ons here
-                    OrderLevelAddOn(shopOrder.addOnSectionDescription,shopOrder.addOnItemList)
+                    shopOrder.addOnItemList             // add order level add-ons here
             )
             visitableList.add(shopInvoice)
             currentIndex++
@@ -232,12 +231,11 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.variant, purchasedItem.quantity,
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, addOnList: ArrayList<AddOnItem>, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
         purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType, addOnList)
 
     private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(
         bundleGroupItem?.bundleTitle ?: "",
-        null,
         null,
         bundleGroupItem?.totalPrice.toString(),
         bundleGroupItem?.totalPriceStr ?: "",
