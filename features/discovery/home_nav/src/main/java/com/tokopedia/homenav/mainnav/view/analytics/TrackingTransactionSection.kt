@@ -210,7 +210,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             }
         )
         bundle.putParcelableArrayList(Items.KEY, items)
-        getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.PRODUCT_CLICK, bundle)
     }
 
     fun clickOnWishlistViewAll() {

@@ -49,7 +49,5 @@ interface MainNavTypeFactory {
 
     fun type(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel): Int
 
-    fun type(emptyStateNonLoggedInDataModel: EmptyStateNonLoggedInDataModel): Int
-
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }
