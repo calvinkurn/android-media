@@ -47,7 +47,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
-    protected var shopId: Long = 0L
+    protected var shopId: String = "0"
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""

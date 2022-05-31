@@ -439,7 +439,7 @@ open class TopChatViewModel @Inject constructor(
         })
     }
 
-    fun getShopFollowingStatus(shopId: Long) {
+    fun getShopFollowingStatus(shopId: String) {
         launchCatchError(block = {
             val result = getShopFollowingUseCase(shopId)
             _shopFollowing.value = Success(result)

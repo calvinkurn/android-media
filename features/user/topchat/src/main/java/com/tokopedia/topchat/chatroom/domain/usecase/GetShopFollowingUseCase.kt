@@ -4,21 +4,22 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import javax.inject.Inject
 
 open class GetShopFollowingUseCase@Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-): CoroutineUseCase<Long, ShopFollowingPojo>(dispatcher.io) {
+): CoroutineUseCase<String, ShopFollowingPojo>(dispatcher.io) {
 
-    override suspend fun execute(params: Long): ShopFollowingPojo {
+    override suspend fun execute(params: String): ShopFollowingPojo {
         val param = generateParam(params)
         return repository.request(graphqlQuery(), param)
     }
 
-    private fun generateParam(shopId: Long): Map<String, Any> {
-        val shopIds = listOf(shopId)
+    private fun generateParam(shopId: String): Map<String, Any> {
+        val shopIds = listOf(shopId.toIntSafely())
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
             PARAM_SHOP_IDS to shopIds,

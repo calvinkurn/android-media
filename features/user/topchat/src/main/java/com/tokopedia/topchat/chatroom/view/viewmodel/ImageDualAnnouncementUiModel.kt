@@ -37,7 +37,7 @@ constructor(
         var redirectUrlTop: String,
         var imageUrlBottom: String,
         var redirectUrlBottom: String,
-        val broadcastBlastId: Long,
+        val broadcastBlastId: String,
         source: String
 ) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
