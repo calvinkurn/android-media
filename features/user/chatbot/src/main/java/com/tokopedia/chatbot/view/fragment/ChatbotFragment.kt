@@ -90,7 +90,6 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.ChatReplyOnBoardingBubbleItemDecorator
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
@@ -202,6 +201,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var rvScrollListener : RecyclerViewScrollListener? = null
     private var rvLayoutManager : LinearLayoutManager? = null
     private var messageCreateTime : String = ""
+    private lateinit var chatbotAdapter: ChatbotAdapter
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -321,13 +321,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         setChatBackground()
         initSmoothScroller()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
-        getRecyclerView(view)?.addItemDecoration(ChatReplyOnBoardingBubbleItemDecorator(setOnBoardingPosition()))
+        chatbotAdapter = adapter as ChatbotAdapter
         return view
-    }
-    var tempView : View?=null
-    private fun setOnBoardingPosition(): (View) -> Unit = {
-        if(tempView==null)
-            tempView = it
     }
 
     private fun initSmoothScroller(){
@@ -1356,22 +1351,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showReplyOption(messageUiModel: MessageUiModel) {
-      //  if (replyBubbleEnabled)
-        //TODO change this change this , BE issue
         if (replyBubbleEnabled) {
             val bottomSheetPage = BottomSheetUnify()
-            val viewBottomSheetPage =
-                View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
-                    val rvPages = findViewById<RecyclerView>(R.id.rv_reply_bubble)
-                    rvPages.layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                    val adapter =
-                        ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
-                    rvPages.adapter = adapter
+            val viewBottomSheetPage = initBottomSheetForReply(bottomSheetPage, messageUiModel)
 
-                }
             bottomSheetPage.apply {
-                setTitle("Pengaturan pesan")
+                setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_reply_bubble_bottomsheet_title)?: "")
                 showCloseIcon = true
                 setChild(viewBottomSheetPage)
                 showKnob = false
@@ -1383,8 +1368,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    private fun initBottomSheetForReply(
+        bottomSheetPage: BottomSheetUnify,
+        messageUiModel: MessageUiModel
+    ) : View {
+        return View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
+            val rvPages = findViewById<RecyclerView>(R.id.rv_reply_bubble)
+            rvPages.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val adapter =
+                ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
+            rvPages.adapter = adapter
+        }
+    }
+
     override fun goToBubble(parentReply: ParentReply) {
-        val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
+        val bubblePosition = chatbotAdapter.getBubblePosition (
             parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
@@ -1428,7 +1427,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         recyclerView?.let {
             if (!hasBeenShown){
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
-                    adapter as ChatbotAdapter,
+                    chatbotAdapter,
                     reply_box, context)
             }
         }
@@ -1460,7 +1459,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onErrorGetBottomChat() : (Throwable) -> Unit =  {
-        (adapter as ChatbotAdapter).hideBottomLoading()
+        chatbotAdapter.hideBottomLoading()
         onError()
         rvScrollListener?.finishBottomLoadingState()
     }
@@ -1520,11 +1519,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showTopLoading() {
-        (adapter as ChatbotAdapter).showTopLoading()
+        chatbotAdapter.showTopLoading()
     }
 
     private fun showBottomLoading() {
-        (adapter as ChatbotAdapter).showBottomLoading()
+        chatbotAdapter.showBottomLoading()
     }
 
     private fun setupBeforeReplyTime(replyTimeMillis: String) {
@@ -1555,7 +1554,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
-        val adapter = adapter as ChatbotAdapter
+        val adapter = chatbotAdapter
         adapter?.hideBottomLoading()
         if (listChat.isNotEmpty()) {
             adapter?.addBottomData(listChat)
@@ -1563,7 +1562,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun renderTopList(listChat: List<Visitable<*>>) {
-        val adapter = adapter as ChatbotAdapter
+        val adapter = chatbotAdapter
         adapter?.hideTopLoading()
         if (listChat.isNotEmpty()) {
             adapter?.addTopData(listChat)
@@ -1573,7 +1572,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun resetData(){
         rvScrollListener?.reset()
         presenter.clearGetChatUseCase()
-        (adapter as ChatbotAdapter).reset()
+        chatbotAdapter.reset()
         showTopLoading()
     }
 

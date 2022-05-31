@@ -39,9 +39,9 @@ abstract class ChatbotMessageUnifyViewHolder(
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
         bindReplyBubbleListener()
-        //TODO check for msg link
-        customChatLayout?.fxChat?.message?.setOnClickListener {
+        customChatLayout?.fxChat?.message?.setOnLongClickListener {
             replyBubbleListener.showReplyOption(message)
+            return@setOnLongClickListener true
         }
     }
 
