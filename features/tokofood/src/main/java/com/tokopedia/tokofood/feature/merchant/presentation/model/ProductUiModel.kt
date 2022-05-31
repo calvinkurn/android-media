@@ -1,8 +1,6 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.model
 
 import android.os.Parcelable
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -23,6 +21,7 @@ data class ProductUiModel(
         val isShopClosed: Boolean = false,
         val customListItems: List<CustomListItem> = listOf(),
         // mutable attributes
+        var cartId: String = "",
         var orderQty: Int = 1,
         var orderNote: String = "",
         var isAtc: Boolean = false,
@@ -30,8 +29,10 @@ data class ProductUiModel(
 ) : Parcelable {
     @IgnoredOnParcel
     val isSlashPriceVisible = slashPriceFmt.isNotBlank()
+
     @IgnoredOnParcel
     val isCustomizable = customListItems.isNotEmpty()
+
     @IgnoredOnParcel
     val customOrderCount = customOrderDetails.size
 }

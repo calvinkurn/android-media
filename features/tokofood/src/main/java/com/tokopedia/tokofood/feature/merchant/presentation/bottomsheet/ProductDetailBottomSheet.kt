@@ -7,21 +7,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokofood.databinding.BottomsheetProductDetailLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ProductDetailBottomSheet : BottomSheetUnify() {
+class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickListener) : BottomSheetUnify() {
+
+    interface OnProductDetailClickListener {
+        fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
+        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
+    }
 
     companion object {
 
-        private const val PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
+        private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel): ProductDetailBottomSheet {
-            return ProductDetailBottomSheet().apply {
+        fun createInstance(productUiModel: ProductUiModel,
+                           clickListener: OnProductDetailClickListener): ProductDetailBottomSheet {
+            return ProductDetailBottomSheet(clickListener).apply {
                 arguments = Bundle().apply {
-                    putParcelable(PRODUCT_UI_MODEL, productUiModel)
+                    putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 }
             }
         }
@@ -30,8 +38,10 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
     private var binding: BottomsheetProductDetailLayoutBinding? = null
 
     private val productUiModel: ProductUiModel by lazy {
-        arguments?.getParcelable(PRODUCT_UI_MODEL) ?: ProductUiModel()
+        arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
+
+    private var cardPositions: Pair<Int, Int>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewBinding = BottomsheetProductDetailLayoutBinding.inflate(inflater, container, false)
@@ -43,7 +53,7 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView(binding)
+        setupView(productUiModel, binding)
         renderData(productUiModel)
     }
 
@@ -52,9 +62,26 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
         super.onDestroyView()
     }
 
-    private fun setupView(binding: BottomsheetProductDetailLayoutBinding?) {
+    private fun setupView(productUiModel: ProductUiModel, binding: BottomsheetProductDetailLayoutBinding?) {
         binding?.atcButton?.setOnClickListener {
-
+            this.cardPositions?.run {
+                if (productUiModel.isCustomizable) {
+                    clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
+                }
+                if (productUiModel.orderQty.isZero()) {
+                    clickListener.onAtcButtonClicked(
+                            productUiModel = productUiModel,
+                            cardPositions = this
+                    )
+                } else {
+                    clickListener.onIncreaseQtyButtonClicked(
+                            productId = productUiModel.id,
+                            quantity = productUiModel.orderQty + 1,
+                            cardPositions = this
+                    )
+                }
+            }
+            dismiss()
         }
         binding?.iuShareButton?.setOnClickListener {
 
@@ -75,6 +102,10 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
                 text = productUiModel.slashPriceFmt
             }
         }
+    }
+
+    fun setSelectedCardPositions(cardPositions: Pair<Int, Int>) {
+        this.cardPositions = cardPositions
     }
 
     fun show(fragmentManager: FragmentManager) {

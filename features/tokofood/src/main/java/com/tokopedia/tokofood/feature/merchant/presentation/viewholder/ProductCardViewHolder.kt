@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
@@ -15,12 +16,12 @@ class ProductCardViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductCardItemClickListener {
-        fun onProductCardClicked(productUiModel: ProductUiModel)
+        fun onProductCardClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
         fun onAtcButtonClicked(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>)
-        fun onAddNoteButtonClicked(orderNote: String, cardPositions: Pair<Int, Int>)
-        fun onDeleteButtonClicked()
-        fun onIncreaseQtyButtonClicked()
-        fun onDecreaseQtyButtonClicked()
+        fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
+        fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
+        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onDecreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
     }
 
     private var context: Context? = null
@@ -29,8 +30,12 @@ class ProductCardViewHolder(
         context = binding.root.context
         binding.root.setOnClickListener {
             // open product bottom sheet
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            clickListener.onProductCardClicked(productUiModel)
+            clickListener.onProductCardClicked(
+                    productUiModel = productUiModel,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
         binding.atcButton.setOnClickListener {
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
@@ -44,18 +49,39 @@ class ProductCardViewHolder(
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             clickListener.onAddNoteButtonClicked(
+                    productId = productUiModel.id,
                     orderNote = productUiModel.orderNote,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.removeProductFromCartButton.setOnClickListener {
-            clickListener.onDeleteButtonClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            clickListener.onDeleteButtonClicked(
+                    cartId = productUiModel.cartId,
+                    productId = productUiModel.id,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
         binding.qeuProductQtyEditor.setAddClickListener {
-            clickListener.onIncreaseQtyButtonClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val quantity = binding.qeuProductQtyEditor.getValue()
+            clickListener.onIncreaseQtyButtonClicked(
+                    productId = productUiModel.id,
+                    quantity = quantity,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
         binding.qeuProductQtyEditor.setSubstractListener {
-            clickListener.onDecreaseQtyButtonClicked()
+            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val quantity = binding.qeuProductQtyEditor.getValue()
+            clickListener.onDecreaseQtyButtonClicked(
+                    productId = productUiModel.id,
+                    quantity = quantity,
+                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            )
         }
     }
 
@@ -113,6 +139,13 @@ class ProductCardViewHolder(
             }
             // set order detail quantity
             binding.qeuProductQtyEditor.setValue(productUiModel.orderQty)
+        }
+
+        // atc button wording e.g. Pesan or 2 Pesanan
+        if (productUiModel.customOrderCount.isMoreThanZero()) {
+            binding.atcButton.text = "${productUiModel.customOrderCount} Pesanan"
+        } else {
+            binding.atcButton.text = "Pesan"
         }
     }
 }

@@ -47,5 +47,6 @@
 
     <!-- id -->
     <item name="product_ui_model" type="id" />
+    <item name="custom_order_detail" type="id" />
     <item name="dataset_position" type="id" />
 </resources>

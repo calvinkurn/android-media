@@ -9,13 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAdapter
-import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -32,12 +34,14 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
     companion object {
 
-        const val BUNDLE_KEY_PRODUCT_UI_MODEL = "productUiModel"
+        private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "productUiModel"
+        private const val BUNDLE_KEY_CART_ID = "cartId"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel) = OrderCustomizationFragment().apply {
+        fun createInstance(productUiModel: ProductUiModel, cartId: String = "") = OrderCustomizationFragment().apply {
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
+                putString(BUNDLE_KEY_CART_ID, cartId)
             }
         }
     }
@@ -78,6 +82,21 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
+
+    private fun initInjector() {
+        activity?.let {
+            DaggerMerchantPageComponent
+                    .builder()
+                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+                    .inject(this)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val viewBinding = FragmentOrderCustomizationLayoutBinding.inflate(inflater)
         binding = viewBinding
@@ -94,37 +113,48 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
         val productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL)
-        productUiModel?.run {
+        val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
 
+        productUiModel?.run {
+            val customListItems = viewModel.getCustomListItems(cartId, productUiModel)
             customListItems.run { setupCustomList(this) }
 
             binding?.qeuProductQtyEditor?.setValue(orderQty)
 
             // set subtotal price if product is already added to cart
-            if (!isAtc) binding?.subtotalProductPriceLabel?.text = priceFmt
-            else binding?.subtotalProductPriceLabel?.text = subTotalFmt
+            if (!isAtc) {
+                binding?.subtotalProductPriceLabel?.text = priceFmt
+                viewModel.subTotalPrice = productUiModel.price
+            } else binding?.subtotalProductPriceLabel?.text = subTotalFmt
 
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
                 customListAdapter?.getCustomListItems()?.run {
-                    val addOnUiModels = this.map { it.addOnUiModel ?: AddOnUiModel() }
-
-                    val isError = viewModel.isCustomOrderContainError(addOnUiModels)
+                    val validationResult = viewModel.validateCustomOrderInput(this)
+                    val isError = validationResult.first
                     if (isError) {
-                        customListAdapter?.notifyDataSetChanged()
+                        customListAdapter?.setCustomListItems(validationResult.second)
                         return@setOnClickListener
                     }
-
-                    val updateParam = TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
+                    // exclude the last custom list item which contain order note information
+                    val addOnUiModels = this.filter { it.addOnUiModel != null }.map {
+                        it.addOnUiModel ?: AddOnUiModel()
+                    }
+                    val updateParam = viewModel.generateRequestParam(
                             shopId = userSession.shopId,
-                            productUiModels = listOf(productUiModel),
+                            productUiModel = productUiModel,
+                            cartId = cartId,
+                            orderNote = this.last().orderNote,
+                            orderQty = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE,
                             addOnUiModels = addOnUiModels
                     )
-                    activityViewModel?.addToCart(updateParam = updateParam, source = "")
+                    if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = "")
+                    else activityViewModel?.addToCart(updateParam = updateParam, source = "")
+                    // TODO: implement callback
+                    parentFragmentManager.popBackStack()
                 }
             }
         }
-
     }
 
     private fun setupCustomList(customListItems: List<CustomListItem>) {
@@ -140,7 +170,10 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
         customListAdapter?.setCustomListItems(customListItems = customListItems)
     }
 
-    override fun onAddOnSelected(isSelected: Boolean, addOnPositions: Pair<Int, Int>) {
+    override fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>) {
+        if (isSelected) viewModel.addSubTotalPrice(addOnPrice)
+        else viewModel.subtractSubTotalPrice(addOnPrice)
+        binding?.subtotalProductPriceLabel?.text = viewModel.subTotalPrice.toString()
         customListAdapter?.updateAddOnSelection(isSelected, addOnPositions)
     }
 }

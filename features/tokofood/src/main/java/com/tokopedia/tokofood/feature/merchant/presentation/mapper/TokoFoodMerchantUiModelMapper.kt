@@ -4,15 +4,16 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 
 object TokoFoodMerchantUiModelMapper {
 
     fun mapProductUiModelToAtcRequestParam(
-            cartId: String = "",
             shopId: String,
+            cartId: String = "",
             productUiModels: List<ProductUiModel>,
-            addOnUiModels: List<AddOnUiModel>
+            addOnUiModels: List<AddOnUiModel> = listOf()
     ): UpdateParam {
         return UpdateParam(
                 shopId = shopId,
@@ -22,6 +23,29 @@ object TokoFoodMerchantUiModelMapper {
                             cartId = cartId,
                             notes = it.orderNote,
                             quantity = it.orderQty,
+                            variants = mapCustomListItemsToVariantParams(addOnUiModels)
+                    )
+                }
+        )
+    }
+
+    fun mapCustomOrderDetailToAtcRequestParam(
+            shopId: String,
+            cartId: String,
+            productId: String,
+            customOrderDetails: List<CustomOrderDetail>
+    ): UpdateParam {
+        return UpdateParam(
+                shopId = shopId,
+                productList = customOrderDetails.map { customOrderDetail ->
+                    val addOnUiModels = customOrderDetail.customListItems
+                            .filter { it.addOnUiModel != null }
+                            .map { customListItem -> customListItem.addOnUiModel ?: AddOnUiModel() }
+                    UpdateProductParam(
+                            productId = productId,
+                            cartId = cartId,
+                            notes = customOrderDetail.orderNote,
+                            quantity = customOrderDetail.qty,
                             variants = mapCustomListItemsToVariantParams(addOnUiModels)
                     )
                 }

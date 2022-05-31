@@ -103,4 +103,10 @@
             android:paddingHorizontal="@dimen/unify_space_16" />
     </androidx.core.widget.NestedScrollView>
 
+    <com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
+        android:id="@+id/mini_cart_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
