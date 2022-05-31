@@ -39,7 +39,6 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.TestMerchantFragment
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -895,7 +894,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onTextAddItemClicked() {
         // Todo : navigate to merchant page
-        navigateToNewFragment(TestMerchantFragment.createInstance())
+
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
