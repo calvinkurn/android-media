@@ -62,10 +62,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'upload_prescription'
+    artifactId = 'epharmacy'
     groupId = 'com.tokopedia.im'
     versionName = "0.0.2"
-    artifactName = "upload_prescription-release"
+    artifactName = "epharmacy-release"
 }
 
 apply from: '../../../publish_local.gradle'
