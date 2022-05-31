@@ -12,6 +12,7 @@ class TokoNowSharedPreference @Inject constructor(
         private const val KEY_HOME_SHARED_PREF = "tokonow_shared_pref"
         private const val KEY_HOME_2H_SWITCHER_ONBOARD = "switcher_onboard_2h"
         private const val KEY_HOME_20M_SWITCHER_ONBOARD = "switcher_onboard_20m"
+        private const val KEY_HOME_20M_BOTTOMSHEET_ONBOARD = "bottomsheet_onboard_20m"
     }
 
     private val sharedPref by lazy {
@@ -32,5 +33,13 @@ class TokoNowSharedPreference @Inject constructor(
 
     fun get2hSwitcherOnBoardShown(): Boolean {
         return sharedPref.getBoolean(KEY_HOME_2H_SWITCHER_ONBOARD, false)
+    }
+
+    fun set20mBottomSheetOnBoardShown(shown: Boolean) {
+        sharedPref.edit().putBoolean(KEY_HOME_20M_BOTTOMSHEET_ONBOARD, shown).apply()
+    }
+
+    fun get20mBottomSheetOnBoardShown(): Boolean {
+        return sharedPref.getBoolean(KEY_HOME_20M_BOTTOMSHEET_ONBOARD, false)
     }
 }

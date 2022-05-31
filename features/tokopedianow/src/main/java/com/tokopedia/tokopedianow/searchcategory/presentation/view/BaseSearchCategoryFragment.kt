@@ -130,7 +130,8 @@ abstract class BaseSearchCategoryFragment:
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
         private const val DEFAULT_POSITION = 0
-        private const val QUERY_PARAM_SERVICE_TYPE_NOW20 = "?service_type=20m"
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW20M = "?service_type=20m"
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -1058,7 +1059,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW20)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW20M)
     }
 
     override fun onClickSwitcherTo2H() {
@@ -1105,10 +1106,10 @@ abstract class BaseSearchCategoryFragment:
                             .newInstance()
                             .show(childFragmentManager, OnBoard20mBottomSheetCallback(
                                 onBackTo2hClicked = {
-                                    getViewModel().switchService()
+                                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
                                 },
                                 onDismiss = {
-                                    sharedPref.set2hSwitcherOnBoardShown(true)
+                                    sharedPref.set20mBottomSheetOnBoardShown(true)
                                 }
                             ))
                     }

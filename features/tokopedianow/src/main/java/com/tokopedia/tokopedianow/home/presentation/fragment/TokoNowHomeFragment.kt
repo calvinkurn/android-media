@@ -1216,7 +1216,7 @@ class TokoNowHomeFragment: Fragment(),
             val is20mServiceType = service_type == NOW_15M
             val has20mCoachMarkShown = homeSharedPref.get20mSwitcherOnBoardShown()
 
-            if ((is2hServiceType && has2hCoachMarkShown) || (is20mServiceType && has20mCoachMarkShown)) {
+            if ((is2hServiceType && has20mCoachMarkShown) || (is20mServiceType && has2hCoachMarkShown)) {
                 showSwitcherToaster(service_type)
             }
         }
@@ -1415,8 +1415,8 @@ class TokoNowHomeFragment: Fragment(),
                 !homeSharedPref.get20mSwitcherOnBoardShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
                     show20mSwitcherCoachMark()
                 }
-                //if coach mark is never shown and the 2 hours switcher widget is exist then show coach mark (in 20 minutes state)
-                !homeSharedPref.get2hSwitcherOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
+                //if bottomsheet 20 minutes is never shown and the 2 hours switcher widget is exist then show bottomsheet (in 20 minutes state)
+                !homeSharedPref.get20mBottomSheetOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
                     TokoNowOnBoard20mBottomSheet
                         .newInstance()
                         .show(childFragmentManager, OnBoard20mBottomSheetCallback(
@@ -1426,10 +1426,15 @@ class TokoNowHomeFragment: Fragment(),
                                 }
                             },
                             onDismiss = {
+                                homeSharedPref.set20mBottomSheetOnBoardShown(true)
                                 show2hSwitcherCoachMark()
                             }
                         )
                     )
+                }
+                //if coach mark is never shown and the 2 hours switcher widget is exist then show coach mark (in 20 minutes state)
+                !homeSharedPref.get2hSwitcherOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
+                    show2hSwitcherCoachMark()
                 }
             }
         }
@@ -1460,35 +1465,37 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun show2hSwitcherCoachMark() {
-        adapter.getItem(Home2hSwitcher::class.java)?.let {
-            val index = adapter.findPosition(it)
-            rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.apply {
-                val tpTitle = findViewById<View>(R.id.tp_title)
-                val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
-                switcherCoachMark = SwitcherCoachMark(context) {
-                    homeSharedPref.set2hSwitcherOnBoardShown(true)
-                }
-                switcherCoachMark?.setCoachMarkItems(
-                    arrayListOf(
-                        CoachMark2Item(
-                            tpTitle,
-                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_first_section_coachmark)
-                                .orEmpty(),
-                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_first_section_coachmark)
-                                .orEmpty(),
-                            CoachMark2.POSITION_BOTTOM
-                        ),
-                        CoachMark2Item(
-                            tpSubtitle,
-                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_second_section_coachmark)
-                                .orEmpty(),
-                            activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_second_section_coachmark)
-                                .orEmpty(),
-                            CoachMark2.POSITION_BOTTOM
+        rvHome?.addOneTimeGlobalLayoutListener {
+            adapter.getItem(Home2hSwitcher::class.java)?.let {
+                val index = adapter.findPosition(it)
+                rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.apply {
+                    val tpTitle = findViewById<View>(R.id.tp_title)
+                    val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
+                    switcherCoachMark = SwitcherCoachMark(context) {
+                        homeSharedPref.set2hSwitcherOnBoardShown(true)
+                    }
+                    switcherCoachMark?.setCoachMarkItems(
+                        arrayListOf(
+                            CoachMark2Item(
+                                tpTitle,
+                                activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_first_section_coachmark)
+                                    .orEmpty(),
+                                activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_first_section_coachmark)
+                                    .orEmpty(),
+                                CoachMark2.POSITION_BOTTOM
+                            ),
+                            CoachMark2Item(
+                                tpSubtitle,
+                                activity?.getString(R.string.tokopedianow_home_on_boarding_20m_title_second_section_coachmark)
+                                    .orEmpty(),
+                                activity?.getString(R.string.tokopedianow_home_on_boarding_20m_description_second_section_coachmark)
+                                    .orEmpty(),
+                                CoachMark2.POSITION_BOTTOM
+                            )
                         )
                     )
-                )
-                switcherCoachMark?.show()
+                    switcherCoachMark?.show()
+                }
             }
         }
     }
