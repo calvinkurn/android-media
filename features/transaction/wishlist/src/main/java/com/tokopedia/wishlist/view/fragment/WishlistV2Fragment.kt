@@ -614,10 +614,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     result.data.let { wishlistRemoveV2 ->
                         context?.let { context ->
                             view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistRemoveV2,
-                                    context, v
-                                )
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistRemoveV2, context, v)
                             }
+                            setRefreshing()
                         }
                     }
                 }
