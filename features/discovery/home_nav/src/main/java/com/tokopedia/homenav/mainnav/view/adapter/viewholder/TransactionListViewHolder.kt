@@ -64,8 +64,8 @@ class TransactionListViewHolder(itemView: View,
         val visitableList = mutableListOf<Visitable<*>>()
         if (element.isMePageUsingRollenceVariant) {
             visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
-            visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
+            visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
             } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > SIZE_LAYOUT_SHOW_VIEW_ALL_CARD) {
