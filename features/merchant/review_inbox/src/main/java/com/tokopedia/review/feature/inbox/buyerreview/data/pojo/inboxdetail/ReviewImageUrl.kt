@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ReviewImageUrl(
     @SerializedName("attachment_id")
     @Expose
-    val attachmentId: Long = 0,
+    val attachmentId: String = "",
 
     @SerializedName("description")
     @Expose

@@ -35,6 +35,11 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
+    }
 }
 
 dependencies {
@@ -100,6 +105,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -130,7 +136,6 @@ dependencies {
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
@@ -211,7 +216,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.weaver)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.filter)
@@ -226,6 +230,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
@@ -371,6 +376,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

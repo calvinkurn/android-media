@@ -27,14 +27,49 @@ class ShimmerViewModelTest {
         MockKAnnotations.init(this)
     }
 
+    /**************************** test for design type *******************************************/
+    @Test
+    fun `design type test when properties is null`() {
+        every { componentsItem.properties } returns null
+
+        assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
+    }
+    @Test
+    fun `design type test when template is null`() {
+        every { componentsItem.properties?.template } returns null
+
+        assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
+    }
 
     @Test
-    fun `design type test`() {
-        every { componentsItem.properties } returns null
-        assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
+    fun `design type test when template is not null`() {
         every { componentsItem.properties?.template } returns Constant.ProductTemplate.LIST
+
         assert(viewModel.getTemplateType() == Constant.ProductTemplate.LIST)
     }
+    /**************************** end of design type *******************************************/
+
+    /**************************** test for getCalendarLayout() *******************************************/
+    @Test
+    fun `test for getCalendarLayout when properties is null`() {
+        every { componentsItem.properties } returns null
+
+        assert(viewModel.getCalendarLayout() == null)
+    }
+    @Test
+    fun `test for getCalendarLayout when calendarLayout is null`() {
+        every { componentsItem.properties?.calendarLayout } returns null
+
+        assert(viewModel.getCalendarLayout() == null)
+    }
+
+    @Test
+    fun `test for getCalendarLayout when calendarLayout is not null`() {
+        every { componentsItem.properties?.calendarLayout } returns "calendarLayout"
+
+        assert(viewModel.getCalendarLayout() == "calendarLayout")
+    }
+    /**************************** end of getCalendarLayout() *******************************************/
 
     @Test
     fun `component value is present in live data`() {

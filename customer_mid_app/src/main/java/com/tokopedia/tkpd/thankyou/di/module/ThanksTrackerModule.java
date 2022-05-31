@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.thankyou.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
@@ -26,6 +26,12 @@ import dagger.Provides;
  */
 @Module
 public class ThanksTrackerModule {
+    @Provides
+    @ThanksTrackerScope
+    public GCMHandler provideGcmHandler(@ApplicationContext Context context){
+        return new GCMHandler(context);
+    }
+
     @Provides
     @ThanksTrackerScope
     DigitalTrackerService provideDigitalThanksService() {

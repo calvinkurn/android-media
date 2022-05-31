@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdat
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
+import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -58,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private boolean pauseFlag;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
+    private final ArrayList<DispatchTouchListener> dispatchTouchListeners = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +86,20 @@ public abstract class BaseActivity extends AppCompatActivity implements
         debugVolumeListeners.add(debugVolumeListener);
     }
 
+    public void addListener(DispatchTouchListener dispatchTouchListener) {
+        dispatchTouchListeners.add(dispatchTouchListener);
+    }
+
     public void removeDebugVolumeListener() {
         debugVolumeListeners.clear();
+    }
+
+    public void removeDispatchTouchListener() {
+        dispatchTouchListeners.clear();
+    }
+
+    public void removeDispatchTouchListener(DispatchTouchListener dispatchTouchListener) {
+        dispatchTouchListeners.remove(dispatchTouchListener);
     }
 
     @Override
@@ -205,6 +219,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         try {
+            try {
+                for (int i = 0, size = dispatchTouchListeners.size(); i < size; i++) {
+                    dispatchTouchListeners.get(i).onDispatchTouch(ev);
+                }
+            } catch (Exception ignored) { }
             return super.dispatchTouchEvent(ev);
         } catch (Exception e){
             e.printStackTrace();
@@ -219,8 +238,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void setLogCrash() {
-        if (!GlobalConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+        try {
+            if (!GlobalConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

@@ -473,7 +473,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         bottomSheets.setShowListener {
             val loader = viewParent.loader_unify_event_pdp
 
-            webView.loadData(value, "text/html", "UTF-8")
+            webView.loadPartialWebView(value)
             webView.webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)

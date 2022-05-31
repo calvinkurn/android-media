@@ -6,19 +6,19 @@ import com.google.gson.annotations.SerializedName
 data class InboxReputation(
     @SerializedName("inbox_id")
     @Expose
-    val inboxId: Long = 0,
+    val inboxId: String = "",
 
     @SerializedName("shop_id")
     @Expose
-    val shopId: Long = 0,
+    val shopId: String = "",
 
     @SerializedName("user_id")
     @Expose
-    val userId: Long = 0,
+    val userId: String = "",
 
     @SerializedName("reputation_id")
     @Expose
-    val reputationId: Long = 0,
+    val reputationId: String = "",
 
     @SerializedName("order_data")
     @Expose
