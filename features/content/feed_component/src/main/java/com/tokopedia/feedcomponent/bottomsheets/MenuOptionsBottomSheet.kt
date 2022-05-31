@@ -116,7 +116,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 onDismiss?.invoke()
         }
     }
-    fun  setIsCommentPage(isCommentPage: Boolean){
+    fun setIsCommentPage(isCommentPage: Boolean){
         this.isCommentPage = isCommentPage
     }
 

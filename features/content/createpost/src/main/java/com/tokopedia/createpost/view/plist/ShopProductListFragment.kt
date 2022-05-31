@@ -124,7 +124,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             }
         }
     }
-    private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
+    private fun addSortListObserver() = presenter.sortLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -154,7 +154,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         addSortListObserver()
     }
 
-    private fun addListObserver() = presenter.productList.observe(this, Observer {
+    private fun addListObserver() = presenter.productList.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -171,7 +171,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         }
     })
 
-    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(this, Observer {
+    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(viewLifecycleOwner, Observer {
         view?.cu_sort_chip?.chipText = it.name
         view?.cu_sort_chip?.chipType = ChipsUnify.TYPE_SELECTED
         presenter.getPageData(
@@ -184,7 +184,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     )
 
     private fun addProductValObserver() =
-        presenter.newProductValLiveData.observe(this, Observer { product ->
+        presenter.newProductValLiveData.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 val data = Intent();
                 data.putExtra("product", product)
@@ -195,7 +195,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         )
 
     private fun addBsObserver() =
-        presenter.showBs.observe(this, Observer { product ->
+        presenter.showBs.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 getImeiBS?.dismiss()
             }

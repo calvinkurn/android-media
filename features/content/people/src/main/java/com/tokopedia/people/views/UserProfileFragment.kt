@@ -536,7 +536,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                     }
                     is Success -> {
-                        if (it?.data?.playToggleChannelReminder?.header?.status == 200) {
+                        if (it?.data?.playToggleChannelReminder?.header?.status == SUCCESS_STATUS) {
                             Toaster.build(
                                 btnAction as View,
                                 it.data.playToggleChannelReminder.header.message,
@@ -970,6 +970,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
+        const val SUCCESS_STATUS = 200
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = UserProfileFragment()
