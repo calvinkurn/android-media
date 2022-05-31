@@ -6,10 +6,7 @@ import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepositor
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.andThen
-import com.tokopedia.createpost.util.assertEqualTo
-import com.tokopedia.createpost.util.assertError
-import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -175,6 +172,50 @@ class GlobalSearchShopViewModelTest {
                 submitAction(ProductTagAction.ShopSelected(selectedShop))
             }.andThen {
                 productTagSource.productTagSourceStack.last().assertEqualTo(ProductTagSource.GlobalSearch)
+            }
+        }
+    }
+
+    @Test
+    fun `when user select quick filter, it should reload shop with selected filter`() {
+        val mockResponse = globalSearchModelBuilder.buildShopResponseModel()
+        val selectedQuickFilter = globalSearchModelBuilder.buildQuickFilterModel()
+
+        coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.SelectShopQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertTrue()
+            }
+        }
+    }
+
+    @Test
+    fun `when user select and unselect quick filter, it should reload shop with no filter`() {
+        val mockResponse = globalSearchModelBuilder.buildShopResponseModel()
+        val selectedQuickFilter = globalSearchModelBuilder.buildQuickFilterModel()
+
+        coEvery { mockRepo.searchAceShops(any()) } returns mockResponse
+
+        robot.use {
+            it.recordState {
+                submitAction(ProductTagAction.SelectShopQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertTrue()
+            }
+
+            it.recordState {
+                submitAction(ProductTagAction.SelectShopQuickFilter(selectedQuickFilter))
+            }.andThen {
+                globalSearchShop.state.isSuccess()
+                globalSearchShop.shops.assertEqualTo(mockResponse.pagedData.dataList)
+                globalSearchShop.param.isParamFound(selectedQuickFilter.key, selectedQuickFilter.value).assertFalse()
             }
         }
     }
