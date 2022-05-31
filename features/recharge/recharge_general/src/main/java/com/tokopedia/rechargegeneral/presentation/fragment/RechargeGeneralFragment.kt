@@ -22,8 +22,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.bottomsheet.AddSmartBillsInquiryBottomSheet
@@ -543,6 +553,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -571,6 +582,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             }
         }
 
+        toggleEnquiryButton()
         if (dataList.isNotEmpty()) adapter.renderList(dataList)
     }
 
@@ -1356,6 +1368,16 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     override fun initInjector() {
         getComponent(RechargeGeneralComponent::class.java).inject(this)
+    }
+
+    private fun getIdFromProduct(data: List<CatalogProductInput.DataCollection>, id: String): String {
+        data.forEach { collection ->
+            collection.products.forEach { product ->
+                if (product.id == id) return product.id
+            }
+        }
+
+        return data.firstOrNull()?.products?.firstOrNull()?.id ?: ""
     }
 
     companion object {

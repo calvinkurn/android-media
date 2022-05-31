@@ -1,6 +1,8 @@
 package com.tokopedia.home_account.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
@@ -18,45 +20,45 @@ import javax.inject.Named
 @Module
 class HomeAccountUserQueryModules {
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME)
-    fun provideRawQueryUserData(@HomeAccountUserContext context: Context): String =
+    fun provideRawQueryUserData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_account_buyer)
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(AccountConstants.Query.QUERY_USER_REWARDSHORCUT)
-    fun provideRawQueryShortcut(@HomeAccountUserContext context: Context): String =
+    fun provideRawQueryShortcut(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_account_shortcut)
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@HomeAccountUserContext context: Context): String {
+    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
     }
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(AccountConstants.Query.QUERY_GET_BALANCE)
-    fun provideRawQueryGetBalance(@HomeAccountUserContext context: Context): String =
+    fun provideRawQueryGetBalance(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_balance)
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(AccountConstants.Query.QUERY_TOKOPOINTS_DRAWER_LIST)
-    fun provideRawQueryTokopointsDrawerList(@HomeAccountUserContext context: Context): String =
+    fun provideRawQueryTokopointsDrawerList(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_tokopoints_drawer_list)
 
-    @HomeAccountUserScope
+    @ActivityScope
     @Provides
     @IntoMap
     @StringKey(AccountConstants.Query.QUERY_GET_USER_ASSET_CONFIG)
-    fun provideRawQueryGetUserAssetConfig(@HomeAccountUserContext context: Context): String =
+    fun provideRawQueryGetUserAssetConfig(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_user_asset_config)
 }
