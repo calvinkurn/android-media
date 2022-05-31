@@ -65,12 +65,13 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
                 if (totalItems == 1) {
                     ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
                 }
-
             }
         }
-        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-        layoutParams.width = (parent.measuredWidth * ratio).toInt()
-        view.layoutParams = layoutParams
+        if(currentViewType != CMHomeWidgetPaymentCardViewHolder.LAYOUT || totalItems == 1) {
+            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+            layoutParams.width = (parent.measuredWidth * ratio).toInt()
+            view.layoutParams = layoutParams
+        }
     }
 
     companion object {

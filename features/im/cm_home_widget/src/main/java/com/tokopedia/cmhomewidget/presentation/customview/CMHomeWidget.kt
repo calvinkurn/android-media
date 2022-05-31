@@ -137,9 +137,6 @@ class CMHomeWidget @JvmOverloads constructor(
         if (itemsList.isNotEmpty()) {
             binding.root.visibility = View.VISIBLE
             adapter.get().loadData(itemsList)
-            cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-                it[paymentDataIndex].widgetDataItemSize = itemsList.size
-            }
         } else {
             adapter.get().clearAllElements()
             binding.root.visibility = View.GONE

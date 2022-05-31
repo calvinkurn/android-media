@@ -1,7 +1,6 @@
 package com.tokopedia.cmhomewidget.presentation.adapter.viewholder
 
 
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.cmhomewidget.R
@@ -33,9 +32,6 @@ class CMHomeWidgetPaymentCardViewHolder(
         }
         binding.root.post {
             listener.setPaymentCardHeight(binding.root.measuredHeight)
-        }
-        if (paymentData.isSingleDataItem()) {
-//            setDividerMargin()
         }
     }
 
@@ -79,12 +75,6 @@ class CMHomeWidgetPaymentCardViewHolder(
         }
     }
 
-    private fun setDividerMargin() {
-        val param = binding.vCmHomeWidgetDivider.layoutParams as ViewGroup.MarginLayoutParams
-        param.marginStart = DIVIDER_MARGIN_START
-        binding.vCmHomeWidgetDivider.layoutParams = param
-    }
-
     private fun setOnClickListeners(dataItem: CMHomeWidgetPaymentData) {
         binding.btnCmHomeWidgetPayment.setOnClickListener {
             listener.onPaymentBtnClick(dataItem)
@@ -100,7 +90,6 @@ class CMHomeWidgetPaymentCardViewHolder(
         const val RATIO_WIDTH = 0.689
         const val SINGLE_ITEM_RATIO_WIDTH = 0.943
         const val FIRST_INDEX = 0
-        const val DIVIDER_MARGIN_START = 180
     }
 
 }
