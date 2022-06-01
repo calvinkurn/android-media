@@ -42,10 +42,15 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponV
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.*
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
 import java.util.*
 import javax.inject.Inject
 
@@ -468,6 +473,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         val bundle = Bundle()
         bundle.putInt(BUNDLE_CARD_ID, arguments?.getInt(BUNDLE_CARD_ID)?:0)
+        bundle.putParcelable(BUNDLE_CARD_DATA, arguments?.getParcelable(BUNDLE_CARD_DATA))
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, arguments?.getParcelable(BUNDLE_PROGRAM_DATA))
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)

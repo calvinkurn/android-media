@@ -34,6 +34,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailResponseData
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmKuponUpdateMVResponse
 import com.tokopedia.tokomember_seller_dashboard.model.TmVoucherValidationPartialResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UploadPremiumCouponError
@@ -98,8 +99,8 @@ class TmDashCreateViewModel @Inject constructor(
     val tmCouponCreateLiveData: LiveData<Result<TmKuponCreateMVResponse>> =
         _tmCouponCreateLiveData
 
-    private val _tmCouponUpdateLiveData = MutableLiveData<Result<TmKuponCreateMVResponse>>()
-    val tmCouponUpdateLiveData: LiveData<Result<TmKuponCreateMVResponse>> =
+    private val _tmCouponUpdateLiveData = MutableLiveData<TokoLiveDataResult<TmKuponUpdateMVResponse>>()
+    val tmCouponUpdateLiveData: LiveData<TokoLiveDataResult<TmKuponUpdateMVResponse>> =
         _tmCouponUpdateLiveData
 
     private val _tmProgramValidateLiveData = MutableLiveData<TokoLiveDataResult<MemberShipValidateResponse>>()
@@ -125,8 +126,8 @@ class TmDashCreateViewModel @Inject constructor(
     private val _tmProgramResultLiveData = MutableLiveData<TokoLiveDataResult<ProgramDetailData>>()
     val tmProgramResultLiveData: LiveData<TokoLiveDataResult<ProgramDetailData>> = _tmProgramResultLiveData
 
-    private val _tokomemberProgramUpdateResultLiveData = MutableLiveData<Result<ProgramUpdateResponse>>()
-    val tokomemberProgramUpdateResultLiveData: LiveData<Result<ProgramUpdateResponse>> = _tokomemberProgramUpdateResultLiveData
+    private val _tokomemberProgramUpdateResultLiveData = MutableLiveData<TokoLiveDataResult<ProgramUpdateResponse>>()
+    val tokomemberProgramUpdateResultLiveData: LiveData<TokoLiveDataResult<ProgramUpdateResponse>> = _tokomemberProgramUpdateResultLiveData
 
     fun getProgramInfo(programID: Int ,shopId: Int ,actionType: String, query: String = "") {
         tokomemberDashGetProgramFormUsecase.cancelJobs()
@@ -140,10 +141,11 @@ class TmDashCreateViewModel @Inject constructor(
 
     fun updateProgram(programUpdateDataInput: ProgramUpdateDataInput) {
         tokomemberDashUpdateProgramUsecase.cancelJobs()
+        _tokomemberProgramUpdateResultLiveData.postValue(TokoLiveDataResult.loading())
         tokomemberDashUpdateProgramUsecase.updateProgram({
-            _tokomemberProgramUpdateResultLiveData.postValue(Success(it))
+            _tokomemberProgramUpdateResultLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
-            _tokomemberProgramUpdateResultLiveData.postValue(Fail(it))
+            _tokomemberProgramUpdateResultLiveData.postValue(TokoLiveDataResult.error(it))
         }, programUpdateDataInput)
     }
 
@@ -207,10 +209,11 @@ class TmDashCreateViewModel @Inject constructor(
 
     fun updateCoupon(tmCouponUpdateRequest: TmCouponUpdateRequest){
         tmKuponUpdateUsecase.cancelJobs()
+        _tmCouponUpdateLiveData.postValue(TokoLiveDataResult.loading())
         tmKuponUpdateUsecase.updateCoupon( {
-            _tmCouponUpdateLiveData.postValue(Success(it))
+            _tmCouponUpdateLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
-            _tmCouponUpdateLiveData.postValue(Fail(it))
+            _tmCouponUpdateLiveData.postValue(TokoLiveDataResult.error(it))
         },tmCouponUpdateRequest)
     }
 

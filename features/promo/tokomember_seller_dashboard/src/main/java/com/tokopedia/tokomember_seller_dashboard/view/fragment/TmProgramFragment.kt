@@ -37,8 +37,6 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
@@ -125,17 +123,17 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         })
 
         tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
-            when(it){
-                is Success -> {
-                    if(it.data.membershipCreateEditProgram?.resultStatus?.code=="200"){
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
                         onProgramUpdateSuccess()
                     }
                     else{
                         onProgramUpdateSuccess()
-                      //  handleErrorOnUpdate()
+                        //  handleErrorOnUpdate()
                     }
                 }
-                is Fail ->{
+                TokoLiveDataResult.STATUS.ERROR ->{
                     onProgramUpdateSuccess()
                     //handleErrorOnUpdate()
                 }
@@ -199,10 +197,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
             ProgramActionType.CREATE -> {
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, bundle)
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND ->{
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, Bundle())
             }
             ProgramActionType.EDIT ->{
                 val intent = Intent()

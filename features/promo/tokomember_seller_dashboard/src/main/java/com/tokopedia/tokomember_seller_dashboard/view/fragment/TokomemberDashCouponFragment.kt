@@ -27,12 +27,11 @@ import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.*
 import javax.inject.Inject
 
@@ -240,24 +239,47 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     private fun observeViewModel() {
 
         tmCouponViewModel.couponListLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING ->{
+                    viewFlipperCoupon.displayedChild = 0
+                }
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    viewFlipperCoupon.displayedChild = 1
                     tmCouponAdapter.vouchersItemList.clear()
-                    tmCouponAdapter.vouchersItemList = it.data.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
+                    tmCouponAdapter.vouchersItemList = it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
                     tmCouponAdapter.notifyDataSetChanged()
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR-> {
 
                 }
             }
         })
 
         tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    it.data.getInitiateVoucherPage?.data?.token?.let { it1 -> tmCouponViewModel.updateStatus(voucherId = voucherIdToUpdate, status = voucherStatusToUpdate, token = it1) }
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
+
                 }
-                is Fail ->{
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    it.data?.getInitiateVoucherPage?.data?.token?.let { it1 ->
+                        tmCouponViewModel.updateStatus(voucherId = voucherIdToUpdate, status = voucherStatusToUpdate, token = it1)
+                    }
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
+
+                }
+            }
+        })
+
+        tmCouponViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING ->{
+
+                }
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    refreshCouponList()
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
 
                 }
             }
@@ -304,7 +326,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             EDIT ->{
-                TmDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON, voucherId.toInt())
+                TmDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON_SINGLE, voucherId.toInt())
             }
             STOP ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
