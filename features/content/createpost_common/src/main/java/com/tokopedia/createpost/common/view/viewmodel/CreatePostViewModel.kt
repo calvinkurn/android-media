@@ -25,6 +25,7 @@ data class CreatePostViewModel(
     var shopName: String = "",
     var shopBadge: String = "",
     var productTagSources: List<String> = emptyList(),
+    var editAuthorId: String = ""
 ) : Parcelable {
     val isEditState: Boolean
         get() = postId.isNotBlank()
@@ -54,6 +55,7 @@ data class CreatePostViewModel(
             source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf(),
             source.readString() ?: "",
             productTagSources = source.createStringArrayList() ?: emptyList(),
+            editAuthorId = source.readString() ?: "",
         )
 
     override fun describeContents() = 0
@@ -74,6 +76,7 @@ data class CreatePostViewModel(
         writeTypedList(relatedProducts)
         writeString(defaultPlaceholder)
         writeStringList(productTagSources)
+        writeString(editAuthorId)
     }
 
     companion object {
