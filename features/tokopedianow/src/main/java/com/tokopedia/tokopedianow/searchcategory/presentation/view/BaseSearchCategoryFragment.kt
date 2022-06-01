@@ -38,6 +38,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -129,9 +130,9 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val DEFAULT_POSITION = 0
         private const val QUERY_PARAM_SERVICE_TYPE_NOW20M = "?service_type=20m"
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
+        const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -1067,11 +1068,10 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().setUserPreference(NOW_2H)
     }
 
-    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+    protected open fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
         showContent()
         when(result) {
             is Success -> {
-                swipeRefreshLayout
                 context?.apply {
                     //Set user preference data to local cache
                     ChooseAddressUtils.updateTokoNowData(
@@ -1097,11 +1097,8 @@ abstract class BaseSearchCategoryFragment:
                      * - when switching to 20 minutes, toaster will show if only OnBoard20mBottomSheet has been shown
                      */
 
-                    val serviceType = getViewModel().getServiceTypeToShowSwitcherToaster(sharedPref.get2hSwitcherOnBoardShown())
-
-                    if (serviceType.isNotBlank()) {
-                        showSwitcherToaster(serviceType)
-                    } else {
+                    val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+                    if (needToShowOnBoardBottomSheet) {
                         TokoNowOnBoard20mBottomSheet
                             .newInstance()
                             .show(childFragmentManager, OnBoard20mBottomSheetCallback(
@@ -1112,10 +1109,12 @@ abstract class BaseSearchCategoryFragment:
                                     sharedPref.set20mBottomSheetOnBoardShown(true)
                                 }
                             ))
-                    }
+                    } else if (!result.data.warehouseId.toLongOrZero().isZero()) {
+                        showSwitcherToaster(result.data.serviceType)
+                    } else { /* do nothing */ }
                 }
             }
-            is Fail -> { /* no op */ }
+            is Fail -> { /* do nothing */ }
         }
     }
 

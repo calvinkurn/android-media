@@ -107,15 +107,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     init {
         updateQueryParamWithCategoryIds()
         categoryIdTracking = getCategoryIdForTracking()
-
-        when(externalServiceType) {
-            ServiceType.NOW_20M -> {
-                setUserPreference(ServiceType.NOW_15M)
-            }
-            ServiceType.NOW_2H -> {
-                setUserPreference(ServiceType.NOW_2H)
-            }
-        }
     }
 
     private fun updateQueryParamWithCategoryIds() {
@@ -228,6 +219,20 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun processEmptyState(isEmptyProductList: Boolean) {
         loadCategoryGrid(isEmptyProductList)
+    }
+
+    override fun onViewCreated() {
+        when(externalServiceType) {
+            ServiceType.NOW_20M -> {
+                setUserPreference(ServiceType.NOW_15M)
+            }
+            ServiceType.NOW_2H -> {
+                setUserPreference(ServiceType.NOW_2H)
+            }
+            else -> {
+                super.onViewCreated()
+            }
+        }
     }
 
     private fun loadCategoryGrid(isEmptyProductList: Boolean) {

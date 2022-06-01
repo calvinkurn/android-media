@@ -1206,19 +1206,19 @@ class TokoNowHomeFragment: Fragment(),
 
         localCacheModel?.apply {
 
-            /*
-             * SWITCHER TOASTER
-             * - toaster will be shown if coach mark or bottomsheet has been shown
-             */
+            val has2hCoachMarkBeenShown = homeSharedPref.get2hCoachMarkOnBoardShown()
+            val has20mCoachMarkBeenShown = homeSharedPref.get20mCoachMarkOnBoardShown()
 
-            val is2hServiceType = service_type == NOW_2H
-            val has2hCoachMarkShown = homeSharedPref.get2hSwitcherOnBoardShown()
-            val is20mServiceType = service_type == NOW_15M
-            val has20mCoachMarkShown = homeSharedPref.get20mSwitcherOnBoardShown()
+            val needToShowOnBoardToaster = viewModelTokoNow.needToShowOnBoardToaster(
+                serviceType = service_type,
+                has20mCoachMarkBeenShown = has20mCoachMarkBeenShown,
+                has2hCoachMarkBeenShown = has2hCoachMarkBeenShown
+            )
 
-            if ((is2hServiceType && has20mCoachMarkShown) || (is20mServiceType && has2hCoachMarkShown)) {
+            if (needToShowOnBoardToaster) {
                 showSwitcherToaster(service_type)
             }
+
         }
     }
 
@@ -1412,7 +1412,7 @@ class TokoNowHomeFragment: Fragment(),
         rvHome?.post {
             when {
                 //if coach mark is never shown and the 20 minutes switcher widget is exist then show coach mark (in 2 hours state)
-                !homeSharedPref.get20mSwitcherOnBoardShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
+                !homeSharedPref.get20mCoachMarkOnBoardShown() && adapter.getItem(Home20mSwitcher::class.java) != null -> {
                     show20mSwitcherCoachMark()
                 }
                 //if bottomsheet 20 minutes is never shown and the 2 hours switcher widget is exist then show bottomsheet (in 20 minutes state)
@@ -1433,7 +1433,7 @@ class TokoNowHomeFragment: Fragment(),
                     )
                 }
                 //if coach mark is never shown and the 2 hours switcher widget is exist then show coach mark (in 20 minutes state)
-                !homeSharedPref.get2hSwitcherOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
+                !homeSharedPref.get2hCoachMarkOnBoardShown() && adapter.getItem(Home2hSwitcher::class.java) != null -> {
                     show2hSwitcherCoachMark()
                 }
             }
@@ -1446,7 +1446,7 @@ class TokoNowHomeFragment: Fragment(),
                 val index = adapter.findPosition(it)
                 rvHome?.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<View>(R.id.tp_title)?.let { tpTitle ->
                     switcherCoachMark = SwitcherCoachMark(tpTitle.context) {
-                        homeSharedPref.set20mSwitcherOnBoardShown(true)
+                        homeSharedPref.set20mCoachMarkOnBoardShown(true)
                     }
                     switcherCoachMark?.setCoachMarkItems(
                         arrayListOf(
@@ -1472,7 +1472,7 @@ class TokoNowHomeFragment: Fragment(),
                     val tpTitle = findViewById<View>(R.id.tp_title)
                     val tpSubtitle = findViewById<View>(R.id.tp_subtitle)
                     switcherCoachMark = SwitcherCoachMark(context) {
-                        homeSharedPref.set2hSwitcherOnBoardShown(true)
+                        homeSharedPref.set2hCoachMarkOnBoardShown(true)
                     }
                     switcherCoachMark?.setCoachMarkItems(
                         arrayListOf(

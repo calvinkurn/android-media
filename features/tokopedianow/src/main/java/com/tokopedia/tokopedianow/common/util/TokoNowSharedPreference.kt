@@ -19,19 +19,19 @@ class TokoNowSharedPreference @Inject constructor(
         context.getSharedPreferences(KEY_HOME_SHARED_PREF, Context.MODE_PRIVATE)
     }
 
-    fun set20mSwitcherOnBoardShown(shown: Boolean) {
+    fun set20mCoachMarkOnBoardShown(shown: Boolean) {
         sharedPref.edit().putBoolean(KEY_HOME_20M_SWITCHER_ONBOARD, shown).apply()
     }
 
-    fun get20mSwitcherOnBoardShown(): Boolean {
+    fun get20mCoachMarkOnBoardShown(): Boolean {
         return sharedPref.getBoolean(KEY_HOME_20M_SWITCHER_ONBOARD, false)
     }
 
-    fun set2hSwitcherOnBoardShown(shown: Boolean) {
+    fun set2hCoachMarkOnBoardShown(shown: Boolean) {
         sharedPref.edit().putBoolean(KEY_HOME_2H_SWITCHER_ONBOARD, shown).apply()
     }
 
-    fun get2hSwitcherOnBoardShown(): Boolean {
+    fun get2hCoachMarkOnBoardShown(): Boolean {
         return sharedPref.getBoolean(KEY_HOME_2H_SWITCHER_ONBOARD, false)
     }
 

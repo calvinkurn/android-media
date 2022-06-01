@@ -33,7 +33,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -56,6 +55,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -258,6 +258,10 @@ abstract class BaseSearchCategoryViewModel(
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated() {
+        processLoadDataPage()
+    }
+
+    private fun processLoadDataPage() {
         val shopId = chooseAddressData?.shop_id ?: ""
         val warehouseId = chooseAddressData?.warehouse_id ?: ""
 
@@ -573,7 +577,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showLoading()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun applyFilter() {
@@ -585,7 +589,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun showProgressBar() {
@@ -714,7 +718,7 @@ abstract class BaseSearchCategoryViewModel(
                 id = "",
                 title = "",
                 productList = listOf(),
-                state = -1,
+                state = TokoNowLayoutState.IDLE,
             ),
             repurchaseWidget,
         ).also {
@@ -1186,24 +1190,12 @@ abstract class BaseSearchCategoryViewModel(
         filter(option, false)
     }
 
-    fun getServiceTypeToShowSwitcherToaster(has2hCoachMarkShown: Boolean): String {
+    fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
         chooseAddressData?.apply {
-            val is2hServiceType = service_type == ServiceType.NOW_2H
             val is20mServiceType = service_type == ServiceType.NOW_15M
-
-            /*
-             * return service type if :
-             * - the state is 2 hours
-             * - the state is 20 minutes and coach mark on 2 hours switcher widget or 20 minutes bottomsheet has been shown
-            */
-
-            return if (is2hServiceType || (is20mServiceType && has2hCoachMarkShown)) {
-                service_type
-            } else {
-                ""
-            }
+            return is20mServiceType && !has20mBottomSheetBeenShown
         }
-        return ""
+        return false
     }
 
     open fun setUserPreference(serviceType: String) {
