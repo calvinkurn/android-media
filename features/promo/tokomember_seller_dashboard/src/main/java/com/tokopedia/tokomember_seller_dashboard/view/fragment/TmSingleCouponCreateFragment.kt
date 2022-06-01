@@ -34,49 +34,11 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_CASHBACK
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_SHIPPING
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
-import com.tokopedia.tokomember_seller_dashboard.util.CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.FileUtil
-import com.tokopedia.tokomember_seller_dashboard.util.IDR
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.TERMS
-import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
@@ -116,11 +78,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tokomemberDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -320,17 +282,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             "shipping"
         }
         val hourEnd = if(tmCouponEndTimeUnix != null){
-            DateUtil.getTimeFromUnix(
+            TmDateUtil.getTimeFromUnix(
                 tmCouponEndTimeUnix!!
             )
         }
         else{
-            DateUtil.setTime(
+            TmDateUtil.setTime(
                 programData?.timeWindow?.endTime.toString()
             ).replace(" WIB", "")
         }
         val dateEnd = if(tmCouponEndDateUnix != null){
-            DateUtil.getDateFromUnix(
+            TmDateUtil.getDateFromUnix(
                 tmCouponEndDateUnix!!
             )
         }
@@ -338,17 +300,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             programData?.timeWindow?.endTime?.substringBefore("T")
         }
         val hourStart = if(tmCouponStartTimeUnix != null){
-            DateUtil.getTimeFromUnix(
+            TmDateUtil.getTimeFromUnix(
                 tmCouponStartTimeUnix!!
             )
         }
         else{
-            DateUtil.setTime(
+            TmDateUtil.setTime(
                 programData?.timeWindow?.startTime.toString()
             ).replace(" WIB", "")
         }
         val dateStart = if(tmCouponStartDateUnix != null){
-            DateUtil.getTimeFromUnix(
+            TmDateUtil.getTimeFromUnix(
                 tmCouponStartDateUnix!!
             )
         }
@@ -595,7 +557,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     private fun uploadImagePremium(){
         context?.let { ctx->
-            val file =  customViewSingleCoupon?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
+            val file =  customViewSingleCoupon?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
             if (file != null) {
                 tokomemberDashCreateViewModel.uploadImagePremium(file)
             }
@@ -641,17 +603,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
                 if(programData!= null) {
                     textFieldProgramStartDate.editText.setText(
-                        DateUtil.setDate(
+                        TmDateUtil.setDate(
                             programData?.timeWindow?.startTime.toString()
                         )
                     )
                     textFieldProgramStartTime.editText.setText(
-                        DateUtil.setTime(
+                        TmDateUtil.setTime(
                             programData?.timeWindow?.startTime.toString()
                         )
                     )
-                    textFieldProgramEndDate.editText.setText(DateUtil.setDate(programData?.timeWindow?.endTime.toString()))
-                    textFieldProgramEndTime.editText.setText(DateUtil.setTime(programData?.timeWindow?.endTime.toString()))
+                    textFieldProgramEndDate.editText.setText(TmDateUtil.setDate(programData?.timeWindow?.endTime.toString()))
+                    textFieldProgramEndTime.editText.setText(TmDateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                 }
                 textFieldProgramStartDate.isEnabled = false
                 textFieldProgramStartDate.iconContainer.isEnabled = false
