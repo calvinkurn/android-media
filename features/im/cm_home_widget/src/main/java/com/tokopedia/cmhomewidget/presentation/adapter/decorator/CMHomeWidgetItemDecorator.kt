@@ -63,14 +63,15 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
             }
             //this ratio will only applied if single item is there in adapter for Payment HTDW
             CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
-                ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
+                ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
+                if (totalItems == 1) {
+                    ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
+                }
             }
         }
-        if(currentViewType != CMHomeWidgetPaymentCardViewHolder.LAYOUT || totalItems == 1) {
-            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-            layoutParams.width = (parent.measuredWidth * ratio).toInt()
-            view.layoutParams = layoutParams
-        }
+        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+        layoutParams.width = (parent.measuredWidth * ratio).toInt()
+        view.layoutParams = layoutParams
     }
 
     companion object {

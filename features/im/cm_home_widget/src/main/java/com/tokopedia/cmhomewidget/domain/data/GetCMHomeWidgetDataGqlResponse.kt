@@ -82,15 +82,10 @@ data class CMHomeWidgetPaymentData(
     @SerializedName("action_buttons")
     @Expose
     val actionButton: List<CMHomeWidgetActionButton>?,
-    var isWidgetClosePress: Boolean = false,
-    var widgetDataItemSize: Int = 0
+    var isWidgetClosePress: Boolean = false
 ): CMHomeWidgetVisitable {
     override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    fun isSingleDataItem(): Boolean {
-        return widgetDataItemSize == 1
     }
 }
 
