@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common
+package com.tokopedia.chat_common.view.adapter
 
 import android.content.Context
 import android.text.format.DateFormat
@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.TypingChatModel
-import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import java.util.*
@@ -40,9 +39,9 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewRecycled(holder)
         if (holder is ImageUploadViewHolder) {
-            (holder as ImageUploadViewHolder).onViewRecycled()
+            holder.onViewRecycled()
         } else if (holder is ImageAnnouncementViewHolder) {
-            (holder as ImageAnnouncementViewHolder).onViewRecycled()
+            holder.onViewRecycled()
         }
     }
 

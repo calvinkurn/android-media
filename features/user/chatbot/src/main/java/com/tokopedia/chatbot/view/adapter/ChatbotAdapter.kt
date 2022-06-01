@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.view.adapter
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
