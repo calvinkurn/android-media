@@ -20,7 +20,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
-import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.QuizAnsweredEvent
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
@@ -30,7 +29,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play.view.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
