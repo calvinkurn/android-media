@@ -10,7 +10,7 @@ import javax.inject.Inject
 class TmKuponUpdateUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<TmKuponCreateMVResponse>(graphqlRepository) {
 
-    @GqlQuery("TmKuponCreate", KUPON_UPDATE)
+    @GqlQuery("tmKuponUpdate", KUPON_UPDATE)
     fun updateCoupon(
         success: (TmKuponCreateMVResponse) -> Unit,
         onFail: (Throwable) -> Unit,
@@ -18,7 +18,7 @@ class TmKuponUpdateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
     ) {
         this.setTypeClass(TmKuponCreateMVResponse::class.java)
         this.setRequestParams(getRequestParams(tmCouponUpdateRequest))
-        this.setGraphqlQuery(TmKuponCreate.GQL_QUERY)
+        this.setGraphqlQuery(KUPON_UPDATE)
         this.execute({
             success(it)
         }, {

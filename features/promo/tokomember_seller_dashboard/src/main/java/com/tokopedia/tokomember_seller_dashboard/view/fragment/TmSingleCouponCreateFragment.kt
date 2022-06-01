@@ -214,9 +214,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
+                    if (it.data?.membershipValidateBenefit?.resultStatus?.code?.isNotEmpty() == true) {
                         errorState.isValidateCouponError = false
-                        uploadImagePremium()
+                        updateCoupon()
+//                        uploadImagePremium()
                     } else {
                         setButtonState()
                         handleProgramPreValidateError()
@@ -237,72 +238,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     when(it.data){
                         is UploadResult.Success ->{
-                            errorState.isUploadPremium = false
-                            //Handle success
-                            val level = if(selectedChipPositionLevel == 0){
-                                1
-                            }
-                            else{
-                                2
-                            }
-                            val benefitType = if(selectedChipPositionCashback == 0){
-                                "idr"
-                            }
-                            else{
-                                "percent"
-                            }
-                            val couponType = if(selectedChipPositionKupon == 0){
-                                "cashback"
-                            }
-                            else{
-                                "shipping"
-                            }
-                            val tmCouponUpdateRequest = TmCouponUpdateRequest(
-                                benefitMax = tmCouponDetail?.voucherDiscountAmtMax,
-                                targetBuyer = 3,
-                                image = it.data.uploadId,
-                                code = "",
-                                minPurchase = tmCouponDetail?.voucherMinimumAmt,
-                                minimumTierLevel = level,
-                                benefitPercent = tmCouponDetail?.voucherDiscountAmt,
-                                hourEnd = tmCouponEndTimeUnix?.let { it1 ->
-                                    DateUtil.getTimeFromUnix(
-                                        it1
-                                    )
-                                },
-                                dateEnd = tmCouponEndDateUnix?.let { it1 ->
-                                    DateUtil.getDateFromUnix(
-                                        it1
-                                    )
-                                },
-                                hourStart = tmCouponStartTimeUnix?.let { it1 ->
-                                    DateUtil.getTimeFromUnix(
-                                        it1
-                                    )
-                                },
-                                dateStart = tmCouponStartDateUnix?.let { it1 ->
-                                    DateUtil.getDateFromUnix(
-                                        it1
-                                    )
-                                },
-                                source = "android",
-                                imageSquare = tmCouponDetail?.voucherImageSquare,
-                                couponName = tmCouponDetail?.voucherName,
-                                token = token,
-                                benefitType = benefitType,
-                                benefitIdr = textFieldMaxCashback.editText.text.toString().toInt() * textFieldQuota.editText.text.toString().toInt(),
-                                imagePortrait = tmCouponDetail?.voucherImagePortrait,
-                                quota = textFieldQuota.editText.text.toString().toInt(),
-                                isPublic = tmCouponDetail?.isPublic,
-                                voucherId = tmCouponDetail?.voucherId,
-                                couponType = couponType,
-                                is_lock_to_product = tmCouponDetail?.isLockToProduct,
-                                product_ids = tmCouponDetail?.productIds.toString().replace("[", "").replace("]", ""),
-                                warehouse_id = tmCouponDetail?.warehouseId,
-                                product_ids_csv_url = ""
-
-                            )
-                            tokomemberDashCreateViewModel.updateCoupon(tmCouponUpdateRequest)
+                            updateCoupon()
                         }
                         is UploadResult.Error ->{
                             view?.let { it ->
@@ -354,6 +290,96 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun updateCoupon() {
+        errorState.isUploadPremium = false
+        //Handle success
+        val level = if(selectedChipPositionLevel == 0){
+            1
+        }
+        else{
+            2
+        }
+        val benefitType = if(selectedChipPositionCashback == 0){
+            "idr"
+        }
+        else{
+            "percent"
+        }
+        val couponType = if(selectedChipPositionKupon == 0){
+            "cashback"
+        }
+        else{
+            "shipping"
+        }
+        val hourEnd = if(tmCouponEndTimeUnix != null){
+            DateUtil.getTimeFromUnix(
+                tmCouponEndTimeUnix!!
+            )
+        }
+        else{
+            ProgramUpdateMapper.setTime(
+                programData?.timeWindow?.endTime.toString()
+            ).replace(" WIB", "")
+        }
+        val dateEnd = if(tmCouponEndDateUnix != null){
+            DateUtil.getDateFromUnix(
+                tmCouponEndDateUnix!!
+            )
+        }
+        else{
+            programData?.timeWindow?.endTime?.substringBefore("T")
+        }
+        val hourStart = if(tmCouponStartTimeUnix != null){
+            DateUtil.getTimeFromUnix(
+                tmCouponStartTimeUnix!!
+            )
+        }
+        else{
+            ProgramUpdateMapper.setTime(
+                programData?.timeWindow?.startTime.toString()
+            ).replace(" WIB", "")
+        }
+        val dateStart = if(tmCouponStartDateUnix != null){
+            DateUtil.getTimeFromUnix(
+                tmCouponStartDateUnix!!
+            )
+        }
+        else{
+            programData?.timeWindow?.startTime?.substringBefore("T")
+        }
+        val maxCashBack = textFieldMaxCashback.editText.text.toString().replace(".", "").toInt()
+        val tmCouponUpdateRequest = TmCouponUpdateRequest(
+            benefitMax = tmCouponDetail?.voucherDiscountAmtMax,
+            targetBuyer = 3,
+            image = "it.data.uploadId",
+            code = "",
+            minPurchase = tmCouponDetail?.voucherMinimumAmt,
+            minimumTierLevel = level,
+            benefitPercent = tmCouponDetail?.voucherDiscountAmt,
+            hourEnd = hourEnd,
+            dateEnd = dateEnd,
+            hourStart = hourStart,
+            dateStart = dateStart,
+            source = "android",
+            imageSquare = tmCouponDetail?.voucherImageSquare,
+            couponName = tmCouponDetail?.voucherName,
+            token = token,
+            benefitType = benefitType,
+            benefitIdr = maxCashBack * textFieldQuota.editText.text.toString().toInt(),
+            imagePortrait = tmCouponDetail?.voucherImagePortrait,
+            quota = textFieldQuota.editText.text.toString().toInt(),
+            isPublic = tmCouponDetail?.isPublic,
+            voucherId = tmCouponDetail?.voucherId,
+            couponType = couponType,
+            is_lock_to_product = tmCouponDetail?.isLockToProduct,
+            product_ids = tmCouponDetail?.productIds.toString().replace("[", "").replace("]", ""),
+            warehouse_id = tmCouponDetail?.warehouseId,
+            product_ids_csv_url = ""
+
+        )
+        tokomemberDashCreateViewModel.updateCoupon(tmCouponUpdateRequest)
     }
 
     private fun renderUIForEdit(data: TmCouponDetailData?) {
@@ -729,8 +755,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     selectedMinute = timePicker.minutePicker.activeValue
                     textField.textInputLayout.editText?.setText(( "$selectedHour : $selectedMinute WIB"))
                     when (type) {
-                        0 -> { tmCouponStartTimeUnix = selectedCalendar }
-                        1 -> { tmCouponEndTimeUnix = selectedCalendar }
+                        0 -> { tmCouponStartTimeUnix = startTime }
+                        1 -> { tmCouponEndTimeUnix = startTime }
                     }
                     dismiss()
                 }
