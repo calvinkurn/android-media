@@ -54,7 +54,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
-            android:maxLines="2"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/total_pembayaran"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -68,6 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
+            android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_amt_label"
@@ -82,10 +84,9 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_8"
             android:background="#BFC9D9"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            app:layout_constraintEnd_toEndOf="@id/guideline2"
-            android:layout_marginEnd="@dimen/unify_font_12"
             app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_payment"
+            app:layout_constraintEnd_toEndOf="@id/guideline2"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -95,8 +96,8 @@
             android:layout_marginStart="@dimen/dp_12"
             android:text="@string/sisa_waktu"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="@id/guideline2"
             app:layout_constraintBottom_toTopOf="@+id/timer"
+            app:layout_constraintStart_toStartOf="@id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_payment_amt_label"
             app:typographyType="body_3"
             tools:text="@string/sisa_waktu" />
