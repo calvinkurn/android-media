@@ -1,10 +1,10 @@
-package com.tokopedia.prescription.ui.activity
+package com.tokopedia.epharmacy.ui.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.prescription.ui.fragment.UploadPrescriptionFragment
-import com.tokopedia.prescription.viewmodel.EPharmacyViewModel
+import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
+import com.tokopedia.epharmacy.viewmodel.EPharmacyViewModel
 
 class EPharmacyActivity : BaseViewModelActivity<EPharmacyViewModel>() {
 

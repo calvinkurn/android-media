@@ -29,6 +29,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    //implementation project(rootProject.ext.features.medialoader)
+    //implementation project(rootProject.ext.features.mediauploader)
+    //implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles

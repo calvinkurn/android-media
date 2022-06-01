@@ -1,8 +1,8 @@
-package com.tokopedia.prescription.ui.fragment
+package com.tokopedia.epharmacy.ui.fragment
 
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.prescription.viewmodel.UploadPrescriptionViewModel
+import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
 
 class UploadPrescriptionFragment : BaseViewModelFragment<UploadPrescriptionViewModel>() {
 
