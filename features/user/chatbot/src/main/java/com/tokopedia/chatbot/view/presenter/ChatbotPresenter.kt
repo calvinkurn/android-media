@@ -24,6 +24,21 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CREATE_TIME
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.DESCRIPTION
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_COLOR
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
@@ -43,6 +58,7 @@ import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadPolicy.ChatbotVODUploadPolicyResponse
 import com.tokopedia.chatbot.data.uploadeligibility.UploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -70,8 +86,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -88,7 +102,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Type
 import java.util.*
@@ -96,41 +109,33 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
-import android.provider.MediaStore
-
-import android.database.Cursor
-import android.media.MediaPlayer
-
-import android.net.Uri
-import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
-import java.util.concurrent.TimeUnit
 
 
 /**
  * @author by nisie on 05/12/18.
  */
 class ChatbotPresenter @Inject constructor(
-        var getExistingChatUseCase: GetExistingChatUseCase,
-        override var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor,
-        private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
-        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase,
-        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
-        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
-        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
-        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
-        private val chatbotVideoUploadEligibilityUseCase: ChatbotVideoUploadEligibilityUseCase,
-        private val chatbotUploadPolicyUseCase: ChatbotUploadPolicyUseCase,
-        private val uploaderUseCase : UploaderUseCase
+    var getExistingChatUseCase: GetExistingChatUseCase,
+    override var userSession: UserSessionInterface,
+    private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val fingerprintInterceptor: FingerprintInterceptor,
+    private val sendChatRatingUseCase: SendChatRatingUseCase,
+    private val sendRatingReasonUseCase: SendRatingReasonUseCase,
+    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+    private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
+    private val leaveQueueUseCase: LeaveQueueUseCase,
+    private val getTickerDataUseCase: GetTickerDataUseCase,
+    private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+    private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+    private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
+    private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+    private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+    private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+    private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+    private val chatbotVideoUploadEligibilityUseCase: ChatbotVideoUploadEligibilityUseCase,
+    private val chatbotUploadPolicyUseCase: ChatbotUploadPolicyUseCase,
+    private val uploaderUseCase : UploaderUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -579,7 +584,8 @@ class ChatbotPresenter @Inject constructor(
         launchCatchError(
             block = {
                val gqlResponse =  chatbotVideoUploadEligibilityUseCase.getUserVideoUploadEligibility(msgId)
-                val response = gqlResponse.getData<UploadVideoEligibilityResponse>(UploadVideoEligibilityResponse::class.java)
+                val response = gqlResponse.getData<UploadVideoEligibilityResponse>(
+                    UploadVideoEligibilityResponse::class.java)
                 isEligible(response.topbotUploadVideoEligibility.data.isEligibile)
                 error(response.topbotUploadVideoEligibility.header.reason)
 
