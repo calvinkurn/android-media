@@ -90,15 +90,15 @@ class MerchantCampaignBannerGeneratorDataUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    suspend fun execute(params: Param): CampaignBanner {
-        val request = buildRequest(params)
+    suspend fun execute(campaignId: Long): CampaignBanner {
+        val request = buildRequest(campaignId)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<MerchantCampaignBannerGeneratorDataResponse>()
         return mapper.map(data)
     }
 
-    private fun buildRequest(params: Param): GraphqlRequest {
-        val payload = CampaignBannerGeneratorDataRequest(params.campaignId, params.rows)
+    private fun buildRequest(campaignId: Long): GraphqlRequest {
+        val payload = CampaignBannerGeneratorDataRequest(campaignId, ZERO)
         val requestParams = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(
             GetMerchantCampaignBannerGeneratorData(),
@@ -106,10 +106,5 @@ class MerchantCampaignBannerGeneratorDataUseCase @Inject constructor(
             requestParams
         )
     }
-
-    data class Param(
-        val campaignId: Long,
-        val rows: Int = ZERO
-    )
 
 }

@@ -26,7 +26,6 @@ class CampaignListViewModel @Inject constructor(
     private val merchantCampaignBannerGeneratorDataUseCase: MerchantCampaignBannerGeneratorDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
     val campaigns: LiveData<Result<CampaignMeta>>
         get() = _campaigns
@@ -39,7 +38,6 @@ class CampaignListViewModel @Inject constructor(
     val campaignCreation: LiveData<Result<CampaignCreationResult>>
         get() = _campaignCreation
 
-
     private val _campaignDrafts = MutableLiveData<Result<CampaignMeta>>()
     val campaignDrafts: LiveData<Result<CampaignMeta>>
         get() = _campaignDrafts
@@ -47,7 +45,6 @@ class CampaignListViewModel @Inject constructor(
     private val _campaignBanner = MutableLiveData<Result<CampaignBanner>>()
     val campaignBanner: LiveData<Result<CampaignBanner>>
         get() = _campaignBanner
-
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -136,9 +133,8 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val param =MerchantCampaignBannerGeneratorDataUseCase.Param(campaignId)
-                val attribute = merchantCampaignBannerGeneratorDataUseCase.execute(param)
-                _campaignBanner.postValue(Success(attribute))
+                val campaign = merchantCampaignBannerGeneratorDataUseCase.execute(campaignId)
+                _campaignBanner.postValue(Success(campaign))
             },
             onError = { error ->
                 _campaignBanner.postValue(Fail(error))

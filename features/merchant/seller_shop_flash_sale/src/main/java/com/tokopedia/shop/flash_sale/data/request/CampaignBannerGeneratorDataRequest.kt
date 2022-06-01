@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CampaignBannerGeneratorDataRequest(
     @SuppressLint("Invalid Data Type")
-    @SerializedName("CampaignId")
+    @SerializedName("CampaignID")
     val campaignId: Long,
     @SerializedName("Rows")
     val rows: Int

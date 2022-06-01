@@ -28,6 +28,7 @@ import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
@@ -147,7 +148,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             MAX_DRAFT_COUNT,
             FIRST_PAGE
         )
-        viewModel.getCampaignBanner(754171.toLong())
+
     }
 
     private fun setupView() {
@@ -270,7 +271,8 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         viewModel.campaignBanner.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    val data = result.data
+                    val campaign = result.data
+                    displayShareBottomSheet(campaign)
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
@@ -462,14 +464,14 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
-        bottomSheet.setOnItemClickListener { selectedCampaign ->
-
+        bottomSheet.setOnItemClickListener { menu ->
+            viewModel.getCampaignBanner(campaign.campaignId)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet() {
-
+    private fun displayShareBottomSheet(campaign: CampaignBanner) {
+        println()
         /*shareComponentBottomSheet = shareComponentInstanceBuilder.build(
             ShareComponentInstanceBuilder.Param(),
             onShareOptionsClicked = { shareModel ->
