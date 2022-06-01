@@ -11,23 +11,32 @@ import com.tokopedia.logisticcart.shipping.model.*
 
 class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    // list of eligible services that user can choose
     private var mData: MutableList<RatesViewModelType>
+    // list of all available services from rates (for logistic promo)
+    private var allServices: List<ShippingDurationUiModel>
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     private var isDisableOrderPrioritas = false
 
     init {
         mData = mutableListOf()
+        allServices = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: LogisticPromoUiModel?, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.mData = shippingDurationUiModels.toMutableList()
+        this.allServices = shippingDurationUiModels
+        this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
         if (preOrderModel?.display == true)  {
             preOrderModel.let { this.mData.add(0, it) }
-            promoUiModel?.let { this.mData.add(1, it) }
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(1, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         } else {
-            promoUiModel?.let { this.mData.add(0, it) }
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         }
         if (shippingDurationUiModels[0].etaErrorCode == 1) {
             this.mData.add(0, NotifierModel())
@@ -44,12 +53,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
-        mData.firstOrNull { it is ShippingDurationUiModel && it.serviceData.serviceId == serId }
-                ?.let {
-                    if (it is ShippingDurationUiModel) {
-                        return it
-                    }
-                }
+        allServices.firstOrNull { it.serviceData.serviceId == serId }
+            ?.let {
+                return it
+            }
         return null
     }
 
@@ -69,6 +76,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
+        is DividerModel -> DividerViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -78,6 +86,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
+            DividerViewHolder.LAYOUT -> DividerViewHolder(view)
             else -> ShippingDurationViewHolder(view, cartPosition)
         }
     }

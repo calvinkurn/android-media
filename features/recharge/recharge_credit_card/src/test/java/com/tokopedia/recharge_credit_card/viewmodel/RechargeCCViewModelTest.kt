@@ -172,8 +172,16 @@ class RechargeCCViewModelTest {
 
         val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
+        val validations = listOf(
+            Validation("Max 16 digits", "Maksimal 16 digits", "^\\\\d{0,16}\$"),
+            Validation("Min 15 digits", "Minimal 15 digit", "^\\d{15,}$")
+        )
+
         val result = HashMap<Type, Any>()
-        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
+        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(
+            prefixes = prefixes,
+            validations = validations
+        ))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
@@ -187,6 +195,16 @@ class RechargeCCViewModelTest {
         Assert.assertEquals(rechargeCCSelected.defaultProductId, actualData.value?.defaultProductId)
         Assert.assertEquals(rechargeCCSelected.operatorId, actualData.value?.operatorId)
         Assert.assertEquals(rechargeCCSelected.imageUrl, actualData.value?.imageUrl)
+
+        val actualRules = rechargeCCViewModel.rule
+        Assert.assertNotNull(actualRules)
+        Assert.assertEquals(validations.size, actualRules.value?.size)
+        Assert.assertEquals(validations[0].message, actualRules.value?.get(0)?.message)
+        Assert.assertEquals(validations[0].title, actualRules.value?.get(0)?.title)
+        Assert.assertEquals(validations[0].rule, actualRules.value?.get(0)?.rule)
+        Assert.assertEquals(validations[1].message, actualRules.value?.get(1)?.message)
+        Assert.assertEquals(validations[1].title, actualRules.value?.get(1)?.title)
+        Assert.assertEquals(validations[1].rule, actualRules.value?.get(1)?.rule)
     }
 
     @Test

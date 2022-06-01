@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.presenter
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import com.google.gson.Gson
@@ -34,6 +35,7 @@ import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
@@ -65,6 +67,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -184,7 +189,7 @@ class ChatbotPresenter @Inject constructor(
                 }
                 sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
-
+                view.sendInvoiceForArticle()
             }
 
             override fun onMessage(text: String) {
@@ -412,9 +417,23 @@ class ChatbotPresenter @Inject constructor(
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String,
-                                       opponentId: String) {
-        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
-                invoiceLinkPojo, startTime, opponentId), listInterceptor)
+                                       opponentId: String,isArticleEntry: Boolean,usedBy: String) {
+
+        if (!isArticleEntry) {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendInvoice(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId
+                ), listInterceptor
+            )
+        } else {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId, usedBy
+                ), listInterceptor
+            )
+        }
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
@@ -422,6 +441,17 @@ class ChatbotPresenter @Inject constructor(
                                 opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
                 quickReply, startTime, opponentId), listInterceptor)
+    }
+
+    override fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyViewModel,
+                                startTime: String,
+                                opponentId: String,event : String, usedBy: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                messageId,
+                quickReply, startTime, opponentId, event, usedBy
+            ), listInterceptor
+        )
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
@@ -624,6 +654,48 @@ class ChatbotPresenter @Inject constructor(
         //TODO cancel video upload
     }
 
+
+    override fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel {
+        return AttachInvoiceSingleViewModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[DESCRIPTION] ?: "",
+            url = hashMap[IMAGE_URL] ?: "",
+            id = hashMap.get(ID)!!.toLongOrZero(),
+            imageUrl = hashMap[IMAGE_URL] ?: "",
+            status = hashMap[STATUS] ?: "",
+            statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
+            title = hashMap[TITLE] ?: "",
+            amount = hashMap[TOTAL_AMOUNT] ?: ""
+        )
+    }
+
+    override fun getValuesForArticleEntry(uri: Uri): Map<String, String> {
+        return mapOf(
+            ARTICLE_ID to getQueryParam(uri, ARTICLE_ID),
+            ARTICLE_TITLE to getQueryParam(uri, ARTICLE_TITLE),
+            CODE to getQueryParam(uri, CODE),
+            CREATE_TIME to getQueryParam(uri, CREATE_TIME),
+            DESCRIPTION to getQueryParam(uri, DESCRIPTION),
+            EVENT to getQueryParam(uri, EVENT),
+            ID to getQueryParam(uri, ID),
+            IMAGE_URL to getQueryParam(uri, IMAGE_URL),
+            IS_ATTACHED to getQueryParam(uri, IS_ATTACHED),
+            STATUS to getQueryParam(uri, STATUS),
+            STATUS_COLOR to getQueryParam(uri, STATUS_COLOR),
+            STATUS_ID to getQueryParam(uri, STATUS_ID),
+            TITLE to getQueryParam(uri, TITLE),
+            TOTAL_AMOUNT to getQueryParam(uri, TOTAL_AMOUNT),
+            USED_BY to getQueryParam(uri, USED_BY)
+        )
+
+    }
+
+    private fun getQueryParam(uri: Uri, key: String): String {
+        return uri.getQueryParameter(key).toBlankOrString()
+    }
 
     override fun cancelImageUpload() {
         uploadImageUseCase.unsubscribe()

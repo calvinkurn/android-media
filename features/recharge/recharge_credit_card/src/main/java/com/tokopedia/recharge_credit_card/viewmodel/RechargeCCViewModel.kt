@@ -14,10 +14,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import okhttp3.internal.http2.ConnectionShutdownException
-import java.io.InterruptedIOException
-import java.net.SocketException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -31,10 +27,12 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
     private val _errorPrefix = MutableLiveData<Throwable>()
     private val _bankNotSupported = MutableLiveData<Throwable>()
+    private val _rule = MutableLiveData<List<RuleModel>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val errorPrefix: LiveData<Throwable> = _errorPrefix
     val bankNotSupported: LiveData<Throwable> = _bankNotSupported
+    val rule: LiveData<List<RuleModel>> = _rule
 
     private var foundPrefix: Boolean = false
     var categoryName: String = ""
@@ -100,6 +98,14 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             if (data.prefixSelect.prefixes.isNotEmpty()) {
                 data.prefixSelect.prefixes.map {
                     if (creditCard.startsWith(it.value)) {
+                        val validations = data.prefixSelect.validations.map { validation ->
+                            RuleModel(
+                                validation.title,
+                                validation.message,
+                                validation.rule
+                            )
+                        }
+                        _rule.postValue(validations)
                         foundPrefix = true
                         return@map _rechargeCreditCard.postValue(RechargeCreditCard(
                                 it.operator.id,

@@ -1,6 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
-import com.tokopedia.network.BuildConfig
+import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
 import okhttp3.*

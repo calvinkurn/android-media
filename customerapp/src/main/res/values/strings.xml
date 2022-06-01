@@ -205,6 +205,8 @@
     <string name="label_product_wholesale">Harga Grosir</string>
     <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
+    <string name="alpha_notification_category">Tokopedia Alpha notifications</string>
+    <string name="tokopedia_alpha">Tokopedia Alpha</string>
 
 
     <!-- Travel slice custom query -->

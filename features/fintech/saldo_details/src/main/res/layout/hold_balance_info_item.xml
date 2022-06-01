@@ -64,26 +64,6 @@
             app:typographyType="body_3"
             tools:text="23 Okt 2019" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_liquidOnDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:text="@string/saldo_akan_cair_pada"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_dateWithheld"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_valueLiquidOnDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_valueDateWithheld"
-            app:typographyType="body_3"
-            tools:text="Proses verifikasi selesai" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,7 +71,7 @@
             android:background="@drawable/bg_hold_info_result"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/tv_invoice"
-            app:layout_constraintTop_toBottomOf="@id/tv_valueLiquidOnDate">
+            app:layout_constraintTop_toBottomOf="@id/tv_valueDateWithheld">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"

@@ -6,6 +6,9 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -15,6 +18,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
@@ -51,6 +55,51 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                             serverTimeUnix = 0
                     )
             )
+    )
+}
+
+fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
+    return listOf(
+        HomeLayoutResponse(
+            id = "34923",
+            layout = "lego_3_image",
+            header = Header(
+                name = "Lego Banner",
+                serverTimeUnix = 0
+            ),
+        ),
+        HomeLayoutResponse(
+            id = "11111",
+            layout = "6_image",
+            header = Header(
+                name = "Lego 6",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2222",
+            layout = "banner_carousel_v2",
+            header = Header(
+                name = "Banner Tokonow",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2322",
+            layout = "top_carousel_tokonow",
+            header = Header(
+                name = "Product Recommendation",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2122",
+            layout = "left_carousel",
+            header = Header(
+                name = "Mix Left Carousel",
+                serverTimeUnix = 0
+            )
+        )
     )
 }
 
@@ -140,10 +189,10 @@ fun createLoadingState(): HomeLayoutListUiModel {
     )
 }
 
-fun createEmptyState(id: String): HomeLayoutListUiModel {
+fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, hostSource = TokoNowRepurchaseFragment.SOURCE, serviceType = serviceType)
     mutableList.add(chooseAddressUiModel)
     mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(
@@ -247,14 +296,15 @@ fun createDynamicLegoBannerDataModel(
     id: String,
     groupId: String,
     headerName: String,
-    headerServerTimeUnix: Long = 0
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
 ): DynamicLegoBannerDataModel {
     val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = "lego_3_image")
+    val channelConfig = ChannelConfig(layout = layout)
     val channelModel = ChannelModel(
         id = id,
         groupId = groupId,
-        layout = "lego_3_image",
+        layout = layout,
         channelHeader = channelHeader,
         channelConfig = channelConfig
     )
@@ -279,13 +329,32 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
+fun createMixLeftDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0,
+    layout: String = "lego_3_image"
+): MixLeftDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = layout)
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = layout,
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return MixLeftDataModel(channelModel = channelModel)
+}
+
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>?,
+    categoryList: TokoNowCategoryListUiModel?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
+    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
@@ -309,4 +378,25 @@ fun createHomeProductCardUiModel(
     @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+}
+
+fun createLocalCacheModel(
+    warehouseId: String = "111111",
+    warehouses: List<LocalWarehouseModel> = listOf(
+        LocalWarehouseModel(
+            warehouse_id = 111111,
+            service_type = ServiceType.NOW_2H
+        ),
+        LocalWarehouseModel(
+            warehouse_id = 222222,
+            service_type = ServiceType.NOW_15M
+        )
+    ),
+    serviceType: String = ServiceType.NOW_2H
+): LocalCacheModel {
+    return LocalCacheModel(
+        warehouse_id = warehouseId,
+        warehouses = warehouses,
+        service_type = serviceType
+    )
 }

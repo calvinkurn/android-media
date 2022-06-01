@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.KEY_ONBOARDING
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.getCacheBoolean
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveCacheBoolean
@@ -45,6 +46,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        NotifSettingAnalytics.sendScreenName(SCREEN_NAME)
         return LayoutInflater.from(context).inflate(
                 R.layout.fragment_setting_type,
                 container,
@@ -120,6 +122,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     companion object {
         private const val ILLEGAL_EXCEPTION_MESSAGE = "The activity must implement SettingTypeContract interface"
         private const val BROADCAST_MESSAGE = ".BroadcastMessage"
+        private const val SCREEN_NAME = "Notification Settings Page"
 
         fun createInstance(bundle: Bundle? = Bundle()): Fragment {
             val fragment = SettingTypeFragment()

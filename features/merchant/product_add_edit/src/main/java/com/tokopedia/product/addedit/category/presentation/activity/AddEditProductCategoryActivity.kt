@@ -13,11 +13,12 @@ import com.tokopedia.product.addedit.category.di.AddEditProductCategoryModule
 import com.tokopedia.product.addedit.category.di.DaggerAddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_IS_EDIT_MODE
 import com.tokopedia.product.addedit.tracking.ProductCategoryTracking
 import com.tokopedia.user.session.UserSession
 
-class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEditProductCategoryComponent>{
+class AddEditProductCategoryActivity : TabletAdaptiveActivity(), HasComponent<AddEditProductCategoryComponent>{
 
     private var huCategory: HeaderUnify? = null
 

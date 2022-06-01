@@ -99,43 +99,6 @@ class CreateReviewProgressBar : BaseCustomView {
         }
     }
 
-    fun setProgressBarValueForOldFlow(progress: CreateReviewProgressBarState) {
-        when {
-            progress.isCompleteOldFlow() -> {
-                setCompleteProgress()
-                if (progress.isGoodRating) {
-                    setGoodRatingCompleteText()
-                    return
-                }
-                setBadRatingCompleteText()
-            }
-            progress.isNeedPhotoOldFlow() -> {
-                setPartiallyCompleteProgress()
-                if (progress.isGoodRating) {
-                    setGoodRatingNeedPhotoText()
-                    return
-                }
-                setBadRatingNeedPhotoText()
-            }
-            progress.isNeedReviewOldFlow() -> {
-                setPartiallyCompleteProgress()
-                if (progress.isGoodRating) {
-                    setGoodRatingNeedReviewText()
-                    return
-                }
-                setBadRatingNeedReviewText()
-            }
-            else -> {
-                setEmptyProgress()
-                if (progress.isGoodRating) {
-                    setGoodRatingEmptyText()
-                    return
-                }
-                setBadRatingOldFlowEmptyText()
-            }
-        }
-    }
-
     private fun setEmptyProgress() {
         progressBar?.apply {
             setValue(EMPTY_PROGRESS)
@@ -198,20 +161,8 @@ class CreateReviewProgressBar : BaseCustomView {
         progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_complete)
     }
 
-    private fun setBadRatingNeedPhotoText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
-    }
-
-    private fun setBadRatingNeedReviewText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_text)
-    }
-
     private fun setBadRatingFlowNeedPhotoText() {
         progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
-    }
-
-    private fun setBadRatingOldFlowEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty_old)
     }
 
     private fun setBadRatingEmptyText() {

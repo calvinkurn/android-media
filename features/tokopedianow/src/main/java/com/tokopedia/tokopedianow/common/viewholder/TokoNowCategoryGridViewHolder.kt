@@ -87,10 +87,10 @@ class TokoNowCategoryGridViewHolder(
 
         rvCategory?.apply {
             adapter = this@TokoNowCategoryGridViewHolder.adapter
-            layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT, RecyclerView.HORIZONTAL, false)
+            layoutManager = GridLayoutManager(context, data.categoryListUiModel?.gridSpanCount ?: 1, RecyclerView.HORIZONTAL, false)
         }
 
-        adapter.submitList(data.categoryList.orEmpty())
+        adapter.submitList(data.categoryListUiModel?.categoryList.orEmpty())
 
         categoryShimmering?.hide()
         llCategory?.hide()

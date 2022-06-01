@@ -44,18 +44,26 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return result
     }
 
-    suspend fun getOccCart(source: String): ResultGetOccCart {
+    suspend fun getOccCart(source: String, gatewayCode: String, tenor: Int): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
+                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
                 return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
                         orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
                         orderProfile = orderData.preference,
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
-                        globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
+                        globalEvent = when {
+                            orderData.prompt.shouldShowPrompt() -> {
+                                OccGlobalEvent.Prompt(orderData.prompt)
+                            }
+                            orderData.popUp.isNeedToShowPopUp() -> {
+                                OccGlobalEvent.PopUp(orderData.popUp)
+                            }
+                            else -> null
+                        },
                         throwable = null,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
                         profileCode = orderData.profileCode
@@ -114,14 +122,17 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 }
             }
             val realServiceId = orderShipment.getRealServiceId()
+            val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                    orderProfile.payment.gatewayCode,
-                    metadata,
-                    orderProfile.address.addressId.toString(),
-                    if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
-                    orderShipment.getRealShipperId(),
-                    orderShipment.getRealShipperProductId(),
-                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
+                    gatewayCode = orderProfile.payment.gatewayCode,
+                    metadata = metadata,
+                    addressId = orderProfile.address.addressId.toString(),
+                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
+                    shippingId = orderShipment.getRealShipperId(),
+                    spId = orderShipment.getRealShipperProductId(),
+                    isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
+                    tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
+                    optionId = selectedGoCicilTerm?.optionId ?: ""
             )
             return UpdateCartOccRequest(cart, profile)
         }

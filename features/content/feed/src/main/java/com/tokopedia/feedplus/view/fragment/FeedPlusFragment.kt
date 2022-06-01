@@ -54,6 +54,7 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -146,7 +147,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException
@@ -356,7 +356,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
-        Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -1003,7 +1002,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
-            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -1011,6 +1009,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (userVisibleHint) {
             loadData(userVisibleHint)
         }
+    }
+    fun updateFeedVisibilityVariable(isFeedShown: Boolean){
+        this.isFeedPageShown = isFeedShown
     }
 
     override fun onPause() {
@@ -1744,8 +1745,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShareClick(
-        positionInFeed: Int, id: Int, title: String,
-        description: String, url: String,
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
@@ -1781,6 +1785,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
+                    setDesktopUrl(url)
                     setUri(url)
                 }
             } else {
@@ -1968,7 +1973,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (adapter.getList()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && adapter.getList()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventImageImpressionPost(
                 FeedAnalyticTracker.Screen.FEED,
@@ -2309,7 +2314,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            String.format(getString(R.string.feed_share_pdp), id.toString())
+            url
         } else{
             shareBottomSheetProduct = false
             url
@@ -2326,6 +2331,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             if (isTopads) {
                 linkerBuilder.setOgImageUrl(imageUrl)
+                linkerBuilder.setDesktopUrl(url)
             }
             shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
@@ -2403,7 +2409,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.id,
             feedXCard.media.first(),
             positionInFeed,
-            feedXCard.type,
+            feedXCard.typename,
             feedXCard.followers.isFollowed,
             feedXCard.author.id,
             feedXCard.media.firstOrNull()?.type?:""
@@ -2892,7 +2898,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun stopTracePerformanceMon() {
         performanceMonitoring.stopTrace()
-        Embrace.getInstance().endEvent(FEED_TRACE)
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
@@ -3306,7 +3311,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun showNoInterNetDialog(context: Context) {
-        val sheet = FeedNetworkErrorBottomSheet.newInstance()
+        val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
 
     }

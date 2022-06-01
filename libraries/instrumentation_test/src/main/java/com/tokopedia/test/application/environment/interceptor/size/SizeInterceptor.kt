@@ -1,6 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.size
 
-import com.tokopedia.network.BuildConfig
+import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_QUERY_NAME
 import okhttp3.*

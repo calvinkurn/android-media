@@ -48,6 +48,11 @@ object RechargeCCGqlQuery {
             name
             paramName
             text
+            validations {
+              title
+              message
+              rule
+            }
             prefixes {
               key
               value

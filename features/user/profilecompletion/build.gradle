@@ -17,6 +17,17 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
@@ -43,11 +54,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.pin
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
@@ -66,6 +78,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.playServicesDependencies.core
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingRight="@dimen/spacing_lvl4">
+    android:paddingEnd="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_recharge_home_single_banner_container"
@@ -21,8 +21,7 @@
             android:id="@+id/view_recharge_home_single_banner_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/section_header_margin"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintDimensionRatio="3:1"
             app:layout_constraintTop_toBottomOf="@+id/view_recharge_home_single_banner_header"
             app:unify_image_corner_radius="@integer/banner_image_corner" />

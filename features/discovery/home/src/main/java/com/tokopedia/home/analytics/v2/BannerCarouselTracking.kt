@@ -80,7 +80,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
 
     fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
             id = id,
-            name = attribution,
+            name = channelModel.trackingAttributionModel.promoName,
             creative = attribution,
             position = (position + 1).toString()
     )

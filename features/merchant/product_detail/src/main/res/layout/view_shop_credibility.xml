@@ -187,7 +187,9 @@
         android:id="@+id/shop_credibility_info_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
@@ -198,6 +200,6 @@
         app:tickerType="announcement"
         tools:descriptionText="Toko sedang libur. Ada potensi keterlambatan dalam pengiriman. Cek Jadwal"
         tools:layout_editor_absoluteX="12dp"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

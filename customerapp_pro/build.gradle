@@ -137,7 +137,7 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
-        checkDependencies true
+        checkDependencies false
         htmlReport false
         warningsAsErrors false
         abortOnError false
@@ -220,6 +220,10 @@ android {
         manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     dexOptions {
         javaMaxHeapSize "8g"
     }
@@ -284,7 +288,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.features.feedbackForm)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
@@ -306,19 +309,20 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.playServicesDependencies.measurementApi
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth

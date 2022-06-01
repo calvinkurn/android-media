@@ -7,6 +7,7 @@
     <string name="time_separator">:</string>
     <string name="default_timer_value">00</string>
     <string name="lihat_semua">Lihat Semua</string>
+    <string name="disco_lihat">Lihat</string>
     <string name="discovery">Discovery</string>
     <string name="klaim">Klaim</string>
     <string name="discovery_please_log_in">Please Log in</string>
@@ -58,6 +59,7 @@
     <string name="discovery_filter_reset">Reset Filter</string>
     <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="discovery_msg_success_add_wishlist_CTA">Lihat Wishlist</string>
     <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="discovery_top_to_bottom">Top to bottom</string>
@@ -79,4 +81,5 @@
     <string name="discovery_calendar_push_unsubscribe">Pengingat berhasil dibatalkan.</string>
     <string name="discovery_calendar_push_action">Oke</string>
     <string name="discovery_calendar_line">────</string>
+    <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
 </resources>

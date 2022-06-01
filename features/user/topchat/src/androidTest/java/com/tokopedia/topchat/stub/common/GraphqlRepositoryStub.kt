@@ -27,6 +27,7 @@ class GraphqlRepositoryStub @Inject constructor(): GraphqlRepository {
     }
 
     fun createMapResult(pojo: Type, resultData: Any) {
+        mapGraphqlError.clear()
         mapResult[pojo] = resultData
     }
 

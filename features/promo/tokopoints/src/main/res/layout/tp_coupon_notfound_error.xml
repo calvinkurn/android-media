@@ -36,6 +36,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginRight="16dp"
+        android:textAlignment="center"
         android:text="@string/tp_catalog_code_error_desc"
         android:textColor="@color/Unify_N200"
         app:layout_constraintEnd_toEndOf="parent"

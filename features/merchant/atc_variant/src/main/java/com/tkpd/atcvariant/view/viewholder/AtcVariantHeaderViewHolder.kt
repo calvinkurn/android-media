@@ -76,7 +76,6 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private fun renderTokoCabang(isTokoCabang: Boolean, uspImageUrl: String) = with(view) {
         txtTokoCabang?.run {
             shouldShowWithAction(isTokoCabang) {
-                text = HtmlLinkHelper(context, context.getString(R.string.atc_variant_tokocabang)).spannedString
                 setOnClickListener {
                     atcVarBottomSheetListener.onTokoCabangClicked(uspImageUrl)
                 }
@@ -107,9 +106,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
     }
 
     private fun loadImage(imgUrl: String) {
-        productImage.loadImage(imgUrl)
         productImage?.run {
-            loadImage(imgUrl)
+            setImageUrl(imgUrl)
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }

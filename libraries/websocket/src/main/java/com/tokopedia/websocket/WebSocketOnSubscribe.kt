@@ -1,6 +1,6 @@
 package com.tokopedia.websocket
 
-import com.tokopedia.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*

@@ -12,6 +12,8 @@ data class CatalogResponseData (
     data class CatalogGetDetailModular (
             @Expose @SerializedName( "basicInfo")
             val basicInfo: BasicInfo,
+            @Expose @SerializedName("comparisonInfo")
+            val comparisonInfoComponentData : ComponentData?,
             @Expose @SerializedName( "components")
             val components: List<BasicInfo.Component>?
     )

@@ -38,6 +38,6 @@
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterRegisterSteps"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="filled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

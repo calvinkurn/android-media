@@ -1,25 +1,27 @@
 package com.tokopedia.feedplus.view.adapter;
 
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.KEY_TRENDING;
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.TYPE_CUSTOM;
+
 import android.os.Bundle;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
+import androidx.collection.SparseArrayCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.collection.SparseArrayCompat;
 import androidx.viewpager.widget.PagerAdapter;
-import android.view.ViewGroup;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.videoTabComponent.view.VideoTabFragment;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-
-import static com.tokopedia.feedplus.data.pojo.FeedTabs.KEY_TRENDING;
-import static com.tokopedia.feedplus.data.pojo.FeedTabs.TYPE_CUSTOM;
 
 /**
  * @author by milhamj on 09/08/18.
@@ -46,6 +48,8 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
             return ContentExploreFragment.newInstance(bundle);
         } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
             return DynamicFeedFragment.Companion.newInstance(data.getKey());
+        }  else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(FeedTabs.TYPE_VIDEO)) {
+            return VideoTabFragment.newInstance(bundle);
         } else {
             /* Will be override for next to handle custom tab */
             return new Fragment();

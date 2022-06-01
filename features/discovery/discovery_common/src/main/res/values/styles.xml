@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DiscoveryTheme" parent="Theme.White">
+        <item name="android:windowBackground">@color/Unify_Background</item>
+    </style>
+</resources>

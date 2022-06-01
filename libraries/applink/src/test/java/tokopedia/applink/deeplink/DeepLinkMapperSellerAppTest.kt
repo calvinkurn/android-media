@@ -300,6 +300,20 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check shop score detail appLink then should return tokopedia internal shop score detail in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SHOP_SCORE_DETAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop score detail appLink with coachmark param then should return tokopedia internal shop score performance with coachmark param in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance?coachmark=disabled"
+        val coachMarkParam = mapOf("coachmark" to "disabled")
+        val actualDeeplink = UriUtil.buildUriAppendParam(ApplinkConst.SellerApp.SHOP_SCORE_DETAIL, coachMarkParam)
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check sellerapp webview deeplink`() {
         val queryParam = "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview" + queryParam

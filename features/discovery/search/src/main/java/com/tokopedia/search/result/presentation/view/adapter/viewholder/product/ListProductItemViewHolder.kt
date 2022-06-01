@@ -31,6 +31,7 @@ class ListProductItemViewHolder(
         val productCardView = binding?.productCardView ?: return
         val productCardModel =
             productItemData.toProductCardModel(productItemData.imageUrl, true)
+        this.productCardModel = productCardModel
 
         registerLifecycleObserver(productCardModel)
 

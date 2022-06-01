@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import javax.inject.Inject
 
@@ -216,7 +217,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         tvAccountName.visible()
         tvAccountName.text = bankInfo
         tickerAmountNote.visible()
-        tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
+        tickerAmountNote.tickerTitle = getString(R.string.pms_htp_pending)
+        tickerAmountNote.setTextDescription(
+            HtmlUtil
+                .fromHtml(getString(R.string.pms_manual_transfer_instruction)).trim()
+        )
 
         setActionInfo(data, getString(R.string.pms_hwp_copy), IconUnify.COPY) {
             copyToClipBoard(context, data.transactionCode, data.gatewayCode)

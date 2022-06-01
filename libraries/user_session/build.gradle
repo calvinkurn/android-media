@@ -13,8 +13,16 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.javaxInject
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 }
 
 project.ext {

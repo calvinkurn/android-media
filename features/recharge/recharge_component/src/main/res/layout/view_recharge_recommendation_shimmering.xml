@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/widget_denom_full_desc_shimmering_width"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:corners="16" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_recommendation_single_card_shimmering_height"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginRight="@dimen/unify_space_12">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/loader_img"
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
+                app:corners="16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/loader_title"
+                android:layout_width="@dimen/widget_denom_full_desc_shimmering_width"
+                android:layout_height="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:layout_constraintLeft_toRightOf="@+id/loader_img"
+                app:layout_constraintTop_toTopOf="parent"
+                app:corners="16" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/loader_desc"
+                android:layout_width="@dimen/widget_recommendation_card_shimmering_width"
+                android:layout_height="@dimen/unify_space_12"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                app:layout_constraintLeft_toRightOf="@+id/loader_img"
+                app:layout_constraintTop_toBottomOf="@+id/loader_title"
+                app:corners="16" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/loader_price"
+                android:layout_width="@dimen/widget_recommendation_card_shimmering_price_width"
+                android:layout_height="@dimen/unify_space_12"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                app:layout_constraintLeft_toRightOf="@+id/loader_img"
+                app:layout_constraintTop_toBottomOf="@+id/loader_desc"
+                app:corners="16" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</LinearLayout>

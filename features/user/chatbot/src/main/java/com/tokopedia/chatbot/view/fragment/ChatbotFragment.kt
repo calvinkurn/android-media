@@ -6,14 +6,17 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +30,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -43,6 +47,17 @@ import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
@@ -87,6 +102,7 @@ import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
+import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
@@ -97,11 +113,9 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -639,7 +653,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
-                opponentId)
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
         enableTyping()
     }
 
@@ -647,7 +661,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
-                opponentId)
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
     }
 
     fun showSearchInvoiceScreen() {
@@ -680,7 +694,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.showRetryUploadImages(image, true)
     }
 
-    //Test here
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)
@@ -893,8 +906,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun prepareListener() {
-        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
-            onSendButtonClicked()
+        sendButton.setOnClickListener {
+            if (isSendButtonActivated) {
+                if (isFloatingSendButton) {
+                    onSendFloatingInvoiceClicked()
+                } else {
+                    onSendButtonClicked()
+                }
+            } else
+                Toaster.make(
+                    it,
+                    getString(R.string.chatbot_float_invoice_input_length_zero),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+                )
         }
     }
 

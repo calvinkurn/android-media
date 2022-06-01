@@ -50,10 +50,10 @@ import javax.inject.Inject
  * @author rival
  * @created 29-01-2020
  *
- * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LOGOUT]
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME]
+ * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.LOGOUT]
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME]
  * default is 'true', set 'false' if you wan get activity result
- * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY]
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY]
  * default is 'false', set 'true' if you just wan to clear data only
  */
 

@@ -3,7 +3,10 @@ package com.tokopedia.editshipping.presenter;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
@@ -669,6 +672,26 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 && savedInstanceState.containsKey(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY)) {
             setOpenShopModelFromSavedInstance((OpenShopData) savedInstanceState
                     .getParcelable(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY));
+        }
+    }
+
+    @Override
+    public void setSavedInstance(@Nullable SaveInstanceCacheManager cacheManager) {
+        if (cacheManager != null) {
+            EditShippingCouriers editShippingCouriers = cacheManager.get(EditShippingFragment.CURRENT_COURIER_MODEL, EditShippingCouriers.class);
+            if (editShippingCouriers != null) {
+                setShopModelFromSavedInstance(editShippingCouriers);
+                return;
+            }
+            OpenShopData openShopData = cacheManager.get(EditShippingFragment.CURRENT_OPEN_SHOP_MODEL, OpenShopData.class);
+            if (openShopData != null) {
+                setOpenShopModelFromSavedInstance(openShopData);
+                return;
+            }
+            OpenShopData resumeOpenShopData = cacheManager.get(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY, OpenShopData.class);
+            if (resumeOpenShopData != null) {
+                setOpenShopModelFromSavedInstance(resumeOpenShopData);
+            }
         }
     }
 

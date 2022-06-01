@@ -23,6 +23,8 @@ data class Shop(
         val longitude: String = "",
         @SerializedName("district_name")
         val districtName: String = "",
+        @SerializedName("district_id")
+        val districtId: String = "",
         @SerializedName("origin")
         val origin: Int = 0,
         @SerializedName("address_street")
@@ -46,5 +48,7 @@ data class Shop(
         @SerializedName("maximum_shipping_weight")
         val maximumShippingWeight: Double = 0.0,
         @SerializedName("is_tokonow")
-        val isTokoNow: Boolean = false
+        val isTokoNow: Boolean = false,
+        @SerializedName("shop_shipments")
+        val shopShipments: List<ShopShipment> = emptyList()
 )

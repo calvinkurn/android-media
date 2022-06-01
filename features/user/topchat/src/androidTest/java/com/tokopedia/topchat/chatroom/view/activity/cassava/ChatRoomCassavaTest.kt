@@ -88,6 +88,8 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
+            generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -100,8 +102,12 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
     }
 
     private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(getDefaultProductPreview())
+        val productPreviews = listOf(DEFAULT_PRODUCT_ID)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+    }
+
+    companion object {
+        private const val DEFAULT_PRODUCT_ID = "1111"
     }
 }

@@ -60,10 +60,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // InactivePhoneOnboardingActivity
-    // tokopedia-android-internal://global/change-inactive-phone
-    const val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
-
     // TkpdPaySettingActivity
     // tokopedia-android-internal://global/payment-setting
     const val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
@@ -97,10 +93,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/profile-completion
     const val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
-    // SettingProfileActivity
-    // tokopedia-android-internal://global/setting-profile
-    const val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
-
     // LandingShopCreationActivity
     // tokopedia-android-internal://global/landing-shop-creation
     const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
@@ -113,7 +105,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/name-shop-creation
     const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
 
-    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
+    const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
     const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
@@ -132,7 +124,7 @@ object ApplinkConstInternalGlobal {
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
+    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"
@@ -143,6 +135,7 @@ object ApplinkConstInternalGlobal {
     val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
     const val PARAM_SHOW_INTRO = "showIntro"
     const val PARAM_REDIRECT_URL = "redirectUrl"
+    const val PARAM_KYC_TYPE = "type"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -218,25 +211,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-from-2fa
     const val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
-    // PinOnboardingActivity
-    // tokopedia-android-internal://global/add-pin-onboarding
-    const val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
-
-    // RegisterFingerprintOnboardingActivity
-    // tokopedia-android-internal://global/add-fingerprint-onboarding
-    const val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
-
-    // PinCompleteActivity
-    // tokopedia-android-internal://global/add-pin-complete
-    const val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
-
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     const val COTP = "$INTERNAL_GLOBAL/cotp"
-
-    // SilentVerificationActivity
-    // tokopedia-android-internal://global/silent-verification
-    const val SILENT_VERIFICAITON = "$INTERNAL_GLOBAL/silent-verification"
 
     // ReceiverNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-receiver
@@ -245,18 +222,6 @@ object ApplinkConstInternalGlobal {
     // SettingNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
-
-    // FingerprintSettingActivity
-    // tokopedia-android-internal://global/biometric-setting
-    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
-
-    // VerifyFingerprintActivity
-    // tokopedia-android-internal://global/verify-fingerprint
-    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
-
-    // RegisterFingerprintActivity
-    // tokopedia-android-internal://global/register-fingerprint
-    const val REGISTER_BIOMETRIC = "$INTERNAL_GLOBAL/register-fingerprint"
 
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
@@ -297,6 +262,8 @@ object ApplinkConstInternalGlobal {
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
     const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
+    const val USER_PROFILE_LANDING = "$INTERNAL_GLOBAL/people/"
+    const val USER_PROFILE_FOLLOWERS = "$INTERNAL_GLOBAL/people/followers/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
@@ -456,17 +423,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     const val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 
-    // TwoFactorActivity
-    // tokopedia-android-internal://global/two-factor-register
-    const val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
-
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
-
-    // HomeAccountUserActivity
-    // tokopedia-android-internal://global/new-home-account
-    const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     // FundsAndInvestmentActivity
     // tokopedia-android-internal://global/funds-and-investment
@@ -506,9 +465,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
-    // LinkAccountReminderActivity
-    // tokopedia-android-internal://global/link-acc-reminder
-    const val LINK_ACC_REMINDER = "$INTERNAL_GLOBAL/link-acc-reminder"
 
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview
@@ -516,4 +472,7 @@ object ApplinkConstInternalGlobal {
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
+
+    //DataExplorerActivity
+    const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 }

@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 data class CategoryJumperDataView(
         val title: String = "",
         val itemList: List<Item> = listOf(),
+        val serviceType: String = ""
 ): Visitable<SearchTypeFactory> {
 
     override fun type(typeFactory: SearchTypeFactory?) =
