@@ -572,15 +572,25 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 deleteWishlistV2UseCase.setParams(productId, userId)
                 deleteWishlistV2UseCase.execute(
                     onSuccess = { result ->
-                        if (result is Success) {
-                            productNavListAdapter?.updateWishlistStatus(productId, false)
-                            enableWishListButton(productId)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result.data, context, v)
+                        when (result) {
+                            is Success -> {
+                                productNavListAdapter?.updateWishlistStatus(productId, true)
+                                enableWishListButton(productId)
+
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result.data, context, v)
+                                }
                             }
-                        }
-                    },
+                            is Fail -> {
+                                enableWishListButton(productId)
+                                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                                }
+                            }
+                        } },
                     onError = {
+                        enableWishListButton(productId)
                         val errorMsg = ErrorHandler.getErrorMessage(context, it)
                         view?.let { v ->
                             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
