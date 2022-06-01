@@ -22,6 +22,7 @@ import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
@@ -137,6 +138,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
+        binding?.btnDraft?.setOnClickListener {  }
         setupSearchBar()
         setupScrollListener()
         setupTabChangeListener()
@@ -278,7 +280,11 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
+        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
+        bottomSheet.setOnItemClickListener { selectedCampaign ->
 
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     override fun createAdapter(): CampaignAdapter {
