@@ -22,7 +22,6 @@ import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
@@ -149,6 +148,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     clearAllData()
+                    binding?.groupNoSearchResult?.gone()
                     binding?.loader?.visible()
                     getCampaigns(FIRST_PAGE)
                     return@setOnEditorActionListener false
@@ -308,7 +308,9 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     }
 
     override fun loadData(page: Int) {
-        getCampaigns(page)
+        if (totalCampaign.isMoreThanZero()) {
+            getCampaigns(page)
+        }
     }
 
     private fun getCampaigns(page: Int) {
@@ -370,7 +372,10 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun displayCampaigns(data: CampaignMeta) {
         if (data.campaigns.size.isMoreThanZero()) {
+            binding?.groupNoSearchResult?.gone()
             renderList(data.campaigns, data.campaigns.size == getPerPage())
+        } else {
+            binding?.groupNoSearchResult?.visible()
         }
     }
 
