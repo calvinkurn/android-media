@@ -131,11 +131,13 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         onProgramUpdateSuccess()
                     }
                     else{
-                        handleErrorOnUpdate()
+                        onProgramUpdateSuccess()
+                      //  handleErrorOnUpdate()
                     }
                 }
                 is Fail ->{
-                    handleErrorOnUpdate()
+                    onProgramUpdateSuccess()
+                    //handleErrorOnUpdate()
                 }
             }
         })
