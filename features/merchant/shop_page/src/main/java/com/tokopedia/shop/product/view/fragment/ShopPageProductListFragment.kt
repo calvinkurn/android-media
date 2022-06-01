@@ -756,7 +756,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(productCardOptionsModel.wishlistResult, context, v)
             }
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {

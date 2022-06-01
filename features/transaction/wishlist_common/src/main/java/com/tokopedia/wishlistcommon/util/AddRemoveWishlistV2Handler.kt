@@ -64,12 +64,9 @@ object AddRemoveWishlistV2Handler {
             context.getString(R.string.cta_success_remove_from_wishlist)
         }
 
-        var ctaAction = { }
-        if (result.button.action == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }
-
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
-        ) { ctaAction }.show()
+        ) { if (result.button.action == OPEN_WISHLIST) goToWishlistPage(context) }.show()
     }
 
     fun showRemoveWishlistV2SuccessToaster(result: ProductCardOptionsModel.WishlistResult,
@@ -86,12 +83,9 @@ object AddRemoveWishlistV2Handler {
             context.getString(R.string.cta_success_remove_from_wishlist)
         }
 
-        var ctaAction = { }
-        if (result.ctaActionV2 == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }
-
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
-        ) { ctaAction }.show()
+        ) { if (result.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage(context) }.show()
     }
 
     fun showWishlistV2ErrorToaster(errorMsg: String, view: View) {
