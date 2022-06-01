@@ -28,6 +28,13 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
             binding.root.layoutParams = params
         } else {
             if (item.dataObject is WishlistV2TickerCleanerData) {
+                binding.root.visible()
+                val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    isFullSpan = true
+                }
+                binding.root.layoutParams = params
                 binding.wishlistv2TickerMaxQty.apply {
                     val tickerData = item.dataObject.tickerCleanerData
                     val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
@@ -60,18 +67,11 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                         }
 
                         override fun onDismiss() {
-                            // actionListener?.onTickerCloseIconClicked()
+                            actionListener?.onTickerCloseIconClicked()
                         }
                     })
                 }
             }
-            binding.root.visible()
-            val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                width = ViewGroup.LayoutParams.WRAP_CONTENT
-                isFullSpan = true
-            }
-            binding.root.layoutParams = params
         }
     }
 }

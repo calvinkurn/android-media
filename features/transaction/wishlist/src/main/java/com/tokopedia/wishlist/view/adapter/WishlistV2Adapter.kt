@@ -372,4 +372,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyDataSetChanged()
         }
     }
+
+    fun hideTicker() {
+        isTickerCloseClicked = true
+        notifyItemChanged(0)
+    }
+
+    fun resetTicker() {
+        isTickerCloseClicked = false
+    }
 }

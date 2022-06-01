@@ -501,7 +501,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.hideCheckbox()
         countRemovableAutomaticDelete = 0
         doRefresh()
-        refreshLayout()
 
         binding?.run {
             containerDelete.gone()
@@ -903,7 +902,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     paramWishlistV2 = WishlistV2Params()
                     if (searchQuery.isNotEmpty()) paramWishlistV2.query = searchQuery
                     doRefresh()
-                    refreshLayout()
                     WishlistV2Analytics.clickXChipsToClearFilter()
                 }
             }
@@ -964,7 +962,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 doRefresh()
-                refreshLayout()
                 hitAnalyticsFilterOptionSelected(name, label)
             }
 
@@ -1012,7 +1009,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
                 filterBottomSheet.dismiss()
                 doRefresh()
-                refreshLayout()
                 WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(listTitleCheckboxIdSelected.toString().replace("[", "").replace("]", ""))
             }
         })
@@ -1319,7 +1315,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onTickerCloseIconClicked() {
-        // wishlistV2Adapter.hideTicker()
+        wishlistV2Adapter.hideTicker()
     }
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
@@ -1421,16 +1417,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 resetAllFilters()
                 paramWishlistV2 = WishlistV2Params()
                 wishlistNavtoolbar.clearSearchbarText()
-                doRefresh()
-                refreshLayout()
             }
         }
+        doRefresh()
     }
 
     private fun removeFilter(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
         paramWishlistV2.sortFilters.removeAll { it.name == filterItem.name }
         doRefresh()
-        refreshLayout()
     }
 
     private fun onStickyManageClicked() {
@@ -1551,8 +1545,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         isFetchRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
-        loadWishlistV2()
         hitCountDeletion = false
+        loadWishlistV2()
+        refreshLayout()
     }
 
     private fun refreshLayout() {
@@ -1562,6 +1557,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
         }
         showSortFilter()
+        addEndlessScrollListener()
+        wishlistV2Adapter.resetTicker()
     }
 
     private fun showSortFilter() {
