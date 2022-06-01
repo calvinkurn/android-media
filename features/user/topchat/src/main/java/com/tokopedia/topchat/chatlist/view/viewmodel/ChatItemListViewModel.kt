@@ -208,7 +208,7 @@ class ChatItemListViewModel @Inject constructor(
                     val deletedChat = result.chatMoveToTrash.list.first()
                     if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
                         _deleteChat.value = Success(deletedChat)
-                        clearFromPinUnpin(deletedChat.messageId.toString())
+                        clearFromPinUnpin(deletedChat.messageId)
                     } else {
                         _deleteChat.value = Fail(Throwable(deletedChat.detailResponse))
                     }

@@ -27,7 +27,6 @@ import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_RETRY
 import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -146,12 +145,6 @@ class ChatModule {
         return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
                 .client(okHttpClient)
                 .build()
-    }
-
-    @ChatScope
-    @Provides
-    fun provideChatApi(@InboxQualifier retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
     }
 
     @ChatScope

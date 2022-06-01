@@ -17,7 +17,6 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatlist.di.ChatListScope
-import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.user.session.UserSession
@@ -88,13 +87,6 @@ class ChatListNetworkModuleStub(
                 NET_WRITE_TIMEOUT,
                 NET_CONNECT_TIMEOUT,
                 NET_RETRY)
-    }
-
-
-    @ChatListScope
-    @Provides
-    fun provideChatApi(@Named("retrofit") retrofit: Retrofit): ChatApi {
-        return retrofit.create(ChatApi::class.java)
     }
 
     @ChatListScope

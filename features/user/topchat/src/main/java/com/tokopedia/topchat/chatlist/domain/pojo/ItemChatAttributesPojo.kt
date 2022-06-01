@@ -1,9 +1,7 @@
 package com.tokopedia.topchat.chatlist.domain.pojo
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 
 /**
@@ -11,35 +9,25 @@ import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHo
  */
 data class ItemChatAttributesPojo(
     @SerializedName("label")
-        @Expose
-        var label: String = "",
+    var label: String = "",
     @SerializedName("isReplyByTopbot")
-        @Expose
-        var isReplyByTopbot: Boolean = false,
+    var isReplyByTopbot: Boolean = false,
     @SerializedName("lastReplyMessage")
-        @Expose
-        var lastReplyMessage: String = "",
+    var lastReplyMessage: String = "",
     @SerializedName("lastReplyTimeStr")
-        @Expose
-        var lastReplyTimeStr: String = "",
+    var lastReplyTimeStr: String = "",
     @SerializedName("readStatus")
-        @Expose
-        var readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD,
+    var readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD,
     @SerializedName("unreads")
-        @Expose
-        var unreads: Int = 1,
+    var unreads: Int = 1,
     @SerializedName("unreadsreply")
-        @Expose
-        var unreadReply: Int = 0,
+    var unreadReply: Int = 0,
     @SerializedName("fraudStatus")
-        @Expose
-        var fraudStatus: Int = 0,
+    var fraudStatus: Int = 0,
     @SerializedName("pinStatus")
-        @Expose
-        var pinStatus: Int = 0,
+    var pinStatus: Int = 0,
     @SerializedName("contact")
-        @Expose
-        var contact: ItemChatAttributesContactPojo?
+    var contact: ItemChatAttributesContactPojo? = null
 
 ) {
 

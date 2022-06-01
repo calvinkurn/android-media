@@ -1,8 +1,7 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.Constant.INT_STATUS_TRUE
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,7 +19,7 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
                 ChatDelete(
                     isSuccess = INT_STATUS_TRUE,
                     detailResponse = "Success",
-                    messageId = testMessageId.toLongOrZero()
+                    messageId = testMessageId
                 )
             )
         }
@@ -66,7 +65,7 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
                 ChatDelete(
                     isSuccess = 0,
                     detailResponse = "Oops!",
-                    messageId = testMessageId.toLongOrZero()
+                    messageId = testMessageId
                 )
             )
         }

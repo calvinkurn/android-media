@@ -14,12 +14,8 @@ open class TopChatInternalRouter {
     object Companion {
 
         const val CHAT_DELETED_RESULT_CODE = 111
-        const val CHAT_READ_RESULT_CODE = 112
-
-        const val REQUEST_CODE_USER_LOGIN_CART = 3214
 
         const val RESULT_INBOX_CHAT_PARAM_INDEX = "position"
-        const val RESULT_INBOX_CHAT_PARAM_MUST_REFRESH = "must_refresh"
         const val RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP = "move_to_top"
         const val RESULT_LAST_ITEM = "last_item"
 
@@ -30,9 +26,6 @@ open class TopChatInternalRouter {
         const val RESULT_REPORT_BLOCK_PROMO = "result_report_block_promo"
         const val RESULT_REPORT_BLOCK_USER = "result_report_block_user"
         const val RESULT_REPORT_TOASTER = "result_report_toaster"
-
-
-        const val TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
         const val SOURCE_TOPCHAT = "topchat"
 

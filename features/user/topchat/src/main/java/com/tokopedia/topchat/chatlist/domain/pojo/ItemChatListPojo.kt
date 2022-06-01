@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.domain.pojo
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -17,14 +16,13 @@ import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHo
  */
 data class ItemChatListPojo(
     @SerializedName("msgID")
-        @Expose
-        var msgId: String = "",
+    var msgId: String = "",
+
     @SerializedName("attributes")
-        @Expose
-        var attributes: ItemChatAttributesPojo?,
+    var attributes: ItemChatAttributesPojo?,
+
     @SerializedName("messageKey")
-        @Expose
-        var messageKey: String = ""
+    var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory> {
 
     val label: String get() = attributes?.label ?: ""

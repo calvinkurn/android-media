@@ -14,7 +14,6 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
-import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
@@ -24,6 +23,7 @@ import com.tokopedia.topchat.common.util.AddressUtil
 object TopChatWebSocketParam {
 
     private val gson = GsonBuilder().create()
+    private const val UPLOADING = "Uploaded Image"
 
     fun generateParamSendMessage(
         roomeMetaData: RoomMetaData,

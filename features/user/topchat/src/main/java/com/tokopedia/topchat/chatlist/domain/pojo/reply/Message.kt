@@ -2,9 +2,6 @@ package com.tokopedia.topchat.chatlist.domain.pojo.reply
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by stevenfredian on 11/1/17.
- */
 class Message {
     @SerializedName("censored_reply")
     val censoredReply: String = ""

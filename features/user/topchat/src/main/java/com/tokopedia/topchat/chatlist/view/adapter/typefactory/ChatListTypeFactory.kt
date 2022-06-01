@@ -6,9 +6,6 @@ import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 
-/**
- * @author : Steven 2019-08-06
- */
 interface ChatListTypeFactory {
 
     fun type(chatItemListViewModel: ItemChatListPojo): Int

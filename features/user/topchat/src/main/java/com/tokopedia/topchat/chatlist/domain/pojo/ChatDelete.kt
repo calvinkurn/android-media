@@ -18,5 +18,5 @@ data class ChatDelete(
         @SerializedName("DetailResponse")
         var detailResponse: String,
         @SerializedName("MsgID")
-        var messageId: Long
+        var messageId: String
 )
