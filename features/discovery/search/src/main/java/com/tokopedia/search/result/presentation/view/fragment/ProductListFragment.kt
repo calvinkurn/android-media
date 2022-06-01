@@ -1725,9 +1725,12 @@ class ProductListFragment: BaseDaggerFragment(),
             }
         } else {
             if (wishlistResult.isAddWishlist)
-                Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
+                Toaster.build(view, getString(R.string.msg_add_wishlist),
+                    Snackbar.LENGTH_SHORT, TYPE_NORMAL, getString(R.string.cta_add_wishlist))
+                { goToWishlistPage() }.show()
             else
-                Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+                Toaster.build(view, getString(R.string.msg_remove_wishlist),
+                    Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
         }
     }
 
@@ -1763,14 +1766,19 @@ class ProductListFragment: BaseDaggerFragment(),
             val ctaText = wishlistResult.ctaTextV2.ifEmpty { "" }
 
             context?.let {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, ctaText, wishlistResult.ctaActionV2, view, it)
+                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, ctaText,
+                    wishlistResult.ctaActionV2, view, it)
             }
 
         } else {
             if (wishlistResult.isAddWishlist)
-                Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+                Toaster.build(view, ErrorHandler.getErrorMessage(context,
+                    MessageErrorException(getString(R.string.msg_add_wishlist_failed))),
+                    Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
             else
-                Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+                Toaster.build(view, ErrorHandler.getErrorMessage(context,
+                    MessageErrorException(getString(R.string.msg_remove_wishlist_failed))),
+                    Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         }
     }
     //endregion

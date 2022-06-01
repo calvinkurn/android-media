@@ -29,6 +29,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import rx.Subscriber
+import javax.inject.Named
 
 internal class ProductCardOptionsViewModel(
         dispatcherProvider: CoroutineDispatchers,
@@ -40,6 +41,7 @@ internal class ProductCardOptionsViewModel(
         private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface,
+        @Named(FLAG_IS_USING_ADD_REMOVE_WISHLIST_V2)
         private val isUsingWishlistV2: Boolean
 ): BaseViewModel(dispatcherProvider.main) {
 

@@ -39,6 +39,7 @@ internal class ProductCardOptionsViewModelFactoryModule(
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
             coroutineDispatchers: CoroutineDispatchers,
+            @Named(FLAG_IS_USING_ADD_REMOVE_WISHLIST_V2)
             isUsingWishlistV2: Boolean
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
