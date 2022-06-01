@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -19,12 +18,11 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_layout_add_quota.*
 import javax.inject.Inject
 
@@ -62,10 +60,6 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,27 +83,30 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
     private fun observeViewModel() {
         tmCouponViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    it.data.getInitiateVoucherPage?.data?.token?.let { it1 ->
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    it.data?.getInitiateVoucherPage?.data?.token?.let { it1 ->
                         token = it1
                     }
                 }
-                is Fail ->{
+                TokoLiveDataResult.STATUS.ERROR ->{
 
                 }
             }
         })
 
         tmCouponViewModel.tmCouponQuotaUpdateLiveData.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    if(it.data.data?.merchantPromotionUpdateMVQuota?.data?.status == "success"){
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS ->{
+                    if(it.data?.data?.merchantPromotionUpdateMVQuota?.data?.status == "success"){
                         tmCouponListRefreshCallback.refreshCouponList()
                         dismiss()
                     }
                 }
-                is Fail ->{
+                TokoLiveDataResult.STATUS.LOADING ->{
+
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
                     view?.let { it1 -> Toaster.build(it1, "Something went wrong", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
@@ -129,10 +126,12 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
             override fun afterTextChanged(p0: Editable?) {
                 if(textFieldQuota.editText.text.toString().toIntOrZero() <= voucherQuota){
-                    textFieldQuota.textInputLayout.error = "Minimum kuota: $voucherQuota"
+                    textFieldQuota.isInputError = true
+                    textFieldQuota.setMessage("Minimum kuota: $voucherQuota")
                 }
                 else{
-                    textFieldQuota.textInputLayout.error = ""
+                    textFieldQuota.isInputError = false
+                    textFieldQuota.setMessage("")
                 }
             }
         })

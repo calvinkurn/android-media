@@ -23,7 +23,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,7 +64,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
-        tokomemberDashCreateViewModel.getCardInfo()
+        tokomemberDashCreateViewModel.getCardInfo(1)
         renderHeader()
         renderCouponList(tmCouponPreviewData)
         renderPreviewUI(

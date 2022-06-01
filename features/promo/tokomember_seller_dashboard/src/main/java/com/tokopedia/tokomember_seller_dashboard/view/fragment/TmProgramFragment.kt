@@ -28,17 +28,40 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpda
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_EDIT_DIALOG_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
@@ -125,9 +148,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         })
 
         tokomemberDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
-            when(it){
-                is Success -> {
-                    if(it.data.membershipCreateEditProgram?.resultStatus?.code=="200"){
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
                         onProgramUpdateSuccess()
                     }
                     else{
@@ -135,7 +158,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                       //  handleErrorOnUpdate()
                     }
                 }
-                is Fail ->{
+                TokoLiveDataResult.STATUS.ERROR ->{
                     onProgramUpdateSuccess()
                     //handleErrorOnUpdate()
                 }
@@ -198,10 +221,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
             ProgramActionType.CREATE -> {
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, bundle)
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND ->{
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, Bundle())
             }
             ProgramActionType.EDIT ->{
                 val intent = Intent()

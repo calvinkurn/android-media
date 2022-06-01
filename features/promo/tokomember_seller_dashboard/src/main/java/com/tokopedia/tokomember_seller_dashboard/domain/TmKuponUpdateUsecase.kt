@@ -4,19 +4,19 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponUpdateRequest
-import com.tokopedia.tokomember_seller_dashboard.model.TmKuponCreateMVResponse
+import com.tokopedia.tokomember_seller_dashboard.model.TmKuponUpdateMVResponse
 import javax.inject.Inject
 
 class TmKuponUpdateUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<TmKuponCreateMVResponse>(graphqlRepository) {
+    GraphqlUseCase<TmKuponUpdateMVResponse>(graphqlRepository) {
 
     @GqlQuery("TmKuponUpdate", KUPON_UPDATE)
     fun updateCoupon(
-        success: (TmKuponCreateMVResponse) -> Unit,
+        success: (TmKuponUpdateMVResponse) -> Unit,
         onFail: (Throwable) -> Unit,
         tmCouponUpdateRequest: TmCouponUpdateRequest,
     ) {
-        this.setTypeClass(TmKuponCreateMVResponse::class.java)
+        this.setTypeClass(TmKuponUpdateMVResponse::class.java)
         this.setRequestParams(getRequestParams(tmCouponUpdateRequest))
         this.setGraphqlQuery(TmKuponUpdate.GQL_QUERY)
         this.execute({
@@ -33,7 +33,7 @@ class TmKuponUpdateUsecase @Inject constructor(graphqlRepository: GraphqlReposit
 }
 
 const val KUPON_UPDATE = """
-     mutation merchantPromotionUpdateMV(${'$'}merchantVoucherUpdateData: TmCouponUpdateRequest!) {
+     mutation merchantPromotionUpdateMV(${'$'}merchantVoucherUpdateData: mvUpdateData!) {
   merchantPromotionUpdateMV(merchantVoucherUpdateData: ${'$'}merchantVoucherUpdateData) {
   status
   message

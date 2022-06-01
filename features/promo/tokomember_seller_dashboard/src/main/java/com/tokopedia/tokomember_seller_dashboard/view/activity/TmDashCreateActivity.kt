@@ -9,17 +9,27 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_SINGLE
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
-import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmSingleCouponCreateFragment
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_PRIMARY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_CTA_SECONDARY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_DIALOG_CANCEL_TITLE
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashPreviewFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmProgramFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmSingleCouponCreateFragment
 
 class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
@@ -40,8 +50,11 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             PROGRAM ->{
                 intent.extras?.let { TmProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
-            COUPON ->{
+            COUPON_SINGLE ->{
                 intent.extras?.let { TmSingleCouponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+            }
+            COUPON_MULTIPLE ->{
+                intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 intent.extras?.let { TmDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -129,8 +142,11 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             PROGRAM ->{
                 bundle.let { TmProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
-            COUPON ->{
-                bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
+            COUPON_SINGLE ->{
+                intent.extras?.let { TmSingleCouponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+            }
+            COUPON_MULTIPLE ->{
+                intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }

@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
+import android.text.InputType
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -73,7 +74,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
@@ -81,8 +81,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
@@ -214,11 +212,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmProgramValidateLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data?.membershipValidateBenefit?.resultStatus?.code?.isNotEmpty() == true) {
+                    if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
                         updateCoupon()
 //                        uploadImagePremium()
                     } else {
+                        closeLoadingDialog()
                         setButtonState()
                         handleProgramPreValidateError()
                     }
@@ -280,13 +279,20 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         })
 
         tokomemberDashCreateViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.SUCCESS -> {
                     // Back to coupon list
+                    closeLoadingDialog()
+                    setButtonState()
 
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.LOADING ->{
+
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
                     //handleError
+                    closeLoadingDialog()
+                    setButtonState()
                 }
             }
         })
@@ -319,7 +325,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             )
         }
         else{
-            ProgramUpdateMapper.setTime(
+            DateUtil.setTime(
                 programData?.timeWindow?.endTime.toString()
             ).replace(" WIB", "")
         }
@@ -337,7 +343,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             )
         }
         else{
-            ProgramUpdateMapper.setTime(
+            DateUtil.setTime(
                 programData?.timeWindow?.startTime.toString()
             ).replace(" WIB", "")
         }
@@ -635,17 +641,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
                 if(programData!= null) {
                     textFieldProgramStartDate.editText.setText(
-                        ProgramUpdateMapper.setDate(
+                        DateUtil.setDate(
                             programData?.timeWindow?.startTime.toString()
                         )
                     )
                     textFieldProgramStartTime.editText.setText(
-                        ProgramUpdateMapper.setTime(
+                        DateUtil.setTime(
                             programData?.timeWindow?.startTime.toString()
                         )
                     )
-                    textFieldProgramEndDate.editText.setText(ProgramUpdateMapper.setDate(programData?.timeWindow?.endTime.toString()))
-                    textFieldProgramEndTime.editText.setText(ProgramUpdateMapper.setTime(programData?.timeWindow?.endTime.toString()))
+                    textFieldProgramEndDate.editText.setText(DateUtil.setDate(programData?.timeWindow?.endTime.toString()))
+                    textFieldProgramEndTime.editText.setText(DateUtil.setTime(programData?.timeWindow?.endTime.toString()))
                 }
                 textFieldProgramStartDate.isEnabled = false
                 textFieldProgramStartDate.iconContainer.isEnabled = false
@@ -659,6 +665,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             ProgramDateType.MANUAL -> {
                 textFieldProgramStartDate.isEnabled = true
                 textFieldProgramStartDate.iconContainer.isEnabled = true
+                textFieldProgramStartDate.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramStartTime.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramEndDate.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramEndTime.editText.inputType = InputType.TYPE_NULL
                 textFieldProgramStartTime.isEnabled  = true
                 textFieldProgramStartTime.iconContainer.isEnabled = true
                 textFieldProgramEndDate.isEnabled = true

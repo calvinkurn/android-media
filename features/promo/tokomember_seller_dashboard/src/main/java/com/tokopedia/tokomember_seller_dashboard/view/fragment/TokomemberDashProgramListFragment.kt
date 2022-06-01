@@ -28,11 +28,11 @@ import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_program_fragment.*
 import javax.inject.Inject
 
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
@@ -87,13 +87,17 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     private fun observeViewModel() {
         tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    tokomemberDashProgramAdapter.programSellerList = it.data.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING ->{
+                    viewFlipperProgramList.displayedChild = 0
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    viewFlipperProgramList.displayedChild = 1
+                    tokomemberDashProgramAdapter.programSellerList = it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
                     tokomemberDashProgramAdapter.notifyDataSetChanged()
                     tmProgramListViewModel?.refreshList(LOADED)
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     tmProgramListViewModel?.refreshList(LOADED)
                 }
             }

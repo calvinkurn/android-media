@@ -3,7 +3,10 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.text.*
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -32,7 +35,46 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_SUBTITLE_PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_SUBTITLE_VIP
+import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_TITLE_PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_TITLE_VIP
+import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
+import com.tokopedia.tokomember_seller_dashboard.util.FileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.IDR
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.TERMS
+import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
@@ -42,11 +84,14 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
 import java.util.*
 import javax.inject.Inject
 
@@ -527,11 +572,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
-            it.isEnabled = false
-            it.isClickable = false
-            couponPremiumData = tmCouponPremium?.getSingleCouponData()
-            couponVip = tmCouponVip?.getSingleCouponData()
-            preValidateCouponPremium(couponPremiumData)
+//            it.isEnabled = false
+//            it.isClickable = false
+//            couponPremiumData = tmCouponPremium?.getSingleCouponData()
+//            couponVip = tmCouponVip?.getSingleCouponData()
+//            preValidateCouponPremium(couponPremiumData)
+            uploadImageVip()
+
         }
     }
 
