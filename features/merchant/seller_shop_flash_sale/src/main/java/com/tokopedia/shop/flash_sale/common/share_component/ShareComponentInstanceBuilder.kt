@@ -2,8 +2,14 @@ package com.tokopedia.shop.flash_sale.common.share_component
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.shop.flash_sale.common.constant.Constant
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
 import com.tokopedia.shop.flash_sale.common.extension.formatTo
 import com.tokopedia.shop.flash_sale.common.resource.ResourceProvider
@@ -41,32 +47,17 @@ class ShareComponentInstanceBuilder @Inject constructor(
         private const val THUMBNAIL_IMAGE = ""
     }
 
-
-    data class Param(
-        val shopName: String,
-        val shopLogo: String,
-        val shopBadge: String,
-        val campaignStatusId: Int,
-        val campaignId: Long,
-        val isOngoing: Boolean,
-        val startDate: Date,
-        val endDate: Date,
-        val totalProduct: Int,
-        val products: List<CampaignBanner.Product>,
-        val discount: Int,
-    )
-
     fun build(
         param: Param,
-        onShareOptionsClicked: (ShareModel) -> Unit,
+        onShareOptionClick: (ShareModel, LinkerShareResult, String) -> Unit,
         onCloseOptionClicked: () -> Unit
     ): UniversalShareBottomSheet {
 
-
         return UniversalShareBottomSheet.createInstance().apply {
             val listener = object : ShareBottomsheetListener {
+
                 override fun onShareOptionClicked(shareModel: ShareModel) {
-                    onShareOptionsClicked(shareModel)
+                    handleShareOptionSelection(param, shareModel, onShareOptionClick)
                 }
 
                 override fun onCloseOptionClicked() {
@@ -272,7 +263,56 @@ class ShareComponentInstanceBuilder @Inject constructor(
         }
     }
 
-    fun generateLinkerInstance(
+
+    private fun findOutgoingTitle(shopName: String): String {
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
+    }
+
+    private fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        return if (isOngoing) {
+            String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)
+        } else {
+            String.format(
+                resourceProvider.getOutgoingUpcomingCampaignWording(),
+                formattedShopName
+            )
+        }
+    }
+
+    private fun handleShareOptionSelection(
+        param: Param, shareModel: ShareModel, onShareOptionClick: (ShareModel, LinkerShareResult, String) -> Unit
+    ) {
+        val linkerShareData: LinkerShareData = generateLinkerInstance(
+            param.shopDomain,
+            param.shopName,
+            param.isOngoing,
+            shareModel
+        )
+
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                val template = findOutgoingDescription(param.shopName, param.isOngoing)
+                val outgoingText = "$template ${linkerShareResult?.shareUri.orEmpty()}"
+                onShareOptionClick(shareModel, linkerShareResult ?: return, outgoingText)
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Constant.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+
+    }
+
+    private fun generateLinkerInstance(
         shopDomain: String,
         shopName: String,
         isOngoing: Boolean,
@@ -299,20 +339,19 @@ class ShareComponentInstanceBuilder @Inject constructor(
         return linkerShareData
     }
 
-    private fun findOutgoingTitle(shopName: String): String {
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
-    }
+    data class Param(
+        val shopName: String,
+        val shopLogo: String,
+        val shopBadge: String,
+        val shopDomain: String,
+        val campaignStatusId: Int,
+        val campaignId: Long,
+        val isOngoing: Boolean,
+        val startDate: Date,
+        val endDate: Date,
+        val totalProduct: Int,
+        val products: List<CampaignBanner.Product>,
+        val discount: Int,
+    )
 
-    fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        return if (isOngoing) {
-            String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)
-        } else {
-            String.format(
-                resourceProvider.getOutgoingUpcomingCampaignWording(),
-                formattedShopName
-            )
-        }
-    }
 }

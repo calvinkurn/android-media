@@ -11,10 +11,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
@@ -44,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -479,6 +474,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             banner.shop.name,
             banner.shop.logo,
             "none",
+            banner.shop.domain,
             banner.campaignStatusId,
             banner.campaignId,
             isOngoing,
@@ -488,59 +484,28 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
             banner.products,
             banner.maxDiscountPercentage
         )
+
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(
             param,
-            onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(
-                    shareModel,
-                    banner.shop.domain,
-                    banner.shop.name,
-                    isOngoing
-                )
-            },
-            onCloseOptionClicked = {
-
-            })
-
+            onShareOptionClick = ::handleShareOptionClick,
+            onCloseOptionClicked = {}
+        )
         shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
     }
 
-    private fun handleShareOptionSelection(
+    private fun handleShareOptionClick(
         shareModel: ShareModel,
-        shopDomain: String,
-        shopName: String,
-        isOngoing: Boolean
+        linkerShareResult: LinkerShareResult,
+        outgoingText: String
     ) {
-        val shareCallback = object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                val template = shareComponentInstanceBuilder.findOutgoingDescription(shopName, isOngoing)
-                val outgoingText = "$template ${linkerShareData?.shareUri.orEmpty()}"
-                SharingUtil.executeShareIntent(
-                    shareModel,
-                    linkerShareData,
-                    requireActivity(),
-                    view ?: return,
-                    outgoingText
-                )
-                shareComponentBottomSheet?.dismiss()
-            }
-
-            override fun onError(linkerError: LinkerError?) {}
-        }
-
-        val linkerShareData = shareComponentInstanceBuilder.generateLinkerInstance(
-            shopDomain,
-            shopName,
-            isOngoing,
-            shareModel
+        SharingUtil.executeShareIntent(
+            shareModel,
+            linkerShareResult,
+            requireActivity(),
+            view,
+            outgoingText
         )
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                ZERO,
-                linkerShareData,
-                shareCallback
-            )
-        )
+        shareComponentBottomSheet?.dismiss()
     }
 
 }
