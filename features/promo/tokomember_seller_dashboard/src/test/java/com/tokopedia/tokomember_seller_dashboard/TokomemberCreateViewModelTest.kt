@@ -17,7 +17,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.Runs
@@ -40,7 +40,7 @@ class TokomemberCreateViewModelTest {
 
     private val mockThrowable = Throwable(message = "exception")
     private val dispatcher = TestCoroutineDispatcher()
-    private lateinit var viewModel: TokomemberDashCreateViewModel
+    private lateinit var viewModel: TmDashCreateViewModel
     private val tokomemberDashEditCardUsecase = mockk<TokomemberDashEditCardUsecase>(relaxed = true)
     private val tokomemberDashCardUsecase = mockk<TokomemberDashCardUsecase>(relaxed = true)
     private val tokomemberDashGetProgramFormUsecase =
@@ -56,7 +56,7 @@ class TokomemberCreateViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = TokomemberDashCreateViewModel(
+        viewModel = TmDashCreateViewModel(
             tokomemberDashCardUsecase,
             tokomemberCardColorMapperUsecase,
             tokomemeberCardBgUsecase,

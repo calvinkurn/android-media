@@ -3,27 +3,28 @@ package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 import android.animation.Animator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroTextItem
-import com.tokopedia.tokomember_seller_dashboard.view.animation.TokomemberIntroItemAnimator
-import kotlinx.android.synthetic.main.tm_dash_intro_text_item.view.*
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroBenefitImageItem
+import com.tokopedia.tokomember_seller_dashboard.view.animation.TmIntroItemAnimator
+import kotlinx.android.synthetic.main.tm_dash_intro_benefit_image_item.view.*
 
-class TokomemberIntroTextVh( view: View) :
-    AbstractViewHolder<TokomemberIntroTextItem>(view) {
+class TmIntroBenefitImageVh(val view: View)
+    : AbstractViewHolder<TokomemberIntroBenefitImageItem>(view) {
 
-    private val tvSectionText = itemView.tvSection
-    private var holderElement:TokomemberIntroTextItem?=null
+    private val tmIntroVideoView = itemView.ivSection
+    private var holderElement: TokomemberIntroBenefitImageItem?=null
 
-    override fun bind(element: TokomemberIntroTextItem?) {
+    override fun bind(element: TokomemberIntroBenefitImageItem?) {
         holderElement = element
         holderElement?.apply {
-            tvSectionText.text = element?.text
+            tmIntroVideoView?.loadImage(element?.imgUrl)
         }
     }
 
     fun setAnimationLeftToRight(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
         if (holderElement?.isAnimationFinished==false) {
-            TokomemberIntroItemAnimator.fromLeftToRight(
+            TmIntroItemAnimator.fromLeftToRight(
                 itemView,
                 adapterPosition,
                 ON_ATTACH,
@@ -34,7 +35,7 @@ class TokomemberIntroTextVh( view: View) :
 
     fun setAnimationRightToLeft(itemView: View, adapterPosition: Int, ON_ATTACH: Boolean) {
         if (holderElement?.isAnimationFinished==false) {
-            TokomemberIntroItemAnimator.fromRightToLeft(
+            TmIntroItemAnimator.fromRightToLeft(
                 itemView,
                 adapterPosition,
                 ON_ATTACH,
@@ -61,7 +62,6 @@ class TokomemberIntroTextVh( view: View) :
     }
 
     companion object {
-        val LAYOUT_ID = R.layout.tm_dash_intro_text_item
+        val LAYOUT_ID = R.layout.tm_dash_intro_benefit_image_item
     }
-
 }

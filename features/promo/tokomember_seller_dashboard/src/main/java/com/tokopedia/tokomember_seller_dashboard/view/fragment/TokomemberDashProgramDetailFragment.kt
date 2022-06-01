@@ -16,9 +16,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import kotlinx.android.synthetic.main.tm_dash_program_detail_fragment.*
 import javax.inject.Inject
 
@@ -29,11 +27,11 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -58,12 +56,12 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
+        tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
         setHeader()
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     setMainUi(it.data?.membershipGetProgramForm)

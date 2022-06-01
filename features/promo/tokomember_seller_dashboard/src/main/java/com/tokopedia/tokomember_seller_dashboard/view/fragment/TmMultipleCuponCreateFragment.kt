@@ -33,15 +33,14 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -82,11 +81,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tmDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -468,7 +467,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         )
 
         val bundle = Bundle()
-        bundle.putParcelable(BUNDLE_CARD_DATA, arguments?.getParcelable(BUNDLE_CARD_DATA))
+        bundle.putInt(BUNDLE_CARD_ID, arguments?.getInt(BUNDLE_CARD_ID)?:0)
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, arguments?.getParcelable(BUNDLE_PROGRAM_DATA))
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
@@ -570,7 +569,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun uploadImagePremium() {
         context?.let { ctx ->
             val file =
-                tmCouponPremium?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
+                tmCouponPremium?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
             if (file != null) {
                 tmCouponListPremiumItemPreview = TmCouponListItemPreview(
                     file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
@@ -582,7 +581,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private fun uploadImageVip() {
         context?.let { ctx ->
-            val file = tmCouponVip?.getCouponView()?.let { it1 -> FileUtil.saveBitMap(ctx, it1) }
+            val file = tmCouponVip?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
             if (file != null) {
                 tmCouponListVipItemPreview = TmCouponListItemPreview(
                     file.absolutePath, "VIP", couponVip?.quota ?: ""
@@ -782,7 +781,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun clickTimePicker(textField: TextFieldUnify2, i: Int) {
+    private fun clickTimePicker(textField: TextFieldUnify2, type: Int) {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->

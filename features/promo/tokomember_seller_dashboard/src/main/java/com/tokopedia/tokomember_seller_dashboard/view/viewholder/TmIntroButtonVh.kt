@@ -6,7 +6,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroButtonItem
 import kotlinx.android.synthetic.main.tm_dash_intro_button_item.view.*
 
-class TokomemberIntroButtonVh(val listener: TokomemberIntroButtonListener, view: View)
+class TmIntroButtonVh(private val listener: TokomemberIntroButtonListener, view: View)
     : AbstractViewHolder<TokomemberIntroButtonItem>(view) {
 
     private val btnContinue = itemView.btnContinue

@@ -49,7 +49,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCa
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -73,11 +73,11 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     private var tmShopCardModel = TokomemberShopCardModel()
     private var mTmCardModifyInput = TmCardModifyInput()
     private var loaderDialog: LoaderDialog?=null
-    private val tmDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
     private val adapterBg: TokomemberCardBgAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TokomemberCardBgAdapter(arrayListOf(), TokomemberCardBgFactory(this))
@@ -233,21 +233,21 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         containerViewFlipper.displayedChild = DATA
         shopID = data.card?.shopID?:0
         renderCardCarousel(data)
-        mTmCardModifyInput =  TmCardModifyInput(
-            apiVersion = "3.0.0",
-            isMerchantCard = true,
-            intoolsShop = IntoolsShop(id = data.card?.shopID),
-            cardTemplate = CardTemplate(
-                fontColor = "#FFFFFF",
-                backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
-            ),
-            card = Card(
-                shopID = data.card?.shopID,
-                name = shopViewPremium?.getCardShopName(),
-                numberOfLevel = 2
-            )
-        )
         btnContinueCard?.setOnClickListener {
+            mTmCardModifyInput =  TmCardModifyInput(
+                apiVersion = "3.0.0",
+                isMerchantCard = true,
+                intoolsShop = IntoolsShop(id = data.card?.shopID),
+                cardTemplate = CardTemplate(
+                    fontColor = "#FFFFFF",
+                    backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
+                ),
+                card = Card(
+                    shopID = data.card?.shopID,
+                    name = shopViewPremium?.getCardShopName(),
+                    numberOfLevel = 2
+                )
+            )
             tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
         }
     }
@@ -304,13 +304,16 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                 numberOfLevel = data.card?.numberOfLevel ?: 0,
                 backgroundColor = data.cardTemplate?.backgroundColor ?: "",
                 backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
-                shopType = 0
+                shopType = 0,
+                shopIconUrl = data.shopAvatar
             )
             shopViewPremium?.apply {
                 setShopCardData(tmShopCardModel)
             }
             shopViewVip?.apply {
-                setShopCardData(tmShopCardModel)
+                setShopCardData(tmShopCardModel.apply {
+                    shopType = 1
+                })
             }
 
             carouselCard.apply {
@@ -357,7 +360,9 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     shopType = 0
                 )
                 shopViewPremium?.setShopCardData(tmShopCardModel)
-                shopViewVip?.setShopCardData(tmShopCardModel)
+                shopViewVip?.setShopCardData(tmShopCardModel.apply {
+                    shopType = 1
+                })
             }
         }
     }

@@ -16,26 +16,24 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
+import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_preview.*
+import kotlinx.android.synthetic.main.tm_dash_preview.containerViewFlipper
 import javax.inject.Inject
 
 class TmDashPreviewFragment : BaseDaggerFragment() {
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
-    private var tokomemberShopCardModel = TokomemberShopCardModel()
+    private var tmShopCardModel = TokomemberShopCardModel()
     private var tmCouponPreviewData = TmCouponPreviewData()
     private var tmCouponCreateUnifyRequest = TmMerchantCouponUnifyRequest()
     private val tmCouponPreviewAdapter: TmCouponPreviewAdapter by lazy {
@@ -44,11 +42,11 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -65,13 +63,8 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
-        tokomemberDashCreateViewModel.getCardInfo()
+        tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
         renderHeader()
-        renderCouponList(tmCouponPreviewData)
-        renderPreviewUI(
-            arguments?.getParcelable(BUNDLE_CARD_DATA),
-            arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
-        )
         observeViewModel()
         renderButton()
     }
@@ -85,7 +78,27 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
+
+        tmDashCreateViewModel.tmCardResultLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
+                    containerViewFlipper.displayedChild = SHIMMER
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    containerViewFlipper.displayedChild = DATA
+                    renderCouponList(tmCouponPreviewData)
+                    renderPreviewUI(
+                        it.data,
+                        arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
+                    )
+                }
+                TokoLiveDataResult.STATUS.ERROR -> {
+                    handleErrorUiOnErrorData()
+                }
+            }
+        })
+
+        tmDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
 
             when (it) {
                 is Success -> {
@@ -98,6 +111,13 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             }
         })
 
+    }
+
+    private fun handleErrorUiOnErrorData(){
+        containerViewFlipper.displayedChild = ERROR
+        globalErrorPreview.setActionClickListener {
+            tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
+        }
     }
 
     private fun renderHeader() {
@@ -118,7 +138,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     private fun renderButton(){
         btnPreview.apply {
-            tokomemberDashCreateViewModel.createCoupon(tmCouponCreateUnifyRequest)
+            tmDashCreateViewModel.createCoupon(tmCouponCreateUnifyRequest)
         }
     }
 
@@ -131,7 +151,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun renderPreviewUI(
-        tokomemberShopCardModel: TokomemberShopCardModel?,
+        tokomemberShopCardModel: CardDataTemplate?,
         programUpdateDataInput: ProgramUpdateDataInput?
     ) {
         if (tokomemberShopCardModel != null) {
@@ -142,22 +162,22 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCardCarousel(data: TokomemberShopCardModel) {
+    private fun renderCardCarousel(data: CardDataTemplate?) {
         context?.let {
             shopViewPremium = TokomemberShopView(it)
             shopViewVip = TokomemberShopView(it)
-            tokomemberShopCardModel = TokomemberShopCardModel(
-                shopName = data.shopName,
-                numberOfLevel = data.numberOfLevel,
-                backgroundColor = data.backgroundColor,
-                backgroundImgUrl = data.backgroundImgUrl,
+            tmShopCardModel = TokomemberShopCardModel(
+                shopName = data?.card?.name ?: "",
+                numberOfLevel = data?.card?.numberOfLevel ?: 0,
+                backgroundColor = data?.cardTemplate?.backgroundColor ?: "",
+                backgroundImgUrl = data?.cardTemplate?.backgroundImgUrl ?: "",
                 shopType = 0
             )
             shopViewPremium?.apply {
-                setShopCardData(tokomemberShopCardModel)
+                setShopCardData(tmShopCardModel)
             }
             shopViewVip?.apply {
-                setShopCardData(tokomemberShopCardModel)
+                setShopCardData(tmShopCardModel)
             }
 
             carouselPreview?.apply {
@@ -203,6 +223,9 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
 
     companion object {
 
+        const val DATA = 1
+        const val SHIMMER = 0
+        const val ERROR = 2
         fun newInstance(bundle: Bundle) = TmDashPreviewFragment().apply {
             arguments = bundle
         }

@@ -10,7 +10,7 @@ data class ValidateCouponError(var errorMessage: String = "Membership Validation
     CouponErrorType()
 data class ValidateVipError(var errorMessage: String = "Please Validate Vip Coupon") :
     CouponErrorType()
-data class ValidatePremiumError(var errorMessage: String = "Please Validate Preium Coupon") :
+data class ValidatePremiumError(var errorMessage: String = "Please Validate Premium Coupon") :
     CouponErrorType()
 
 data class ErrorState(
@@ -19,24 +19,4 @@ data class ErrorState(
     var isPreValidatePremiumError: Boolean = false,
     var isUploadVipError: Boolean = false,
     var isUploadPremium: Boolean = false,
-){
-    fun setIsValidateCouponError(flag:Boolean){
-        isValidateCouponError = flag
-    }
-
-    fun setIsPreValidateVipError(flag:Boolean){
-        isPreValidateVipError = flag
-    }
-
-    fun setIsPreValidatePremiumError(flag:Boolean){
-        isPreValidatePremiumError = flag
-    }
-
-    fun setIsUploadVipError(flag:Boolean){
-        isUploadVipError = flag
-    }
-
-    fun setIsUploadPremium(flag:Boolean){
-        isValidateCouponError = flag
-    }
-}
+)

@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
-import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroBenefitImageVh
-import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroTextVh
+import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroBenefitImageVh
+import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroTextVh
 
 class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                   typeFactory: TokomemberIntroFactory) :
@@ -22,7 +22,7 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is TokomemberIntroTextVh) {
+        if (holder is TmIntroTextVh) {
             if (!isAlterNateTextView) {
                 isAlterNateTextView = !isAlterNateTextView
                 holder.setAnimationLeftToRight(holder.itemView, holder.adapterPosition,onAttach)
@@ -31,7 +31,7 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                 holder.setAnimationRightToLeft(holder.itemView, holder.adapterPosition,onAttach)
             }
         }
-        if (holder is TokomemberIntroBenefitImageVh) {
+        if (holder is TmIntroBenefitImageVh) {
             if (!isAlterNateImageView) {
                 isAlterNateImageView = !isAlterNateImageView
                 holder.setAnimationLeftToRight(holder.itemView, holder.adapterPosition,onAttach)

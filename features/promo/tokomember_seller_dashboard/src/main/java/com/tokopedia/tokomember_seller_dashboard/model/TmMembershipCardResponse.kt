@@ -114,5 +114,6 @@ data class MembershipGetCardForm(
 data class CardDataTemplate(
 	val card: Card? = null,
 	val cardTemplate: CardTemplate? = null,
-	val cardTemplateImageList: List<CardTemplateImageListItem?>? = null
+	val cardTemplateImageList: List<CardTemplateImageListItem?>? = null,
+	val shopAvatar: String = ""
 	)

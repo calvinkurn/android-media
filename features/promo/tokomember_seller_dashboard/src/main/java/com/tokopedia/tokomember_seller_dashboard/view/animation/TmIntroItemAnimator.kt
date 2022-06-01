@@ -5,8 +5,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
 
-object  TokomemberIntroItemAnimator {
-    var DURATION: Long = 1000
+object  TmIntroItemAnimator {
+    var DURATION: Long = 500
 
      fun fromLeftToRight(
          itemView: View,

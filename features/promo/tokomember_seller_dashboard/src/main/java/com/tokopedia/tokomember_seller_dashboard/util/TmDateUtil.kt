@@ -5,7 +5,7 @@ import com.tokopedia.utils.date.toDate
 import java.text.SimpleDateFormat
 import java.util.*
 
-object DateUtil {
+object TmDateUtil {
 
     @SuppressLint("SimpleDateFormat")
     fun getTimeFromUnix(calendar: Calendar): String {

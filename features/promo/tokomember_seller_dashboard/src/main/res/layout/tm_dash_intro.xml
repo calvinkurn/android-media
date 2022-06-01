@@ -44,7 +44,7 @@
                     android:background="@drawable/tm_video_selector"
                     android:visibility="visible" />
 
-                <com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
+                <com.tokopedia.tokomember_seller_dashboard.view.customview.TmVideoView
                     android:id="@+id/frame_video"
                     android:layout_width="match_parent"
                     android:layout_height="184dp"

@@ -11,9 +11,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -26,9 +25,9 @@ class TokomemberMainFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberEligibilityViewModel: TokomemberEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmEligibilityViewModel: TmEligibilityViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberEligibilityViewModel::class.java)
+        viewModelProvider.get(TmEligibilityViewModel::class.java)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,25 +41,25 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-        tokomemberEligibilityViewModel.getSellerInfo()
+        tmEligibilityViewModel.getSellerInfo()
     }
 
     private fun observeViewModel() {
 
-        tokomemberEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+        tmEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
                     shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
                     shopName = it.data.userShopInfo?.info?.shopName?:""
-                    tokomemberEligibilityViewModel.checkEligibility(shopId, true)
+                    tmEligibilityViewModel.checkEligibility(shopId, true)
                 }
                 is Fail -> {
                 }
             }
         })
 
-        tokomemberEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
+        tmEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
                     checkEligibility(it.data)

@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class TokomemberVideoView @JvmOverloads constructor(
+class TmVideoView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -57,7 +57,7 @@ class TokomemberVideoView @JvmOverloads constructor(
 
     fun stopVideoPlayer(){
         videoPlayer?.let{
-            it.stop()
+            it.pause()
         }
     }
 
@@ -77,6 +77,7 @@ class TokomemberVideoView @JvmOverloads constructor(
                     layout_video?.player = videoPlayer?.getExoPlayer()
                     videoPlayer?.start(url)
 
+                    loader?.show()
                     videoPlayer?.setVideoStateListener(object : VideoStateListener {
                         override fun onInitialStateLoading() {
                             loader?.show()

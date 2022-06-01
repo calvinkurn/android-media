@@ -5,7 +5,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponCre
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmMerchantCouponUnifyRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import java.util.*
 
 object TmCouponCreateMapper {
@@ -40,10 +40,10 @@ object TmCouponCreateMapper {
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
             isPublic = 0,
-            hourStart = tmStartTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
-            dateStart = tmStartDateUnix?.let { DateUtil.getDateFromUnix(it) },
-            hourEnd = tmEndTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
-            dateEnd = tmEndDateUnix?.let { DateUtil.getDateFromUnix(it) },
+            hourStart = tmStartTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateStart = tmStartDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            hourEnd = tmEndTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateEnd = tmEndDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
             benefitType = couponPremiumData?.typeCashback
         ))
         voucherList.add(1, TmCouponCreateRequest(
@@ -59,10 +59,10 @@ object TmCouponCreateMapper {
             imagePortrait = imagePortrait,
             imageSquare = imageSquare,
             isPublic = 0,
-            hourStart = tmStartTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
-            dateStart = tmStartDateUnix?.let { DateUtil.getDateFromUnix(it) },
-            hourEnd = tmEndTimeUnix?.let { DateUtil.getTimeFromUnix(it) },
-            dateEnd = tmEndDateUnix?.let { DateUtil.getDateFromUnix(it) },
+            hourStart = tmStartTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateStart = tmStartDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
+            hourEnd = tmEndTimeUnix?.let { TmDateUtil.getTimeFromUnix(it) },
+            dateEnd = tmEndDateUnix?.let { TmDateUtil.getDateFromUnix(it) },
             benefitType = couponVip?.typeCashback
         ))
 

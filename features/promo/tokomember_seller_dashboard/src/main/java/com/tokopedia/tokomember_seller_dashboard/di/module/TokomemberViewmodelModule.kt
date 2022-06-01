@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,20 +25,20 @@ abstract class TokomemberViewmodelModule {
     @TokomemberDashScope
     @Binds
     @IntoMap
-    @ViewModelKey(TokomemberDashIntroViewModel::class)
-    abstract fun tokomemberDashIntroViewmodel(viewModel: TokomemberDashIntroViewModel): ViewModel
+    @ViewModelKey(TmDashIntroViewModel::class)
+    abstract fun tokomemberDashIntroViewmodel(viewModel: TmDashIntroViewModel): ViewModel
 
     @TokomemberDashScope
     @Binds
     @IntoMap
-    @ViewModelKey(TokomemberDashCreateViewModel::class)
-    abstract fun tokomemberCardViewmodel(viewModel: TokomemberDashCreateViewModel): ViewModel
+    @ViewModelKey(TmDashCreateViewModel::class)
+    abstract fun tokomemberCardViewmodel(viewModel: TmDashCreateViewModel): ViewModel
 
     @TokomemberDashScope
     @Binds
     @IntoMap
-    @ViewModelKey(TokomemberEligibilityViewModel::class)
-    abstract fun tokomemberEligibilityViewModel(viewModel: TokomemberEligibilityViewModel): ViewModel
+    @ViewModelKey(TmEligibilityViewModel::class)
+    abstract fun tokomemberEligibilityViewModel(viewModel: TmEligibilityViewModel): ViewModel
 
     @TokomemberDashScope
     @Binds

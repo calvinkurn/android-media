@@ -29,13 +29,13 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.convertDateTime
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,11 +59,11 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
+    private val tmDashCreateViewModel: TmDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+        viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
     private var selectedCalendar: Calendar? = null
 
@@ -105,7 +105,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING -> {
                     containerViewFlipper.displayedChild = SHIMMER
@@ -124,7 +124,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
         })
 
-        tokomemberDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
+        tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
                     if(it.data.membershipCreateEditProgram?.resultStatus?.code=="200"){
@@ -171,16 +171,16 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
         when(programType){
             ProgramActionType.CREATE ->{
-                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
             ProgramActionType.DETAIL ->{
-                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
             }
             ProgramActionType.EXTEND ->{
-                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
             }
             ProgramActionType.EDIT ->{
-                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
+                tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
             }
             ProgramActionType.CANCEL ->{
                 //TODO
@@ -194,6 +194,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
+        bundle.putInt(BUNDLE_CARD_ID , arguments?.getInt(BUNDLE_CARD_ID)?:0)
         bundle.putParcelable(BUNDLE_CARD_DATA , arguments?.getParcelable(BUNDLE_CARD_DATA))
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
@@ -388,7 +389,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             periodInMonth,
             arguments?.getInt(BUNDLE_CARD_ID) ?: 0
         )
-        tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
+        tmDashCreateViewModel.updateProgram(programUpdateResponse)
     }
 
     private fun clickDatePicker(title: String, helpText: String) {
@@ -463,7 +464,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
     override fun onButtonClick(errorCount: Int) {
         if (errorCount == 0) {
-            tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
+            tmDashCreateViewModel.updateProgram(programUpdateResponse)
         } else {
             (TokomemberDashIntroActivity.openActivity(
                 arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(

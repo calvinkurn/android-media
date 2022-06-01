@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashIntroUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberIntroSectionMapperUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -24,13 +24,13 @@ class TokomemberIntroViewModelTest {
 
     private val mockThrowable = Throwable(message = "exception")
     private val dispatcher = TestCoroutineDispatcher()
-    private lateinit var viewModel: TokomemberDashIntroViewModel
+    private lateinit var viewModel: TmDashIntroViewModel
     private val tokomemberDashIntroUsecase = mockk< TokomemberDashIntroUsecase>(relaxed = true)
     private val tokomemberIntroSectionMapperUsecase = mockk<TokomemberIntroSectionMapperUsecase>(relaxed = true)
 
     @Before
     fun setUp() {
-        viewModel  = TokomemberDashIntroViewModel(tokomemberDashIntroUsecase,tokomemberIntroSectionMapperUsecase ,dispatcher)
+        viewModel  = TmDashIntroViewModel(tokomemberDashIntroUsecase,tokomemberIntroSectionMapperUsecase ,dispatcher)
     }
 
     @Test

@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class TokomemberDashIntroViewModel @Inject constructor(
+class TmDashIntroViewModel @Inject constructor(
     private val tokomemberDashIntroUsecase: TokomemberDashIntroUsecase,
     private val tokomemberIntroSectionMapperUsecase: TokomemberIntroSectionMapperUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,

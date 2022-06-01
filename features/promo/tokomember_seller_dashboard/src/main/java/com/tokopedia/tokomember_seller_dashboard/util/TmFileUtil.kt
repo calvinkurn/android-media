@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.*
 
-object FileUtil {
+object TmFileUtil {
 
     fun createNewFile(imageName:String , context: Context , bitmap: Bitmap): File{
 

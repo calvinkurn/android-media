@@ -26,9 +26,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -59,7 +59,7 @@ class TmCouponVh(itemView: View, val fragmentManager: FragmentManager) : Recycle
         ivCoupon = itemView.findViewById(R.id.iv_coupon)
         btnAddQuota = itemView.findViewById(R.id.btn_add_quota)
 
-        tvDate.text = "${item.voucherStartTime?.let { ProgramUpdateMapper.setDate(it) }} - ${item.voucherFinishTime?.let { ProgramUpdateMapper.setDate(it) }}"
+        tvDate.text = "${item.voucherStartTime?.let { setDate(it) }} - ${item.voucherFinishTime?.let { setDate(it) }}"
         tvCouponTitle.text = item.voucherName
         when(item.minimumTierLevel){
             COUPON_VIP ->{

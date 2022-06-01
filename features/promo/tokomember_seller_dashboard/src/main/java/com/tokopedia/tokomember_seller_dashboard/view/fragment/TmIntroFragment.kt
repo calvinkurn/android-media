@@ -33,15 +33,15 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.Tokomember
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
-import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroButtonVh
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroButtonVh
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
 
 class TmIntroFragment : BaseDaggerFragment(),
-    TokomemberIntroButtonVh.TokomemberIntroButtonListener {
+    TmIntroButtonVh.TokomemberIntroButtonListener {
 
     private var rootView: RelativeLayout? = null
     private var viewFlipperIntro : ViewFlipper?=null
@@ -51,9 +51,9 @@ class TmIntroFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tmIntroViewModel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmIntroViewModel: TmDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashIntroViewModel::class.java)
+        viewModelProvider.get(TmDashIntroViewModel::class.java)
     }
     val adapter: TokomemberIntroAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TokomemberIntroAdapter(arrayListOf(), TokomemberIntroFactory(this))
@@ -204,6 +204,13 @@ class TmIntroFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         frame_video?.onDetach()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (frame_video.isPlaying() == true) {
+            frame_video?.stopVideoPlayer()
+        }
     }
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")

@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class TokomemberEligibilityViewModel @Inject constructor(
+class TmEligibilityViewModel @Inject constructor(
     private val tokomemberEligibilityUsecase: TokomemberEligibilityUsecase,
     private val tokomemberAuthenticatedUsecase: TokomemberAuthenticatedUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher

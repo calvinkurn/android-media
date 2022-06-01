@@ -5,7 +5,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedU
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberEligibilityUsecase
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
 import com.tokopedia.tokomember_seller_dashboard.model.SellerData
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -18,20 +18,20 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class TokomemberEligibilityViewModelTest {
+class TmEligibilityViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockThrowable = Throwable(message = "exception")
     private val dispatcher = TestCoroutineDispatcher()
-    private lateinit var viewModel: TokomemberEligibilityViewModel
+    private lateinit var viewModel: TmEligibilityViewModel
     private val tokomemberEligibilityUsecase = mockk<TokomemberEligibilityUsecase>(relaxed = true)
     private val tokomemberAuthenticatedUsecase = mockk<TokomemberAuthenticatedUsecase>(relaxed = true)
 
     @Before
     fun setUp() {
-        viewModel = TokomemberEligibilityViewModel(
+        viewModel = TmEligibilityViewModel(
             tokomemberEligibilityUsecase,
             tokomemberAuthenticatedUsecase,
            dispatcher

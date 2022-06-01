@@ -8,6 +8,8 @@
     android:clickable="true"
     tools:ignore="MissingDefaultResource">
 
+    <include layout="@layout/tm_dash_preview_shimmer"/>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
@@ -385,4 +387,12 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalErrorPreview"
+        android:layout_gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </ViewFlipper>

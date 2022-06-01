@@ -6,8 +6,8 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramAttr
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.addDuration
-import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.convertDuration
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.addDuration
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDuration
 
 object ProgramUpdateMapper {
 

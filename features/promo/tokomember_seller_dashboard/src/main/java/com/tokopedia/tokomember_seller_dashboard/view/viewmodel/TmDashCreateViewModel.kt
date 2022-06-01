@@ -51,7 +51,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import java.io.File
 import javax.inject.Inject
 
-class TokomemberDashCreateViewModel @Inject constructor(
+class TmDashCreateViewModel @Inject constructor(
     private val tokomemberDashCardUsecase: TokomemberDashCardUsecase,
     private val tokomemberCardColorMapperUsecase: TokomemberCardColorMapperUsecase,
     private val tokomemeberCardBgUsecase: TokomemeberCardBgUsecase,
@@ -156,7 +156,8 @@ class TokomemberDashCreateViewModel @Inject constructor(
                     CardDataTemplate(
                         card = it.membershipGetCardForm?.card,
                         cardTemplate = it.membershipGetCardForm?.cardTemplate,
-                        cardTemplateImageList = it.membershipGetCardForm?.cardTemplateImageList
+                        cardTemplateImageList = it.membershipGetCardForm?.cardTemplateImageList,
+                        shopAvatar = it.membershipGetCardForm?.shopAvatar?:""
                     )
                 )
             )
