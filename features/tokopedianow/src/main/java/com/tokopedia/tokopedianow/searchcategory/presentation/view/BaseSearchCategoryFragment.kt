@@ -381,7 +381,6 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetEventCategory(): String = eventCategory
 
             override fun onSwitchService() {
-                getViewModel().refreshMiniCart()
                 getViewModel().switchService()
             }
         }
@@ -1112,6 +1111,9 @@ abstract class BaseSearchCategoryFragment:
                     } else if (!result.data.warehouseId.toLongOrZero().isZero()) {
                         showSwitcherToaster(result.data.serviceType)
                     } else { /* do nothing */ }
+
+                    //Refresh mini cart
+                    getViewModel().refreshMiniCart()
                 }
             }
             is Fail -> { /* do nothing */ }
