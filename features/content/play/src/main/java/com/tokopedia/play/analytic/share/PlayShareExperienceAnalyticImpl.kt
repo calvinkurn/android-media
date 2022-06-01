@@ -13,7 +13,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
 ): PlayShareExperienceAnalytic{
 
     private val userId: String
-        get() = userSession.userId
+        get() = if (userSession.userId.isNotEmpty()) userSession.userId else "0"
 
     private fun sendGeneralClickEvent(action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -43,20 +43,6 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userId
             )
         )
-    }
-
-    private fun mapSharingOption(sharingOption: String?): String {
-        return sharingOption?.let {
-            return@let when(it) {
-                "FB Feed" -> "Facebook NewsFeed"
-                "FB Story" -> "Facebook Story"
-                "IG DM" -> "Instagram DirectMessage"
-                "IG Feed" -> "Instagram Feed"
-                "IG Story" -> "Instagram Story"
-                "E-mail" -> "Email"
-                else -> it
-            }
-        } ?: ""
     }
 
     private fun mapPermissionLabel(label: String): String = when(label) {
@@ -96,7 +82,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         val action = if(isScreenshot) "channel share bottom sheet - screenshot" else "sharing channel"
         sendGeneralClickEvent(
             action,
-            "${mapSharingOption(sharingOption)} - $channelId - ${getPartnerId(partnerId)} - $channelType"
+            "$sharingOption - $channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 

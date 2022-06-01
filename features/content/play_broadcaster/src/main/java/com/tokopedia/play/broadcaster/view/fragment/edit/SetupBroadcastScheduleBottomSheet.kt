@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -42,6 +43,9 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
             )
             .build()
     }
+
+    @Inject
+    lateinit var parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -74,7 +78,10 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
         dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(BroadcastScheduleViewModel::class.java)
 

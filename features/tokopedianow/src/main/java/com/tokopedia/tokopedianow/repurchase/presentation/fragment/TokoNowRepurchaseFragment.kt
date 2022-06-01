@@ -24,7 +24,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -38,8 +40,6 @@ import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -51,6 +51,8 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
@@ -204,8 +206,11 @@ class TokoNowRepurchaseFragment:
 
     override fun onResume() {
         super.onResume()
-        checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart()
+        if (isChooseAddressDataUpdated()) {
+            refreshLayout()
+        } else {
+            getMiniCart()
+        }
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -244,6 +249,8 @@ class TokoNowRepurchaseFragment:
     override fun onCategoryClicked(position: Int, categoryId: String) {
         // TO-DO : analytics
     }
+
+    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)
@@ -401,9 +408,11 @@ class TokoNowRepurchaseFragment:
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 
-    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+    override fun getParallaxState(): Map<String, Float> = mapOf()
 
-    }
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { /* nothing to do */ }
+
+    override fun saveParallaxState(mapParallaxState: Map<String, Float>) { /* nothing to do */ }
 
     private fun initInjector() {
         DaggerRepurchaseComponent.builder()
@@ -488,11 +497,6 @@ class TokoNowRepurchaseFragment:
 
     private fun onClickCartButton() {
         analytics.onClickCartNav(userSession.userId)
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        val remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        return remoteConfigInstance.abTestPlatform
     }
 
     private fun isNavOld(): Boolean = false
@@ -640,6 +644,31 @@ class TokoNowRepurchaseFragment:
                 screenName = screenName
             )
         }
+
+        observe(viewModel.setUserPreference) {
+            if(it is Success) {
+                onSuccessSetUserPreference(it.data)
+            }
+        }
+    }
+
+    private fun onSuccessSetUserPreference(data: SetUserPreferenceData) {
+        val warehouses = data.warehouses.map {
+            LocalWarehouseModel(
+                it.warehouseId.toLongOrZero(),
+                it.serviceType
+            )
+        }
+
+        ChooseAddressUtils.updateTokoNowData(
+            requireContext(),
+            data.warehouseId,
+            data.shopId,
+            warehouses,
+            data.serviceType
+        )
+
+        refreshLayout()
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
@@ -662,7 +691,10 @@ class TokoNowRepurchaseFragment:
                 ),
                 postalCode = chooseAddressData.data.postalCode,
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                shopId = chooseAddressData.tokonow.shopId.toString()
+                shopId = chooseAddressData.tokonow.shopId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
@@ -775,11 +807,18 @@ class TokoNowRepurchaseFragment:
     private fun checkIfChooseAddressWidgetDataUpdated() {
         localCacheModel?.let {
             context?.apply {
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(this, it)) {
+                if (isChooseAddressDataUpdated()) {
                     updateCurrentPageLocalCacheModelData()
                 }
             }
         }
+    }
+
+    private fun isChooseAddressDataUpdated(): Boolean {
+        localCacheModel?.let {
+           return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+        return false
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -802,7 +841,10 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
-        if(data.isShowMiniCartWidget) {
+        val showMiniCartWidget = data.isShowMiniCartWidget
+        val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+
+        if(showMiniCartWidget && !outOfCoverage) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
@@ -813,7 +855,8 @@ class TokoNowRepurchaseFragment:
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (isShowMiniCartWidget) {
+            val outOfCoverage = localCacheModel?.isOutOfCoverage() == true
+            val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
                 miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
@@ -874,6 +917,12 @@ class TokoNowRepurchaseFragment:
         carouselScrollPosition.clear()
         viewModel.clearSelectedFilters()
         viewModel.showLoading()
+        refreshMiniCart()
+    }
+
+    private fun refreshMiniCart() {
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
     }
 
     private fun resetSwipeLayout() {
@@ -916,6 +965,10 @@ class TokoNowRepurchaseFragment:
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = ""
+
+            override fun onSwitchService() {
+                viewModel.switchService()
+            }
         }
     }
 }

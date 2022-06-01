@@ -48,7 +48,10 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.adapter = adapter
         headerItemDecoration = HeaderItemDecoration(this, isHeader = {
             adapter.isStickyHeaderView(it)
-        })
+        }, notifySection = {
+            adapter.notifySectionId(it)
+        }
+        )
         recyclerView.addItemDecoration(headerItemDecoration!!)
     }
 
@@ -58,6 +61,14 @@ class StickyHeadRecyclerView : ConstraintLayout {
 
     fun addOnScrollListener(listener: RecyclerView.OnScrollListener) {
         recyclerView.addOnScrollListener(listener)
+    }
+
+    fun setOnTouchListenerRecyclerView(listener: View.OnTouchListener){
+        recyclerView.setOnTouchListener(listener)
+    }
+
+    fun addOnItemTouchListener(listener: RecyclerView.OnItemTouchListener){
+        recyclerView.addOnItemTouchListener(listener)
     }
 
     fun removeHeaderRecyclerView() {

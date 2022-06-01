@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
+    android:layout_width="@dimen/dp_chatbot_220"
+    android:layout_height="wrap_content"
+    android:background="#F3F5F8"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    tools:ignore="UselessParent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_chat_bubble"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_font_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:background="#FFFFFF">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:contentDescription="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:srcCompat="@tools:sample/avatars[0]" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_status"
+            android:layout_width="@dimen/dp_chatbot_80"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textSize="@dimen/fontSize_lvl1"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:labelType="general_light_red"
+            tools:text="Pesanan Dibatalkan Pesanan Dibatalkan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_32"
+            android:layout_marginBottom="@dimen/dp_chatbot_14"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:text="Kaca Pembesar hewa unik"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:typographyType="heading_5"
+            tools:ignore="RtlSymmetry" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_cross"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_clear_invoice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

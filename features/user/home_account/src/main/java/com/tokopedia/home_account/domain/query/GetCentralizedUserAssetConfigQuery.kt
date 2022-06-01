@@ -15,6 +15,7 @@ object GetCentralizedUserAssetConfigQuery {
               icon
               is_active
               id
+              hide_title
             }
             asset_config_vertical {
               title
@@ -24,6 +25,7 @@ object GetCentralizedUserAssetConfigQuery {
               icon
               is_active
               id
+              hide_title
             }
             asset_config {
               title
@@ -33,6 +35,7 @@ object GetCentralizedUserAssetConfigQuery {
               icon
               is_active
               id
+              hide_title
             }
           }
         }

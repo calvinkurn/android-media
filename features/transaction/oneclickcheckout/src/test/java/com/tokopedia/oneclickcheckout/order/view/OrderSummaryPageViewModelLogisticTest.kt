@@ -6,7 +6,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -293,6 +292,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.secondDuration.serviceData.serviceName,
                         serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.secondDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
                         shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
@@ -349,6 +349,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -387,6 +388,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -427,6 +429,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 OrderShipment(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         serviceId = helper.firstDuration.serviceData.serviceId,
                         serviceErrorMessage = errorMessage,
                         shippingRecommendationData = helper.shippingRecommendationData,
@@ -461,6 +464,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         serviceErrorMessage = errorMessage,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
@@ -494,6 +498,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         serviceErrorMessage = errorMessage,
                         shipperName = helper.firstCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.firstCourierFirstDuration.productData.shipperProductId,
@@ -534,6 +539,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 OrderShipment(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         serviceId = helper.firstDuration.serviceData.serviceId,
                         serviceErrorMessage = errorMessage,
                         shipperName = helper.firstCourierFirstDuration.productData.shipperName,
@@ -575,6 +581,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
                         shipperName = helper.firstCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.firstCourierFirstDuration.productData.shipperProductId,
@@ -613,6 +620,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -652,6 +660,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 serviceName = helper.firstDuration.serviceData.serviceName,
                 serviceDuration = helper.firstDuration.serviceData.serviceName,
                 serviceId = helper.firstDuration.serviceData.serviceId,
+                isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                 shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                 shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
                 shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -693,6 +702,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -790,6 +800,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.firstDuration.serviceData.serviceName,
                         serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
                         shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
@@ -836,6 +847,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.secondDuration.serviceData.serviceName,
                         serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.firstDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
                         shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
@@ -868,6 +880,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.secondDuration.serviceData.serviceName,
                         serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.secondDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
                         shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
@@ -902,6 +915,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.secondDuration.serviceData.serviceName,
                         serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.secondDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
                         shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
@@ -931,6 +945,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceName = helper.secondDuration.serviceData.serviceName,
                         serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
+                        isHideChangeCourierCard = helper.secondDuration.serviceData.selectedShipperProductId > 0,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
                         shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
@@ -966,13 +981,43 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         // Then
         val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(true, shipping.isApplyLogisticPromo)
+        assertEquals(true, shipping.isServicePickerEnable)
+        assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Logistic Promo From List of Promo Success`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
+        val promoSelected = helper.logisticPromoEko
+
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+            PromoCheckoutVoucherOrdersItemUiModel(code = promoSelected.promoCode, messageUiModel = MessageUiModel(state = "green"))
+        ), globalSuccess = true), status = "OK")
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(promoSelected)
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        val promoSelectedAfterApplied = promoSelected.copy(isApplied = true)
+
+        assertEquals(promoSelected, shipping.logisticPromoViewModel)
+        assertEquals(promoSelectedAfterApplied, shipping.shippingRecommendationData?.listLogisticPromo?.find { it.isApplied })
+        assertEquals(null, shipping.logisticPromoTickerMessage)
+
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
@@ -989,7 +1034,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1012,7 +1057,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1039,7 +1084,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1069,7 +1114,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1093,7 +1138,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green")),
                 PromoCheckoutVoucherOrdersItemUiModel(code = "123", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1167,7 +1212,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val promoErrorMessage = "error promo"
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red", text = promoErrorMessage))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1287,7 +1332,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        ))), status = "OK")
+        )), globalSuccess = true), status = "OK")
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When Choose Logistic Promo
@@ -1328,7 +1373,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1363,7 +1408,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = firstDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        ))), status = "OK")
+        )), globalSuccess = true), status = "OK")
 
         // When Choose Logistic Promo
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1384,7 +1429,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = secondDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        ))), status = "OK")
+        )), globalSuccess = true), status = "OK")
 
         // When Update Quantity
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1413,7 +1458,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1445,12 +1490,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1474,7 +1519,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val throwable = Throwable()
@@ -1529,7 +1574,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1686,7 +1731,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        ), globalSuccess = true), status = "OK")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)

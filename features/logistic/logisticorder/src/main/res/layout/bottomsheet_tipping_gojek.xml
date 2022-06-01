@@ -6,59 +6,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/payment_tipping_layout"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_tipping_gojek"
-        android:layout_marginBottom="132dp"
-        android:layout_marginHorizontal="16dp"
         android:visibility="visible"
-        tools:visibility="gone">
+        tools:visibility="gone" >
 
-        <com.tokopedia.unifycomponents.TipsUnify
-            android:id="@+id/ticker_tipping_gojek"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="132dp"
+            android:layout_marginHorizontal="16dp" >
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_tipping_gojek"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/tipping_layout_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ticker_tipping_gojek"
-            app:typographyType="heading_4" />
+            <com.tokopedia.unifycomponents.TipsUnify
+                android:id="@+id/ticker_tipping_gojek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chips_tip"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_tipping_gojek" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_tipping_gojek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tipping_layout_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticker_tipping_gojek"
+                app:typographyType="heading_4" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify2
-            android:id="@+id/et_nominal_tip"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            style="@style/HintTextInputLayout"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="150dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:unify_text_field_input_type="number"
-            app:unify_text_field_label="@string/nominal_tip_label"
-            app:unify_text_field_message="@string/nominal_tip_message"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_chips_tip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_tipping_gojek" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/et_nominal_tip"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                style="@style/HintTextInputLayout"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="150dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:unify_text_field_input_type="number"
+                app:unify_text_field_label="@string/nominal_tip_label"
+                app:unify_text_field_message="@string/nominal_tip_message"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/result_tipping_layout"

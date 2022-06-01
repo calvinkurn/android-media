@@ -40,6 +40,7 @@ object RechargeHomepageQueries {
                       text_link
                       media_url
                       label_1
+                      label_2
                       tracking {
                         action
                         data

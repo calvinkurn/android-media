@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -101,7 +102,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
-    private ImageView minimizeButtonLeft;
+    private AppCompatImageView minimizeButtonLeft;
     private float newAngleOfMinimizeBtn = 180;
     private float oldAngleOfMinimizeBtn = 0;
     private boolean isMinimized;
@@ -128,8 +129,17 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
 
+        initMinimizeIcon();
         prepareScreenHeight();
         return view;
+    }
+
+    private void initMinimizeIcon(){
+        try {
+            minimizeButtonLeft.setImageResource(com.tokopedia.promogamification.common.R.drawable.gami_core_minimize_button);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void prepareScreenHeight(){
@@ -527,10 +537,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         }
 
-
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
+            try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asGif()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -545,7 +555,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             } else {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asBitmap()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -561,6 +571,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
                             }
                         });
+            }
+            } catch (Exception e) {
+                Timber.e(e);
             }
         }
     }

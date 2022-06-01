@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+}
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.dbDependencies.sqliteFramework
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
+    androidTestImplementation rootProject.ext.miscDependencies.multiDex
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics, {
+        exclude group: "com.google.android.gms", module: "play-services-basement"
+        exclude group: "com.google.android.gms", module: "play-services-tasks"
+    }
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.network)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms"
+        exclude group: "com.google.firebase", module: "firebase-iid"
+        exclude group: "com.google.code.gson"
+        exclude group: "androidx.lifecycle", module: "lifecycle-livedata"
+    }
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+}
+
+project.ext {
+    artifactId = 'video_widget'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "0.0.1"
+    artifactName = "videowidget-release"
+}
+
+apply from: '../../../publish_local.gradle'

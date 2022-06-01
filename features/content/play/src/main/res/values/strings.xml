@@ -22,6 +22,8 @@
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
     <string name="play_product_atc">Keranjang</string>
+    <string name="play_product_upcoming_reminder_success">Oke, kami akan ingatkan!</string>
+    <string name="play_product_upcoming_reminder_error">Pengingat telah dihapus.</string>
 
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
@@ -45,7 +47,7 @@
     <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
 
     <string name="play_action_ok">Oke</string>
-    <string name="play_out_of_stock">Stok habis</string>
+    <string name="play_out_of_stock">Stok Habis</string>
 
     <!--Pinned Message-->
     <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
@@ -89,7 +91,7 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
-    <string name="play_product_item_stock">Stok %1$s</string>
+    <string name="play_product_item_stock">Sisa %1$s</string>
 
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
@@ -113,5 +115,4 @@
     <!-- Sharing Experience -->
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
-  
 </resources>

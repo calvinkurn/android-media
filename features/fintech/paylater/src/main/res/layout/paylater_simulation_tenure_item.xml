@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/payLaterSimulationCard"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:card_type="border"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSimulationCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/unify_space_128">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvInstallmentHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:lineSpacingExtra="4sp"
+            android:paddingEnd="@dimen/credit_card_dp_10"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="30 hari/akhir bulan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvMonthlyTenure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:paddingEnd="@dimen/credit_card_dp_10"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvInstallmentHeader"
+            app:layout_constraintTop_toBottomOf="@id/tvInstallmentHeader"
+            app:typographyType="body_3"
+            tools:text="Mulai Rp1.250.000" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
+

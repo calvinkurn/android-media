@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_Background"
     android:paddingStart="@dimen/unify_space_16"
     android:paddingEnd="@dimen/unify_space_16">
 
@@ -12,7 +11,7 @@
         android:id="@+id/tv_title_cpl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Layanan Pengiriman"
+        android:text="@string/title_cpl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
@@ -22,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:text="Atur layanan pengioriman sesuai jenis produkmu."
+        android:text="@string/description_cpl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_title_cpl"
         app:layout_constraintTop_toBottomOf="@id/tv_title_cpl"
@@ -42,7 +41,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
-            android:text="Standar" />
+            android:text="@string/cpl_standard_shipment" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/radio_custom_shipment"
@@ -50,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layoutDirection="rtl"
-            android:text="Custom" />
+            android:text="@string/cpl_custom_shipment" />
 
     </RadioGroup>
 
@@ -66,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:text="Dijemput Kurir"
+            android:text="@string/cpl_custom_on_demand"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -80,21 +79,19 @@
             app:icon_name="INFORMATION"
             app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
             app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_change_on_demand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ubah"
+            android:text="@string/cpl_custom_on_demand_button"
             android:textColor="@color/Unify_G500"
             android:textSize="14sp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_on_demand"
@@ -105,7 +102,6 @@
             tools:listitem="@layout/item_add_edit_shipment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_custom_conventional"
@@ -119,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:text="Antar ke Kantor Agen"
+            android:text="@string/cpl_custom_agen"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -133,22 +129,19 @@
             app:icon_name="INFORMATION"
             app:layout_constraintBottom_toBottomOf="@id/tv_agen"
             app:layout_constraintStart_toEndOf="@id/tv_agen"
-            app:layout_constraintTop_toTopOf="@id/tv_agen"
-            tools:ignore="ContentDescription" />
-
+            app:layout_constraintTop_toTopOf="@id/tv_agen" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_change_conventional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ubah"
+            android:text="@string/cpl_custom_agen_button"
             android:textColor="@color/Unify_G500"
             android:textSize="14sp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tv_agen"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_agen"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/tv_agen" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_conventional"
@@ -159,6 +152,5 @@
             tools:listitem="@layout/item_add_edit_shipment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

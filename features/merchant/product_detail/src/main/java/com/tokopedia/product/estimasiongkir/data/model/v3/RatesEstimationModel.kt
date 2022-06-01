@@ -74,6 +74,18 @@ data class FreeShipping(
 
         @SerializedName("title")
         @Expose
-        val title: String = ""
+        val title: String = "",
+
+        @SerializedName("desc")
+        @Expose
+        val desc: String = "",
+
+        @SerializedName("raw_shipping_rate")
+        @Expose
+        val rawShippingRate: Double = 0.0,
+
+        @SerializedName("is_quota_empty")
+        @Expose
+        val isQuotaEmpty: Boolean = false
 
 )

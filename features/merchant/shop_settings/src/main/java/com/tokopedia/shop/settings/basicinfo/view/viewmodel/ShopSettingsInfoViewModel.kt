@@ -6,20 +6,23 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseShopSettingsInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
+import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
-import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
-import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,6 +31,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: GqlGetIsShopOsUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
         private val getShopStatusUseCase: GetPMStatusUseCase,
+        private val shopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
@@ -42,13 +46,17 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
 
+    private val _shopOperationalHourList = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
+    val shopOperationalHourList: LiveData<Result<ShopOperationalHoursListResponse>>
+        get() = _shopOperationalHourList
+
     private val _shopStatusData = MutableLiveData<Result<PMStatusUiModel>>()
     val shopStatusData: LiveData<Result<PMStatusUiModel>>
         get() = _shopStatusData
 
-    private val _shopBadgeData = MutableLiveData<Result<String>>()
-    val shopBadgeData: LiveData<Result<String>>
-        get() = _shopBadgeData
+    private val _shopInfoData = MutableLiveData<Result<ShopInfo>>()
+    val shopInfoData: LiveData<Result<ShopInfo>>
+        get() = _shopInfoData
 
     private val _updateScheduleResult = MutableLiveData<Result<String>>()
     val updateScheduleResult: LiveData<Result<String>>
@@ -59,16 +67,17 @@ class ShopSettingsInfoViewModel @Inject constructor (
         _shopBasicData.value = null
         _shopStatusData.value = null
         _updateScheduleResult.value = null
-        _shopBadgeData.value = null
+        _shopInfoData.value = null
+        _shopOperationalHourList.value = null
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        getShopBadgeData(shopId)
+        getShopInfo(shopId)
         getShopBasicData()
         getShopStatus(shopId, includeOS)
     }
 
-    private fun getShopBadgeData(shopId: String) {
+    private fun getShopInfo(shopId: String) {
         launchCatchError(
             context = dispatchers.io,
             block = {
@@ -78,16 +87,30 @@ class ShopSettingsInfoViewModel @Inject constructor (
                         "",
                         source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
                         fields = listOf(
-                            GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS
+                                GQLGetShopInfoUseCase.FIELD_CLOSED_INFO,
+                                GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS
                         )
                     )
-                    val data = getShopInfoUseCase.executeOnBackground().goldOS.badge
-                    _shopBadgeData.postValue(Success(data))
+                    getShopInfoUseCase.isFromCacheFirst = false
+                    val data = getShopInfoUseCase.executeOnBackground()
+                    _shopInfoData.postValue(Success(data))
                 }
             },
             onError = {
-                _shopBadgeData.postValue(Fail(it))
+                _shopInfoData.postValue(Fail(it))
             })
+    }
+
+    fun getOperationalHoursList(shopId: String) {
+        launchCatchError(block = {
+            withContext(dispatchers.io) {
+                shopOperationalHoursListUseCase.params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
+                val response = shopOperationalHoursListUseCase.executeOnBackground()
+                _shopOperationalHourList.postValue(Success(response))
+            }
+        }) {
+            _shopOperationalHourList.postValue(Fail(it))
+        }
     }
 
     fun updateShopSchedule(

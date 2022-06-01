@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.authentication.AuthKeyExt
+import com.tokopedia.network.authentication.AuthKeyExt
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.exception.ResponseErrorException

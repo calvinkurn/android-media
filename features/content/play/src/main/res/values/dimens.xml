@@ -11,6 +11,7 @@
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_64">64dp</dimen>
 
@@ -66,6 +67,7 @@
     <dimen name="play_product_featured_image_height">90dp</dimen>
     <dimen name="play_product_featured_placeholder_height">128dp</dimen>
     <dimen name="play_product_grid_more_action_size">32dp</dimen>
+    <dimen name="play_product_section_divider">20dp</dimen>
 
     <dimen name="play_pinned_voucher_radius">8dp</dimen>
     <dimen name="play_pinned_placeholder_radius">4dp</dimen>
@@ -132,4 +134,5 @@
     <dimen name="play_product_item_image_size">104dp</dimen>
     <dimen name="play_line_spacing_4">4sp</dimen>
     <dimen name="play_voucher_info_translationY">-2dp</dimen>
+    <dimen name="play_product_empty_illustration_size">275dp</dimen>
 </resources>

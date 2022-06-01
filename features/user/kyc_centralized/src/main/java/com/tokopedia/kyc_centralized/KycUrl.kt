@@ -24,6 +24,8 @@ object KycUrl {
     const val KYC_BENEFIT_SHIELD = "https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png"
     const val KYC_BENEFIT_CART = "https://images.tokopedia.net/img/android/user/kyc_centralized/kyc_benefit_cart.png"
 
+    const val KYC_TYPE_KTP_WITH_SELFIE = "ktpWithSelfie"
+
     fun getKYCBaseUrl(): String {
         return when (TokopediaUrl.getInstance().TYPE) {
             Env.STAGING -> KYC_BASE_URL_STAGING

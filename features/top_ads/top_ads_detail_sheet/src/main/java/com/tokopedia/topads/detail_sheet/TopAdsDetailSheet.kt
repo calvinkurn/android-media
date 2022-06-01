@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Switch
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +25,13 @@ import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_pdp_bottom_sheet_single_ad.*
 import javax.inject.Inject
 
 /**
@@ -34,11 +41,31 @@ import javax.inject.Inject
 const val CLICK_TOGGLE_ADS = "click-toggle ads"
 const val CLICK_ATUR_IKLAN = "click - Atur Iklan"
 const val CLICK_LIHAT_DASHBOARD_TOPADS = "click - Lihat Dashboard TopAds"
+
 class TopAdsDetailSheet : BottomSheetUnify() {
+
+    private var imgProduct: ImageUnify? = null
+    private var txtTitleProduct: Typography? = null
+    private var txtBudget: Typography? = null
+    private var btnSwitch: SwitchUnify? = null
+    private var tickerInfo: Ticker? = null
+    private var autoadsWidget: AutoAdsWidgetCommon? = null
+    private var adInfo: CardView? = null
+    private var tampilCount: Typography? = null
+    private var pengeluaranCount: Typography? = null
+    private var klikCount: Typography? = null
+    private var pendapatanCount: Typography? = null
+    private var persentaseKlikCount: Typography? = null
+    private var produkTerjualCount: Typography? = null
+    private var createAd: Typography? = null
+    private var singleAd: CardUnify? = null
+    private var createGroupLayout: ConstraintLayout? = null
+    private var desc: Typography? = null
+    private var editAd: UnifyButton? = null
 
     private var groupId: String = "0"
     private val autoAdsWidget: AutoAdsWidgetCommon?
-        get() = autoads_widget
+        get() = autoadsWidget
     private var adId: String = "0"
     private var category: Int = 0
     private var adType: String = "1"
@@ -61,7 +88,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         context?.let {
             getComponent(it).inject(this)
         }
-        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
+        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory)
+            .get(TopAdsSheetViewModel::class.java)
         setFragment()
         viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             currentAutoAdsStatus = it.status
@@ -82,23 +110,39 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         val childView = View.inflate(context, R.layout.topads_pdp_bottom_sheet_single_ad, null)
         setChild(childView)
+        initView(childView)
         showCloseIcon = false
         setTitle(getString(R.string.detail_iklan))
     }
 
-    private fun onSuccessPost(action: String) {
-        btn_switch?.isChecked = action == ACTION_ACTIVATE
+    private fun initView(childView: View) {
+        imgProduct = childView.findViewById(R.id.imgProduct)
+        txtTitleProduct = childView.findViewById(R.id.txtTitleProduct)
+        txtBudget = childView.findViewById(R.id.txtBudget)
+        btnSwitch = childView.findViewById(R.id.btn_switch)
+        tickerInfo = childView.findViewById(R.id.tickerInfo)
+        autoadsWidget = childView.findViewById(R.id.autoads_widget)
+        adInfo = childView.findViewById(R.id.adInfo)
+        tampilCount = childView.findViewById(R.id.tampil_count)
+        pengeluaranCount = childView.findViewById(R.id.pengeluaran_count)
+        klikCount = childView.findViewById(R.id.klik_count)
+        pendapatanCount = childView.findViewById(R.id.pendapatan_count)
+        persentaseKlikCount = childView.findViewById(R.id.persentase_klik_count)
+        produkTerjualCount = childView.findViewById(R.id.produk_terjual_count)
+        createAd = childView.findViewById(R.id.createAd)
+        singleAd = childView.findViewById(R.id.singleAd)
+        createGroupLayout = childView.findViewById(R.id.createGroupLayout)
+        desc = childView.findViewById(R.id.desc)
+        editAd = childView.findViewById(R.id.editAd)
     }
 
-    fun show(
-            fragmentManager: FragmentManager,
-            adTye: String,
-            adId: String,
-            categoryType: Int
-    ) {
+    private fun onSuccessPost(action: String) {
+        btnSwitch?.isChecked = action == ACTION_ACTIVATE
+    }
 
-        if(adId.isNotEmpty())
-        this.adId = adId
+    fun show(fragmentManager: FragmentManager, adTye: String, adId: String, categoryType: Int, ) {
+        if (adId.isNotEmpty())
+            this.adId = adId
         this.adType = adTye
         this.category = categoryType
 
@@ -118,72 +162,92 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 imgProduct?.visibility = View.GONE
                 txtTitleProduct?.visibility = View.GONE
                 txtBudget?.visibility = View.GONE
-                btn_switch?.visibility = View.GONE
+                btnSwitch?.visibility = View.GONE
                 autoAdsWidget?.loadData(LOAD_DATA_SHEET)
                 autoAdsWidget?.visibility = View.VISIBLE
             }
         }
 
-        editAd.setOnClickListener {
+        editAd?.setOnClickListener {
             if (category == TYPE_MANUAL) {
                 if (groupId == SINGLE_AD) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, SINGLE_USER_ADS)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        SINGLE_USER_ADS)
+                    val intent = RouteManager.getIntent(context,
+                        ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
                         putExtra(GROUPID, adId)
                     }
                     startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, GROUP_USER_ADS)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                        putExtra(GROUPID, groupId)
-                    }
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        GROUP_USER_ADS)
+                    val intent =
+                        RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)
+                            ?.apply {
+                                putExtra(GROUPID, groupId)
+                            }
                     startActivity(intent)
                 }
 
             } else if (category == TYPE_AUTO) {
                 if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, PRODUCT_ADVERTISED)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        PRODUCT_ADVERTISED)
+                    val intent = RouteManager.getIntent(context,
+                        ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
                     startActivity(intent)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_NOT_ADVERTISED)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        PRODUCT_NOT_ADVERTISED)
                     RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
                 }
             }
         }
 
-        btn_switch?.setOnClickListener {
+        btnSwitch?.setOnClickListener {
             if ((it as Switch).isChecked) {
                 sendToggleEvent(TOGGLE_BUTTON_ON)
                 viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
-                        listOf(adId), resources, null)
+                    listOf(adId), null)
             } else {
                 sendToggleEvent(TOGGLE_BUTTON_OFF)
                 viewModel.setProductAction(::onSuccessPost, ACTION_DEACTIVATE,
-                        listOf(adId), resources, null)
+                    listOf(adId), null)
             }
 
         }
 
         createAd?.setOnClickListener {
-            if(category == TYPE_MANUAL) {
+            if (category == TYPE_MANUAL) {
                 if (groupId == SINGLE_AD) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, SINGLE_USER_ADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        SINGLE_USER_ADS)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, GROUP_USER_ADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        GROUP_USER_ADS)
                 }
-            } else if(category == TYPE_AUTO && adId.toInt() > 0){
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_ADVERTISED)
+            } else if (category == TYPE_AUTO && adId.toInt() > 0) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                    CLICK_LIHAT_DASHBOARD_TOPADS,
+                    PRODUCT_ADVERTISED)
             }
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
     }
 
     private fun sendToggleEvent(state: String) {
-        if(groupId == SINGLE_AD)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$SINGLE_USER_ADS")
+        if (groupId == SINGLE_AD)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS,
+                "$state-$SINGLE_USER_ADS")
         else
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$GROUP_USER_ADS")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS,
+                "$state-$GROUP_USER_ADS")
     }
 
     private fun isInProgress(): Boolean {
@@ -194,17 +258,19 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private fun onSuccessGroupId(data: List<SingleAd>) {
         data.firstOrNull().let {
             groupId = it?.groupID ?: SINGLE_AD
-            btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
+            btnSwitch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
         viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
-            singleAd.visibility = View.VISIBLE
-            txtBudget.visibility = View.GONE
-            createGroupLayout.setOnClickListener {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc.text}", "")
-                val intent =  RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+            singleAd?.visibility = View.VISIBLE
+            txtBudget?.visibility = View.GONE
+            createGroupLayout?.setOnClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc?.text}",
+                    "")
+                val intent =
+                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP, true)
                 startActivity(intent)
             }
         }
@@ -214,8 +280,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         data.forEachIndexed { index, it ->
             if (it.adId.toString() == adId) {
                 ImageHandler.LoadImage(imgProduct, data[index].productImageUri)
-                txtTitleProduct.text = data[index].productName
-                pendapatan_count.text = data[index].statTotalGrossProfit
+                txtTitleProduct?.text = data[index].productName
+                pendapatanCount?.text = data[index].statTotalGrossProfit
                 return@forEachIndexed
             }
         }
@@ -223,11 +289,11 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     private fun onsuccessProductStats(data: List<WithoutGroupDataItem>) {
         data.firstOrNull().let {
-            tampil_count.text = it?.statTotalImpression
-            klik_count.text = it?.statTotalClick
-            persentase_klik_count.text = it?.statTotalCtr
-            pengeluaran_count.text = it?.statTotalSpent
-            produk_terjual_count.text = it?.statTotalConversion
+            tampilCount?.text = it?.statTotalImpression
+            klikCount?.text = it?.statTotalClick
+            persentaseKlikCount?.text = it?.statTotalCtr
+            pengeluaranCount?.text = it?.statTotalSpent
+            produkTerjualCount?.text = it?.statTotalConversion
         }
     }
 
@@ -235,7 +301,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         private const val ACTION_ACTIVATE = "toggle_on"
         private const val ACTION_DEACTIVATE = "toggle_off"
         private const val TOGGLE_BUTTON_ON = "ON"
-        private const val TOGGLE_BUTTON_OFF= "OFF"
+        private const val TOGGLE_BUTTON_OFF = "OFF"
         private const val GROUPID = "groupId"
         private const val STATUS_ACTIVE = "1"
         private const val STATUS_TIDAK_TAMPIL = "2"

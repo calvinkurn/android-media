@@ -13,6 +13,7 @@
     "data": {
       "isQuerySafe": true,
       "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "backendFilters": "fcity=123,234#456&official=true",
       "redirection": {
         "redirectApplink": ""
       },

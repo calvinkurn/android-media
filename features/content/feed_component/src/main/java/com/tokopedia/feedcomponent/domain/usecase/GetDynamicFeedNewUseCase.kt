@@ -1,9 +1,12 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
+import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
 import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapper
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -407,10 +410,13 @@ val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
-class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
+    var context: Context? = null
+
     init {
+        this.context = context
         setTypeClass(FeedXData::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
@@ -433,7 +439,8 @@ class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRep
             DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId)
         val dynamicFeedResponse = executeOnBackground()
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor)
+        val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
+        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
     }
 
 }

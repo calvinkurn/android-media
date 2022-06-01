@@ -79,8 +79,8 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         maxSelectedItems = max
     }
 
-    fun getItem(position: Int): VariantDetail {
-        return items[position]
+    fun getItem(position: Int): VariantDetail? {
+        return items.getOrNull(position)
     }
 
     fun getItems(): List<VariantDetail> = items

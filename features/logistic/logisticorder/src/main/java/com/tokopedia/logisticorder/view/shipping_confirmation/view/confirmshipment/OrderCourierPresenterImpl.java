@@ -2,7 +2,7 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipm
 
 import android.content.Context;
 
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;

@@ -4,7 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class CheckoutResponse(
         @SerializedName("data")
-        val data: CheckoutDataResponse = CheckoutDataResponse(),
-        @SerializedName("error_reporter")
-        val errorReporter: ErrorReporterResponse = ErrorReporterResponse()
+        val data: CheckoutDataResponse = CheckoutDataResponse()
 )

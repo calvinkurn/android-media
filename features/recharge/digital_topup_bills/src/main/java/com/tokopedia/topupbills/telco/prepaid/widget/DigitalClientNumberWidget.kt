@@ -13,12 +13,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,6 +28,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
@@ -43,7 +44,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
     protected val sortFilterChip: SortFilter
-    protected val sortFilterChipShimmer: LoaderTextView
+    protected val sortFilterChipShimmer: LoaderUnify
 
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
@@ -242,11 +243,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(formatPrefixClientNumber(inputNumber))
+        inputNumberField.editText.setText(
+            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(inputNumberField.editText.text.toString())
+        return CommonTopupBillsUtil.formatPrefixClientNumber(inputNumberField.editText.text.toString())
     }
 
     fun setContactName(contactName: String) {
@@ -286,6 +288,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             context,
             com.tokopedia.common.topupbills.R.layout.item_topup_bills_autocomplete_number,
             mutableListOf(),
+            context.getString(com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return inputNumberField.editText.text.toString()
@@ -308,33 +311,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         } else {
             context.getString(R.string.digital_client_label)
         }
-    }
-
-    private fun validatePrefixClientNumber(phoneNumber: String): String {
-        var phoneNumber = phoneNumber
-        if (phoneNumber.startsWith("62")) {
-            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
-        }
-        if (phoneNumber.startsWith("+62")) {
-            phoneNumber = phoneNumber.replace("+62", "0")
-        }
-        phoneNumber = phoneNumber.replace(".", "")
-
-        return phoneNumber.replace("[^0-9]+".toRegex(), "")
-    }
-
-    private fun formatPrefixClientNumber(phoneNumber: String?): String {
-        phoneNumber?.run {
-            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
-                return phoneNumber
-            }
-            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
-            if (!phoneNumberWithPrefix.startsWith("0")) {
-                phoneNumberWithPrefix = "0$phoneNumber"
-            }
-            return phoneNumberWithPrefix
-        }
-        return ""
     }
 
     fun hideSoftKeyboard() {

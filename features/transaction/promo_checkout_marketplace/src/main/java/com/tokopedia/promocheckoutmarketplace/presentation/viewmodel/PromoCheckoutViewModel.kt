@@ -1036,6 +1036,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 if (it.uiData.currentClashingPromo.isNotEmpty()) {
                     it.uiData.currentClashingPromo.clear()
                     it.uiData.errorMessage = ""
+                    if (it.uiState.isParentEnabled) {
+                        it.uiState.isDisabled = false
+                    }
                 }
                 promoList.add(it)
             }
@@ -1351,6 +1354,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                 } else {
                     promoListItemUiModel.uiData.errorMessage = ""
+                    if (promoListItemUiModel.uiState.isParentEnabled) {
+                        promoListItemUiModel.uiState.isDisabled = false
+                    }
                 }
             }
         }

@@ -11,13 +11,17 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.video_widget.VideoPlayer
+import com.tokopedia.video_widget.VideoPlayerProvider
 
 abstract class ProductItemViewHolder(
         itemView: View,
-        protected val productListener: ProductListener
-) : AbstractViewHolder<ProductItemDataView>(itemView) {
+        protected val productListener: ProductListener,
+) : AbstractViewHolder<ProductItemDataView>(itemView), VideoPlayerProvider {
 
     abstract val productCardView: IProductCardView?
+
+    protected var productCardModel: ProductCardModel? = null
 
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
@@ -39,6 +43,7 @@ abstract class ProductItemViewHolder(
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
+            customVideoURL = customVideoURL
         )
     }
 
@@ -84,4 +89,7 @@ abstract class ProductItemViewHolder(
         productCardView.recycle()
         productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
+
+    override val videoPlayer: VideoPlayer?
+        get() = productCardView?.getVideoPlayerController()
 }

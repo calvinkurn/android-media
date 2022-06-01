@@ -8,7 +8,10 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryJumperBinding
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryJumperChipsBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -29,6 +32,10 @@ class SearchCategoryJumperViewHolder(
     }
 
     private var binding: ItemTokopedianowSearchCategoryJumperBinding? by viewBinding()
+
+    private val divider: View? by lazy {
+        binding?.tokoNowSearchCategoryJumperTopDivider
+    }
 
     private val titleTypography: Typography? by lazy {
         binding?.tokoNowSearchCategoryJumperTitle
@@ -59,6 +66,7 @@ class SearchCategoryJumperViewHolder(
         bindTitle(element)
         bindSeeAllCategory()
         bindItemList(element)
+        addMarginTop(element.serviceType)
     }
 
     private fun bindTitle(element: CategoryJumperDataView) {
@@ -81,6 +89,19 @@ class SearchCategoryJumperViewHolder(
         recyclerView.layoutManager = layoutManager
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecorationIfNotExists(spacingItemDecoration)
+    }
+
+    private fun addMarginTop(serviceType: String) {
+        binding?.apply {
+            if (serviceType == ServiceType.NOW_2H) {
+                divider?.setMargin(
+                    left = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                    top = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                    right = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+                    bottom = root.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                )
+            }
+        }
     }
 
     private fun RecyclerView.addItemDecorationIfNotExists(

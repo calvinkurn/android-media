@@ -4,18 +4,24 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.action.ViewActions.swipeRight
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -28,12 +34,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * @author by furqan on 04/08/2020
  */
-@RunWith(AndroidJUnit4::class)
+
 class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -41,7 +46,10 @@ class FlightHomepageActivityTest {
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule = ActivityTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java, false, false)
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
+
+    @get:Rule
+    var activityRule = ActivityTestRule(FlightHomepageActivity::class.java, false, false)
 
     @Before
     fun setup() {
@@ -91,15 +99,16 @@ class FlightHomepageActivityTest {
     @Test
     fun validateFlightHomepageP1Tracking() {
         Thread.sleep(3000)
+
+        validateFlightHomepageBannerDisplayedAndScrollable()
+
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
 
-        validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
         validateFlightHomepageSearchClick()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
-                hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_P1), hasAllSuccess())
     }
 
     private fun validateFlightHomepageSearchClick() {
@@ -126,8 +135,8 @@ class FlightHomepageActivityTest {
 
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.flightHomepageBanner)).perform(swipeRight())
-            onView(withId(R.id.flightHomepageBanner)).perform(click())
         }
+        onView(withId(R.id.flightHomepageBanner)).perform(click())
     }
 
     private fun getBannerItemCount(): Int {
@@ -150,8 +159,8 @@ class FlightHomepageActivityTest {
         setPassengersClass()
 
         Thread.sleep(1000)
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
-                hasAllSuccess())
+
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ALL), hasAllSuccess())
     }
 
     private fun departureAirport() {
@@ -159,8 +168,10 @@ class FlightHomepageActivityTest {
 
         // click on flight departure airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        Thread.sleep(2000)
 
         // click on Padang, to set Padang as Departure Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Padang, Indonesia")).perform(click())
         Thread.sleep(1000)
     }
@@ -170,9 +181,11 @@ class FlightHomepageActivityTest {
 
         // click on flight arrival airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightDestinationAirport)).perform(click())
-
+        Thread.sleep(2000)
         // click on Palembang, to set Palembang as Arrival Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Palembang, Indonesia")).perform(click())
+
         Thread.sleep(1000)
     }
 
@@ -224,13 +237,14 @@ class FlightHomepageActivityTest {
 
         // click on flight class to open bottom sheet to set passengers class
         onView(withId(R.id.tvFlightClass)).perform(click())
+        Thread.sleep(1000)
 
         // set class, Bisnis
         onView(withId(R.id.radioBisnisClass)).perform(click())
         Thread.sleep(1000)
     }
 
-    fun validateTravelVideoTracking() {
+    private fun validateTravelVideoTracking() {
         Thread.sleep(1000)
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())

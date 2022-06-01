@@ -3,8 +3,7 @@ package com.tokopedia.analyticsdebugger.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 
 /**
  * @author okasurya on 5/14/18.

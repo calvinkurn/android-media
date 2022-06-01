@@ -99,7 +99,7 @@ class SomBottomSheetProductEmpty(
         }
     }
 
-    fun setProducts(listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>) {
+    fun setProducts(listProduct: List<SomDetailOrder.Data.GetSomDetail.Details.Product>) {
         somBottomSheetStockEmptyAdapter.listProduct = listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }

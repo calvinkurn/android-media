@@ -63,6 +63,7 @@ class TokoNowDateFilterFragment: Fragment() {
             dateFilterBottomSheet = DateFilterUnify(this,  childFragmentManager, TAG.orEmpty())
             setupDataFilterOptions(selectedFilter)
             setupCustomDatePicker(selectedFilter)
+            dateFilterBottomSheet?.submitButtonView?.text = getString(R.string.tokopedianow_date_filter_apply_filter_bottomshet)
             dateFilterBottomSheet?.onSubmit = { position, startDate, endDate ->
                 setupSubmittingData(position, startDate, endDate, selectedFilter)
             }

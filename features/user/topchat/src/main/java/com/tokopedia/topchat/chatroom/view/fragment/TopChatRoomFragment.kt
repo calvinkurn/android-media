@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -36,7 +35,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -45,6 +43,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
@@ -56,7 +55,6 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -68,7 +66,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -149,8 +146,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
-
 
 /**
  * @author : Steven 29/11/18
@@ -159,7 +156,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
     SendButtonListener, ImagePickerListener, ChatTemplateListener,
     HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-    InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
+    InvoiceThumbnailListener,
     TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
     StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
     SearchListener, BroadcastSpamHandlerViewHolder.Listener,
@@ -167,7 +164,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener {
+    ReminderTickerViewHolder.Listener, ProductBundlingListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -212,6 +209,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
+    private var seenAttachmentVoucher = HashSet<String>()
+    private var seenAttachmentProductBundling = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -229,7 +228,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
-    private var commentArea: LinearLayout? = null
+    private var replyBox: ComposeMessageAreaConstraintLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -305,6 +304,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 adapter.setSrwBubbleState(isExpanded)
             }
+
+            override fun shouldShowOnBoarding(): Boolean {
+                return replyBubbleOnBoarding.hasBeenShown()
+            }
         })
     }
 
@@ -355,11 +358,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun collapseSrw() {
-        collapseSrwPreview()
-        adapter.collapseSrwBubble()
-    }
-
-    private fun collapseSrwPreview() {
         rvSrw?.isExpanded = false
     }
 
@@ -395,9 +393,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
-        if (model is SendableProductPreview && hasProductPreviewShown()) {
+        if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
             reloadSrw()
         }
+        viewModel.removeAttachmentPreview(model)
+    }
+
+    override fun reloadCurrentAttachment() {
+        viewModel.reloadCurrentAttachment()
     }
 
     override fun removeSrwBubble() {
@@ -410,7 +413,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
-                rvSrw?.isAllowToShow() == true ||
+                rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
                 (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
     }
 
@@ -434,7 +437,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
-        commentArea = view?.findViewById(R.id.add_comment_area)
+        replyBox = view?.findViewById(R.id.reply_box)
     }
 
     private fun initStickerView() {
@@ -442,7 +445,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu?.setVisibilityListener(object : ChatMenuView.VisibilityListener {
             override fun onShow() {
                 collapseSrw()
-                adapter.collapseSrwBubble()
             }
 
             override fun onHide() {
@@ -454,6 +456,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.updateMessageId(messageId)
         setupBackground()
         setupViewState()
         setupArguments(savedInstanceState)
@@ -676,11 +679,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onSuccessGetMessageId(messageId: String) {
         this.messageId = messageId
+        viewModel.updateMessageId(messageId)
         loadInitialData()
         if (chatRoomFlexModeListener?.isFlexMode() == true) {
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
         reloadSrw()
+        viewModel.loadPendingProductPreview()
     }
 
     private fun onSuccessGetExistingChatFirstTime(
@@ -737,6 +742,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun reloadSrw() {
         if (!isSeller() && messageId.isNotBlank() &&
             topchatViewState?.hasProductPreviewShown() == true
+                && viewModel.isAttachmentPreviewReady()
         ) {
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
@@ -757,7 +763,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, commentArea, context
+                rv, adapter, replyBox, context
             )
         }
     }
@@ -1104,8 +1110,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendAttachmentPreviews(message: String? = null) {
-        val composedMsg = getComposedMessage(message)
-        viewModel.sendAttachments(composedMsg)
+        if (viewModel.isAttachmentPreviewReady()) {
+            val composedMsg = getComposedMessage(message)
+            viewModel.sendAttachments(composedMsg)
+        }
     }
 
     private fun sendComposedMsg() {
@@ -1442,10 +1450,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val resultProducts: ArrayList<ResultProduct>? = data.getParcelableArrayListExtra(
             TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
         )
-        resultProducts?.let {
-            viewModel.initProductPreviewFromAttachProduct(it)
+        resultProducts?.let { products ->
             removeSrwBubble()
+            removeSrwPreview()
+            val productIds = products.map { it.productId }
+            viewModel.loadProductPreview(productIds)
         }
+    }
+
+    private fun removeSrwPreview() {
+        rvSrw?.hideSrw()
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
@@ -1687,12 +1701,45 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherClicked(data: MerchantVoucherViewModel) {
-        analytics.eventVoucherThumbnailClicked()
+    override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
+        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (data.isLockToProduct()) {
+            goToMvcPage(data.applink)
+        } else {
+            goToMerchantVoucherDetail(data)
+        }
+    }
+
+    override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
+        if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
+            TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
+        }
+    }
+
+    private fun goToMvcPage(applink: String) {
+        //If seller in MA, show toaster
+        if(!GlobalConfig.isSellerApp() && isSeller()) {
+            view?.let {
+                val text = getStringResource(R.string.topchat_mvc_not_available)
+                Toaster.build(it, text).show()
+            }
+        //If applink is empty or wrong applink in sellerapp, return
+        } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
+            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)) {
+            return
+        } else {
+            context?.let {
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun goToMerchantVoucherDetail(data: TopChatVoucherUiModel) {
         activity?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(
-                it, data.voucherId,
-                data, shopId.toString()
+                it, data.voucher.voucherId,
+                data.voucher, shopId.toString()
             )
             startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
         }
@@ -1782,13 +1829,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun clearAttachmentPreviews() {
-        topchatViewState?.clearAttachmentPreview()
+        if (viewModel.isAttachmentPreviewReady()) {
+            topchatViewState?.clearAttachmentPreview()
+            viewModel.clearAttachmentPreview()
+        }
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
         if (attachment is InvoicePreviewUiModel) {
             analytics.invoiceAttachmentSent(attachment)
-        } else if (attachment is SendableProductPreview) {
+        } else if (attachment is TopchatProductAttachmentPreviewUiModel) {
             analytics.trackSendProductAttachment()
         }
     }
@@ -1927,10 +1977,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
             }
         })
-    }
-
-    override fun trackClickQuotation(msg: QuotationUiModel) {
-        analytics.eventClickQuotation(msg)
     }
 
     override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {
@@ -2091,18 +2137,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initProductPreview(savedInstanceState: Bundle?) {
-        val stringProductPreviews =
+        val stringProductIds =
             getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
-        if (stringProductPreviews.isEmpty()) return
-        val listType = object : TypeToken<List<ProductPreview>>() {}.type
-        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
-            stringProductPreviews,
+        if (stringProductIds.isEmpty()) return
+        val listType = object : TypeToken<List<String>>() {}.type
+        val productIds = CommonUtil.fromJson<List<String>>(
+            stringProductIds,
             listType
         )
-        for (productPreview in productPreviews) {
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            viewModel.addAttachmentPreview(sendAbleProductPreview)
+        if (productIds.isNotEmpty()) {
+            viewModel.loadProductPreview(productIds)
         }
     }
 
@@ -2249,7 +2293,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun trackClickSrwBubbleQuestion(
         products: List<SendablePreview>, question: QuestionUiModel
     ) {
-        val productIds = products.filterIsInstance<SendableProductPreview>()
+        val productIds = products.filterIsInstance<TopchatProductAttachmentPreviewUiModel>()
             .map { it.productId }
         val trackProductIds = productIds.joinToString(separator = ", ")
         analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
@@ -2290,6 +2334,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addSrwBubble() {
+        expandSrwPreview()
         val srwState = rvSrw?.getStateInfo()
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
@@ -2513,6 +2558,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.chatAttachments.observe(viewLifecycleOwner, {
             updateAttachmentsView(it)
+            updateAttachmentsPreview(it)
         })
 
         viewModel.chatListGroupSticker.observe(viewLifecycleOwner, {
@@ -2651,6 +2697,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
+    private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
+        val previousReadyState = viewModel.isAttachmentPreviewReady()
+        topchatViewState?.updateProductPreviews(products)
+        val afterReadyState = viewModel.isAttachmentPreviewReady()
+        if (!previousReadyState && afterReadyState) {
+            reloadSrw()
+        }
+    }
+
     override fun onDestroyView() {
         viewModel.newMsg.removeObserver(newMsgObserver)
         viewModel.removeSrwBubble.removeObserver(srwRemovalObserver)
@@ -2662,7 +2717,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun uploadImage(image: ImageUploadServiceModel) {
+    protected open fun uploadImage(image: ImageUploadServiceModel) {
         context?.applicationContext?.let {
             UploadImageChatService.enqueueWork(
                 it, image, viewModel.roomMetaData.msgId
@@ -2859,6 +2914,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivity(intent)
     }
 
+    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
+        TopChatAnalyticsKt.eventClickProductBundlingCta(
+            element.productBundling.bundleItem?.first()?.productId?: "",
+            element.productBundling.bundleId?: ""
+        )
+        if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it,
+                    element.productBundling.ctaBundling?.buttonAndroidLink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
+        if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
+            TopChatAnalyticsKt.eventViewProductBundling(
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
+            )
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -2878,10 +2956,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_UPDATE_STOCK = 120
 
         private const val ELLIPSIZE_MAX_CHAR = 20
-        private const val SECOND_DIVIDER = 1000
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
+
+        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

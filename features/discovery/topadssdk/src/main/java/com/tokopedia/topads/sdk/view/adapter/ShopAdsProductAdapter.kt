@@ -34,6 +34,8 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
         private val shopProductReviews = itemView.findViewById<LinearLayout>(R.id.shopProductReviews)
         private val reviewCount = itemView.findViewById<Typography>(R.id.reviewCount)
         private val shopProductRoot = itemView.findViewById<CardView>(R.id.shopProductRoot)
+        private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
+        private val locationName = itemView.findViewById<Typography>(R.id.locationName)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
@@ -42,7 +44,7 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
             productShopName.text = shopProductModelItem.shopName
-            setRating(shopProductModelItem.ratingAverage, shopProductModelItem.ratingCount)
+            setLocation(shopProductModelItem.location)
             shopProductModelItem.impressHolder?.let { impressHolder ->
                 shopProductRoot.addOnImpressionListener(impressHolder) {
                     shopAdsProductListener.onItemImpressed(shopProductModelItem.position)
@@ -51,6 +53,14 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
 
             shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
 
+        }
+
+        private fun setLocation(location: String) {
+            if (location.isNotEmpty()) {
+                locationIcon.show()
+                locationName.text = location
+                locationName.show()
+            }
         }
 
         private fun setRating(rating: String, countReview: String) {

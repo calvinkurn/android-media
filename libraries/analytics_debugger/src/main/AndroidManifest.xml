@@ -20,7 +20,7 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".cassava.validator.MainValidatorActivity"
+            android:name=".cassava.ui.MainValidatorActivity"
             android:label="Analytics Validator"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
@@ -32,7 +32,7 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".cassava.debugger.AnalyticsDebuggerActivity"
+            android:name="com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerActivity"
             android:label="Analytics Debugger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
@@ -18,6 +19,10 @@ data class ShipmentAddressFormDataResponse(
         val keroDiscomToken: String = "",
         @SerializedName("kero_unix_time")
         val keroUnixTime: Int = 0,
+        @SerializedName("pop_up")
+        val popup: PopUp = PopUp( ),
+        @SerializedName("add_on_wording")
+        val addOnWording: AddOnWording = AddOnWording( ),
         @SerializedName("donation")
         val donation: Donation = Donation(),
         @SerializedName("cod")

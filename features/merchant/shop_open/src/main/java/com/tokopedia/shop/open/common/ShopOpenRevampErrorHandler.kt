@@ -3,7 +3,6 @@ package com.tokopedia.shop.open.common
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.shop.open.BuildConfig
 
 /**
  * @author by milhamj on 21/04/20.

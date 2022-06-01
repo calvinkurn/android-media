@@ -19,6 +19,7 @@ internal object QueryDynamicChannel {
             "          category_persona\n" +
             "          name\n" +
             "          layout\n" +
+            "          campaignType\n" +
             "          type\n" +
             "          pageName\n" +
             "          showPromoBadge\n" +
@@ -55,6 +56,7 @@ internal object QueryDynamicChannel {
             "             id\n" +
             "             back_color\n" +
             "             name\n" +
+            "             expiredTime\n" +
             "             url\n" +
             "             applink\n" +
             "             price\n" +
@@ -79,7 +81,11 @@ internal object QueryDynamicChannel {
             "              recommendationType\n" +
             "              shop{\n" +
             "                shopID\n" +
+            "                name\n" +
             "                city\n" +
+            "                imageUrl\n" +
+            "                url\n" +
+            "                applink\n" +
             "               }\n" +
             "              labelGroup {\n" +
             "                title\n" +

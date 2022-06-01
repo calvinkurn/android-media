@@ -125,16 +125,19 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       content_id
                       like_type
                     }
-                    pinned_product_config{
-                      pin_title
-                      bottom_sheet_title
-                    }
                     room_background{
                       image_url
                     }
                     multiple_like{
                       icon
                       background_color
+                    }
+                    has_follow_button
+                    empty_bottom_sheet{
+                        copy_text_header
+                        copy_text_body
+                        copy_text_redirect_button
+                        image_url
                     }
                   }
                   app_link
