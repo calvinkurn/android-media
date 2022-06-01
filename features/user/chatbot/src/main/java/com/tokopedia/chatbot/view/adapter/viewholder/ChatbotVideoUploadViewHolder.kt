@@ -155,7 +155,7 @@ class ChatbotVideoUploadViewHolder(
                     .load(placeHolder)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_video_placeholder)
+                    .placeholder(R.drawable.chatbot_video_placeholder)
                     .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(imageview)
             }
@@ -164,7 +164,7 @@ class ChatbotVideoUploadViewHolder(
                 imageview.setImageDrawable(
                     ContextCompat.getDrawable(
                         imageview.context,
-                        com.tokopedia.resources.common.R.drawable.chatbot_video_placeholder
+                        R.drawable.chatbot_video_placeholder
                     )
                 )
             }
@@ -179,7 +179,7 @@ class ChatbotVideoUploadViewHolder(
                     .load(videoUrl)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_video_placeholder)
+                    .placeholder(R.drawable.chatbot_video_placeholder)
                     .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(imageview)
             }
@@ -188,7 +188,7 @@ class ChatbotVideoUploadViewHolder(
                 imageview.setImageDrawable(
                     ContextCompat.getDrawable(
                         imageview.context,
-                        com.tokopedia.resources.common.R.drawable.chatbot_video_placeholder
+                        R.drawable.chatbot_video_placeholder
                     )
                 )
             }

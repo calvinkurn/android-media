@@ -281,21 +281,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return ""
     }
 
-    lateinit var textWatcher : TextWatcher
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        val bundle = this.arguments
-        if (bundle != null) {
-            val intentData = bundle.getString(DEEP_LINK_URI, "")
-            var uri: Uri = Uri.parse(intentData)
-
-            isAttached = checkForIsAttachedInvoice(uri)
-            hashMap = presenter.getValuesForArticleEntry(uri)
-            isArticleEntry = checkForArticleEntry(uri)
-
-        }
-
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
@@ -316,175 +302,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     //    videoPicker = view.findViewById(R.id.video_picker)
         attachmentRecyclerView = view.findViewById(R.id.rv_attachment_menu)
      //   attachmentRecyclerView.show()
+     //   mediaPickerContainer = view.findViewById(R.id.media_picker_layout)
+    //    imagePicker = view.findViewById(R.id.image_picker)
+    //    videoPicker = view.findViewById(R.id.video_picker)
+        attachmentRecyclerView = view.findViewById(R.id.rv_attachment_menu)
+     //   attachmentRecyclerView.show()
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
         return view
     }
-
-    private fun checkForArticleEntry(uri: Uri): Boolean {
-        if (uri.getQueryParameter(USED_BY) != null && uri.getQueryParameter(USED_BY) == ARTICLE_ENTRY) {
-            return true
-        }
-        return false
-    }
-
-    private fun checkForIsAttachedInvoice(uri: Uri): Boolean {
-        if (uri.getQueryParameter(IS_ATTACHED) != null) {
-            return uri.getQueryParameter(IS_ATTACHED) != FALSE
-        }
-        return false
-    }
-
-    override fun sendInvoiceForArticle() {
-        if (isArticleEntry) {
-            if (!isAttached) {
-
-                if (hashMap.get(CODE)?.isNotEmpty() == true) {
-                    val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
-                    var invoice: InvoiceLinkPojo =
-                        AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
-                            attachInvoiceSingleViewModel
-                        )
-                    val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
-                    getViewState()?.onShowInvoiceToChat(generatedInvoice)
-                    presenter.sendInvoiceAttachment(
-                        messageId, invoice, generatedInvoice.startTime,
-                        opponentId, isArticleEntry,hashMap.get(USED_BY).toBlankOrString()
-                    )
-                }
-                if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
-                    val startTime = SendableUiModel.generateStartTime()
-                    val msg = hashMap.get(ARTICLE_TITLE).toBlankOrString()
-                    var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
-
-                    presenter.sendQuickReplyInvoice(
-                        messageId,
-                        quickReplyViewModel,
-                        startTime,
-                        opponentId,
-                        hashMap.get(EVENT).toBlankOrString(),
-                        hashMap.get(USED_BY).toBlankOrString()
-                    )
-                }
-                enableTyping()
-            } else {
-
-                isSendButtonActivated = false
-                isFloatingSendButton = true
-                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-
-                invoiceLabel.text = hashMap.get(STATUS).toBlankOrString()
-                val labelType = getLabelType(hashMap.get(STATUS_ID).toIntOrZero())
-                invoiceLabel?.setLabelType(labelType)
-
-
-                invoiceName.setText(hashMap.get(CODE).toBlankOrString())
-                if (hashMap.get(IMAGE_URL)?.isNotEmpty() == true)
-                    ImageHandler.loadImage(
-                        context,
-                        invoiceImage,
-                        hashMap.get(IMAGE_URL)!!.toBlankOrString(),
-                        R.drawable.ic_retry_image_send
-                    )
-                invoiceCancel.setOnClickListener {
-                    float_chat_item.visibility = View.GONE
-                    isAttached = false
-                    isFloatingInvoiceCancelled = true
-                }
-                if (isFloatingSendButton) {
-
-                    textWatcher = object : TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (replyEditText.text.toString().isEmpty()) {
-                                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-                                isSendButtonActivated = false
-                            }
-                        }
-
-                        override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                        ) {
-
-                        }
-
-                        override fun onTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            before: Int,
-                            count: Int
-                        ) {
-                            if (replyEditText.text.toString().isNotEmpty()) {
-                                sendButton.setImageResource(R.drawable.ic_chatbot_send)
-                                isSendButtonActivated = true
-                            }
-                        }
-                    }
-                    replyEditText.addTextChangedListener(textWatcher)
-
-                }
-
-                float_chat_item.show()
-
-            }
-        }
-
-    }
-
-    private fun onSendFloatingInvoiceClicked() {
-
-        float_chat_item.hide()
-        isSendButtonActivated = true
-        sendButton.setImageResource(R.drawable.ic_chatbot_send)
-        replyEditText.removeTextChangedListener(textWatcher)
-
-        if(!isFloatingInvoiceCancelled) {
-
-            val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
-            var invoice: InvoiceLinkPojo =
-                AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
-                    attachInvoiceSingleViewModel
-                )
-            val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
-            getViewState()?.onShowInvoiceToChat(generatedInvoice)
-            presenter.sendInvoiceAttachment(
-                messageId, invoice, generatedInvoice.startTime,
-                opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
-            )
-        }
-
-        val startTime = SendableUiModel.generateStartTime()
-        val msg = replyEditText.text.toString()
-        var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
-
-        presenter.sendQuickReplyInvoice(
-            messageId,
-            quickReplyViewModel,
-            startTime,
-            opponentId,
-            hashMap.get(EVENT).toString(),
-            hashMap.get(USED_BY).toString()
-        )
-        emptyReplyEditText()
-        isFloatingSendButton = false
-    }
-
-    private fun emptyReplyEditText(){
-        replyEditText.setText("")
-    }
-
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
-        }
-    }
-
 
     private fun setChatBackground() {
         activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
@@ -891,7 +718,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.showRetryUploadImages(image, true)
     }
 
-    //Test here
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)

@@ -147,6 +147,9 @@ interface ChatbotContract {
             context: Context?
         )
 
+        fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
+
+        fun getValuesForArticleEntry(uri: Uri): Map<String, String>
         fun checkVideoUploadEligibility(
             msgId: String,
             isEligible: (Boolean) -> Unit,
@@ -167,8 +170,5 @@ interface ChatbotContract {
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 
         fun cancelVideoUpload(file: String, sourceId: String)
-        fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
-
-        fun getValuesForArticleEntry(uri: Uri): Map<String, String>
     }
 }
