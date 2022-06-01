@@ -10,6 +10,7 @@ import com.tokopedia.shop.flash_sale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flash_sale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flash_sale.domain.usecase.MerchantCampaignBannerGeneratorDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +22,8 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
-    private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase
+    private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
+    private val merchantCampaignBannerGeneratorDataUseCase: MerchantCampaignBannerGeneratorDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
 
@@ -41,6 +43,11 @@ class CampaignListViewModel @Inject constructor(
     private val _campaignDrafts = MutableLiveData<Result<CampaignMeta>>()
     val campaignDrafts: LiveData<Result<CampaignMeta>>
         get() = _campaignDrafts
+
+    private val _campaignBanner = MutableLiveData<Result<CampaignBanner>>()
+    val campaignBanner: LiveData<Result<CampaignBanner>>
+        get() = _campaignBanner
+
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -120,6 +127,21 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun getCampaignBanner(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param =MerchantCampaignBannerGeneratorDataUseCase.Param(campaignId)
+                val attribute = merchantCampaignBannerGeneratorDataUseCase.execute(param)
+                _campaignBanner.postValue(Success(attribute))
+            },
+            onError = { error ->
+                _campaignBanner.postValue(Fail(error))
             }
         )
 

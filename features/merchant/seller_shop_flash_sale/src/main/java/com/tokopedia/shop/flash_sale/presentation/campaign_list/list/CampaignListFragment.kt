@@ -11,6 +11,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
 import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
@@ -20,12 +25,16 @@ import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragme
 import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
+import com.tokopedia.shop.flash_sale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -97,12 +106,16 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     @Inject
     lateinit var dateManager: DateManager
 
+    @Inject
+    lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
+
     private var binding by autoClearedNullable<SsfsFragmentCampaignListBinding>()
     private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
+    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
 
     override fun getScreenName(): String = CampaignListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -128,11 +141,13 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         observeRemainingQuota()
         observeCampaignCreation()
         observeCampaignDrafts()
+        observeCampaignBanner()
         viewModel.getRemainingQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
         viewModel.getCampaignDrafts(
             MAX_DRAFT_COUNT,
             FIRST_PAGE
         )
+        viewModel.getCampaignBanner(754171.toLong())
     }
 
     private fun setupView() {
@@ -251,6 +266,19 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
+    private fun observeCampaignBanner() {
+        viewModel.campaignBanner.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val data = result.data
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
         this.onScrollDown = onScrollDown
     }
@@ -280,11 +308,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
 
     private val onOverflowMenuClicked: (CampaignUiModel) -> Unit = { campaign ->
-        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
-        bottomSheet.setOnItemClickListener { selectedCampaign ->
-
-        }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        displayMoreMenuBottomSheet(campaign)
     }
 
     override fun createAdapter(): CampaignAdapter {
@@ -363,10 +387,8 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         val campaignDrafts = viewModel.getCampaignDrafts()
         if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
             //TODO: Call bottomsheet draft list
-            println()
         } else {
             //TODO: Navigate to info campaign page
-            println()
         }
     }
 
@@ -438,6 +460,72 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
+    private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
+        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
+        bottomSheet.setOnItemClickListener { selectedCampaign ->
 
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayShareBottomSheet() {
+
+        /*shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            ShareComponentInstanceBuilder.Param(),
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    coupon.galadrielVoucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shop.shopDomain
+                )
+            },
+            onCloseOptionClicked = {
+
+            })
+
+
+
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)*/
+    }
+
+    private fun handleShareOptionSelection(
+        shareModel: ShareModel,
+        shopDomain: String,
+        shopName: String,
+        isOngoing: Boolean
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = ""
+                //val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    requireActivity(),
+                    view,
+                    wording
+                )
+                shareComponentBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val linkerShareData = shareComponentInstanceBuilder.generateLinkerInstance(
+            shopDomain,
+            shopName,
+            isOngoing,
+            shareModel
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
 
 }
