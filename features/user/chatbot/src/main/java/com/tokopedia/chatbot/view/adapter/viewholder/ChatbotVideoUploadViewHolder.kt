@@ -212,7 +212,7 @@ class ChatbotVideoUploadViewHolder(
                     .load(getGlideUrl(messageId, attachmentType, url, userSession))
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_video_placeholder)
+                    .placeholder(R.drawable.chatbot_video_placeholder)
                     .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                     .into(imageview)
             }

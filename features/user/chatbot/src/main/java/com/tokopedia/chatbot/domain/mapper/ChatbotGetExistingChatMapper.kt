@@ -74,9 +74,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
-            else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
             ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
-            else -> super.mapAttachment(chatItemPojoByDateByTime)
+            else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
 
