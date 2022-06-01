@@ -1,10 +1,10 @@
 package com.tokopedia.analyticsdebugger.cassava.di
 
 import android.content.Context
-import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerFragment
-import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
-import com.tokopedia.analyticsdebugger.cassava.validator.list.ValidatorListFragment
-import com.tokopedia.analyticsdebugger.cassava.validator.main.MainValidatorFragment
+import com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerFragment
+import com.tokopedia.analyticsdebugger.cassava.ui.MainValidatorActivity
+import com.tokopedia.analyticsdebugger.cassava.ui.list.ValidatorListFragment
+import com.tokopedia.analyticsdebugger.cassava.ui.main.MainValidatorFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

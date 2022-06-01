@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 
 /**
  * @author by furqan on 07/06/2020
@@ -17,7 +17,7 @@ class PlayCoverProductViewHolder(
 
     private val ivThumbnail = itemView.findViewById<ImageView>(R.id.iv_thumbnail)
 
-    fun bind(item: ProductContentUiModel) {
+    fun bind(item: ProductUiModel) {
         ivThumbnail.loadImage(item.imageUrl)
         ivThumbnail.setOnClickListener {
             listener.onProductCoverClicked(item.id, item.imageUrl)

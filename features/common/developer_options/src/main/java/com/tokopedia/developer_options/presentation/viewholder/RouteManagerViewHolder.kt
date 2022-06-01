@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.applink.presentation.activity.AppLinkListActivity
 import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,6 +23,7 @@ class RouteManagerViewHolder(
     override fun bind(element: RouteManagerUiModel?) {
         val btn = itemView.findViewById<UnifyButton>(R.id.route_manager_btn)
         val tf = itemView.findViewById<TextFieldUnify>(R.id.route_manager_tf)
+        val appLinkListBtn = itemView.findViewById<UnifyButton>(R.id.view_applink_list_btn)
         btn.setOnClickListener {
             val routeManagerString = tf.textFieldInput.text.toString()
             itemView.context.apply {
@@ -31,6 +33,9 @@ class RouteManagerViewHolder(
                     RouteManager.route(this, routeManagerString)
                 }
             }
+        }
+        appLinkListBtn.setOnClickListener {
+            itemView.context.startActivity(AppLinkListActivity.newInstance(it.context))
         }
     }
 }

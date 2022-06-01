@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_recommendation_card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/widget_denom_margin"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:typographyType="heading_4" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recharge_recommendation_card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12" />
+
+    <include
+        android:id="@+id/shimmering_recommendation"
+        layout="@layout/view_recharge_recommendation_shimmering"
+        />
+
+</LinearLayout>
+
+

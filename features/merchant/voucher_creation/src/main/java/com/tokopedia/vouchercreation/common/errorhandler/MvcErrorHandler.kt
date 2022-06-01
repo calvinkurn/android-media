@@ -1,12 +1,12 @@
 package com.tokopedia.vouchercreation.common.errorhandler
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.vouchercreation.BuildConfig
+import com.tokopedia.config.GlobalConfig
 
 object MvcErrorHandler {
     fun logToCrashlytics(throwable: Throwable, message: String) {
         try {
-            if (!BuildConfig.DEBUG) {
+            if (!GlobalConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
                 FirebaseCrashlytics.getInstance().recordException(
                         MvcException(

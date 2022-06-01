@@ -14,7 +14,7 @@ data class ProductMiniSocialProofStockDataModel(
         var viewCount: Int = 0,
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
-        var paymentVerifiedCount: Int = 0,
+        var itemSoldFmt: String = "",
         var shouldRenderSocialProof: Boolean = false,
         var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 ) : DynamicPdpDataModel {
@@ -58,7 +58,7 @@ data class ProductMiniSocialProofStockDataModel(
 
     private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
+            itemSoldFmt != "" -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, itemSoldFmt, type)
             wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
             viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
             else -> ProductMiniSocialProofItemDataModel(type = type)

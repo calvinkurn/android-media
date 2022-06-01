@@ -42,8 +42,8 @@ https://phab.tokopedia.com/XXXXX
 - **/check risk** - run risk analysis
 - **/check lint** - run linter checker
 - **/check macrobenchmark** - run macrobenchmark test
-- **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
+- **/check uitest** - run UI instrument test
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 - **/check vector** - run vector drawable optimizer
@@ -82,4 +82,7 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for ut-decrease** - send along with the approval to cast the magic
 *(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1867484824/Unit+Test+Coverage+Decrease+Checker)*
+
+- **approved for darkmode-decrease** - send along with the approval to cast the magic
+*(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1959690974/Dark+Mode+Coverage+Decrease+Checker)*
 

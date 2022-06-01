@@ -2,13 +2,10 @@ package com.tokopedia.buyerorder.recharge.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
+import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -39,6 +36,7 @@ class RechargeOrderDetailViewModelTest {
     private lateinit var viewModel: RechargeOrderDetailViewModel
 
     private val orderDetailUseCase: RechargeOrderDetailUseCase = mockk()
+    private val emoneyVoidUseCase: RechargeEmoneyVoidUseCase = mockk()
     private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase = mockk()
     private val bestSellerMapper: BestSellerMapper = mockk()
     private val recommendationUseCase: DigitalRecommendationUseCase = mockk()
@@ -46,11 +44,12 @@ class RechargeOrderDetailViewModelTest {
     @Before
     fun setUp() {
         viewModel = RechargeOrderDetailViewModel(
-                orderDetailUseCase,
-                getRecommendationUseCaseCoroutine,
-                bestSellerMapper,
-                recommendationUseCase,
-                dispatcher
+            orderDetailUseCase,
+            emoneyVoidUseCase,
+            getRecommendationUseCaseCoroutine,
+            bestSellerMapper,
+            recommendationUseCase,
+            dispatcher
         )
     }
 
@@ -74,7 +73,7 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
         }
@@ -96,9 +95,9 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel("", "", emptyList()))
+            Success(emptyList())
         }
 
         // when
@@ -118,36 +117,14 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel(
-                    "",
-                    "",
-                    listOf(
-                            DigitalRecommendationItemModel(
-                                    categoryName = "dg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                            DigitalRecommendationItemModel(
-                                    categoryName = "pg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                    )
-            ))
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -167,36 +144,14 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(DigitalRecommendationModel(
-                    "",
-                    "",
-                    listOf(
-                            DigitalRecommendationItemModel(
-                                    categoryName = "pg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                            DigitalRecommendationItemModel(
-                                    categoryName = "dg_order_detail",
-                                    iconUrl = "",
-                                    productName = "",
-                                    applink = "",
-                                    tracking = DigitalRecommendationTrackingModel(),
-                                    type = DigitalRecommendationType.CATEGORY,
-                                    price = "",
-                                    beforePrice = "",
-                                    discountTag = ""
-                            ),
-                    )
-            ))
+            Success(
+                listOf(
+                    "pg_order_detail_dgu",
+                    "dg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -227,7 +182,7 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
         }
@@ -241,35 +196,11 @@ class RechargeOrderDetailViewModelTest {
     }
 
     @Test
-    fun getDigitalRecommendationPositionData_whenValueSuccess_shouldReturnRecommendationWidgetModel() {
+    fun getDigitalRecommendationPositionData_whenValueSuccess_shouldReturnListOfString() {
         // given
-        val recommendationWidgetData = DigitalRecommendationModel(
-                "",
-                "",
-                listOf(
-                        DigitalRecommendationItemModel(
-                                categoryName = "dg_order_detail",
-                                iconUrl = "",
-                                productName = "",
-                                applink = "",
-                                tracking = DigitalRecommendationTrackingModel(),
-                                type = DigitalRecommendationType.CATEGORY,
-                                price = "",
-                                beforePrice = "",
-                                discountTag = ""
-                        ),
-                        DigitalRecommendationItemModel(
-                                categoryName = "pg_order_detail",
-                                iconUrl = "",
-                                productName = "",
-                                applink = "",
-                                tracking = DigitalRecommendationTrackingModel(),
-                                type = DigitalRecommendationType.CATEGORY,
-                                price = "",
-                                beforePrice = "",
-                                discountTag = ""
-                        ),
-                )
+        val expectedRecommendationList = listOf(
+            "dg_order_detail_dgu",
+            "pg_order_detail_dgu"
         )
         coEvery {
             orderDetailUseCase.execute(any())
@@ -277,17 +208,17 @@ class RechargeOrderDetailViewModelTest {
             Fail(Throwable())
         }
         coEvery {
-            recommendationUseCase.execute(any(), any(), any())
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
         } coAnswers {
-            Success(recommendationWidgetData)
+            Success(expectedRecommendationList)
         }
 
         // when
         viewModel.fetchData(RechargeOrderDetailRequest("", ""))
-        val digitalRecommendationWidgetData = viewModel.getRecommendationWidgetPositionData()
+        val actualResult = viewModel.getRecommendationWidgetPositionData()
 
         // then
-        assertEquals(digitalRecommendationWidgetData, recommendationWidgetData)
+        assertEquals(expectedRecommendationList, actualResult)
     }
 
     @Test
@@ -314,6 +245,16 @@ class RechargeOrderDetailViewModelTest {
         } coAnswers {
             Fail(Throwable())
         }
+        coEvery {
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
+        } coAnswers {
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
+        }
 
         // when
         viewModel.fetchData(RechargeOrderDetailRequest("", ""))
@@ -327,40 +268,40 @@ class RechargeOrderDetailViewModelTest {
     fun getOrderDetailResultData_whenOrderDetailSuccess_shouldReturnData() {
         // given
         val orderDetailResponse = RechargeOrderDetailModel(
-                topSectionModel = RechargeOrderDetailTopSectionModel(
-                        labelStatusColor = "",
-                        textStatusColor = "",
-                        textStatus = "",
-                        tickerData = RechargeOrderDetailTickerModel(
-                                title = "",
-                                text = "",
-                                urlDetail = "",
-                                type = 0
-                        ),
-                        invoiceRefNum = "",
-                        invoiceUrl = "",
-                        titleData = emptyList()
+            topSectionModel = RechargeOrderDetailTopSectionModel(
+                labelStatusColor = "",
+                textStatusColor = "",
+                textStatus = "",
+                tickerData = RechargeOrderDetailTickerModel(
+                    title = "",
+                    text = "",
+                    urlDetail = "",
+                    type = 0
                 ),
-                detailsSection = RechargeOrderDetailSectionModel(
-                        detailList = emptyList()
+                invoiceRefNum = "",
+                invoiceUrl = "",
+                titleData = emptyList()
+            ),
+            detailsSection = RechargeOrderDetailSectionModel(
+                detailList = emptyList()
+            ),
+            paymentSectionModel = RechargeOrderDetailPaymentModel(
+                paymentMethod = RechargeOrderDetailSimpleModel(
+                    label = "",
+                    detail = "",
+                    isTitleBold = false,
+                    isDetailBold = false,
+                    alignment = RechargeSimpleAlignment.RIGHT
                 ),
-                paymentSectionModel = RechargeOrderDetailPaymentModel(
-                        paymentMethod = RechargeOrderDetailSimpleModel(
-                                label = "",
-                                detail = "",
-                                isTitleBold = false,
-                                isDetailBold = false,
-                                alignment = RechargeSimpleAlignment.RIGHT
-                        ),
-                        paymentDetails = emptyList(),
-                        totalPriceLabel = "",
-                        totalPrice = "",
-                        additionalTicker = null
-                ),
-                helpUrl = "",
-                actionButtonList = RechargeOrderDetailActionButtonListModel(
-                        actionButtons = emptyList()
-                )
+                paymentDetails = emptyList(),
+                totalPriceLabel = "",
+                totalPrice = "",
+                additionalTicker = null
+            ),
+            helpUrl = "",
+            actionButtonList = RechargeOrderDetailActionButtonListModel(
+                actionButtons = emptyList()
+            )
         )
         coEvery {
             orderDetailUseCase.execute(any())
@@ -371,6 +312,16 @@ class RechargeOrderDetailViewModelTest {
             recommendationUseCase.execute(any(), any(), any())
         } coAnswers {
             Fail(Throwable())
+        }
+        coEvery {
+            recommendationUseCase.getRecommendationPosition(any(), any(), any())
+        } coAnswers {
+            Success(
+                listOf(
+                    "dg_order_detail_dgu",
+                    "pg_order_detail_dgu"
+                )
+            )
         }
 
         // when
@@ -413,29 +364,29 @@ class RechargeOrderDetailViewModelTest {
     fun getTopAdsData_whenResponseSuccess_shouldReturnData() {
         // given
         val bestSellerDataModel = BestSellerDataModel(
-                title = "",
-                subtitle = "",
-                height = 0,
-                pageName = "",
-                productCardModelList = emptyList(),
-                recommendationItemList = emptyList(),
-                filterChip = emptyList(),
-                seeMoreAppLink = ""
+            title = "",
+            subtitle = "",
+            height = 0,
+            pageName = "",
+            productCardModelList = emptyList(),
+            recommendationItemList = emptyList(),
+            filterChip = emptyList(),
+            seeMoreAppLink = ""
         )
         coEvery {
             getRecommendationUseCaseCoroutine.getData(any())
         } returns
                 listOf(
-                        RecommendationWidget(
-                                title = "",
-                                subtitle = "",
-                                pageName = "",
-                                recommendationFilterChips = emptyList(),
-                                seeMoreAppLink = "",
-                                recommendationItemList = listOf(
-                                        RecommendationItem()
-                                )
+                    RecommendationWidget(
+                        title = "",
+                        subtitle = "",
+                        pageName = "",
+                        recommendationFilterChips = emptyList(),
+                        seeMoreAppLink = "",
+                        recommendationItemList = listOf(
+                            RecommendationItem()
                         )
+                    )
                 )
         coEvery {
             bestSellerMapper.mappingRecommendationWidget(any())
@@ -447,6 +398,15 @@ class RechargeOrderDetailViewModelTest {
 
         // then
         assertEquals(topAdsData, bestSellerDataModel)
+    }
+
+    @Test
+    fun onResetOrderDetailData() {
+        // when
+        viewModel.resetOrderDetailData()
+
+        // then
+        assert(viewModel.orderDetailData.value == null)
     }
 
 }

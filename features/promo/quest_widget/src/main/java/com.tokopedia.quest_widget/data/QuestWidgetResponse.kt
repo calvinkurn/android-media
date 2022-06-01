@@ -21,7 +21,7 @@ data class QuestWidgetList(
     val resultStatus: ResultStatus? = null,
 
     @SerializedName("questWidgetList")
-    val questWidgetList: List<QuestWidgetListItem>,
+    val questWidgetList: List<QuestWidgetListItem>?,
 
     @SerializedName("isEligible")
     val isEligible: Boolean? = null,

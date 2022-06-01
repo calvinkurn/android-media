@@ -61,6 +61,8 @@ object FlightSearchGQLQuery {
                 childNumeric
                 infantNumeric
               }
+              label1
+              label2
             }
             error {
               id

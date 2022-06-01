@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
@@ -27,6 +27,8 @@ import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogSearchApiConst
@@ -51,7 +53,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -81,11 +85,17 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private lateinit var catalogComponent: CatalogComponent
 
     private var catalogId: String = ""
+    private var catalogName: String = ""
     private var catalogUrl: String = ""
     private var departmentId: String = ""
+    private var categoryId : String = ""
+    private var brand : String = ""
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -96,21 +106,33 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var gcmHandler: GCMHandler
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
+    private var lastDetachedItemPosition : Int = 0
+    private var lastAttachItemPosition : Int = 0
+    private var isUserScrolledList = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
+        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
+        private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
+        private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
         private const val PAGING_ROW_COUNT = 20
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
+        const val MORE_CATALOG_WIDGET_INDEX = 3
+        const val MINIMUM_SCROLL_FOR_ANIMATION = 15
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
             bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
+            bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
+            bundle.putString(ARG_EXTRA_CATALOG_BRAND, catalogBrand)
             fragment.arguments = bundle
             return fragment
         }
@@ -128,7 +150,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         arguments?.let {
             if (it.containsKey(ARG_EXTRA_CATALOG_ID)) {
                 catalogId = it.getString(ARG_EXTRA_CATALOG_ID, "")
+                catalogName = it.getString(ARG_EXTRA_CATALOG_NAME, "")
                 catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
+                categoryId = it.getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
+                brand = it.getString(ARG_EXTRA_CATALOG_BRAND, "")
             }
         }
         initView()
@@ -149,13 +174,24 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
             fetchDynamicFilter(getDynamicFilterParams())
-            viewModel.catalogUrl = catalogUrl
+            saveArgumentsToViewModel()
         }
     }
 
+    private fun saveArgumentsToViewModel(){
+        viewModel.catalogUrl = catalogUrl
+        viewModel.catalogId = catalogId
+        viewModel.catalogName = catalogName
+        viewModel.categoryId = categoryId
+        viewModel.brand = brand
+    }
+
     private fun setUpAdapter() {
-        catalogTypeFactory = CatalogTypeFactoryImpl(this)
-        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
+        activity?.let {
+            catalogTypeFactory = CatalogTypeFactoryImpl(this,
+                viewModel.catalogId,viewModel.categoryId,viewModel.brand, it)
+            productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
+        }
         productNavListAdapter?.changeListView()
         if(viewModel.list.size == 0)
             productNavListAdapter?.addShimmer()
@@ -168,6 +204,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             layoutManager = getLinearLayoutManager()
             setHasFixedSize(true)
             adapter = productNavListAdapter
+            if(viewModel.lastSeenProductPosition != 0){
+                scrollToPosition(viewModel.lastSeenProductPosition)
+            }
         }
     }
 
@@ -178,6 +217,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         loadMoreTriggerListener?.let {
             product_recyclerview.addOnScrollListener(it)
         }
+        product_recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!isUserScrolledList){
+                    if(dy > MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
+                        isUserScrolledList = true
+                    }
+                }
+            }
+        })
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
@@ -274,10 +323,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
 
         })
-
     }
 
-    private fun setHeaderCount(totalProductsCount : String){
+    private fun setHeaderCount(totalProductsCount : Int){
         if(CatalogConstant.ZERO_VALUE == totalProductsCount) {
             headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
             showNoDataScreen(true)
@@ -293,7 +341,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.show()
-            product_recyclerview.hide()
+            product_recyclerview.show()
         } else {
             layout_no_data.hide()
             product_recyclerview.show()
@@ -425,6 +473,50 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
+    override fun onCatalogForYouClick(adapterPosition: Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {
+        CatalogDetailAnalytics.sendPromotionEvent(CatalogDetailAnalytics.EventKeys.EVENT_SELECT_CONTENT,
+            CatalogDetailAnalytics.ActionKeys.CLICK_KATALOG_PILIHAN_UNTUKMU,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            "current catalog-id: $catalogId - click catalog-id: ${catalogComparison.id}",
+            catalogId,
+            adapterPosition,
+            userSession.userId,
+            "${catalogComparison.id}",
+            catalogComparison.name ?: ""
+            )
+        context?.let { context ->
+            if(!catalogComparison.appLink.isNullOrBlank()){
+                RouteManager.route(context,catalogComparison.appLink)
+            }
+        }
+    }
+
+    override fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue,
+            CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
+            CatalogDetailAnalytics.ActionKeys.IMPRESSION_KATALOG_PILIHAN_UNTUKMU,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            "current catalog-id: $catalogId",
+            catalogId,
+            adapterPosition,
+            userSession.userId,
+            "${model.item?.id}",
+            model.item?.name ?: "",
+            CatalogDetailAnalytics.ActionKeys.KATALOG_PiILIHAN_UNTUKMU,
+            CatalogConstant.KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING
+        )
+    }
+
+    override fun setLastDetachedItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastDetachedItemPosition = adapterPosition
+    }
+
+    override fun setLastAttachItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastAttachItemPosition = adapterPosition
+    }
+
     /*********************************   WishList  ******************************/
 
     override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
@@ -528,6 +620,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
+        if(isUserScrolledList)
+            viewModel.lastSeenProductPosition = (lastAttachItemPosition + lastDetachedItemPosition)/2
         productNavListAdapter?.onPause()
     }
 

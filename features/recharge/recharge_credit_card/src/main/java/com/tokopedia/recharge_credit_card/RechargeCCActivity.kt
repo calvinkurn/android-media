@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.di.DaggerRechargeCCComponent
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
@@ -68,6 +69,10 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
                 RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
             }
         }
+
+        cc_logo_verified?.let { imageView ->
+            imageView.loadImage(CC_IMG_VERIFIED)
+        }
     }
 
     override fun onResume() {
@@ -103,5 +108,7 @@ class RechargeCCActivity : BaseSimpleActivity(), HasComponent<RechargeCCComponen
 
         private const val CATEGORY_ID_DEFAULT = "26"
         private const val MENU_ID_DEFAULT = "169"
+
+        private const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
     }
 }

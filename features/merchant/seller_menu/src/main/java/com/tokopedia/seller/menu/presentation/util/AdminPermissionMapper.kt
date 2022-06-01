@@ -2,28 +2,25 @@ package com.tokopedia.seller.menu.presentation.util
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 class AdminPermissionMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
     companion object {
-        private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
         private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
@@ -126,21 +123,11 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
             SellerMigrationActivity.createIntent(context, featureName, SCREEN_NAME, appLinks)
 
     private fun getReputationIntent(context: Context): Intent {
-        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-        val useNewNav = true
-        return if (useNewInbox && useNewNav) {
-            RouteManager.getIntent(context,
-                    Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
-                        appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
-                        appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_SELLER)
-                    }.build().toString())
-        } else {
-            RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-                putExtra(GO_TO_BUYER_REVIEW, true)
-            }
-        }
+        val appLink = UriUtil.buildUriAppendParam(
+            ApplinkConst.REPUTATION,
+            mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.SELLER_TAB)
+        )
+        return RouteManager.getIntent(context, appLink)
     }
 
 }

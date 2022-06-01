@@ -39,6 +39,8 @@ data class ComponentData(
         val marketPrice: List<CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>?,
         @SerializedName("topSpec")
         val topSpecifications : List<SpecificationsRow>?,
+        @SerializedName("fullSpec")
+        val fullSpecifications : List<ComponentData>?,
 
         @Expose @SerializedName("avgRating")
         val avgRating: String?,

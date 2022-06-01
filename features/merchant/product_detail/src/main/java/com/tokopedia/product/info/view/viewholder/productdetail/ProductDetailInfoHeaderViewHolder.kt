@@ -65,7 +65,8 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         }
     }
 
-    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding, data: ProductDetailInfoContent) = with(socProofBinding) {
+    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding,
+                          data: ProductDetailInfoContent) = with(socProofBinding) {
         infoDetailTitle.text = data.title
         infoDetailValue.text = data.subtitle
 
@@ -79,10 +80,10 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.goToCategory(data.applink)
                         }
-                        ProductDetailCommonConstant.KEY_ETALASE  -> {
+                        ProductDetailCommonConstant.KEY_ETALASE -> {
                             listener.goToEtalase(data.applink)
                         }
-                        ProductDetailCommonConstant.KEY_CATALOG  -> {
+                        ProductDetailCommonConstant.KEY_CATALOG -> {
                             listener.goToCatalog(data.applink, data.subtitle)
                         }
                         else -> {

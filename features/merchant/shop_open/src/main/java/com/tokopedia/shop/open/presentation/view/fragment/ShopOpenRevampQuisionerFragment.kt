@@ -17,9 +17,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
@@ -99,20 +99,12 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_quisioner, container, false)
-        loading = view.findViewById(R.id.loading)
-        btnNext = view.findViewById(R.id.next_button_quisioner_page)
-        recyclerView = view.findViewById(R.id.recycler_view_questions_list)
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapter = ShopOpenRevampQuisionerAdapter(this)
-        recyclerView?.layoutManager = layoutManager
-        recyclerView?.adapter = adapter
-        btnNext.isEnabled = false
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         setupToolbarActions(view)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_SURVEY)
         setupPreconditions()
@@ -183,6 +175,17 @@ class ShopOpenRevampQuisionerFragment :
     override fun onResume() {
         super.onResume()
         closeKeyboard()
+    }
+
+    private fun initView(view: View) {
+        recyclerView = view.findViewById(R.id.recycler_view_questions_list)
+        loading = view.findViewById(R.id.loading)
+        btnNext = view.findViewById(R.id.next_button_quisioner_page)
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter = ShopOpenRevampQuisionerAdapter(this)
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = adapter
+        btnNext.isEnabled = false
     }
 
     private fun setupToolbarActions(view: View?) {
@@ -438,7 +441,7 @@ class ShopOpenRevampQuisionerFragment :
                 setSecondaryCTAText(getString(R.string.open_shop_logout_button))
                 setSecondaryCTAClickListener {
                     if (GlobalConfig.isSellerApp()) {
-                        RouteManager.route(exitDialog.context, ApplinkConstInternalGlobal.LOGOUT)
+                        RouteManager.route(exitDialog.context, ApplinkConstInternalUserPlatform.LOGOUT)
                     }
                     it.finish()
                 }

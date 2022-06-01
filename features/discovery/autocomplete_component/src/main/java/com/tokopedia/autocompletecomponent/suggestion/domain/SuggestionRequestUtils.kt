@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.util.CPM
 import com.tokopedia.autocompletecomponent.util.CPM_ITEM_COUNT
 import com.tokopedia.autocompletecomponent.util.CPM_PAGE
@@ -56,6 +56,7 @@ object SuggestionRequestUtils {
                 tracking_option
                 component_id
                 child_items {
+                  component_id
                   template
                   type
                   applink
@@ -97,6 +98,9 @@ object SuggestionRequestUtils {
                         }
                         badges {
                             image_url
+                        }
+                        shop {
+                            location
                         }
                     }
                 }

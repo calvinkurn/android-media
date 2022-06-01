@@ -58,7 +58,9 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
             setFeaturedBrandList(it)
             setIncrementalBrandList(getInitialBrandList(it))
             setImpressionDataTracking(getInitialBrandList(incrementalBrandList), START_INDEX_IMPRESSION)
-            adapter?.setFeaturedBrands(getInitialBrandList(incrementalBrandList))
+            if (recyclerView?.isComputingLayout == false) {
+                adapter?.setFeaturedBrands(getInitialBrandList(incrementalBrandList))
+            }
         }
 
         if (featuredBrandList.size <= INITIAL_AMOUNT) {
@@ -89,9 +91,11 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
                 val incrementedBrandList = getIncrementedBrandList(featuredBrandList, incrementalAmount)
                 setIncrementalBrandList(incrementedBrandList)
                 setImpressionDataTracking(getInitialBrandList(incrementalBrandList), INCREMENTAL_INDEX_IMPRESSION)
-                adapter?.setFeaturedBrands(incrementedBrandList)
-                expandButtonView?.let { button -> hideExpandButton(featuredBrandList, incrementedBrandList, button) }
-                listener.clickLihatSemua()
+                if (recyclerView?.isComputingLayout == false) {
+                    adapter?.setFeaturedBrands(incrementedBrandList)
+                    expandButtonView?.let { button -> hideExpandButton(featuredBrandList, incrementedBrandList, button) }
+                    listener.clickLihatSemua()
+                }
             }
         }
     }

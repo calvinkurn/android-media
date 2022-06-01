@@ -200,7 +200,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onCheckboxItemClicked(id: Int, position: Int, checked: Boolean) {
+    override fun onCheckboxItemClicked(id: Long, position: Int, checked: Boolean) {
         when (idFilter) {
             SomConsts.FILTER_TYPE_ORDER -> {
                 if (checked) {

@@ -20,7 +20,7 @@
         android:background="@color/tokopedianow_cardview_background_dms_color">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_two_hours"
+            android:id="@+id/iu_time"
             android:layout_width="@dimen/tokopedianow_usp_illustration_width"
             android:layout_height="@dimen/tokopedianow_usp_illustration_height"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,17 +29,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_two_hours"
+            android:id="@+id/tp_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:text="@string/tokopedianow_home_educational_information_two_hours"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline1"
-            app:layout_constraintStart_toEndOf="@+id/iu_two_hours"
+            app:layout_constraintStart_toEndOf="@+id/iu_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="36dp"
             app:typographyType="heading_6" />

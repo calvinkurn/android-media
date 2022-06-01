@@ -335,9 +335,6 @@ di tempatmu.</string>
     <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah ke harga semula yaitu <b>%1$s</b>.]]></string>
     <string name="flight_search_see_only_best_pairing_journey_button">Cek Penerbangan Best Pairing</string>
 
-    <string name="flight_search_has_seat_distancing_label">Seat Distancing</string>
-    <string name="flight_search_free_rapid_test_label">Free Rapid Test</string>
-
     <string name="flight_detail_bottom_sheet_title">Detail tiket</string>
     <string name="flight_detail_bottom_sheet_tab_journey_title">Perjalanan</string>
     <string name="flight_detail_bottom_sheet_tab_facility_title">Fasilitas</string>
@@ -426,4 +423,6 @@ di tempatmu.</string>
     <string name="flight_resend_eticket_dialog_email_hint">Johndoe@tokopedia.com</string>
     <string name="flight_resend_eticket_success" translatable="false">Hore! E-mail berhasil dikirim.</string>
     <string name="flight_order_detail_title">Daftar Transaksi</string>
+
+    <string name="flight_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
 </resources>

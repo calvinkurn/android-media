@@ -75,9 +75,14 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModel, visitableListSlot)
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModel,
+                visitableListSlot
+            )
 
             productListView.updateScrollListener()
 
@@ -129,8 +134,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             productListView.isAnyFilterActive
             productListView.isAnySortActive
 
-            productListView.stopPreparePagePerformanceMonitoring()
-            productListView.startNetworkRequestPerformanceMonitoring()
+            performanceMonitoring.stopPreparePagePerformanceMonitoring()
+            performanceMonitoring.startNetworkRequestPerformanceMonitoring()
 
             verifyShowError(productListView)
 
@@ -197,9 +202,14 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModel, visitableListSlot)
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModel,
+                visitableListSlot
+            )
 
             productListView.updateScrollListener()
 

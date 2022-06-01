@@ -26,4 +26,15 @@
         app:unifyButtonType="main"
         app:unifyButtonSize="medium"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/view_applink_list_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/view_applink_list"
+        android:layout_marginBottom="10dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"/>
+
 </LinearLayout>

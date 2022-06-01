@@ -18,7 +18,7 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
 
-class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
+open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"

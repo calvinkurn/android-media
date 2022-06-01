@@ -1,6 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor
 
-import com.tokopedia.network.BuildConfig
+import com.tokopedia.instrumentation.test.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer

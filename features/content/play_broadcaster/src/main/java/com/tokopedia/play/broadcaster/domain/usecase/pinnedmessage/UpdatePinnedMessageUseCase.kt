@@ -5,8 +5,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.AddPinnedMessageResponse
-import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.UpdatePinnedMessageResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
@@ -22,7 +20,7 @@ class UpdatePinnedMessageUseCase @Inject constructor(
 ) : RetryableGraphqlUseCase<UpdatePinnedMessageResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     init {
-        setGraphqlQuery(UpdatePinnedMessageUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(UpdatePinnedMessageUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
             .Builder(CacheType.ALWAYS_CLOUD).build())

@@ -945,6 +945,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 } else {
                     if (additionalItem.action == SHARE_LINK_PRODUCT) {
                         showShareBottomSheet(wishlistItem)
+                        WishlistV2Analytics.clickShareLinkProduct(wishlistId = wishlistItem.wishlistId,
+                                productId = wishlistItem.id, userId = userSession.userId)
                     } else if (additionalItem.action == DELETE_WISHLIST) {
                         wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
@@ -987,7 +989,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                         view,
                                         shareString
                                 )
-
+                                shareModel.channel?.let { ch ->
+                                    WishlistV2Analytics.clickSharingChannel(wishlistId = wishlistItem.wishlistId,
+                                            productId = wishlistItem.id, userId = userSession.userId, channel = ch)
+                                }
                                 universalShareBottomSheet?.dismiss()
                             }
 
@@ -996,7 +1001,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 )
             }
 
-            override fun onCloseOptionClicked() {}
+            override fun onCloseOptionClicked() {
+                WishlistV2Analytics.clickCloseShareBottomSheet(wishlistId = wishlistItem.wishlistId,
+                productId = wishlistItem.id, userId = userSession.userId)
+            }
         }
 
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -1007,6 +1015,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         universalShareBottomSheet?.show(childFragmentManager, this@WishlistV2Fragment)
+        WishlistV2Analytics.viewOnSharingChannel(wishlistId = wishlistItem.wishlistId,
+                productId = wishlistItem.id, userId = userSession.userId)
     }
 
     private fun showToaster(message: String, actionText: String, type: Int) {

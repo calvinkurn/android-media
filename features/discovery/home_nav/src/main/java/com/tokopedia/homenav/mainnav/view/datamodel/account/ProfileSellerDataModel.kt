@@ -1,6 +1,9 @@
 package com.tokopedia.homenav.mainnav.view.datamodel.account
 
-data class ProfileSellerDataModel(
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.homenav.mainnav.view.adapter.typefactory.SellerTypeFactory
+
+data class ProfileSellerDataModel  (
     var hasShop: Boolean = false,
     var shopName: String = "",
     var shopId: String = "",
@@ -15,4 +18,8 @@ data class ProfileSellerDataModel(
      */
     var isGetShopLoading: Boolean = false,
     var isGetShopError: Boolean = false
-)
+) : Visitable<SellerTypeFactory> {
+    override fun type(typeFactory: SellerTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}

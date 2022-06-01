@@ -22,7 +22,7 @@ class ImageGeneratorUseCase constructor(
             .Builder(CacheType.CACHE_FIRST).build())
 
         val response = gqlResponse.getData<ImageGeneratorModel.Response>(ImageGeneratorModel.Response::class.java)
-        if (!TextUtils.isEmpty(response.imageGeneratorModel.imageUrl)) {
+        if (response?.imageGeneratorModel != null && !TextUtils.isEmpty(response.imageGeneratorModel.imageUrl)) {
             return response.imageGeneratorModel.imageUrl
         } else {
             throw MessageErrorException("Error in image generation")

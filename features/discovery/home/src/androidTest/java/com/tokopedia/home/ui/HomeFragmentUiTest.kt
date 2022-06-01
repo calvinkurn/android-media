@@ -108,7 +108,7 @@ class HomeFragmentUiTest {
         )
         onView(withTagStringValue(HomeTagHelper.getNotifCounterMessage(context))).check(
             matches(
-                withText(HomeMockValueHelper.DEFAULT_COUNTER_NOTIF_VALUE)
+                withText("30")
             )
         )
 

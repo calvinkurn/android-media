@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -31,13 +30,10 @@ import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
 
 abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountListener {
 
     private val binding: FragmentChooseLoginPhoneAccountBinding? by viewBinding()
-
-    protected var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     protected var adapter: AccountAdapter? = null
     private var listAccount: RecyclerView? = null
@@ -65,7 +61,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initObserver()
-        showLoadingProgress()
     }
 
     private fun initToolbar() {
@@ -93,15 +88,7 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         if (throwable is AkamaiErrorException) {
             showPopupErrorAkamai()
         } else {
-            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
-        }
-    }
-
-    protected fun logUnknownError(throwable: Throwable) {
-        try {
-            crashlytics.recordException(throwable)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable, builder = getErrorHandlerBuilder()))
         }
     }
 
@@ -137,9 +124,17 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
 
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
-        val logException = Throwable("LoginPN activation", messageErrorException)
-        logUnknownError(logException)
+        onErrorLogin(ErrorHandler.getErrorMessage(
+            context,
+            messageErrorException,
+            getErrorHandlerBuilder()
+        ))
+    }
+
+    protected fun getErrorHandlerBuilder(): ErrorHandler.Builder {
+        return ErrorHandler.Builder().apply {
+                className = this.javaClass.name
+        }.build()
     }
 
     protected fun onGoToSecurityQuestion() {

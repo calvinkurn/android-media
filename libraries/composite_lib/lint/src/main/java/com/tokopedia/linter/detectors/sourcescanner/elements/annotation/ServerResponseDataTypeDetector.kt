@@ -17,7 +17,7 @@ import org.jetbrains.uast.UNamedExpression
 
 object ServerResponseDataTypeDetector {
     const val TYPE_OBJECT = "java.lang.Object"
-    const val TYPE_STRING = "java.lang.String"
+    const val TYPE_STRING = "string"
     const val TYPE_INT = "int"
     const val TYPE_LONG = "long"
     const val TYPE_CHAR = "char"
@@ -33,12 +33,17 @@ object ServerResponseDataTypeDetector {
     const val TYPE_SHORT_WRAPPER = "java.lang.Short"
     const val TYPE_LONG_WRAPPER = "java.lang.Long"
     const val TYPE_DOUBLE_WRAPPER = "java.lang.Double"
+    const val TYPE_STRING_WRAPPER = "java.lang.String"
     const val TYPE_FLOAT_WRAPPER = "java.lang.Float"
     const val TYPE_CHARACTER_WRAPPER = "java.lang.Character"
 
 
-    private val classTypeIdentifierMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$" to TYPE_STRING)
-    private val primitiveTypeIdentifierMap = mapOf("^price\$" to TYPE_DOUBLE, "^price\$" to TYPE_DOUBLE_WRAPPER)
+    private val IdTypeStringMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$|^[a-z]+ID|(?i)(?<= |^)ID(?= |\$)" to TYPE_STRING_WRAPPER)
+    private val IdTypeLongMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$|^[a-z]+ID|(?i)(?<= |^)ID(?= |\$)" to TYPE_LONG)
+    private val IdTypeJavaLongMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$|^[a-z]+ID|(?i)(?<= |^)ID(?= |\$)" to TYPE_LONG_WRAPPER)
+    private val priceTypeDoubleMap = mapOf("^price|price\$" to TYPE_DOUBLE)
+    private val priceTypeJavaDoubleMap = mapOf("^price|price\$" to TYPE_DOUBLE_WRAPPER)
+    private val priceTypeStringMap = mapOf("^price|price\$" to TYPE_STRING_WRAPPER)
 
 
     const val DATA_TYPE_IMPORT_ID = "Invalid Data Type"
@@ -69,7 +74,7 @@ object ServerResponseDataTypeDetector {
                         WRONG_DATA_TYPE,
                         annotation,
                         context.getLocation(annotation),
-                        "Please use data type as ${type[0]} for variable $attribute"
+                        "Please use data type as ${type.joinToString(" or ")} for variable $attribute"
                 )
             }
         }
@@ -77,22 +82,12 @@ object ServerResponseDataTypeDetector {
 
 
     fun getRequiredTypes(attribute: String): List<String> {
-        return (checkIsKeys(primitiveTypeIdentifierMap, attribute).values.toList() + checkIsKeys(
-                classTypeIdentifierMap,
-                attribute
-        ).values.toList()).let {
-            var list = it;
-            if (list.isEmpty()) {
-                list = checkContainInKeys(
-                        primitiveTypeIdentifierMap,
-                        attribute
-                ).values.toList() + checkContainInKeys(
-                        classTypeIdentifierMap,
-                        attribute
-                ).values.toList()
-            }
-            return list
-        }
+        return (checkIsKeys(IdTypeLongMap, attribute).values.toList()
+                + checkIsKeys(IdTypeJavaLongMap, attribute).values.toList()
+                + checkIsKeys(IdTypeStringMap, attribute).values.toList()
+                + checkIsKeys(priceTypeDoubleMap, attribute).values.toList()
+                + checkIsKeys(priceTypeJavaDoubleMap, attribute).values.toList()
+                + checkIsKeys(priceTypeStringMap, attribute).values.toList())
     }
 
     private fun isRequiredType(list: List<String>, type: PsiType): Boolean {
@@ -107,10 +102,6 @@ object ServerResponseDataTypeDetector {
         }
         return false;
     }
-
-
-    var checkContainInKeys =
-            { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key.toRegex()) }) }
 
     var checkIsKeys =
             { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key.toRegex()) }) }

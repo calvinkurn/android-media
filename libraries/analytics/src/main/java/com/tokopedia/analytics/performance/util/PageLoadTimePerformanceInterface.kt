@@ -5,7 +5,6 @@ interface PageLoadTimePerformanceInterface {
 
     fun startMonitoring(traceName: String = "")
     fun stopMonitoring()
-    fun stopEmbraceMonitoringOnly()
 
     fun startPreparePagePerformanceMonitoring()
     fun stopPreparePagePerformanceMonitoring()

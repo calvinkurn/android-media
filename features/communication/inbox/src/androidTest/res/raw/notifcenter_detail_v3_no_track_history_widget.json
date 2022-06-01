@@ -38,6 +38,9 @@
         "read_status": 2,
         "notif_order_type": 1,
         "is_last_journey": true,
+        "is_show_expire":false,
+        "is_pinned": false,
+        "pinned_text": "",
         "unique_id": 0,
         "widget": {
           "title": "747330958",

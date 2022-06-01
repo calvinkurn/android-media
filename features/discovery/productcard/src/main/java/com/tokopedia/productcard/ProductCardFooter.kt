@@ -1,23 +1,35 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard.utils.ViewId
+import com.tokopedia.productcard.utils.ViewStubId
+import com.tokopedia.productcard.utils.showWithCondition
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 
 internal fun View.renderProductCardFooter(
     productCardModel: ProductCardModel,
     isProductCardList: Boolean,
 ) {
-    buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
+    val buttonRemoveFromWishlist = findViewById<FrameLayout?>(R.id.buttonRemoveFromWishlist)
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonNotifyStub),
+        ViewId(R.id.buttonNotify),
+        productCardModel.hasNotifyMeButton)
 
     if (isProductCardList) {
         val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
-        buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
+        showWithCondition<UnifyButton?>(
+            ViewStubId(R.id.buttonDeleteProductStub),
+            ViewId(R.id.buttonDeleteProduct),
+            productCardModel.hasDeleteProductButton)
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
         buttonSimilarProduct?.hide()
     } else {
+        val buttonDeleteProduct = findViewById<UnifyButton?>(R.id.buttonDeleteProduct)
         buttonDeleteProduct?.hide()
         buttonRemoveFromWishlist?.hide()
         renderSimilarProductButton(productCardModel)
@@ -26,13 +38,24 @@ internal fun View.renderProductCardFooter(
 }
 
 private fun View.renderSimilarProductButton(productCardModel: ProductCardModel) {
-    val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
-    buttonSimilarProduct?.showWithCondition(productCardModel.hasSimilarProductButton)
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeSimilarProductStub),
+        ViewId(R.id.buttonSeeSimilarProduct),
+        productCardModel.hasSimilarProductButton)
 }
 
 private fun View.renderWishlistComponents(productCardModel: ProductCardModel) {
+    val buttonThreeDotsWishlist = findViewById<FrameLayout?>(R.id.buttonThreeDotsWishlist)
+    val rlPrimaryButtonWishlist = findViewById<RelativeLayout?>(R.id.rlPrimaryButtonWishlist)
     buttonThreeDotsWishlist?.showWithCondition(productCardModel.hasButtonThreeDotsWishlist)
     rlPrimaryButtonWishlist?.showWithCondition(productCardModel.willShowPrimaryButtonWishlist())
-    buttonAddToCartWishlist?.showWithCondition(productCardModel.hasAddToCartWishlist)
-    buttonSeeSimilarProductWishlist?.showWithCondition(productCardModel.hasSimilarProductWishlist)
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonAddToCartWishlistStub),
+        ViewId(R.id.buttonAddToCartWishlist),
+        productCardModel.hasAddToCartWishlist)
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeSimilarProductWishlistStub),
+        ViewId(R.id.buttonSeeSimilarProductWishlist),
+        productCardModel.hasSimilarProductWishlist)
+
 }

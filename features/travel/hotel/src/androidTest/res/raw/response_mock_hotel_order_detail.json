@@ -167,6 +167,10 @@
               "number": "+886988741287"
             }
           ]
+        },
+        "agent": {
+          "name": "Booking.com",
+          "logo": "https://images.tokopedia.net/img/hotel/agent/booking.png"
         }
       }
     }

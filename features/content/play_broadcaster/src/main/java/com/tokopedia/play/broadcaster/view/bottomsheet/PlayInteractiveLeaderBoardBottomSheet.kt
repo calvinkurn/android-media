@@ -11,12 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -25,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
@@ -38,9 +38,12 @@ import com.tokopedia.play_common.R as commonR
  * Created by mzennis on 06/07/21.
  */
 class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelFactory,
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
+
+    private val channelId
+        get() = arguments?.getString(ARG_CHANNEL_ID) ?: ""
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
@@ -73,7 +76,10 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        ).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -92,7 +98,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
-
         observeLeaderboardInfo()
     }
 
@@ -116,7 +121,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                 }
 
             btnRefresh.setOnClickListener {
-                parentViewModel.getLeaderboardData()
+                parentViewModel.getLeaderboardData(channelId)
             }
 
             rvLeaderboard.adapter = leaderboardAdapter
@@ -199,5 +204,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
         private const val HEIGHT_MULTIPLIER = 0.67f
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
+
+        const val ARG_CHANNEL_ID = "ARG_CHANNEL_ID"
     }
 }

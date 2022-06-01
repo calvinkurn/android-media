@@ -33,34 +33,36 @@
       "shop_type": 0,
       "badge_url": ""
     },
-    "products": [
-      {
-        "product_id": 2147827287,
-        "order_detail_id": 20534854,
-        "product_name": "T3ST ID64INT",
-        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/7/2986b0bb-a697-45b0-ad34-39e5fd1d15bd.jpg",
-        "price": 100000,
-        "price_text": "Rp100.000",
-        "quantity": 1,
-        "total_price": 100000,
-        "total_price_text": "Rp100.000",
-        "notes": "automation order: kurir toko",
-        "category": "Film &  Musik > Musik > CD & DVD Musik",
-        "category_id": 1517,
-        "button": {
-          "key": "see_similar_products",
-          "display_name": "Lihat Produk Serupa",
-          "type": "main",
-          "variant": "ghost",
-          "url": "tokopedia://rekomendasi/2147827287?ref=bom_cancelled",
-          "popup": {
-            "title": "",
-            "body": "",
-            "action_button": []
+    "details": {
+      "non_bundles": [
+        {
+          "product_id": 2147827287,
+          "order_detail_id": 20534854,
+          "product_name": "T3ST ID64INT",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/7/2986b0bb-a697-45b0-ad34-39e5fd1d15bd.jpg",
+          "price": 100000,
+          "price_text": "Rp100.000",
+          "quantity": 1,
+          "total_price": 100000,
+          "total_price_text": "Rp100.000",
+          "notes": "automation order: kurir toko",
+          "category": "Film &  Musik > Musik > CD & DVD Musik",
+          "category_id": 1517,
+          "button": {
+            "key": "see_similar_products",
+            "display_name": "Lihat Produk Serupa",
+            "type": "main",
+            "variant": "ghost",
+            "url": "tokopedia://rekomendasi/2147827287?ref=bom_cancelled",
+            "popup": {
+              "title": "",
+              "body": "",
+              "action_button": []
+            }
           }
         }
-      }
-    ],
+      ]
+    },
     "shipment": {
       "shipping_name": "JNE",
       "shipping_product_name": "Reguler",

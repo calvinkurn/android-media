@@ -378,6 +378,22 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT, "")
     }
 
+    fun eventClickCreateProductCoupon(shopId: String) {
+        val eventMap =
+            EventTracking(
+                ProductManageDataLayer.EVENT_NAME_CLICK_PG,
+                ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_CREATE_PRODUCT_COUPON,
+                ""
+            ).dataTracking.plus(mapOf(
+                ProductManageDataLayer.CURRENT_SITE to ProductManageDataLayer.TOKOPEDIA_SELLER,
+                ProductManageDataLayer.SHOP_ID to shopId,
+                ProductManageDataLayer.BUSINESS_UNIT to ProductManageDataLayer.PHYSICAL_GOODS
+            ))
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
