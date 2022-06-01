@@ -37,7 +37,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
         private const val TOTAL_PRODUCT_THREE = 3
         private const val TOTAL_PRODUCT_FOUR = 4
 
-        private const val PAGE_NAME = "flashsale"//"ShopFS"
+        private const val PAGE_NAME = "ShopFS"
         private const val THUMBNAIL_IMAGE = ""
     }
 
@@ -283,7 +283,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            id = "shop/${userSession.shopId}?page_source=share"
+            id = "${userSession.shopId}?page_source=share"
             linkerData.type = LinkerData.SHOP_TYPE
             name = findOutgoingTitle(shopName)
             uri = "https://www.tokopedia.com/${shopDomain}?page_source=share"
@@ -304,7 +304,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
         return String.format(resourceProvider.getOutgoingTitleWording(), formattedShopName)
     }
 
-    private fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
+    fun findOutgoingDescription(shopName: String, isOngoing: Boolean): String {
         val formattedShopName = MethodChecker.fromHtml(shopName).toString()
         return if (isOngoing) {
             String.format(resourceProvider.getOutgoingOngoingCampaignWording(), formattedShopName)

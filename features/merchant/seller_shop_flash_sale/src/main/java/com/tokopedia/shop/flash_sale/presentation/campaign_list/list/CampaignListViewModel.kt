@@ -10,7 +10,7 @@ import com.tokopedia.shop.flash_sale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flash_sale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListUseCase
-import com.tokopedia.shop.flash_sale.domain.usecase.MerchantCampaignBannerGeneratorDataUseCase
+import com.tokopedia.shop.flash_sale.domain.usecase.GetBannerGeneratorDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,7 +23,7 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
-    private val merchantCampaignBannerGeneratorDataUseCase: MerchantCampaignBannerGeneratorDataUseCase
+    private val getBannerGeneratorDataUseCase: GetBannerGeneratorDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -133,8 +133,8 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val campaign = merchantCampaignBannerGeneratorDataUseCase.execute(campaignId)
-                _campaignBanner.postValue(Success(campaign))
+                val banner = getBannerGeneratorDataUseCase.execute(campaignId)
+                _campaignBanner.postValue(Success(banner))
             },
             onError = { error ->
                 _campaignBanner.postValue(Fail(error))

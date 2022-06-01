@@ -2,13 +2,15 @@ package com.tokopedia.shop.flash_sale.data.mapper
 
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.flash_sale.data.response.MerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.shop.flash_sale.common.constant.DateConstant
+import com.tokopedia.shop.flash_sale.common.extension.toDate
+import com.tokopedia.shop.flash_sale.data.response.BannerGeneratorDataResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import javax.inject.Inject
 
-class CampaignBannerGeneratorDataMapper @Inject constructor() {
+class BannerGeneratorDataMapper @Inject constructor() {
 
-    fun map(response: MerchantCampaignBannerGeneratorDataResponse): CampaignBanner {
+    fun map(response: BannerGeneratorDataResponse): CampaignBanner {
         return CampaignBanner(
             response.getMerchantCampaignBannerGeneratorData.campaign.campaignId.toLong().orZero(),
             response.getMerchantCampaignBannerGeneratorData.campaign.name,
@@ -29,7 +31,9 @@ class CampaignBannerGeneratorDataMapper @Inject constructor() {
                 response.getMerchantCampaignBannerGeneratorData.shopData.isGold,
                 response.getMerchantCampaignBannerGeneratorData.shopData.isOfficial,
                 response.getMerchantCampaignBannerGeneratorData.shopData.badge.imageURL
-            )
+            ),
+            response.getMerchantCampaignBannerGeneratorData.campaign.startDate.toDate(DateConstant.DATE_TIME),
+            response.getMerchantCampaignBannerGeneratorData.campaign.endDate.toDate(DateConstant.DATE_TIME)
         )
 
     }

@@ -3,7 +3,7 @@ package com.tokopedia.shop.flash_sale.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class MerchantCampaignBannerGeneratorDataResponse(
+data class BannerGeneratorDataResponse(
     @SerializedName("getMerchantCampaignBannerGeneratorData")
     val getMerchantCampaignBannerGeneratorData: GetMerchantCampaignBannerGeneratorData = GetMerchantCampaignBannerGeneratorData()
 ) {

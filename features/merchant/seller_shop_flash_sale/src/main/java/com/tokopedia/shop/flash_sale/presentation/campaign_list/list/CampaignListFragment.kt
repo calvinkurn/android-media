@@ -31,6 +31,7 @@ import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flash_sale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -43,6 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>() {
@@ -271,8 +273,8 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         viewModel.campaignBanner.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    val campaign = result.data
-                    displayShareBottomSheet(campaign)
+                    val banner = result.data
+                    displayShareBottomSheet(banner)
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
@@ -470,26 +472,37 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet(campaign: CampaignBanner) {
-        println()
-        /*shareComponentBottomSheet = shareComponentInstanceBuilder.build(
-            ShareComponentInstanceBuilder.Param(),
+    private fun displayShareBottomSheet(banner: CampaignBanner) {
+        val isOngoing = banner.campaignStatusId == CAMPAIGN_STATUS_ID_ONGOING
+
+        val param = ShareComponentInstanceBuilder.Param(
+            banner.shop.name,
+            banner.shop.logo,
+            "none",
+            banner.campaignStatusId,
+            banner.campaignId,
+            isOngoing,
+            banner.startDate,
+            banner.endDate,
+            banner.products.size,
+            banner.products,
+            banner.maxDiscountPercentage
+        )
+        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            param,
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
-                    coupon.galadrielVoucherId,
                     shareModel,
-                    title,
-                    description,
-                    shop.shopDomain
+                    banner.shop.domain,
+                    banner.shop.name,
+                    isOngoing
                 )
             },
             onCloseOptionClicked = {
 
             })
 
-
-
-        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)*/
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
     }
 
     private fun handleShareOptionSelection(
@@ -500,14 +513,14 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     ) {
         val shareCallback = object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                val wording = ""
-                //val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                val template = shareComponentInstanceBuilder.findOutgoingDescription(shopName, isOngoing)
+                val outgoingText = "$template ${linkerShareData?.shareUri.orEmpty()}"
                 SharingUtil.executeShareIntent(
                     shareModel,
                     linkerShareData,
                     requireActivity(),
-                    view,
-                    wording
+                    view ?: return,
+                    outgoingText
                 )
                 shareComponentBottomSheet?.dismiss()
             }

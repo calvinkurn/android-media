@@ -8,16 +8,16 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
-import com.tokopedia.shop.flash_sale.data.mapper.CampaignBannerGeneratorDataMapper
-import com.tokopedia.shop.flash_sale.data.request.CampaignBannerGeneratorDataRequest
-import com.tokopedia.shop.flash_sale.data.response.MerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.shop.flash_sale.data.mapper.BannerGeneratorDataMapper
+import com.tokopedia.shop.flash_sale.data.request.BannerGeneratorDataRequest
+import com.tokopedia.shop.flash_sale.data.response.BannerGeneratorDataResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import javax.inject.Inject
 
 
-class MerchantCampaignBannerGeneratorDataUseCase @Inject constructor(
+class GetBannerGeneratorDataUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: CampaignBannerGeneratorDataMapper
+    private val mapper: BannerGeneratorDataMapper
 ) : GraphqlUseCase<CampaignBanner>(repository) {
 
     companion object {
@@ -93,16 +93,16 @@ class MerchantCampaignBannerGeneratorDataUseCase @Inject constructor(
     suspend fun execute(campaignId: Long): CampaignBanner {
         val request = buildRequest(campaignId)
         val response = repository.response(listOf(request))
-        val data = response.getSuccessData<MerchantCampaignBannerGeneratorDataResponse>()
+        val data = response.getSuccessData<BannerGeneratorDataResponse>()
         return mapper.map(data)
     }
 
     private fun buildRequest(campaignId: Long): GraphqlRequest {
-        val payload = CampaignBannerGeneratorDataRequest(campaignId, ZERO)
+        val payload = BannerGeneratorDataRequest(campaignId, ZERO)
         val requestParams = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(
             GetMerchantCampaignBannerGeneratorData(),
-            MerchantCampaignBannerGeneratorDataResponse::class.java,
+            BannerGeneratorDataResponse::class.java,
             requestParams
         )
     }

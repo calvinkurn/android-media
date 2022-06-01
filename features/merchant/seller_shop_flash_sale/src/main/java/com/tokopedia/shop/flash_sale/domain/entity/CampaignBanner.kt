@@ -1,12 +1,16 @@
 package com.tokopedia.shop.flash_sale.domain.entity
 
+import java.util.*
+
 data class CampaignBanner(
     val campaignId: Long,
     val campaignName: String,
     val products: List<Product>,
     val maxDiscountPercentage: Int,
     val campaignStatusId: Int,
-    val shop: Shop
+    val shop: Shop,
+    val startDate: Date,
+    val endDate: Date
 ) {
     data class Product(
         val imageUrl: String,
