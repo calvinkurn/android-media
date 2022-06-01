@@ -10,13 +10,13 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashIntroFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmIntroFragment
 
 class TokomemberDashIntroActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
 
-        return TokomemberDashIntroFragment.newInstance(intent.extras)
+        return TmIntroFragment.newInstance(intent.extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,7 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +21,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponPreviewAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
@@ -32,7 +32,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_preview.*
 import javax.inject.Inject
 
-class TokomemberDashPreviewFragment : BaseDaggerFragment() {
+class TmDashPreviewFragment : BaseDaggerFragment() {
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
     private var tokomemberShopCardModel = TokomemberShopCardModel()
@@ -65,6 +65,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             arguments?.getParcelable(BUNDLE_COUPON_PREVIEW_DATA) ?: TmCouponPreviewData()
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
+        tokomemberDashCreateViewModel.getCardInfo()
         renderHeader()
         renderCouponList(tmCouponPreviewData)
         renderPreviewUI(
@@ -192,8 +193,8 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun renderProgramPreview(programUpdateDataInput: ProgramUpdateDataInput) {
-        tvProgramMulaiValue.text = ProgramUpdateMapper.setDate(programUpdateDataInput.timeWindow?.startTime?:"") + "," + "00:00 WIB"
-        tvProgramBerakhirValue.text = ProgramUpdateMapper.setDate(programUpdateDataInput.timeWindow?.endTime?:"") + "," + "00:00 WIB"
+        tvProgramMulaiValue.text = setDate(programUpdateDataInput.timeWindow?.startTime?:"") + "," + "00:00 WIB"
+        tvProgramBerakhirValue.text = setDate(programUpdateDataInput.timeWindow?.endTime?:"") + "," + "00:00 WIB"
         tvProgramMinTransaksiPremiumValue.text =
             "Rp${CurrencyFormatHelper.convertToRupiah(programUpdateDataInput.tierLevels?.getOrNull(0)?.threshold.toString())}"
         tvProgramMinTransaksiVipValue.text =
@@ -202,7 +203,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
 
     companion object {
 
-        fun newInstance(bundle: Bundle) = TokomemberDashPreviewFragment().apply {
+        fun newInstance(bundle: Bundle) = TmDashPreviewFragment().apply {
             arguments = bundle
         }
     }

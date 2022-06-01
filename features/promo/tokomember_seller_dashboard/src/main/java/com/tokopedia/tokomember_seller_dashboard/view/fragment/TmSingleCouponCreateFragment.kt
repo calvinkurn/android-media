@@ -681,7 +681,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         var year = ""
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, TokomemberProgramFragment.MAX_YEAR)
+            calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -690,7 +690,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 
             val calMin = Calendar.getInstance()
-            calMin.add(Calendar.YEAR, TokomemberProgramFragment.MIN_YEAR)
+            calMin.add(Calendar.YEAR, TmProgramFragment.MIN_YEAR)
             val yearMin = calMin.get(Calendar.YEAR)
             val monthMin = calMin.get(Calendar.MONTH)
             val dayMin = calMin.get(Calendar.DAY_OF_MONTH)

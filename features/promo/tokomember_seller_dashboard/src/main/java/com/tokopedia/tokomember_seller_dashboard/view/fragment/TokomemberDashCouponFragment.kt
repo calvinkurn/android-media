@@ -27,7 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -304,7 +304,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             EDIT ->{
-                TokomemberDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON, voucherId.toInt())
+                TmDashCreateActivity.openActivity(activity, ProgramScreenType.COUPON, voucherId.toInt())
             }
             STOP ->{
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }

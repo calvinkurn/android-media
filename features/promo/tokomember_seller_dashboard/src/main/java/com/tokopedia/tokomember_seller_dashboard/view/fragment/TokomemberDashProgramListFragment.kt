@@ -28,7 +28,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -129,8 +129,8 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         when {
             type.equals(EXTEND) -> {
 //                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
-//                (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
-                TokomemberDashCreateActivity.openActivity(shopId, activity, ProgramScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
+//                (activity as TokomemberDashHomeActivity).addFragment(TmProgramFragment.newInstance(bundle), TAG_HOME)
+                TmDashCreateActivity.openActivity(shopId, activity, ProgramScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
 
             }
             type.equals(CANCEL) -> {
@@ -156,7 +156,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             }
             type.equals(EDIT) -> {
 //                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
-                TokomemberDashCreateActivity.openActivity(
+                TmDashCreateActivity.openActivity(
                     shopId,
                     activity,
                     ProgramScreenType.PROGRAM,
@@ -164,7 +164,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     REQUEST_CODE_REFRESH,
                     programId
                 )
-//                (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
+//                (activity as TokomemberDashHomeActivity).addFragment(TmProgramFragment.newInstance(bundle), TAG_HOME)
             }
         }
     }

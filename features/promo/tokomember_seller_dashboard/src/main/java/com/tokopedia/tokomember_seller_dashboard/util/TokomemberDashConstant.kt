@@ -5,6 +5,7 @@ const val BUNDLE_OPEN_BS = "bundleOpenBS"
 const val BUNDLE_SHOP_ID = "bundleShopId"
 const val BUNDLE_SHOP_NAME = "bundleShopName"
 const val BUNDLE_SHOP_AVATAR = "bundleShopAvatar"
+const val BUNDLE_CARD_ID = "bundleCardId"
 const val BUNDLE_VOUCHER_ID = "bundleVoucherId"
 const val BUNDLE_VOUCHER_QUOTA = "bundleVoucherQuota"
 const val BUNDLE_VOUCHER_TYPE = "bundleVoucherType"
@@ -110,6 +111,21 @@ const val VIP = "vip"
 const val CREATE = "create"
 const val UPDATE = "update"
 
+const val TM_NOT_ELIGIBLE_TITLE = "Tokomu belum memenuhi syarat"
+const val TM_NOT_ELIGIBLE_DESC= "Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
+const val TM_NOT_ELIGIBLE_CTA = "Pelajari Official Store"
+
+const val TM_DIALOG_CANCEL_TITLE = "Yakin batalkan program?"
+const val TM_DIALOG_CANCEL_DESC = "Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pembuatan TokoMember, lho."
+const val TM_DIALOG_CANCEL_CTA_PRIMARY = "Lanjut"
+const val TM_DIALOG_CANCEL_CTA_SECONDARY = "Batalkan Program"
+const val PROGRAM_CTA = "Buat Program"
+const val PROGRAM_CTA_EDIT = "Simpan"
+
+const val TM_PROGRAM_EDIT_DIALOG_TITLE = "Makan pepaya minum jus durian\n" +
+        "Tunggu ya, program lagi disiapkan!"
+
+const val TM_PROGRAM_MIN_PURCHASE_ERROR = "Tidak boleh melebihi level VIP (Level 2)"
 const val COUPON_TYPE_SHIPPING = 1
 const val COUPON_TYPE_DISCOUNT = 2
 const val COUPON_TYPE_CASHBACK = 3

@@ -4,8 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +29,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.convertDateTime
+import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import java.util.*
 import javax.inject.Inject
 
-class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
+class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     BottomSheetClickListener {
 
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
@@ -159,6 +159,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             0-> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
+        //TODO remote res
         val bundle = Bundle()
         val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = errorCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
@@ -219,10 +220,10 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
         when(programActionType){
             ProgramActionType.CREATE ->{
-                btnCreateProgram.text = "Buat Program"
+                btnCreateProgram.text = PROGRAM_CTA
                 headerProgram?.apply {
-                    title = "Daftar TokoMember"
-                    subtitle = "Langkah 2 dari 4"
+                    title = HEADER_TITLE_CREATE
+                    subtitle = HEADER_TITLE_DESC
                     isShowBackButton = true
                 }
                 progressProgram?.apply {
@@ -233,7 +234,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
             ProgramActionType.EXTEND ->{
                 headerProgram?.apply {
-                    title = "Perpanjang TokoMember"
+                    title = HEADER_TITLE_EXTEND
                     isShowBackButton = true
                 }
                 progressProgram?.apply {
@@ -241,17 +242,17 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     progressBarHeight = ProgressBarUnify.SIZE_SMALL
                     setValue(33, false)
                 }
-                btnCreateProgram.text = "Buat Program"
+                btnCreateProgram.text = PROGRAM_CTA
                 textFieldTranskVip.isEnabled = false
                 textFieldTranskPremium.isEnabled = false
             }
             ProgramActionType.EDIT ->{
                 //TODO actionType edit pending from backend
                 headerProgram?.apply {
-                    title = "Ubah Program"
+                    title = HEADER_TITLE_EDIT
                     isShowBackButton = true
                 }
-                btnCreateProgram.text = "Simpan"
+                btnCreateProgram.text = PROGRAM_CTA_EDIT
                 progressProgram?.hide()
             }
         }
@@ -278,7 +279,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         }
         membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
             selectedTime = it
-            textFieldDuration.editText.setText(ProgramUpdateMapper.setDate(selectedTime))
+            textFieldDuration.editText.setText(setDate(selectedTime))
         }
         membershipGetProgramForm?.timePeriodList?.forEach {
             if(it?.isSelected == true){
@@ -296,7 +297,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             textFieldDuration?.setFirstIcon(R.drawable.tm_dash_calender)
         }
         textFieldDuration.iconContainer.setOnClickListener {
-            clickDatePicker("Pilih tanggal mulai","Tentukan tanggal mulai untuk kupon TokoMember yang sudah kamu buat.")
+            clickDatePicker(DATE_TITLE,DATE_DESC)
         }
         btnCreateProgram?.setOnClickListener {
             initCreateProgram(membershipGetProgramForm)
@@ -323,7 +324,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     ) {
                         tickerInfo.show()
                         textFieldTranskPremium.isInputError = true
-                        textFieldTranskPremium.setMessage("Tidak boleh melebihi level VIP (Level 2)")
+                        textFieldTranskPremium.setMessage(TM_PROGRAM_MIN_PURCHASE_ERROR)
                     }
                     else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && number<= textFieldTranskVip.editText.text.toString().toIntOrZero()
                     ) {
@@ -372,23 +373,20 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if(selectedCalendar != null) {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime =
                 selectedCalendar?.time?.let {
-                    ProgramUpdateMapper.convertDateTime(
-                        it
-                    )
+                    convertDateTime(it)
                 }
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it
         }
         if(programActionType == ProgramActionType.EDIT){
-            context?.let { TokomemberLoaderDialog.showLoaderDialog(it, "Makan pepaya minum jus durian\n" +
-                    "Tunggu ya, program lagi disiapkan!") }
+            context?.let { TokomemberLoaderDialog.showLoaderDialog(it, TM_PROGRAM_EDIT_DIALOG_TITLE) }
         }
         programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(
             membershipGetProgramForm,
             arguments?.getInt(BUNDLE_PROGRAM_TYPE) ?: 0,
             periodInMonth,
-            arguments?.getInt("cardID") ?: 0
+            arguments?.getInt(BUNDLE_CARD_ID) ?: 0
         )
         tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
     }
@@ -421,7 +419,6 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 datePickerButton.let { button ->
                     button.setOnClickListener {
                         selectedCalendar = getDate()
-                        // TODO convert Sun May 29 00:00:00 GMT+05:30 2022 to 2023-04-01 23:59:59 +07 otherwise invalid parameter coming
                         selectedTime = selectedCalendar?.time.toString()
                          date = selectedCalendar?.get(Calendar.DATE).toString()
                          month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
@@ -447,10 +444,15 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     companion object {
         const val MAX_YEAR = 10
         const val MIN_YEAR = -90
+        const val HEADER_TITLE_CREATE = "Daftar TokoMember"
+        const val HEADER_TITLE_DESC = "Langkah 2 dari 4"
+        const val HEADER_TITLE_EXTEND = "Perpanjang TokoMember"
+        const val HEADER_TITLE_EDIT =  "Ubah Program"
+
         const val DATA = 1
         const val SHIMMER = 0
         const val ERROR = 2
-        fun newInstance(extras: Bundle?) = TokomemberProgramFragment().apply {
+        fun newInstance(extras: Bundle?) = TmProgramFragment().apply {
             arguments = extras
         }
     }
@@ -464,7 +466,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
         } else {
             (TokomemberDashIntroActivity.openActivity(
-                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,"","",
+                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,arguments?.getString(BUNDLE_SHOP_AVATAR)?:"" ,arguments?.getString(
+                    BUNDLE_SHOP_NAME)?:"",
                 false,
                 this.context
             ))

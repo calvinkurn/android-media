@@ -7,12 +7,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
@@ -28,14 +26,12 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
+import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
+import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroButtonVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
@@ -44,7 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
 
-class TokomemberDashIntroFragment : BaseDaggerFragment(),
+class TmIntroFragment : BaseDaggerFragment(),
     TokomemberIntroButtonVh.TokomemberIntroButtonListener {
 
     private var rootView: RelativeLayout? = null
@@ -55,7 +51,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberIntroViewmodel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmIntroViewModel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashIntroViewModel::class.java)
     }
@@ -86,7 +82,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
         hideStatusBar()
         observeViewModel()
         renderHeader()
-        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tokomemberIntroViewmodel.getIntroInfo(it) }
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tmIntroViewModel.getIntroInfo(it) }
     }
 
     override fun getScreenName() = ""
@@ -97,7 +93,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
 
     private fun observeViewModel() {
 
-        tokomemberIntroViewmodel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
+        tmIntroViewModel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     viewFlipperIntro?.displayedChild = 1
@@ -110,7 +106,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
             }
         })
 
-        tokomemberIntroViewmodel.tokomemberIntroSectionResultLiveData.observe(viewLifecycleOwner,{
+        tmIntroViewModel.tokomemberIntroSectionResultLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> renderSectionBenefit(it.data)
                 is Fail -> {}
@@ -122,21 +118,24 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     private fun populateUI(membershipData: MembershipData) {
 
         if(openBS){
+            //TODO use remote request
             val bundle = Bundle()
-            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", "")
+            val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+                TM_NOT_ELIGIBLE_TITLE,
+                TM_NOT_ELIGIBLE_DESC,
+                "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+                TM_NOT_ELIGIBLE_CTA
+            )
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-            val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
-            bottomsheet.show( childFragmentManager,"")
+            val bottomSheet = TokomemberBottomsheet.createInstance(bundle)
+            bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+                override fun onButtonClick(errorCount: Int) {
+                    bottomSheet.dismiss()
+                }
+            })
+            bottomSheet.show( childFragmentManager,"")
         }
-
-        val animation: Animation =
-            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_benefit_left)
-         cardTokmemberParent.startAnimation(animation)
-
-        val animation1: Animation =
-            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
-        buttonContainer.startAnimation(animation1)
-
+        animateViews()
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
         headerData?.let {
             tvTitle.text = it.title?.getOrNull(0)
@@ -146,10 +145,20 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
          setVideoView(
             videoUrl?:"")
 
-        val animation2: Animation =
-            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
-        frame_video.startAnimation(animation2)
+    }
 
+    private fun animateViews(){
+        val animationBenefit =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_benefit_left)
+        cardTokmemberParent.startAnimation(animationBenefit)
+
+        val animationIntro =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
+        buttonContainer.startAnimation(animationIntro)
+
+        val animationVideo =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
+        frame_video.startAnimation(animationVideo)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -168,8 +177,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     }
 
     override fun onButtonItemClick(position: Int) {
-        val intent = Intent(this.context, TokomemberDashCreateActivity::class.java)
-        intent.putExtra("cardID",cardID?:0)
+        val intent = Intent(this.context, TmDashCreateActivity::class.java)
+        intent.putExtra(BUNDLE_CARD_ID,cardID?:0)
         intent.putExtra(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         intent.putExtra(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         startActivity(intent)
@@ -253,7 +262,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        fun newInstance(bundle: Bundle?) = TokomemberDashIntroFragment().apply {
+        fun newInstance(bundle: Bundle?) = TmIntroFragment().apply {
             arguments = bundle
         }
     }

@@ -18,10 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-private const val TIME_THREE_SEC = 3000L
-private const val TIME_SECOND = 1000L
-private const val MINUTE_IN_HOUR = 60
-
 class TokomemberVideoView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

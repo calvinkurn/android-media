@@ -25,7 +25,6 @@ import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.TM_PREVIEW
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCouponValidateRequest
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponPreviewData
@@ -34,6 +33,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setDate
+import com.tokopedia.tokomember_seller_dashboard.util.DateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
@@ -372,6 +373,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun handleProgramPreValidateError() {
         setButtonState()
         val bundle = Bundle()
+        //TODO remote res
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             PROGRAM_VALIDATION_ERROR_TITLE,
             PROGRAM_VALIDATION_ERROR_DESC,
@@ -401,6 +403,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             0 -> ERROR_CREATING_CTA
             else -> ERROR_CREATING_CTA_RETRY
         }
+        //TODO remote res
         val bundle = Bundle()
         val tmIntroBottomSheetModel = TmIntroBottomsheetModel(
             title,
@@ -686,16 +689,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
                 if (programData != null) {
                     textFieldProgramStartDate.editText.setText(
-                        ProgramUpdateMapper.setDate(programData?.timeWindow?.startTime.toString())
+                        setDate(programData?.timeWindow?.startTime.toString())
                     )
                     textFieldProgramStartTime.editText.setText(
-                        ProgramUpdateMapper.setTime(programData?.timeWindow?.startTime.toString())
+                        setTime(programData?.timeWindow?.startTime.toString())
                     )
                     textFieldProgramEndDate.editText.setText(
-                        ProgramUpdateMapper.setDate(programData?.timeWindow?.endTime.toString())
+                        setDate(programData?.timeWindow?.endTime.toString())
                     )
                     textFieldProgramEndTime.editText.setText(
-                        ProgramUpdateMapper.setTime(programData?.timeWindow?.endTime.toString())
+                        setTime(programData?.timeWindow?.endTime.toString())
                     )
                 }
                 textFieldProgramStartDate.isEnabled = false
@@ -727,7 +730,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var year = ""
         context?.let {
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.YEAR, TokomemberProgramFragment.MAX_YEAR)
+            calMax.add(Calendar.YEAR, TmProgramFragment.MAX_YEAR)
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -736,7 +739,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 
             val calMin = Calendar.getInstance()
-            calMin.add(Calendar.YEAR, TokomemberProgramFragment.MIN_YEAR)
+            calMin.add(Calendar.YEAR, TmProgramFragment.MIN_YEAR)
             val yearMin = calMin.get(Calendar.YEAR)
             val monthMin = calMin.get(Calendar.MONTH)
             val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
