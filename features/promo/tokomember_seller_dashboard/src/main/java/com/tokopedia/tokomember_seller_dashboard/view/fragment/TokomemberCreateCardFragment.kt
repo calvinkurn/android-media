@@ -89,13 +89,11 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         if (context is TmOpenFragmentCallback) {
             tmOpenFragmentCallback =  context as TmOpenFragmentCallback
         } else {
             throw Exception(context.toString() )
         }
-
     }
 
     override fun onCreateView(
@@ -123,13 +121,16 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tokomemberCardResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    mCardBgTemplateList.addAll(it.data.cardTemplateImageList as ArrayList<CardTemplateImageListItem>)
+        tokomemberDashCreateViewModel.tmCardResultLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                 TokoLiveDataResult.STATUS.LOADING -> {
+                     containerViewFlipper.displayedChild = SHIMMER
+                 }
+                 TokoLiveDataResult.STATUS.SUCCESS -> {
+                    mCardBgTemplateList.addAll(it.data?.cardTemplateImageList as ArrayList<CardTemplateImageListItem>)
                     renderCardUi(it.data)
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorUiOnErrorData()
                 }
             }
@@ -180,7 +181,10 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     }
 
     private fun handleErrorUiOnErrorData(){
-        containerViewFlipper.displayedChild = 1
+        containerViewFlipper.displayedChild = ERROR
+        globalError.setActionClickListener {
+            tokomemberDashCreateViewModel.getCardInfo(arguments?.getInt("cardID")?:0)
+        }
     }
 
     private fun handleErrorUiOnUpdate(){
@@ -218,6 +222,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
         bundle.putInt(BUNDLE_SHOP_ID, shopID)
+        bundle.putInt("cardID",arguments?.getInt("cardID")?:0)
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
@@ -225,6 +230,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
+        containerViewFlipper.displayedChild = DATA
         shopID = data.card?.shopID?:0
         renderCardCarousel(data)
         mTmCardModifyInput =  TmCardModifyInput(
@@ -389,7 +395,8 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
             0 -> tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
             else -> {
                 (TokomemberDashIntroActivity.openActivity(
-                    shopID,"","",
+                    shopID, arguments?.getString(BUNDLE_SHOP_AVATAR)?:"",
+                        arguments?.getString(BUNDLE_SHOP_NAME)?:"",
                     false,
                     this.context
                 ))
@@ -398,9 +405,10 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     }
 
     companion object {
-        const val PROGRAM_TYPE = "PROGRAM_TYPE"
-        const val SHOP_ID = "SHOP_ID"
         const val TAG_CARD_CREATE = "CARD_CREATE"
+        const val DATA = 1
+        const val SHIMMER = 0
+        const val ERROR = 2
         fun newInstance(bundle: Bundle): TokomemberCreateCardFragment {
             return TokomemberCreateCardFragment().apply {
                 arguments = bundle

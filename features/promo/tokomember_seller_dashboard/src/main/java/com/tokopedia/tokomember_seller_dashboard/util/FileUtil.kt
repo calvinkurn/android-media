@@ -83,8 +83,8 @@ object FileUtil {
             "del_tm_coupon" + System.currentTimeMillis()
                 .toString() + ".png"
         val pictureFile = File(context.cacheDir,filename)
-        val bitmap = getBitmapFromView(drawView)
         try {
+            val bitmap = getBitmapFromView(drawView)
             pictureFile.createNewFile()
             val oStream = FileOutputStream(pictureFile)
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, oStream)

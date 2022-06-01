@@ -105,17 +105,20 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
-            when(it){
-                is Success -> {
-                    if (it.data.membershipGetProgramForm?.resultStatus?.code == "200") {
+        tokomemberDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                TokoLiveDataResult.STATUS.LOADING -> {
+                    containerViewFlipper.displayedChild = SHIMMER
+                }
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data?.membershipGetProgramForm?.resultStatus?.code == "200") {
                         renderProgramUI(it.data.membershipGetProgramForm)
                     }
                     else{
                         handleErrorOnDataError()
                     }
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
                     handleErrorOnDataError()
                 }
             }
@@ -128,18 +131,21 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                         onProgramUpdateSuccess()
                     }
                     else{
-                        onProgramUpdateSuccess()
+                        handleErrorOnUpdate()
                     }
                 }
                 is Fail ->{
-                    onProgramUpdateSuccess()
+                    handleErrorOnUpdate()
                 }
             }
         })
     }
 
     private fun handleErrorOnDataError(){
-
+        containerViewFlipper.displayedChild = ERROR
+        globalError.setActionClickListener {
+            callGQL(programActionType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0)
+        }
     }
 
     private fun handleErrorOnUpdate() {
@@ -250,6 +256,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+        containerViewFlipper.displayedChild = DATA
         addPremiumTransactionTextListener(membershipGetProgramForm?.programThreshold)
         addVipTransactionTextListener(membershipGetProgramForm?.programThreshold)
         if(programActionType == ProgramActionType.EXTEND){
@@ -352,15 +359,13 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?){
-        if(programActionType != ProgramActionType.EXTEND) {
-            val pre = textFieldTranskPremium.editText.text.toString()
-            val vip = textFieldTranskVip.editText.text.toString()
-            if (membershipGetProgramForm != null) {
-                membershipGetProgramForm.programForm?.tierLevels?.getOrNull(0)?.threshold =
-                    pre.toIntSafely()
-                membershipGetProgramForm.programForm?.tierLevels?.getOrNull(1)?.threshold =
-                    vip.toIntSafely()
-            }
+        val pre = textFieldTranskPremium.editText.text.toString()
+        val vip = textFieldTranskVip.editText.text.toString()
+        if (membershipGetProgramForm != null) {
+            membershipGetProgramForm.programForm?.tierLevels?.getOrNull(0)?.threshold =
+                pre.replace(".","").toIntSafely()
+            membershipGetProgramForm.programForm?.tierLevels?.getOrNull(1)?.threshold =
+                vip.replace(".","").toIntSafely()
         }
         if(selectedCalendar != null) {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime =
@@ -377,7 +382,12 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             context?.let { TokomemberLoaderDialog.showLoaderDialog(it, "Makan pepaya minum jus durian\n" +
                     "Tunggu ya, program lagi disiapkan!") }
         }
-        programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0, periodInMonth)
+        programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(
+            membershipGetProgramForm,
+            arguments?.getInt(BUNDLE_PROGRAM_TYPE) ?: 0,
+            periodInMonth,
+            arguments?.getInt("cardID") ?: 0
+        )
         tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
     }
 
@@ -435,6 +445,9 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     companion object {
         const val MAX_YEAR = 10
         const val MIN_YEAR = -90
+        const val DATA = 1
+        const val SHIMMER = 0
+        const val ERROR = 2
         fun newInstance(extras: Bundle?) = TokomemberProgramFragment().apply {
             arguments = extras
         }

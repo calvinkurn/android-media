@@ -8,6 +8,9 @@
     android:clickable="true"
     tools:ignore="MissingDefaultResource">
 
+    <include
+        layout="@layout/tm_dash_program_shimmer"/>
+
     <FrameLayout
         android:id="@+id/containerParent"
         android:layout_width="match_parent"

@@ -15,6 +15,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -62,12 +63,12 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
-            when(it){
-                is Success -> {
-                    setMainUi(it.data.membershipGetProgramForm)
+        tokomemberDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+            when(it.status){
+                TokoLiveDataResult.STATUS.SUCCESS -> {
+                    setMainUi(it.data?.membershipGetProgramForm)
                 }
-                is Fail -> {
+                TokoLiveDataResult.STATUS.ERROR -> {
 
                 }
             }

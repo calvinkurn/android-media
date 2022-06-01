@@ -124,7 +124,7 @@ data class ProgramForm(
 	val timeWindow: TimeWindow? = null,
 
 	@SerializedName("programAttributes")
-	val programAttributes: List<ProgramAttributesItem?>? = null,
+	val programAttributes: List<ProgramAttributesItem?>? = arrayListOf(),
 
 	@SerializedName("cardID")
 	val cardID: Int? = null,

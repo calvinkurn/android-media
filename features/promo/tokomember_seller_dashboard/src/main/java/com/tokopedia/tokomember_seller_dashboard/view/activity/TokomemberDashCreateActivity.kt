@@ -15,14 +15,17 @@ import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.P
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmSingleCouponCreateFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashPreviewFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmMultipleCuponCreateFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
 
 class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
@@ -53,7 +56,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 intent.extras?.let { TokomemberProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
             COUPON ->{
-                intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+                intent.extras?.let { TmSingleCouponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 intent.extras?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -123,10 +126,13 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
         fun openActivity(
             activity: Activity?,
             screenType: Int,
+            voucherId: Int,
         ){
             activity?.let {
                 val intent = Intent(it, TokomemberDashCreateActivity::class.java)
                 intent.putExtra(BUNDLE_PROGRAM, screenType)
+                intent.putExtra(BUNDLE_VOUCHER_ID, voucherId)
+                intent.putExtra(ACTION_EDIT, true)
                 it.startActivity(intent)
             }
         }

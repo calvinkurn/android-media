@@ -9,6 +9,8 @@
     android:measureAllChildren="false"
     tools:ignore="MissingDefaultResource">
 
+    <include layout="@layout/tm_coupon_creation_shimmer"/>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
@@ -301,7 +303,5 @@ syarat  ketentuan TokoMember." />
         app:globalerrors_type="SERVER_ERROR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
-    <include layout="@layout/tm_coupon_creation_shimmer"/>
 
 </ViewFlipper>

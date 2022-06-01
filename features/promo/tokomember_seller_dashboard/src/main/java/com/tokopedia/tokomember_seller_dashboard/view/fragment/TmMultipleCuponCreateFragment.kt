@@ -131,18 +131,18 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tmDashCreateViewModel.tmCouponInitialLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 TokoLiveDataResult.STATUS.LOADING -> {
-                    containerViewFlipper.displayedChild = 2
+                    containerViewFlipper.displayedChild = SHIMMER
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     tmToken = it.data?.getInitiateVoucherPage?.data?.token ?: ""
                     imageSquare = it.data?.getInitiateVoucherPage?.data?.imgBannerIgPost ?: ""
                     imagePortrait = it.data?.getInitiateVoucherPage?.data?.imgBannerIgStory ?: ""
-                    containerViewFlipper.displayedChild = 0
+                    containerViewFlipper.displayedChild = DATA
                     renderProgram()
                     renderMultipleCoupon()
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
-                    containerViewFlipper.displayedChild = 1
+                    handleDataError()
                 }
             }
         })
@@ -324,6 +324,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private fun closeLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
+    }
+
+    private fun handleDataError(){
+        containerViewFlipper.displayedChild = ERROR
+        globalError.setActionClickListener {
+            tmDashCreateViewModel.getInitialCouponData(CREATE, "")
+        }
     }
 
     private fun handleProgramValidateNetworkError() {
@@ -825,6 +832,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val DATA = 1
+        const val SHIMMER = 0
+        const val ERROR = 2
 
         fun newInstance(bundle: Bundle): TmMultipleCuponCreateFragment {
             return TmMultipleCuponCreateFragment().apply {

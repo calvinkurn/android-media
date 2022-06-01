@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -71,6 +72,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
         )
         observeViewModel()
+        renderButton()
     }
 
     override fun getScreenName() = ""
@@ -87,6 +89,7 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     //Open Dashboard
+                    //startActivityForResult(Intent(Tok))
                 }
                 is Fail -> {
                     //handleError
@@ -109,6 +112,12 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
             progressBarHeight = ProgressBarUnify.SIZE_SMALL
             setValue(90, false)
+        }
+    }
+
+    private fun renderButton(){
+        btnPreview.apply {
+            tokomemberDashCreateViewModel.createCoupon(tmCouponCreateUnifyRequest)
         }
     }
 

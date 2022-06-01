@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper
 import android.annotation.SuppressLint
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramAttributesItem
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
@@ -15,7 +16,8 @@ object ProgramUpdateMapper {
     fun formToUpdateMapper(
         membershipGetProgramForm: MembershipGetProgramForm?,
         programType: Int,
-        periodInMonth: Int
+        periodInMonth: Int,
+        cardIdCreate:Int = 0
     ): ProgramUpdateDataInput {
         var actionType = ""
         val timeWindow = TimeWindow(
@@ -31,7 +33,7 @@ object ProgramUpdateMapper {
             this?.forEach {
                 it?.isUseMultiplier = true
                 it?.multiplierRates = 1
-                it?.minimumTransaction = 5000
+                it?.minimumTransaction = 50000
             }
         }
         val tierLevels = membershipGetProgramForm?.programForm?.tierLevels
@@ -39,8 +41,10 @@ object ProgramUpdateMapper {
             this.forEach{
                 it?.metadata = "metadata"
             }
+            this.getOrNull(0)?.name = "Premium"
+            this.getOrNull(1)?.name = "VIP"
         }
-        var programUpdateResponse = ProgramUpdateDataInput(
+        val programUpdateResponse = ProgramUpdateDataInput(
             id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
             cardID = membershipGetProgramForm?.programForm?.cardID,
             name = membershipGetProgramForm?.programForm?.name,
@@ -59,17 +63,19 @@ object ProgramUpdateMapper {
                         it?.id = 0
                     }
                 }
-                programAttributes.apply {
-                    this?.forEach {
-                        it?.id = 0
-                        it?.programID = 0
-                        it?.tierLevelID = 0
-                    }
-                }
+                val programAttributeListItem = ProgramAttributesItem(
+                    isUseMultiplier = true,
+                    multiplierRates = 1,
+                    minimumTransaction = 50000,
+                    id = 0,
+                    programID = 0,
+                    tierLevelID = 0,
+                )
                 programUpdateResponse.apply {
                     this.tierLevels = tierLevels
-                    this.programAttributes = programAttributes
+                    this.programAttributes = listOf(programAttributeListItem,programAttributeListItem)
                     this.actionType = actionType
+                    this.cardID = cardIdCreate
                 }
             }
             ProgramActionType.EXTEND ->{
@@ -104,7 +110,7 @@ object ProgramUpdateMapper {
     }
 
     fun setTime(time: String): String {
-        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":")
+        val selectedTime  = time.substringAfter(" ").substringBefore(" ").substringBeforeLast(":").substringAfter("T")
         return "$selectedTime WIB"
     }
 

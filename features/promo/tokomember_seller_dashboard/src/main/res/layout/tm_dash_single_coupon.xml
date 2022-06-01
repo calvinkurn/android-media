@@ -137,7 +137,7 @@
             <com.tokopedia.tokomember_common_widget.TmCouponViewPreview
                 android:id="@+id/ivPreviewCoupon"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/tm_bg_round_corner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

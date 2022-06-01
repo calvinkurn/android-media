@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
+    <include layout="@layout/tm_dash_card_create_shimmer"/>
+
     <FrameLayout
         android:id="@+id/containerParent"
         android:layout_width="match_parent"
