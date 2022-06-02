@@ -28,7 +28,13 @@ data class BenefitPackageResponse(
         data class Result(
             @Expose
             @SerializedName("period")
-            val period: String? = ""
+            val period: String? = "",
+            @Expose
+            @SerializedName("itemSold")
+            val itemSold: Double? = 0.0,
+            @Expose
+            @SerializedName("niv")
+            val netIncomeValue: Double? = 0.0
         )
     }
 
@@ -44,6 +50,12 @@ data class BenefitPackageResponse(
     data class CurrentPmGradeModel(
         @Expose
         @SerializedName("grade_name")
-        val gradeName: String? = ""
+        val gradeName: String? = "",
+        @Expose
+        @SerializedName("shop_level")
+        val shopLevel: Int? = 0,
+        @Expose
+        @SerializedName("shop_score")
+        val shopScore: Int? = 0
     )
 }

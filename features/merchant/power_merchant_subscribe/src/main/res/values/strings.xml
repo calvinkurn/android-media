@@ -111,6 +111,7 @@
     <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
+    <string name="pm_niv_threshold_term_membership">Target: min. %1$s dalam 90 hari terakhir</string>
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_order_term_description"><![CDATA[Tokomu harus mendapatkan <b>min. %1$s pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!]]></string>
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
@@ -166,7 +167,7 @@
     <string name="pm_additional_info_benefit_package_section">• Level toko akan diperbarui setiap bulan di hari Senin pertama.
          &lt;br /&gt;• Kenaikan paket keuntungan dilakukan tiap bulan &amp; penurunan setiap kuartal.
     </string>
-    
+
     <string name="pm_date_based_on_your_sell"><![CDATA[Berdasarkan penjualanmu di [%s], kamu dapat paket keuntungan <b>%s</b>]]></string>
     <string name="pm_title_profit_package_section">Kamu dapat paket keuntungan %s</string>
     <string name="pm_next_update_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Tidak ada penurunan paket keuntungan pada update berikutnya.]]></string>
@@ -252,4 +253,5 @@
     <string name="pm_tnc_description_pm_deactivation"><![CDATA[Dengan kembali jadi Regular Merchant, saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku]]></string>
     <string name="pm_new_label">Baru</string>
     <string name="pm_cancel_pm_deactivation_message">Permintaan untuk berhenti dari program Power Merchant dibatalkan.</string>
+    <string name="pm_header_terms_status">Capai target ke <b>Power Merchant PRO!</b></string>
 </resources>

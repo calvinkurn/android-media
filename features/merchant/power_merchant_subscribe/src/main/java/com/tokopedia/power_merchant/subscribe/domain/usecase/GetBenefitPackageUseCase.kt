@@ -39,7 +39,7 @@ class GetBenefitPackageUseCase @Inject constructor(
     }
 
     companion object {
-        const val SHOP_ID_PARAM = "shopId"
+        private const val SHOP_ID_PARAM = "shopId"
 
         val BENEFIT_PACKAGE_QUERY = """
             query BenefitPackage(${'$'}shopId: Int!) {
@@ -47,27 +47,31 @@ class GetBenefitPackageUseCase @Inject constructor(
                   shopID: "${'$'}shopId"
                   source: "android"
                   lang: "id"
-                }){
-                   result {
+               }){
+                  result {
+                     shopLevel
                      period
-                   }
-                   error {
+                     itemSold
+                     niv
+                  }
+                  error {
                      message
-                   }
-                }
-                  goldGetPMGradeBenefitInfo(
-                     shop_id: ${'$'}shopId,
-                     source: "android-goldmerchant", 
-                     lang: "id", 
-                     device: "android",
-                     fields: ["current_pm_grade", "next_level_benefit_package_list"]
-                  ) {
-                      next_monthly_refresh_date
-                      current_pm_grade {
-                        grade_name
-                      }
-                  }     
+                  }
+               }
+               goldGetPMGradeBenefitInfo(
+                  shop_id: ${'$'}shopId,
+                  source: "android-goldmerchant", 
+                  lang: "id", 
+                  device: "android",
+                  fields: ["current_pm_grade", "next_level_benefit_package_list"]
+               ){
+                  next_monthly_refresh_date
+                  current_pm_grade {
+                    grade_name
+                    shop_score
+                  }
+               }
             }
-        """.trimIndent()
+        """.trim()
     }
 }

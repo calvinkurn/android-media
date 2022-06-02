@@ -22,7 +22,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -31,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
@@ -40,7 +40,6 @@ import com.tokopedia.power_merchant.subscribe.databinding.FragmentMembershipDeta
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.MembershipViewPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.MembershipBasicInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.MembershipDetailViewModel
 import com.tokopedia.unifycomponents.setIconUnify
@@ -76,7 +75,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
     private var binding: FragmentMembershipDetailBinding? = null
     private val pagerAdapter by lazy { MembershipViewPagerAdapter() }
-    private var basicInfo: MembershipBasicInfoUiModel? = null
+    private var data: BenefitPackageHeaderUiModel? = null
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -162,10 +161,10 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         Timber.e(throwable)
     }
 
-    private fun onSuccessPmShopInfo(data: MembershipBasicInfoUiModel) {
-        basicInfo = data
-        showHeaderInfo(data.headerData)
-        setupPagerItems(data.pmShopInfo, data.headerData.gradeName)
+    private fun onSuccessPmShopInfo(data: BenefitPackageHeaderUiModel) {
+        this.data = data
+        showHeaderInfo(data)
+        setupPagerItems()
         setupTabs()
         sendImpressionTrackerEvent()
         showShopPerformanceFooterInfo()
@@ -182,12 +181,12 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
 
     private fun sendClickShopPerformanceEvent() {
-        val currentGrade = basicInfo?.headerData?.gradeName.orEmpty()
+        val currentGrade = data?.gradeName.orEmpty()
         tracker.sendClickLearnShopPerformanceEvent(currentGrade)
     }
 
     private fun sendImpressionTrackerEvent() {
-        val currentGrade = basicInfo?.headerData?.gradeName.orEmpty()
+        val currentGrade = data?.gradeName.orEmpty()
         tracker.sendImpressionMembershipPageEvent(currentGrade)
     }
 
@@ -311,9 +310,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     private fun setUnifyTabIconColorFilter(view: View?, saturation: Float) {
         val colorMatrix = ColorMatrix()
         colorMatrix.setSaturation(saturation)
-        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
-        view?.findViewById<IconUnify>(com.tokopedia.unifycomponents.R.id.tab_item_icon_unify_id)?.colorFilter =
-            colorMatrixColorFilter
+        view?.findViewById<IconUnify>(com.tokopedia.unifycomponents.R.id.tab_item_icon_unify_id)
+            ?.colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 
     private fun showHeaderInfo(data: BenefitPackageHeaderUiModel) {
@@ -336,33 +334,39 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupPagerItems(shopInfo: PMShopInfoUiModel, gradeName: String) {
+    private fun setupPagerItems() {
         pagerAdapter.clearItems()
 
         pagerAdapter.addItem(
             getMembershipData(
-                shopInfo,
-                getPowerMerchantPager(gradeName)
+                gradeBenefit = getPowerMerchantPager(),
+                orderThreshold = Constant.MembershipConst.PM_ORDER_THRESHOLD,
+                netIncomeThreshold = Constant.MembershipConst.PM_INCOME_THRESHOLD,
+                netIncomeThresholdFmt = Constant.MembershipConst.PM_INCOME_THRESHOLD_FMT
             )
         )
         pagerAdapter.addItem(
             getMembershipData(
-                shopInfo,
-                getPmProAdvancePager(shopInfo.shopLevel, gradeName)
+                gradeBenefit = getPmProAdvancePager(),
+                orderThreshold = Constant.MembershipConst.PM_PRO_ADVANCE_ORDER_THRESHOLD,
+                netIncomeThreshold = Constant.MembershipConst.PM_PRO_ADVANCE_INCOME_THRESHOLD,
+                netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_ADVANCE_INCOME_THRESHOLD_FMT
             )
         )
-
         pagerAdapter.addItem(
             getMembershipData(
-                shopInfo,
-                getPmProExpertPager(shopInfo.shopLevel, gradeName)
+                gradeBenefit = getPmProExpertPager(),
+                orderThreshold = Constant.MembershipConst.PM_PRO_EXPERT_ORDER_THRESHOLD,
+                netIncomeThreshold = Constant.MembershipConst.PM_PRO_EXPERT_INCOME_THRESHOLD,
+                netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_EXPERT_INCOME_THRESHOLD_FMT
             )
         )
-
         pagerAdapter.addItem(
             getMembershipData(
-                shopInfo,
-                getPmProUltimatePager(shopInfo.shopLevel, gradeName)
+                gradeBenefit = getPmProUltimatePager(),
+                orderThreshold = Constant.MembershipConst.PM_PRO_ULTIMATE_ORDER_THRESHOLD,
+                netIncomeThreshold = Constant.MembershipConst.PM_PRO_ULTIMATE_INCOME_THRESHOLD,
+                netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_ULTIMATE_INCOME_THRESHOLD_FMT
             )
         )
 
@@ -370,21 +374,24 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
 
     private fun getMembershipData(
-        shopInfo: PMShopInfoUiModel,
-        gradeBenefit: PMGradeWithBenefitsUiModel
+        gradeBenefit: PMGradeWithBenefitsUiModel,
+        orderThreshold: Long,
+        netIncomeThreshold: Long,
+        netIncomeThresholdFmt: String
     ): MembershipDataUiModel {
         return MembershipDataUiModel(
-            shopScore = shopInfo.shopScore,
-            shopScoreThreshold = shopInfo.shopScorePmProThreshold,
-            totalOrder = shopInfo.itemSoldOneMonth,
-            orderThreshold = shopInfo.itemSoldPmProThreshold,
-            netIncome = shopInfo.netItemValueOneMonth,
-            netIncomeThreshold = shopInfo.netItemValuePmProThreshold,
+            shopScore = data?.shopScore.orZero(),
+            totalOrder = data?.totalOrder.orZero(),
+            netIncome = data?.netIncome.orZero(),
+            orderThreshold = orderThreshold,
+            netIncomeThreshold = netIncomeThreshold,
+            netIncomeThresholdFmt = netIncomeThresholdFmt,
             gradeBenefit = gradeBenefit
         )
     }
 
-    private fun getPowerMerchantPager(gradeName: String): PMGradeWithBenefitsUiModel.PM {
+    private fun getPowerMerchantPager(): PMGradeWithBenefitsUiModel.PM {
+        val gradeName = data?.gradeName.orEmpty()
         return PMGradeWithBenefitsUiModel.PM(
             gradeName = Constant.POWER_MERCHANT,
             isTabActive = gradeName.equals(PMConstant.ShopGrade.PM, true),
@@ -399,13 +406,11 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun getPmProAdvancePager(
-        shopLevel: Int,
-        gradeName: String
-    ): PMGradeWithBenefitsUiModel.PMProAdvance {
+    private fun getPmProAdvancePager(): PMGradeWithBenefitsUiModel.PMProAdvance {
+        val gradeName: String = data?.gradeName.orEmpty()
         return PMGradeWithBenefitsUiModel.PMProAdvance(
             gradeName = Constant.PM_PRO_ADVANCED,
-            isTabActive = shopLevel == PMConstant.ShopLevel.TWO && gradeName.equals(
+            isTabActive = gradeName.equals(
                 PMConstant.ShopGrade.PRO_ADVANCE,
                 true
             ),
@@ -420,13 +425,11 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun getPmProExpertPager(
-        shopLevel: Int,
-        gradeName: String
-    ): PMGradeWithBenefitsUiModel.PMProExpert {
+    private fun getPmProExpertPager(): PMGradeWithBenefitsUiModel.PMProExpert {
+        val gradeName: String = data?.gradeName.orEmpty()
         return PMGradeWithBenefitsUiModel.PMProExpert(
             gradeName = Constant.PM_PRO_EXPERT,
-            isTabActive = shopLevel == PMConstant.ShopLevel.THREE && gradeName.equals(
+            isTabActive = gradeName.equals(
                 PMConstant.ShopGrade.PRO_EXPERT,
                 true
             ),
@@ -441,13 +444,11 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun getPmProUltimatePager(
-        shopLevel: Int,
-        gradeName: String
-    ): PMGradeWithBenefitsUiModel.PMProUltimate {
+    private fun getPmProUltimatePager(): PMGradeWithBenefitsUiModel.PMProUltimate {
+        val gradeName: String = data?.gradeName.orEmpty()
         return PMGradeWithBenefitsUiModel.PMProUltimate(
             gradeName = Constant.PM_PRO_ULTIMATE,
-            isTabActive = shopLevel == PMConstant.ShopLevel.FOUR && gradeName.equals(
+            isTabActive = gradeName.equals(
                 PMConstant.ShopGrade.PRO_ULTIMATE,
                 true
             ),

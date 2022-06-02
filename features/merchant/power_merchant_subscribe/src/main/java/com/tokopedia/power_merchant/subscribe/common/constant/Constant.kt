@@ -89,4 +89,21 @@ object Constant {
         const val IMG_PM_REGISTRATION =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/img_pm_registration_banner.png"
     }
+
+    object MembershipConst {
+        const val PM_ORDER_THRESHOLD = 3L
+        const val PM_PRO_ADVANCE_ORDER_THRESHOLD = 3L
+        const val PM_PRO_EXPERT_ORDER_THRESHOLD = 50L
+        const val PM_PRO_ULTIMATE_ORDER_THRESHOLD = 1500L
+
+        const val PM_INCOME_THRESHOLD = 350L
+        const val PM_PRO_ADVANCE_INCOME_THRESHOLD = PM_INCOME_THRESHOLD
+        const val PM_PRO_EXPERT_INCOME_THRESHOLD = 10000000L
+        const val PM_PRO_ULTIMATE_INCOME_THRESHOLD = 300000000L
+
+        const val PM_INCOME_THRESHOLD_FMT = "Rp350.000"
+        const val PM_PRO_ADVANCE_INCOME_THRESHOLD_FMT = PM_INCOME_THRESHOLD_FMT
+        const val PM_PRO_EXPERT_INCOME_THRESHOLD_FMT = "Rp10 juta"
+        const val PM_PRO_ULTIMATE_INCOME_THRESHOLD_FMT = "Rp300 juta"
+    }
 }

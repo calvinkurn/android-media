@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
@@ -45,13 +46,13 @@ class MembershipPmCheckListView : LinearLayout {
     }
 
     fun show(data: MembershipDataUiModel) {
-        showTitle(data)
+        showTitle()
         showShopScoreCheckList(data)
         showOrderCheckList(data)
         showNetIncomeCheckList(data)
     }
 
-    private fun showTitle(data: MembershipDataUiModel) {
+    private fun showTitle() {
         binding.tvPmMembershipChecklistTitle.text = context.getString(
             R.string.pm_membership_current_grade_pm_title
         )
@@ -59,9 +60,6 @@ class MembershipPmCheckListView : LinearLayout {
 
     private fun showNetIncomeCheckList(data: MembershipDataUiModel) {
         val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.netIncome.toString())
-        val netIncomeThresholdStr = CurrencyFormatHelper.convertToRupiah(
-            data.netIncomeThreshold.toString()
-        )
         val netIncomeFmt = if (data.isEligibleIncome()) {
             context.getString(R.string.pm_net_income, eligibleColor, netIncomeStr)
         } else {
@@ -76,7 +74,7 @@ class MembershipPmCheckListView : LinearLayout {
             imgPmMembershipChecklist3.loadImage(checkListIcon)
             tvPmMembershipChecklistNetIncome.text = netIncomeFmt.parseAsHtml()
             tvPmMembershipChecklistNetIncomeDescription.text = context.getString(
-                R.string.pm_niv_threshold_term, netIncomeThresholdStr
+                R.string.pm_niv_threshold_term, data.netIncomeThresholdFmt
             )
         }
     }
@@ -110,7 +108,7 @@ class MembershipPmCheckListView : LinearLayout {
     }
 
     private fun showShopScoreCheckList(data: MembershipDataUiModel) {
-        val shopScoreFmt = if (data.isEligibleShopScore()) {
+        val shopScoreFmt = if (isEligibleShopScore(data.shopScore)) {
             context.getString(
                 R.string.pm_term_shop_score,
                 eligibleColor,
@@ -123,7 +121,7 @@ class MembershipPmCheckListView : LinearLayout {
                 data.shopScore.toString()
             )
         }
-        val checkListIcon = if (data.isEligibleShopScore()) {
+        val checkListIcon = if (isEligibleShopScore(data.shopScore)) {
             R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_not_checked
@@ -133,8 +131,12 @@ class MembershipPmCheckListView : LinearLayout {
             tvPmMembershipChecklistShopScore.text = shopScoreFmt.parseAsHtml()
             tvPmMembershipChecklistShopScoreDescription.text = context.getString(
                 R.string.pm_membership_shop_score_threshold,
-                data.shopScoreThreshold
+                PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
             )
         }
+    }
+
+    private fun isEligibleShopScore(shopScore: Int): Boolean {
+        return shopScore >= PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
     }
 }

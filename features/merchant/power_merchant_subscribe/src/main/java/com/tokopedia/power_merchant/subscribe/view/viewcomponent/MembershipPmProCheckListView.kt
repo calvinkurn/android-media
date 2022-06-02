@@ -68,9 +68,6 @@ class MembershipPmProCheckListView : LinearLayout {
 
     private fun showNetIncomeCheckList(data: MembershipDataUiModel) {
         val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.netIncome.toString())
-        val netIncomeThresholdStr = CurrencyFormatHelper.convertToRupiah(
-            data.netIncomeThreshold.toString()
-        )
         val netIncomeFmt = if (data.isEligibleIncome()) {
             context.getString(R.string.pm_net_income, eligibleColor, netIncomeStr)
         } else {
@@ -79,7 +76,7 @@ class MembershipPmProCheckListView : LinearLayout {
         binding.run {
             tvPmMembershipChecklistNetIncome.text = netIncomeFmt.parseAsHtml()
             tvPmMembershipChecklistNetIncomeDescription.text = context.getString(
-                R.string.pm_niv_threshold_term, netIncomeThresholdStr
+                R.string.pm_niv_threshold_term_membership, data.netIncomeThresholdFmt
             )
         }
     }
@@ -101,7 +98,7 @@ class MembershipPmProCheckListView : LinearLayout {
         binding.run {
             tvPmMembershipChecklistOrder.text = orderFmt.parseAsHtml()
             tvPmMembershipChecklistOrderDescription.text = context.getString(
-                R.string.pm_niv_threshold_term, data.orderThreshold.toString()
+                R.string.pm_niv_threshold_term_membership, data.orderThreshold.toString()
             )
         }
     }

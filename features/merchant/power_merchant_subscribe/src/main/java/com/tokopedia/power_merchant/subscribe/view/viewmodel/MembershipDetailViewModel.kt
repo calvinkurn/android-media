@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.power_merchant.subscribe.domain.usecase.GetMembershipBasicInfoUseCase
-import com.tokopedia.power_merchant.subscribe.view.model.MembershipBasicInfoUiModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetBenefitPackageUseCase
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,21 +21,22 @@ import javax.inject.Inject
  */
 
 class MembershipDetailViewModel @Inject constructor(
-    private val getMembershipBasicInfo: Lazy<GetMembershipBasicInfoUseCase>,
+    private val getShopScoreUpdatePeriod: Lazy<GetBenefitPackageUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    val membershipBasicInfo: LiveData<Result<MembershipBasicInfoUiModel>>
+    val membershipBasicInfo: LiveData<Result<BenefitPackageHeaderUiModel>>
         get() = _membershipBasicInfo
 
-    private val _membershipBasicInfo = MutableLiveData<Result<MembershipBasicInfoUiModel>>()
+    private val _membershipBasicInfo = MutableLiveData<Result<BenefitPackageHeaderUiModel>>()
 
     fun getMembershipBasicInfo() {
         launchCatchError(block = {
             val shopId = userSession.get().shopId
+            getShopScoreUpdatePeriod.get().setParams(shopId.toLongOrZero())
             val result = withContext(dispatchers.io) {
-                getMembershipBasicInfo.get().execute(shopId)
+                getShopScoreUpdatePeriod.get().executeOnBackground()
             }
             _membershipBasicInfo.value = Success(result)
         }, onError = {

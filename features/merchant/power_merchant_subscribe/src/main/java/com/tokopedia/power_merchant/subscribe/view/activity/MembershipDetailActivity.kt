@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.MembershipDetailFragment
@@ -20,6 +21,7 @@ class MembershipDetailActivity : BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
 
         initInjector()
+        title = getString(R.string.pm_benefit_package_title_activity)
     }
 
     override fun getNewFragment(): Fragment {
