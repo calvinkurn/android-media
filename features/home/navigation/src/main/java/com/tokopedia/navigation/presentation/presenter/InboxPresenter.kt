@@ -202,27 +202,13 @@ class InboxPresenter @Inject constructor(
     }
 
     fun addWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
-        if (model.isTopAds) {
-            val params = RequestParams.create()
-            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    actionListener.onErrorAddWishList(e, model.productId.toString())
-                }
-
-                override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null) {
-                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true),
-                            model.productId.toString())
-                    }
-                }
+        addToWishListV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+        addToWishListV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
+            onError = {
+                actionListener.onErrorAddWishList(it, model.productId.toString())
             })
-        } else {
-            doAddToWishlistV2(model, actionListener)
-        }
     }
 
     private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
@@ -245,16 +231,6 @@ class InboxPresenter @Inject constructor(
                 override fun onSuccessRemoveWishlist(productId: String?) {
                     // do nothing
                 }
-            })
-    }
-
-    private fun doAddToWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
-        addToWishListV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        addToWishListV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())},
-            onError = {
-                actionListener.onErrorAddWishList(it, model.productId.toString())
             })
     }
 

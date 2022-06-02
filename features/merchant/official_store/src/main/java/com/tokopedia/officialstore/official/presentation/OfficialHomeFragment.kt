@@ -36,6 +36,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertTo
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -62,6 +63,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -394,6 +396,9 @@ class OfficialHomeFragment :
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                             }
                         }
+                        if (item.isTopAds) {
+                            hitWishlistTopadsClickUrl(item)
+                        }
                     }
 
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
@@ -436,6 +441,18 @@ class OfficialHomeFragment :
             item.productId,
             item.isTopAds
         )
+    }
+
+    private fun hitWishlistTopadsClickUrl(item: RecommendationItem) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+            )
+        }
     }
 
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
