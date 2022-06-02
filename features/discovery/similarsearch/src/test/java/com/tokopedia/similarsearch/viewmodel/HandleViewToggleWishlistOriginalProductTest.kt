@@ -80,9 +80,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
 
         `When handle view toggle wishlistV2 Original product`()
 
-        `Then verify add wishlistV2 API is called with product id equals to Original product id`(
-            originalProduct, userId
-        )
+        `Then verify add wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
     }
 
     private fun `Then verify add wishlist API is called with product id equals to Original product id`(
@@ -129,9 +127,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
 
         `When handle view toggle wishlistV2 Original product`()
 
-        `Then verify remove wishlistV2 API is called with product id equals to Original product id`(
-            originalProduct, userId
-        )
+        `Then verify remove wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
     }
 
     private fun `Then verify remove wishlist API is called with product id equals to Original product id`(
@@ -181,6 +177,8 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         `When handle view toggle wishlistV2 Original product`()
 
         `Then verify add wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
+        `Then assert add wishlistV2 success field is true`()
+        `Then assert Original product is wishlisted is true, and update wishlist Original product event is true`()
     }
 
     private fun `Given add wishlist API will be successful`(
@@ -208,6 +206,24 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
             true,
             "Add wishlist event should be true"
+        )
+    }
+
+    private fun `Then assert add wishlistV2 success field is true`() {
+        val addWishlistEventLiveData = similarSearchViewModel.getAddWishlistV2EventLiveData().value
+
+        addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+            AddToWishlistV2Response.Data.WishlistAddV2(success = true),
+            "Add wishlistV2 field should return success"
+        )
+    }
+
+    private fun `Then assert remove wishlistV2 success field is true`() {
+        val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistV2EventLiveData().value
+
+        removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
+            DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true),
+            "Remove wishlistV2 field should return success"
         )
     }
 
@@ -342,6 +358,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         `When handle view toggle wishlistV2 Original product`()
 
         `Then verify remove wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
+        `Then assert Original product is wishlisted is false, and update wishlist Original product event is false`()
     }
 
     private fun `Given remove wishlist API will be successful`(
@@ -365,15 +382,6 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
 
     private fun `Then assert remove wishlist event is true`() {
         val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistEventLiveData().value
-
-        removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
-            true,
-            "Remove wishlist event should be true"
-        )
-    }
-
-    private fun `Then assert remove wishlistV2 event is true`() {
-        val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistV2EventLiveData().value
 
         removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
             true,
@@ -426,6 +434,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         `When handle view toggle wishlistV2 Original product`()
 
         `Then verify remove wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
+        `Then assert Original product is wishlisted stays true, and update wishlist Original product event is null`()
     }
 
     private fun `Given remove wishlist API will fail`(
@@ -441,8 +450,6 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
             )
         }
     }
-
-
 
     private fun `Given remove wishlistV2 API will fail`() {
         val mockThrowable = mockk<Throwable>("fail")
