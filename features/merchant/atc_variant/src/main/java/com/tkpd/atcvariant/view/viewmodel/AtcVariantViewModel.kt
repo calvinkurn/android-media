@@ -26,6 +26,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -68,7 +69,7 @@ class AtcVariantViewModel @Inject constructor(
 
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
-    private var minicartData: MutableMap<String, MiniCartItem>? = null
+    private var minicartData: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     private var variantActivityResult: ProductVariantResult = ProductVariantResult()
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
@@ -317,12 +318,12 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem>?) {
+    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem.MiniCartItemProduct>?) {
         if (miniCart == null) return
         miniCart.forEach {
-            localQuantityData[it.productId] = it.quantity
+                localQuantityData[it.productId] = it.quantity
+            }
         }
-    }
 
     private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         /**
@@ -341,7 +342,7 @@ class AtcVariantViewModel @Inject constructor(
                     extParams = aggregatorParams.extParams
             )
             aggregatorData = result.variantAggregator
-            minicartData = result.miniCartData?.toMutableMap()
+            minicartData = result.miniCartData?.mapProductsWithProductId()?.toMutableMap()
             if (aggregatorParams.pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
             }
@@ -397,7 +398,7 @@ class AtcVariantViewModel @Inject constructor(
         val selectedMiniCartData = minicartData?.get(productId)
 
         if (selectedMiniCartData == null) {
-            minicartData?.set(productId, MiniCartItem(
+            minicartData?.set(productId, MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -492,7 +493,7 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
+    private fun getUpdateCartUseCase(params: MiniCartItem.MiniCartItemProduct, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
             val updateCartRequest = UpdateCartRequest(
@@ -590,7 +591,7 @@ class AtcVariantViewModel @Inject constructor(
         return aggregatorData?.nearestWarehouse?.get(productId)
     }
 
-    private fun getSelectedMiniCartItem(productId: String): MiniCartItem? {
+    private fun getSelectedMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         return minicartData?.get(productId)
     }
 

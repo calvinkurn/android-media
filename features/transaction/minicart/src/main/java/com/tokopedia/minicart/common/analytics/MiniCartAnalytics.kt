@@ -54,6 +54,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_CHECKOUT = "checkout"
         const val EVENT_NAME_CLICK_PG = "clickPG"
         const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+        const val EVENT_NAME_CLICK_PP = "clickPP"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
@@ -87,6 +88,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET = "click tanya soal produk on minicart chat attachment"
         const val EVENT_ACTION_CLICK_CHECK_CART = "click check cart"
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
+        const val EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE = "click ubah in product bundling"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -171,7 +173,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
     }
 
-    private fun getBundleProduct(product: MiniCartItem): Bundle {
+    private fun getBundleProduct(product: MiniCartItem.MiniCartItemProduct): Bundle {
         return Bundle().apply {
             putString(DIMENSION_104, product.campaignId.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(DIMENSION_38, product.attribution.toEnhancedEcommerceDefaultValueIfEmpty())
@@ -383,8 +385,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
-                val bundle = getBundleProduct(product)
-                items.add(bundle)
+                if (product is MiniCartItem.MiniCartItemProduct && !product.isError) {
+                    val bundle = getBundleProduct(product)
+                    items.add(bundle)
+                }
             }
             putParcelableArrayList(KEY_ITEMS, items)
         }
@@ -537,6 +541,16 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
                 eventAction = EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET
+        )
+
+        sendGeneralEvent(data)
+    }
+
+    // 30871
+    fun eventClickChangeProductBundle() {
+        val data = getGtmData(
+                eventName = EVENT_NAME_CLICK_PP,
+                eventAction = EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE
         )
 
         sendGeneralEvent(data)

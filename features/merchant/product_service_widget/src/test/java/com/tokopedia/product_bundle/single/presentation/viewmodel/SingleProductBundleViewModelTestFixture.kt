@@ -42,27 +42,9 @@ abstract class SingleProductBundleViewModelTestFixture {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-    val singleBundleVariant: GetBundleInfo by lazy {
-        val jsonString = getJsonFromFile(SINGLE_BUNDLE_VARIANT)
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            jsonString,
-            JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GetBundleInfoResponse::class.java
-        CommonUtils.fromJson(data, objectType).getBundleInfo
-    }
+    var singleBundleVariant: GetBundleInfo? = null
 
-    val singleBundleEmpty: GetBundleInfo by lazy {
-        val jsonString = getJsonFromFile(SINGLE_BUNDLE_EMPTY)
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            jsonString,
-            JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GetBundleInfoResponse::class.java
-        CommonUtils.fromJson(data, objectType).getBundleInfo
-    }
+    var singleBundleEmpty: GetBundleInfo? = null
 
     protected val viewModel: SingleProductBundleViewModel by lazy {
         spyk(SingleProductBundleViewModel(
@@ -70,6 +52,11 @@ abstract class SingleProductBundleViewModelTestFixture {
             addToCartBundleUseCase,
             userSession
         ))
+    }
+
+    init {
+        singleBundleEmpty = getSingleBundle(SINGLE_BUNDLE_EMPTY)
+        singleBundleVariant = getSingleBundle(SINGLE_BUNDLE_VARIANT)
     }
 
     @Before
@@ -88,5 +75,16 @@ abstract class SingleProductBundleViewModelTestFixture {
         val uri = ClassLoader.getSystemClassLoader().getResource(unit_test_path)
         val file = File(uri.path)
         return String(file.readBytes())
+    }
+
+    private fun getSingleBundle(typeBundle: String): GetBundleInfo? {
+        val jsonString = getJsonFromFile(typeBundle)
+        val jsonObject: JsonObject = CommonUtils.fromJson(
+            jsonString,
+            JsonObject::class.java
+        )
+        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+        val objectType = GetBundleInfoResponse::class.java
+        return CommonUtils.fromJson(data, objectType).getBundleInfo
     }
 }

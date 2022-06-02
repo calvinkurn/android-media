@@ -48,7 +48,7 @@ object AtcVariantHelper {
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
-                        miniCart: Map<String, MiniCartItem>?,
+                        miniCart: Map<String, MiniCartItem.MiniCartItemProduct>?,
                         alternateCopy: List<AlternateCopy>?,
                         boData: BebasOngkir?,
                         rates: List<P2RatesEstimate>?,

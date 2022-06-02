@@ -26,9 +26,7 @@ import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartChatListBottomSheet @Inject constructor(
@@ -146,6 +144,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         viewBinding.rvMiniCartChatList.adapter = adapter
         viewBinding.rvMiniCartChatList.layoutManager = layoutManager
         viewBinding.rvMiniCartChatList.addItemDecoration(miniCartChatProductDecoration)
+        viewBinding.rvMiniCartChatList.itemAnimator = null
     }
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {

@@ -8,11 +8,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.minicart.test.R
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.test.R
 
 class MinicartTestFragment : Fragment(), MiniCartWidgetListener {
 
@@ -34,7 +35,8 @@ class MinicartTestFragment : Fragment(), MiniCartWidgetListener {
                 shopIds = shopIds,
                 fragment = this,
                 listener = this,
-                pageName = MiniCartAnalytics.Page.HOME_PAGE
+                pageName = MiniCartAnalytics.Page.HOME_PAGE,
+                source = MiniCartSource.TokonowHome
         )
     }
 

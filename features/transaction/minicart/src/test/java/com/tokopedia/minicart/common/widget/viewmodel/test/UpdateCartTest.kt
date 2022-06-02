@@ -84,4 +84,24 @@ class UpdateCartTest {
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
+    @Test
+    fun `WHEN update bundle cart for save state success THEN global event state should not be updated`() {
+        //given
+        viewModel.initializeGlobalState()
+
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.updateCart()
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
+    }
 }

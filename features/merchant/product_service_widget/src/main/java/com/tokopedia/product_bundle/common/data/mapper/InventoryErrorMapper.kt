@@ -16,7 +16,7 @@ object InventoryErrorMapper {
         if (getBundleInfoResponse is Fail) return InventoryError()
         if (selectedBundleId == 0L) return InventoryError()
 
-        val bundleInfo = (getBundleInfoResponse as Success).data.getBundleInfo
+        val bundleInfo = (getBundleInfoResponse as Success).data.getBundleInfo ?: GetBundleInfo()
         val isBundleAvailable = bundleInfo.isStockAvailable(selectedBundleId, selectedProductIds)
         val isOtherBundleAvailable = bundleInfo.isOtherStockAvailable(selectedBundleId, selectedProductIds)
         val isOtherVariantAvailable = bundleInfo.isOtherVariantStockAvailable(selectedBundleId)

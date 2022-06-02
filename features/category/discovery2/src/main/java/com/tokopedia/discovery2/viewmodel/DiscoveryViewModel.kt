@@ -50,7 +50,9 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -130,9 +132,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getMiniCartItem(productId: String): MiniCartItem? {
+    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
-        return items.firstOrNull { it.productId == productId }
+        return items.getMiniCartItemProduct(productId)
     }
 
     fun addProductToCart(
@@ -184,11 +186,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun updateItemCart(
-        parentPosition: Int,
-        position: Int,
-        miniCartItem: MiniCartItem,
-        quantity: Int,
-        isGeneralCartATC: Boolean
+            parentPosition: Int,
+            position: Int,
+            miniCartItem: MiniCartItem.MiniCartItemProduct,
+            quantity: Int,
+            isGeneralCartATC: Boolean
     ) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
@@ -211,7 +213,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowDiscoveryPage)
                 getMiniCartUseCase.execute({
                     miniCartSimplifiedData = it
                     _miniCart.postValue(Success(it))
@@ -227,7 +229,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private fun removeItemCart(
         parentPosition: Int,
         position: Int,
-        miniCartItem: MiniCartItem,
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
         isGeneralCartATC: Boolean
     ) {
         deleteCartUseCase.setParams(
@@ -404,7 +406,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             discoveryBottomNavLiveData.postValue(Fail(Throwable()))
         }
     }
-
     private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
         val tabDataComponent = components?.find {
             it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault

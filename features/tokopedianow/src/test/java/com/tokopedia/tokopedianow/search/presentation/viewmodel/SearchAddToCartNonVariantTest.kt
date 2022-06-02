@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -252,7 +253,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
             `Given view resumed to update mini cart`()
 
             val (broadMatchItem, broadMatchIndex) = getBroadMatchItemForATC(PRODUCT_ID_NON_VARIANT_ATC)
-            val quantity = miniCartItems.find { it.productId == broadMatchItem.id }!!.quantity
+            val quantity = miniCartItems.getMiniCartItemProduct(broadMatchItem.id)!!.quantity
             `When add to cart broad match item`(broadMatchItem, quantity, broadMatchIndex)
 
             `Then assert add to cart use case is not called`()
@@ -264,7 +265,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     fun `update quantity broad match item success`() {
         addToCartTestHelper.run {
             val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-            val broadMatchItemInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+            val broadMatchItemInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
             val updatedQuantity = broadMatchItemInMiniCart.quantity - 3
 
             `Given view setup to update quantity broad match item`(productIdToATC, updatedQuantity)
@@ -316,7 +317,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     fun `update quantity broad match item failed`() {
         addToCartTestHelper.run {
             val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-            val broadMatchItemInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+            val broadMatchItemInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToATC)!!
             val updatedQuantity = broadMatchItemInMiniCart.quantity - 3
 
             val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
@@ -347,7 +348,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     fun `delete cart broad match item success`() {
         addToCartTestHelper.run {
             val productIdToDelete = PRODUCT_ID_NON_VARIANT_ATC
-            val broadMatchItemInMiniCart = miniCartItems.find { it.productId == productIdToDelete }!!
+            val broadMatchItemInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToDelete)!!
             `Given delete cart use case will be successful`(deleteCartResponse)
             `Given view setup to delete broad match item`(productIdToDelete)
 
@@ -397,7 +398,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     fun `delete cart broad match item failed`() {
         addToCartTestHelper.run {
             val productIdToDelete = PRODUCT_ID_NON_VARIANT_ATC
-            val broadMatchItemInMiniCart = miniCartItems.find { it.productId == productIdToDelete }!!
+            val broadMatchItemInMiniCart = miniCartItems.getMiniCartItemProduct(productIdToDelete)!!
             `Given delete cart use case will fail`()
             `Given view setup to delete broad match item`(productIdToDelete)
 

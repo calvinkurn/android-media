@@ -52,7 +52,7 @@ data class ProductInfoP2UiData(
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
-        var miniCart: MutableMap<String, MiniCartItem>? = null,
+        var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),
         var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
         var rating: ProductRatingCount = ProductRatingCount(),

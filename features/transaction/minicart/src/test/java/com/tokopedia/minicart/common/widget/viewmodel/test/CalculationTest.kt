@@ -7,6 +7,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
@@ -57,6 +58,7 @@ class CalculationTest {
 
         //then
         assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == true)
+        assert(viewModel.miniCartChatListBottomSheetUiModel.value?.isFirstLoad == true)
     }
 
     @Test
@@ -81,11 +83,12 @@ class CalculationTest {
         //given
         val expectedTotalPrice = 8000L
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 5)
+        viewModel.updateProductQty(productUiModel, 5)
         viewModel.calculateProduct()
 
         //then
@@ -97,11 +100,60 @@ class CalculationTest {
         //given
         val expectedTotalProductCount = 7
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 5)
+        viewModel.updateProductQty(productUiModel, 5)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product bundle THEN total product count should be calculated correctly`() {
+        //given
+        val expectedTotalProductCount = 11
+        val productId = "2148476278"
+        val bundleId = "36012"
+        val productUiModel = MiniCartProductUiModel(
+            productId = productId,
+            bundleId = bundleId,
+            isBundlingItem = true
+        )
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        //when
+        viewModel.updateProductQty(productUiModel, 2)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product bundle variant THEN total product count should be calculated correctly`() {
+        //given
+        val expectedTotalProductCount = 31
+        val productId = "2148476278"
+        val bundleId = "36012"
+        val productUiModel = MiniCartProductUiModel(
+            productId = productId,
+            bundleId = bundleId,
+            isBundlingItem = true
+        )
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleVariantSimplifiedSuccessAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleVariantListUiModelAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        //when
+        viewModel.updateProductQty(productUiModel, 2)
         viewModel.calculateProduct()
 
         //then
@@ -113,11 +165,12 @@ class CalculationTest {
         //given
         val expectedTotalProductCount = 7
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 5)
+        viewModel.updateProductQty(productUiModel, 5)
         viewModel.calculateProduct()
 
         //then
@@ -129,11 +182,12 @@ class CalculationTest {
         //given
         val expectedTotalValue = 6000L
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 3)
+        viewModel.updateProductQty(productUiModel, 3)
         viewModel.calculateProduct()
 
         //then
@@ -145,11 +199,12 @@ class CalculationTest {
         //given
         val expectedPaymentTotal = 6000L
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 3)
+        viewModel.updateProductQty(productUiModel, 3)
         viewModel.calculateProduct()
 
         //then
@@ -161,11 +216,12 @@ class CalculationTest {
         //given
         val expectedDiscountTotal = 1500L
         val productId = "1925675638"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 3)
+        viewModel.updateProductQty(productUiModel, 3)
         viewModel.calculateProduct()
 
         //then
@@ -177,11 +233,12 @@ class CalculationTest {
         //given
         val expectedPaymentTotal = 1500L
         val productId = "1925675638"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 3)
+        viewModel.updateProductQty(productUiModel, 3)
         viewModel.calculateProduct()
 
         //then
@@ -193,11 +250,12 @@ class CalculationTest {
         //given
         val expectedTotalVALUE = 3000L
         val productId = "1925675638"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModel = DataProvider.provideGetMiniCartListSuccessWithSlashPrice()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         //when
-        viewModel.updateProductQty(productId, 3)
+        viewModel.updateProductQty(productUiModel, 3)
         viewModel.calculateProduct()
 
         //then
@@ -210,11 +268,12 @@ class CalculationTest {
         //given
         val productId = "1894482358"
         val expectedWholesalePrice = 200L
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideGetMiniCartListSuccessWithWholesaleVariant()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 101)
+        viewModel.updateProductQty(productUiModel, 101)
         viewModel.calculateProduct()
 
         //then
@@ -226,13 +285,14 @@ class CalculationTest {
         //given
         val productId = "1894482358"
         val expectedWholesalePrice = 0L
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideGetMiniCartListSuccessWithWholesaleVariant()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 50)
+        viewModel.updateProductQty(productUiModel, 50)
         viewModel.calculateProduct()
-        viewModel.updateProductQty(productId, 1)
+        viewModel.updateProductQty(productUiModel, 1)
         viewModel.calculateProduct()
 
         //then
@@ -244,11 +304,12 @@ class CalculationTest {
     fun `WHEN change quantity and calculate product got weight exceed limit and have no ticker warning overweight THEN ticker warning overweight should be added to list`(){
         //given
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
 
         //then
@@ -260,11 +321,12 @@ class CalculationTest {
         //given
         val productId = "1920796612"
         val overWeight = "0,2"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
 
         //then
@@ -275,13 +337,14 @@ class CalculationTest {
     fun `WHEN change quantity and calculate product got no weight exceed limit THEN ticker warning overweight should be removed`(){
         //given
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
-        viewModel.updateProductQty(productId, 1)
+        viewModel.updateProductQty(productUiModel, 1)
         viewModel.calculateProduct()
 
         //then
@@ -293,13 +356,14 @@ class CalculationTest {
         //given
         val productId = "1920796612"
         val overWeight = "1,2"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
-        viewModel.updateProductQty(productId, 20)
+        viewModel.updateProductQty(productUiModel, 20)
         viewModel.calculateProduct()
 
         //then
@@ -310,11 +374,12 @@ class CalculationTest {
     fun `WHEN mini cart has no unavailable product and change quantity got overweight THEN ticker warning overweight should be on first index`(){
         //given
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
 
         //then
@@ -326,11 +391,12 @@ class CalculationTest {
     fun `WHEN mini cart has unavailable product and change quantity got overweight THEN ticker warning overweight should be on second index`(){
         //given
         val productId = "1920796612"
+        val productUiModel = MiniCartProductUiModel(productId = productId)
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
         //when
-        viewModel.updateProductQty(productId, 10)
+        viewModel.updateProductQty(productUiModel, 10)
         viewModel.calculateProduct()
 
         //then

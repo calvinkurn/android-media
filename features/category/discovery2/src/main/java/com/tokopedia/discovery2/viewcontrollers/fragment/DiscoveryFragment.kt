@@ -90,8 +90,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
@@ -1641,7 +1641,8 @@ class DiscoveryFragment :
                     shopIds,
                     this,
                     this,
-                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE
+                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE,
+                    source = MiniCartSource.TokonowDiscoveryPage
                 )
                 miniCartWidget?.show()
             } else {
@@ -1663,16 +1664,7 @@ class DiscoveryFragment :
     }
 
     private fun syncWithCart(data:MiniCartSimplifiedData){
-        val map = HashMap<String,MiniCartItem>()
-        data.miniCartItems.associateByTo (map,{ it.productId })
-        val variantMap = data.miniCartItems.groupBy { it.productParentId }
-        for((parentProductId,list) in variantMap){
-            if(parentProductId.isNotEmpty() && parentProductId!="0"){
-                val quantity = list.sumOf { it.quantity }
-                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
-            }
-        }
-        setCartData(map,pageEndPoint)
+        setCartData(data.miniCartItems,pageEndPoint)
         miniCartData = data
         reSync()
     }

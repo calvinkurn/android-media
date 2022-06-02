@@ -221,6 +221,7 @@ const val CART_REVAMP_V3_QUERY =
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state
