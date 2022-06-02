@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,20 +18,21 @@ import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftDeleteQuest
 import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flash_sale.presentation.draft.viewmodel.DraftDeleteViewModel
 import com.tokopedia.unifycomponents.TextAreaUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
 class DraftDeleteBottomSheet(
-    private val draftItemModel: DraftItemModel? = null
+    private val draftItemModel: DraftItemModel? = null,
+    private val onDeleteDraftSuccess: () -> Unit = {}
 ): ModalBottomSheet() {
 
     companion object {
         const val TAG = "Tag DraftDeleteBottomSheet"
         const val MIN_LINE_TEXTAREA = 3
     }
-
 
     @Inject
     lateinit var viewModel: DraftDeleteViewModel
@@ -39,6 +41,8 @@ class DraftDeleteBottomSheet(
     private var rvQuestionList: RecyclerView? = null
     private var questionListAdapter = DraftDeleteQuestionAdapter()
     private var otherReasonText: String = ""
+    private var btnStop: UnifyButton? = null
+    private var btnBack: View? = null
 
     init {
         useWideModal = true
@@ -60,6 +64,16 @@ class DraftDeleteBottomSheet(
         setupTitle()
         setupEtQuestionOther()
         setupQuestionList()
+
+        btnStop?.setOnClickListener {
+            if (btnStop?.isLoading == true) return@setOnClickListener
+            viewModel.doCancellation(draftItemModel ?: return@setOnClickListener)
+            btnStop?.isLoading = true
+        }
+        btnBack?.setOnClickListener {
+            dismiss()
+        }
+
         viewModel.getQuestionListData()
     }
 
@@ -75,6 +89,8 @@ class DraftDeleteBottomSheet(
         val contentView: View? = View.inflate(context, R.layout.ssfs_bottomsheet_draft_delete, null)
         etQuestionOther = contentView?.findViewById(R.id.etQuestionOther)
         rvQuestionList = contentView?.findViewById(R.id.rvQuestionList)
+        btnStop = contentView?.findViewById(R.id.btnStop)
+        btnBack = contentView?.findViewById(R.id.btnBack)
         typographyDraftDeleteDesc = contentView?.findViewById(R.id.typographyDraftDeleteDesc)
         setChild(contentView)
     }
@@ -85,6 +101,18 @@ class DraftDeleteBottomSheet(
                 questionListAdapter.setItems(it.data)
                 questionListAdapter.addItem(otherReasonText)
                 refreshLayout()
+            }
+        }
+
+        viewModel.cancellationError.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            btnStop?.isLoading = false
+        }
+
+        viewModel.cancellationStatus.observe(viewLifecycleOwner) {
+            if (it) {
+                dismiss()
+                onDeleteDraftSuccess.invoke()
             }
         }
     }
@@ -102,6 +130,7 @@ class DraftDeleteBottomSheet(
         rvQuestionList?.adapter = questionListAdapter.apply {
             setSelectionChangedListener {
                 etQuestionOther?.isEnabled = it == otherReasonText
+                viewModel.setCancellationReason(it)
             }
         }
     }

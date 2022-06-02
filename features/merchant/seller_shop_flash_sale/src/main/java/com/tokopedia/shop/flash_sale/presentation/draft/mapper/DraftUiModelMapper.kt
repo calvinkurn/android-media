@@ -13,7 +13,7 @@ object DraftUiModelMapper {
         isFull = campaignUiList.size >= MAX_DRAFT_COUNT,
         list = campaignUiList.map {
             DraftItemModel(
-                id = it.campaignId.toString(),
+                id = it.campaignId,
                 title = it.campaignName,
                 description = it.summary.totalItem.toString() + DRAFT_DESC_SUFFIX,
                 startDate = it.startDate,

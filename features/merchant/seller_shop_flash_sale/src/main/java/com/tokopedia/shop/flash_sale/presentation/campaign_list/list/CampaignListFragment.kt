@@ -140,7 +140,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
         binding?.btnDraft?.setOnClickListener {
             DraftListBottomSheet.showUsingCampaignUiModel(childFragmentManager,
-                viewModel.getCampaignDrafts())
+                viewModel.getCampaignDrafts(), ::onDeleteDraftSuccess)
         }
         setupSearchBar()
         setupScrollListener()
@@ -359,7 +359,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     private fun handleCreateCampaign() {
         val campaignDrafts = viewModel.getCampaignDrafts()
         if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
-            DraftListBottomSheet.showUsingCampaignUiModel(childFragmentManager, campaignDrafts)
+            DraftListBottomSheet.showUsingCampaignUiModel(childFragmentManager, campaignDrafts, ::onDeleteDraftSuccess)
         } else {
             //TODO: Navigate to info campaign page
             println()
@@ -400,7 +400,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
-
     private fun handleDraftCount(draftCount: Int) {
         val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
         binding?.btnDraft?.text = wording
@@ -431,6 +430,10 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
-
-
+    private fun onDeleteDraftSuccess() {
+        viewModel.getCampaignDrafts(
+            MAX_DRAFT_COUNT,
+            FIRST_PAGE
+        )
+    }
 }

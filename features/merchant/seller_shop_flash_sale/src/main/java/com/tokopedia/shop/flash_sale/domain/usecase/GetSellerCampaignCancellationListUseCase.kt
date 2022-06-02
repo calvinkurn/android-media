@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.flash_sale.data.request.CampaignCancellationRequest
-import com.tokopedia.shop.flash_sale.domain.entity.CampaignCancellation.CampaignCancellationResponse
+import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignCancellationListRequest
+import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignCancellationListResponse
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ import javax.inject.Inject
 )
 class GetSellerCampaignCancellationListUseCase @Inject constructor(
     private val repository: GraphqlRepository
-): GraphqlUseCase<CampaignCancellationResponse>(repository) {
+): GraphqlUseCase<GetSellerCampaignCancellationListResponse>(repository) {
 
     companion object {
         private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
@@ -43,16 +43,16 @@ class GetSellerCampaignCancellationListUseCase @Inject constructor(
     suspend fun execute(): List<String> {
         val request = buildRequest()
         val response = repository.response(listOf(request))
-        val data = response.getSuccessData<CampaignCancellationResponse>()
+        val data = response.getSuccessData<GetSellerCampaignCancellationListResponse>()
         return data.cancellationList.cancellationList
     }
 
     private fun buildRequest(): GraphqlRequest {
-        val payload = CampaignCancellationRequest(CAMPAIGN_TYPE_SHOP_FLASH_SALE)
+        val payload = GetSellerCampaignCancellationListRequest(CAMPAIGN_TYPE_SHOP_FLASH_SALE)
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(
             GetSellerCampaignCancellationListQuery(),
-            CampaignCancellationResponse::class.java,
+            GetSellerCampaignCancellationListResponse::class.java,
             params
         )
     }

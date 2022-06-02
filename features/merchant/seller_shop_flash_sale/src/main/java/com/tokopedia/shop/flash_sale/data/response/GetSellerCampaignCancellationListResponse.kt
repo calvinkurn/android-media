@@ -1,8 +1,8 @@
-package com.tokopedia.shop.flash_sale.domain.entity.CampaignCancellation
+package com.tokopedia.shop.flash_sale.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class CampaignCancellationResponse(
+data class GetSellerCampaignCancellationListResponse(
     @SerializedName("getSellerCampaignCancellationList")
     val cancellationList: CancellationReason = CancellationReason()
 )

@@ -21,32 +21,20 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import java.util.*
 
 class DraftListBottomSheet(
-    private val draftItemModel: DraftUiModel = DraftUiModel()
+    private val draftItemModel: DraftUiModel = DraftUiModel(),
+    private val onDeleteDraftSuccess: () -> Unit = {}
 ): BottomSheetUnify() {
 
     companion object {
         const val TAG = "Tag DraftListBottomSheet"
 
-        // TODO: delete if not used
-        fun showDummy(manager: FragmentManager?) {
-            DraftListBottomSheet(DraftUiModel(
-                false,
-                listOf(
-                    DraftItemModel("1", "title 1", "desc1",
-                        Date(),
-                        Date().addTimeToSpesificDate(Calendar.YEAR, 1)
-                            .addTimeToSpesificDate(Calendar.HOUR, 2)
-                    ),
-                    DraftItemModel("2", "title 2", "desc2", Date(), Date()),
-                )
-            )).show(manager)
-        }
-
         fun showUsingCampaignUiModel(manager: FragmentManager?,
-            campaignUiModelList: List<CampaignUiModel>
+            campaignUiModelList: List<CampaignUiModel>,
+            onDeleteDraftSuccess: () -> Unit = {}
         ) {
             DraftListBottomSheet(
-                DraftUiModelMapper.convertFromCampaignUiModel(campaignUiModelList)
+                DraftUiModelMapper.convertFromCampaignUiModel(campaignUiModelList),
+                onDeleteDraftSuccess
             ).show(manager)
         }
     }
@@ -106,7 +94,12 @@ class DraftListBottomSheet(
     }
 
     private fun onDeleteIconClick(draftItemModel: DraftItemModel) {
-        DraftDeleteBottomSheet(draftItemModel).show(childFragmentManager)
+        DraftDeleteBottomSheet(draftItemModel, ::onDeleteDraftSuccess).show(childFragmentManager)
+    }
+
+    private fun onDeleteDraftSuccess() {
+        onDeleteDraftSuccess.invoke()
+        dismiss()
     }
 
     fun show(manager: FragmentManager?) {
