@@ -72,6 +72,8 @@ class BannerNotificationViewHolder(
             showPinNotif()
             if (!element.isShowExpire) {
                 bindPinExpired(element, isShow = true)
+            } else {
+                bindPinExpired(isShow = false)
             }
         } else {
             hidePinNotif()

@@ -36,6 +36,10 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
     }
 
+    public void initialize(UserSession mUserSession) {
+        this.userSession = mUserSession;
+    }
+
     @Override
     public void onDestroy() {
         postUpdateDealLikesUseCase.unsubscribe();
