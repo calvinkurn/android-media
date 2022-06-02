@@ -127,7 +127,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             override fun afterTextChanged(p0: Editable?) {
                 if(textFieldQuota.editText.text.toString().toIntOrZero() <= voucherQuota){
                     textFieldQuota.isInputError = true
-                    textFieldQuota.setMessage("Minimum kuota: $voucherQuota")
+                    textFieldQuota.setMessage("Kuota harus lebih dari $voucherQuota")
                 }
                 else{
                     textFieldQuota.isInputError = false

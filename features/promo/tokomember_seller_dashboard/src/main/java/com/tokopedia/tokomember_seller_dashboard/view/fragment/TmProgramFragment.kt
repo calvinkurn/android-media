@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.TokomemberLoaderDialog
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -197,10 +197,10 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
             ProgramActionType.CREATE -> {
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, bundle)
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, bundle)
             }
             ProgramActionType.EXTEND ->{
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON_MULTIPLE, Bundle())
+                tmOpenFragmentCallback.openFragment(CreateScreenType.COUPON_MULTIPLE, Bundle())
             }
             ProgramActionType.EDIT ->{
                 val intent = Intent()

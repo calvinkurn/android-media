@@ -7,16 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_MULTIPLE
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_SINGLE
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
@@ -39,7 +40,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tm_dash_create_activity)
 
-        intent.extras?.getInt(BUNDLE_PROGRAM, CARD)?.let {
+        intent.extras?.getInt(BUNDLE_CREATE_SCREEN_TYPE, CARD)?.let {
             screenType = it
         }
 
@@ -51,7 +52,11 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 intent.extras?.let { TmProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
             COUPON_SINGLE ->{
-                intent.extras?.let { TmSingleCouponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+                intent.extras?.let { tmCouponListRefreshCallback?.let { it1 ->
+                    TmSingleCouponCreateFragment.newInstance(it,
+                        it1
+                    )
+                } }?.let { addFragment(it, "") }
             }
             COUPON_MULTIPLE ->{
                 intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -98,6 +103,9 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
     }
 
     companion object{
+
+        private var tmCouponListRefreshCallback: TmCouponListRefreshCallback? = null
+
         fun openActivity(
             shopId: Int,
             activity: Activity?,
@@ -109,7 +117,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
-                intent.putExtra(BUNDLE_PROGRAM, screenType)
+                intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_PROGRAM_TYPE, programActionType)
                 intent.putExtra(BUNDLE_PROGRAM_ID, programId)
                 requestCode?.let {
@@ -122,10 +130,12 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             activity: Activity?,
             screenType: Int,
             voucherId: Int,
+            tmCouponListRefreshCallback: TmCouponListRefreshCallback
         ){
+            this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
-                intent.putExtra(BUNDLE_PROGRAM, screenType)
+                intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_VOUCHER_ID, voucherId)
                 intent.putExtra(ACTION_EDIT, true)
                 it.startActivity(intent)
@@ -142,9 +152,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             PROGRAM ->{
                 bundle.let { TmProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
-            COUPON_SINGLE ->{
-                intent.extras?.let { TmSingleCouponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
-            }
+            COUPON_SINGLE ->{}
             COUPON_MULTIPLE ->{
                 intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
             }

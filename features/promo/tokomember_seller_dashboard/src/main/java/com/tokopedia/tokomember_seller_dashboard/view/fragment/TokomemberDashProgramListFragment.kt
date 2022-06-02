@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
@@ -134,7 +134,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             type.equals(EXTEND) -> {
 //                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
 //                (activity as TokomemberDashHomeActivity).addFragment(TmProgramFragment.newInstance(bundle), TAG_HOME)
-                TmDashCreateActivity.openActivity(shopId, activity, ProgramScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
+                TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
 
             }
             type.equals(CANCEL) -> {
@@ -163,7 +163,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 TmDashCreateActivity.openActivity(
                     shopId,
                     activity,
-                    ProgramScreenType.PROGRAM,
+                    CreateScreenType.PROGRAM,
                     ProgramActionType.EDIT,
                     REQUEST_CODE_REFRESH,
                     programId

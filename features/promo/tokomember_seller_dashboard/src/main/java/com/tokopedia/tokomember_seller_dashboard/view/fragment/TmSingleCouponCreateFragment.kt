@@ -23,8 +23,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
+import com.tokopedia.tokomember_common_widget.util.CouponType
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
@@ -34,7 +36,47 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING_PREVIEW
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_CASHBACK
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_SHIPPING
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
+import com.tokopedia.tokomember_seller_dashboard.util.CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
+import com.tokopedia.tokomember_seller_dashboard.util.IDR
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.TERMS
+import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
@@ -44,6 +86,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import kotlinx.android.synthetic.main.tm_kupon_create_single.*
@@ -246,7 +289,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     // Back to coupon list
                     closeLoadingDialog()
                     setButtonState()
-
+                    activity?.finish()
+                    tmCouponListRefreshCallback?.refreshCouponList()
                 }
                 TokoLiveDataResult.STATUS.LOADING ->{
 
@@ -372,12 +416,26 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionKupon = position
+                when(selectedChipPositionKupon){
+                    CouponType.CASHBACK -> {
+                        ivPreviewCoupon.showHideCashBackValueView(true)
+                        ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
+                    }
+                    CouponType.SHIPPING -> {
+                        ivPreviewCoupon.showHideCashBackValueView(false)
+                        ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
+                    }
+                }
             }
         })
         if(data?.voucherType == COUPON_TYPE_CASHBACK){
+            ivPreviewCoupon.showHideCashBackValueView(true)
+            ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
             selectedChipPositionKupon = 0
         }
         if(data?.voucherType == COUPON_TYPE_SHIPPING){
+            ivPreviewCoupon.showHideCashBackValueView(false)
+            ivPreviewCoupon.setCouponType(COUPON_SHIPPING_PREVIEW)
             selectedChipPositionKupon = 1
         }
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
@@ -403,8 +461,26 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         textFieldMinTransk.editText.setText(data?.voucherMinimumAmt.toString())
         textFieldQuota.editText.setText(data?.voucherQuota.toString())
 
+        ivPreviewCoupon.setCouponValue(data?.voucherDiscountAmtMax.toString())
+
         ivPreviewCoupon.setInitialData(shopName, shopAvatar)
 
+        textFieldMaxCashback.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    ivPreviewCoupon.setCouponValue(number.toString())
+                }
+            })
+        }
+        textFieldPercentCashback.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    ivPreviewCoupon.setCouponBenefit(number.toString())
+                }
+            })
+        }
     }
 
     private fun openLoadingDialog(){
@@ -431,7 +507,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     private fun handleProgramValidateError(validationError: ValidationError?, couponType: String) {
         when(couponType){
-
             PREMIUM -> {
                 customViewSingleCoupon?.setErrorMaxBenefit(validationError?.benefitMax?:"")
                 customViewSingleCoupon?.setErrorCashbackPercentage(validationError?.benefitPercent?:"")
@@ -741,8 +816,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private var tmCouponListRefreshCallback: TmCouponListRefreshCallback? = null
 
-        fun newInstance(bundle: Bundle): TmSingleCouponCreateFragment {
+        fun newInstance(bundle: Bundle, tmCouponListRefreshCallback: TmCouponListRefreshCallback
+        ): TmSingleCouponCreateFragment {
+            this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
             return TmSingleCouponCreateFragment().apply {
                 arguments = bundle
             }

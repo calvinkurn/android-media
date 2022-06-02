@@ -8,6 +8,11 @@ import com.tokopedia.tokomember_common_widget.util.CashbackType.Companion.PERCEN
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.CASHBACK
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.DISCOUNT
 import com.tokopedia.tokomember_common_widget.util.CouponType.Companion.SHIPPING
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
@@ -17,11 +22,6 @@ import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.E
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.AUTO
 import com.tokopedia.tokomember_common_widget.util.ProgramDateType.Companion.MANUAL
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_MULTIPLE
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON_SINGLE
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
-import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(PREMIUM, VIP)
@@ -55,7 +55,7 @@ annotation class ProgramActionType {
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(CARD, PROGRAM, COUPON_SINGLE, COUPON_MULTIPLE, PREVIEW)
-annotation class ProgramScreenType {
+annotation class CreateScreenType {
     companion object {
         const val CARD = 0
         const val PROGRAM = 1
