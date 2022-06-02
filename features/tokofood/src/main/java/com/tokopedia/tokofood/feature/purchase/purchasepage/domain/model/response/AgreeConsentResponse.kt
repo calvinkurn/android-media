@@ -19,12 +19,8 @@ data class AgreeConsent(
 data class AgreeConsentData(
     @SerializedName("success")
     @Expose
-    val success: String = "",
+    val success: Boolean = false,
     @SerializedName("message")
     @Expose
     val message: String = ""
-) {
-
-    fun isSuccess() = success == TokoFoodCartUtil.SUCCESS_STATUS
-
-}
+)

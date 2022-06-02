@@ -17,7 +17,7 @@ class AgreeConsentUseCase @Inject constructor(
         mutation AgreeConsent {
           tokofoodSubmitUserConsent() {
             message
-            status
+            success
           }
         }
     """.trimIndent()
