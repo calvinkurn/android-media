@@ -11,12 +11,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
-import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 
 class UserConsentDescription constructor(
     private val context: Context,
-    private val collectionDataModel: ConsentCollectionDataModel.CollectionPointDataModel
+    private val collectionDataModel: UserConsentCollectionDataModel.CollectionPointDataModel
 ) {
 
     private val userConsentAnalytics = UserConsentAnalytics()

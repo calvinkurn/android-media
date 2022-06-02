@@ -15,8 +15,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
-import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.ConsentStateResult
+import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponentBuilder
@@ -42,7 +42,7 @@ class UserConsentWidget : FrameLayout {
     private var lifecycleOwner: LifecycleOwner? = null
     private var consentCollectionParam: ConsentCollectionParam? = null
     private var userConsentActionClickListener: UserConsentActionClickListener? = null
-    private var collection: ConsentCollectionDataModel.CollectionPointDataModel? = null
+    private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
 
     private var userConsentDescription: UserConsentDescription? = null
 
@@ -152,14 +152,14 @@ class UserConsentWidget : FrameLayout {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.observe(it) { result ->
                 when(result) {
-                    is ConsentStateResult.Loading -> {
+                    is UserConsentStateResult.Loading -> {
                         setLoader(true)
                     }
-                    is ConsentStateResult.Fail -> {
+                    is UserConsentStateResult.Fail -> {
                         setLoader(false)
                         showError(result.error)
                     }
-                    is ConsentStateResult.Success -> {
+                    is UserConsentStateResult.Success -> {
                         setLoader(false)
                         result.data?.let { data ->
                             collection = data.collectionPoints[0]
@@ -291,6 +291,20 @@ class UserConsentWidget : FrameLayout {
                 }
                 else -> false
             }
+        }
+    }
+
+    override fun invalidate() {
+        super.invalidate()
+
+        viewBinding?.singleConsent?.apply {
+            checkboxPurposes.isChecked = false
+        }
+
+        viewBinding?.multipleConsent?.apply {
+            checkboxPurposeA.isChecked = false
+            checkboxPurposeB.isChecked = false
+            checkboxPurposeC.isChecked = false
         }
     }
 

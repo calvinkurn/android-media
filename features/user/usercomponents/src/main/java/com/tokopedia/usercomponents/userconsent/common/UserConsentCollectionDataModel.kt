@@ -2,7 +2,7 @@ package com.tokopedia.usercomponents.userconsent.common
 
 import com.google.gson.annotations.SerializedName
 
-data class ConsentCollectionDataModel(
+data class UserConsentCollectionDataModel(
     @SerializedName("success")
     var success: Boolean = false,
     @SerializedName("refID")
