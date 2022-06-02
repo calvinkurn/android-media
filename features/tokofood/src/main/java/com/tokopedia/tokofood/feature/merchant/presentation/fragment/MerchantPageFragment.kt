@@ -822,7 +822,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun navigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel) {
         val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
             productUiModel = productUiModel,
-            cartId = cartId
+            cartId = cartId,
+            merchantId = merchantId
         )
         navigateToNewFragment(orderCustomizationFragment)
     }
