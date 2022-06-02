@@ -9,7 +9,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -54,7 +53,6 @@ class QuizFormView : ConstraintLayout {
         true,
     )
     private val timePickerBinding = ViewPlayInteractiveTimePickerBinding.bind(binding.root)
-    private val ivBottomSheetClose = findViewById<IconUnify>(commonR.id.iv_sheet_close)
     private val bottomSheetHeaderBinding = BottomSheetHeaderBinding.bind(timePickerBinding.root)
 
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
@@ -84,7 +82,7 @@ class QuizFormView : ConstraintLayout {
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
-        ivBottomSheetClose.setImage(IconUnify.ARROW_BACK)
+        timePickerBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
@@ -103,7 +101,7 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.GiftChanged(it))
         }
 
-        ivBottomSheetClose.setOnClickListener {
+        timePickerBinding.ivSheetClose.setOnClickListener {
             eventBus.emit(Event.Back)
         }
 
