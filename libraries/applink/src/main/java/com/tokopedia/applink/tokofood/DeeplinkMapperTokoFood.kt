@@ -8,6 +8,10 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperTokoFood {
 
+    // merchant
+    const val PARAM_MERCHANT_ID = "merchantId"
+    const val PARAM_PRODUCT_ID = "product_id"
+
     //post purchase
     const val PATH_ORDER_ID = "orderId"
 
@@ -16,6 +20,16 @@ object DeeplinkMapperTokoFood {
     const val OPTION_PARAM = "option"
     const val CUISINE_PARAM = "cuisine"
     const val SORT_BY_PARAM = "sortBy"
+
+    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?): String {
+        val merchantId = idList?.getOrNull(0).orEmpty()
+        val productId = idList?.getOrNull(1).orEmpty()
+        return Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+                .buildUpon()
+                .appendQueryParameter(PARAM_MERCHANT_ID, merchantId)
+                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
+                .build().toString()
+    }
 
     fun mapperInternalApplinkTokoFood(uri: Uri): String {
         val url = uri.toString()
