@@ -33,6 +33,8 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         "seller/chat_attachment_shipping_location_reply.json"
     private val upcomingCampaignPath =
         "buyer/chat_attachment_upcoming_campaign.json"
+    private val productBundlingPath =
+        "product_bundling/success_get_chat_attachment_bundling.json"
 
     val chatAttachmentNoVariant: ChatAttachmentResponse
         get() = alterResponseOf(defaultChatAttachmentResponsePath) {
@@ -148,6 +150,9 @@ class ChatAttachmentUseCaseStub @Inject constructor(
      * <!--- End SRW Prompt --->
      */
 
+    /**
+     * <!-- Start Broadcast Campaign -->
+     */
     fun createBroadcastCampaignStarted(bannerAttachmentId: String): ChatAttachmentResponse {
         return alterResponseOf(broadcastCampaignLabelPath) { response ->
             alterAttachmentAttributesAt(
@@ -240,6 +245,21 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         val attr = response.chatAttachments.list[0].attributes
         return fromJson<ImageAnnouncementPojo>(attr).endStateWording!!
     }
+
+    /**
+     * <!-- End Broadcast Campaign -->
+     */
+
+    /**
+     * <!-- Start Product Bundling -->
+     */
+
+    val productBundlingAttachment: ChatAttachmentResponse
+        get() = alterResponseOf(productBundlingPath) { }
+
+    /**
+     * <!-- End Product Bundling -->
+     */
 
     private fun alterAttachmentAttributesAt(
         position: Int,
