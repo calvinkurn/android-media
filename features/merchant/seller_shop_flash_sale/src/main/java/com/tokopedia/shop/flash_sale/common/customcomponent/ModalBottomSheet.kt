@@ -76,4 +76,12 @@ open class ModalBottomSheet: BottomSheetUnify() {
             }
         })
     }
+
+    fun refreshLayout() {
+        try {
+            val bsLayout = view as LinearLayout
+            changeToModalLayout(bsLayout)
+            setAlignToCenter(bsLayout)
+        } catch (e: Exception) { /* no-op */ }
+    }
 }

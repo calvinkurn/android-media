@@ -3,11 +3,10 @@ package com.tokopedia.shop.flash_sale.presentation.draft.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftItemModel
 
 class DraftDeleteQuestionAdapter: RecyclerView.Adapter<DraftDeleteQuestionViewHolder>() {
 
-    private var items: List<String> = emptyList()
+    private var items: MutableList<String> = mutableListOf()
     private var itemsSelection: List<Boolean> = emptyList()
     private var selectionChangedListener: (String) -> Unit = {}
 
@@ -29,11 +28,18 @@ class DraftDeleteQuestionAdapter: RecyclerView.Adapter<DraftDeleteQuestionViewHo
     }
 
     fun setItems(items: List<String>) {
-        this.items = items
+        this.items = items.toMutableList()
         itemsSelection = items.map { false }
+        notifyItemRangeChanged(Int.ZERO, itemCount)
     }
 
     fun setSelectionChangedListener(listener: (String) -> Unit){
         selectionChangedListener = listener
+    }
+
+    fun addItem(item: String) {
+        items.add(item)
+        itemsSelection = items.map { false }
+        notifyItemChanged(itemCount)
     }
 }

@@ -7,15 +7,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.flash_sale.common.Constant
-import com.tokopedia.shop.flash_sale.data.mapper.SellerCampaignListMetaMapper
 import com.tokopedia.shop.flash_sale.data.request.CampaignCancellationRequest
-import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignListMetaRequest
-import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListMetaResponse
-import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignCancellation.CampaignCancellationResponse
-import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
-import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @GqlQuery(
@@ -29,6 +23,7 @@ class GetSellerCampaignCancellationListUseCase @Inject constructor(
     companion object {
         private const val CAMPAIGN_TYPE_SHOP_FLASH_SALE = 0
         private const val REQUEST_PARAM_KEY = "params"
+        private const val EXPIRED_CACHE_DAYS = 1L
         const val QUERY_NAME = "GetSellerCampaignCancellationListQuery"
         const val QUERY = """
             query GetSellerCampaignCancellationList(${'$'}params: GetSellerCampaignCancellationListRequest!)  {
@@ -41,7 +36,8 @@ class GetSellerCampaignCancellationListUseCase @Inject constructor(
 
     init {
         setGraphqlQuery(GetSellerCampaignCancellationListQuery())
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(
+            TimeUnit.DAYS.toMillis(EXPIRED_CACHE_DAYS)).build())
     }
 
     suspend fun execute(): List<String> {

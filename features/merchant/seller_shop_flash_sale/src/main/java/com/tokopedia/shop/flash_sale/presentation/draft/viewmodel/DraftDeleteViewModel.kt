@@ -1,12 +1,14 @@
 package com.tokopedia.shop.flash_sale.presentation.draft.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignCancellationListUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,16 +17,18 @@ class DraftDeleteViewModel @Inject constructor(
     private val cancellationListUseCase: GetSellerCampaignCancellationListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    fun getData(param: String) {
-        println(param)
+    private val _questionListData = SingleLiveEvent<Result<List<String>>>()
+    val questionListData: LiveData<Result<List<String>>>
+        get() = _questionListData
+
+    fun getQuestionListData() {
         launchCatchError(block = {
-            val aaa = withContext(dispatchers.io) {
+            val result = withContext(dispatchers.io) {
                 cancellationListUseCase.execute()
             }
-
-            println(aaa)
+            _questionListData.value = Success(result)
         }, onError = {
-
+            _questionListData.value = Fail(it)
         })
     }
 }

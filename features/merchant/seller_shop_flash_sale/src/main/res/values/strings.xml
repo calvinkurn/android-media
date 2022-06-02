@@ -11,9 +11,10 @@
     <string name="draftlist_date_delimiter">﹣</string>
     <string name="action_yes_stop">Ya, Hentikan</string>
     <string name="draftdelete_title">Yakin hapus draft campaign?</string>
-    <string name="draftdelete_desc">Detail campaign “Diskon Kilat” yang sudah diatur akan dihapus permanen.</string>
+    <string name="draftdelete_desc">Detail campaign “%s” yang sudah diatur akan dihapus permanen.</string>
     <string name="draftdelete_question_title">Kenapa kamu ingin membatalkan campaign ini?</string>
     <string name="draftdelete_question_other_placeholder">Tuliskan alasanmu di sini</string>
     <string name="draftdelete_question_other_placeholder_short">Alasan</string>
+    <string name="draftdelete_question_other_text">Alasan Lain:</string>
 
 </resources>
