@@ -37,7 +37,7 @@ fun StaggeredGridLayoutManager.getVisibleItems(adapter: ProductTagCardAdapter): 
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
 
-    if (start > -1 && end < items.size) {
+    if (start > -1 && end < items.size && start <= end) {
         return items.slice(start..end)
             .filterIsInstance<ProductTagCardAdapter.Model.Product>()
             .mapIndexed { index, item ->
@@ -52,7 +52,7 @@ fun StaggeredGridLayoutManager.getVisibleItems(adapter: MyShopProductAdapter): L
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
 
-    if (start > -1 && end < items.size) {
+    if (start > -1 && end < items.size && start <= end) {
         return items.slice(start..end)
             .filterIsInstance<MyShopProductAdapter.Model.Product>()
             .mapIndexed { index, item ->
@@ -67,7 +67,7 @@ fun LinearLayoutManager.getVisibleItems(adapter: ShopCardAdapter): List<Pair<Sho
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
 
-    if (start > -1 && end < items.size) {
+    if (start > -1 && end < items.size && start <= end) {
         return items.slice(start..end)
             .filterIsInstance<ShopCardAdapter.Model.Shop>()
             .mapIndexed { index, item ->
