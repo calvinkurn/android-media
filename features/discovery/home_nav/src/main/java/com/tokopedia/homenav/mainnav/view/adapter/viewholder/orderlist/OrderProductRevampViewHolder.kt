@@ -12,6 +12,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.common.util.loadImageNormal
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -61,31 +62,36 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         //image
         if (productRevampModel.navProductModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.orderProductImage
-            val shimmer = binding?.orderProductImageShimmer
-            Glide.with(itemView.context)
-                    .load(productRevampModel.navProductModel.imageUrl)
-                    .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                    .dontAnimate()
-                    .fitCenter()
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            imageView?.setImageDrawable(resource)
-                            shimmer?.gone()
-                        }
-
-                        override fun onLoadStarted(placeholder: Drawable?) {
-                            shimmer?.visible()
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer?.gone()
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            shimmer?.gone()
-                        }
-                    })
+//            val shimmer = binding?.orderProductImageShimmer
+            binding?.orderProductImage?.setImageUrl(
+                productRevampModel.navProductModel.imageUrl
+//                ,
+//                com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
+            )
+//            Glide.with(itemView.context)
+//                    .load(productRevampModel.navProductModel.imageUrl)
+//                    .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+//                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+//                    .dontAnimate()
+//                    .fitCenter()
+//                    .into(object : CustomTarget<Drawable>() {
+//                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+//                            imageView?.setImageDrawable(resource)
+//                            shimmer?.gone()
+//                        }
+//
+//                        override fun onLoadStarted(placeholder: Drawable?) {
+//                            shimmer?.visible()
+//                        }
+//
+//                        override fun onLoadCleared(placeholder: Drawable?) {
+//                            shimmer?.gone()
+//                        }
+//
+//                        override fun onLoadFailed(errorDrawable: Drawable?) {
+//                            shimmer?.gone()
+//                        }
+//                    })
         }
 
         //description
