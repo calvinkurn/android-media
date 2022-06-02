@@ -507,7 +507,6 @@ object DeeplinkMapper {
                 if (isMatch) {
                     val target = it.targetDeeplink(context, uri, deeplink, idList)
                     if (target.isNotEmpty()) {
-                        System.out.println("HENDRYAAA $index")
                         putToTop(index)
                         return target
                     }
@@ -521,12 +520,12 @@ object DeeplinkMapper {
     private fun putToTop(index: Int) {
         // Uncomment this for performance for RouteManager. Currently disabled in production
         // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            deeplinkPatternTokopediaSchemeList.add(
-//                0,
-//                deeplinkPatternTokopediaSchemeList.removeAt(index)
-//            )
-//        }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            deeplinkPatternTokopediaSchemeList.add(
+                0,
+                deeplinkPatternTokopediaSchemeList.removeAt(index)
+            )
+        }
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {

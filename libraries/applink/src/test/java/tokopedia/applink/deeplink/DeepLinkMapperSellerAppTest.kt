@@ -331,7 +331,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check power merchant pro interrupt sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome?state="
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT, expectedDeepLink)
     }
 

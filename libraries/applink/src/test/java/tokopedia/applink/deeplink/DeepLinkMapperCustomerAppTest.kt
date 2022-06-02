@@ -2,6 +2,7 @@ package tokopedia.applink.deeplink
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
@@ -25,6 +26,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
+    val SIZE_MAPPER = 187
+
     override fun setup() {
         super.setup()
         mockkStatic(RemoteConfigInstance::class)
@@ -35,6 +38,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     override fun finish() {
         super.finish()
         clearStaticMockk(RemoteConfigInstance::class)
+    }
+
+    @Test
+    fun `size deeplinkPatternTokopediaSchemeList`() {
+        // This test is a reminder for developer.
+        // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
+        // also there developer should also add the corresponding unit test for the deeplink.
+        assert(DeeplinkMapper.getTokopediaSchemeList().size == SIZE_MAPPER)
     }
 
     @Test
@@ -2095,7 +2106,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check power merchant pro interrupt customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-menu"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-menu?state="
         assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT, expectedDeepLink)
     }
 
@@ -2131,7 +2142,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check KYC_FORM_ONLY_NO_PARAM customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/abc/def"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-only/abc/def"
         assertEqualsDeepLinkMapper(ApplinkConst.KYC_FORM_ONLY_NO_PARAM +"/abc/def", expectedDeepLink)
     }
 
@@ -2197,7 +2208,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check WEBVIEW_DOWNLOAD_HOST customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://webviewdownload"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webviewdownload"
         assertEqualsDeepLinkMapper("tokopedia://webviewdownload/abc/def", expectedDeepLink)
     }
 

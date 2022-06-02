@@ -34,12 +34,15 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
-//        every {
-//            GlobalConfig.isAllowDebuggingTools()
-//        } answers {
-//            false
-//        }
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
+    }
+
+    open fun setAllowingDebugToolsFalse(){
+        every {
+            GlobalConfig.isAllowDebuggingTools()
+        } answers {
+            false
+        }
     }
 
     @After
@@ -48,15 +51,16 @@ open class DeepLinkMapperTestFixture {
     }
 
     protected fun assertEqualsDeepLinkMapper(deepLink: String, expectedDeepLink: String) {
+        setAllowingDebugToolsFalse()
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResult)
-//        every {
-//            DeeplinkMapper.getTokopediaSchemeList()
-//        } answers {
-//            reversedList
-//        }
-//        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
-//        assertEquals(expectedDeepLink, actualResultReverse)
+        every {
+            DeeplinkMapper.getTokopediaSchemeList()
+        } answers {
+            reversedList
+        }
+        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeepLinkMapperApp(appType: AppType, deepLink: String, expectedDeepLink: String) {
@@ -65,17 +69,19 @@ open class DeepLinkMapperTestFixture {
         } else {
             GlobalConfig.SELLER_APPLICATION
         }
+        setAllowingDebugToolsFalse()
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
-//        every {
-//            DeeplinkMapper.getTokopediaSchemeList()
-//        } answers {
-//            reversedList
-//        }
-//        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
-//        assertEquals(expectedDeepLink, actualResultReverse)
+        every {
+            DeeplinkMapper.getTokopediaSchemeList()
+        } answers {
+            reversedList
+        }
+        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeeplinkParameters(deeplink: String, vararg extras: Pair<String, String?>) {
+        setAllowingDebugToolsFalse()
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deeplink)
         val uri = Uri.parse(actualResult)
         extras.forEach {
