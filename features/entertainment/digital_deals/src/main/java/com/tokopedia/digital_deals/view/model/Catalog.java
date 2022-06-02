@@ -46,24 +46,8 @@ public class Catalog implements Parcelable {
         return digitalCategoryId;
     }
 
-    public int getDigitalCategoryIdInInt() {
-        return Integer.parseInt(digitalCategoryId);
-    }
-
-    public void setDigitalCategoryId(String digitalCategoryId) {
-        this.digitalCategoryId = digitalCategoryId;
-    }
-
     public String getDigitalProductId() {
         return digitalProductId;
-    }
-
-    public int getDigitalProductIdInInt() {
-        return Integer.parseInt(digitalProductId);
-    }
-
-    public void setDigitalProductId(String digitalProductId) {
-        this.digitalProductId = digitalProductId;
     }
 
     public String getDigitalProductCode() {
