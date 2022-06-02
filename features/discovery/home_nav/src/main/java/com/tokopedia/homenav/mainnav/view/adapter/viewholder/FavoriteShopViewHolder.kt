@@ -29,6 +29,8 @@ class FavoriteShopViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_favorite_shop_list
         private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
+        private const val EDGE_MARGIN = 16f
+        private const val SPACING_BETWEEN = 8f
         private const val MAX_CARD_HEIGHT = 80f
     }
 
@@ -36,8 +38,8 @@ class FavoriteShopViewHolder(itemView: View,
         val context = itemView.context
         val adapter = FavoriteShopAdapter(FavoriteShopTypeFactoryImpl(mainNavListener))
 
-        val edgeMargin = 16f.toDpInt()
-        val spacingBetween = 8f.toDpInt()
+        val edgeMargin = EDGE_MARGIN.toDpInt()
+        val spacingBetween = SPACING_BETWEEN.toDpInt()
 
         binding?.favoriteShopRv?.adapter = adapter
         binding?.favoriteShopRv?.layoutManager = LinearLayoutManager(
