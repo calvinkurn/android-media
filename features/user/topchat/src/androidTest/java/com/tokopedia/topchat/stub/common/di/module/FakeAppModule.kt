@@ -12,8 +12,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.topchat.stub.common.CoroutineAndroidTestDispatchersProvider
+import com.tokopedia.topchat.stub.fake.FakeUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.UserSessionDataStoreClient.getInstance
 import dagger.Module
 import dagger.Provides
 
@@ -58,7 +58,7 @@ class FakeAppModule(private val context: Context) {
 
     @ApplicationScope
     @Provides
-    fun provideUserSessionDataStore(@ApplicationContext context: Context): UserSessionDataStore {
-        return getInstance(context)
+    fun provideUserSessionDataStore(): UserSessionDataStore {
+        return FakeUserSessionDataStore()
     }
 }
