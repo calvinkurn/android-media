@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeDcPlayBannerCarouselBinding
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetHomeAnalyticModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -29,7 +30,8 @@ class CarouselPlayWidgetViewHolder(
     )
 
     init {
-        playWidgetViewHolder.coordinator.setAnalyticListener(playWidgetAnalyticListener)
+        playWidgetViewHolder.coordinator.setAnalyticModel(PlayWidgetHomeAnalyticModel())
+//        playWidgetViewHolder.coordinator.setAnalyticListener(playWidgetAnalyticListener)
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {

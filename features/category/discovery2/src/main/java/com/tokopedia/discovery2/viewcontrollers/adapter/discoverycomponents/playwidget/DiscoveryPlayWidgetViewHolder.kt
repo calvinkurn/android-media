@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetDiscoveryAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -26,7 +27,8 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     private lateinit var discoveryPlayWidgetViewModel: DiscoveryPlayWidgetViewModel
     private val playWidgetViewHolder: PlayWidgetViewHolder = PlayWidgetViewHolder(itemView, PlayWidgetCoordinator(fragment.viewLifecycleOwner).apply {
         setListener(this@DiscoveryPlayWidgetViewHolder)
-        setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(this@DiscoveryPlayWidgetViewHolder))
+        setAnalyticModel(PlayWidgetDiscoveryAnalyticModel())
+//        setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(this@DiscoveryPlayWidgetViewHolder))
     })
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {

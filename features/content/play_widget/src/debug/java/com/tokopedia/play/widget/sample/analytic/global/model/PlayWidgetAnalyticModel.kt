@@ -6,10 +6,7 @@ package com.tokopedia.play.widget.sample.analytic.global.model
 interface PlayWidgetAnalyticModel {
 
     val prefix: String
-
     val category: String
-
     val promotionsItemName: String
-
     val promotionsCreativeName: String
 }
