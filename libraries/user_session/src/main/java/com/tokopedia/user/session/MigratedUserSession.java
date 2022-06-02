@@ -273,7 +273,7 @@ public class MigratedUserSession {
                     if (encryptedNewValue != null && !encryptedNewValue.isEmpty()) {
                         internalSetString(newPrefName, newKeyName, encryptedNewValue);
                         UserSessionMap.map.put(key, decryptedCurValue);
-                        return encryptedNewValue;
+                        return decryptedCurValue;
                     }
                 }
 
