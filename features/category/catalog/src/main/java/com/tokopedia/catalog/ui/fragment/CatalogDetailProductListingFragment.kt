@@ -625,6 +625,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                             }
                         }
                         is Fail -> {
+                            enableWishListButton(productId)
                             val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
@@ -632,6 +633,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                         }
                     } },
                     onError = {
+                        enableWishListButton(productId)
                         val errorMessage = ErrorHandler.getErrorMessage(context, it)
                         view?.let { v ->
                             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
