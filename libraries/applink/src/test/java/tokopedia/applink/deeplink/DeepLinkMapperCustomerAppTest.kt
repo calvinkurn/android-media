@@ -12,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -2071,5 +2070,32 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParam = "kumamoto"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/" + queryParam
         assertEqualsDeepLinkMapper(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, queryParam), expectedDeepLink)
+    }
+
+    @Test
+    fun `check inbox host customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
+    }
+
+    @Test
+    fun `check affiliate toko customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE, expectedDeepLink)
+
+        val expectedDeepLink2 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, expectedDeepLink2)
+    }
+
+    @Test
+    fun `check shop penalty detail customerapp`() {
+        assertEqualsDeepLinkMapper(ApplinkConst.SHOP_PENALTY_DETAIL,
+            ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+    }
+
+    @Test
+    fun `check power merchant pro interrupt customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-menu"
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT, expectedDeepLink)
     }
 }
