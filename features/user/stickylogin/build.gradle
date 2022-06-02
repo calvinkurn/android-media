@@ -46,6 +46,9 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
+    // TODO :: delete soon
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
+
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons

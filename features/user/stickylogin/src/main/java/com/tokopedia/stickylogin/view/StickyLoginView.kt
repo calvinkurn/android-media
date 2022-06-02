@@ -2,6 +2,7 @@ package com.tokopedia.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -50,6 +51,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -151,7 +153,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-            stickyLoginAction?.onClick()
+            // TODO :: delete soon; debug test
+//            stickyLoginAction?.onClick()
+
+            val intent = Intent(context, UserConsentDebugActivity::class.java)
+            context.startActivity(intent)
         }
 
         viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
