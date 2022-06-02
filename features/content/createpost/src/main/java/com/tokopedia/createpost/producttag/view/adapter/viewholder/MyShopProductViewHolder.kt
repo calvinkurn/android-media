@@ -31,10 +31,7 @@ internal class MyShopProductViewHolder private constructor() {
 
             if(item.product.isDiscount) {
                 binding.tvPrice.text = item.product.priceFmt
-                binding.labelDiscountPercentage.text = itemView.context.getString(
-                    R.string.cc_product_discount_template,
-                    item.product.discountFmt
-                )
+                binding.labelDiscountPercentage.text = item.product.discountFmt
                 binding.tvPriceBeforeDiscount.text = item.product.priceOriginalFmt
                 binding.llDiscount.visibility = View.VISIBLE
             } else {

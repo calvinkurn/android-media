@@ -98,7 +98,10 @@ class ProductTagUiModelMapper @Inject constructor() {
                         priceFmt = it.price,
                         isDiscount = it.discountPercentage != 0.0,
                         discount = it.discountPercentage,
-                        discountFmt = "${it.discountPercentage}%",
+                        discountFmt = when(it.discountPercentage % 1.0 == 0.0) {
+                            true -> "${it.discountPercentage.toString().split(".")[0]}%"
+                            else -> "${it.discountPercentage}%"
+                        },
                         priceOriginal = 0.0,
                         priceOriginalFmt = it.originalPrice,
                         priceDiscount = 0.0,
