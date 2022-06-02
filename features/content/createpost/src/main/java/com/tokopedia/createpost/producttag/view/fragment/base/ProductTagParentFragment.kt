@@ -230,8 +230,9 @@ class ProductTagParentFragment @Inject constructor(
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
                 binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
                 binding.icCcProductTagShopBadge2.apply {
-                    showWithCondition(viewModel.selectedShop.isShopHasBadge)
-                    if(viewModel.selectedShop.isShopHasBadge) setImage(viewModel.selectedShop.badge)
+                    showWithCondition(viewModel.selectedShop.isShopHasBadge) {
+                        setImage(viewModel.selectedShop.badge)
+                    }
                 }
             }
         }
