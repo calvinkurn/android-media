@@ -29,6 +29,8 @@ object Utils {
     var locale = Locale("in", "ID")
     const val KALI = " kali"
 
+    fun <T> fastLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
+
     /**
      * This method helps to validate and update ui for edit bid textfield
      * @param[block] is false ,if validation passed or is true is bid is error
