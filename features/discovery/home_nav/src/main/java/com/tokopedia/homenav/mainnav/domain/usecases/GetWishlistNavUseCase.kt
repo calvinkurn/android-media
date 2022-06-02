@@ -3,10 +3,7 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Category
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.LabelGroup
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.Wishlist
-import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.*
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.asLowerCase
@@ -24,8 +21,8 @@ class GetWishlistNavUseCase @Inject constructor (
 
     init {
         val query = """
-            query GetWishlist(${'$'}page:Int, ${'$'}limit:Int){
-              wishlist_v2(params:{page:${'$'}page, limit:${'$'}limit}){
+            query GetWishlist(${'$'}params:WishlistV2Params){
+              wishlist_v2(params:${'$'}params){
                 items {
                   id
                   name
@@ -101,7 +98,7 @@ class GetWishlistNavUseCase @Inject constructor (
             }
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(setParams().parameters)
+        graphqlUseCase.setRequestParams(generateParam(WishlistParam(sortFilters = constructFilter())))
         graphqlUseCase.setTypeClass(WishlistData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
@@ -136,37 +133,18 @@ class GetWishlistNavUseCase @Inject constructor (
         return this.any { it.title.asLowerCase() == LABEL_CASHBACK }
     }
 
-    private fun setParams(
-        page: Int = PARAM_PAGE_VALUE,
-        limit: Int = PARAM_LIMIT_VALUE
-    ) = RequestParams.create().apply {
-        parameters.clear()
-
-        putInt(PARAM_PAGE, page)
-        putInt(PARAM_LIMIT, limit)
-        putString(PARAM_SOURCE, PARAM_SOURCE_VALUE)
-        putObject(PARAM_SORT_FILTER, constructFilter())
+    private fun generateParam(param: WishlistParam): Map<String, Any?> {
+        return mapOf(PARAM to param)
     }
 
-    private fun constructFilter() : HashMap<String, Any> {
-        return HashMap<String, Any>().apply {
-            put(PARAM_FILTER_NAME, PARAM_FILTER_NAME_VALUE)
-            put(PARAM_FILTER_SELECTED, listOf(PARAM_FILTER_SELECTED_VALUE))
-        }
+    private fun constructFilter() : ArrayList<WishlistParam.WishlistSortFilterParam> {
+        return arrayListOf(WishlistParam.WishlistSortFilterParam(PARAM_FILTER_NAME_VALUE, arrayListOf(PARAM_FILTER_SELECTED_VALUE)))
     }
 
     companion object{
-        private const val PARAM_PAGE = "page"
-        private const val PARAM_LIMIT = "limit"
-        private const val PARAM_SOURCE = "source"
-        private const val PARAM_SOURCE_VALUE = "navigation"
-        private const val PARAM_SORT_FILTER = "sort_filters"
-        private const val PARAM_FILTER_NAME = "name"
+        private const val PARAM = "params"
         private const val PARAM_FILTER_NAME_VALUE = "stock"
-        private const val PARAM_FILTER_SELECTED = "selected"
         private const val PARAM_FILTER_SELECTED_VALUE = "2"
-        private const val PARAM_PAGE_VALUE = 1
-        private const val PARAM_LIMIT_VALUE = 5
         private const val LABEL_CASHBACK = "cashback"
     }
 }
