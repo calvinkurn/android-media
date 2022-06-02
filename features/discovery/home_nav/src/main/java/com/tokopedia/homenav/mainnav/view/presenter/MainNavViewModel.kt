@@ -85,13 +85,11 @@ class MainNavViewModel @Inject constructor(
         private const val ON_GOING_TRANSACTION_TO_SHOW_REVAMP = 5
         private const val IGNORE_TAKE_LIST = 0
 
-        private const val ON_GOING_FAVORITE_SHOPS_TO_SHOW = 5
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
         private const val INDEX_DEFAULT_ALL_CATEGORY = 8
 
         private const val SOURCE = "dave_home_nav"
         private const val MAX_ORDER_TO_SHOW = 6
-        private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
         private const val SIZE_LAYOUT_SHOW_FULL_WIDTH = 1
         private const val INDEX_FOR_FULL_WIDTH = 0
     }
