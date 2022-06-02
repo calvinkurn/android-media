@@ -42,8 +42,8 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -51,9 +51,8 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
-import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadataDetail
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodData
@@ -68,6 +67,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -316,7 +316,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
                         showToasterError(throwable)
-                        TokofoodErrorLogger.logExceptionToScalyr(
+                        TokofoodErrorLogger.logExceptionToServerLogger(
+                            TokofoodErrorLogger.PAGE.PURCHASE,
                             throwable,
                             TokofoodErrorLogger.ErrorType.ERROR_PAGE,
                             userSession.deviceId.orEmpty(),
@@ -332,7 +333,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
                         renderGlobalError(throwable)
-                        TokofoodErrorLogger.logExceptionToScalyr(
+                        TokofoodErrorLogger.logExceptionToServerLogger(
+                            TokofoodErrorLogger.PAGE.PURCHASE,
                             throwable,
                             TokofoodErrorLogger.ErrorType.ERROR_PAGE,
                             userSession.deviceId.orEmpty(),
@@ -384,7 +386,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         showCheckoutGeneralGlobalError(globalErrorType)
                     }
                     it.throwable?.let { throwable ->
-                        TokofoodErrorLogger.logExceptionToScalyr(
+                        TokofoodErrorLogger.logExceptionToServerLogger(
+                            TokofoodErrorLogger.PAGE.PURCHASE,
                             throwable,
                             TokofoodErrorLogger.ErrorType.ERROR_PAYMENT,
                             userSession.deviceId.orEmpty(),
@@ -410,7 +413,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         }
                     }
                     it.throwable?.let { throwable ->
-                        TokofoodErrorLogger.logExceptionToScalyr(
+                        TokofoodErrorLogger.logExceptionToServerLogger(
+                            TokofoodErrorLogger.PAGE.PURCHASE,
                             throwable,
                             TokofoodErrorLogger.ErrorType.ERROR_PAYMENT,
                             userSession.deviceId.orEmpty(),
@@ -478,7 +482,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
                         it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToScalyr(
+                            TokofoodErrorLogger.logExceptionToServerLogger(
+                                TokofoodErrorLogger.PAGE.PURCHASE,
                                 throwable,
                                 TokofoodErrorLogger.ErrorType.ERROR_REMOVE_FROM_CART,
                                 userSession.deviceId.orEmpty(),
@@ -491,7 +496,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_FAILED_UPDATE_QUANTITY -> {
                         it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToScalyr(
+                            TokofoodErrorLogger.logExceptionToServerLogger(
+                                TokofoodErrorLogger.PAGE.PURCHASE,
                                 throwable,
                                 TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
                                 userSession.deviceId.orEmpty(),
@@ -504,7 +510,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_FAILED_UPDATE_NOTES -> {
                         it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToScalyr(
+                            TokofoodErrorLogger.logExceptionToServerLogger(
+                                TokofoodErrorLogger.PAGE.PURCHASE,
                                 throwable,
                                 TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
                                 userSession.deviceId.orEmpty(),
@@ -623,7 +630,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.text_purchase_delete_item, productCount))
+                setTitle(getString(R.string.text_purchase_delete_item, productCount.toString()))
                 setDescription(getString(R.string.text_purchase_delete_all))
                 setPrimaryCTAText(getString(R.string.text_purchase_delete))
                 setSecondaryCTAText(getString(R.string.text_purchase_back))

@@ -45,7 +45,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     }
 
     private fun onSecondaryActionButtonClicked(
-        orderId: String,
+        trackingWrapperUiModel: TrackingWrapperUiModel,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ): OnClickListener {
@@ -55,7 +55,8 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
             }
             secondaryActionBottomSheet?.run {
                 dismissBottomSheet()
-                setOrderId(orderId)
+                setMerchantData(trackingWrapperUiModel.merchantData)
+                setOrderId(trackingWrapperUiModel.orderId)
                 setActionBtnList(secondaryButton)
                 navigator?.let { navigator -> setNavigator(navigator) }
                 show(fragmentManager)
@@ -80,7 +81,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     }
 
     private fun setupSecondaryButton(
-        orderId: String,
+        trackingWrapperUiModel: TrackingWrapperUiModel,
         secondaryButton: List<ActionButtonsUiModel.ActionButton>,
         fragmentManager: FragmentManager
     ) {
@@ -108,7 +109,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
             )
             setOnClickListener(
                 onSecondaryActionButtonClicked(
-                    orderId,
+                    trackingWrapperUiModel,
                     secondaryButton,
                     fragmentManager
                 )
@@ -124,7 +125,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
 
         setupPrimaryButton(trackingWrapperUiModel, actionButtons.primaryActionButton)
         setupSecondaryButton(
-            trackingWrapperUiModel.orderId,
+            trackingWrapperUiModel,
             actionButtons.secondaryActionButton,
             fragmentManager
         )
