@@ -10,7 +10,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot.clickThreeDotsMenu
 import org.junit.Assert.assertTrue

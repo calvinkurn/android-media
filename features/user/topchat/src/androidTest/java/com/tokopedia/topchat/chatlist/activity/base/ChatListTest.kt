@@ -4,7 +4,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub

@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.chatlist.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.topchat.chatlist.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.stub.chatlist.fragment.ChatTabListFragmentStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
