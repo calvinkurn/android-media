@@ -58,6 +58,36 @@
     <string name="text_purchase_add_order">Tambah Pesanan</string>
     <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
 
+    <!-- Merchant Page -->
+    <string name="action_share">Share</string>
+    <string name="action_open_global_menu">Open Global Menu</string>
+    <string name="action_save">Simpan</string>
+    <string name="text_rating_title">%s Rating</string>
+    <string name="text_distance_title">Jarak</string>
+    <string name="text_estimation_title">Tiba</string>
+    <string name="text_ops_hour_title">Jam Operasional</string>
+    <string name="text_customizable">Bisa Custom</string>
+    <string name="text_promo">Promo</string>
+    <string name="text_order">Pesan</string>
+    <string name="text_sold_out">Terjual Habis</string>
+    <string name="text_order_bottomsheet_title">Ada catatan buat menu ini?</string>
+    <string name="text_save">Simpan</string>
+    <string name="text_mandatory_selection">Harus dipilih</string>
+    <string name="text_single_mandatory_add_on_amount">Pilih %d</string>
+    <string name="text_multiple_mandatory_add_on_amount">Pilih min. %d, maks. %d</string>
+    <string name="text_optional_add_on_wording">Opsional • Pilih maks. %d</string>
+    <string name="text_dot_separator">&#160;•&#160;</string>
+    <string name="text_add_on_name">%s:&#160;</string>
+    <string name="text_note_saved_message">Sip, catatanmu tersimpan.</string>
+    <string name="text_orders">%s Pesanan</string>
+    <string name="action_merchant_ok">Oke</string>
+    <string name="action_order">Pesan</string>
+    <string name="category_filter_bottom_sheet_title">Mau menu dari kategori apa?</string>
+    <string name="desc_merchant_page_share">Hai, kamu! Jajan dari %1s jadi makin mudah di Tokopedia! Cek makanan-minuman yang kamu suka, yuk.</string>
+    <string name="desc_merchant_food_share">Coba cek ini, deh: %1s %2s %3s di Tokopedia. Bisa langsung sampai, lho.</string>
+    <string name="og_desc_merchant_page_share">Jajan dari %1s sekarang bisa di Tokopedia! Checkout cepat, bisa langsung sampai.</string>
+    <string name="og_desc_merchant_food_share">Jajan "%1s" %2s jadi makin mudah di Tokopedia! Pesan hari ini, tiba hari ini.</string>
+
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
     <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
@@ -90,4 +120,9 @@
     <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telp driver</string>
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis</string>
 
+
+    <!-- id -->
+    <item name="product_ui_model" type="id" />
+    <item name="custom_order_detail" type="id" />
+    <item name="dataset_position" type="id" />
 </resources>

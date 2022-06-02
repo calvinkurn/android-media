@@ -23,4 +23,12 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_BUY_AGAIN = "click buy again"
     const val TOKOFOOD_ORDER_DETAIL_PAGE = "tokofood order detail page"
 
+    //Merchant Page
+    const val MERCHANT = "merchant"
+    const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
+    const val CLICK_COMMUNICATION = "clickCommunication"
+    const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val CLICK_SHARE_BOTTOM_SHEET = "click - share button"
+    const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
+    const val USER_ID_FORMAT = "UserID %s"
 }

@@ -495,6 +495,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TokoFood.POST_PURCHASE) { _, uri, _, _ -> DeeplinkMapperTokoFood.getTokoFoodPostPurchaseInternalAppLink(uri) },
             DLP.startWith(ApplinkConst.TokoFood.HOME) { _, _, _, _ -> DeeplinkMapperTokoFood.getTokoFoodHomeInternalAppLink()},
             DLP.startWith(ApplinkConst.TokoFood.CATEGORY){ _, uri, _, _ -> DeeplinkMapperTokoFood.getTokoFoodCategoryInternalAppLink(uri)},
+            DLP.matchPattern(ApplinkConst.TokoFood.MERCHANT){ _, _, _, idList -> DeeplinkMapperTokoFood.getTokoFoodMerchantInternalAppLink(idList) }
     )
 
     fun getTokopediaSchemeList():List<DLP>{
