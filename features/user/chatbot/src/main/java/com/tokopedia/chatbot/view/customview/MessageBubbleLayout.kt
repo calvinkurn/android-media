@@ -22,7 +22,6 @@ class MessageBubbleLayout : ViewGroup {
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
     private val radiusMargin = 16f.toPx().toInt()
 
-    private var bodyMsgContainer: LinearLayout? = null
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -40,64 +39,17 @@ class MessageBubbleLayout : ViewGroup {
         initConfig(context, attrs)
     }
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initConfig(context, attrs)
-    }
 
     init {
         initViewLayout()
     }
 
-//    fun bindReplyData(uiModel: BaseChatUiModel) {
-//        replyBubbleContainer?.bindReplyData(uiModel)
-//    }
-//
     fun setReplyListener(listener: ReplyBubbleAreaMessage.Listener) {
         replyBubbleContainer?.setReplyListener(listener)
     }
 
-    fun setMsgGravity(gravity: Int) {
-        val gravityAttr = when (gravity) {
-            Gravity.START -> LEFT_MSG_ORIENTATION
-            Gravity.END -> RIGHT_MSG_ORIENTATION
-            else -> DEFAULT_MSG_ORIENTATION
-        }
-        msgOrientation = gravityAttr
-        //      initReplyBubbleBackground()
-    }
-
     private fun initConfig(context: Context?, attrs: AttributeSet?) {
         initViewBinding()
-        initAttrs(context, attrs)
-        //      initReplyBubbleBackground()
-    }
-
-
-    private fun initAttrs(context: Context?, attrs: AttributeSet?) {
-//        context?.theme?.obtainStyledAttributes(
-//            attrs,
-//            R.styleable.MessageBubbleConstraintLayout,
-//            0,
-//            0
-//        )?.apply {
-//            try {
-//                showCheckMark = getBoolean(
-//                    R.styleable.MessageBubbleConstraintLayout_showCheckMark,
-//                    FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
-//                )
-//                msgOrientation = getInteger(
-//                    R.styleable.MessageBubbleConstraintLayout_messageOrientation,
-//                    DEFAULT_MSG_ORIENTATION
-//                )
-//            } finally {
-//                recycle()
-//            }
-//        }
     }
 
     private fun initViewLayout() {
@@ -109,10 +61,6 @@ class MessageBubbleLayout : ViewGroup {
         replyBubbleContainer = findViewById(R.id.reply_container)
     }
 
-//
-//    private fun initReplyBubbleBackground() {
-//        replyBubbleContainer?.updateMessageOrientation(msgOrientation)
-//    }
 
     /**
      * Measure it's children, take the max width of a child and set it
@@ -139,7 +87,6 @@ class MessageBubbleLayout : ViewGroup {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec)
                 maxChildWidth = max(child.measuredWidth, maxChildWidth)
                 maxChildWidth = min(maxWidth, maxChildWidth)
-            //    Log.d("FATAL", "onMeasure:  " + maxChildWidth)
                 myHeight += child.measuredHeight
             }
         }

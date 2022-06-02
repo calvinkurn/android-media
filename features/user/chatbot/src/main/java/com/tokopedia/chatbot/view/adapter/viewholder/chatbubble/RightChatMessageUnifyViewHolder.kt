@@ -51,13 +51,19 @@ class RightChatMessageUnifyViewHolder(
             val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.fxChat?.background = backgroundChatWithReplyBubble
             customChatLayout?.fxChat?.bringToFront()
-            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
-            customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-            customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
-            customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
-            customChatLayout?.replyBubbleContainer?.show()
+            setupReplyBubble(senderName, message)
         } else {
             customChatLayout?.replyBubbleContainer?.hide()
+        }
+    }
+
+    private fun setupReplyBubble(senderName: String, message: MessageUiModel) {
+        customChatLayout?.replyBubbleContainer?.apply {
+            composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
+            updateReplyButtonState(true)
+            updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
+            updateCloseButtonState(false)
+            show()
         }
     }
 

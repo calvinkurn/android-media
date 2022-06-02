@@ -52,16 +52,22 @@ class LeftChatMessageUnifyViewHolder(
 
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
-            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
             customChatLayout?.fxChat?.bringToFront()
-            customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-            customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
-            customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
-            customChatLayout?.replyBubbleContainer?.show()
+            setupReplyBubble(senderName,message)
         } else {
             customChatLayout?.replyBubbleContainer?.hide()
         }
 
+    }
+
+    private fun setupReplyBubble(senderName: String, message: MessageUiModel) {
+        customChatLayout?.replyBubbleContainer?.apply {
+            composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
+            updateReplyButtonState(true)
+            updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
+            updateCloseButtonState(false)
+            show()
+        }
     }
 
     override fun mapSenderName(parentReply: ParentReply): String {

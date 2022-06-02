@@ -127,11 +127,6 @@ class GetExistingChatUseCase @Inject constructor(
         )
     }
 
-    //Don't know the usage of this
-    fun isInTheMiddleOfThePage(): Boolean {
-        return hasNextAfter
-    }
-
     fun reset() {
         minReplyTime = ""
         maxReplyTime = ""

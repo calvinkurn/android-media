@@ -21,9 +21,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 abstract class ChatbotMessageUnifyViewHolder(
-        itemView: View?,
-        protected val listener: ChatLinkHandlerListener,
-        val replyBubbleListener : ReplyBubbleAreaMessage.Listener
+    itemView: View?,
+    protected val listener: ChatLinkHandlerListener,
+    private val replyBubbleListener : ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout_with_reply)

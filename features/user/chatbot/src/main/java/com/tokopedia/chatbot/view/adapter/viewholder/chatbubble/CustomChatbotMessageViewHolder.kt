@@ -1,10 +1,8 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -70,7 +68,7 @@ abstract class CustomChatbotMessageViewHolder(
     override fun getDateId(): Int = R.id.date
 
     companion object {
-        val TYPE_LEFT = 0
-        val TYPE_RIGHT = 1
+        const val TYPE_LEFT = 0
+        const val TYPE_RIGHT = 1
     }
 }
