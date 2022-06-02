@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import javax.inject.Inject
 
 /**
@@ -230,7 +231,7 @@ class ProductTagParentFragment @Inject constructor(
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
                 binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
                 binding.icCcProductTagShopBadge2.apply {
-                    showWithCondition(viewModel.selectedShop.isShopHasBadge) {
+                    shouldShowWithAction(viewModel.selectedShop.isShopHasBadge) {
                         setImage(viewModel.selectedShop.badge)
                     }
                 }
