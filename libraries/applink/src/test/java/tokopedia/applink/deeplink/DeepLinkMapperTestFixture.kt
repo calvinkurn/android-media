@@ -34,7 +34,13 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        setAllowingDebugToolsFalse()
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
+    }
+
+    open fun setAllowingDebugToolsFalse(){
+        GlobalConfig.DEBUG = false
+        GlobalConfig.ENABLE_DISTRIBUTION = false
     }
 
     @After
