@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  USER CONSENT  -->
+    <declare-styleable name="UserConsentWidget">
+        <attr name="actionText" format="string"/>
+    </declare-styleable>
+</resources>
