@@ -47,7 +47,7 @@ class GetReviewProductUseCase (
 
     companion object{
         private const val LIMIT = "limit"
-        private const val MAX_LIMIT = 5
+        private const val MAX_LIMIT = 6
         private const val PAGE = "page"
         private const val PAGE_REVIEW = 1
     }

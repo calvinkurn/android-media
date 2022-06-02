@@ -33,14 +33,17 @@ class TransactionListViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
         private const val SIZE_LAYOUT_SHOW_VIEW_ALL_CARD = 5
+        private var EDGE_MARGIN = 16f.toDpInt()
+        private var SPACING_BETWEEN = 8f.toDpInt()
+        private var TRANSACTION_CARD_HEIGHT = 80f.toDpInt()
+        private const val OTHER_TRANSACTION_THRESHOLD = 0
     }
 
-    private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(element: TransactionListItemDataModel) {
+    private fun RecyclerView.setHeightBasedOnTransactionCardMaxHeight(element: TransactionListItemDataModel) {
         if (element.isMePageUsingRollenceVariant) {
-            val productCardHeight = 80f.toDpInt()
 
             val carouselLayoutParams = this.layoutParams
-            carouselLayoutParams?.height = productCardHeight
+            carouselLayoutParams?.height = TRANSACTION_CARD_HEIGHT
             this.layoutParams = carouselLayoutParams
         }
     }
@@ -49,16 +52,13 @@ class TransactionListViewHolder(itemView: View,
         val context = itemView.context
         val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
-        val edgeMargin = 16f.toDpInt()
-        val spacingBetween = 8f.toDpInt()
-
         binding?.transactionRv?.adapter = adapter
         binding?.transactionRv?.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false
         )
         if (binding?.transactionRv?.itemDecorationCount == 0) {
             binding?.transactionRv?.addItemDecoration(
-                NavOrderSpacingDecoration(spacingBetween, edgeMargin)
+                NavOrderSpacingDecoration(SPACING_BETWEEN, EDGE_MARGIN)
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
@@ -68,9 +68,9 @@ class TransactionListViewHolder(itemView: View,
             visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
-            } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > SIZE_LAYOUT_SHOW_VIEW_ALL_CARD) {
+            } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > OTHER_TRANSACTION_THRESHOLD) {
                 visitableList.add(OtherTransactionRevampModel())
-                binding?.transactionRv?.setHeightBasedOnProductCardMaxHeight(element)
+                binding?.transactionRv?.setHeightBasedOnTransactionCardMaxHeight(element)
             }
         }
         else {
