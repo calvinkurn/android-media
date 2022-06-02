@@ -171,13 +171,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
-                REQUEST_FROM_PDP -> {
-                    data?.let {
-                        val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
-                        val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
-                            false)
-                    }
-                }
                 REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
