@@ -53,7 +53,7 @@ class UpgradePmProWidget(
             )
 
             if (shopGrade ==  PMConstant.ShopGrade.PM && shopInfo.shopScore > 70){
-                tickerPmWidget.setTextDescription(getString(
+                tickerPmWidget.setHtmlDescription(getString(
                     R.string.pm_ticker_update_pm_pro,
                     element.nextMonthlyRefreshDate
                 ))
