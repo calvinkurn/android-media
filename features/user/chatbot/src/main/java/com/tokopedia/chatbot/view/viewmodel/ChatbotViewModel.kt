@@ -6,10 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
@@ -18,8 +14,8 @@ class ChatbotViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _ticketList = MutableLiveData<Result<InboxTicketListResponse>>()
-    val ticketList : LiveData<Result<InboxTicketListResponse>>
+    private val _ticketList = MutableLiveData<TicketListState>()
+    val ticketList : LiveData<TicketListState>
         get() = _ticketList
 
     fun getTicketList(){
@@ -31,11 +27,16 @@ class ChatbotViewModel @Inject constructor(
     }
 
     private fun onTicketListDataSuccess(inboxTicketListResponse: InboxTicketListResponse) {
-        _ticketList.postValue(Success(inboxTicketListResponse))
+        inboxTicketListResponse.ticket?.TicketData?.notice?.let {
+            if (it.isActive)
+                _ticketList.postValue(TicketListState.BottomSheetData(it))
+        }?: kotlin.run {
+            _ticketList.postValue(TicketListState.ShowContactUs)
+        }
     }
 
     private fun onTicketListDataFail(throwable: Throwable) {
-        _ticketList.postValue(Fail(throwable))
+        _ticketList.postValue(TicketListState.ShowContactUs)
     }
 
     override fun onCleared() {
@@ -43,4 +44,10 @@ class ChatbotViewModel @Inject constructor(
         super.onCleared()
     }
 
+}
+
+sealed class TicketListState {
+    object ShowContactUs : TicketListState()
+    data class BottomSheetData(val noticeData: InboxTicketListResponse.Ticket.Data.NoticeItem) :
+        TicketListState()
 }

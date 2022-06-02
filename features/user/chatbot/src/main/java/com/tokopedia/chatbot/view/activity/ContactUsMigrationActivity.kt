@@ -16,19 +16,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chatbot.ChatbotConstant.CONTACT_US_APPLINK
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
-import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.di.ChatbotModule
 
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
+import com.tokopedia.chatbot.view.viewmodel.TicketListState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottom_sheet_go_to_help.view.*
 import javax.inject.Inject
 
 class ContactUsMigrationActivity : BaseSimpleActivity() {
@@ -64,22 +61,13 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private fun startObservingViewModels() {
         viewModel.ticketList.observe(this) {
             when (it) {
-                is Success -> onSuccessGetTicketData(it.data)
-                is Fail -> goToContactUs()
+                is TicketListState.BottomSheetData -> {
+                    showBottomSheet(it.noticeData.subtitle)
+                }
+                is TicketListState.ShowContactUs -> {
+                    goToContactUs()
+                }
             }
-        }
-    }
-
-
-    private fun onSuccessGetTicketData(data: InboxTicketListResponse) {
-        val shouldShowBottomSheet =  data?.ticket?.TicketData?.notice?.isActive
-        if(shouldShowBottomSheet==true){
-            val noticeData = data?.ticket?.TicketData?.notice
-            val subtitle = noticeData?.subtitle
-            showBottomSheet(subtitle)
-        }
-        else{
-            goToContactUs()
         }
     }
 
