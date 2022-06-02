@@ -1206,18 +1206,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     }
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
-                    String eventCategory = bundle.getString(KEY_CATEGORY);
-                    if (eventCategory != null && eventCategory.contains("search result")) {
-                        // https://tokopedia.atlassian.net/browse/AN-36131
-                        Bundle gA4bundle = createBundleGA4BundleProductClick(bundle);
-                        fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, gA4bundle);
-                    } else {
-                        // https://tokopedia.atlassian.net/browse/AN-36122
-                        Bundle gA4bundle = createBundleGA4BundleClickPromotion(bundle);
-                        if (gA4bundle != null) {
-                            fa.logEvent(FirebaseAnalytics.Event.SELECT_PROMOTION, gA4bundle);
-                        }
-                    }
+                    sendBundleGA4BundleClick(fa, bundle);
                     break;
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
                     // https://tokopedia.atlassian.net/browse/AN-36179
@@ -1241,6 +1230,26 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void sendBundleGA4BundleClick(FirebaseAnalytics fa, Bundle oriBundle) {
+        String eventCategory = oriBundle.getString(KEY_CATEGORY);
+        boolean isPromotion = true;
+        if ((eventCategory != null && eventCategory.contains("search result")) ||
+                oriBundle.get("promotions") == null) {
+            isPromotion = false;
+        }
+        if (isPromotion) {
+            // https://tokopedia.atlassian.net/browse/AN-36122
+            Bundle gA4bundle = createBundleGA4BundleClickPromotion(oriBundle);
+            if (!gA4bundle.isEmpty()) {
+                fa.logEvent(FirebaseAnalytics.Event.SELECT_PROMOTION, gA4bundle);
+            }
+        } else {
+            // https://tokopedia.atlassian.net/browse/AN-36131
+            Bundle gA4bundle = createBundleGA4BundleProductClick(oriBundle);
+            fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, gA4bundle);
         }
     }
 
@@ -1271,33 +1280,29 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private Bundle createBundleGA4BundleClickPromotion(Bundle oriBundle) {
         Object promotions = oriBundle.get("promotions");
-        if (promotions != null) {
-            List promotionList = (List) promotions;
-            Bundle ecommerceBundleGA4 = new Bundle();
+        List promotionList = (List) promotions;
+        Bundle ecommerceBundleGA4 = new Bundle();
 
-            if (promotionList.size() > 0) {
-                Bundle bundlePromotion = ((Bundle) promotionList.get(0));
-                String itemId = bundlePromotion.getString(ITEM_ID);
-                if (itemId != null) {
-                    ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
-                }
-                String itemName = bundlePromotion.getString(ITEM_NAME);
-                if (itemName != null) {
-                    ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
-                }
-                String creativeName = bundlePromotion.getString(CREATIVE_NAME);
-                if (creativeName != null) {
-                    ecommerceBundleGA4.putString(CREATIVE_NAME, creativeName);
-                }
-                String creativeSlot = bundlePromotion.getString(CREATIVE_SLOT);
-                if (creativeSlot != null) {
-                    ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
-                }
+        if (promotionList.size() > 0) {
+            Bundle bundlePromotion = ((Bundle) promotionList.get(0));
+            String itemId = bundlePromotion.getString(ITEM_ID);
+            if (itemId != null) {
+                ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
             }
-            return ecommerceBundleGA4;
-        } else {
-            return null;
+            String itemName = bundlePromotion.getString(ITEM_NAME);
+            if (itemName != null) {
+                ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+            }
+            String creativeName = bundlePromotion.getString(CREATIVE_NAME);
+            if (creativeName != null) {
+                ecommerceBundleGA4.putString(CREATIVE_NAME, creativeName);
+            }
+            String creativeSlot = bundlePromotion.getString(CREATIVE_SLOT);
+            if (creativeSlot != null) {
+                ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
+            }
         }
+        return ecommerceBundleGA4;
     }
 
     private Bundle createBundleGA4BundleProductClick(Bundle oriBundle) {
