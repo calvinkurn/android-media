@@ -16,9 +16,9 @@ import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponentBuilder
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import javax.inject.Inject
@@ -188,7 +188,7 @@ class UserConsentWidget : FrameLayout {
                 collection?.consentType.orEmpty()
             ))
         }
-        return UserConsentPayload(collection?.id.orEmpty(), purposes)
+        return UserConsentPayload(collection?.id.orEmpty(), collection?.version.orEmpty(), purposes)
     }
 
     private fun renderView() {
