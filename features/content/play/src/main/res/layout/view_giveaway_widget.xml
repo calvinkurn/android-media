@@ -59,15 +59,16 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/tap_lottie_bg"
-                android:layout_width="@dimen/play_giveaway_tap_bg_size"
-                android:layout_height="@dimen/play_giveaway_tap_bg_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:translationZ="0dp"
                 />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/iv_tap"
-                android:layout_width="@dimen/play_giveaway_tap_icon_size"
-                android:layout_height="@dimen/play_giveaway_tap_icon_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:translationZ="1dp"
                 />
 
