@@ -16,8 +16,12 @@ import android.opengl.ETC1.getHeight
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.shop.flash_sale.common.util.KeyboardHandler
+import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftDeleteQuestionAdapter
+import com.tokopedia.shop.flash_sale.presentation.draft.viewmodel.DraftDeleteViewModel
+import javax.inject.Inject
 
 
 class DraftDeleteBottomSheet(
@@ -28,6 +32,9 @@ class DraftDeleteBottomSheet(
         const val TAG = "Tag DraftDeleteBottomSheet"
         const val MIN_LINE_TEXTAREA = 3
     }
+
+    @Inject
+    lateinit var viewModel: DraftDeleteViewModel
 
     init {
         useWideModal = true
@@ -43,9 +50,20 @@ class DraftDeleteBottomSheet(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        initInjector()
+
         setTitle(getString(R.string.draftdelete_title))
         bottomSheetTitle.gravity = Gravity.CENTER
         bottomSheetClose.hide()
+
+        viewModel.getData("222")
+    }
+
+    private fun initInjector() {
+        DaggerShopFlashSaleComponent.builder()
+            .baseAppComponent((requireActivity().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun initChildLayout() {
@@ -71,6 +89,9 @@ class DraftDeleteBottomSheet(
                 "Ingin berpromosi menggunakan fitur lain",
                 "Alasan Lain: ",
             ))
+            setSelectionChangedListener {
+                etQuestionOther?.isEnabled = it == "Alasan Lain: "
+            }
         }
     }
 
