@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.databinding.ItemFooterMessageBinding
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
@@ -31,6 +32,7 @@ class FooterViewHolder(
 
         binding?.btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }
         binding?.txtTitle?.setOnClickListener { listener.onInfoClicked() }
+        binding?.imgStatus?.loadImage(FOOTER_IMG)
 
         binding?.txtTitle?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 EMPTY_DRAWABLE,
@@ -74,6 +76,7 @@ class FooterViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_footer_message
 
+        private const val FOOTER_IMG = "https://images.tokopedia.net/img/android/user/notif-troubleshooter/ic_ts_notif_footer.png"
         private const val URL_TOKOPEDIA_CARE = "tokopedia://webview?url=https://www.tokopedia.com/help/article/apa-itu-push-notification"
         private const val EMPTY_DRAWABLE = 0
     }

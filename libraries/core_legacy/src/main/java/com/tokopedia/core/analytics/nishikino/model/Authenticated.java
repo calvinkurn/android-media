@@ -10,8 +10,6 @@ public class Authenticated {
     public static final String KEY_CONTACT_INFO = "contactInfo";
 
     public static final String KEY_USER_SELLER = "userSeller";
-    public static final String KEY_USER_FULLNAME = "userFullName";
-    public static final String KEY_USER_EMAIL = "userEmail";
 
     public static final String KEY_USER_ID = "userId";
     public static final String KEY_SHOP_ID = "shopID";

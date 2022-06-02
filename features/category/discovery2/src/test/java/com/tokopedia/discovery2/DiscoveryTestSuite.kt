@@ -66,7 +66,6 @@ import org.junit.runners.Suite
 
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        CategoryBestSellerViewModelTest::class,
         MultiBannerViewModelTest::class,
         TimerSprintSaleItemViewModelTest::class,
         UtilsTest::class,
@@ -131,6 +130,7 @@ import org.junit.runners.Suite
         ChipsFilterViewModelTest::class,
         ShopBannerInfiniteModelTest::class,
         ShopBannerInfiniteItemModelTest::class,
+        CategoryBestSellerViewModelTest::class,
 )
 
 
