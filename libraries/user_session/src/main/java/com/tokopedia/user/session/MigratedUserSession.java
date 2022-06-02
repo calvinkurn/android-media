@@ -185,6 +185,10 @@ public class MigratedUserSession {
                 return EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("type", "encrypt_string_exception");
+            data.put("error", Log.getStackTraceString(e));
+            ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
             return "";
         }
     }
@@ -201,6 +205,10 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("type", "decrypt_string_exception");
+            data.put("error", Log.getStackTraceString(e));
+            ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
             return "";
         }
     }
