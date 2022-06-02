@@ -2,16 +2,16 @@ package com.tokopedia.power_merchant.subscribe.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.power_merchant.subscribe.domain.model.BenefitPackageResponse
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.domain.model.MembershipDetailResponse
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import javax.inject.Inject
 
-class BenefitPackageMapper @Inject constructor() {
+class MembershipDetailMapper @Inject constructor() {
 
-    fun mapToBenefitPackageHeader(
-        response: BenefitPackageResponse
-    ): BenefitPackageHeaderUiModel {
-        return BenefitPackageHeaderUiModel(
+    fun mapToUiModel(
+        response: MembershipDetailResponse
+    ): MembershipDetailUiModel {
+        return MembershipDetailUiModel(
             periodDate = response.shopLevel.result.period.orEmpty(),
             gradeName = response.data?.currentPMGrade?.gradeName.orEmpty(),
             nextUpdate = DateFormatUtils.formatDate(
@@ -20,7 +20,6 @@ class BenefitPackageMapper @Inject constructor() {
             ),
             totalOrder = response.shopLevel.result.itemSold?.toLong().orZero(),
             netIncome = response.shopLevel.result.netIncomeValue?.toLong().orZero(),
-            shopLevel = response.data?.currentPMGrade?.shopLevel.orZero(),
             shopScore = response.data?.currentPMGrade?.shopScore.orZero()
         )
     }

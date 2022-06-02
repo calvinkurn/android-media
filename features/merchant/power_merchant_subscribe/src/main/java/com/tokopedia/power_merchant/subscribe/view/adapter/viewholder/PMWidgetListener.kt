@@ -6,6 +6,6 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 interface PMWidgetListener : PMDeactivateWidget.PMDeactivateWidgetListener,
     TickerWidget.Listener, CancelDeactivationSubmissionWidget.Listener,
-    ExpandableWidget.Listener, ShopGradeWidget.Listener,
-    ItemPMProNewSellerBenefitWidget.Listener, RegistrationHeaderWidget.Listener,
-    PotentialWidget.Listener, GradeBenefitWidget.Listener
+    ShopGradeWidget.Listener, ItemPMProNewSellerBenefitWidget.Listener,
+    RegistrationHeaderWidget.Listener, PotentialWidget.Listener,
+    GradeBenefitWidget.Listener

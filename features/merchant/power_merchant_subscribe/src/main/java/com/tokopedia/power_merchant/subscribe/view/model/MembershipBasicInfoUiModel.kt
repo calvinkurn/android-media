@@ -7,6 +7,6 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
  */
 
 data class MembershipBasicInfoUiModel(
-    val headerData: BenefitPackageHeaderUiModel,
+    val headerData: MembershipDetailUiModel,
     val pmShopInfo: PMShopInfoUiModel
 )

@@ -159,16 +159,6 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    override fun showUpdateInfoBottomSheet(gradeName: String) {
-        val fragment = PMProBenefitPackageStatusBottomSheet.createInstance(gradeName)
-        if (childFragmentManager.isStateSaved || fragment.isAdded) return
-        fragment.show(childFragmentManager)
-    }
-
-    override fun onMembershipStatusPmProClickListener() {
-        showPmProDeactivationBottomSheet()
-    }
-
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
         val bottomSheet = PMProStatusInfoBottomSheet.createInstance(model)
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
@@ -307,21 +297,6 @@ open class PowerMerchantSubscriptionFragment :
         mViewModel.submitPMActivation(currentShopTireType)
 
         powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
-    }
-
-    private fun showPmProDeactivationBottomSheet() {
-        val bottomSheet = PowerMerchantProDeactivationBottomSheet.createInstance()
-        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheet.setOnNextClickListener { shopTire ->
-            val pmTireType = if (shopTire == PMConstant.ShopTierType.POWER_MERCHANT) {
-                PMConstant.PMTierType.POWER_MERCHANT_PRO
-            } else {
-                PMConstant.PMTierType.POWER_MERCHANT
-            }
-
-            showDeactivationQuestionnaire(pmTireType)
-        }
-        bottomSheet.show(childFragmentManager)
     }
 
     private fun showRegularPmDeactivationBottomSheet() {

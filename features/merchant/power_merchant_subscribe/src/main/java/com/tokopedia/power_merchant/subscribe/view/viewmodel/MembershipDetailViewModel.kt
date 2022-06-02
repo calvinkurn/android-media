@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.power_merchant.subscribe.domain.usecase.GetBenefitPackageUseCase
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetMembershipDetailUseCase
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,15 +21,15 @@ import javax.inject.Inject
  */
 
 class MembershipDetailViewModel @Inject constructor(
-    private val getShopScoreUpdatePeriod: Lazy<GetBenefitPackageUseCase>,
+    private val getShopScoreUpdatePeriod: Lazy<GetMembershipDetailUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    val membershipBasicInfo: LiveData<Result<BenefitPackageHeaderUiModel>>
+    val membershipBasicInfo: LiveData<Result<MembershipDetailUiModel>>
         get() = _membershipBasicInfo
 
-    private val _membershipBasicInfo = MutableLiveData<Result<BenefitPackageHeaderUiModel>>()
+    private val _membershipBasicInfo = MutableLiveData<Result<MembershipDetailUiModel>>()
 
     fun getMembershipBasicInfo() {
         launchCatchError(block = {

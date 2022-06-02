@@ -39,7 +39,7 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentMembershipDetailBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.MembershipViewPagerAdapter
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.MembershipDetailViewModel
 import com.tokopedia.unifycomponents.setIconUnify
@@ -75,7 +75,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     }
     private var binding: FragmentMembershipDetailBinding? = null
     private val pagerAdapter by lazy { MembershipViewPagerAdapter() }
-    private var data: BenefitPackageHeaderUiModel? = null
+    private var data: MembershipDetailUiModel? = null
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -161,7 +161,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         Timber.e(throwable)
     }
 
-    private fun onSuccessPmShopInfo(data: BenefitPackageHeaderUiModel) {
+    private fun onSuccessPmShopInfo(data: MembershipDetailUiModel) {
         this.data = data
         showHeaderInfo(data)
         setupPagerItems()
@@ -314,7 +314,7 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             ?.colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 
-    private fun showHeaderInfo(data: BenefitPackageHeaderUiModel) {
+    private fun showHeaderInfo(data: MembershipDetailUiModel) {
         binding?.run {
             tvPmMembershipPerformancePeriod.text = getString(
                 R.string.pm_date_based_on_your_sell, data.periodDate, data.gradeName.asCamelCase()

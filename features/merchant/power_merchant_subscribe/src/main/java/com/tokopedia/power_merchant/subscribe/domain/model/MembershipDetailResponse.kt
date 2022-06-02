@@ -3,7 +3,7 @@ package com.tokopedia.power_merchant.subscribe.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class BenefitPackageResponse(
+data class MembershipDetailResponse(
     @Expose
     @SerializedName("shopLevel")
     val shopLevel: ShopLevel = ShopLevel(),
@@ -51,9 +51,6 @@ data class BenefitPackageResponse(
         @Expose
         @SerializedName("grade_name")
         val gradeName: String? = "",
-        @Expose
-        @SerializedName("shop_level")
-        val shopLevel: Int? = 0,
         @Expose
         @SerializedName("shop_score")
         val shopScore: Int? = 0
