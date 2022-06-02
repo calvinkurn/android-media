@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
@@ -2049,13 +2050,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check tokofood home appLink then should return tokopedia home link because rollence is false in customerapp`() {
-        val expectedDeepLink = ApplinkConst.HOME
-        val appLink = ApplinkConst.TokoFood.HOME
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check tokofood merchant appLink then should return tokopedia internal tokofood merchant in customerapp`() {
         val merchantId = "cbdb87be-acca-439e-ae0f-4829a608b811"
         val productId = "1111"
@@ -2067,11 +2061,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check tokofood merchant appLink then should return tokopedia home link because rollence is false in customerapp`() {
-        val merchantId = "cbdb87be-acca-439e-ae0f-4829a608b811"
-        val productId = "1111"
-        val expectedDeepLink = ApplinkConst.HOME
-        val appLink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchantId, productId)
+    fun `check tokofood category appLink then should return tokopedia internal tokofood category in customerapp`() {
+        val pageTitle = "Terlaris"
+        val cuisine = "Coffee"
+        val option = "1"
+        val sortBy = "2"
+        val expectedDeepLink =
+            "${ApplinkConstInternalTokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy"
+        val appLink = "${ApplinkConst.TokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy"
+        foodRollenceEnabler()
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -2082,14 +2080,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
         val appLink = "${ApplinkConst.TokoFood.POST_PURCHASE}/$orderId"
         foodRollenceEnabler()
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokofood post purchase appLink then should return tokopedia home link because rollence is false in customerapp`() {
-        val orderId = "123"
-        val expectedDeepLink = ApplinkConst.HOME
-        val appLink = "${ApplinkConst.TokoFood.POST_PURCHASE}/$orderId"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
