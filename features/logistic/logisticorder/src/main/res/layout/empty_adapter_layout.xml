@@ -16,7 +16,8 @@
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/circle_green_logistic" />
+        android:src="@drawable/circle_border_logistic"
+        android:contentDescription="@string/content_desc_empty_tracking" />
 
 
     <com.tokopedia.unifyprinciples.Typography

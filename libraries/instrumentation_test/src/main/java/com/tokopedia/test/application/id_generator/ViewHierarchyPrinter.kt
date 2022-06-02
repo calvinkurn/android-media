@@ -9,6 +9,7 @@ import android.view.ViewGroup
 class ViewHierarchyPrinter(
     private val printConditions: List<PrintCondition> = emptyList(),
     private val customIdPrefix: String = "",
+    private val packageName: String = "",
 ) {
 
     private val mapOfViews = mutableMapOf<View, Int>()
@@ -18,7 +19,7 @@ class ViewHierarchyPrinter(
     }
 
     fun printAsCSV(view: View): String {
-        val header = "Parent Custom ID, Parent ID, Parent Class, View Custom ID, View ID, View Class"
+        val header = "Parent Custom ID, Parent ID, Parent Class, View Custom ID, View ID, View Class, Package Name"
         val body = printAsCSVInternal(view)
 
         return buildString {
@@ -63,7 +64,10 @@ class ViewHierarchyPrinter(
                 } catch (e: Throwable) { "-" }
             )
             append(", ")
-            appendLine(view::class.java.name)
+            append(view::class.java.name)
+            append(", ")
+
+            appendLine(packageName.replace('.', ';'))
 
             if (view is ViewGroup) {
                 for (i in 0 until view.childCount) {

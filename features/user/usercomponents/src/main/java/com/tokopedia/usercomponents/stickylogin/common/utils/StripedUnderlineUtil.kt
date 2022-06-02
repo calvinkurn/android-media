@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.tokopedia.usercomponents.stickylogin.R
 
 object StripedUnderlineUtil {
 

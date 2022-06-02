@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -102,6 +103,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -133,7 +135,8 @@ public class MainParentActivity extends BaseActivity implements
         HomePerformanceMonitoringListener,
         OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
-        MainParentStateListener
+        MainParentStateListener,
+        ITelemetryActivity
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -1424,5 +1427,11 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    @NonNull
+    @Override
+    public String getTelemetrySectionName() {
+        return "home";
     }
 }
