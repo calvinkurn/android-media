@@ -33,6 +33,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
@@ -53,6 +54,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
     var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
 
     protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
@@ -68,6 +72,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         when(fragment) {
             is FeedAccountTypeBottomSheet -> {
                 fragment.setData(mFeedAccountList)
+                fragment.setAnalytic(feedAccountAnalytic)
                 fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
                         if(feedAccount.type != selectedFeedAccount.type && feedAccount.isShop) {
@@ -322,6 +327,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             }
 
             setOnAccountClickListener {
+                feedAccountAnalytic.clickAccountInfo()
                 FeedAccountTypeBottomSheet
                     .getFragment(supportFragmentManager, classLoader)
                     .showNow(supportFragmentManager)
@@ -350,6 +356,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             setPrimaryCTAClickListener { dismiss() }
 
             setSecondaryCTAClickListener {
+                feedAccountAnalytic.clickChangeAccountToSeller()
                 dismiss()
                 when(intent.extras?.get(PARAM_TYPE)) {
                     TYPE_CONTENT_TAGGING_PAGE -> {

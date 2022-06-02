@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -18,28 +17,29 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
-import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
-import com.tokopedia.createpost.producttag.util.AUTHOR_USER
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.SelectedProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.createpost.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import javax.inject.Inject
 
 /**
@@ -48,6 +48,7 @@ import javax.inject.Inject
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
+    private val analytic: ProductTagAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -96,6 +97,7 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
+                            analytic.clickProductTagSource(source)
                             viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
@@ -117,15 +119,16 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun setupView() {
         binding.icCcProductTagBack.setOnClickListener {
+            analytic.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
         binding.tvCcProductTagProductSource.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+            clickBreadcrumb()
         }
 
         binding.icCcProductTagChevron1.setOnClickListener {
-            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+            clickBreadcrumb()
         }
 
         showBreadcrumb(viewModel.isUser)
@@ -193,42 +196,45 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
-        /** Update the First Part */
-        if(productTagSourceStack.isNotEmpty()) {
-            val firstSource = productTagSourceStack.first()
+        if(viewModel.isUser) {
+            /** Update the First Part */
+            if(productTagSourceStack.isNotEmpty()) {
+                val firstSource = productTagSourceStack.first()
 
-            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
-            binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
-            if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
-                binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
-                binding.imgCcProductTagShopBadge1.show()
-                binding.icCcProductTagShopBadge1.hide()
+                binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
+                binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
+                if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+                    binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
+                    binding.imgCcProductTagShopBadge1.show()
+                    binding.icCcProductTagShopBadge1.hide()
+                }
+                else if(firstSource == ProductTagSource.Shop) {
+                    binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
+                    binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
+                    binding.imgCcProductTagShopBadge1.hide()
+                }
+                else {
+                    binding.imgCcProductTagShopBadge1.hide()
+                    binding.icCcProductTagShopBadge1.hide()
+                }
             }
-            else if(firstSource == ProductTagSource.Shop) {
-                binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
-                binding.icCcProductTagShopBadge1.showWithCondition(viewModel.selectedShop.isShopHasBadge)
-                binding.imgCcProductTagShopBadge1.hide()
-            }
-            else {
-                binding.imgCcProductTagShopBadge1.hide()
-                binding.icCcProductTagShopBadge1.hide()
-            }
-        }
 
-        /** Update the Last Part */
-        val hasLastPart = productTagSourceStack.size == 2
-        binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
-        binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
-        binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
+            /** Update the Last Part */
+            val hasLastPart = productTagSourceStack.size == 2
+            binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
+            binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
+            binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
 
-        if(hasLastPart) {
-            val lastSource = productTagSourceStack.last()
+            if(hasLastPart) {
+                val lastSource = productTagSourceStack.last()
 
-            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
-            binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
-            binding.icCcProductTagShopBadge2.apply {
-                showWithCondition(viewModel.selectedShop.isShopHasBadge)
-                if(viewModel.selectedShop.isShopHasBadge) setImage(viewModel.selectedShop.badge)
+                binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
+                binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
+                binding.icCcProductTagShopBadge2.apply {
+                    shouldShowWithAction(viewModel.selectedShop.isShopHasBadge) {
+                        setImage(viewModel.selectedShop.badge)
+                    }
+                }
             }
         }
     }
@@ -299,6 +305,11 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
+    private fun clickBreadcrumb() {
+        analytic.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
+        viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
+    }
+
     private fun showBreadcrumb(isShow: Boolean) {
         binding.apply {
             tvCcProductTagProductSourceLabel.showWithCondition(isShow)
@@ -330,8 +341,8 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {
-        viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
+    fun onNewIntent(source: ProductTagSource, query: String, shopId: String, componentId: String) {
+        viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
     }
 
     fun onBackPressed() {

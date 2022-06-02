@@ -13,8 +13,25 @@ data class FeedAceSearchShopResponse(
         @SerializedName("total_shop")
         val totalShop: Int = 0,
 
+        @SerializedName("header")
+        val header: Header = Header(),
+
         @SerializedName("shops")
         val shops: List<Shop> = emptyList(),
+    )
+
+    data class Header(
+        @SerializedName("total_data")
+        val totalData: Int = 0,
+
+        @SerializedName("total_data_text")
+        val totalDataText: String = "",
+
+        @SerializedName("response_code")
+        val responseCode: Int = 0,
+
+        @SerializedName("keyword_process")
+        val keywordProcess: String = "",
     )
 
     data class Shop(

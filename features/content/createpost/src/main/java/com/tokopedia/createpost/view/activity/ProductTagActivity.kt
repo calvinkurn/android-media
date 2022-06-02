@@ -12,6 +12,7 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.SearchParamUiModel
 import javax.inject.Inject
 
 /**
@@ -75,10 +76,11 @@ class ProductTagActivity : BaseActivity() {
                     else if(path.contains(SHOP)) ProductTagSource.Shop
                     else ProductTagSource.Unknown
 
-        val query = intent?.extras?.getString(KEY_QUERY) ?: ""
+        val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY) ?: ""
         val shopId = intent?.data?.lastPathSegment ?: ""
+        val componentId = intent?.extras?.getString(SearchParamUiModel.KEY_COMPONENT_ID) ?: ""
 
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query, shopId)
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query, shopId, componentId)
     }
 
     private fun inject() {
@@ -119,7 +121,5 @@ class ProductTagActivity : BaseActivity() {
 
         private const val PRODUCT = "product"
         private const val SHOP = "shop"
-
-        private const val KEY_QUERY = "q"
     }
 }

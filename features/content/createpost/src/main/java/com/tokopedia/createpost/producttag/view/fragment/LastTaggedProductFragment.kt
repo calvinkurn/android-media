@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
+import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -28,7 +31,10 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragment() {
+class LastTaggedProductFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+    private val impressionCoordinator: ProductImpressionCoordinator,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastTaggedProductFragment"
 
@@ -39,9 +45,23 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
+            onSelected = { product, position ->
+                analytic.clickProductCard(
+                    viewModel.selectedTagSource,
+                    product,
+                    position,
+                    false
+                )
+                viewModel.submitAction(ProductTagAction.ProductSelected(product))
+            },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
         )
+    }
+    private lateinit var layoutManager: StaggeredGridLayoutManager
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,17 +86,40 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
         super.onViewCreated(view, savedInstanceState)
         if(viewModel.lastTaggedProductStateUnknown)
             viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct)
+
+        setupAnalytic()
         setupView()
         setupObserver()
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendProductImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvLastTaggedProduct.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(
+            viewModel.selectedTagSource,
+            false,
+        )
+    }
+
     private fun setupView() {
-        binding.rvLastTaggedProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
+        layoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressProduct()
+            }
+        }
+
+        binding.rvLastTaggedProduct.addOnScrollListener(scrollListener)
+        binding.rvLastTaggedProduct.layoutManager = layoutManager
         binding.rvLastTaggedProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -88,6 +131,7 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
         }
 
         binding.clSearch.setOnClickListener {
+            analytic.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
@@ -112,6 +156,8 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
 
             binding.rvLastTaggedProduct.show()
             binding.globalError.hide()
+
+            impressProduct()
         }
 
         if(prev?.products == curr.products && prev.state == curr.state) return
@@ -139,6 +185,14 @@ class LastTaggedProductFragment @Inject constructor(): BaseProductTagChildFragme
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
                 ).show()
             }
+        }
+    }
+
+    private fun impressProduct() {
+        if(this::layoutManager.isInitialized) {
+            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            if(visibleProducts.isNotEmpty())
+                impressionCoordinator.saveProductImpress(visibleProducts)
         }
     }
 

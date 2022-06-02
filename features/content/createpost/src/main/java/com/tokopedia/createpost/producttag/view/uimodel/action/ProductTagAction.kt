@@ -10,7 +10,12 @@ sealed interface ProductTagAction {
     object ClickBreadcrumb: ProductTagAction
     object OpenAutoCompletePage: ProductTagAction
 
-    data class SetDataFromAutoComplete(val source: ProductTagSource, val query: String, val shopId: String): ProductTagAction
+    data class SetDataFromAutoComplete(
+        val source: ProductTagSource,
+        val query: String,
+        val shopId: String,
+        val componentId: String,
+    ): ProductTagAction
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
     data class ProductSelected(val product: ProductUiModel): ProductTagAction
 

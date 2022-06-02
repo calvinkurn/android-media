@@ -7,15 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchShopTabBinding
+import com.tokopedia.createpost.producttag.analytic.coordinator.ShopImpressionCoordinator
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchShopUiState
@@ -26,11 +28,15 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022
  */
-class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
+class GlobalSearchShopTabFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+    private val impressionCoordinator: ShopImpressionCoordinator,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchShopTabFragment"
 
@@ -41,11 +47,20 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: ShopCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ShopCardAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ShopSelected(it)) },
+            onSelected = { shop, position ->
+                analytic.clickShopCard(shop, position + 1)
+                viewModel.submitAction(ProductTagAction.ShopSelected(shop))
+            },
             onLoading = {
                 viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop)
             }
         )
+    }
+    private lateinit var layoutManager: LinearLayoutManager
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressShop()
+        }
     }
 
     private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
@@ -85,6 +100,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAnalytic()
         setupView()
         setupObserver()
     }
@@ -95,13 +111,31 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
             viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop)
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendShopImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvGlobalSearchShop.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(viewModel.selectedTagSource)
+    }
+
     private fun setupView() {
-        binding.rvGlobalSearchShop.layoutManager = LinearLayoutManager(requireContext())
+        layoutManager = object : LinearLayoutManager(requireContext()) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressShop()
+            }
+        }
+
+        binding.rvGlobalSearchShop.addOnScrollListener(scrollListener)
+        binding.rvGlobalSearchShop.layoutManager = layoutManager
         binding.rvGlobalSearchShop.adapter = adapter
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -209,6 +243,16 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
 
         if(binding.rvGlobalSearchShop.isComputingLayout.not())
             adapter.setItemsAndAnimateChanges(finalShops)
+
+        impressShop()
+    }
+
+    private fun impressShop() {
+        if(this::layoutManager.isInitialized) {
+            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            if(visibleProducts.isNotEmpty())
+                impressionCoordinator.saveShopImpress(visibleProducts)
+        }
     }
 
     companion object {

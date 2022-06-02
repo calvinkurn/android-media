@@ -82,13 +82,13 @@ internal class ProductTagCardViewHolder private constructor() {
 
     internal class Product(
         private val binding: ItemProductTagCardListBinding,
-        private val onSelected: (ProductUiModel) -> Unit,
+        private val onSelected: (ProductUiModel, Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ProductTagCardAdapter.Model.Product) {
             binding.productView.apply {
                 setProductModel(item.product.toProductCard())
-                setOnClickListener { onSelected(item.product) }
+                setOnClickListener { onSelected(item.product, adapterPosition) }
             }
         }
 
@@ -96,7 +96,7 @@ internal class ProductTagCardViewHolder private constructor() {
 
             fun create(
                 parent: ViewGroup,
-                onSelected: (ProductUiModel) -> Unit
+                onSelected: (ProductUiModel, Int) -> Unit
             ) = Product(
                 binding = ItemProductTagCardListBinding.inflate(
                     LayoutInflater.from(parent.context),

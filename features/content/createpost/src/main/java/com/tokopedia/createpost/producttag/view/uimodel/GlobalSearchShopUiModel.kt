@@ -9,7 +9,6 @@ data class GlobalSearchShopUiModel(
     val shops: List<ShopUiModel>,
     val quickFilters: List<QuickFilterUiModel>,
     val sortFilters: DynamicFilterModel,
-    val nextCursor: Int,
     val state: PagedState,
     val param: SearchParamUiModel,
 ) {
@@ -20,7 +19,6 @@ data class GlobalSearchShopUiModel(
                 shops = emptyList(),
                 sortFilters = DynamicFilterModel(),
                 quickFilters = emptyList(),
-                nextCursor = 0,
                 state = PagedState.Unknown,
                 param = SearchParamUiModel.Empty,
             )

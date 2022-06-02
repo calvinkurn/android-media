@@ -8,22 +8,26 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.RouteManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchBinding
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
 * Created By : Jonathan Darwin on May 10, 2022
 */
-class GlobalSearchFragment : BaseProductTagChildFragment() {
+class GlobalSearchFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchFragment"
 
@@ -77,14 +81,44 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.clSearch.setOnClickListener {
+            analytic.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
+
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) { }
+
+            override fun onPageSelected(position: Int) {
+                if(position == 0) analytic.clickGlobalSearchTab(TYPE_PRODUCT)
+                else analytic.clickGlobalSearchTab(TYPE_SHOP)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) { }
+        })
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collect {
+            viewModel.uiState.withCache().collectLatest {
                 renderSearchBar(it.value.globalSearchProduct.param.query)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    is ProductTagUiEvent.HitGlobalSearchProductTracker -> {
+                        analytic.trackGlobalSearchProduct(it.header, it.param)
+                    }
+                    is ProductTagUiEvent.HitGlobalSearchShopTracker -> {
+                        analytic.trackGlobalSearchShop(it.header, it.param)
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -101,6 +135,9 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
 
     companion object {
         const val TAG = "GlobalSearchFragment"
+
+        private const val TYPE_PRODUCT = "barang"
+        private const val TYPE_SHOP = "toko"
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,

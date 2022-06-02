@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.producttag.di
+package com.tokopedia.createpost.producttag.di.scope
 
 import javax.inject.Scope
 

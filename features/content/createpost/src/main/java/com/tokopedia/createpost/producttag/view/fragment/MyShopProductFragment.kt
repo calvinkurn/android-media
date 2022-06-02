@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -12,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
+import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
@@ -32,11 +36,15 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class MyShopProductFragment : BaseProductTagChildFragment() {
+class MyShopProductFragment @Inject constructor(
+    private val analytic: ProductTagAnalytic,
+    private val impressionCoordinator: ProductImpressionCoordinator,
+) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "MyShopProductFragment"
 
@@ -47,9 +55,23 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: MyShopProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         MyShopProductAdapter(
-            onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
+            onSelected = { product, position ->
+                analytic.clickProductCard(
+                    viewModel.selectedTagSource,
+                    product,
+                    position,
+                    false
+                )
+                viewModel.submitAction(ProductTagAction.ProductSelected(product))
+            },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadMyShopProduct) }
         )
+    }
+    private lateinit var layoutManager: StaggeredGridLayoutManager
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) impressProduct()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +94,7 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAnalytic()
         setupView()
         setupObserver()
     }
@@ -97,19 +120,47 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
             viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendProductImpress()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvMyShopProduct.removeOnScrollListener(scrollListener)
         _binding = null
     }
 
+    private fun setupAnalytic() {
+        impressionCoordinator.setInitialData(
+            viewModel.selectedTagSource,
+            false,
+        )
+    }
+
     private fun setupView() {
-        binding.rvMyShopProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+        layoutManager = object : StaggeredGridLayoutManager(2, RecyclerView.VERTICAL) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                impressProduct()
+            }
+        }
+
+        binding.rvMyShopProduct.addOnScrollListener(scrollListener)
+        binding.rvMyShopProduct.layoutManager = layoutManager
         binding.rvMyShopProduct.adapter = adapter
 
         binding.globalError.apply {
             errorIllustration.loadImage(getString(R.string.img_no_shop_product))
             errorAction.gone()
             errorSecondaryAction.gone()
+        }
+
+        binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
+            if(motionEvent.action == MotionEvent.ACTION_UP) {
+                analytic.clickSearchBar(viewModel.selectedTagSource)
+            }
+            false
         }
 
         binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
@@ -166,6 +217,7 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
 
             binding.rvMyShopProduct.show()
             binding.globalError.hide()
+            impressProduct()
         }
 
         if(prev?.products == curr.products && prev.state == curr.state) return
@@ -230,11 +282,18 @@ class MyShopProductFragment : BaseProductTagChildFragment() {
         }
     }
 
-
     private fun clearSearchFocus() {
         binding.sbShopProduct.searchBarTextField.apply {
             clearFocus()
             hideKeyboard()
+        }
+    }
+
+    private fun impressProduct() {
+        if(this::layoutManager.isInitialized) {
+            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            if(visibleProducts.isNotEmpty())
+                impressionCoordinator.saveProductImpress(visibleProducts)
         }
     }
 
