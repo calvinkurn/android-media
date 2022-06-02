@@ -36,7 +36,7 @@ class TransactionListViewHolder(itemView: View,
         private var EDGE_MARGIN = 16f.toDpInt()
         private var SPACING_BETWEEN = 8f.toDpInt()
         private var TRANSACTION_CARD_HEIGHT = 80f.toDpInt()
-        private const val OTHER_TRANSACTION = 0
+        private const val OTHER_TRANSACTION_THRESHOLD = 0
     }
 
     private fun RecyclerView.setHeightBasedOnTransactionCardMaxHeight(element: TransactionListItemDataModel) {
@@ -68,7 +68,7 @@ class TransactionListViewHolder(itemView: View,
             visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
             if (visitableList.isEmpty()) {
                 visitableList.add(OrderEmptyModel())
-            } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > OTHER_TRANSACTION) {
+            } else if (visitableList.size == SIZE_LAYOUT_SHOW_VIEW_ALL_CARD && element.othersTransactionCount > OTHER_TRANSACTION_THRESHOLD) {
                 visitableList.add(OtherTransactionRevampModel())
                 binding?.transactionRv?.setHeightBasedOnTransactionCardMaxHeight(element)
             }
