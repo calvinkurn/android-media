@@ -80,7 +80,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         productListItems.getOrNull(dataSetPosition)?.productUiModel.apply {
             this?.cartId = cartTokoFood.cartId
             this?.orderQty = cartTokoFood.quantity
-            this?.orderNote = cartTokoFood.getMetadata().notes
+            this?.orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
             this?.isAtc = cartTokoFood.quantity.isMoreThanZero()
         }
         notifyItemChanged(adapterPosition)

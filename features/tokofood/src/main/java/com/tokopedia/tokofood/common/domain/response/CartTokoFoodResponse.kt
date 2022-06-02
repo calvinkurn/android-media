@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
+import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFoodWithVariant
 
 data class AddToCartTokoFoodResponse(
     @SerializedName("add_to_cart_general")
@@ -88,8 +89,12 @@ data class CartTokoFood(
     @Expose
     val metadata: String = ""
 ) {
-    fun getMetadata(): CartMetadataTokoFood {
-        return Gson().fromJson(metadata, CartMetadataTokoFood::class.java)
+    fun getMetadata(): CartMetadataTokoFoodWithVariant? {
+        return try {
+            Gson().fromJson(metadata, CartMetadataTokoFoodWithVariant::class.java)
+        } catch (ex: Exception) {
+            null
+        }
     }
 
 }

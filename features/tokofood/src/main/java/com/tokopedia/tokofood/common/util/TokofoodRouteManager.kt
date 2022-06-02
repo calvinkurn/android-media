@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 
 object TokofoodRouteManager {
 

@@ -16,7 +16,7 @@ class AgreeConsentUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<Unit, AgreeConsentResponse>(dispatchers.io) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     override fun graphqlQuery(): String = """
         query AgreeConsent {

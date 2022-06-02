@@ -466,7 +466,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()
-            newProductData.notes = product.getMetadata().notes
+            newProductData.notes = product.getMetadata()?.notes.orEmpty()
             newProductData.cartId = product.cartId
             dataList[it.first] = newProductData
             _visitables.value = dataList
@@ -478,7 +478,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             getVisitablesValue().getProductByUpdateParam(param)?.let { productData ->
                 productData.second.let { product ->
                     cartData.carts.find { cartData ->
-                        cartData.productId == product.id && cartData.getMetadata().variants.any { cartVariant ->
+                        cartData.productId == product.id && cartData.getMetadata()?.variants?.any { cartVariant ->
                             var isSameVariants = false
                             run checkVariant@ {
                                 product.variants.forEach { productVariant ->
@@ -489,7 +489,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                                 }
                             }
                             isSameVariants
-                        }
+                        } == true
                     }?.let {
                         (visitables.value?.getOrNull(productData.first) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = it.cartId
                     }
