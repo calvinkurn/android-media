@@ -1,9 +1,15 @@
 package com.tokopedia.play.widget.sample.analytic
 
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
+import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
+import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
+import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetJumboGlobalAnalytic
+import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetLargeGlobalAnalytic
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetMediumGlobalAnalytic
+import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetSmallGlobalAnalytic
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,9 +19,16 @@ import dagger.assisted.AssistedInject
  */
 class PlayWidgetGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
+    private val smallAnalytic: PlayWidgetSmallGlobalAnalytic.Factory,
     private val mediumAnalytic: PlayWidgetMediumGlobalAnalytic.Factory,
+    private val largeAnalytic: PlayWidgetLargeGlobalAnalytic.Factory,
+    private val jumboAnalytic: PlayWidgetJumboGlobalAnalytic.Factory,
 ) : PlayWidgetInListAnalyticListener,
-    PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model) {
+    PlayWidgetInListSmallAnalyticListener by smallAnalytic.create(model),
+    PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model),
+    PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model),
+    PlayWidgetInListJumboAnalyticListener by jumboAnalytic.create(model)
+{
 
     @AssistedFactory
     interface Factory {
