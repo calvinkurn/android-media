@@ -301,6 +301,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             if (Prefs.getShouldShowCoachMarkValue(activity as Context))
             showFabCoachMark()
         }
+        toolbarCommon.setClickListenerToOpenBottomSheet()
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)

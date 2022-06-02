@@ -30,7 +30,6 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
@@ -332,8 +331,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
                 showHideExpandIcon(!createPostViewModel.isEditState)
-                if (createPostViewModel.isEditState)
-                    disableClickListenerToOpenBottomSheet()
+                if (!createPostViewModel.isEditState)
+                    setClickListenerToOpenBottomSheet()
             }
 
 
