@@ -1,16 +1,16 @@
 package com.tokopedia.minicart.common.domain.mapper
 
-import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
-import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
-import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
-import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
-import com.tokopedia.minicart.common.data.response.minicartlist.Data
-import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.minicartlist.Product
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryHeaderUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryProductUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummarySeparatorUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryTotalTransactionUiModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MiniCartSimplifiedMapperTest {
@@ -138,5 +138,79 @@ class MiniCartSimplifiedMapperTest {
                         MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(productId = "3", quantity = 1)
                 )),
         ), miniCartSimplifiedData.miniCartItems)
+    }
+
+    @Test
+    fun `WHEN map mini cart data with shopping summary THEN should return each shop data with correct separator position`() {
+        // GIVEN
+        val data = MiniCartData(
+            data = Data(
+                simplifiedShoppingSummary = SimplifiedShoppingSummary(
+                    "Title",
+                    sections = listOf(
+                        Section(title = "Shop 1", description = "Desc 1", details = listOf(
+                            SectionDetail(name = "Item 1", value = "Rp 10000"),
+                            SectionDetail(name = "Item 2", value = "Rp 25000")
+                        )),
+                        Section(title = "Shop 2", description = "Desc 2", details = listOf(
+                            SectionDetail(name = "Item 1", value = "Rp 30000"),
+                            SectionDetail(name = "Item 2", value = "Rp 15000")
+                        )),
+                        Section(title = "", description = "", details = listOf(
+                            SectionDetail(name = "Total Harga (12 Barang)", value = "<b>Rp5.000.000</b>")
+                        ))
+                    )
+                )
+            )
+        )
+
+        val separatorOneIdx = 3
+        val separatorTwoIdx = 7
+
+        // WHEN
+        val miniCartSimplifiedData = mapper.mapMiniCartSimplifiedData(data)
+
+        // THEN
+        assertTrue(miniCartSimplifiedData.shoppingSummaryBottomSheetData.items[separatorOneIdx] is ShoppingSummarySeparatorUiModel)
+        assertTrue(miniCartSimplifiedData.shoppingSummaryBottomSheetData.items[separatorTwoIdx] is ShoppingSummarySeparatorUiModel)
+    }
+
+    @Test
+    fun `WHEN map mini cart data with empty title or empty details and not in last index THEN should not return the data`() {
+        // GIVEN
+        val data = MiniCartData(
+            data = Data(
+                simplifiedShoppingSummary = SimplifiedShoppingSummary(
+                    "Title",
+                    sections = listOf(
+                        Section(title = "Shop 1", description = "Desc 1", details = listOf(
+                            SectionDetail(name = "Item 1", value = "Rp 10000"),
+                            SectionDetail(name = "Item 2", value = "Rp 25000")
+                        )),
+                        Section(title = "Barang yang dilayani Tokopedia", description = "", details = emptyList()),
+                        Section(title = "", description = "", details = listOf(
+                            SectionDetail(name = "Item 1", value = "Rp 10000"),
+                            SectionDetail(name = "Item 2", value = "Rp 25000")
+                        )),
+                        Section(title = "", description = "", details = listOf(
+                            SectionDetail(name = "Total Harga (12 Barang)", value = "<b>Rp5.000.000</b>")
+                        ))
+                    )
+                )
+            )
+        )
+        val separatorIdx = 3
+
+        // WHEN
+        val miniCartSimplifiedData = mapper.mapMiniCartSimplifiedData(data)
+
+        // THEN
+        assertEquals(listOf<Visitable<*>>(
+            ShoppingSummaryHeaderUiModel("", "Shop 1", "Desc 1"),
+            ShoppingSummaryProductUiModel("Item 1", "Rp 10000"),
+            ShoppingSummaryProductUiModel("Item 2", "Rp 25000"),
+            miniCartSimplifiedData.shoppingSummaryBottomSheetData.items[separatorIdx],
+            ShoppingSummaryTotalTransactionUiModel("Total Harga (12 Barang)", "<b>Rp5.000.000</b>"),
+        ), miniCartSimplifiedData.shoppingSummaryBottomSheetData.items)
     }
 }

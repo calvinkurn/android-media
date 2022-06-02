@@ -22,12 +22,8 @@ class ShoppingSummaryHeaderViewHolder(private val viewBinding: ItemShoppingSumma
     }
 
     private fun renderShopIcon(element: ShoppingSummaryHeaderUiModel) {
-        with(viewBinding) {
-            iuShopBadge.let {
-                if (element.iconUrl.isNotBlank()) {
-                    it.loadImage(element.iconUrl)
-                }
-            }
+        if (element.iconUrl.isNotBlank()) {
+            viewBinding.iuShopBadge.loadImage(element.iconUrl)
         }
     }
 
