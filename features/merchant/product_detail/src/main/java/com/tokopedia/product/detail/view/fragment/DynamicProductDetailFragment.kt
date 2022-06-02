@@ -66,6 +66,7 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -999,7 +1000,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         if (openShipmentBottomSheetWhenError()) return
 
-        DynamicProductDetailTracking.Click.trackTradein(getTradeinData().usedPrice.toDouble(),
+        DynamicProductDetailTracking.Click.trackTradein(getTradeinData().usedPrice.toDoubleOrZero(),
                 viewModel.getDynamicProductInfoP1,
                 componentTrackDataModel)
 
@@ -2343,7 +2344,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val errorMessage = String.format(
                     getString(R.string.on_error_p1_string_builder),
                     viewModel.userSessionInterface.userId,
-                    viewModel.userSessionInterface.email,
                     t.message
             )
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
@@ -2823,7 +2823,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 trackerListName = trackerListNamePdp,
                 trackerAttribution = trackerAttributionPdp,
                 isTradeIn = isElligible,
-                isDiagnosed = getTradeinData().usedPrice.toDouble() > 0,
+                isDiagnosed = getTradeinData().usedPrice.toDoubleOrZero() > 0,
                 multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",

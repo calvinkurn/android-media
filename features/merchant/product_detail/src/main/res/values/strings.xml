@@ -75,7 +75,7 @@
     <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
-    <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | userEmail: %2$s | %3$s</string>
+    <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | %2$s</string>
 
     //Error section
     <string name="banned_product_title">Barang ini dilarang</string>
