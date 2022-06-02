@@ -7,6 +7,7 @@ import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
@@ -18,14 +19,14 @@ import javax.inject.Inject
 class RemoveCartTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-): FlowUseCase<CartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
+): FlowUseCase<RemoveCartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
 
     private val isDebug = false
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(params: CartTokoFoodParam): Map<String, Any> {
+        private fun generateParams(params: RemoveCartTokoFoodParam): Map<String, Any> {
             return mapOf(PARAMS_KEY to params)
         }
     }
@@ -51,7 +52,7 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: CartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
+    override suspend fun execute(params: RemoveCartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse(params.carts.getOrNull(0)?.productId.orEmpty()))
