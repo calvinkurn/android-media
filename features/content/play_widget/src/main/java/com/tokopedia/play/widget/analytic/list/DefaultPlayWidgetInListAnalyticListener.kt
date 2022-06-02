@@ -32,6 +32,10 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickViewAll(view, verticalWidgetPosition, businessWidgetPosition)
     }
 
+    override fun onImpressViewAll(view: PlayWidgetMediumView) {
+        analytic.onImpressViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+    }
+
     override fun onClickViewAll(view: PlayWidgetMediumView) {
         analytic.onClickViewAll(view, verticalWidgetPosition, businessWidgetPosition)
     }
@@ -60,6 +64,15 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
     }
 
+    override fun onImpressReminderIcon(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean
+    ) {
+        analytic.onImpressReminderIcon(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition, businessWidgetPosition)
+    }
+
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
         analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition, businessWidgetPosition)
     }
@@ -74,6 +87,14 @@ class DefaultPlayWidgetInListAnalyticListener (
 
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
+    }
+
+    override fun onImpressBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onImpressBannerCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
     }
 
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int) {
@@ -202,5 +223,13 @@ class DefaultPlayWidgetInListAnalyticListener (
         isAutoPlay: Boolean
     ) {
         analytic.onLabelPromoImpressed(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onImpressViewAll(view: PlayWidgetSmallView) {
+        analytic.onImpressViewAll(view, verticalWidgetPosition, businessWidgetPosition)
+    }
+
+    override fun onImpressBannerCard(view: PlayWidgetSmallView) {
+        analytic.onImpressBannerCard(view, verticalWidgetPosition, businessWidgetPosition)
     }
 }

@@ -11,38 +11,69 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 interface PlayWidgetMediumAnalyticListener {
 
+    /**
+     * View all
+     */
+    fun onImpressViewAll(
+        view: PlayWidgetMediumView
+    ) {}
+
     fun onClickViewAll(
         view: PlayWidgetMediumView
-    ) {
-    }
+    ) {}
 
+    /**
+     * Banner
+     */
+    fun onImpressBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
+    ) {}
+
+    fun onClickBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int
+    ) {}
+
+    /**
+     * Overlay
+     */
     fun onImpressOverlayCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int
-    ) {
-    }
+    ) {}
 
     fun onClickOverlayCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
         channelPositionInList: Int
-    ) {
-    }
+    ) {}
 
-    fun onClickChannelCard(
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
-    ) {
-    }
+        isRemindMe: Boolean,
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean
+    ) {}
+
+    fun onClickChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
     ) {
     }
 
@@ -65,13 +96,6 @@ interface PlayWidgetMediumAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean
-    ) {
-    }
-
-    fun onClickBannerCard(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetBannerUiModel,
-        channelPositionInList: Int
     ) {
     }
 

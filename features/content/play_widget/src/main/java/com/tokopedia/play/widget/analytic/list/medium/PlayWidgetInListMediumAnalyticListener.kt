@@ -10,13 +10,43 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 interface PlayWidgetInListMediumAnalyticListener {
 
+    /**
+     * View all
+     */
+    fun onImpressViewAll(
+        view: PlayWidgetMediumView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
     fun onClickViewAll(
         view: PlayWidgetMediumView,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
+    /**
+     * Banner
+     */
+    fun onImpressBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    fun onClickBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Overlay
+     */
     fun onImpressOverlayCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetBackgroundUiModel,
@@ -32,24 +62,34 @@ interface PlayWidgetInListMediumAnalyticListener {
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
-    fun onClickChannelCard(
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
+        isRemindMe: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    fun onClickChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -78,15 +118,6 @@ interface PlayWidgetInListMediumAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
-
-    fun onClickBannerCard(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetBannerUiModel,
-        channelPositionInList: Int,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {

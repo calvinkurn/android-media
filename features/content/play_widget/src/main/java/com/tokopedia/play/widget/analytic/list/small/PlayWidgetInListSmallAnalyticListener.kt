@@ -8,12 +8,17 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 interface PlayWidgetInListSmallAnalyticListener {
 
-    fun onClickViewAll(
+    /**
+     * Channel card
+     */
+    fun onImpressChannelCard(
         view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
     fun onClickChannelCard(
         view: PlayWidgetSmallView,
@@ -22,25 +27,37 @@ interface PlayWidgetInListSmallAnalyticListener {
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
+
+    /**
+     * View all
+     */
+    fun onImpressViewAll(
+        view: PlayWidgetSmallView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    fun onClickViewAll(
+        view: PlayWidgetSmallView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Banner
+     */
+    fun onImpressBannerCard(
+        view: PlayWidgetSmallView,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
 
     fun onClickBannerCard(
         view: PlayWidgetSmallView,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
-
-    fun onImpressChannelCard(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
     fun onLabelPromoClicked(
         view: PlayWidgetSmallView,
