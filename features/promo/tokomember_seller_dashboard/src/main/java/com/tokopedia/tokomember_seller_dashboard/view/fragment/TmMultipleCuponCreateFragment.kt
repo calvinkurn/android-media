@@ -49,6 +49,17 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.btnContinue
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.chipDateSelection
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.containerViewFlipper
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.globalError
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.progressKupon
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.textFieldProgramEndDate
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.textFieldProgramEndTime
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.textFieldProgramStartDate
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.textFieldProgramStartTime
+import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.tvTermsAndCondition
+import kotlinx.android.synthetic.main.tm_kupon_create_single.*
 import java.util.*
 import javax.inject.Inject
 
@@ -598,6 +609,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun renderMultipleCoupon() {
         tmCouponPremium = this.context?.let { TmSingleCouponView(it) }
         tmCouponPremium?.setShopData(shopName, shopAvatar)
+        tmCouponPremium?.setChipPercentageClickListener(object : TmSingleCouponView.ChipPercentageClickListener{
+            override fun onClickPercentageChip() {
+                accordionUnifyPremium.expandGroup(0)
+            }
+        })
         val itemAccordionPremium = tmCouponPremium?.let {
             AccordionDataUnify(
                 title = ACCORDION_TITLE_PREMIUM,
@@ -612,6 +628,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         }
         tmCouponVip = this.context?.let { TmSingleCouponView(it) }
         tmCouponVip?.setShopData(shopName, shopAvatar)
+        tmCouponVip?.setChipPercentageClickListener(object : TmSingleCouponView.ChipPercentageClickListener{
+            override fun onClickPercentageChip() {
+                accordionUnifyVIP.expandGroup(0)
+            }
+        })
         val itemAccordionVip = tmCouponVip?.let {
             AccordionDataUnify(
                 title = ACCORDION_TITLE_VIP,
@@ -722,6 +743,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 textFieldProgramEndDate.iconContainer.isEnabled = true
                 textFieldProgramEndTime.isEnabled = true
                 textFieldProgramEndTime.iconContainer.isEnabled = true
+                textFieldProgramStartDate.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramStartTime.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramEndDate.editText.inputType = InputType.TYPE_NULL
+                textFieldProgramEndTime.editText.inputType = InputType.TYPE_NULL
             }
         }
 

@@ -64,9 +64,13 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         tmCouponCreateUnifyRequest =
             arguments?.getParcelable(BUNDLE_COUPON_CREATE_DATA) ?: TmMerchantCouponUnifyRequest()
         tmDashCreateViewModel.getCardInfo(arguments?.getInt(BUNDLE_CARD_ID)?:0)
+        containerViewFlipper.displayedChild = SHIMMER
         renderHeader()
         observeViewModel()
         renderButton()
+        renderCouponList(tmCouponPreviewData)
+        renderCardCarousel(arguments?.getParcelable(BUNDLE_CARD_DATA))
+        renderProgramPreview(arguments?.getParcelable(BUNDLE_PROGRAM_DATA)?:ProgramUpdateDataInput())
     }
 
     override fun getScreenName() = ""
@@ -78,25 +82,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-
-        tmDashCreateViewModel.tmCardResultLiveData.observe(viewLifecycleOwner, {
-            when (it.status) {
-                TokoLiveDataResult.STATUS.LOADING -> {
-                    containerViewFlipper.displayedChild = SHIMMER
-                }
-                TokoLiveDataResult.STATUS.SUCCESS -> {
-                    containerViewFlipper.displayedChild = DATA
-                    renderCouponList(tmCouponPreviewData)
-                    renderPreviewUI(
-                        it.data,
-                        arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
-                    )
-                }
-                TokoLiveDataResult.STATUS.ERROR -> {
-                    handleErrorUiOnErrorData()
-                }
-            }
-        })
 
         tmDashCreateViewModel.tmCouponCreateLiveData.observe(viewLifecycleOwner, {
 
@@ -110,7 +95,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
                 }
             }
         })
-
     }
 
     private fun handleErrorUiOnErrorData(){
@@ -148,18 +132,6 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         tmCouponPreviewAdapter.list = tmCouponPreviewData.voucherList
         rvPreview.adapter = tmCouponPreviewAdapter
         tmCouponPreviewAdapter.notifyDataSetChanged()
-    }
-
-    private fun renderPreviewUI(
-        tokomemberShopCardModel: CardDataTemplate?,
-        programUpdateDataInput: ProgramUpdateDataInput?
-    ) {
-        if (tokomemberShopCardModel != null) {
-            renderCardCarousel(tokomemberShopCardModel)
-        }
-        if (programUpdateDataInput != null) {
-            renderProgramPreview(programUpdateDataInput)
-        }
     }
 
     private fun renderCardCarousel(data: CardDataTemplate?) {

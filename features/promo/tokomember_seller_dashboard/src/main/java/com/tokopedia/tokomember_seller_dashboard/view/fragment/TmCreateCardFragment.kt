@@ -226,6 +226,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         bundle.putInt(BUNDLE_CARD_ID,arguments?.getInt(BUNDLE_CARD_ID)?:0)
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
+        bundle.putParcelable(BUNDLE_CARD_DATA , tmShopCardModel)
         tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
     }
 
