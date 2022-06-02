@@ -12,9 +12,11 @@ import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.AdminConfirmationRegUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetShopAdminInfoUseCase
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.UpdateUserProfileUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.ValidateAdminEmailUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,6 +42,7 @@ class InvitationConfirmationViewModel @Inject constructor(
     private val getShopAdminInfoUseCase: Lazy<GetShopAdminInfoUseCase>,
     private val adminConfirmationRegUseCase: Lazy<AdminConfirmationRegUseCase>,
     private val validateAdminEmailUseCase: Lazy<ValidateAdminEmailUseCase>,
+    private val updateUserProfileUseCase: Lazy<UpdateUserProfileUseCase>,
     private val invitationConfirmationParam: InvitationConfirmationParam
 ) : BaseViewModel(coroutineDispatchers.main) {
 
@@ -54,6 +57,10 @@ class InvitationConfirmationViewModel @Inject constructor(
     private val _confirmationReg = MutableLiveData<Result<AdminConfirmationRegUiModel>>()
     val confirmationReg: LiveData<Result<AdminConfirmationRegUiModel>>
         get() = _confirmationReg
+
+    private val _updateUserProfile = MutableLiveData<Result<UserProfileUpdateUiModel>>()
+    val updateUserProfile: LiveData<Result<UserProfileUpdateUiModel>>
+        get() = _updateUserProfile
 
     private val _emailParam = MutableStateFlow("")
 
@@ -112,6 +119,17 @@ class InvitationConfirmationViewModel @Inject constructor(
             _confirmationReg.value = Success(confirmationRegResponse)
         }, onError = {
             _confirmationReg.value = Fail(it)
+        })
+    }
+
+    fun updateUserProfile(email: String) {
+        launchCatchError(block = {
+            val updateUserProfileData = withContext(coroutineDispatchers.io) {
+                updateUserProfileUseCase.get().execute(email)
+            }
+            _updateUserProfile.value = Success(updateUserProfileData)
+        }, onError = {
+            _updateUserProfile.value = Fail(it)
         })
     }
 

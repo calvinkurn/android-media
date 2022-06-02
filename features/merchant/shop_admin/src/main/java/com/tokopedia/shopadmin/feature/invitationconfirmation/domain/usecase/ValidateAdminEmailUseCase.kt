@@ -8,7 +8,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimod
 import javax.inject.Inject
 
 class ValidateAdminEmailUseCase @Inject constructor(
-     val useCase: GraphqlUseCase<ValidateAdminEmailResponse>,
+    private val useCase: GraphqlUseCase<ValidateAdminEmailResponse>,
     private val mapper: AdminInvitationConfirmationMapper
 ) {
 
@@ -17,8 +17,18 @@ class ValidateAdminEmailUseCase @Inject constructor(
         useCase.setTypeClass(ValidateAdminEmailResponse::class.java)
     }
 
-    suspend fun execute(shopID: String, email: String, manageID: String): ValidateAdminEmailUiModel {
-        useCase.setRequestParams(ValidateAdminEmailQuery.createRequestParams(shopID, email, manageID))
+    suspend fun execute(
+        shopID: String,
+        email: String,
+        manageID: String
+    ): ValidateAdminEmailUiModel {
+        useCase.setRequestParams(
+            ValidateAdminEmailQuery.createRequestParams(
+                shopID,
+                email,
+                manageID
+            )
+        )
         return mapper.mapToValidateAdminUiModel(useCase.executeOnBackground())
     }
 }

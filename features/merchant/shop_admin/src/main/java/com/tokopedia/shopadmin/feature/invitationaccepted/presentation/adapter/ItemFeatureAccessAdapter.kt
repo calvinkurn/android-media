@@ -41,7 +41,7 @@ class ItemFeatureAccessAdapter(private val featureAccessList: List<AdminPermissi
             }
 
             private fun setFeatureAccessImg(iconUrl: String) {
-                if (iconUrl.isNotEmpty()) {
+                if (iconUrl.isNotBlank()) {
                     binding.ivFeatureAccessIcon.run {
                         show()
                         setImageUrl(iconUrl)
@@ -52,7 +52,7 @@ class ItemFeatureAccessAdapter(private val featureAccessList: List<AdminPermissi
             }
 
             private fun setFeatureAccessTitle(title: String) {
-                if (title.isNotEmpty()) {
+                if (title.isNotBlank()) {
                     binding.tvFeatureAccessName.run {
                         show()
                         text = title

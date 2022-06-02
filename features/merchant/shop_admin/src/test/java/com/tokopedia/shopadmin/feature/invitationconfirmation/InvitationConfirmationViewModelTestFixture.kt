@@ -7,9 +7,11 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.Invit
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParamImpl
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.AdminConfirmationRegUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetShopAdminInfoUseCase
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.UpdateUserProfileUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.ValidateAdminEmailUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import dagger.Lazy
@@ -43,6 +45,9 @@ abstract class InvitationConfirmationViewModelTestFixture {
     @RelaxedMockK
     lateinit var validateAdminEmailUseCase: Lazy<ValidateAdminEmailUseCase>
 
+    @RelaxedMockK
+    lateinit var updateUserProfileUseCase: Lazy<UpdateUserProfileUseCase>
+
     lateinit var invitationConfirmationParam: InvitationConfirmationParam
 
     protected lateinit var viewModel: InvitationConfirmationViewModel
@@ -59,13 +64,14 @@ abstract class InvitationConfirmationViewModelTestFixture {
         MockKAnnotations.init(this)
         invitationConfirmationParam = InvitationConfirmationParamImpl()
         viewModel = InvitationConfirmationViewModel(
-                CoroutineTestDispatchersProvider,
-                getAdminTypeUseCaseCase,
-                getShopAdminInfoUseCase,
-                adminConfirmationRegUseCase,
-                validateAdminEmailUseCase,
-                invitationConfirmationParam
-            )
+            CoroutineTestDispatchersProvider,
+            getAdminTypeUseCaseCase,
+            getShopAdminInfoUseCase,
+            adminConfirmationRegUseCase,
+            validateAdminEmailUseCase,
+            updateUserProfileUseCase,
+            invitationConfirmationParam
+        )
     }
 
     @After
@@ -155,6 +161,21 @@ abstract class InvitationConfirmationViewModelTestFixture {
             validateAdminEmailUseCase.get()
                 .execute(shopId, email, manageID)
         }
+    }
+
+    protected fun onUpdateUserProfileUseCaseError_thenReturn(email: String, exception: Throwable) {
+        coEvery { updateUserProfileUseCase.get().execute(email) } throws exception
+    }
+
+    protected fun verifyUpdateUserProfileUseUseCalled(email: String) {
+        coVerify { updateUserProfileUseCase.get().execute(email) }
+    }
+
+    protected fun onUpdateUserProfileUseUse_thenReturn(
+        email: String,
+        userProfileUpdateUiModel: UserProfileUpdateUiModel
+    ) {
+        coEvery { updateUserProfileUseCase.get().execute(email) } returns userProfileUpdateUiModel
     }
 
 }

@@ -3,8 +3,6 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.frag
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +34,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.dialo
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -92,6 +92,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         observeShopAdminInfo()
         observeConfirmationReg()
         observeValidationEmail()
+        observeUpdateUserProfile()
         actionGlobalError()
         checkAfterLogin()
     }
@@ -117,7 +118,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                         ApplinkConstInternalGlobal.PARAM_TOKEN
                     ).orEmpty()
                 )
-                adminConfirmationReg(true)
+                fetchUpdateUserProfile()
             }
         }
     }
@@ -138,17 +139,53 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun fetchUpdateUserProfile() {
+        viewModel.updateUserProfile(getEmailFromTextField())
+    }
+
+    private fun observeUpdateUserProfile() {
+        observe(viewModel.updateUserProfile) {
+            when (it) {
+                is Success -> {
+                    setActionAfterUpdateUserProfile(it.data)
+                }
+                is Fail -> {
+                    val message = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showToaster(message)
+                }
+            }
+        }
+    }
+
+    private fun setActionAfterUpdateUserProfile(userProfileUpdate: UserProfileUpdateUiModel) {
+        if (userProfileUpdate.isSuccess) {
+            adminConfirmationReg(true)
+        } else {
+            showToaster(userProfileUpdate.errorMessage)
+        }
+    }
+
     private fun setValidateEmailMessage(validateAdminEmailUiModel: ValidateAdminEmailUiModel) {
         confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
-            if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.message.isNotEmpty()) {
+            if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.message.isNotBlank()) {
                 setError(true)
                 setMessage(validateAdminEmailUiModel.message)
-                textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                textFieldWrapper.setHelperTextColor(
+                    ContextCompat.getColorStateList(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    )
+                )
                 setAccessAcceptedBtnDisabled()
             } else if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.existsUser) {
                 setError(true)
                 setMessage(getString(R.string.error_message_email_has_been_registered))
-                textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                textFieldWrapper.setHelperTextColor(
+                    ContextCompat.getColorStateList(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    )
+                )
                 setAccessAcceptedBtnDisabled()
             } else {
                 setError(false)
@@ -370,28 +407,10 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun emailTypingListener() {
         confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
-            textFieldWrapper.editText?.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {
-                    val email = s.trim().toString()
-                    viewModel.validateAdminEmail(email)
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {
-                }
-            })
+            textFieldWrapper.editText?.afterTextChanged { s ->
+                val email = s.trim()
+                viewModel.validateAdminEmail(email)
+            }
         }
     }
 
@@ -445,7 +464,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             ?.adminInvitationWithNoEmailSection
             ?.tfuAdminConfirmationEmail
             ?.textFieldWrapper
-            ?.editText.toString().trim()
+            ?.editText?.text?.trim()?.toString().orEmpty()
     }
 
     private fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
@@ -523,13 +542,15 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun showToaster(message: String) {
-        view?.let {
-            Toaster.build(
-                it,
-                message,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR
-            ).show()
+        if (message.isNotBlank()) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
         }
     }
 

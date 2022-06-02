@@ -4,6 +4,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,6 +54,44 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             //then
             verifyGetAdminTypeUseCaseCalled()
             val actualResult = (viewModel.adminType.value as Fail).throwable::class.java
+            val expectedResult = errorException::class.java
+            Assert.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `when updateUserProfile should set live data success`() {
+        runBlocking {
+            //given
+            val updateUserProfileUiModel =
+                UserProfileUpdateUiModel(isSuccess = true, "")
+            onUpdateUserProfileUseUse_thenReturn(email, updateUserProfileUiModel)
+
+            //when
+            viewModel.updateUserProfile(email)
+
+            //then
+            verifyUpdateUserProfileUseUseCalled(email)
+            val actualResult = (viewModel.updateUserProfile.value as Success).data
+            Assert.assertEquals(updateUserProfileUiModel, actualResult)
+            Assert.assertEquals(updateUserProfileUiModel.isSuccess, actualResult.isSuccess)
+            Assert.assertEquals(updateUserProfileUiModel.errorMessage, actualResult.errorMessage)
+        }
+    }
+
+    @Test
+    fun `when updateUserProfile should set live data error`() {
+        runBlocking {
+            //given
+            val errorException = MessageErrorException()
+            onUpdateUserProfileUseCaseError_thenReturn(email, errorException)
+
+            //when
+            viewModel.updateUserProfile(email)
+
+            //then
+            verifyUpdateUserProfileUseUseCalled(email)
+            val actualResult = (viewModel.updateUserProfile.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java
             Assert.assertEquals(expectedResult, actualResult)
         }

@@ -1,10 +1,14 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.AdminConfirmationRegResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetShopAdminInfoResponse
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.UserProfileUpdateResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.ValidateAdminEmailResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import javax.inject.Inject
 
@@ -34,6 +38,17 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
             isSuccess = adminConfirmationRegResponse.success,
             message = adminConfirmationRegResponse.message,
             acceptBecomeAdmin = adminConfirmationRegResponse.acceptBecomeAdmin
+        )
+    }
+
+    fun mapToUserProfileUpdateUiModel(
+        userProfileUpdateResponse: UserProfileUpdateResponse.UserProfileUpdate
+    ): UserProfileUpdateUiModel {
+        val errorMessage = userProfileUpdateResponse.errors.getOrNull(Int.ZERO).orEmpty()
+        val isSuccess = userProfileUpdateResponse.isSuccess == Int.ONE
+        return UserProfileUpdateUiModel(
+            isSuccess = isSuccess,
+            errorMessage = errorMessage
         )
     }
 }
