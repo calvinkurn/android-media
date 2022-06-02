@@ -57,14 +57,14 @@
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold"
                     tools:text="Electragon" />
 
             </LinearLayout>

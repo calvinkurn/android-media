@@ -16,7 +16,7 @@
         app:srcCompat="@drawable/ic_loading_image"
         tools:src="@tools:sample/avatars" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,10 +25,10 @@
         android:fontFamily="sans-serif-black"
         android:text="@string/post_detail_empty_title"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:text="@string/post_detail_empty_sub"
         android:gravity="center"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_12" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_back"

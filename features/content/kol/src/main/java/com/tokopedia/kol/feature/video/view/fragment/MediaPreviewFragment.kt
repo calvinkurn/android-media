@@ -95,19 +95,19 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mediaPreviewViewModel.postDetailLive.observe(this, Observer {
+        mediaPreviewViewModel.postDetailLive.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessGetDetail(it.data)
                 is Fail -> onErrorGetDetail(it.throwable)
             }
         })
 
-        mediaPreviewViewModel.postFooterLive.observe(this, Observer {
+        mediaPreviewViewModel.postFooterLive.observe(viewLifecycleOwner, Observer {
             val (footer, footerTemplate) = it ?: return@Observer
             bindFooter(footer, footerTemplate)
         })
 
-        mediaPreviewViewModel.postTagLive.observe(this, Observer { postTag ->
+        mediaPreviewViewModel.postTagLive.observe(viewLifecycleOwner, Observer { postTag ->
             postTag?.let { bindTags(it) }
         })
     }

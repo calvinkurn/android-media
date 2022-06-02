@@ -20,9 +20,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:scaleType="centerCrop"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"
+        android:contentDescription="@string/cp_thumbnail_content_desc" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,10 +42,10 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="14sp"
+        app:typographyType="display_2"
         tools:text="Merries Baby Diapers Terbaik sedunia Jangan beli yang lain, yang lain palsu" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,8 +65,8 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:maxLines="1"
         android:textColor="@color/Unify_B500"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Komisi Rp8.400.123" />
 
     <ImageView
@@ -85,7 +86,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_system_action_close_grayscale_24"
         tools:ignore="UnusedAttribute"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="@string/cp_del_btn_content_desc" />
 
     <View
         android:id="@+id/separatorBottom"

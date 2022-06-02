@@ -18,6 +18,10 @@
     <string name="cp_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="cp_title_edit">Edit</string>
     <string name="cp_get_commission">Raih Komisi</string>
+    <string name="cp_play_btn_content_desc">Play Button</string>
+    <string name="cp_del_btn_content_desc">Delete Media Button</string>
+    <string name="cp_thumbnail_content_desc">Profile Image</string>
+    <string name="cp_img_checkl_content_desc">Image Icon CheckMark</string>
 
     <string name="cp_share_tokopedia">Follower</string>
     <string name="cp_share_facebook">Facebook</string>
