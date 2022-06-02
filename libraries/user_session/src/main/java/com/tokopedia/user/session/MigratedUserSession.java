@@ -175,25 +175,25 @@ public class MigratedUserSession {
 
     private String encryptString(String message, String keyName) {
         try {
-	    /*
-		 Check PII data from SET, if keyName is PII data encrypt with aead (tink)
-		 else use existing encryption
-	    */
+        /*
+            Check PII data from SET, if keyName is PII data encrypt with aead (tink)
+            else use existing encryption
+        */
             if (Constants.PII_DATA_SET.contains(keyName)) {
                 return aead.encrypt(message, null);
             } else {
                 return EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 
     private String decryptString(String message, String keyName) {
         try {
 	    /*
-		 Check PII data from SET, if keyName is PII data decrypt with aead (tink)
-		 else use existing decryption
+            Check PII data from SET, if keyName is PII data decrypt with aead (tink)
+            else use existing decryption
 	    */
             if (Constants.PII_DATA_SET.contains(keyName)) {
                 return aead.decrypt(message, null);
@@ -201,7 +201,7 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 
@@ -220,7 +220,7 @@ public class MigratedUserSession {
         editor.apply();
     }
 
-    private Boolean isMigratedToAead(String keyName) {
+    private Boolean isMigratedToGoogleTink(String keyName) {
         if (Constants.PII_DATA_SET.contains(keyName)) {
             String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
             SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
@@ -264,10 +264,10 @@ public class MigratedUserSession {
             String value = sharedPrefs.getString(newKeyName, defValue);
 
             if (value != null) {
-                if (!isMigratedToAead(newKeyName)) {
+                if (!isMigratedToGoogleTink(newKeyName)) {
                     String decryptedCurValue = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
                     String encryptedNewValue = encryptString(decryptedCurValue, newKeyName);
-                    if (encryptedNewValue != null) {
+                    if (encryptedNewValue != null && !encryptedNewValue.isEmpty()) {
                         internalSetString(newPrefName, newKeyName, encryptedNewValue);
                         UserSessionMap.map.put(key, decryptedCurValue);
                         setPiiMigrationStatus(true, newKeyName);
