@@ -175,7 +175,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when upco campaign is exist check if user has reminded, if user has not reminded return false`(){
-        runBlocking {
+        runBlockingTest {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = false)
             )
