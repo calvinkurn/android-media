@@ -73,7 +73,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when get section success return success with complete config`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockResponse = modelBuilder.generateResponseSectionGql(gradient = null)
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
@@ -89,7 +89,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when get section success return success with bg config null`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockResponse = modelBuilder.generateResponseSectionGql(gradient = listOf("3fffff", "#45a5aa"))
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
@@ -105,7 +105,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when ATC success return success response`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockCartId = "1"
             val mockResponse = AddToCartDataModel(
                 errorMessage = arrayListOf(),
@@ -131,7 +131,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when ATC error return failed response = exception`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockCartId = "1"
             val mockErrorResponse = AddToCartDataModel(
                 errorMessage = arrayListOf("Error Message"),
@@ -159,7 +159,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when upco campaign is exist check if user has reminded, if user has reminded return true`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = true)
             )
@@ -175,7 +175,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when upco campaign is exist check if user has reminded, if user has not reminded return false`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = false)
             )
@@ -191,7 +191,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when upco campaign is exist when user click reminder return true if success`(){
-        runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val mockResponse = PostUpcomingCampaign(
                 response = UpcomingCampaignResponse(success = true)
             )
