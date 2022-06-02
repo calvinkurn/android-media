@@ -12,9 +12,6 @@ import com.tokopedia.imagepicker_insta.common.ui.itemdecoration.FeedAccountTypeI
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022
