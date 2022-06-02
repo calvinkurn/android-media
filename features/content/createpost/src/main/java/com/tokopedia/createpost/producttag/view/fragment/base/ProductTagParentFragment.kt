@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -18,29 +17,28 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
-import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
-import com.tokopedia.createpost.producttag.util.AUTHOR_SELLER
-import com.tokopedia.createpost.producttag.util.AUTHOR_USER
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.SelectedProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.createpost.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import javax.inject.Inject
 
 /**
@@ -49,7 +47,7 @@ import javax.inject.Inject
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ProductTagAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"

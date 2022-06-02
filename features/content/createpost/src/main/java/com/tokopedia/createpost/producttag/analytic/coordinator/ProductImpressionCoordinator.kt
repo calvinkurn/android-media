@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.producttag.analytic.coordinator
 
-import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import javax.inject.Inject
@@ -9,7 +9,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on May 23, 2022
  */
 class ProductImpressionCoordinator @Inject constructor(
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ProductTagAnalytic,
 ) {
     private val mProductImpress = mutableListOf<Pair<ProductUiModel, Int>>()
 

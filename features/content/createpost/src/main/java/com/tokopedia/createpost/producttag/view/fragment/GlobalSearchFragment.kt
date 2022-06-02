@@ -9,14 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchBinding
-import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
@@ -29,7 +26,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 * Created By : Jonathan Darwin on May 10, 2022
 */
 class GlobalSearchFragment @Inject constructor(
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ProductTagAnalytic,
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchFragment"

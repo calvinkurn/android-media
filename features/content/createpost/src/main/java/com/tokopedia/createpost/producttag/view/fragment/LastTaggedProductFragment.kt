@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
-import com.tokopedia.createpost.producttag.analytic.ContentProductTagAnalytic
 import com.tokopedia.createpost.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.createpost.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.createpost.producttag.util.extension.getVisibleItems
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
@@ -32,7 +32,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class LastTaggedProductFragment @Inject constructor(
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
