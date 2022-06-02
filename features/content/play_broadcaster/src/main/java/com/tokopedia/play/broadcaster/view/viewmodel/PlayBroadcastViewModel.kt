@@ -1017,7 +1017,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
             if (leaderboardSlots.isNotEmpty()) {
                 hasLeaderBoard = true
-                _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget)
+                _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
+                sharedPref.setNotFirstGameResult()
+                delay(TimeUnit.SECONDS.toMillis(DEFAULT_GAME_RESULT_AUTO_DISMISS_IN_SECOND))
+                _uiEvent.emit(PlayBroadcastEvent.DismissGameResultCoachMark)
             }
         }) {
             it.printStackTrace()
@@ -1510,6 +1513,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
+        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS_IN_SECOND = 5L
 
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
