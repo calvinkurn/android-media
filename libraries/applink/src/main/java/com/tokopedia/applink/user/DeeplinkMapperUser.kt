@@ -28,6 +28,7 @@ object DeeplinkMapperUser {
                 context
             )
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
+            deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalGlobal.ADD_PHONE
             else -> deeplink
         }
     }
