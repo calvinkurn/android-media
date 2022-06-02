@@ -3,6 +3,7 @@ package com.tokopedia.applink.tokofood
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -34,7 +35,7 @@ object DeeplinkMapperTokoFood {
                 else -> url
             }
         } else {
-            return ApplinkConst.HOME
+            return ApplinkConsInternalHome.HOME_NAVIGATION
         }
     }
 
