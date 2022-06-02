@@ -100,17 +100,17 @@
         app:cardBackgroundColor="@color/Unify_N0">
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/ll_buynow"
-            style="@style/TextView.Small.White"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="14dp"
+            android:textColor="@color/Unify_N0"
             android:background="@drawable/button_buy_now_background"
             android:gravity="center"
+            app:typographyType="display_2"
             android:text="@string/buy_now" />
-
 
     </androidx.cardview.widget.CardView>
 
