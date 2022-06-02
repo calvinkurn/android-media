@@ -101,8 +101,6 @@ class HomeAccountUserViewModel @Inject constructor(
     val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
         get() = mutableCheckFingerprintStatus
 
-    var internalBuyerData: UserAccountDataModel? = null
-
     fun refreshPhoneNo() {
         launchCatchError(block = {
             val profile = getPhoneUseCase(Unit)
@@ -168,7 +166,6 @@ class HomeAccountUserViewModel @Inject constructor(
             val accountModel = homeAccountUser.await().apply {
                 this.linkStatus = linkStatus.await().response
             }
-            internalBuyerData = accountModel
             saveLocallyAttributes(accountModel)
             _buyerAccountData.value = Success(accountModel)
         }, onError = {
