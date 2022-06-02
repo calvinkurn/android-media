@@ -60,51 +60,53 @@ class ShopGradeWidget(
 
 
     private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
-        val isPm = element.shopGrade == PMConstant.ShopGrade.PM
-        val isPmProAdvance = element.shopGrade == PMConstant.ShopGrade.PRO_ADVANCE
-        val isPmProExpert = element.shopGrade == PMConstant.ShopGrade.PRO_EXPERT
-        val isPmProUltimate = element.shopGrade == PMConstant.ShopGrade.PRO_ULTIMATE
+        binding?.run {
+            val isPm = element.shopGrade == PMConstant.ShopGrade.PM
+            val isPmProAdvance = element.shopGrade == PMConstant.ShopGrade.PRO_ADVANCE
+            val isPmProExpert = element.shopGrade == PMConstant.ShopGrade.PRO_EXPERT
+            val isPmProUltimate = element.shopGrade == PMConstant.ShopGrade.PRO_ULTIMATE
 
+            when {
+                isPm || element.pmStatus == PMStatusConst.IDLE -> {
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator2.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                }
+                isPmProAdvance -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                    textPmProAdvanced.setWeight(Typography.BOLD)
 
-        when {
-            isPm -> {
-                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
-                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
-                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
-                binding?.separator2?.stepSeparatorInActive()
-                binding?.separator3?.stepSeparatorInActive()
+                }
+                isPmProExpert -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator.stepSeparatorInActive()
+                    separator2.stepSeparatorInActive()
+                    textPmProExpert.setWeight(Typography.BOLD)
+                }
+                isPmProUltimate -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    separator.stepSeparatorInActive()
+                    separator2.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                    textPmProUltimate.setWeight(Typography.BOLD)
+                }
             }
-            isPmProAdvance -> {
-                stepInActive(binding?.badgePm)
-                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
-                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
-                binding?.separator?.stepSeparatorInActive()
-                binding?.separator3?.stepSeparatorInActive()
-                binding?.textPmProAdvanced?.setWeight(Typography.BOLD)
 
+            chevronPmGrade.isVisible = element.pmStatus == PMStatusConst.ACTIVE
+            chevronPmGrade.setOnClickListener {
+                listener.goToMembershipDetail()
+                powerMerchantTracking.sendEventClickProgressBar(element.shopGrade)
             }
-            isPmProExpert -> {
-                stepInActive(binding?.badgePm)
-                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
-                stepInActive(binding?.badgePmProUltimate, binding?.textPmProUltimate)
-                binding?.separator?.stepSeparatorInActive()
-                binding?.separator2?.stepSeparatorInActive()
-                binding?.textPmProExpert?.setWeight(Typography.BOLD)
-            }
-            isPmProUltimate -> {
-                stepInActive(binding?.badgePm)
-                stepInActive(binding?.badgePmProAdvanced, binding?.textPmProAdvanced)
-                stepInActive(binding?.badgePmProExpert, binding?.textPmProExpert)
-                binding?.separator?.stepSeparatorInActive()
-                binding?.separator2?.stepSeparatorInActive()
-                binding?.separator3?.stepSeparatorInActive()
-                binding?.textPmProUltimate?.setWeight(Typography.BOLD)
-            }
-        }
-
-        binding?.chevronPmGrade?.setOnClickListener {
-            listener.goToMembershipDetail()
-            powerMerchantTracking.sendEventClickProgressBar(element.shopGrade)
         }
     }
 
@@ -292,7 +294,7 @@ class ShopGradeWidget(
                     R.string.pm_shop_grade_shop_score_threshold_description_pm_active,
                     textColor,
                     element.shopScoreThreshold,
-                    getPmTireLabel(element.pmTierType)
+                    getPmTireLabel(element)
                 )
             }
         } else {
@@ -300,7 +302,7 @@ class ShopGradeWidget(
                 R.string.pm_shop_grade_shop_score_threshold_description_pm_idle,
                 textColor,
                 element.shopScoreThreshold,
-                getPmTireLabel(element.pmTierType)
+                getPmTireLabel(element)
             )
         }
     }
@@ -336,7 +338,7 @@ class ShopGradeWidget(
     }
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = binding?.run {
-        tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
+        tvPmShopGrade.text = getPmTireLabel(element)
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
 
@@ -352,8 +354,10 @@ class ShopGradeWidget(
         tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))
     }
 
-    private fun getPmTireLabel(pmTierType: Int): String {
-        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+    private fun getPmTireLabel(element: WidgetShopGradeUiModel): String {
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        return if (isPmPro && isPmActive) {
             getString(R.string.pm_power_merchant_pro)
         } else {
             getString(R.string.pm_power_merchant)
