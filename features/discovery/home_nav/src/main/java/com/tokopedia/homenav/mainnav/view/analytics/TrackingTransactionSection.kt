@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
-import com.tokopedia.analyticconstant.DataLayer
 import android.os.Bundle
 import com.tokopedia.homenav.common.TrackingConst.CATEGORY_GLOBAL_MENU
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BANNER
@@ -49,9 +48,6 @@ object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_CARD = "click favorite shop card"
     private const val ACTION_CLICK_ON_FAVORITE_SHOP_VIEW_ALL = "click view all favorite shop"
     private const val ITEM_ID_FAVORITE_SHOP_FORMAT = "0_%s"
-    private const val CURRENCY_CODE = "currencyCode"
-    private const val CURRENCY_IDR = "IDR"
-    private const val IMPRESSIONS_KEY = "impressions"
 
     fun clickOnAllTransaction(userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
