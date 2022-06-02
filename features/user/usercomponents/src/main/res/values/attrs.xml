@@ -14,5 +14,6 @@
 
     <declare-styleable name="ExplicitView">
         <attr name="template_name" format="string"/>
+        <attr name="page_name" format="string"/>
     </declare-styleable>
 </resources>

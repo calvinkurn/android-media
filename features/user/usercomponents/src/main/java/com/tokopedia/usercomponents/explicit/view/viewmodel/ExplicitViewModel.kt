@@ -34,14 +34,18 @@ class ExplicitViewModel @Inject constructor(
     private val preferenceUpdateState = UpdateStateParam()
     private val preferenceOptions = listOf(OptionsItem(), OptionsItem())
 
+    private var _loadingState = LOADING_STATE_QUESTION
+    val loadingState get() = _loadingState
+
     fun getExplicitContent(templateName: String) {
         _isQuestionLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getQuestionUseCase(templateName)
             val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
+            val sections = response.explicitprofileGetQuestion.template.sections
 
-            if (activeConfig) {
-                val property = response.explicitprofileGetQuestion.template.sections[0].questions[0].property
+            if (activeConfig && sections.isNotEmpty() && sections[0].questions.isNotEmpty()) {
+                val property = sections[0].questions[0].property
                 _explicitContent.value = Success(Pair(activeConfig, property))
                 setPreferenceAnswer(response.explicitprofileGetQuestion.template)
             } else {
@@ -55,6 +59,7 @@ class ExplicitViewModel @Inject constructor(
     }
 
     private fun setPreferenceAnswer(template: Template) {
+        _loadingState = LOADING_STATE_ANSWER
         preferenceUpdateState.template.name = template.name
         preferenceAnswer.apply {
             templateId = template.id
@@ -78,9 +83,9 @@ class ExplicitViewModel @Inject constructor(
         }
     }
 
-    fun sendAnswer(answers: Boolean) {
+    fun sendAnswer(answers: Boolean?) {
         preferenceAnswer.sections[0].questions[0].answerValue =
-            if (answers) preferenceOptions[0].value else preferenceOptions[1].value
+            if (answers == true) preferenceOptions[0].value else preferenceOptions[1].value
 
         launchCatchError(coroutineContext, {
             val response = saveAnswerUseCase(preferenceAnswer)
@@ -95,6 +100,11 @@ class ExplicitViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             updateStateUseCase(preferenceUpdateState)
         }, {})
+    }
+
+    companion object {
+        const val LOADING_STATE_QUESTION = "loading_state_question"
+        private const val LOADING_STATE_ANSWER = "loading_state_answer"
     }
 
 }
