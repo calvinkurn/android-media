@@ -157,3 +157,7 @@ const val TIME_SIXTEEN = 16
 const val TIME_EIGHTEEN = 18
 
 const val PAGE_LIMIT = 20
+
+const val NO_UI_METRICS = 0
+
+const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"

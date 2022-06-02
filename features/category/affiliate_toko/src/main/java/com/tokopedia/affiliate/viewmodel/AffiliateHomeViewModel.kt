@@ -3,7 +3,9 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -169,9 +171,9 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order == 0) {
+                if (metrics?.metricType == TOTAL_ITEMS_METRIC_TYPE) {
                     totalItemsCount.value = metrics.metricValue?.toInt()
-                } else {
+                } else if(metrics?.order != NO_UI_METRICS) {
                     performaTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }

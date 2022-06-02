@@ -60,10 +60,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:id="@+id/affiliate_announcement_ticker"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
-                            app:tickerType="announcement"
-                            app:titleText="Saat ini lagi ada pemeliharaan sistem" />
+                            android:layout_height="wrap_content"/>
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/withdrawal_home_widget"
                             android:layout_width="match_parent"
