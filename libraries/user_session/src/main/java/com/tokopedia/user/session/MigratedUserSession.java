@@ -267,10 +267,12 @@ public class MigratedUserSession {
                 if (!isMigratedToAead(newKeyName)) {
                     String decryptedCurValue = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
                     String encryptedNewValue = encryptString(decryptedCurValue, newKeyName);
-                    internalSetString(newPrefName, newKeyName, encryptedNewValue);
-                    UserSessionMap.map.put(key, decryptedCurValue);
-                    setPiiMigrationStatus(true, newKeyName);
-                    return encryptedNewValue;
+                    if (encryptedNewValue != null) {
+                        internalSetString(newPrefName, newKeyName, encryptedNewValue);
+                        UserSessionMap.map.put(key, decryptedCurValue);
+                        setPiiMigrationStatus(true, newKeyName);
+                        return encryptedNewValue;
+                    }
                 }
 
                 if (value.equals(defValue)) {// if value same with def value\
