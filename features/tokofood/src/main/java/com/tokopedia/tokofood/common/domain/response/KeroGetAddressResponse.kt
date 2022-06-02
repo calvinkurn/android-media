@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.purchase.purchasepage.domain.model.response
+package com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

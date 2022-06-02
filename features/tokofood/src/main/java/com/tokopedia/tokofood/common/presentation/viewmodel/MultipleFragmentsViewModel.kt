@@ -114,7 +114,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
                     throwable = it
                 )
             )
@@ -136,7 +136,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_DELETE_PRODUCT,
                     throwable = it
                 )
             )
@@ -163,7 +163,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_UPDATE_NOTES,
                     throwable = it
                 )
             )
@@ -184,7 +184,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_UPDATE_QUANTITY,
                     throwable = it
                 )
             )
@@ -205,7 +205,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_UPDATE_CART,
                     throwable = it
                 )
             )
@@ -224,7 +224,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_UPDATE_CART,
                     throwable = it
                 )
             )
@@ -253,14 +253,13 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         }, onError = {
             cartDataValidationState.emit(
                 UiEvent(
-                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    state = UiEvent.EVENT_FAILED_ADD_TO_CART,
                     throwable = it
                 )
             )
         })
     }
 
-    // TODO: Move to mapper
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
         return MiniCartUiModel(
             shopName = cartData.shop.name,

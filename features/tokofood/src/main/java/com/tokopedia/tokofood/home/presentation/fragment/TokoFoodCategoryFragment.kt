@@ -55,7 +55,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerch
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodCategoryViewModel
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
