@@ -527,10 +527,10 @@ class MainNavViewModel @Inject constructor(
                 }
 
                 val (paymentListToShow, orderListToShow, reviewListToShow) = getOrderHistory(paymentList, orderList, reviewList)
-
+                val otherTransaction = totalTransaction - ON_GOING_TRANSACTION_TO_SHOW_REVAMP
                 val transactionListItemViewModel = TransactionListItemDataModel(
                     NavOrderListModel(orderListToShow, paymentListToShow, reviewListToShow),
-                    totalTransaction,
+                    otherTransaction,
                     isMePageUsingRollenceVariant
                 )
 
