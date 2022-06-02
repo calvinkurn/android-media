@@ -97,6 +97,7 @@ object DigitalCheckoutQueries {
             admin_fee_text
             admin_fee
             admin_fee_included
+            channel_id
           }
         }
     """.trimIndent()

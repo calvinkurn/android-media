@@ -427,7 +427,8 @@ class DigitalPDPDataPlanFragment :
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedFullProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }

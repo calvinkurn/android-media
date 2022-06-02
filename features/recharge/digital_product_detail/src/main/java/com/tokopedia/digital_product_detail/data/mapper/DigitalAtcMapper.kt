@@ -9,16 +9,11 @@ import javax.inject.Inject
 class DigitalAtcMapper @Inject constructor() {
 
     fun mapAtcToResult(atc: ResponseCartData): DigitalAtcResult {
-        val categoryId = atc.relationships?.category?.data?.id
-            ?: ""
-        val price = atc.attributes?.price
-            ?: ""
-        val atcResult = DigitalAtcResult(
-            atc.id ?: "",
-            categoryId,
-            price
+        return DigitalAtcResult(
+            cartId = atc.id ?: "",
+            categoryId = atc.relationships?.category?.data?.id ?: "",
+            priceProduct = atc.attributes?.price ?: "",
+            channelId = atc.attributes?.channelId ?: "",
         )
-
-        return atcResult
     }
 }
