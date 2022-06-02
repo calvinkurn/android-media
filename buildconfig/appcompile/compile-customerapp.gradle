@@ -256,7 +256,7 @@ includeIfEnabled("features:user:settingnotif")
 includeIfEnabled("features:user:sessioncommon")
 includeIfEnabled("features:user:additional_check")
 
-includeIfEnabled("features:user:stickylogin")
+includeIfEnabled("features:user:usercomponents")
 includeIfEnabled("features:user:topchat")
 includeIfEnabled("features:user:updateinactivephone")
 includeIfEnabled("features:user:user_identification_common")
