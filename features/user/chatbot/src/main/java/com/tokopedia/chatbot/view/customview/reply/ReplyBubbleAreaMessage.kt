@@ -166,7 +166,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     private fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.unify_space_2
+        return R.dimen.dp_chatbot_2
     }
 
     fun updateBackground(orientation : Int){
