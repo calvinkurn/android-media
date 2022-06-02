@@ -117,7 +117,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -1492,8 +1491,21 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
+            if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(productCardOptionsModel)
         else
             showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
+    }
+
+    private fun hitWishlistClickUrl(item: ProductCardOptionsModel) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.topAdsClickUrl+CLICK_TYPE_WISHLIST,
+                item.productId,
+                item.productName,
+                item.productImageUrl
+            )
+        }
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1653,6 +1665,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
