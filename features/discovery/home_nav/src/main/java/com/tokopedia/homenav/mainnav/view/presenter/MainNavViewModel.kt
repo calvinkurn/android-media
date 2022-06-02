@@ -264,7 +264,7 @@ class MainNavViewModel @Inject constructor(
         if (isMePageUsingRollenceVariant) {
             allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
             this.add(allCategories)
-            this.add(SeparatorDataModel())
+            this.add(SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant))
         } else {
             this.addAll(buildBUTitleList())
             this.add(InitialShimmerDataModel())
@@ -281,9 +281,9 @@ class MainNavViewModel @Inject constructor(
 
     private fun addHomeBackButtonMenu() {
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
-        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
+        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isUsingRollence = isMePageUsingRollenceVariant))
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
-        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
+        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isUsingRollence = isMePageUsingRollenceVariant))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
     }
 
@@ -722,7 +722,7 @@ class MainNavViewModel @Inject constructor(
                     it.getMenu(menuId = ID_COMPLAIN, notifCount = complainNotification, sectionId = MainNavConst.Section.USER_MENU),
                     it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU)
             )
-            firstSectionList.add(SeparatorDataModel())
+            firstSectionList.add(SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant))
 
             val secondSectionList = listOf(
                     it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
@@ -770,7 +770,7 @@ class MainNavViewModel @Inject constructor(
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
                         ShimmerFavoriteShopDataModel(),
-                        SeparatorDataModel()
+                        SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant)
                 )
             } else {
                 transactionDataList = mutableListOf(
@@ -780,7 +780,7 @@ class MainNavViewModel @Inject constructor(
                     EmptyStateWishlistDataModel(),
                     it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
                     EmptyStateFavoriteShopDataModel(),
-                    SeparatorDataModel()
+                    SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant)
                 )
             }
             return transactionDataList
