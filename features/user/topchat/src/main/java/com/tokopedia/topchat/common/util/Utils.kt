@@ -3,7 +3,7 @@ package com.tokopedia.topchat.common.util
 import java.lang.Exception
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 object Utils {
 
