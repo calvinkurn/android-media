@@ -3,11 +3,11 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.query.SetUserPreferenceQuery
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -32,8 +32,8 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
             }
 
             val shopId = localCacheModel.shop_id
-            val warehouse = warehouses.first { it.serviceType == serviceType }
-            val warehouseId = warehouse.warehouseId
+            val warehouse = warehouses.firstOrNull { it.serviceType == serviceType }
+            val warehouseId = warehouse?.warehouseId?.getOrDefaultZeroString()
 
             val requestParams = RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
