@@ -521,7 +521,12 @@ object DeeplinkMapper {
     private fun putToTop(index: Int) {
         // Uncomment this for performance for RouteManager. Currently disabled in production
         // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-        // deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
+//        if (GlobalConfig.isAllowDebuggingTools()) {
+//            deeplinkPatternTokopediaSchemeList.add(
+//                0,
+//                deeplinkPatternTokopediaSchemeList.removeAt(index)
+//            )
+//        }
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {

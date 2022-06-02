@@ -34,11 +34,11 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
-        every {
-            GlobalConfig.isAllowDebuggingTools()
-        } answers {
-            false
-        }
+//        every {
+//            GlobalConfig.isAllowDebuggingTools()
+//        } answers {
+//            false
+//        }
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
     }
 
