@@ -7,7 +7,13 @@ import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 data class AgreeConsentResponse(
     @SerializedName("data")
     @Expose
-    val data: AgreeConsentData = AgreeConsentData()
+    val data: AgreeConsent = AgreeConsent()
+)
+
+data class AgreeConsent(
+    @SerializedName("tokofoodSubmitUserConsent")
+    @Expose
+    val tokofoodSubmitUserConsent: AgreeConsentData = AgreeConsentData()
 )
 
 data class AgreeConsentData(
