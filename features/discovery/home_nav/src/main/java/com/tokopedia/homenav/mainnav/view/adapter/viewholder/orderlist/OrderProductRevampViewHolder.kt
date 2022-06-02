@@ -1,14 +1,10 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
@@ -16,8 +12,6 @@ import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -60,32 +54,9 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
 
         //image
         if (productRevampModel.navProductModel.imageUrl.isNotEmpty()) {
-            val imageView = binding?.orderProductImage
-            val shimmer = binding?.orderProductImageShimmer
-            Glide.with(itemView.context)
-                    .load(productRevampModel.navProductModel.imageUrl)
-                    .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                    .dontAnimate()
-                    .fitCenter()
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            imageView?.setImageDrawable(resource)
-                            shimmer?.gone()
-                        }
-
-                        override fun onLoadStarted(placeholder: Drawable?) {
-                            shimmer?.visible()
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer?.gone()
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            shimmer?.gone()
-                        }
-                    })
+            binding?.orderProductImage?.setImageUrl(
+                productRevampModel.navProductModel.imageUrl
+            )
         }
 
         //description
