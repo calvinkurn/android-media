@@ -26,6 +26,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
@@ -174,7 +175,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     @Test
     fun  `when upco campaign is exist check if user has reminded, if user has not reminded return false`(){
-        runBlockingTest {
+        runBlocking {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = false)
             )
