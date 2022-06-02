@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 
 data class Attachment (
     @SerializedName("id")
-    var id: String? = null,
+    var id: String = "",
 
     @SerializedName("type")
-    var type: String? = null,
+    var type: String = "",
 
     @SerializedName("attributes")
-    var attributes: JsonObject? = null,
+    var attributes: JsonObject = JsonObject(),
 
     @SerializedName("fallback_attachment")
-    var fallbackAttachment: FallbackAttachment? = null
+    var fallbackAttachment: FallbackAttachment = FallbackAttachment()
 )
