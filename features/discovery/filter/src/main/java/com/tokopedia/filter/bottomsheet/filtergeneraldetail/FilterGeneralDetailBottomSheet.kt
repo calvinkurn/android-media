@@ -37,6 +37,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private var filter: Filter? = null
     private var originalSelectedOptionList = mutableListOf<Option>()
     private var callback: Callback? = null
+    private var buttonApplyFilterDetailText: String? = null
 
     private var filterGeneralDetailBottomSheetView: View? = null
     private val filterGeneralDetailAdapter = FilterGeneralDetailAdapter(this)
@@ -46,10 +47,11 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
-    fun show(fragmentManager: FragmentManager, filter: Filter, callback: Callback) {
+    fun show(fragmentManager: FragmentManager, filter: Filter, callback: Callback, buttonApplyFilterDetailText: String? = null) {
         this.filter = filter.copyParcelable()
         this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
         this.callback = callback
+        this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
 
         show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
@@ -218,9 +220,14 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initButtonApplyDetailFilter() {
-        binding?.buttonApplyFilterDetail?.setOnClickListener {
-            callback?.onApplyButtonClicked(filter?.options)
-            dismiss()
+        binding?.buttonApplyFilterDetail?.apply {
+            buttonApplyFilterDetailText?.let {
+                text = it
+            }
+            setOnClickListener {
+                callback?.onApplyButtonClicked(filter?.options)
+                dismiss()
+            }
         }
     }
 
@@ -257,9 +264,9 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun notifyAdapterChanges(option: Option, position: Int) {
         if (option.isTypeRadio)
-            filterGeneralDetailAdapter.notifyDataSetChanged()
+            filterGeneralDetailAdapter.notifyItemRangeChanged(0, filterGeneralDetailAdapter.itemCount, true)
         else
-            filterGeneralDetailAdapter.notifyItemChanged(position)
+            filterGeneralDetailAdapter.notifyItemChanged(position, true)
     }
 
     private fun getButtonResetVisibility(isChecked: Boolean) = isChecked || filter.hasActiveOptions()

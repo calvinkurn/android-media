@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.helper.createColorSampleDrawable
 import com.tokopedia.filter.databinding.FilterGeneralDetailItemViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterGeneralDetailAdapter(
@@ -36,15 +37,26 @@ internal class FilterGeneralDetailAdapter(
         holder.bind(optionList[position])
     }
 
+    override fun onBindViewHolder(holder: FilterGeneralDetailViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            holder.bind(optionList[position], true)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     inner class FilterGeneralDetailViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private var binding: FilterGeneralDetailItemViewHolderBinding? by viewBinding()
 
-        fun bind(option: Option) {
-            bindOnClickListener(option)
-            bindColorSample(option)
-            bindTitle(option)
-            bindNewIcon(option)
-            bindDescription(option)
+        fun bind(option: Option, bindInputStateOnly: Boolean = false) {
+            if (!bindInputStateOnly) {
+                bindOnClickListener(option)
+                bindColorSample(option)
+                bindIconOption(option)
+                bindTitle(option)
+                bindNewIcon(option)
+                bindDescription(option)
+            }
             bindRadioState(option)
             bindCheckedState(option)
         }
@@ -62,6 +74,14 @@ internal class FilterGeneralDetailAdapter(
                 colorSampleImageView.setImageDrawable(gradientDrawable)
             }
         }
+
+        private fun bindIconOption(option: Option) {
+            val iconOptionImageView = binding?.optionIconImageView ?: return
+            iconOptionImageView.shouldShowWithAction(option.iconUrl.isNotEmpty()) {
+                iconOptionImageView.loadImage(option.iconUrl)
+            }
+        }
+
 
         private fun bindNewIcon(option: Option) {
             binding?.newNotification?.showWithCondition(option.isNew)

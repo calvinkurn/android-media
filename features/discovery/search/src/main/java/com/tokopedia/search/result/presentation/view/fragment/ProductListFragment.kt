@@ -1902,7 +1902,8 @@ class ProductListFragment: BaseDaggerFragment(),
         FilterGeneralDetailBottomSheet().show(
             parentFragmentManager,
             filter,
-            filterDetailCallback
+            filterDetailCallback,
+            getString(R.string.search_quick_filter_dropdown_apply_button_text)
         )
     }
 

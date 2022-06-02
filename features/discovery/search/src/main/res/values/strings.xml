@@ -107,4 +107,6 @@
     <string name="search_result_local_search_other_products">Barang lainnya di %s</string>
 
     <string name="search_last_filter_use_filter">Gunakan Filter</string>
+
+    <string name="search_quick_filter_dropdown_apply_button_text">Terapkan</string>
 </resources>
