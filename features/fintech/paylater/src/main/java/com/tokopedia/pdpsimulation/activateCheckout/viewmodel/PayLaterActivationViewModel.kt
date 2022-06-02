@@ -16,6 +16,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActiv
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -52,6 +53,8 @@ class PayLaterActivationViewModel @Inject constructor(
     var selectedTenureSelected = "0"
     var selectedGatewayCode = ""
     var occRedirectionUrl = ""
+    var variantName = ""
+
 
     fun setProductId(productId: String) {
         selectedProductId = productId
@@ -94,7 +97,25 @@ class PayLaterActivationViewModel @Inject constructor(
             it.shopDetail?.shopId?.let { shopID ->
                 shopId = shopID
             }
+            setVariantName(it.variant)
             _productDetailLiveData.value = Success(it)
+        }
+    }
+
+    private fun setVariantName(data: Variant?) {
+        data?.let { variant ->
+            if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
+                var combination = -1
+                for (i in variant.products.indices) {
+                    if (selectedProductId == variant.products[i].productID) {
+                        combination = variant.products[i].combination[0] ?: -1
+                        break
+                    }
+                }
+                if (combination != -1) {
+                    variantName = variant.selections[0].options[combination]?.value ?: ""
+                }
+            }
         }
     }
 
@@ -186,10 +207,12 @@ class PayLaterActivationViewModel @Inject constructor(
             )
         else {
             occRedirectionUrl =
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
                     gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: "",
                     selectedTenureSelected,
-                    "fintech")
+                    "fintech"
+                )
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

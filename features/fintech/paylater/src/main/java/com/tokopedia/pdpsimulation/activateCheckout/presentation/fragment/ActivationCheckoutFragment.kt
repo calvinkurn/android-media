@@ -60,8 +60,6 @@ import javax.inject.Inject
 
 class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
-    private lateinit var parentView: View
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -81,7 +79,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var quantity = 1
     var isDisabledPartner = false
     var isDisableTenure = false
-    private var variantName = ""
     var itemProductStock = 1
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -94,8 +91,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        parentView = inflater.inflate(R.layout.fragment_activation_checkout, container, false)
-        return parentView
+        return inflater.inflate(R.layout.fragment_activation_checkout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,7 +136,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun showToaster(atcErrorMessage: String?) {
         atcErrorMessage?.let {
             Toaster.build(
-                parentView,
+                baseLayoutForActivation,
                 it,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
@@ -262,7 +258,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                             checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                             quantity.toString(),
                             checkoutData.userAmount ?: "",
-                            variantName
+                            payLaterActivationViewModel.variantName
                         )
                     )
                 }
@@ -393,8 +389,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun setBottomDetailData(checkoutData: CheckoutData)
-    {
+    private fun setBottomDetailData(checkoutData: CheckoutData) {
         if (!checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
             isDisableTenure = false
             setTenureData(DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]))
@@ -402,8 +397,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             isDisableTenure = true
     }
 
-    private fun setSelectToMaxTenureData(checkoutData: CheckoutData)
-    {
+    private fun setSelectToMaxTenureData(checkoutData: CheckoutData) {
         var maxEnabledTenure = -1
         for (i in 0 until checkoutData.tenureDetail.size) {
             if (!checkoutData.tenureDetail[i].tenureDisable) {
@@ -488,10 +482,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             }
         }
         detailHeader.productDetailWidget.productName.text = productData.productName.orEmpty()
-        detailHeader.productDetailWidget.productPrice.text =
-            productPriceValue(productData)
-
-        showVariantProductHeader(productData)
+        detailHeader.productDetailWidget.productPrice.text = productPriceValue(productData)
+        showVariantProductHeader()
     }
 
     private fun productPriceValue(productData: GetProductV3) =
@@ -503,7 +495,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock
         detailHeader.quantityEditor.addButton.isEnabled = productStock > MINIMUM_THRESHOLD_QUANTITY
-        detailHeader.quantityEditor.subtractButton.isEnabled = detailHeader.quantityEditor.editText.text.toString().toIntOrZero() > MINIMUM_THRESHOLD_QUANTITY
+        detailHeader.quantityEditor.subtractButton.isEnabled =
+            detailHeader.quantityEditor.editText.text.toString()
+                .toIntOrZero() > MINIMUM_THRESHOLD_QUANTITY
         val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
         try {
             if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
@@ -516,26 +510,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    private fun showVariantProductHeader(data: GetProductV3) {
-        data.variant?.let { variant ->
-            if (variant.products.isNotEmpty() && variant.selections.isNotEmpty()) {
-                var combination = -1
-                for (i in variant.products.indices) {
-                    if (payLaterActivationViewModel.selectedProductId == variant.products[i].productID) {
-                        combination = variant.products[i].combination[0] ?: -1
-                        break
-                    }
-                }
-                if (combination != -1) {
-                    detailHeader.showVariantBottomSheet.visibility = View.VISIBLE
-                    detailHeader.productDetailWidget.productVariant.text =
-                        variant.selections[0].options[combination]?.value ?: ""
-                }
-                variantName = detailHeader.productDetailWidget.productVariant.text.toString()
-            } else {
-                detailHeader.productDetailWidget.productVariant.gone()
-                detailHeader.showVariantBottomSheet.visibility = View.GONE
-            }
+    private fun showVariantProductHeader() {
+        if (payLaterActivationViewModel.variantName.isNullOrEmpty()) {
+            detailHeader.productDetailWidget.productVariant.gone()
+            detailHeader.showVariantBottomSheet.visibility = View.GONE
+        } else {
+            detailHeader.showVariantBottomSheet.visibility = View.VISIBLE
+            detailHeader.productDetailWidget.productVariant.text =
+                payLaterActivationViewModel.variantName
         }
     }
 
@@ -602,7 +584,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
-                    variantName
+                    payLaterActivationViewModel.variantName
                 )
             )
         }
@@ -640,7 +622,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 productId = payLaterActivationViewModel.selectedProductId,
                 pageSource = VariantPageSource.BNPL_PAGESOURCE,
                 isTokoNow = false,
-                shopId = payLaterActivationViewModel.shopId?:"",
+                shopId = payLaterActivationViewModel.shopId ?: "",
                 saveAfterClose = false
             ) { data, code ->
                 startActivityForResult(data, code)
@@ -654,7 +636,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 OccBundleHelper.setBundleForBottomSheetPartner(
                     listOfGateway,
                     payLaterActivationViewModel.selectedGatewayId,
-                    variantName,
+                    payLaterActivationViewModel.variantName,
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
                     quantity,
@@ -668,7 +650,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 OccBundleHelper.setBundleForBottomSheetPartner(
                     listOfGateway,
                     payLaterActivationViewModel.selectedGatewayId,
-                    variantName,
+                    payLaterActivationViewModel.variantName,
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
                     quantity,
@@ -692,7 +674,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
                         checkoutData.userAmount ?: "",
-                        variantName,
+                        payLaterActivationViewModel.variantName,
                     )
                 )
             }
@@ -714,7 +696,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
                         checkoutData.userAmount ?: "",
-                        variantName,
+                        payLaterActivationViewModel.variantName,
                     )
                 )
 
@@ -842,6 +824,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     companion object {
         const val MINIMUM_THRESHOLD_QUANTITY = 1
+
         @JvmStatic
         fun newInstance(bundle: Bundle): ActivationCheckoutFragment {
             val fragment = ActivationCheckoutFragment()
@@ -849,5 +832,4 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             return fragment
         }
     }
-
 }
