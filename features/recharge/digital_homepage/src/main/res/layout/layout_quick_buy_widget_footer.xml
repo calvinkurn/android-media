@@ -9,51 +9,49 @@
         android:id="@+id/tagLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:labelType="general_light_orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
         tools:text="Label" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pricePrefix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/quick_buy_text_spacing"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontSize_lvl1"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/strikeThroughPrice"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/tagLine"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
         tools:text="mulai dari"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/strikeThroughPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/quick_buy_text_spacing"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/quick_buy_text_size"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/price"
         app:layout_constraintStart_toEndOf="@+id/pricePrefix"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
         tools:text="Rp3.425.000"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,12 +59,12 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/quick_buy_text_spacing"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/unify_space_12"
-        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Rp3.425.000"
         tools:visibility="visible" />
 
