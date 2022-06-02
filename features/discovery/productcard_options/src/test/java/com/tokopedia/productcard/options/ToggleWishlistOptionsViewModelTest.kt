@@ -9,6 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -364,6 +365,22 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = true`()
     }
 
+    @Test
+    fun `Delete Product from WishlistV2 Success`() {
+        val userId = "123456"
+        val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
+
+        `Given using wishlistV2 is true`()
+        `Given Product Card Options View Model`(productCardOptionsModelWishlisted)
+        `Given user is logged in`(userId)
+        `Given remove wishlistV2 API will be successful`(userId)
+
+        `When Click delete from wishlist`()
+
+        `Then should post wishlist event`()
+        `Then assert product card options model has wishlist result with isAddWishlist = false and isSuccess = true`()
+    }
+
     private fun `Given remove wishlist API will be successful`(userId: String) {
         val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
 
@@ -371,6 +388,15 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
             removeWishListUseCase.createObservable(productId, userId, any())
         }.answers {
             thirdArg<WishListActionListener>().onSuccessRemoveWishlist(firstArg())
+        }
+    }
+
+    private fun `Given remove wishlistV2 API will be successful`(userId: String) {
+        val resultRemoveWishlistV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultRemoveWishlistV2))
         }
     }
 

@@ -271,14 +271,6 @@ internal class ProductCardOptionsViewModel(
         override fun onCompleted() { }
     }
 
-    private fun createAddWishlistV2TopAdsSubscriber() = object: Subscriber<Boolean>() {
-        override fun onNext(t: Boolean?) { }
-
-        override fun onError(e: Throwable?) { }
-
-        override fun onCompleted() { }
-    }
-
     private fun addWishlistNonTopAds(wishListActionListener: WishListActionListener) {
         try {
             tryAddWishlist(wishListActionListener)
