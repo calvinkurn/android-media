@@ -56,15 +56,15 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "productView",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PRODUCT_VIEW,
+                category = VAL_EVENT_CATEGORY,
                 action = if(isGlobalSearch) "impression - product card" else "impression - entry point product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "impressions" to products.map {
+                KEY_ECOMMERCE to hashMapOf(
+                    KEY_CURRENCY_CODE to VAL_IDR,
+                    KEY_IMPRESSIONS to products.map {
                         convertProductToHashMapWithList(it.first, it.second)
                     }
                 )
@@ -86,16 +86,16 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "productClick",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PRODUCT_CLICK,
+                category = VAL_EVENT_CATEGORY,
                 action = if(isGlobalSearch) "click - product card" else "click - entry point product card",
                 label = "${source.labelAnalytic} - ${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/feed - creation tagging page"),
-                        "products" to listOf(convertProductToHashMapWithList(product, position))
+                KEY_ECOMMERCE to hashMapOf(
+                    KEY_CLICK to hashMapOf(
+                        KEY_ACTION_FIELD to hashMapOf( "list" to "/feed - creation tagging page"),
+                        KEY_PRODUCTS to listOf(convertProductToHashMapWithList(product, position))
                     )
                 )
             ),
@@ -129,15 +129,15 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "promoView",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PROMO_VIEW,
+                category = VAL_EVENT_CATEGORY,
                 action = "impression - toko product tagging search result",
                 label = userSession.shopId
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "promoView" to hashMapOf(
-                        "promotions" to shops.map {
+                KEY_ECOMMERCE to hashMapOf(
+                    EVENT_PROMO_VIEW to hashMapOf(
+                        KEY_PROMOTIONS to shops.map {
                             convertToPromotion(it.first, it.second)
                         }
                     )
@@ -158,15 +158,15 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "promoClick",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PROMO_CLICK,
+                category = VAL_EVENT_CATEGORY,
                 action = "click - toko product tagging search result",
                 label = userSession.shopId
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "promoClick" to hashMapOf(
-                        "promotions" to listOf(convertToPromotion(shop, position))
+                KEY_ECOMMERCE to hashMapOf(
+                    EVENT_PROMO_CLICK to hashMapOf(
+                        KEY_PROMOTIONS to listOf(convertToPromotion(shop, position))
                     )
                 )
             ),
@@ -188,15 +188,15 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "productView",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PRODUCT_VIEW,
+                category = VAL_EVENT_CATEGORY,
                 action = "impression - product card on toko",
                 label = "${userSession.shopId} - ${products.firstOrNull()?.first?.id ?: 0}"
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "impressions" to products.map {
+                KEY_ECOMMERCE to hashMapOf(
+                    KEY_CURRENCY_CODE to VAL_IDR,
+                    KEY_IMPRESSIONS to products.map {
                         convertProductToHashMapWithList(it.first, it.second)
                     }
                 )
@@ -216,16 +216,16 @@ class ProductTagAnalyticImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = "productClick",
-                category = "content feed post creation - product tagging",
+                event = EVENT_PRODUCT_CLICK,
+                category = VAL_EVENT_CATEGORY,
                 action = "click - product card on toko",
                 label = "${userSession.shopId} - ${product.id}"
             ),
             hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/feed - creation tagging page"),
-                        "products" to listOf(convertProductToHashMapWithList(product, position))
+                KEY_ECOMMERCE to hashMapOf(
+                    KEY_CLICK to hashMapOf(
+                        KEY_ACTION_FIELD to hashMapOf( "list" to "/feed - creation tagging page"),
+                        KEY_PRODUCTS to listOf(convertProductToHashMapWithList(product, position))
                     )
                 )
             ),
@@ -247,7 +247,7 @@ class ProductTagAnalyticImpl @Inject constructor(
             mapOf(
                 KEY_EVENT to "clickPG",
                 KEY_EVENT_ACTION to action,
-                KEY_EVENT_CATEGORY to "content feed post creation - product tagging",
+                KEY_EVENT_CATEGORY to VAL_EVENT_CATEGORY,
                 KEY_EVENT_LABEL to label,
                 KEY_BUSINESS_UNIT to VAL_CONTENT,
                 KEY_CURRENT_SITE to VAL_CURRENT_SITE,
@@ -296,23 +296,23 @@ class ProductTagAnalyticImpl @Inject constructor(
 
     private fun convertProductToHashMapWithList(product: ProductUiModel, position: Int): HashMap<String, Any> {
         return hashMapOf(
-            "name" to product.name,
-            "id" to product.id,
-            "price" to product.price,
-            "brand" to "",
-            "category" to "",
-            "variant" to "",
-            "position" to position,
-            "list" to "/feed - creation tagging page",
+            KEY_PRODUCT_NAME to product.name,
+            KEY_PRODUCT_ID to product.id,
+            KEY_PRODUCT_PRICE to product.price,
+            KEY_PRODUCT_BRAND to "",
+            KEY_PRODUCT_CATEGORY to "",
+            KEY_PRODUCT_VARIANT to "",
+            KEY_PRODUCT_POSITION to position,
+            KEY_PRODUCT_LIST to VAL_PRODUCT_LIST,
         )
     }
 
     private fun convertToPromotion(shop: ShopUiModel, position: Int): HashMap<String, Any> {
         return hashMapOf(
-            "creative" to shop.shopImage,
-            "position" to position,
-            "id" to shop.shopId,
-            "name" to "/feed content creation - toko tab search result",
+            KEY_CREATIVE to shop.shopImage,
+            KEY_CREATIVE_POSITION to position,
+            KEY_CREATIVE_ID to shop.shopId,
+            KEY_CREATIVE_NAME to VAL_CREATIVE_NAME,
         )
     }
 }
