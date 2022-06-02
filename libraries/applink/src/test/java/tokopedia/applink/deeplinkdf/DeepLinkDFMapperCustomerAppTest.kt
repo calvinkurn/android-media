@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import org.junit.Test
@@ -1042,6 +1043,14 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check tokofood home appLink then should return DF_BASE in customerapp`() {
         val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/home"
-        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_BASE)
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
+
+    @Test
+    fun `check tokofood post purchase appLink then should return DF_TOKOFOOD in customerapp`() {
+        val orderId = "123"
+        val internalAppLink =
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
+        assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
 }
