@@ -28,12 +28,6 @@ class FakeAppModule(private val context: Context) {
 
     @ApplicationScope
     @Provides
-    fun provideUserSessionDataStore(): UserSessionDataStore {
-        return TestUserSessionDataStore()
-    }
-
-    @ApplicationScope
-    @Provides
     fun provideAbstractionRouter(@ApplicationContext context: Context?): AbstractionRouter {
         return context as AbstractionRouter
     }
