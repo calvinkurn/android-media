@@ -68,7 +68,7 @@ open class ProductAttachmentUiModel protected constructor(
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
                     && priceBefore != productPrice && dropPercentage != "0"
         }
-    val stringBlastId: String get() = blastId.toString()
+    val stringBlastId: String get() = blastId
     var campaignId: String = builder.campaignId
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
@@ -344,7 +344,7 @@ open class ProductAttachmentUiModel protected constructor(
             withProductImage(product.productProfile.imageUrl)
             withPriceInt(product.productProfile.priceInt)
             withCategory(product.productProfile.category)
-            withVariants(product.productProfile.variant ?: emptyList())
+            withVariants(product.productProfile.variant)
             withDropPercentage(product.productProfile.dropPercentage)
             withPriceBefore(product.productProfile.priceBefore)
             withShopId(product.productProfile.shopId)

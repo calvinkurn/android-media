@@ -154,11 +154,11 @@ class FakeTopchatWebSocket @Inject constructor(
             timeStampUnix = timestamp.toString()
         )
         val chat = ChatSocketPojo(
-            msgId = TopchatRoomTest.MSG_ID.toLong(),
+            msgId = TopchatRoomTest.MSG_ID,
             fromUid = session.userId,
             from = uiModel.shopName,
             fromRole = uiModel.role,
-            toUid = uiModel.headerModel.senderId.toLong(),
+            toUid = uiModel.headerModel.senderId,
             message = message,
             startTime = requestStartTime,
             imageUri = "",
@@ -166,7 +166,7 @@ class FakeTopchatWebSocket @Inject constructor(
             showRating = false,
             ratingStatus = 0,
             isOpposite = false,
-            blastId = 0,
+            blastId = "0",
             source = "inbox",
             label = "",
             localId = localId,
