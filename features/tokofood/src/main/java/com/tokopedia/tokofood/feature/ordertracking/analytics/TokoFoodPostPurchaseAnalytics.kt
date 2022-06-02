@@ -78,9 +78,9 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
     }
 
     fun clickBuyAgainButton(orderId: String, merchantData: MerchantDataUiModel, foodItems: List<FoodItemUiModel>) {
-        val itemBundle = Bundle()
+        val bundleList = arrayListOf<Bundle>()
         foodItems.forEach {
-            itemBundle.apply {
+            val itemBundle = Bundle().apply {
                 putString(
                     AddToCartExternalAnalytics.EE_PARAM_CATEGORY_ID,
                     it.categoryId
@@ -123,6 +123,7 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
                     AddToCartExternalAnalytics.EE_PARAM_SHOP_TYPE, ""
                 )
             }
+            bundleList.add(itemBundle)
         }
 
         val eventDataLayer = Bundle().apply {
@@ -145,7 +146,7 @@ class TokoFoodPostPurchaseAnalytics @Inject constructor(private val userSession:
                 TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
             )
             putParcelableArrayList(
-                AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
+                AddToCartExternalAnalytics.EE_VALUE_ITEMS, bundleList
             )
             putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantData.merchantId)
             putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
