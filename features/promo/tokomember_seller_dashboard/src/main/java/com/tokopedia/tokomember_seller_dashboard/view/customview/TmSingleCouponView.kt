@@ -1,7 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.customview
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -18,10 +17,20 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.view.*
 
+const val QUOTA_DEFAULT = "50"
+const val PERCENTAGE_DEFAULT = "10"
+const val MAX_CASHBACK = "10.000"
+const val MAX_CASHBACK_COUPON = "10000.0"
+const val MIN_TRANSACTION = "10000"
+const val CHIP_LABEL_RUPIAH = "Rupiah(Rp)"
+const val CHIP_LABEL_PERCENTAGE = "Persentase (%)"
+const val CHIP_LABEL_FREE_SHIPPING = "Gratis Ongkir"
+const val CHIP_LABEL_CASHBACK = "Cashback"
+
 class TmSingleCouponView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var selectedChipPositionKupon: Int = 0
@@ -30,6 +39,7 @@ class TmSingleCouponView @JvmOverloads constructor(
     private var isShowCashPercentage = false
     private var shopName = ""
     private var shopAvatar = ""
+    private var chipPercentageClickListener:ChipPercentageClickListener?= null
 
     init {
         View.inflate(context, R.layout.tm_dash_single_coupon, this)
@@ -43,6 +53,7 @@ class TmSingleCouponView @JvmOverloads constructor(
      }
 
     private fun initView() {
+
         chipGroupKuponType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionKupon = position
@@ -59,23 +70,30 @@ class TmSingleCouponView @JvmOverloads constructor(
             }
         })
         chipGroupKuponType.setDefaultSelection(selectedChipPositionKupon)
-        chipGroupKuponType.addChips(arrayListOf("Cashback", "Gratis Ongkir"))
+        chipGroupKuponType.addChips(arrayListOf(CHIP_LABEL_CASHBACK, CHIP_LABEL_FREE_SHIPPING ))
+        ivPreviewCoupon.showHideCashBackValueView(true)
+        ivPreviewCoupon.setCouponType(COUPON_CASHBACK_PREVIEW)
+        textFieldMaxCashback.editText.setText(MAX_CASHBACK)
 
+        textFieldQuota.editText.setText(QUOTA_DEFAULT)
+        textFieldPercentCashback.editText.setText(PERCENTAGE_DEFAULT)
         chipGroupCashbackType.setCallback(object : ChipGroupCallback {
             override fun chipSelected(position: Int) {
                 selectedChipPositionCashback = position
                 isShowCashPercentage = if (position == CashbackType.PERCENTAGE){
                     textFieldPercentCashback.show()
+                    //chipPercentageClickListener?.onClickPercentageChip()
                     chipCashBackCouponValidation()
                     true
                 } else{
                     textFieldPercentCashback.hide()
+                    ivPreviewCoupon.setCouponBenefit("")
                     false
                 }
             }
         })
         chipGroupCashbackType.setDefaultSelection(selectedChipPositionCashback)
-        chipGroupCashbackType.addChips(arrayListOf("Rupiah(Rp)", "Persentase (%)"))
+        chipGroupCashbackType.addChips(arrayListOf(CHIP_LABEL_RUPIAH, CHIP_LABEL_PERCENTAGE))
         maxCashBackFieldValidation()
         minTransactionFieldValidation()
     }
@@ -111,6 +129,7 @@ class TmSingleCouponView @JvmOverloads constructor(
     }
 
     private fun maxCashBackFieldValidation(){
+        ivPreviewCoupon.setCouponValue(MAX_CASHBACK_COUPON)
         textFieldMaxCashback.let {
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
@@ -122,6 +141,7 @@ class TmSingleCouponView @JvmOverloads constructor(
     }
 
     private fun minTransactionFieldValidation(){
+        textFieldMinTransk.editText.setText(MIN_TRANSACTION)
         textFieldMinTransk.let {
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
@@ -172,5 +192,13 @@ class TmSingleCouponView @JvmOverloads constructor(
             textFieldQuota.isInputError = true
             textFieldQuota.setMessage(error)
         }
+    }
+
+    fun setChipPercentageClickListener(chipPercentageClickListener:ChipPercentageClickListener){
+        this.chipPercentageClickListener = chipPercentageClickListener
+    }
+
+    interface ChipPercentageClickListener{
+        fun onClickPercentageChip()
     }
 }
