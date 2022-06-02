@@ -67,6 +67,7 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.LOCATION;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.LOCATION_ID;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 import org.json.JSONException;
@@ -1204,37 +1205,23 @@ public class GTMAnalytics extends ContextAnalytics {
             switch (eventName) {
                 // https://tokopedia.atlassian.net/browse/AN-36119
                 case FirebaseAnalytics.Event.VIEW_ITEM:
-                    Object promotions = bundle.get("promotions");
-                    if (promotions != null) {
-                        List promotionList = (List) promotions;
-                        ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
-                        for (int i = 0, size = promotionList.size(); i < size; i++) {
-                            Bundle bundlePromotion = ((Bundle) promotionList.get(i));
-                            String itemId = bundlePromotion.getString(ITEM_ID);
-                            if (itemId != null) {
-                                bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
-                            }
-                            String itemName = bundlePromotion.getString(ITEM_NAME);
-                            if (itemName != null) {
-                                bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
-                            }
-                            promotionsGA4.add(bundlePromotion);
-                        }
-                        Bundle ecommerceBundleGA4 = new Bundle();
-                        ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
-                        fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
+                    Bundle bundleGA4 = createBundleGA4BundleViewPromotion(bundle);
+                    if (bundleGA4 != null) {
+                        fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundleGA4);
                     }
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
                     String eventCategory = bundle.getString(KEY_CATEGORY);
                     if (eventCategory != null && eventCategory.contains("search result")) {
                         // https://tokopedia.atlassian.net/browse/AN-36131
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, bundle.getString(ITEM_LIST));
-                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, bundle.getString(KEY_CATEGORY));
-                        fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
+                        Bundle gA4bundle = createBundleGA4BundleProductClick(bundle);
+                        fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, gA4bundle);
                     } else {
                         // https://tokopedia.atlassian.net/browse/AN-36122
-                        fa.logEvent(FirebaseAnalytics.Event.SELECT_PROMOTION, bundle);
+                        Bundle gA4bundle = createBundleGA4BundleClickPromotion(bundle);
+                        if (gA4bundle != null) {
+                            fa.logEvent(FirebaseAnalytics.Event.SELECT_PROMOTION, gA4bundle);
+                        }
                     }
                     break;
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
@@ -1259,6 +1246,96 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private Bundle createBundleGA4BundleViewPromotion(Bundle oriBundle) {
+        Object promotions = oriBundle.get("promotions");
+        if (promotions != null) {
+            List promotionList = (List) promotions;
+            ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
+            for (int i = 0, size = promotionList.size(); i < size; i++) {
+                Bundle bundlePromotion = ((Bundle) promotionList.get(i));
+                String itemId = bundlePromotion.getString(ITEM_ID);
+                if (itemId != null) {
+                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
+                }
+                String itemName = bundlePromotion.getString(ITEM_NAME);
+                if (itemName != null) {
+                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                }
+                promotionsGA4.add(bundlePromotion);
+            }
+            Bundle ecommerceBundleGA4 = new Bundle();
+            ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
+            return ecommerceBundleGA4;
+        } else {
+            return null;
+        }
+    }
+
+    private Bundle createBundleGA4BundleClickPromotion(Bundle oriBundle) {
+        Object promotions = oriBundle.get("promotions");
+        if (promotions != null) {
+            List promotionList = (List) promotions;
+            Bundle ecommerceBundleGA4 = new Bundle();
+
+            if (promotionList.size() > 0) {
+                Bundle bundlePromotion = ((Bundle) promotionList.get(0));
+                String itemId = bundlePromotion.getString(ITEM_ID);
+                if (itemId != null) {
+                    ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
+                }
+                String itemName = bundlePromotion.getString(ITEM_NAME);
+                if (itemName != null) {
+                    ecommerceBundleGA4.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                }
+                String creativeName = bundlePromotion.getString(CREATIVE_NAME);
+                if (creativeName != null) {
+                    ecommerceBundleGA4.putString(CREATIVE_NAME, creativeName);
+                }
+                String creativeSlot = bundlePromotion.getString(CREATIVE_SLOT);
+                if (creativeSlot != null) {
+                    ecommerceBundleGA4.putString(CREATIVE_SLOT, creativeSlot);
+                }
+            }
+            return ecommerceBundleGA4;
+        } else {
+            return null;
+        }
+    }
+
+    private Bundle createBundleGA4BundleProductClick(Bundle oriBundle) {
+        Object promotions = oriBundle.get("promotions");
+        if (promotions != null) {
+            List promotionList = (List) promotions;
+            ArrayList<Bundle> promotionsGA4 = new ArrayList<>();
+            for (int i = 0, size = promotionList.size(); i < size; i++) {
+                Bundle bundlePromotion = ((Bundle) promotionList.get(i));
+                String itemId = bundlePromotion.getString(ITEM_ID);
+                if (itemId != null) {
+                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_ID, itemId);
+                }
+                String itemName = bundlePromotion.getString(ITEM_NAME);
+                if (itemName != null) {
+                    bundlePromotion.putString(FirebaseAnalytics.Param.PROMOTION_NAME, itemName);
+                }
+                promotionsGA4.add(bundlePromotion);
+            }
+            Bundle ecommerceBundleGA4 = new Bundle();
+            ecommerceBundleGA4.putParcelableArrayList(ITEMS, promotionsGA4);
+            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
+            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
+            return ecommerceBundleGA4;
+        } else {
+            Bundle ecommerceBundleGA4 = new Bundle();
+            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, oriBundle.getString(ITEM_LIST));
+            ecommerceBundleGA4.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, oriBundle.getString(KEY_CATEGORY));
+            ArrayList item = (ArrayList) oriBundle.get(ITEMS);
+            if (item != null) {
+                ecommerceBundleGA4.putParcelableArrayList(ITEMS, item);
+            }
+            return ecommerceBundleGA4;
         }
     }
 
