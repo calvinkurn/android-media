@@ -5,6 +5,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
@@ -42,11 +43,6 @@ object DeeplinkMapperOrder {
     fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri)
         else deeplink
-    }
-
-    fun getReschedulePickupDeeplink(context: Context, uri: Uri, deeplink: String): String {
-        val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
-        return ApplinkConstInternalOrder.RESCHEDULE_PICKUP.replace("{order_id}", orderId)
     }
 
     /**

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -87,10 +89,8 @@ object SomNavigator {
 
     fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
         fragment.run {
-            Intent(activity, ReschedulePickupActivity::class.java).apply {
-                putExtra(SomConsts.PARAM_ORDER_ID, orderId)
-                startActivityForResult(this, REQUEST_RESCHEDULE_PICKUP)
-            }
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId))
+            startActivityForResult(intent, REQUEST_RESCHEDULE_PICKUP)
         }
     }
 

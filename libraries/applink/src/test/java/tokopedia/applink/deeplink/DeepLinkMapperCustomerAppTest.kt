@@ -16,7 +16,6 @@ import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -1500,7 +1499,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check reschedule pickup applink then should return tokopedia internal reschedule pickup in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://seller/reschedulepickup?order_id=1234567890"
-        val appLink = "${ApplinkConst.SELLER_ORDER_RESCHEDULE}?order_id=1234567890"
+        val appLink = "${ApplinkConst.LOGISTIC_SELLER_RESCHEDULE}?order_id=1234567890"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

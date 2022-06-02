@@ -28,4 +28,6 @@ object ApplinkConstInternalLogistic {
 
     const val TNC_WEBVIEW = "$INTERNAL_LOGISTIC/logistictnc"
 
+    const val RESCHEDULE_PICKUP = "$INTERNAL_LOGISTIC/reschedulepickup?order_id={order_id}"
+
 }

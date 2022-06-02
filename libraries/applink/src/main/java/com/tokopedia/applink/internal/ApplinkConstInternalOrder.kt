@@ -115,8 +115,6 @@ object ApplinkConstInternalOrder {
 
     const val ORDER_DETAIL = "$INTERNAL_SELLER/order?order_id={order_id}"
 
-    const val RESCHEDULE_PICKUP = "$INTERNAL_SELLER/reschedulepickup?order_id={order_id}"
-
     const val INVOICE = "$INTERNAL_ORDER/invoice"
 
     const val UNIFY_ORDER = "$INTERNAL_ORDER/$UNIFIED"
