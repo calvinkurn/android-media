@@ -104,7 +104,7 @@ import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
+//import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -2140,11 +2140,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun handleSomReschedulePickupActivityResult(message: String) {
         context?.let {
-            ReschedulePickupResultDialog(it).apply {
-                init()
-                setSuccessMessage(message)
-                show()
-            }
+
+            // todo todo
+            showCommonToaster(view, message)
+//            ReschedulePickupResultDialog(it).apply {
+//                init()
+//                setSuccessMessage(message)
+//                show()
+//            }
         }
     }
 
