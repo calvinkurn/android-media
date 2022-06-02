@@ -1,17 +1,11 @@
 package com.tokopedia.topchat.chatroom.view.activity.cassava
 
-import android.content.Intent
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -79,35 +73,5 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
-    }
-
-    @Test
-    fun chat_srw() {
-        // Given
-        val journeyId = "114"
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-            generatePreAttachPayload(EX_PRODUCT_ID)
-        launchChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
-
-        // When
-        clickSrwPreviewItemAt(0)
-
-        // Then
-        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
-    }
-
-    private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(DEFAULT_PRODUCT_ID)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
-        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
-    }
-
-    companion object {
-        private const val DEFAULT_PRODUCT_ID = "1111"
     }
 }

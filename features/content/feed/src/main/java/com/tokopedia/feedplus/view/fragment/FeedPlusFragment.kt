@@ -2007,7 +2007,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .build().toString()
         }
 
-        if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
+        if (feedXCard.typename != TYPE_FEED_X_CARD_PLAY && feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
             onVideoPlayerClicked(
                 positionInFeed,
                 0,

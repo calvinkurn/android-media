@@ -33,7 +33,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -65,7 +65,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.notifications.worker.PushWorker;
-import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
@@ -102,6 +101,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
 
 
 /**
@@ -114,7 +114,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         GamificationRouter,
         NetworkRouter,
-        OmsModuleRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
 
@@ -188,7 +187,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initDataStoreMigration();
         return true;
+    }
+
+    private void initDataStoreMigration() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initCMDependencies(){
@@ -274,12 +281,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-
-    @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
     }
 
     private Intent getInboxReputationIntent(Context context) {

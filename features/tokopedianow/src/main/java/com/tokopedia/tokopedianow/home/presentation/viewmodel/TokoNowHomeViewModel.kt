@@ -32,7 +32,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
@@ -86,8 +86,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -597,9 +597,14 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val data = getHomeReferralUseCase.execute(item.slug)
-            homeLayoutItemList.mapSharingReferralData(item, data)
-            _getReferralResult.postValue(Success(data))
+            val referral = getHomeReferralUseCase.execute(item.slug)
+
+            if(referral.isEligible) {
+                homeLayoutItemList.mapSharingReferralData(item, referral)
+                _getReferralResult.postValue(Success(referral))
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
         }) {
             homeLayoutItemList.removeItem(item.id)
             _getReferralResult.postValue(Fail(it))
@@ -712,7 +717,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (type) {
             REPURCHASE_PRODUCT -> trackRepurchaseAddToCart(productId, quantity, cartId)
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
-            MIX_LEFT_CAROUSEL -> trackLeftCarouselAddToCart(productId, quantity, cartId)
+            MIX_LEFT_CAROUSEL_ATC -> trackLeftCarouselAddToCart(productId, quantity, cartId)
         }
     }
 
@@ -762,11 +767,11 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
-        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselUiModel }?.apply {
-            val repurchase = layout as HomeLeftCarouselUiModel
+        homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
+            val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
             val product = productList.firstOrNull {
-                if (it is HomeLeftCarouselProductCardUiModel) {
+                if (it is HomeLeftCarouselAtcProductCardUiModel) {
                     it.id == productId
                 } else {
                     false
