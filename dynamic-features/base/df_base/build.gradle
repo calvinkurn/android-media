@@ -162,7 +162,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
     implementation projectOrAar(rootProject.ext.features.people)
-
-    //TokoFood
-    implementation projectOrAar(rootProject.ext.features.tokofood)
 }
