@@ -29,32 +29,7 @@ class EmptyWishlistViewHolder(itemView: View): AbstractViewHolder<EmptyStateWish
     override fun bind(emptyStateWishlistDataModel: EmptyStateWishlistDataModel) {
         binding?.cardEmptyWishlist?.cardType = CardUnify2.TYPE_BORDER
         val imageView = binding?.wishlistEmptyImage
-        val shimmer = binding?.wishlistEmptyImageShimmer
         imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        Glide.with(itemView.context)
-            .load(EMPTY_IMAGE_LINK)
-            .centerInside()
-            .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable>?
-                ) {
-                    imageView?.setImageDrawable(resource)
-                    shimmer?.gone()
-                }
-
-                override fun onLoadStarted(placeholder: Drawable?) {
-                    shimmer?.visible()
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    shimmer?.gone()
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    shimmer?.gone()
-                }
-            })
+        imageView?.setImageUrl(EMPTY_IMAGE_LINK)
     }
 }

@@ -27,18 +27,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/text_product_name" />
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/image_wishlist_shimmer"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginVertical="@dimen/unify_space_8"
-            android:layout_marginStart="@dimen/unify_space_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:loader_corner_radius="8dp"
-            app:loader_type="rect" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_name"
             android:layout_width="0dp"

@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<WishlistModel>(itemView) {
@@ -45,31 +47,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
 
         if (element.navWishlistModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.imageWishlist
-            val shimmer = binding?.imageWishlistShimmer
-            Glide.with(itemView.context)
-                .load(element.navWishlistModel.imageUrl)
-                .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-                .dontAnimate()
-                .fitCenter()
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        imageView?.setImageDrawable(resource)
-                        shimmer?.gone()
-                    }
-
-                    override fun onLoadStarted(placeholder: Drawable?) {
-                        shimmer?.visible()
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        shimmer?.gone()
-                    }
-
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        shimmer?.gone()
-                    }
-                })
+            imageView?.setImageUrl(element.navWishlistModel.imageUrl)
         }
         binding?.textPriceValue?.text = element.navWishlistModel.priceFmt
         setLabel(element)
