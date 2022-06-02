@@ -118,6 +118,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private var loaderDialog: LoaderDialog?=null
     private var fromEdit = false
     private var voucherId = 0
+    private var errorCount = 0
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -181,6 +182,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     if(fromEdit){
                         token = it.data?.getInitiateVoucherPage?.data?.token
                         getCouponDetails()
+                    }
+                    else{
+
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
@@ -279,6 +283,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     renderUIForEdit(it.data?.merchantPromotionGetMVDataByID?.data)
                     renderProgram()
                     renderSingleCoupon()
+                }
+                TokoLiveDataResult.STATUS.ERROR ->{
+                    //open error bottom sheet
+                    val tmModel = TmIntroBottomsheetModel("", "", "", "", "", errorCount)
+                    val bundle = Bundle()
+                    bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmModel))
+                    val bs = TokomemberBottomsheet.createInstance(bundle)
+                    bs.show(childFragmentManager, "")
+                    bs.setUpBottomSheetListener(object : BottomSheetClickListener{
+                        override fun onButtonClick(errorCount: Int) {
+                            this@TmSingleCouponCreateFragment.errorCount = errorCount
+                        }
+                    })
                 }
             }
         })

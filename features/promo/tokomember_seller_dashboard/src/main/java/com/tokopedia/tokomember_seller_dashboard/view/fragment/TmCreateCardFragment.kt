@@ -33,6 +33,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModif
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
@@ -238,7 +239,6 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         bundle.putString(BUNDLE_SHOP_AVATAR, arguments?.getString(BUNDLE_SHOP_AVATAR))
         bundle.putString(BUNDLE_SHOP_NAME, arguments?.getString(BUNDLE_SHOP_NAME))
         bundle.putParcelable(BUNDLE_CARD_DATA , tmShopCardModel)
-        tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
         tmOpenFragmentCallback.openFragment(CreateScreenType.PROGRAM, bundle)
     }
 

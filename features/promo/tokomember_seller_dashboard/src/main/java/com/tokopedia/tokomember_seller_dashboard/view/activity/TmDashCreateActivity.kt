@@ -154,7 +154,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             }
             COUPON_SINGLE ->{}
             COUPON_MULTIPLE ->{
-                intent.extras?.let { TmMultipleCuponCreateFragment.newInstance(it) }?.let { addFragment(it, "") }
+                bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }

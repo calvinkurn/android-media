@@ -2,8 +2,10 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/gmc_dimen_328dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
     android:layout_gravity="center_horizontal"
     android:background="@color/Unify_Background"
     android:paddingBottom="@dimen/unify_space_12">
@@ -20,6 +22,7 @@
             android:layout_width="4dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/tm_bg_coupon_status"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
