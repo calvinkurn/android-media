@@ -14,11 +14,12 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopPmUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase

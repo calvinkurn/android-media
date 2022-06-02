@@ -54,7 +54,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -76,24 +76,24 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopHomeViewModel @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val addToCartUseCase: AddToCartUseCase,
-        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
-        private val addToCartBundleUseCase: AddToCartBundleUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
-        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper,
-        private val mvcSummaryUseCase: MVCSummaryUseCase,
-        private val playWidgetTools: PlayWidgetTools,
-        private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
-        private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
+    private val userSession: UserSessionInterface,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+    private val addToCartBundleUseCase: AddToCartBundleUseCase,
+    private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+    private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+    private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
+    private val playWidgetTools: PlayWidgetTools,
+    private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
+    private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
