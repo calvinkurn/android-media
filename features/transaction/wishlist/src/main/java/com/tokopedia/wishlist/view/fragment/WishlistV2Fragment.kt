@@ -720,7 +720,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                     updateDeletionWidget(data)
                                     handler.postDelayed(progressDeletionRunnable, DELAY_REFETCH_PROGRESS_DELETION)
                                 }
-                                doRefresh()
                             } else {
                                 stopDeletionAndShowToasterError(data.toasterMessage)
                             }
@@ -761,6 +760,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
         stopProgressDeletionHandler()
         hideStickyDeletionProgress()
+        doRefresh()
     }
 
     private fun updateDeletionWidget(progressData: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
