@@ -17,9 +17,6 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
-import com.tokopedia.navigation_common.model.DebitInstantData
-import com.tokopedia.navigation_common.model.DebitInstantModel
-import com.tokopedia.navigation_common.model.ProfileModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -69,6 +66,7 @@ class HomeAccountUserViewModelTest {
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
+    private val saveAttributeOnLocal = mockk<SaveAttributeOnLocalUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -112,7 +110,7 @@ class HomeAccountUserViewModelTest {
             getPhoneUseCase,
             userProfileSafeModeUseCase,
             checkFingerprintToggleUseCase,
-            walletPref,
+            saveAttributeOnLocal,
             dispatcher
         )
 
@@ -165,9 +163,6 @@ class HomeAccountUserViewModelTest {
 
         responseResult.linkStatus = linkStatusResult.response
 
-        verify {
-            viewModel.saveLocallyAttributes(responseResult)
-        }
         Assertions.assertThat(viewModel.buyerAccountDataData.value)
             .isEqualTo(Success(responseResult))
     }
@@ -181,29 +176,6 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getBuyerData()
         Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(throwable)
-    }
-
-    @Test
-    fun `Execute saveLocallyAttributes`() {
-        val debitInstandData = mockk<DebitInstantData>(relaxed = true)
-        val debitInstantModel = mockk<DebitInstantModel>(relaxed = true)
-
-        every { debitInstandData.redirectUrl } returns "redirect"
-        every { debitInstantModel.data } returns debitInstandData
-
-        /* When */
-        val response = UserAccountDataModel(
-            profile = ProfileModel().apply { isPhoneVerified = true },
-            isAffiliate = true,
-            debitInstant = debitInstantModel
-        )
-
-        viewModel.saveLocallyAttributes(response)
-
-        verify {
-            userSession.setIsMSISDNVerified(response.profile.isPhoneVerified)
-            userSession.setIsAffiliateStatus(response.isAffiliate)
-        }
     }
 
     @Test

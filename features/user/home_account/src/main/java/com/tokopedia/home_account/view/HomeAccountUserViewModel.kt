@@ -17,7 +17,6 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
-import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -51,7 +50,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
-    private val walletPref: WalletPref,
+    private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -166,8 +165,9 @@ class HomeAccountUserViewModel @Inject constructor(
             val accountModel = homeAccountUser.await().apply {
                 this.linkStatus = linkStatus.await().response
             }
-            saveLocallyAttributes(accountModel)
             _buyerAccountData.value = Success(accountModel)
+            // This is executed after setting live data to save load time
+            saveAttributeOnLocal(accountModel)
         }, onError = {
             _buyerAccountData.value = Fail(it)
         })
@@ -292,28 +292,6 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1
-
-    fun saveLocallyAttributes(accountDataModel: UserAccountDataModel) {
-        savePhoneVerified(accountDataModel)
-        saveIsAffiliateStatus(accountDataModel)
-        saveDebitInstantData(accountDataModel)
-    }
-
-    private fun saveDebitInstantData(accountDataModel: UserAccountDataModel) {
-        accountDataModel.debitInstant.data?.let {
-            walletPref.saveDebitInstantUrl(it.redirectUrl)
-        }
-    }
-
-    private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        accountDataModel.profile.let {
-            userSession.setIsMSISDNVerified(it.isPhoneVerified)
-        }
-    }
-
-    private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {
-        userSession.setIsAffiliateStatus(accountDataModel.isAffiliate)
-    }
 
     companion object {
         private const val AKUN_PAGE = "account"
