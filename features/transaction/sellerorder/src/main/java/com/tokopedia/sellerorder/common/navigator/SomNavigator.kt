@@ -18,7 +18,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
-import com.tokopedia.sellerorder.reschedulepickup.presentation.activity.ReschedulePickupActivity
+//import com.tokopedia.sellerorder.reschedulepickup.presentation.activity.ReschedulePickupActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
