@@ -2,12 +2,12 @@ package com.tokopedia.loginregister.login.service
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.JobIntentService
+import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.GetDefaultChosenAddressUseCase
 import javax.inject.Inject
 
-class GetDefaultChosenAddressService : JobIntentService() {
+class GetDefaultChosenAddressService : JobIntentServiceX() {
 
     @Inject
     lateinit var getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase

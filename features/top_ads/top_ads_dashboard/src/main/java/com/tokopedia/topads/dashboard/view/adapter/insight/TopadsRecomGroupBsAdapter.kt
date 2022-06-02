@@ -73,7 +73,10 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) :
     }
 
     fun getCheckedPosition(): Pair<String, String> {
-        return Pair(items[selectedPosition].groupId, items[selectedPosition].type)
+        return Pair(
+            items.getOrNull(selectedPosition)?.groupId ?: "",
+            items.getOrNull(selectedPosition)?.type ?: ""
+        )
     }
 
     fun isChecked(): Int {
@@ -93,7 +96,7 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) :
                 items[holder.adapterPosition].isSelected = true
                 setOtherFalse(holder.adapterPosition)
                 it.radio.isChecked = true
-                selectedPosition = holder.adapterPosition
+                selectedPosition = position
             }
         }
     }
