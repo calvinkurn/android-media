@@ -29,6 +29,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -161,9 +162,12 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBuyerData() {
         launchCatchError(block = {
-            val accountModel = getHomeAccountUserUseCase(Unit)
-            val linkStatus = getLinkStatus()
-            accountModel.linkStatus = linkStatus.response
+            val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
+            val linkStatus = async { getLinkStatus() }
+
+            val accountModel = homeAccountUser.await().apply {
+                this.linkStatus = linkStatus.await().response
+            }
             internalBuyerData = accountModel
             saveLocallyAttributes(accountModel)
             _buyerAccountData.value = Success(accountModel)
