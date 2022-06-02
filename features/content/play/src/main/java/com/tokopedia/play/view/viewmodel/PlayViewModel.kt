@@ -1381,16 +1381,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun checkInteractive(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-//            val interactive = repo.getCurrentInteractive(channelId)
-            val cal = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 2)
-            }
-            val interactive = InteractiveUiModel.Giveaway(
-                status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
-                waitingDuration = 5000L,
-                id = "1261",
-                title = "GA sendal",
-            )
+            val interactive = repo.getCurrentInteractive(channelId)
             setupInteractive(interactive)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
@@ -1982,8 +1973,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
-        handleClickRetryInteractive()
-
         fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
             val currentTotalLike = _channelReport.value.totalLike
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
