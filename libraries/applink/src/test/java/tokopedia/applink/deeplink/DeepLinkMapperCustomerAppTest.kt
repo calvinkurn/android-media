@@ -2098,4 +2098,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-menu"
         assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT, expectedDeepLink)
     }
+
+    @Test
+    fun `check marketplace onboarding customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/onboarding"
+        assertEqualsDeepLinkMapper("tokopedia://marketplace/onboarding", expectedDeepLink)
+    }
 }
