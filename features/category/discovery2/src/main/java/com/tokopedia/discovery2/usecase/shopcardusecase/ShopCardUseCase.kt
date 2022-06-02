@@ -4,10 +4,9 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.RPC_NEXT_PAGE
 import com.tokopedia.discovery2.Utils.Companion.RPC_PAGE_NUMBER
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import javax.inject.Inject
 
 class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCardRepository) {
@@ -66,7 +65,6 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
-//            val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
             val (shopCardListData,nextPage) = shopCardRepository.getShopCardData(
                     if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
                         component1.dynamicOriginalId!! else component1.id,

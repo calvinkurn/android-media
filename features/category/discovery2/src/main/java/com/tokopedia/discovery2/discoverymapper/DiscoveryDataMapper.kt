@@ -154,7 +154,8 @@ class DiscoveryDataMapper {
         creativeName: String? = "",
         parentComponentPosition: Int? = null,
         parentListSize:Int = 0,
-        parentSectionId:String? = ""
+        parentSectionId:String? = "",
+        parentComponentName: String? = null
     ): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
@@ -163,6 +164,9 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             componentsItem.creativeName = creativeName
+            if(!parentComponentName.isNullOrEmpty()) {
+                componentsItem.parentComponentName = parentComponentName
+            }
             if(parentComponentPosition!=null){
                 componentsItem.parentComponentPosition = parentComponentPosition
             }
