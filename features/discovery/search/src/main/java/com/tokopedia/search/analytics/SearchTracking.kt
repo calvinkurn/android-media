@@ -934,4 +934,30 @@ object SearchTracking {
             )
         )
     }
+
+    fun trackEventClickDropdownQuickFilter(filterName: String, filterValue: String, isSelected: Boolean, userId: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
+                SearchTrackingConstant.USER_ID, userId,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            )
+        )
+    }
+
+    fun trackEventApplyDropdownQuickFilter(filterName: String, filterValue: String, isSelected: Boolean, userId: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
+                SearchTrackingConstant.USER_ID, userId,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            )
+        )
+    }
 }

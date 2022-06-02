@@ -1620,12 +1620,22 @@ class ProductListPresenter @Inject constructor(
             }
         } else {
             item.listener = {
-                view.openBottomsheetMultipleOptionsQuickFilter(filter)
+                onDropDownQuickFilterClick(filter)
             }
             item.chevronListener = {
-                view.openBottomsheetMultipleOptionsQuickFilter(filter)
+                onDropDownQuickFilterClick(filter)
             }
         }
+    }
+
+    override fun onDropDownQuickFilterClick(filter: Filter) {
+        view.openBottomsheetMultipleOptionsQuickFilter(filter)
+        view.trackEventClickDropdownQuickFilter()
+    }
+
+    override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
+        view.applyDropdownQuickFilter(optionList)
+        view.trackEventApplyDropdownQuickFilter()
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {

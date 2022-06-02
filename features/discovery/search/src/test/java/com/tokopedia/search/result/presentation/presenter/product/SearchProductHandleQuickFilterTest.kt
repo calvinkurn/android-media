@@ -21,6 +21,7 @@ import java.util.*
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
 private const val searchProductModelWithQuickFilterAndNoResult = "searchproduct/quickfilter/with-quick-filter-no-result.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
+private const val searchProductModelWithMultipleOptionQuickFilter = "searchproduct/quickfilter/with-multiple-option-quick-filter.json"
 
 internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixtures() {
     private val requestParamsSlot = slot<RequestParams>()
@@ -147,6 +148,68 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private fun `Then verify filter controller only initialized once`() {
         verify(exactly = 1) {
             productListView.initFilterController(any())
+        }
+    }
+
+    @Test
+    fun `Search Product has Multiple Option Quick Filter`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify new quick filter interactions`(searchProductModel.quickFilterModel)
+    }
+
+    @Test
+    fun `Open Dropdown Quick Filter`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+        `When Open Dropdown Quick Filter`(selectedFilter)
+
+        `Then verify dropdown quick filter bottomsheet has opened and track sent`(selectedFilter)
+    }
+
+    private fun `When Open Dropdown Quick Filter`(filter: Filter) {
+        productListPresenter.onDropDownQuickFilterClick(filter)
+    }
+
+    private fun `Then verify dropdown quick filter bottomsheet has opened and track sent`(filter: Filter) {
+        verify {
+            productListView.openBottomsheetMultipleOptionsQuickFilter(filter)
+            productListView.trackEventClickDropdownQuickFilter()
+        }
+    }
+
+    @Test
+    fun `Open Dropdown Quick Filter and Apply Option`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilter = searchProductModel.quickFilterModel.filter[0]
+        val selectedOptions = listOf(
+            selectedFilter.options[0],
+            selectedFilter.options[1]
+        )
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+        `When Open Dropdown Quick Filter`(selectedFilter)
+        `When Apply Dropdown Quick Filter`(selectedOptions)
+
+        `Then verify dropdown quick filter bottomsheet has applied and track sent`(selectedOptions)
+    }
+
+    private fun `When Apply Dropdown Quick Filter`(optionList: List<Option>?) {
+        productListPresenter.onApplyDropdownQuickFilter(optionList)
+    }
+
+    private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(optionList: List<Option>?) {
+        verify {
+            productListView.applyDropdownQuickFilter(optionList)
+            productListView.trackEventApplyDropdownQuickFilter()
         }
     }
 }

@@ -1881,32 +1881,6 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
-        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
-                optionList?.forEach {
-                    setFilterToQuickFilterController(it, it.inputState.toBoolean())
-
-                    trackEventSearchResultQuickFilter(it.key, it.value, it.inputState.toBoolean())
-                }
-
-                val queryParams = filterController.getParameter().addFilterOrigin()
-                refreshSearchParameter(queryParams)
-
-                updateLastFilter()
-
-                reloadData()
-            }
-        }
-
-        FilterGeneralDetailBottomSheet().show(
-            parentFragmentManager,
-            filter,
-            filterDetailCallback,
-            getString(R.string.search_quick_filter_dropdown_apply_button_text)
-        )
-    }
-
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
         val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
 
@@ -2038,6 +2012,44 @@ class ProductListFragment: BaseDaggerFragment(),
         productListAdapter?.removeLastFilterWidget()
 
         presenter?.closeLastFilter(searchParameterMap)
+    }
+    //endregion
+
+    //region dropdown quick filter
+    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
+            override fun onApplyButtonClicked(optionList: List<Option>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList)
+            }
+        }
+
+        FilterGeneralDetailBottomSheet().show(
+            parentFragmentManager,
+            filter,
+            filterDetailCallback,
+            getString(R.string.search_quick_filter_dropdown_apply_button_text)
+        )
+    }
+
+    override fun applyDropdownQuickFilter(optionList: List<Option>?) {
+        optionList?.forEach {
+            setFilterToQuickFilterController(it, it.inputState.toBoolean())
+        }
+
+        val queryParams = filterController.getParameter().addFilterOrigin()
+        refreshSearchParameter(queryParams)
+
+        updateLastFilter()
+
+        reloadData()
+    }
+
+    override fun trackEventClickDropdownQuickFilter() {
+//        SearchTracking.trackEventClickDropdownQuickFilter()
+    }
+
+    override fun trackEventApplyDropdownQuickFilter() {
+//        SearchTracking.trackEventApplyDropdownQuickFilter()
     }
     //endregion
 }

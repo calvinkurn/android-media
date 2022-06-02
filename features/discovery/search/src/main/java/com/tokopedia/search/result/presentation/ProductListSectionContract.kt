@@ -114,6 +114,9 @@ interface ProductListSectionContract {
         fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
         fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun applyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventClickDropdownQuickFilter()
+        fun trackEventApplyDropdownQuickFilter()
     }
 
     interface Presenter : CustomerPresenter<View>{
@@ -162,5 +165,7 @@ interface ProductListSectionContract {
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
         fun shopAdsImpressionCount(impressionCount: Int)
+        fun onDropDownQuickFilterClick(filter: Filter)
+        fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }
