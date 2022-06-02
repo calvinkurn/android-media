@@ -10,7 +10,6 @@ import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
@@ -51,7 +50,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
@@ -153,14 +152,10 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getLinkStatus(): LinkStatusResponse {
-        return getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
-    }
-
     fun getBuyerData() {
         launchCatchError(block = {
             val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
-            val linkStatus = async { getLinkStatus() }
+            val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
 
             val accountModel = homeAccountUser.await().apply {
                 this.linkStatus = linkStatus.await().response
