@@ -99,25 +99,8 @@ class ProductManageFilterFragment(
             cacheManager = context?.let { ctx ->
                 SaveInstanceCacheManager(ctx, cacheManagerId)
             }
-            filterOptionWrapper =
-                try {
-                    cacheManager?.get<FilterOptionWrapper>(
-                        KEY_FILTER_OPTION_WRAPPER,
-                        FilterOptionWrapper::class.java,
-                        null
-                    )
-                } catch (ex: Exception) {
-                    null
-                }
-            needToPostponeActivityResult =
-                try {
-                    cacheManager?.get(
-                        KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT,
-                        Boolean::class.java,
-                        false) ?: false
-                } catch (ex: Exception) {
-                    false
-                }
+            setFilterOptionWrapper()
+            setNeedToPostponeActivityResult()
         }
         binding = FragmentProductManageFilterNewBinding.inflate(
             LayoutInflater.from(context),
@@ -423,6 +406,31 @@ class ProductManageFilterFragment(
                 }
             productManageFilterViewModel.updateShow(it.filterShownState)
         }
+    }
+
+    private fun setFilterOptionWrapper() {
+        filterOptionWrapper =
+            try {
+                cacheManager?.get<FilterOptionWrapper>(
+                    KEY_FILTER_OPTION_WRAPPER,
+                    FilterOptionWrapper::class.java,
+                    null
+                )
+            } catch (ex: Exception) {
+                null
+            }
+    }
+
+    private fun setNeedToPostponeActivityResult() {
+        needToPostponeActivityResult =
+            try {
+                cacheManager?.get(
+                    KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT,
+                    Boolean::class.java,
+                    false) ?: false
+            } catch (ex: Exception) {
+                false
+            }
     }
 
     fun setOnFinishedListener(onFinishedListener: OnFinishedListener) {
