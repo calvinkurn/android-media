@@ -4,354 +4,355 @@ import android.content.Context
 import com.tokopedia.user.session.datastore.UserData
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TestUserSessionDataStore: UserSessionDataStore {
     override suspend fun setUUID(uuid: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsLogin(isLogin: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setUserId(userId: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setName(fullName: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setEmail(email: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setPhoneNumber(phoneNumber: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setShopId(shopId: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setShopName(shopName: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsGoldMerchant(isGoldMerchant: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTempLoginName(fullName: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTempUserId(userId: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsAffiliateStatus(isAffiliate: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTempPhoneNumber(userPhone: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTempLoginEmail(email: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setToken(accessToken: String, tokenType: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setToken(accessToken: String, tokenType: String, refreshToken: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTokenType(tokenType: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setAccessToken(accessToken: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun clearToken() {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun logoutSession() {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun clearDataStore() {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setFirstTimeUser(isFirstTime: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setLoginSession(isLogin: Boolean, userId: String, fullName: String, shopId: String, isMsisdnVerified: Boolean, shopName: String, email: String, shopIsGold: Boolean, phoneNumber: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsMSISDNVerified(isMsisdnVerified: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setHasPassword(hasPassword: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setProfilePicture(profilePicture: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setSaldoWithdrawalWaring(value: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setSaldoIntroPageStatus(value: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setGCToken(gcToken: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setShopAvatar(shopAvatar: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsPowerMerchantIdle(powerMerchantIdle: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTwitterAccessTokenAndSecret(accessToken: String, accessTokenSecret: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTwitterAccessToken(accessToken: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTwitterSecret(secret: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setAutofillUserData(autofillUserData: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setLoginMethod(loginMethod: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setDeviceId(deviceId: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun setFcmTimestamp(timestamp: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override fun getUserSession(): Flow<UserData> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getAccessToken(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTokenType(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getRefreshToken(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getUserId(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isLoggedIn(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getShopId(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getName(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getProfilePicture(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTemporaryUserId(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getDeviceId(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTempEmail(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTempPhoneNumber(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isMsisdnVerified(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getPhoneNumber(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getEmail(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isFirstTimeUser(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isGoldMerchant(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getShopName(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun hasShop(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun hasPassword(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getGCToken(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getShopAvatar(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isPowerMerchantIdle(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getAutofillUserData(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTwitterAccessToken(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTwitterAccessTokenSecret(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getTwitterShouldPost(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getLoginMethod(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isShopOfficialStore(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun hasShownSaldoWithdrawalWarning(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getFcmTimestamp(): Flow<Long> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun getGTMLoginID(): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isAffiliate(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun hasShownSaldoIntroScreen(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override fun isShopOwner(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override suspend fun setIsShopOwner(isShopOwner: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override fun isShopAdmin(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override suspend fun setIsShopAdmin(isShopAdmin: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override fun isLocationAdmin(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override suspend fun setIsLocationAdmin(isLocationAdmin: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override fun isMultiLocationShop(): Flow<Boolean> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
     override suspend fun getAndroidId(context: Context): Flow<String> {
-        TODO("Not yet implemented")
+        return flow {  }
     }
 
     override suspend fun setAndroidId(androidId: String) {
-        TODO("Not yet implemented")
+        //no-op
     }
 
 }
