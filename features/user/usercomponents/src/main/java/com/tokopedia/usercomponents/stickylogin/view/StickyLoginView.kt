@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -393,12 +394,17 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @SuppressLint("SetTextI18n")
     private fun showLoginReminder(page: StickyLoginConstant.Page) {
-        val name = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
-        val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
+        val encryptedName = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
+        val encryptedProfilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
+
+        val aead = AeadEncryptorImpl(context)
+
+        val name = aead.decrypt(encryptedName ?: "", null)
+        val profilePicture = aead.decrypt(encryptedProfilePicture ?: "", null)
 
         viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
 
-        profilePicture?.let {
+        profilePicture.let {
             viewBinding.layoutStickyImageLeft.type = ImageUnify.TYPE_CIRCLE
             viewBinding.layoutStickyImageLeft.setImageUrl(it)
         }
