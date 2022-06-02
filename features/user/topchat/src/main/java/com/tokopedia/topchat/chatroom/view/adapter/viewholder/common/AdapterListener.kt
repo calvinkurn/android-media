@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 
 interface AdapterListener {
     fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean
-    fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool
+    fun getCarouselViewPool(): RecyclerView.RecycledViewPool
     fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int)
 }
 

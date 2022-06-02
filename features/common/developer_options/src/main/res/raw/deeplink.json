@@ -455,16 +455,6 @@
           "deeplink_variable": "ApplinkConstInternalOrder.UNIFY_ORDER"
      }, 
      {
-          "destination_activity": "com.tokopedia.kyc.view.activity.StartUpgradeToOvoActivity", 
-          "deeplink": "tokopedia-android-internal://ovo/upgrade", 
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity", 
-          "deeplink": "tokopedia-android-internal://ovo/upgradestatus", 
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE_STATUS"
-     }, 
-     {
           "destination_activity": "com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity", 
           "deeplink": "tokopedia-android-internal://now/home", 
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.HOME"
@@ -780,16 +770,6 @@
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST"
      }, 
      {
-          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-favourites", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/shop-favourites", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID"
-     }, 
-     {
           "destination_activity": "com.tokopedia.shop.info.view.activity.ShopInfoActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/shop-info/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_INFO"
@@ -938,6 +918,16 @@
           "destination_activity": "com.tokopedia.shop_widget.operationalhour.view.activity.ShopOperationalHourBottomSheetActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/shop/widget/operational-hour/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity", 
+          "deeplink": "tokopedia-android-internal://marketplace/shop-favourites", 
+          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity", 
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/shop-favourites", 
+          "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID"
      }, 
      {
           "destination_activity": "com.tokopedia.shop.score.performance.presentation.activity.ShopPerformancePageActivity", 
@@ -1953,12 +1943,7 @@
           "destination_activity": "com.tokopedia.digital_deals.view.activity.DealDetailsActivity", 
           "deeplink": "tokopedia-android-internal://global/deals-slug/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.digital_deals.view.activity.BrandDetailsActivity", 
-          "deeplink": "tokopedia-android-internal://global/deals-brand/.*\\/", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.search.activity.EventSearchActivity", 
           "deeplink": "tokopedia-android-internal://event/search", 

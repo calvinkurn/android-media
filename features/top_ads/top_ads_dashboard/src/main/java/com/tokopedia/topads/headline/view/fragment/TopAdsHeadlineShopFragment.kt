@@ -164,9 +164,12 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(page: Int) {
-        val startDate =
-            Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate)
-        val endDate = Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate)
+        val startDate = Utils.format.format(
+            (parentFragment as? TopAdsHeadlineBaseFragment)?.startDate ?: Utils.getStartDate()
+        )
+        val endDate = Utils.format.format(
+            (parentFragment as? TopAdsHeadlineBaseFragment)?.endDate ?: Utils.getEndDate()
+        )
         presenter.getGroupData(
             page,
             searchBar?.searchBarTextField?.text.toString(),
@@ -194,8 +197,8 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         } else if (groupIds.isNotEmpty()) {
             presenter.getGroupStatisticsData(
                 1, ",", "", 0,
-                Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate),
-                Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate),
+                Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate?:Utils.getStartDate()),
+                Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate?:Utils.getEndDate()),
                 groupIds, ::onSuccessStatistics
             )
             presenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
@@ -420,9 +423,12 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         loader?.visibility = View.VISIBLE
         adapter?.items?.clear()
         adapter?.notifyDataSetChanged()
-        val startDate =
-            Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate)
-        val endDate = Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate)
+        val startDate = Utils.format.format(
+            (parentFragment as? TopAdsHeadlineBaseFragment)?.startDate ?: Utils.getStartDate()
+        )
+        val endDate = Utils.format.format(
+            (parentFragment as? TopAdsHeadlineBaseFragment)?.endDate ?: Utils.getEndDate()
+        )
         presenter.getGroupData(
             currentPageNum,
             searchBar?.searchBarTextField?.text.toString(),

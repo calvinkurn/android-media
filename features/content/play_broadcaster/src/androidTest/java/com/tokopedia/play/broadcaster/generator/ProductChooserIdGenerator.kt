@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -175,7 +176,9 @@ class ProductChooserIdGenerator {
         }
     )
 
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
     private val fileWriter = FileWriter()
 
     init {

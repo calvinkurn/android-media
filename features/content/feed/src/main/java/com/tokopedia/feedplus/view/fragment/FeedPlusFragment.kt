@@ -2007,7 +2007,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .build().toString()
         }
 
-        if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
+        if (feedXCard.typename != TYPE_FEED_X_CARD_PLAY && feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
             onVideoPlayerClicked(
                 positionInFeed,
                 0,
@@ -3411,12 +3411,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (type == TYPE_TOPADS_HEADLINE_NEW) {
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
-            feedAnalytics?.clickSekSekarang(postId, shopId, type, isFollowed)
+            feedAnalytics.clickSekSekarang(postId, shopId, type, isFollowed)
         } else {
             feedAnalytics.eventGridMoreProductCLicked(
                 postId, type, isFollowed, shopId
             )
-            val intent = RouteManager.getIntent(context, feedXCard.appLink)
+            val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
             intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
             intent.putExtra(IS_FOLLOWED, isFollowed)
             intent.putExtra(PARAM_SHOP_ID, shopId)
