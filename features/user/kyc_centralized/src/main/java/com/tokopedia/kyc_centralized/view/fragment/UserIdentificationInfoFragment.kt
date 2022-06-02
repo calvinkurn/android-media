@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
+import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import javax.inject.Inject
 
 /**
@@ -211,7 +212,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         kycBenefitLayout?.show()
         KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             analytics?.eventClickOnNextOnBoarding()
-            goToFormActivity()
+//            goToFormActivity()
+
+            val intent = Intent(context, UserConsentDebugActivity::class.java)
+            context?.startActivity(intent)
         }, closeButtonAction = {
             activity?.onBackPressed()
         }, onCheckedChanged = {

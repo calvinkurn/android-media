@@ -21,6 +21,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 
 class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
@@ -87,7 +88,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private fun setupKycBenefitView(view: View) {
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
-            startKyc()
+//            startKyc()
+
+            val intent = Intent(context, UserConsentDebugActivity::class.java)
+            context?.startActivity(intent)
         }, closeButtonAction = {
             activity?.onBackPressed()
         }, onCheckedChanged = {})
