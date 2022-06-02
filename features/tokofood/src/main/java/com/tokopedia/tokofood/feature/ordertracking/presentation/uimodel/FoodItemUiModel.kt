@@ -4,6 +4,10 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 
 class FoodItemUiModel(
+    val cartId: String,
+    val categoryId: String,
+    val categoryName: String,
+    val itemId: String,
     val foodName: String,
     val quantity: String,
     val priceStr: String,

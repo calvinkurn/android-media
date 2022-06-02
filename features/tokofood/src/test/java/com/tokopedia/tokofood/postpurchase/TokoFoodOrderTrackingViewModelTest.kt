@@ -46,7 +46,10 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
             assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
             assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
+            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
             assertTrue(viewModel.getFoodItems().isNotEmpty())
+            assertTrue(viewModel.userSession.userId.isNullOrBlank())
         }
     }
 
@@ -318,6 +321,8 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             assertEquals(orderDetailResultUiModel.orderStatusKey, actualResult.orderStatusKey)
             assertEquals(orderDetailResultUiModel.orderDetailList, actualResult.orderDetailList)
             assertEquals(orderDetailResultUiModel.foodItemList, actualResult.foodItemList)
+            assertEquals(viewModel.getMerchantData()?.merchantId, orderDetailResultUiModel.merchantData.merchantId)
+            assertEquals(viewModel.getMerchantData()?.merchantName, orderDetailResultUiModel.merchantData.merchantName)
 
             viewModel.viewModelScope.coroutineContext.cancelChildren()
         }

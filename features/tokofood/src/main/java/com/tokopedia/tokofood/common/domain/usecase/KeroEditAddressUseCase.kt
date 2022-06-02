@@ -12,7 +12,7 @@ class KeroEditAddressUseCase @Inject constructor(
     private val keroGetAddressUseCase: KeroGetAddressUseCase
 ) : GraphqlUseCase<KeroEditAddressResponse>(graphqlRepository) {
 
-    private val isDebug = true
+    private val isDebug = false
 
     init {
         setGraphqlQuery(KeroEditAddressQuery)

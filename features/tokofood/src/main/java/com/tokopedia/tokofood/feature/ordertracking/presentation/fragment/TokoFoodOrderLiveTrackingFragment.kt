@@ -7,6 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
@@ -40,7 +41,11 @@ class TokoFoodOrderLiveTrackingFragment(
             containerOrderTrackingActionsButton.hide()
             containerOrderTrackingHelpButton.apply {
                 setOrderTrackingNavigator(navigator)
-                setupHelpButton(viewModel.getOrderId(), primaryActionButton)
+                setupHelpButton(
+                    viewModel.getOrderId(),
+                    primaryActionButton,
+                    viewModel.getMerchantData()
+                )
                 show()
             }
         }
@@ -59,6 +64,7 @@ class TokoFoodOrderLiveTrackingFragment(
                         viewModel.updateOrderId(viewModel.getOrderId())
                     }
                     is Fail -> {
+                        logExceptionToServerLogger(it.throwable)
                         viewModel.updateOrderId(viewModel.getOrderId())
                     }
                 }
@@ -74,5 +80,17 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_POOL_POST_PURCHASE,
+            viewModel.userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.POOL_BASED_ERROR
+        )
     }
 }

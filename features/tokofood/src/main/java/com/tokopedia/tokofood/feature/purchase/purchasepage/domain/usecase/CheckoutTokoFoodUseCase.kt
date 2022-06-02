@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.address.TokoFoodChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.common.domain.additionalattributes.CheckoutAdditionalAttributesTokoFood
+import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
@@ -266,7 +266,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
             kotlinx.coroutines.delay(1000)
             emit(getDummyResponse())
         } else {
-            val additionalAttributes = CheckoutAdditionalAttributesTokoFood(
+            val additionalAttributes = CartAdditionalAttributesTokoFood(
                 chosenAddressRequestHelper.getChosenAddress()
             )
             val param = generateParams(additionalAttributes.generateString(), params)

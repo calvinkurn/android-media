@@ -36,13 +36,17 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
         private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "productUiModel"
         private const val BUNDLE_KEY_CART_ID = "cartId"
+        private const val BUNDLE_KEY_MERCHANT_ID = "merchantId"
         private const val SOURCE = "merchant_page"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel, cartId: String = "") = OrderCustomizationFragment().apply {
+        fun createInstance(productUiModel: ProductUiModel,
+                           cartId: String = "",
+                           merchantId: String = "") = OrderCustomizationFragment().apply {
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
+                putString(BUNDLE_KEY_MERCHANT_ID, merchantId)
             }
         }
     }
@@ -115,6 +119,7 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
         val productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL)
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
+        val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
 
         productUiModel?.run {
             val customListItems = viewModel.getCustomListItems(cartId, productUiModel)
@@ -142,7 +147,7 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
                         it.addOnUiModel ?: AddOnUiModel()
                     }
                     val updateParam = viewModel.generateRequestParam(
-                            shopId = userSession.shopId,
+                            shopId = merchantId,
                             productUiModel = productUiModel,
                             cartId = cartId,
                             orderNote = this.last().orderNote,

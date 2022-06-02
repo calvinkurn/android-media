@@ -30,7 +30,7 @@ class PromoListTokoFoodUseCase @Inject constructor(
         }
     }
 
-    private val isDebug = true
+    private val isDebug = false
 
     override fun graphqlQuery(): String = """
         query PromoListTokofood($$ADDITIONAL_ATTRIBUTES_KEY: String) {
