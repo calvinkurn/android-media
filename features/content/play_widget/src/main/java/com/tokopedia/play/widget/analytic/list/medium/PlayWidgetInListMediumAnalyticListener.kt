@@ -85,34 +85,9 @@ interface PlayWidgetInListMediumAnalyticListener {
         businessWidgetPosition: Int,
     ) {}
 
-    fun onClickChannelCard(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
-
-    fun onClickMoreActionChannel(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
-
-    fun onClickDeleteChannel(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-    }
-
+    /**
+     * Channel
+     */
     fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -120,8 +95,27 @@ interface PlayWidgetInListMediumAnalyticListener {
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {
-    }
+    ) {}
+
+    fun onClickChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Rilisan Spesial
+     */
+    fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean,
+    ) {}
 
     fun onLabelPromoClicked(
         view: PlayWidgetMediumView,
@@ -131,11 +125,22 @@ interface PlayWidgetInListMediumAnalyticListener {
         isAutoPlay: Boolean,
     ) {}
 
-    fun onLabelPromoImpressed(
+    /**
+     * Other
+     */
+    fun onClickMoreActionChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
+    ) {}
+
+    fun onClickDeleteChannel(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {}
 }

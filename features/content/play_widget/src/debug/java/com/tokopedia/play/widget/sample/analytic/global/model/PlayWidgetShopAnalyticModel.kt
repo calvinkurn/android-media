@@ -1,4 +1,6 @@
-package com.tokopedia.play.widget.sample.analytic.global
+package com.tokopedia.play.widget.sample.analytic.global.model
+
+import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 
 /**
  * Created by kenny.hadisaputra on 31/05/22

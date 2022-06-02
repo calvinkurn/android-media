@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
+import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
@@ -359,6 +360,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             )
     }
 
+    //TODO("ASK")
     override fun onClickMoreActionChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -366,15 +368,25 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
-        super.onClickMoreActionChannel(
-            view,
-            item,
-            channelPositionInList,
-            verticalWidgetPosition,
-            businessWidgetPosition
-        )
+        TrackApp.getInstance().gtm
+            .sendGeneralEvent(
+                mapOf(
+                    "event" to EVENT_CLICK,
+                    "eventAction" to "click option button on card",
+                    "eventCategory" to model.category,
+                    "eventLabel" to eventLabel(
+                        model.prefix, /** prefix **/
+                        "", /** partnerId **/ //TODO("Ask")
+                    ),
+                    "businessUnit" to "play",
+                    "currentSite" to currentSite,
+                    "sessionIris" to irisSessionId,
+                    "userId" to userId,
+                )
+            )
     }
 
+    //TODO("ASK")
     override fun onClickDeleteChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -382,46 +394,41 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
-        super.onClickDeleteChannel(
-            view,
-            item,
-            channelPositionInList,
-            verticalWidgetPosition,
-            businessWidgetPosition
-        )
+        TrackApp.getInstance().gtm
+            .sendGeneralEvent(
+                mapOf(
+                    "event" to EVENT_CLICK,
+                    "eventAction" to "click delete on card",
+                    "eventCategory" to model.category,
+                    "eventLabel" to eventLabel(
+                        model.prefix, /** prefix **/
+                        "", /** partnerId **/ //TODO("Ask")
+                    ),
+                    "businessUnit" to "play",
+                    "currentSite" to currentSite,
+                    "sessionIris" to irisSessionId,
+                    "userId" to userId,
+                )
+            )
     }
 
+    //TODO("ASK")
     override fun onLabelPromoClicked(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
-    ) {
-        super.onLabelPromoClicked(
-            view,
-            item,
-            channelPositionInList,
-            businessWidgetPosition,
-            isAutoPlay
-        )
-    }
+    ) {}
 
+    //TODO("ASK")
     override fun onLabelPromoImpressed(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
-    ) {
-        super.onLabelPromoImpressed(
-            view,
-            item,
-            channelPositionInList,
-            businessWidgetPosition,
-            isAutoPlay
-        )
-    }
+    ) {}
 
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"

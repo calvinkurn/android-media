@@ -8,14 +8,38 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 interface PlayWidgetInListJumboAnalyticListener {
 
+    /**
+     * Channel
+     */
+    fun onImpressChannelCard(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
     fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+        businessWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetJumboView,
@@ -23,15 +47,25 @@ interface PlayWidgetInListJumboAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+        businessWidgetPosition: Int,
+    ) {}
 
-    fun onImpressChannelCard(
+    /**
+     * Rilisan Spesial
+     */
+    fun onLabelPromoClicked(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
-        verticalWidgetPosition: Int,
-    ) {
-    }
+    ) {}
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean,
+    ) {}
 }

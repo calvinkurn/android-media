@@ -9,14 +9,38 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  */
 interface PlayWidgetInListLargeAnalyticListener {
 
+    /**
+     * Channel
+     */
+    fun onImpressChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
+
     fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+        businessWidgetPosition: Int,
+    ) {}
+
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetLargeView,
@@ -24,33 +48,31 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+        businessWidgetPosition: Int,
+    ) {}
 
-    fun onImpressChannelCard(
+    /**
+     * Banner
+     */
+    fun onImpressBannerCard(
         view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
+        item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+        businessWidgetPosition: Int,
+    ) {}
 
     fun onClickBannerCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
-    ) {
-    }
-
-    fun onImpressBannerCard(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetBannerUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {}
 
+    /**
+     * Rilisan Spesial
+     */
     fun onLabelPromoClicked(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,

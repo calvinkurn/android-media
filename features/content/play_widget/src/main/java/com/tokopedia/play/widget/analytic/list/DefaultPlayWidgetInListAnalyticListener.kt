@@ -106,7 +106,13 @@ class DefaultPlayWidgetInListAnalyticListener (
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int
     ) {
-        analytic.onClickBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
+        analytic.onClickBannerCard(
+            view,
+            item,
+            channelPositionInList,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onClickChannelCard(
@@ -115,7 +121,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isAutoPlay: Boolean
     ) {
-        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+        analytic.onClickChannelCard(
+            view,
+            item,
+            channelPositionInList,
+            isAutoPlay,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onImpressBannerCard(
@@ -123,7 +136,13 @@ class DefaultPlayWidgetInListAnalyticListener (
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int
     ) {
-        analytic.onImpressBannerCard(view, item, channelPositionInList, verticalWidgetPosition)
+        analytic.onImpressBannerCard(
+            view,
+            item,
+            channelPositionInList,
+            verticalWidgetPosition,
+            businessWidgetPosition
+        )
     }
 
     override fun onImpressChannelCard(
@@ -132,7 +151,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isAutoPlay: Boolean
     ) {
-        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+        analytic.onImpressChannelCard(
+            view,
+            item,
+            channelPositionInList,
+            isAutoPlay,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onClickToggleReminderChannel(
@@ -141,7 +167,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isRemindMe: Boolean
     ) {
-        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition)
+        analytic.onClickToggleReminderChannel(
+            view,
+            item,
+            channelPositionInList,
+            isRemindMe,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onClickChannelCard(
@@ -150,7 +183,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isAutoPlay: Boolean
     ) {
-        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+        analytic.onClickChannelCard(
+            view,
+            item,
+            channelPositionInList,
+            isAutoPlay,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onClickToggleReminderChannel(
@@ -159,7 +199,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isRemindMe: Boolean
     ) {
-        analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition)
+        analytic.onClickToggleReminderChannel(
+            view,
+            item,
+            channelPositionInList,
+            isRemindMe,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onImpressChannelCard(
@@ -168,7 +215,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         channelPositionInList: Int,
         isAutoPlay: Boolean
     ) {
-        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
+        analytic.onImpressChannelCard(
+            view,
+            item,
+            channelPositionInList,
+            isAutoPlay,
+            verticalWidgetPosition,
+            businessWidgetPosition,
+        )
     }
 
     override fun onLabelPromoClicked(

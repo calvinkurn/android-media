@@ -18,6 +18,7 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
     }
@@ -28,6 +29,7 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetJumboView ${item.channelId} $channelPositionInList")
     }
@@ -37,7 +39,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
-        verticalWidgetPosition: Int
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onImpressChannelCard PlayWidgetLargeView ${item.channelId} $channelPositionInList")
     }
@@ -47,7 +50,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
-        verticalWidgetPosition: Int
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         Log.d("FeedPlayWidget","onClickChannelCard PlayWidgetLargeView ${item.channelId} $channelPositionInList")
     }

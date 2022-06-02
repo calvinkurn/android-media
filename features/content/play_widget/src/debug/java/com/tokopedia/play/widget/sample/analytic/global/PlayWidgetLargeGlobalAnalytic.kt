@@ -1,9 +1,10 @@
 package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
+import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
+import com.tokopedia.play.widget.ui.PlayWidgetLargeView
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -16,14 +17,14 @@ import dagger.assisted.AssistedInject
 /**
  * Created by kenny.hadisaputra on 31/05/22
  */
-class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
+class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
     private val userSession: UserSessionInterface,
-) : PlayWidgetInListSmallAnalyticListener {
+) : PlayWidgetInListLargeAnalyticListener {
 
     @AssistedFactory
     interface Factory {
-        fun create(model: PlayWidgetAnalyticModel): PlayWidgetSmallGlobalAnalytic
+        fun create(model: PlayWidgetAnalyticModel): PlayWidgetLargeGlobalAnalytic
     }
 
     private val irisSessionId: String
@@ -43,12 +44,12 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         }
 
     override fun onImpressChannelCard(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -88,12 +89,12 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     }
 
     override fun onClickChannelCard(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -132,59 +133,12 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
             )
     }
 
-    /**
-     * View all
-     */
-    override fun onImpressViewAll(
-        view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    "event" to EVENT_VIEW,
-                    "eventAction" to "impress view all",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
-                        model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
-                    ),
-                    "businessUnit" to "play",
-                    "currentSite" to currentSite,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
-                )
-            )
-    }
-
-    override fun onClickViewAll(
-        view: PlayWidgetSmallView,
-        verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
-    ) {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click view all",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
-                        model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
-                    ),
-                    "businessUnit" to "play",
-                    "currentSite" to currentSite,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
-                )
-            )
-    }
-
     override fun onImpressBannerCard(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -205,9 +159,11 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     }
 
     override fun onClickBannerCard(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
         verticalWidgetPosition: Int,
-        businessWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
@@ -227,9 +183,71 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
             )
     }
 
+    override fun onImpressReminderIcon(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int
+    ) {
+        TrackApp.getInstance().gtm
+            .sendGeneralEvent(
+                mapOf(
+                    "event" to EVENT_VIEW,
+                    "eventAction" to "view remind me",
+                    "eventCategory" to model.category,
+                    "eventLabel" to eventLabel(
+                        model.prefix, /** prefix **/
+                        item.channelType.toTrackingType(), /** videoType **/
+                        item.partner.id, /** partnerId **/
+                        item.channelId, /** channelId **/
+                        channelPositionInList + 1, /** position **/
+                        item.recommendationType, /** recommendationType **/
+                        item.promoType.toTrackingString(), /** promoType **/
+                    ),
+                    "businessUnit" to "play",
+                    "currentSite" to currentSite,
+                    "sessionIris" to irisSessionId,
+                    "userId" to userId,
+                )
+            )
+    }
+
+    override fun onClickToggleReminderChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int
+    ) {
+        TrackApp.getInstance().gtm
+            .sendGeneralEvent(
+                mapOf(
+                    "event" to EVENT_CLICK,
+                    "eventAction" to "click remind me",
+                    "eventCategory" to model.category,
+                    "eventLabel" to eventLabel(
+                        model.prefix, /** prefix **/
+                        item.channelType.toTrackingType(), /** videoType **/
+                        item.partner.id, /** partnerId **/
+                        item.channelId, /** channelId **/
+                        channelPositionInList + 1, /** position **/
+                        item.recommendationType, /** recommendationType **/
+                        item.promoType.toTrackingString(), /** promoType **/
+                    ),
+                    "businessUnit" to "play",
+                    "currentSite" to currentSite,
+                    "sessionIris" to irisSessionId,
+                    "userId" to userId,
+                )
+            )
+    }
+
     //TODO("ASK")
     override fun onLabelPromoClicked(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         businessWidgetPosition: Int,
@@ -238,7 +256,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
 
     //TODO("ASK")
     override fun onLabelPromoImpressed(
-        view: PlayWidgetSmallView,
+        view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
         businessWidgetPosition: Int,
@@ -267,6 +285,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         private const val EVENT_VIEW = "viewContentIris"
         private const val EVENT_CLICK = "clickContent"
 
-        private const val WIDGET_SIZE = "small"
+        private const val WIDGET_SIZE = "large"
     }
 }
