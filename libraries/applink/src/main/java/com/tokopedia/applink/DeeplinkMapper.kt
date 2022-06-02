@@ -493,7 +493,6 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.ADD_FINGERPRINT_ONBOARDING) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
 
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
-            DLP.matchPattern(ApplinkConst.TokoFood.MERCHANT){ _, _, _, idList -> DeeplinkMapperTokoFood.getTokoFoodMerchantInternalAppLink(idList) },
         )
 
     fun getTokopediaSchemeList():List<DLP>{

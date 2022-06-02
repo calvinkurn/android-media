@@ -2,6 +2,7 @@ package com.tokopedia.applink.tokofood
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -21,16 +22,6 @@ object DeeplinkMapperTokoFood {
     const val CUISINE_PARAM = "cuisine"
     const val SORT_BY_PARAM = "sortBy"
 
-    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?): String {
-        val merchantId = idList?.getOrNull(0).orEmpty()
-        val productId = idList?.getOrNull(1).orEmpty()
-        return Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
-                .buildUpon()
-                .appendQueryParameter(PARAM_MERCHANT_ID, merchantId)
-                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
-                .build().toString()
-    }
-
     fun mapperInternalApplinkTokoFood(uri: Uri): String {
         val url = uri.toString()
         if (isGoToFoodPage()){
@@ -38,11 +29,23 @@ object DeeplinkMapperTokoFood {
                 url.startsWith(ApplinkConst.TokoFood.HOME) -> getTokoFoodHomeInternalAppLink()
                 url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
                 url.startsWith(ApplinkConst.TokoFood.POST_PURCHASE) -> getTokoFoodPostPurchaseInternalAppLink(uri)
+                isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
+                    getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri))
                 else -> url
             }
         } else {
             return ApplinkConst.HOME
         }
+    }
+
+    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?): String {
+        val merchantId = idList?.getOrNull(0).orEmpty()
+        val productId = idList?.getOrNull(1).orEmpty()
+        return Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+            .buildUpon()
+            .appendQueryParameter(PARAM_MERCHANT_ID, merchantId)
+            .appendQueryParameter(PARAM_PRODUCT_ID, productId)
+            .build().toString()
     }
 
     private fun getTokoFoodPostPurchaseInternalAppLink(uri: Uri): String {
@@ -80,5 +83,13 @@ object DeeplinkMapperTokoFood {
         } catch (e: Exception) {
             false
         }
+    }
+
+    private fun getUriIdList(pattern:String, uri: Uri): List<String>? {
+        return UriUtil.matchWithPattern(pattern, uri)
+    }
+
+    private fun isMatchPattern(pattern:String, uri: Uri): Boolean {
+        return UriUtil.matchWithPattern(pattern, uri) != null
     }
 }
