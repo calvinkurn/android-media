@@ -11,12 +11,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -116,5 +116,79 @@ class RecentViewViewModelTest {
             removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         viewModel.removeFromWishlist("1")
         assert(viewModel.removeWishlistResponse.value is Fail && (viewModel.removeWishlistResponse.value as Fail).throwable.message == errorMessage)
+    }
+
+    @Test
+    fun verify_add_to_wishlistv2_returns_success() {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
+        }
+
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addToWishlistV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSession.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun verify_add_to_wishlistv2_returns_fail() {
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addToWishlistV2(productId, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSession.userId) }
+        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun verify_remove_wishlistV2_returns_success(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
+        }
+
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.removeFromWishlistV2(productId)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSession.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun verify_remove_wishlistV2_returns_fail(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel.removeFromWishlistV2(productId)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, userSession.userId) }
+        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
     }
 }
