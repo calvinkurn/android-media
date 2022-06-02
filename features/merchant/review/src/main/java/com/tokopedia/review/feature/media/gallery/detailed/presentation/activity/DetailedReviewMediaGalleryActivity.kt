@@ -337,7 +337,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             binding?.root?.let { view ->
                 Toaster.build(
                     view,
-                    it.message.getStringValue(view.context),
+                    it.message.getStringValueWithDefaultParam(view.context),
                     it.duration,
                     it.type,
                     it.actionText.getStringValue(view.context)

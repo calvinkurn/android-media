@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
@@ -72,10 +73,10 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _hasSuccessToggleLikeStatus = MutableStateFlow(false)
     val connectedToWifi: StateFlow<Boolean>
         get() = _connectedToWifi
-    private val _toasterQueue = MutableSharedFlow<ToasterUiModel>()
+    private val _toasterQueue = MutableSharedFlow<ToasterUiModel>(extraBufferCapacity = 50)
     val toasterQueue: Flow<ToasterUiModel>
         get() = _toasterQueue
-    private val _toasterEventActionClickQueue = MutableSharedFlow<String>()
+    private val _toasterEventActionClickQueue = MutableSharedFlow<String>(extraBufferCapacity = 50)
     val toasterEventActionClickQueue: Flow<String>
         get() = _toasterEventActionClickQueue
     private val _mediaNumberToLoad = MutableStateFlow(UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE)
@@ -203,7 +204,10 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
             enqueueToaster(
                 ToasterUiModel(
                     key = TOASTER_KEY_ERROR_GET_REVIEW_MEDIA,
-                    message = StringRes(R.string.review_media_gallery_failed_load_detailed_review_error_message),
+                    message = StringRes(
+                        R.string.review_media_gallery_failed_load_detailed_review_error_message,
+                        listOf(ErrorHandler.getErrorMessagePair(null, it, ErrorHandler.Builder().build()).second)
+                    ),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_INDEFINITE,
                     actionText = StringRes(R.string.review_media_gallery_failed_load_detailed_review_error_action_text)

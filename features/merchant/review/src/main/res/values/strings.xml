@@ -421,10 +421,12 @@
     <string name="review_action_success_report">Kamu berhasil melaporkan ulasan ini.</string>
     <string name="review_video_player_error_message">Video tidak bisa dimainkan. Cek koneksimu atau coba lagi nanti. Kode Error: (%1$s)</string>
     <string name="review_video_player_error_action_text">Oke</string>
-    <string name="review_media_gallery_failed_load_detailed_review_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_media_gallery_failed_load_detailed_review_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya! Kode Error: (%1$s)</string>
     <string name="review_media_gallery_failed_load_detailed_review_error_action_text">Refresh</string>
     <string name="review_media_image_player_see_more_button_text">Lihat Semua</string>
     <string name="review_image_player_see_more">Tersedia %1$d foto &amp; video dari pembeli</string>
+    <string name="review_image_player_toaster_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_image_player_toaster_error_action">Refresh</string>
 
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>
     <string name="ic_create_review_video_remove_content_description">Buang video</string>

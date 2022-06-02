@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.image_gallery.ImagePreview
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,24 +14,26 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.extension.collectLatestWhenResumed
+import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewMediaImagePlayerBinding
 import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.base.presentation.viewmodel.ReviewMediaGalleryViewModel
+import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
+import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.image.di.component.DaggerReviewImagePlayerComponent
 import com.tokopedia.review.feature.media.player.image.di.qualifier.ReviewImagePlayerViewModelFactory
 import com.tokopedia.review.feature.media.player.image.presentation.uistate.ReviewImagePlayerUiState
 import com.tokopedia.review.feature.media.player.image.presentation.viewmodel.ReviewImagePlayerViewModel
+import com.tokopedia.reviewcommon.uimodel.StringRes
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
+class ReviewImagePlayerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val ARG_IMAGE_URI = "argImageUri"
@@ -40,6 +41,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         private const val ARG_TOTAL_MEDIA_COUNT = "argTotalMediaCount"
         private const val ZOOM_SCALE_FACTOR = 2f
         private const val UNZOOM_SCALE_FACTOR = 1f
+        private const val TOASTER_KEY_ERROR_LOAD_IMAGE = "toasterKeyErrorLoadImage - %s"
 
         fun createInstance(
             imageUri: String,
@@ -65,11 +67,11 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
     lateinit var reviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var dispatchers: CoroutineDispatchers
+    @DetailedReviewMediaGalleryViewModelFactory
+    lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     private var binding by viewBinding(FragmentReviewMediaImagePlayerBinding::bind)
     private var listener: Listener? = null
-    private var uiStateCollectorJob: Job? = null
 
     private val reviewImagePlayerViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(requireActivity(), reviewImagePlayerViewModelFactory).get(
@@ -83,8 +85,11 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         )
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = dispatchers.main + SupervisorJob()
+    private val sharedReviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(requireActivity(), detailedReviewMediaGalleryViewModelFactory).get(
+            SharedReviewMediaGalleryViewModel::class.java
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,11 +108,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
         collectUiState()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        uiStateCollectorJob?.cancel()
+        collectToasterEvent()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -123,6 +124,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         DaggerReviewImagePlayerComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .reviewMediaGalleryComponent(ReviewMediaGalleryComponentInstance.getInstance(requireContext()))
+            .detailedReviewMediaGalleryComponent(DetailedReviewMediaGalleryComponentInstance.getInstance(requireContext()))
             .build()
             .inject(this)
     }
@@ -172,35 +174,56 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
             listener?.onSeeMoreClicked()
         }
         binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.onUrlLoaded = { success ->
-            if (success && !reviewImagePlayerViewModel.getImpressHolder().isInvoke) {
-                reviewImagePlayerViewModel.getImpressHolder().invoke()
-                listener?.onImageImpressed(getImageUri())
+            binding?.imagePreviewReviewMediaImagePlayerShimmer?.gone()
+            if (success) {
+                if (!reviewImagePlayerViewModel.getImpressHolder().isInvoke) {
+                    reviewImagePlayerViewModel.getImpressHolder().invoke()
+                    listener?.onImageImpressed(getImageUri())
+                }
+            } else {
+                sharedReviewMediaGalleryViewModel.enqueueToaster(
+                    ToasterUiModel(
+                        String.format(TOASTER_KEY_ERROR_LOAD_IMAGE, getImageUri()),
+                        StringRes(R.string.review_image_player_toaster_error_message),
+                        Toaster.TYPE_ERROR,
+                        Toaster.LENGTH_INDEFINITE,
+                        StringRes(R.string.review_image_player_toaster_error_action)
+                    )
+                )
             }
         }
     }
 
     private fun collectUiState() {
-        uiStateCollectorJob = uiStateCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-            reviewImagePlayerViewModel.uiState.collectLatest { updateUi(it) }
+        viewLifecycleOwner.collectLatestWhenResumed(reviewImagePlayerViewModel.uiState, ::updateUi)
+    }
+
+    private fun collectToasterEvent() {
+        viewLifecycleOwner.collectWhenResumed(sharedReviewMediaGalleryViewModel.toasterEventActionClickQueue) {
+            if (it == String.format(TOASTER_KEY_ERROR_LOAD_IMAGE, getImageUri())) {
+                binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(getImageUri())
+            }
         }
     }
 
     private fun updateUi(uiState: ReviewImagePlayerUiState) {
-        binding?.imagePreviewReviewMediaImagePlayer?.mLoaderView?.hide()
-        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(uiState.imageUri)
-        binding?.imagePreviewReviewMediaImagePlayer?.show()
-        when (uiState) {
-            is ReviewImagePlayerUiState.Showing -> {
-                binding?.btnReviewMediaImagePlayerSeeMore?.gone()
-                binding?.tvReviewMediaImagePlayerSeeMore?.gone()
-                binding?.overlayReviewMediaImagePlayerSeeMore?.gone()
-            }
-            is ReviewImagePlayerUiState.ShowingSeeMore -> {
-                binding?.btnReviewMediaImagePlayerSeeMore?.show()
-                binding?.overlayReviewMediaImagePlayerSeeMore?.show()
-                binding?.tvReviewMediaImagePlayerSeeMore?.apply {
-                    text = context.getString(R.string.review_image_player_see_more, uiState.totalImageCount)
-                    show()
+        if (uiState.imageUri.isNotEmpty()) {
+            binding?.imagePreviewReviewMediaImagePlayer?.mLoaderView?.hide()
+            binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(uiState.imageUri)
+            binding?.imagePreviewReviewMediaImagePlayer?.show()
+            when (uiState) {
+                is ReviewImagePlayerUiState.Showing -> {
+                    binding?.btnReviewMediaImagePlayerSeeMore?.gone()
+                    binding?.tvReviewMediaImagePlayerSeeMore?.gone()
+                    binding?.overlayReviewMediaImagePlayerSeeMore?.gone()
+                }
+                is ReviewImagePlayerUiState.ShowingSeeMore -> {
+                    binding?.btnReviewMediaImagePlayerSeeMore?.show()
+                    binding?.overlayReviewMediaImagePlayerSeeMore?.show()
+                    binding?.tvReviewMediaImagePlayerSeeMore?.apply {
+                        text = context.getString(R.string.review_image_player_see_more, uiState.totalImageCount)
+                        show()
+                    }
                 }
             }
         }
