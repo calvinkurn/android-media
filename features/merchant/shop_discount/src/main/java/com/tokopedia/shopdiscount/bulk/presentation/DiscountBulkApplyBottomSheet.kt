@@ -183,7 +183,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
         if (benefits.isNotEmpty()) {
             val benefit = benefits[0]
-            viewModel.setBenefitPackageName(benefit.packageName)
+            if(isUsingVps)
+                viewModel.setBenefitPackageName(benefit.packageName)
 
             handleBottomSheetAppearance(benefit, isUsingVps)
         }
