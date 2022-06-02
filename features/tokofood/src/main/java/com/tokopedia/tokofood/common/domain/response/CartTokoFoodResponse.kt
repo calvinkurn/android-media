@@ -89,7 +89,7 @@ data class CartTokoFood(
     @Expose
     val metadata: String = ""
 ) {
-    fun getMetadata(): CartMetadataTokoFoodWithVariant {
+    fun getMetadata(): CartMetadataTokoFoodWithVariant? {
         return Gson().fromJson(metadata, CartMetadataTokoFoodWithVariant::class.java)
     }
 

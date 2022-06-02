@@ -906,7 +906,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(element.id, element.cartId, SOURCE)
+        activityViewModel?.deleteProduct(
+            productId = element.id,
+            cartId = element.cartId,
+            source = SOURCE)
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {

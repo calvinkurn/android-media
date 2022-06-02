@@ -665,7 +665,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             navigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
         } else {
             val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = userSession.shopId,
+                    shopId = merchantId,
                     productUiModel = productUiModel
             )
             activityViewModel?.addToCart(updateParam, SOURCE)
@@ -685,7 +685,12 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>) {
         viewModel.productMap[productId] = cardPositions
-        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, SOURCE)
+        activityViewModel?.deleteProduct(
+            productId = productId,
+            cartId = cartId,
+            source = SOURCE,
+            shopId = merchantId
+        )
     }
 
     override fun onFinishCategoryFilter(categoryFilterList: List<CategoryFilterListUiModel>) {
@@ -714,7 +719,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productUiModel?.orderQty = quantity
         productUiModel?.run {
             val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = userSession.shopId,
+                shopId = merchantId,
                 productUiModel = productUiModel
             )
             activityViewModel?.updateQuantity(updateParam, SOURCE)
@@ -739,7 +744,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productUiModel?.orderQty = quantity
         productUiModel?.run {
             val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = userSession.shopId,
+                shopId = merchantId,
                 productUiModel = productUiModel
             )
             activityViewModel?.updateQuantity(updateParam, SOURCE)
@@ -754,7 +759,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel?.orderNote = orderNote
             productUiModel?.run {
                 val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = userSession.shopId,
+                    shopId = merchantId,
                     productUiModel = productUiModel
                 )
                 activityViewModel?.updateNotes(updateParam, SOURCE)
@@ -796,13 +801,18 @@ class MerchantPageFragment : BaseMultiFragment(),
 
 
     override fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String) {
-        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, SOURCE)
+        activityViewModel?.deleteProduct(
+            productId = productId,
+            cartId = cartId,
+            source = SOURCE,
+            shopId = merchantId
+        )
     }
 
     override fun onUpdateCustomOrderQtyButtonClicked(productId: String, quantity: Int, customOrderDetail: CustomOrderDetail) {
         customOrderDetail.qty = quantity
         val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
-            shopId = userSession.shopId,
+            shopId = merchantId,
             productId = productId,
             customOrderDetail = customOrderDetail
         )
