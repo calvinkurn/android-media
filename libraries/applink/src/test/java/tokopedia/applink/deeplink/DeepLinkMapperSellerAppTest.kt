@@ -334,4 +334,10 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT, expectedDeepLink)
     }
+
+    @Test
+    fun `check NOTIFICATION sellerapp`() {
+        val expectedDeepLink = "tokopedia://sellerinfo"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, ApplinkConst.NOTIFICATION, expectedDeepLink)
+    }
 }

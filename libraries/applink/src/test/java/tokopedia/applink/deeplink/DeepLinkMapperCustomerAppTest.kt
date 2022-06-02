@@ -2104,4 +2104,142 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/onboarding"
         assertEqualsDeepLinkMapper("tokopedia://marketplace/onboarding", expectedDeepLink)
     }
+
+    @Test
+    fun `check SELLER_CUSTOM_PRODUCT_LOGISTIC customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/customproductlogistic"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CUSTOM_PRODUCT_LOGISTIC, expectedDeepLink)
+    }
+
+    @Test
+    fun `check SETTING_PAYMENT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/payment-setting"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_PAYMENT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check SETTING_ACCOUNT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/account-setting"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ACCOUNT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check GOPAY_KYC customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://payment/gopayKyc"
+        assertEqualsDeepLinkMapper(ApplinkConst.GOPAY_KYC, expectedDeepLink)
+    }
+
+    @Test
+    fun `check KYC_FORM_ONLY_NO_PARAM customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/abc/def"
+        assertEqualsDeepLinkMapper(ApplinkConst.KYC_FORM_ONLY_NO_PARAM +"/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check NOTIFICATION customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/inbox?page=notification&show_bottom_nav=false"
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check ACTIVATION_GOPAY customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/activate_gopay"
+        assertEqualsDeepLinkMapper(ApplinkConst.ACTIVATION_GOPAY +"/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check OPTIMIZED_CHECKOUT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/opt-checkout"
+        assertEqualsDeepLinkMapper(ApplinkConst.OPTIMIZED_CHECKOUT +"/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check SHARING_HOST customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/sharing/abc/def"
+        assertEqualsDeepLinkMapper("tokopedia://sharing/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check LINK_ACCOUNT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/link-account-webview"
+        assertEqualsDeepLinkMapper(ApplinkConst.LINK_ACCOUNT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check EXPLICIT_PROFILE customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/explicit-profile"
+        assertEqualsDeepLinkMapper(ApplinkConst.EXPLICIT_PROFILE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check TELEPHONY_MASKING customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/telephony-masking"
+        assertEqualsDeepLinkMapper(ApplinkConst.TELEPHONY_MASKING +"/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check PRODUCT_BUNDLE customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/product-bundle/123/"
+        assertEqualsDeepLinkMapper("tokopedia://product-bundle/123", expectedDeepLink)
+    }
+
+    @Test
+    fun `check GIFTING customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/gifting/213/"
+        assertEqualsDeepLinkMapper("tokopedia://gifting/213", expectedDeepLink)
+    }
+
+    @Test
+    fun `check TOPADS_CREATE_MANUAL_ADS customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS +"/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check WEBVIEW_DOWNLOAD_HOST customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://webviewdownload"
+        assertEqualsDeepLinkMapper("tokopedia://webviewdownload/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check AFFILIATE_DEFAULT_CREATE_POST_V2 customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/create_post_v2/abc/def"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2 + "/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check REVIEW_REMINDER_PREVIOUS customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER_PREVIOUS, expectedDeepLink)
+    }
+
+    @Test
+    fun `check IMAGE_PICKER_V2 customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/image-picker/v2/"
+        assertEqualsDeepLinkMapper("tokopedia://image-picker/v2", expectedDeepLink)
+    }
+
+    @Test
+    fun `check MEDIA_PICKER customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/media-picker"
+        assertEqualsDeepLinkMapper(ApplinkConst.MediaPicker.MEDIA_PICKER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check MEDIA_PICKER_PREVIEW customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/media-picker-preview"
+        assertEqualsDeepLinkMapper(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, expectedDeepLink)
+    }
+
+    @Test
+    fun `check WEB_HOST customerapp`() {
+        val expectedDeepLink = "https://www.tokopedia.com/abc/def"
+        assertEqualsDeepLinkMapper("tokopedia://www.tokopedia.com/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check INPUT_INACTIVE_NUMBER customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/input-old-phone-number"
+        assertEqualsDeepLinkMapper(ApplinkConst.INPUT_INACTIVE_NUMBER, expectedDeepLink)
+    }
 }
