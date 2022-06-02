@@ -112,6 +112,7 @@ includeIfEnabled("features:im:cm_home_widget")
 includeIfEnabled("features:kyc")
 
 includeIfEnabled("features:logistic:logisticorder")
+includeIfEnabled("features:logistic:logisticseller")
 includeIfEnabled("features:logistic:logisticaddaddress")
 includeIfEnabled("features:logistic:dropoff")
 includeIfEnabled("features:logistic:logisticCommon")

@@ -2,7 +2,6 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
-			logisticseller		: ":features:logistic:logisticseller",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             resourcesCommon                 : ":features:common:resources_common",
@@ -114,6 +113,7 @@ ext {
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
+            logisticseller		            : ":features:logistic:logisticseller",
             logisticcart                    : ":features:logistic:logisticcart",
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
