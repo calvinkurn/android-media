@@ -6,5 +6,7 @@ data class TokoFoodParamFilterMerchant (
     @SerializedName("brandID")
     var brandId: String = "",
     @SerializedName("option")
-    var option: Int = 0
+    var option: Int = 0,
+    @SerializedName("cuisines")
+    var cuisines: List<String> = emptyList()
 )

@@ -343,6 +343,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,
+                cuisine = cuisine,
                 page = "1"
             )
         }
@@ -381,6 +382,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,
+                cuisine = cuisine
             )
         }
     }

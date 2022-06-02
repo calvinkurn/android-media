@@ -61,7 +61,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, page: String = "") {
+                          sortBy: Int = 0, cuisine: String = "", page: String = "") {
         launchCatchError(block = {
             setPageKey(page)
             categoryLayoutItemList.clear()
@@ -70,6 +70,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
                     localCacheModel = localCacheModel,
                     option = option,
                     sortBy = sortBy,
+                    cuisine = cuisine,
                     pageKey = pageKey)
             }
 
@@ -87,7 +88,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun onScrollProductList(containsLastItemIndex: Int?, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
-                            sortBy: Int = 0) {
+                            sortBy: Int = 0, cuisine: String = "") {
         val lastItemIndex = itemCount - 1
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
                 && containsLastItemIndex.isMoreThanZero()
@@ -101,7 +102,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
             showProgressBar()
             loadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,
-                sortBy = sortBy)
+                sortBy = sortBy,
+                cuisine = cuisine
+            )
         }
     }
 
@@ -119,13 +122,14 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int = 0,
-                                 sortBy: Int = 0) {
+                                 sortBy: Int = 0, cuisine: String = "") {
         launchCatchError(block = {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
                     option = option,
                     sortBy = sortBy,
+                    cuisine = cuisine,
                     pageKey = pageKey)
             }
 

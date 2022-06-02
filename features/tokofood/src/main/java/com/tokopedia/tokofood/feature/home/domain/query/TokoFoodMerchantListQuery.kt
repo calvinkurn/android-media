@@ -47,12 +47,12 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
 
     @JvmStatic
     fun createRequestParams(localCacheModel: LocalCacheModel?, option: Int = 0, brandId: String = "",
-                            sortBy: Int = 0, orderById: Int = 0, pageKey: String = "") = HashMap<String, Any>().apply {
+                            sortBy: Int = 0, orderById: Int = 0, cuisine: String = "", pageKey: String = "") = HashMap<String, Any>().apply {
         put(LAT_LONG_KEY, mapLocation(localCacheModel))
         put(PAGE_KEY, pageKey)
         put(TIMEZONE_KEY, TIMEZONE)
         put(LIMIT_KEY, LIMIT)
-        put(FILTER_KEY, mapFilter(option, brandId))
+        put(FILTER_KEY, mapFilter(option, brandId, cuisine))
         put(SORT_BY_KEY, mapSort(sortBy, orderById))
     }
 
@@ -70,10 +70,11 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
         return stringBuilder.toString()
     }
 
-    private fun mapFilter(option: Int, brandId: String): TokoFoodParamFilterMerchant {
+    private fun mapFilter(option: Int, brandId: String, cuisine: String): TokoFoodParamFilterMerchant {
         return TokoFoodParamFilterMerchant().apply {
             this.option = option
             this.brandId = brandId
+            this.cuisines = listOf(cuisine)
         }
     }
 

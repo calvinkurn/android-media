@@ -16,9 +16,9 @@ class TokoFoodMerchantListUseCase @Inject constructor(graphqlRepository: Graphql
     }
 
     suspend fun execute(localCacheModel: LocalCacheModel?, option: Int = 0, brandId: String = "",
-                        sortBy: Int = 0, orderById: Int = 0, pageKey: String = ""): TokoFoodMerchantListResponse {
+                        sortBy: Int = 0, orderById: Int = 0, cuisine: String = "", pageKey: String = ""): TokoFoodMerchantListResponse {
         setRequestParams(TokoFoodMerchantListQuery.createRequestParams(localCacheModel, option,
-            brandId, sortBy, orderById, pageKey))
+            brandId, sortBy, orderById, cuisine, pageKey))
         return executeOnBackground()
     }
 }
