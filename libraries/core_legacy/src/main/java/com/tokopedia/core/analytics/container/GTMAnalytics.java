@@ -1,5 +1,14 @@
 package com.tokopedia.core.analytics.container;
 
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.CHECKOUT_STEP;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_NAME;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLOT;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
+import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -15,12 +24,13 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -45,6 +55,9 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,22 +71,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.CHECKOUT_STEP;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_NAME;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLOT;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.LOCATION;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.LOCATION_ID;
-import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
 
 public class GTMAnalytics extends ContextAnalytics {
     public static final String OPEN_SCREEN = "openScreen";
