@@ -6,7 +6,7 @@ import java.util.*
 data class CampaignUiModel(
     val campaignId: Long,
     val campaignName: String,
-    val endDate: String,
+    val endDateFormatted: String,
     val endTime: String,
     val isCancellable: Boolean,
     val isShareable: Boolean,
@@ -16,7 +16,8 @@ data class CampaignUiModel(
     val status: CampaignStatus,
     val thematicParticipation: Boolean,
     val summary: ProductSummary,
-    val startDate: Date
+    val startDate: Date,
+    val endDate: Date
 ) {
     data class ProductSummary(
         val totalItem: Int,

@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftListAdapter
+import com.tokopedia.shop.flash_sale.presentation.draft.mapper.DraftUiModelMapper
 import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftItemModel
 import com.tokopedia.shop.flash_sale.presentation.draft.uimodel.DraftUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -38,6 +40,14 @@ class DraftListBottomSheet(
                     DraftItemModel("2", "title 2", "desc2", Date(), Date()),
                 )
             )).show(manager)
+        }
+
+        fun showUsingCampaignUiModel(manager: FragmentManager?,
+            campaignUiModelList: List<CampaignUiModel>
+        ) {
+            DraftListBottomSheet(
+                DraftUiModelMapper.convertFromCampaignUiModel(campaignUiModelList)
+            ).show(manager)
         }
     }
 

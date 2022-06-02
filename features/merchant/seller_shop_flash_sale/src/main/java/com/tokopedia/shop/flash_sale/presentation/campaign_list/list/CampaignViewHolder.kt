@@ -31,7 +31,7 @@ class CampaignViewHolder(private val binding: SsfsItemCampaignBinding) :
         binding.imgMore.setOnClickListener { onOverflowMenuClicked(campaign) }
         binding.tpgStartDate.text = campaign.startDateFormatted
         binding.tpgStartTime.text = campaign.startTime
-        binding.tpgEndDate.text = campaign.endDate
+        binding.tpgEndDate.text = campaign.endDateFormatted
         binding.tpgEndTime.text = campaign.endTime
         binding.tpgProductCount.text = campaign.summary.totalItem.toString()
         binding.tpgReminderCount.text = campaign.notifyMeCount.toString()

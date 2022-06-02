@@ -35,7 +35,8 @@ class SellerCampaignListMapper @Inject constructor() {
                     it.productSummary.deletedProduct,
                     it.productSummary.visibleProductCount
                 ),
-                it.startDate.epochToDate()
+                it.startDate.epochToDate(),
+                it.endDate.epochToDate()
             )
         }
         return CampaignMeta(
