@@ -7,18 +7,20 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.flash_sale.common.Constant.EMPTY_STRING
-import com.tokopedia.shop.flash_sale.common.Constant.ZERO
+import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
+import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.data.mapper.SellerCampaignListMapper
 import com.tokopedia.shop.flash_sale.data.request.GetSellerCampaignListRequest
 import com.tokopedia.shop.flash_sale.data.response.GetSellerCampaignListResponse
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
 class GetSellerCampaignListUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: SellerCampaignListMapper
+    private val mapper: SellerCampaignListMapper,
+    private val userSessionInterface: UserSessionInterface
 ) : GraphqlUseCase<CampaignMeta>(repository) {
 
     companion object {
@@ -47,6 +49,14 @@ class GetSellerCampaignListUseCase @Inject constructor(
                   review_start_date
                   review_end_date
                   max_product_submission
+                  product_summary {
+                    total_item
+                    sold_item
+                    reserved_product
+                    submitted_product
+                    deleted_product
+                    visible_product_count
+                  }
                   etalase_prefix
                   redirect_url
                   redirect_url_app
@@ -84,7 +94,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
     suspend fun execute(
         sellerCampaignType: Int = CAMPAIGN_TYPE_SHOP_FLASH_SALE,
         listType: Int = ZERO,
-        rows: Int = 20,
+        rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
         campaignId: Int = ZERO,
@@ -109,7 +119,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
     private fun buildRequest(
         sellerCampaignType: Int,
         listType: Int = ZERO,
-        rows: Int = 20,
+        rows: Int,
         offset: Int,
         statusId: List<Int> = emptyList(),
         campaignId: Int = ZERO,
@@ -117,6 +127,7 @@ class GetSellerCampaignListUseCase @Inject constructor(
         thematicParticipation: Boolean = false
     ): GraphqlRequest {
         val payload = GetSellerCampaignListRequest(
+            userSessionInterface.shopId.toLong(),
             sellerCampaignType,
             listType,
             GetSellerCampaignListRequest.Pagination(rows, offset),

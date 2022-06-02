@@ -14,7 +14,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 open class ModalBottomSheet: BottomSheetUnify() {
 
     companion object {
-        const val MODAL_WIDTH_RATIO = 0.7
+        var MODAL_WIDTH_RATIO = 0.7
         const val MODAL_WIDE_WIDTH_RATIO = 0.9
         const val MODAL_MARGIN_PERCENTAGE = 0.4f
     }

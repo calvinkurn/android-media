@@ -2,6 +2,65 @@
     <!--Common-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
     <string name="action_back">Kembali</string>
+    <string name="sfs_available">Tersedia</string>
+    <string name="sfs_upcoming">Mendatang</string>
+    <string name="sfs_ongoing">Berlangsung</string>
+    <string name="sfs_finished">Berakhir</string>
+    <string name="sfs_cancelled">Dibatalkan</string>
+    <string name="sfs_start">Mulai</string>
+    <string name="sfs_finish">Selesai</string>
+    <string name="sfs_sold_count">Jumlah Terjual</string>
+    <string name="sfs_active_reminder">Pengingat Aktif</string>
+    <string name="sfs_product">Produk</string>
+    <string name="sfs_registered_to_an_event">Terdaftar Event</string>
+    <string name="sfs_create_campaign">Buat Campaign</string>
+    <string name="sfs_search_campaign">Cari Campaign</string>
+
+    <string name="sfs_no_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
+
+    <string name="sfs_placeholder_no_campaign_title">Saat ini tidak ada %s</string>
+    <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
+    <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
+    <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
+    <string name="sfs_placeholder_draft">Draft (%s)</string>
+
+    <!--campaign teaser info bottom sheet-->
+    <string name="campaign_teaser_info_point_1">Calon pembeli dapat melihat preview produk campaign mendatang dan mengaktifkan pengingat campaign.</string>
+    <string name="campaign_teaser_info_point_2">Pembelian di luar jadwal campaign akan dikenakan harga normal.</string>
+    <string name="campaign_teaser_info_title">Informasi Teaser Campaign</string>
+
+    <!--no campaign quota dialog box-->
+    <string name="no_campaign_quota_title">Yaah, kuota campaign-mu habis</string>
+    <string name="no_campaign_quota_description">Dapatkan tambahan kuota campaign dengan upgrade keanggotaan tokomu dulu, ya!</string>
+    <string name="no_campaign_quota_primary_cta_text">Cek Keanggotaan Toko</string>
+    <string name="no_campaign_quota_secondary_cta_text">Kembali</string>
+
+    <!--forbidden words info bottom sheet-->
+    <string name="forbidden_words_info_title">Informasi daftar larangan kata</string>
+    <string name="forbidden_words_info_content">Nama campaign tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, kata-kata kasar, atau unsur SARA.</string>
+
+    <!--payment method bottom sheet-->
+    <string name="choose_payment_method_title">Pilih Metode Pembayaran</string>
+    <string name="payment_method_point_1">Campaign ini hanya menggunakan metode pembayaran VA, kartu kredit, kartu debit, GoPay, dan pembayaran instan lainnya.</string>
+    <string name="payment_method_point_2">Batas Bayar Cepat: Pembeli harus melakukan pembayaran di bawah 5 menit.</string>
+    <string name="payment_method_point_3">Batas Bayar Reguler: Pembeli harus melakukan pembayaran di bawah 30 menit.</string>
+    <string name="payment_method_point_4">Jika pembeli gagal melakukan pembayaran dalam waktu yang ditentukan, stok produk otomatis dikembalikan dan dapat dibeli pembeli lain.</string>
+
+    <!--Manage highligh product Bottom Sheet-->
+    <string name="manage_highlight_product_title">Atur Highlight</string>
+    <string name="manage_highlight_product_description">Produk yang dipilih sebagai highlight akan tampil di banner campaign tokomu. Kamu hanya bisa memilih maks. 5 produk untuk di-highlight, ya.</string>
+
+    <!--Success Register Campaign Dialog-->
+    <string name="success_register_campaign_title">Produk berhasil terdaftar dalam [%1$s]</string>
+    <string name="success_register_campaign_description">Pastikan informasi produk sudah sesuai kebutuhan campaign-mu. Kamu masih bisa ubah informasi produknya juga, ya.</string>
+    <string name="success_register_campaign_primary_cta_text">Oke, Mengerti</string>
+
+    <!--Shop Close Dialog-->
+    <string name="shop_close_title">Yaah, tokomu sedang tutup</string>
+    <string name="shop_close_description">Kamu tidak bisa tambah atau ubah produk campaign saat tokomu tutup. Buka tokomu dulu, yuk!</string>
+    <string name="shop_close_primary_cta">Buka Toko Sekarang</string>
+    <string name="shop_close_secondary_cta">Batal</string>
+    <string name="shop_close_foot_note">Kamu dapat mengatur kembali jam buka dan tutup toko di Pengaturan Toko</string>
 
     <!--Draft-->
     <string name="draftlist_title_full">Draft campaign penuh</string>
