@@ -2,13 +2,11 @@ package com.tokopedia.chatbot.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.isVisible

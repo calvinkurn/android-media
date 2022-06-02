@@ -29,7 +29,7 @@ class LeftChatMessageUnifyViewHolder(
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-        customChatLayout,
+        customChatLayout?.fxChat,
         com.tokopedia.unifyprinciples.R.color.Unify_N0,
         R.dimen.dp_chatbot_0,
         R.dimen.dp_chatbot_20,
@@ -53,6 +53,7 @@ class LeftChatMessageUnifyViewHolder(
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
+            customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)

@@ -17,8 +17,8 @@ class RightChatMessageUnifyViewHolder(
         replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener) {
 
-     val bg = ViewUtil.generateBackgroundWithShadow(
-            customChatLayout,
+     private val bg = ViewUtil.generateBackgroundWithShadow(
+            customChatLayout?.fxChat,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_0,
@@ -30,8 +30,8 @@ class RightChatMessageUnifyViewHolder(
             Gravity.CENTER
     )
 
-    val backgroundChatWithReplyBubble = ViewUtil.generateBackgroundWithShadow(
-        customChatLayout,
+    private val backgroundChatWithReplyBubble = ViewUtil.generateBackgroundWithShadow(
+        customChatLayout?.fxChat,
         com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_0,
@@ -49,7 +49,8 @@ class RightChatMessageUnifyViewHolder(
         bindBackground()
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
-            customChatLayout?.background = backgroundChatWithReplyBubble
+            customChatLayout?.fxChat?.background = backgroundChatWithReplyBubble
+            customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
