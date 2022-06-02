@@ -77,29 +77,29 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
     }
 
     fun updateProductUiModel(cartTokoFood: CartTokoFood, dataSetPosition: Int, adapterPosition: Int) {
-        productListItems[dataSetPosition].productUiModel.apply {
-            cartId = cartTokoFood.cartId
-            orderQty = cartTokoFood.quantity
-            orderNote = cartTokoFood.getMetadata().notes
-            isAtc = cartTokoFood.quantity.isMoreThanZero()
+        productListItems.getOrNull(dataSetPosition)?.productUiModel.apply {
+            this?.cartId = cartTokoFood.cartId
+            this?.orderQty = cartTokoFood.quantity
+            this?.orderNote = cartTokoFood.getMetadata().notes
+            this?.isAtc = cartTokoFood.quantity.isMoreThanZero()
         }
         notifyItemChanged(adapterPosition)
     }
 
     fun updateAtcStatus(isAtc: Boolean, dataSetPosition: Int, adapterPosition: Int) {
-        productListItems[dataSetPosition].productUiModel.isAtc = isAtc
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.isAtc = isAtc
         notifyItemChanged(adapterPosition)
     }
 
     fun updateOrderQty(orderQty: Int, dataSetPosition: Int) {
-        productListItems[dataSetPosition].productUiModel.orderQty = orderQty
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.orderQty = orderQty
     }
 
     fun updateCustomOrderQty(cartId: String, orderQty: Int, dataSetPosition: Int) {
-        productListItems[dataSetPosition].productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }?.qty = orderQty
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.firstOrNull { it.cartId == cartId }?.qty = orderQty
     }
 
     fun removeCustomOrder(cartId: String, dataSetPosition: Int) {
-        productListItems[dataSetPosition].productUiModel.customOrderDetails.removeFirst { it.cartId == cartId }
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.removeFirst { it.cartId == cartId }
     }
 }

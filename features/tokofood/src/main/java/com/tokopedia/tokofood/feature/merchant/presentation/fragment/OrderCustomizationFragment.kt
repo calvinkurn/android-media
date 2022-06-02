@@ -36,6 +36,7 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
         private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "productUiModel"
         private const val BUNDLE_KEY_CART_ID = "cartId"
+        private const val SOURCE = "merchant_page"
 
         @JvmStatic
         fun createInstance(productUiModel: ProductUiModel, cartId: String = "") = OrderCustomizationFragment().apply {
@@ -148,8 +149,8 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
                             orderQty = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE,
                             addOnUiModels = addOnUiModels
                     )
-                    if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = "")
-                    else activityViewModel?.addToCart(updateParam = updateParam, source = "")
+                    if (viewModel.isEditingCustomOrder(cartId)) activityViewModel?.updateCart(updateParam = updateParam, source = SOURCE)
+                    else activityViewModel?.addToCart(updateParam = updateParam, source = SOURCE)
                     // TODO: implement callback
                     parentFragmentManager.popBackStack()
                 }

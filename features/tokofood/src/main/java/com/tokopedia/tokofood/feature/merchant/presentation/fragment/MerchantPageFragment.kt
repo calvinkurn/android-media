@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
@@ -113,11 +114,11 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var merchantId: String = ""
 
+    private var productId: String = ""
+
     private val merchantShareComponentUtil: MerchantShareComponentUtil? by lazy {
         context?.let { MerchantShareComponentUtil(it) }
     }
-
-    private val dummyMerchantId = "88d9f5a4-7410-46f5-a835-93955b8e3496"
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
@@ -143,7 +144,8 @@ class MerchantPageFragment : BaseMultiFragment(),
         super.onCreate(savedInstanceState)
         val bundle = arguments?.getString(Constant.DATA_KEY) ?: ""
         val uri = Uri.parse(bundle)
-        merchantId = uri.pathSegments.firstOrNull() ?: ""
+        merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
+        productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
         setHasOptionsMenu(true)
         initInjector()
     }
@@ -206,10 +208,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         setupMerchantProfileCarousel()
         setupProductList()
         setupOrderNoteBottomSheet()
+        setupCardSticky()
         observeLiveData()
         collectFlow()
         fetchMerchantData()
-        setupCardSticky()
         initializeMiniCartWidget()
     }
 
@@ -292,11 +294,17 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun fetchMerchantData() {
-        val dummyLatLong = "-6.2,106.816666"
         showLoader()
-        viewModel.getMerchantData(dummyMerchantId, dummyLatLong, "")
-        collectFlow()
-        initializeMiniCartWidget()
+        context?.run {
+            ChooseAddressUtils.getLocalizingAddressData(this)
+                    .let { addressData ->
+                        viewModel.getMerchantData(
+                                merchantId,
+                                addressData.latLong,
+                                ""
+                        )
+                    }
+        }
     }
 
     private fun showLoader() {
@@ -313,7 +321,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     ) {
         merchantShareComponent = merchantShareComponentUtil?.getMerchantShareComponent(
             tokoFoodMerchantProfile,
-            dummyMerchantId
+            merchantId
         )
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@MerchantPageFragment)
@@ -343,7 +351,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
             tokoFoodMerchantProfile,
             productUiModel,
-            dummyMerchantId
+            merchantId
         )
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@MerchantPageFragment)
@@ -418,16 +426,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
                         activityViewModel?.cartDataFlow?.collect { cartData ->
                             viewModel.selectedProducts = cartData.availableSection.products
-                            context?.run {
-                                ChooseAddressUtils.getLocalizingAddressData(this)
-                                    .let { addressData ->
-                                        viewModel.getMerchantData(
-                                            merchantId,
-                                            addressData.latLong,
-                                            ""
-                                        )
-                                    }
-                            }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
@@ -480,10 +478,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     view?.let { view ->
                                         Toaster.build(
                                             view = view,
-                                            text = "Sip, catatanmu tersimpan.",
+                                            text = getString(com.tokopedia.tokofood.R.string.text_note_saved_message),
                                             duration = Toaster.LENGTH_SHORT,
                                             type = Toaster.TYPE_NORMAL,
-                                            actionText = "Oke"
+                                            actionText = getString(com.tokopedia.tokofood.R.string.action_merchant_ok)
                                         ).show()
                                     }
                                 }
@@ -564,7 +562,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
-            binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, "")
+            binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
         }
     }
 
@@ -670,7 +668,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     shopId = userSession.shopId,
                     productUiModel = productUiModel
             )
-            activityViewModel?.addToCart(updateParam, "")
+            activityViewModel?.addToCart(updateParam, SOURCE)
         }
     }
 
@@ -687,7 +685,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>) {
         viewModel.productMap[productId] = cardPositions
-        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, "")
+        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, SOURCE)
     }
 
     override fun onFinishCategoryFilter(categoryFilterList: List<CategoryFilterListUiModel>) {
@@ -719,7 +717,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 shopId = userSession.shopId,
                 productUiModel = productUiModel
             )
-            activityViewModel?.updateQuantity(updateParam, "")
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
         }
     }
 
@@ -744,7 +742,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 shopId = userSession.shopId,
                 productUiModel = productUiModel
             )
-            activityViewModel?.updateQuantity(updateParam, "")
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
         }
     }
 
@@ -759,7 +757,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     shopId = userSession.shopId,
                     productUiModel = productUiModel
                 )
-                activityViewModel?.updateNotes(updateParam, "")
+                activityViewModel?.updateNotes(updateParam, SOURCE)
             }
         }
         orderNoteBottomSheet?.dismiss()
@@ -798,7 +796,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
 
     override fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String) {
-        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, "")
+        activityViewModel?.deleteProduct(productId = productId, cartId = cartId, SOURCE)
     }
 
     override fun onUpdateCustomOrderQtyButtonClicked(productId: String, quantity: Int, customOrderDetail: CustomOrderDetail) {
@@ -808,7 +806,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productId = productId,
             customOrderDetail = customOrderDetail
         )
-        activityViewModel?.updateQuantity(updateParam, "")
+        activityViewModel?.updateQuantity(updateParam, SOURCE)
     }
 
     private fun navigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel) {

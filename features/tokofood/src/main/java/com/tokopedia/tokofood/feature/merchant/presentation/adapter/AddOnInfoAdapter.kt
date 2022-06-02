@@ -30,7 +30,7 @@ class AddOnInfoAdapter : RecyclerView.Adapter<AddOnInfoViewHolder>() {
     @SuppressLint("NotifyDataSetChanged")
     fun setCustomListItems(customListItems: List<CustomListItem>) {
         this.customListItems = customListItems.filter {
-            it.addOnUiModel != null && it.addOnUiModel.selectedAddOns.isNotEmpty()
+            it.addOnUiModel?.selectedAddOns?.isNotEmpty() == true
         }
         notifyDataSetChanged()
     }

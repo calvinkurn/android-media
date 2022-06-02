@@ -143,9 +143,10 @@ class ProductCardViewHolder(
 
         // atc button wording e.g. Pesan or 2 Pesanan
         if (productUiModel.customOrderCount.isMoreThanZero()) {
-            binding.atcButton.text = "${productUiModel.customOrderCount} Pesanan"
+            val orderCount = productUiModel.customOrderCount.toString()
+            binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
         } else {
-            binding.atcButton.text = "Pesan"
+            binding.atcButton.text = context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
         }
     }
 }

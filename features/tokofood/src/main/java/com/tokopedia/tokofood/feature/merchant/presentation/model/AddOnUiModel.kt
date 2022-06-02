@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.parcelize.IgnoredOnParcel
@@ -18,7 +19,7 @@ data class AddOnUiModel(
         val options: List<OptionUiModel> = listOf()
 ) : Parcelable {
     @IgnoredOnParcel
-    val isMultipleMandatory = minQty > 1
+    val isMultipleMandatory = minQty > Int.ONE
 
     @IgnoredOnParcel
     val addOnItems = options.map { optionUiModel ->
@@ -39,9 +40,6 @@ data class AddOnUiModel(
 
     @IgnoredOnParcel
     val selectedAddOns = options.filter { it.isSelected }.map { it.name }
-
-//    @IgnoredOnParcel
-//    val isError = options.filter { it.isSelected }.count() < minQty
 
     @IgnoredOnParcel
     val selectedCount = options.filter { it.isSelected }.count()

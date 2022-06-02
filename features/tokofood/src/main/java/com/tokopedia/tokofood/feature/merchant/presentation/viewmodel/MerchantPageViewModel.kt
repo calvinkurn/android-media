@@ -49,10 +49,6 @@ class MerchantPageViewModel @Inject constructor(
         private val getMerchantDataUseCase: GetMerchantDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    companion object {
-        private const val ONE = 1
-    }
-
     private val getMerchantDataResultLiveData = MutableLiveData<Result<GetMerchantDataResponse>>()
     val getMerchantDataResult: LiveData<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
 
@@ -125,33 +121,6 @@ class MerchantPageViewModel @Inject constructor(
                 isWarning = merchantProfile.opsHourFmt.isWarning
         )
         return listOf(ratingData, distanceData, estimationData, opsHoursData)
-    }
-
-    private fun formatRating(totalRating: Int): String {
-        return when {
-            // 10K - 10K+
-            totalRating >= 10000 -> {
-                return if (totalRating == 10000) "10K"
-                else "10K+"
-            }
-            // 1K - 1K+
-            totalRating >= 1000 -> {
-                return if (totalRating == 1000) "1K"
-                else {
-                    var suffix = ""
-                    if (totalRating % 1000 != 0) suffix = "+"
-                    val ratingThousandCount = totalRating / 1000
-                    ratingThousandCount.toString() + suffix
-                }
-            }
-            // 100 - 999
-            totalRating >= 100 -> {
-                var suffix = ""
-                if (totalRating % 100 != 0) suffix = "+"
-                totalRating.toString() + suffix
-            }
-            else -> totalRating.toString()
-        }
     }
 
     fun mapOpsHourDetailsToMerchantOpsHours(opsHourDetails: List<TokoFoodMerchantOpsHour>): List<MerchantOpsHour> {
@@ -253,7 +222,7 @@ class MerchantPageViewModel @Inject constructor(
                     name = optionDetail.name,
                     price = optionDetail.price,
                     priceFmt = optionDetail.priceFmt,
-                    selectionControlType = if (maxQty > ONE) MULTIPLE_SELECTION else SINGLE_SELECTION
+                    selectionControlType = if (maxQty > Int.ONE) MULTIPLE_SELECTION else SINGLE_SELECTION
             )
         }
     }

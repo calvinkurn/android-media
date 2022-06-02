@@ -44,11 +44,6 @@
 
                 <data
                     android:host="@string/host_food"
-                    android:path="@string/path_tokofood_merchant_list"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_food"
                     android:path="@string/path_tokofood_category"
                     android:scheme="@string/internal_scheme" />
 

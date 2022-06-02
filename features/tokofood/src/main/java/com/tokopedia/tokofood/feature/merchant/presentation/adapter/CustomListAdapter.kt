@@ -70,8 +70,8 @@ class CustomListAdapter(private val selectListener: ProductAddOnViewHolder.OnAdd
     fun updateAddOnSelection(isSelected: Boolean, addOnPositions: Pair<Int, Int>) {
         val dataSetPosition = addOnPositions.first
         val optionIndex = addOnPositions.second
-        customListItems[dataSetPosition].addOnUiModel?.isSelected = isSelected
-        customListItems[dataSetPosition].addOnUiModel?.options?.get(optionIndex)?.run {
+        customListItems.getOrNull(dataSetPosition)?.addOnUiModel?.isSelected = isSelected
+        customListItems.getOrNull(dataSetPosition)?.addOnUiModel?.options?.get(optionIndex)?.run {
             if (selectionControlType == SelectionControlType.SINGLE_SELECTION) {
                 customListItems[dataSetPosition].addOnUiModel?.options?.forEach { it.isSelected = false }
             }
