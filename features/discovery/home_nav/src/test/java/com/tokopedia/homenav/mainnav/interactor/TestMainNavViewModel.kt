@@ -18,11 +18,9 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
@@ -972,8 +970,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateWishlistDataModel } == true)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateFavoriteShopDataModel } == true)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateDataModel } == true)
         val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
         Assert.assertTrue(transactionListModel.orderListModel.orderList.isEmpty())
         Assert.assertTrue(transactionListModel.orderListModel.paymentList.isEmpty())
@@ -1028,7 +1025,7 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateWishlistDataModel } == true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateDataModel } == true)
     }
 
     @Test
@@ -1045,7 +1042,7 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateFavoriteShopDataModel } == true)
+        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateDataModel } == true)
     }
 
     @Test
@@ -1062,7 +1059,8 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+        val errorState = viewModel.mainNavLiveData.value?.dataList?.find { it is ErrorStateDataModel }
+        assert(errorState!=null && errorState is ErrorStateDataModel && errorState.sectionId == ClientMenuGenerator.ID_WISHLIST_MENU)
     }
 
     @Test
@@ -1079,7 +1077,8 @@ class TestMainNavViewModel {
         )
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
+        val errorState = viewModel.mainNavLiveData.value?.dataList?.find { it is ErrorStateDataModel }
+        assert(errorState!=null && errorState is ErrorStateDataModel && errorState.sectionId == ClientMenuGenerator.ID_FAVORITE_SHOP)
     }
 
     @Test
@@ -1174,7 +1173,8 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+        val errorState = viewModel.mainNavLiveData.value?.dataList?.find { it is ErrorStateDataModel }
+        assert(errorState!=null && errorState is ErrorStateDataModel && errorState.sectionId == ClientMenuGenerator.ID_WISHLIST_MENU)
 
         coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
 
@@ -1200,7 +1200,7 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
+        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateDataModel } == true)
 
         coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
 
@@ -1226,7 +1226,8 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
+        val errorState = viewModel.mainNavLiveData.value?.dataList?.find { it is ErrorStateDataModel }
+        assert(errorState!=null && errorState is ErrorStateDataModel && errorState.sectionId == ClientMenuGenerator.ID_FAVORITE_SHOP)
 
         coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
 
@@ -1252,7 +1253,8 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(true)
         viewModel.getMainNavData(true)
 
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
+        val errorState = viewModel.mainNavLiveData.value?.dataList?.find { it is ErrorStateDataModel }
+        assert(errorState!=null && errorState is ErrorStateDataModel && errorState.sectionId == ClientMenuGenerator.ID_FAVORITE_SHOP)
 
         coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
 

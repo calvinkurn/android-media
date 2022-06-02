@@ -1,11 +1,11 @@
-package com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop
+package com.tokopedia.homenav.mainnav.view.datamodel.wishlist
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
-class EmptyStateFavoriteShopDataModel: MainNavVisitable, ImpressHolder() {
-    override fun id(): Any = "Empty state favorite shop"
+class EmptyStateDataModel(val id: Int): MainNavVisitable, ImpressHolder() {
+    override fun id(): Any = id
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean = id() == visitable.id()
 

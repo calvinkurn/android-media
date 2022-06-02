@@ -40,12 +40,10 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -603,7 +601,8 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshFavoriteShopData() {
         val favoriteShopPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateFavoriteShopDataModel || it.value is FavoriteShopListDataModel
+            (it.value is ErrorStateDataModel && (it.value as ErrorStateDataModel).sectionId == ID_FAVORITE_SHOP)
+                    || it.value is FavoriteShopListDataModel
         }
         favoriteShopPlaceHolder?.let {
             updateWidget(ShimmerFavoriteShopDataModel(), favoriteShopPlaceHolder.index)
@@ -618,7 +617,7 @@ class MainNavViewModel @Inject constructor(
     private suspend fun getFavoriteShops() {
         //find error state if available and change to shimmering
         val favoriteShopErrorState = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateFavoriteShopDataModel
+            it.value is ErrorStateDataModel && (it.value as ErrorStateDataModel).sectionId == ID_FAVORITE_SHOP
         }
         favoriteShopErrorState?.let {
             updateWidget(ShimmerFavoriteShopDataModel(), it.index)
@@ -638,14 +637,14 @@ class MainNavViewModel @Inject constructor(
                 }
             } else {
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
-                    updateWidget(EmptyStateFavoriteShopDataModel(), it)
+                    updateWidget(EmptyStateDataModel(ID_FAVORITE_SHOP), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
             findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
-                updateWidget(ErrorStateFavoriteShopDataModel(), it)
+                updateWidget(ErrorStateDataModel(ID_FAVORITE_SHOP), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
@@ -654,7 +653,7 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshWishlistData() {
         val wishlistPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateWishlistDataModel || it.value is WishlistDataModel
+            (it.value is ErrorStateDataModel && (it.value as ErrorStateDataModel).sectionId == ID_WISHLIST_MENU)  || it.value is WishlistDataModel
         }
         wishlistPlaceHolder?.let {
             updateWidget(ShimmerWishlistDataModel(), wishlistPlaceHolder.index)
@@ -668,7 +667,7 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getWishlist() {
         val wishlistErrorState = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateWishlistDataModel
+            it.value is ErrorStateDataModel && (it.value as ErrorStateDataModel).sectionId == ID_WISHLIST_MENU
         }
         wishlistErrorState?.let {
             updateWidget(ShimmerWishlistDataModel(), it.index)
@@ -687,13 +686,13 @@ class MainNavViewModel @Inject constructor(
                 }
             } else {
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
-                    updateWidget(EmptyStateWishlistDataModel(), it)
+                    updateWidget(EmptyStateDataModel(ID_WISHLIST_MENU), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             findShimmerPosition<ShimmerWishlistDataModel>()?.let {
-                updateWidget(ErrorStateWishlistDataModel(), it)
+                updateWidget(ErrorStateDataModel(ID_WISHLIST_MENU), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
@@ -777,9 +776,9 @@ class MainNavViewModel @Inject constructor(
                     it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                     TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant),
                     it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    EmptyStateWishlistDataModel(),
+                    EmptyStateDataModel(ID_WISHLIST_MENU),
                     it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    EmptyStateFavoriteShopDataModel(),
+                    EmptyStateDataModel(ID_FAVORITE_SHOP),
                     SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant)
                 )
             }

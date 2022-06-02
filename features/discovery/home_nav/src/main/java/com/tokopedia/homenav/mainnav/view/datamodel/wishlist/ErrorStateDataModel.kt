@@ -4,10 +4,10 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
-data class ErrorStateWishlistDataModel(
-        val sectionId: Int? = null
+data class ErrorStateDataModel(
+        val sectionId: Int
 ): MainNavVisitable, ImpressHolder() {
-    override fun id(): Any = "Error state wishlist"
+    override fun id(): Any = sectionId
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean = id() == visitable.id()
 

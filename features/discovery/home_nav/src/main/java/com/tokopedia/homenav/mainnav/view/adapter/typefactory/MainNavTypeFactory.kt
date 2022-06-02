@@ -4,12 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 
@@ -41,13 +39,9 @@ interface MainNavTypeFactory {
 
     fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int
 
-    fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int
+    fun type(errorStateDataModel: ErrorStateDataModel): Int
 
-    fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int
-
-    fun type(emptyStateWishlistDataModel: EmptyStateWishlistDataModel): Int
-
-    fun type(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel): Int
+    fun type(emptyStateDataModel: EmptyStateDataModel): Int
 
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }
