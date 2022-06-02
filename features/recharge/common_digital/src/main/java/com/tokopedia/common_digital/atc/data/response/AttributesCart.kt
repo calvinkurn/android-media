@@ -97,7 +97,11 @@ data class AttributesCart(
 
         @SerializedName("fintech_product")
         @Expose
-        var fintechProduct: List<FintechProduct>? = null
+        var fintechProduct: List<FintechProduct>? = null,
+
+        @SerializedName("channel_id")
+        @Expose
+        var channelId: String? = null,
 ) {
     data class UserInputPrice(
 

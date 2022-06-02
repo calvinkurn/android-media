@@ -153,6 +153,7 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
             cartDigitalInfoData.title = responseRechargeGetCart.response.title
+            cartDigitalInfoData.channelId = responseRechargeGetCart.response.channelId
 
             return cartDigitalInfoData
 

@@ -106,10 +106,8 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
             else -> DigitalTrackingConst.Category.DIGITAL_NATIVE
         }
 
-        // TODO: replace channelId with its actual value when available
-        val channelId = ""
         val eventLabel = digitalAtcTrackingModel.categoryName.toLowerCase() + " - " +
-                digitalAtcTrackingModel.operatorName + " - " + channelId
+                digitalAtcTrackingModel.operatorName + " - " + digitalAtcTrackingModel.channelId
 
         products.add(constructProductEnhanceEcommerce(digitalAtcTrackingModel, productName))
 

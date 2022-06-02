@@ -15,5 +15,6 @@ data class DigitalAtcTrackingModel(
         val isInstantCheckout: Boolean = false,
         val source: Int = 0,
         val userId: String = "",
-        val isSpecialProduct: Boolean = false
+        val isSpecialProduct: Boolean = false,
+        val channelId: String = ""
 )
