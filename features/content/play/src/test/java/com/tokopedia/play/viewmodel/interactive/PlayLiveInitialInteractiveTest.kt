@@ -26,7 +26,9 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -404,7 +406,7 @@ class PlayLiveInitialInteractiveTest {
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
-                    type = PlayQuizOptionState.Other(false)
+                    type = PlayQuizOptionState.Other(true)
                 ),
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
@@ -412,7 +414,7 @@ class PlayLiveInitialInteractiveTest {
                 ),
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
-                    type = PlayQuizOptionState.Answered(true)
+                    type = PlayQuizOptionState.Answered(false)
                 )
             )
         )
@@ -448,7 +450,7 @@ class PlayLiveInitialInteractiveTest {
                     PlayUserWinnerStatusSocketResponse.imageUrl,
                     PlayUserWinnerStatusSocketResponse.winnerTitle,
                     PlayUserWinnerStatusSocketResponse.winnerText,
-                    InteractiveUiModel.Unknown,
+                    model,
                 )
             )
         }
@@ -485,7 +487,6 @@ class PlayLiveInitialInteractiveTest {
                 )
             )
         )
-        coEvery { repo.getCurrentInteractive(any()) } returns model
         coEvery { repo.getCurrentInteractive(any()) } returns model
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns true
