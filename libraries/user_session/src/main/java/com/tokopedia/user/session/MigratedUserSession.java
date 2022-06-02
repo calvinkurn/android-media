@@ -199,7 +199,7 @@ public class MigratedUserSession {
             Check PII data from SET, if keyName is PII data decrypt with aead (tink)
             else use existing decryption
 	    */
-            if (Constants.PII_DATA_SET.contains(keyName)) {
+            if (Constants.PII_DATA_SET.contains(keyName) && isMigratedToGoogleTink(keyName)) {
                 return aead.decrypt(message, null);
             } else {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
