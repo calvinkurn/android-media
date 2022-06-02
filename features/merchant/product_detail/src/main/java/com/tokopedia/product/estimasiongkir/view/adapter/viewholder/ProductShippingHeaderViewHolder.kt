@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.FreeShipping
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
+import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
@@ -144,7 +145,7 @@ class ProductShippingHeaderViewHolder(view: View,
 
 //        if(freeOngkirEtas.size > 2){
         freeOngkirEtas.forEach { eta ->
-            val etaView = ViewFreeShippingEtaBinding.bind(this)
+            val etaView = ViewFreeShippingEtaBinding.inflate(itemView.context.layoutInflater)
 
             etaView.pdpFreeShippingEtaText.showIfWithBlock(isFreeOngkir && eta.etaText.isNotEmpty()) {
                 text = eta.etaText
@@ -161,28 +162,6 @@ class ProductShippingHeaderViewHolder(view: View,
 
             viewFreeOngkirEtas?.addView(etaView.root)
         }
-//        }else {
-//            val eta = freeOngkirEtas.firstOrNull()
-//            val freeOngkirEstimation = eta?.etaText ?: ""
-//            val freeOngkirPriceOriginal = eta?.rawShippingRate ?: 0.0
-//            val freeOngkirPrice = eta?.shippingPrice ?: ""
-//
-//
-//            txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
-//                txtFreeOngkirEstimation.text = freeOngkirEstimation
-//            }
-//
-//            txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > 0){
-//                text = freeOngkirPriceOriginal.getCurrencyFormatted()
-//                paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-//            }
-//
-//            txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPrice.isNotEmpty()) {
-//                txtFreeOngkirPrice.text = freeOngkirPrice
-//            }
-
-//        }
-
     }
 
     private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {
