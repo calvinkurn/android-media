@@ -223,7 +223,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     }
 
     private fun getViewPagerAdapter(isBidAutomatic: Boolean): TopAdsEditPagerAdapter {
-        val bundle = intent.extras ?: Bundle().apply {
+        val bundle = Bundle(intent.extras) .apply {
             putBoolean(IS_BID_AUTOMATIC, isBidAutomatic)
         }
 
