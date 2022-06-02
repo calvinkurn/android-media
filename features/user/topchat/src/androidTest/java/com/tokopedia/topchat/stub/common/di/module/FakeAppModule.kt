@@ -54,4 +54,9 @@ class FakeAppModule(private val context: Context) {
         return GraphqlUseCase()
     }
 
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
 }
