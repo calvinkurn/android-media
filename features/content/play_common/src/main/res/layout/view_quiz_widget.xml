@@ -15,12 +15,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.6"
         app:layout_constraintVertical_bias="0"
         tools:layout_constraintWidth_percent="0.6"
         />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
         android:id="@+id/ll_quiz_content"
+        app:layout_constraintWidth_percent="0.6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
@@ -55,7 +57,7 @@
     <include
         android:id="@+id/view_game_reward"
         layout="@layout/view_game_reward"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_dp_12"
         android:layout_marginStart="@dimen/play_dp_12"
