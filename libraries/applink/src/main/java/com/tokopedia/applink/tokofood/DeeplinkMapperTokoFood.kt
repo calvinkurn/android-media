@@ -1,7 +1,10 @@
 package com.tokopedia.applink.tokofood
 
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperTokoFood {
 
@@ -14,7 +17,21 @@ object DeeplinkMapperTokoFood {
     const val CUISINE_PARAM = "cuisine"
     const val SORT_BY_PARAM = "sortBy"
 
-    fun getTokoFoodPostPurchaseInternalAppLink(uri: Uri): String {
+    fun mapperInternalApplinkTokoFood(uri: Uri): String {
+        val url = uri.toString()
+        if (isGoToFoodPage()){
+            return when {
+                url.startsWith(ApplinkConst.TokoFood.HOME) -> getTokoFoodHomeInternalAppLink()
+                url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
+                url.startsWith(ApplinkConst.TokoFood.POST_PURCHASE) -> getTokoFoodPostPurchaseInternalAppLink(uri)
+                else -> url
+            }
+        } else {
+            return ApplinkConst.HOME
+        }
+    }
+
+    private fun getTokoFoodPostPurchaseInternalAppLink(uri: Uri): String {
         val orderId = uri.lastPathSegment
         return Uri.parse(ApplinkConstInternalTokoFood.POST_PURCHASE)
             .buildUpon()
@@ -22,11 +39,11 @@ object DeeplinkMapperTokoFood {
             .build().toString()
     }
 
-    fun getTokoFoodHomeInternalAppLink(): String {
+    private fun getTokoFoodHomeInternalAppLink(): String {
         return ApplinkConstInternalTokoFood.HOME
     }
 
-    fun getTokoFoodCategoryInternalAppLink(uri: Uri): String {
+    private fun getTokoFoodCategoryInternalAppLink(uri: Uri): String {
         val pageTitle = uri.getQueryParameter(PAGE_TITLE_PARAM) ?: ""
         val option = uri.getQueryParameter(OPTION_PARAM) ?: ""
         val cuisine = uri.getQueryParameter(CUISINE_PARAM) ?: ""
@@ -39,5 +56,15 @@ object DeeplinkMapperTokoFood {
             .appendQueryParameter(CUISINE_PARAM, cuisine)
             .appendQueryParameter(SORT_BY_PARAM, sortBy)
             .build().toString()
+    }
+
+    private fun isGoToFoodPage(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_FOOD, ""
+            ) == RollenceKey.KEY_ROLLENCE_FOOD
+        } catch (e: Exception) {
+            false
+        }
     }
 }
