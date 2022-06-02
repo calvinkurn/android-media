@@ -96,12 +96,28 @@ class ProductManageFilterFragment(
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
             val cacheManagerId = it.getString(CACHE_MANAGER_ID).orEmpty()
-            cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            cacheManager = context?.let { ctx ->
+                SaveInstanceCacheManager(ctx, cacheManagerId)
+            }
             filterOptionWrapper =
-                cacheManager?.get(KEY_FILTER_OPTION_WRAPPER, FilterOptionWrapper::class.java, null)
+                try {
+                    cacheManager?.get<FilterOptionWrapper>(
+                        KEY_FILTER_OPTION_WRAPPER,
+                        FilterOptionWrapper::class.java,
+                        null
+                    )
+                } catch (ex: Exception) {
+                    null
+                }
             needToPostponeActivityResult =
-                cacheManager?.get(KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT, Boolean::class.java, false)
-                    ?: false
+                try {
+                    cacheManager?.get(
+                        KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT,
+                        Boolean::class.java,
+                        false) ?: false
+                } catch (ex: Exception) {
+                    false
+                }
         }
         binding = FragmentProductManageFilterNewBinding.inflate(
             LayoutInflater.from(context),
