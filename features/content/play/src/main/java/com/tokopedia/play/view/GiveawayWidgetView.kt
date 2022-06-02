@@ -7,22 +7,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.airbnb.lottie.LottieDrawable
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewGiveawayWidgetBinding
+import com.tokopedia.play.view.custom.interactive.InteractiveTapView
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import java.util.*
-import android.content.res.ColorStateList
-import android.graphics.Color
-
-import android.graphics.drawable.RippleDrawable
-
-import android.graphics.drawable.Drawable
-import android.view.View
-import android.view.animation.AnticipateInterpolator
-import android.view.animation.AnticipateOvershootInterpolator
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 
 
 /**
@@ -100,7 +94,16 @@ class GiveawayWidgetView : ConstraintLayout {
         answerTrueAnimator.addListener(animationListener)
         answerTrueAnimator.duration = 100L
         answerTrueAnimator.start()
+
+        binding.tapLottieBg.setAnimationFromUrl(context.getString(R.string.lottie_confetti_tap))
+        binding.tapLottieBg.repeatCount = LottieDrawable.INFINITE
+        binding.tapLottieBg.playAnimation()
+
+        binding.ivTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap))
+        binding.ivTap.repeatCount = LottieDrawable.INFINITE
+        binding.ivTap.playAnimation()
     }
+
 
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
         binding.flTap, View.SCALE_X, 1f, 0.8f
