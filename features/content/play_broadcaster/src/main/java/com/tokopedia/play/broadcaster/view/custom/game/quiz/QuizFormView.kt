@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
-import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
@@ -53,7 +52,6 @@ class QuizFormView : ConstraintLayout {
         true,
     )
     private val timePickerBinding = ViewPlayInteractiveTimePickerBinding.bind(binding.root)
-    private val bottomSheetHeaderBinding = BottomSheetHeaderBinding.bind(timePickerBinding.root)
 
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
@@ -83,7 +81,7 @@ class QuizFormView : ConstraintLayout {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
         timePickerBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
-        bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
+        timePickerBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
             eventBus.emit(Event.Next)
