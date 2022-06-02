@@ -351,7 +351,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PLACEHOLDER] = resources.getString(R.string.tokopedianow_search_bar_hint)
         params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
