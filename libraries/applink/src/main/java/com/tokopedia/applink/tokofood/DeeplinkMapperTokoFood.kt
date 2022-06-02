@@ -30,7 +30,7 @@ object DeeplinkMapperTokoFood {
                 url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
                 url.startsWith(ApplinkConst.TokoFood.POST_PURCHASE) -> getTokoFoodPostPurchaseInternalAppLink(uri)
                 isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
-                    getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri))
+                    getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
                 else -> url
             }
         } else {
@@ -38,9 +38,9 @@ object DeeplinkMapperTokoFood {
         }
     }
 
-    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?): String {
+    fun getTokoFoodMerchantInternalAppLink(idList: List<String>?, uri: Uri): String {
         val merchantId = idList?.getOrNull(0).orEmpty()
-        val productId = idList?.getOrNull(1).orEmpty()
+        val productId = uri.getQueryParameter(PARAM_PRODUCT_ID).orEmpty()
         return Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(PARAM_MERCHANT_ID, merchantId)
