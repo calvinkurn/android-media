@@ -231,7 +231,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         stepperModel?.let {
             it.slogan = promotionalMessage
             it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
-            topAdsBannerView?.displayAds(stepperModel?.cpmModel)
+            topAdsBannerView?.displayHeadlineAds(stepperModel?.cpmModel)
         }
         btnSubmit?.isEnabled = promotionalMessage.length >= MIN_PROMOTIONAL_MSG_COUNT
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
@@ -16,42 +15,76 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.*
+import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
-import com.tokopedia.tokopedianow.data.*
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
-import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
+import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
+import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
+import com.tokopedia.tokopedianow.data.createCategoryList
+import com.tokopedia.tokopedianow.data.createChooseAddress
+import com.tokopedia.tokopedianow.data.createDynamicChannelLayoutList
+import com.tokopedia.tokopedianow.data.createDynamicLegoBannerDataModel
+import com.tokopedia.tokopedianow.data.createEmptyState
+import com.tokopedia.tokopedianow.data.createHomeLayoutData
+import com.tokopedia.tokopedianow.data.createHomeLayoutList
+import com.tokopedia.tokopedianow.data.createHomeLayoutListForBannerOnly
+import com.tokopedia.tokopedianow.data.createHomeLayoutListForQuestOnly
+import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
+import com.tokopedia.tokopedianow.data.createHomeTickerDataModel
+import com.tokopedia.tokopedianow.data.createKeywordSearch
+import com.tokopedia.tokopedianow.data.createLeftCarouselAtcDataModel
+import com.tokopedia.tokopedianow.data.createLeftCarouselDataModel
+import com.tokopedia.tokopedianow.data.createLoadingState
+import com.tokopedia.tokopedianow.data.createLocalCacheModel
+import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
+import com.tokopedia.tokopedianow.data.createQuestWidgetList
+import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
+import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
+import com.tokopedia.tokopedianow.data.createTicker
+import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
-import com.tokopedia.tokopedianow.home.domain.model.GetReferralSenderHomeResponse
-import com.tokopedia.tokopedianow.home.domain.model.ValidateReferralUserResponse
-import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
+import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
-import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
@@ -155,6 +188,20 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
         verifyGetBannerResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when scroll home error should do nothing`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        onGetHomeLayoutData_thenReturn(MessageErrorException())
+
+        viewModel.onScrollTokoMartHome(1, LocalCacheModel(), listOf())
+
+        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
 
     @Test
@@ -682,8 +729,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     id = "2322",
                     recomWidget = recommendationWidget
                 ),
-                createMixLeftDataModel(
+                createLeftCarouselAtcDataModel(
                     id = "2122",
+                    headerName = "Mix Left Atc Carousel",
+                ),
+                createLeftCarouselDataModel(
+                    id = "2333",
                     groupId = "",
                     headerName = "Mix Left Carousel",
                     layout = "left_carousel"
@@ -1885,6 +1936,110 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when add mix left atc product to cart should track add mix left atc product`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        val productCardUiModel = HomeLeftCarouselAtcProductCardUiModel(
+            id = "2",
+            channelHeaderName = "Mix Left Carousel",
+            shopId = "100",
+            channelId = "2122",
+            productCardModel = ProductCardModel(formattedPrice = "0", nonVariant = NonVariant(quantity=0, minQuantity=0, maxQuantity=0))
+        )
+
+        val expected = HomeAddToCartTracker(
+            position = 1,
+            quantity = 2,
+            cartId = "1999",
+            productCardUiModel
+        )
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected)
+    }
+
+    @Test
+    fun `given product not found when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf(
+                    Grid(
+                        id = "2",
+                        shop = Shop(shopId = "100")
+                    )
+                )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given layout list does NOT contain mix left when add product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = emptyList<HomeLayoutResponse>()
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
     fun `given add to cart error when addProductToCart should set miniCartAdd value fail`() {
         val error = NullPointerException()
         val invalidLayoutType = "random layout type"
@@ -2045,7 +2200,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val items = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0"),
-            HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel(
+            HomeSharingEducationWidgetUiModel(
                 id = channelId,
                 HomeLayoutItemState.LOADED,
                 R.string.tokopedianow_home_sharing_education_button,
@@ -2821,327 +2976,175 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when get referral sender home should be success with code equals to 200 and return sharingUrlParam`() {
+    fun `when get referral sender home success with code equals to 200 should return sharingUrlParam`() {
+        val id = "155"
         val slug = "slug"
-        val sharingUrl = "123"
-        val sharingMetaData = GetReferralSenderHomeResponse.GamiReferralSenderHome.SharingMetadata(
-            sharingUrl = sharingUrl,
-            ogTitle = "",
-            ogImage = "",
-            ogDescription = "",
-            textDescription = ""
+        val ogImage = "https://tkpd.com/image.png"
+        val ogTitle = "Title"
+        val ogDescription = "Desc"
+        val textDescription = "Text desc"
+        val sharingUrlParam = "123"
+        val maxReward = "Rp 123.000"
+        val userStatus = "100"
+        val isSender = true
+        val warehouseId = "15021"
+        val serviceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId,
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 12530, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 15021, service_type = "2h")
+            ),
+            service_type = serviceType
         )
-        val getReferralSenderHomeResponse = GetReferralSenderHomeResponse(
-            GetReferralSenderHomeResponse.GamiReferralSenderHome(
-                resultStatus = GetReferralSenderHomeResponse.GamiReferralSenderHome.ResultStatus(
-                    code = "200",
-                    message = listOf(),
-                    reason = ""
+
+        val layoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "tokonow_referral",
+                header = Header(
+                    name = "Tokonow Referral",
+                    serverTimeUnix = 0
                 ),
-                sharingMetaData = sharingMetaData
+                widgetParam = slug,
+                token = ""
             )
         )
 
-        onGetReferralSenderHome_thenReturn(slug, getReferralSenderHomeResponse)
+        val referral = HomeReferralDataModel(
+            ogImage = ogImage,
+            ogTitle = ogTitle,
+            ogDescription = ogDescription,
+            textDescription = textDescription,
+            sharingUrlParam = sharingUrlParam,
+            userStatus = userStatus,
+            maxReward = maxReward,
+            isSender = isSender,
+            isEligible = true
+        )
 
-        viewModel.getReferralSenderHome(slug)
+        val homeSharingWidgetUiModel = HomeSharingReferralWidgetUiModel(
+            id = id,
+            state = HomeLayoutItemState.LOADED,
+            slug = slug,
+            ogImage = ogImage,
+            ogTitle = ogTitle,
+            ogDescription = ogDescription,
+            textDescription = textDescription,
+            sharingUrlParam = sharingUrlParam,
+            userStatus = userStatus,
+            maxReward = maxReward,
+            isSender = isSender,
+            warehouseId = warehouseId
+        )
+
+        onGetHomeLayoutData_thenReturn(layoutResponse, localCacheModel)
+        onGetReferralSenderHome_thenReturn(slug, referral)
+
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            homeSharingWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        ))
 
         verifyGetReferralSenderHomeUseCaseCalled(slug)
 
-        val expectedSharingMetaData = HomeShareMetaDataModel(
-            sharingUrlParam = "$slug/$sharingUrl",
-            ogTitle = "",
-            ogImage = "",
-            ogDescription = "",
-            textDescription = ""
-        )
-        viewModel.sharingReferralUrlParam
-            .verifySuccessEquals(Success(expectedSharingMetaData))
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.getReferralResult
+            .verifySuccessEquals(Success(referral))
     }
 
     @Test
-    fun `when get referral sender home should be success with code does not equal to 200 and return MessageErrorException`() {
+    fun `when get referral not eligible should not add referral widget to home layout list`() {
+        val id = "155"
         val slug = "slug"
-        val messageError = "this is an error"
-        val getReferralSenderHomeResponse = GetReferralSenderHomeResponse(
-            GetReferralSenderHomeResponse.GamiReferralSenderHome(
-                resultStatus = GetReferralSenderHomeResponse.GamiReferralSenderHome.ResultStatus(
-                    code = "444490",
-                    message = listOf(),
-                    reason = messageError
+        val isEligible = false
+        val localCacheModel = LocalCacheModel()
+
+        val layoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "tokonow_referral",
+                header = Header(
+                    name = "Tokonow Referral",
+                    serverTimeUnix = 0
                 ),
-                sharingMetaData = GetReferralSenderHomeResponse.GamiReferralSenderHome.SharingMetadata(
-                    sharingUrl = "123",
-                    ogTitle = "",
-                    ogImage = "",
-                    ogDescription = "",
-                    textDescription = ""
-                )
+                widgetParam = slug,
+                token = ""
             )
         )
 
-        onGetReferralSenderHome_thenReturn(slug, getReferralSenderHomeResponse)
+        val referral = HomeReferralDataModel(isEligible = isEligible)
 
-        viewModel.getReferralSenderHome(slug)
+        onGetHomeLayoutData_thenReturn(layoutResponse, localCacheModel)
+        onGetReferralSenderHome_thenReturn(slug, referral)
+
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        val layoutList = listOf(TokoNowChooseAddressWidgetUiModel("0"))
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        ))
 
         verifyGetReferralSenderHomeUseCaseCalled(slug)
 
-        viewModel.sharingReferralUrlParam
-            .verifyErrorEquals(Fail(MessageErrorException(messageError)))
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.getReferralResult
+            .verifyValueEquals(null)
     }
 
     @Test
-    fun `when get referral sender home should be failed and return MessageErrorException`() {
+    fun `when get referral sender home error should not add referral widget to home layout list`() {
+        val id = "155"
         val slug = "slug"
         val messageError = "this is an error"
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "tokonow_referral",
+                header = Header(
+                    name = "Tokonow Referral",
+                    serverTimeUnix = 0
+                ),
+                widgetParam = slug,
+                token = ""
+            )
+        )
+        val localCacheModel = LocalCacheModel()
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse, localCacheModel)
         onGetReferralSenderHome_thenReturn(slug, MessageErrorException(messageError))
 
-        viewModel.getReferralSenderHome(slug)
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        val layoutList = listOf(TokoNowChooseAddressWidgetUiModel("0"))
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        ))
 
         verifyGetReferralSenderHomeUseCaseCalled(slug)
 
-        viewModel.sharingReferralUrlParam
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.getReferralResult
             .verifyErrorEquals(Fail(MessageErrorException(messageError)))
-    }
-
-    @Test
-    fun `when validate referral should be success with code equals to 200, status equal to 1 and return expected result`() {
-        val channelId = "34923"
-        val slug = anyString()
-        val validateReferral = ValidateReferralUserResponse(
-            gamiReferralValidateUser = ValidateReferralUserResponse.GamiReferralValidateUser(
-                resultStatus = ValidateReferralUserResponse.GamiReferralValidateUser.ResultStatus(
-                    code = "200",
-                    message = listOf(),
-                    reason = ""
-                ),
-                status = 1
-            )
-        )
-        val chooseAddress = TokoNowChooseAddressWidgetUiModel(id = "0")
-        val referralWidget = HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel(
-            id = channelId,
-            warehouseId = "",
-            state = HomeLayoutItemState.LOADED,
-            isSender = false,
-            userStatus = "1"
-        )
-
-        onValidateReferralSender_thenReturn(slug, validateReferral)
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            chooseAddress,
-            HomeLayoutItemState.LOADED
-        ))
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            referralWidget,
-            HomeLayoutItemState.NOT_LOADED
-        ))
-
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        referralWidget.isSender = true
-        val items = listOf(
-            chooseAddress,
-            referralWidget
-        )
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = items,
-            state = TokoNowLayoutState.UPDATE
-        )
-
-        verifyValidateReferralSenderUseCaseCalled(slug)
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(Success(expectedResult))
-    }
-
-    @Test
-    fun `when validate referral should be success with code equals to 200, status equals to 2 and return expected result`() {
-        val channelId = "34923"
-        val slug = anyString()
-        val validateReferral = ValidateReferralUserResponse(
-            gamiReferralValidateUser = ValidateReferralUserResponse.GamiReferralValidateUser(
-                resultStatus = ValidateReferralUserResponse.GamiReferralValidateUser.ResultStatus(
-                    code = "200",
-                    message = listOf(),
-                    reason = ""
-                ),
-                status = 2
-            )
-        )
-
-        onValidateReferralSender_thenReturn(slug, validateReferral)
-
-        val chooseAddress = TokoNowChooseAddressWidgetUiModel(id = "0")
-        val referralWidget = HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel(
-            id = channelId,
-            warehouseId = "",
-            state = HomeLayoutItemState.LOADED,
-            isSender = false,
-            userStatus = "2"
-        )
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            chooseAddress,
-            HomeLayoutItemState.LOADED
-        ))
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            referralWidget,
-            HomeLayoutItemState.NOT_LOADED
-        ))
-
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        val items = listOf<Visitable<*>>(
-            chooseAddress,
-            referralWidget
-        )
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = items,
-            state = TokoNowLayoutState.UPDATE
-        )
-
-        verifyValidateReferralSenderUseCaseCalled(slug)
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(Success(expectedResult))
-    }
-
-    @Test
-    fun `when validate referral should be success with code equals to 4444 and remove referral widget`() {
-        val channelId = "34923"
-        val validateReferral = ValidateReferralUserResponse(
-            gamiReferralValidateUser = ValidateReferralUserResponse.GamiReferralValidateUser(
-                resultStatus = ValidateReferralUserResponse.GamiReferralValidateUser.ResultStatus(
-                    code = "4444",
-                    message = listOf(),
-                    reason = ""
-                ),
-                status = 1
-            )
-        )
-
-        coEvery { validateReferralUserUseCase.execute(any()) } returns validateReferral
-
-        val chooseAddress = TokoNowChooseAddressWidgetUiModel(id = "0")
-        val referralWidget = HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel(
-            id = channelId,
-            warehouseId = "",
-            state = HomeLayoutItemState.LOADED,
-            isSender = false
-        )
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            chooseAddress,
-            HomeLayoutItemState.LOADED
-        ))
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            referralWidget,
-            HomeLayoutItemState.NOT_LOADED
-        ))
-
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        val items = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0")
-        )
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = items,
-            state = TokoNowLayoutState.UPDATE
-        )
-
-        coVerify { validateReferralUserUseCase.execute(any()) }
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(Success(expectedResult))
-    }
-
-    @Test
-    fun `when validate referral should be failed and remove referral widget`() {
-        val channelId = "34923"
-        val slug = anyString()
-        onValidateReferralSender_thenReturn(slug, MessageErrorException("this is an error"))
-
-        val chooseAddress = TokoNowChooseAddressWidgetUiModel(id = "0")
-        val referralWidget = HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel(
-            id = channelId,
-            warehouseId = "",
-            state = HomeLayoutItemState.LOADED,
-            isSender = false
-        )
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            chooseAddress,
-            HomeLayoutItemState.LOADED
-        ))
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            referralWidget,
-            HomeLayoutItemState.NOT_LOADED
-        ))
-
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        val items = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0")
-        )
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = items,
-            state = TokoNowLayoutState.UPDATE
-        )
-
-        verifyValidateReferralSenderUseCaseCalled(slug)
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(Success(expectedResult))
-    }
-
-    @Test
-    fun `when update isButtonLoading referral widget should be true`() {
-        val channelId = "34923"
-
-        val chooseAddress = TokoNowChooseAddressWidgetUiModel(id = "0")
-        val referralWidget = HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel(
-            id = channelId,
-            warehouseId = "",
-            state = HomeLayoutItemState.LOADED,
-            isSender = false
-        )
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            chooseAddress,
-            HomeLayoutItemState.LOADED
-        ))
-
-        addHomeLayoutItem(HomeLayoutItemUiModel(
-            referralWidget,
-            HomeLayoutItemState.LOADED
-        ))
-
-        viewModel.updateSharingReferral(
-            item = referralWidget,
-            isButtonLoading = true
-        )
-
-        referralWidget.isButtonLoading = true
-        val items = listOf(
-            chooseAddress,
-            referralWidget
-        )
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = items,
-            state = TokoNowLayoutState.LOADED
-        )
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(Success(expectedResult))
     }
 
     @Test
@@ -3157,6 +3160,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             isNow15 = false,
             isImpressionTracker = isImpressionTracker
         ))
+    }
+
+    @Test
+    fun `when trackSwitchService throws error should do nothing`() {
+        val isImpressionTracker = true
+        val localCacheModel = createLocalCacheModel()
+
+        onGetUserSession_returnNull()
+
+        viewModel.trackSwitchService(localCacheModel, isImpressionTracker)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(null)
     }
 
     @Test

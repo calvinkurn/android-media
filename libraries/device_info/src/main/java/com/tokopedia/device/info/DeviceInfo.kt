@@ -269,17 +269,15 @@ object DeviceInfo {
         timeOutInMillis: Long = 3000L
     ) {
         GlobalScope.launch(Dispatchers.IO) {
-            val adsIdCache: String = getCacheAdsId(context)
-            if (adsIdCache.isNotBlank()) {
-                withContext(Dispatchers.Main) {
+            try {
+                val adsIdCache: String = getCacheAdsId(context)
+                if (adsIdCache.isNotBlank()) {
                     onSuccessGetAdsId?.invoke(adsIdCache)
-                }
-            } else {
-                val adId = getlatestAdId(context, timeOutInMillis)
-                withContext(Dispatchers.Main) {
+                } else {
+                    val adId = getlatestAdId(context, timeOutInMillis)
                     onSuccessGetAdsId?.invoke(adId)
                 }
-            }
+            } catch (ignored:Exception) { }
         }
     }
 

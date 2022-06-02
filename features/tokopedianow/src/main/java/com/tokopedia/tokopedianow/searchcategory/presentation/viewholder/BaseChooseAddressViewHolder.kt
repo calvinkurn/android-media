@@ -52,6 +52,8 @@ abstract class BaseChooseAddressViewHolder(
             override fun getLocalizingAddressHostSourceTrackingData() = trackingSource
 
             override fun onLocalizingAddressLoginSuccess() { }
+
+            override fun getEventLabelHostPage() = chooseAddressListener.trackingEventLabel()
         })
     }
 

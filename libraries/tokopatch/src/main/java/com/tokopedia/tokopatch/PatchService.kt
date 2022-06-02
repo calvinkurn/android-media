@@ -124,7 +124,7 @@ class PatchService(val context: Context) {
     }
 
     private fun onErrorGetPatch(t: Throwable) {
-        repository.allData?.let {
+        repository.allData()?.let {
             val patchList: MutableList<Patch> = mutableListOf()
             it.forEachIndexed { index, result ->
                 decodeData(result, patchList)
