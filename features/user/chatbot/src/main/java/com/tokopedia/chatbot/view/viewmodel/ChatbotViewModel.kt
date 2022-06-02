@@ -30,6 +30,8 @@ class ChatbotViewModel @Inject constructor(
         inboxTicketListResponse.ticket?.TicketData?.notice?.let {
             if (it.isActive)
                 _ticketList.postValue(TicketListState.BottomSheetData(it))
+            else
+                _ticketList.postValue(TicketListState.ShowContactUs)
         }?: kotlin.run {
             _ticketList.postValue(TicketListState.ShowContactUs)
         }
