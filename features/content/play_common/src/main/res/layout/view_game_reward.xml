@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/tv_reward_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
