@@ -16,12 +16,12 @@ class PromoListTokoFood(
     val message: String = "",
     @SerializedName("status")
     @Expose
-    val status: Int = 0,
+    val status: String = "",
     @SerializedName("data")
     @Expose
     val data: PromoListTokoFoodData = PromoListTokoFoodData()
 ) {
-    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS_INT
+    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
 }
 
 class PromoListTokoFoodData(
@@ -94,24 +94,6 @@ data class PromoListTokoFoodEmptyState(
 )
 
 data class PromoListTokoFoodSection(
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
-    @SerializedName("sub_title")
-    @Expose
-    val subtitle: String = "",
-    @SerializedName("icon_url")
-    @Expose
-    val iconUrl: String = "",
-    @SerializedName("is_enabled")
-    @Expose
-    val isEnabled: Boolean = false,
-    @SerializedName("sub_sections")
-    @Expose
-    val subSection: PromoListTokoFoodSubSection = PromoListTokoFoodSubSection()
-)
-
-data class PromoListTokoFoodSubSection(
     @SerializedName("title")
     @Expose
     val title: String = "",
