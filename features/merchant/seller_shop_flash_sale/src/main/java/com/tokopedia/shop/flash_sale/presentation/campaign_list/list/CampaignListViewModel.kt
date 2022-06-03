@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.flash_sale.domain.entity.*
+import com.tokopedia.shop.flash_sale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flash_sale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flash_sale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flash_sale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flash_sale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,9 +23,9 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
-    private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase
+    private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
 ) : BaseViewModel(dispatchers.main) {
-
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
     val campaigns: LiveData<Result<CampaignMeta>>
@@ -37,10 +39,13 @@ class CampaignListViewModel @Inject constructor(
     val campaignCreation: LiveData<Result<CampaignCreationResult>>
         get() = _campaignCreation
 
-
     private val _campaignDrafts = MutableLiveData<Result<CampaignMeta>>()
     val campaignDrafts: LiveData<Result<CampaignMeta>>
         get() = _campaignDrafts
+
+    private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
+    val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
+        get() = _shareComponentMetadata
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -120,6 +125,20 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun getShareComponentMetadata(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val metadata = getShareComponentMetadataUseCase.execute(campaignId)
+                _shareComponentMetadata.postValue(Success(metadata))
+            },
+            onError = { error ->
+                _shareComponentMetadata.postValue(Fail(error))
             }
         )
 
