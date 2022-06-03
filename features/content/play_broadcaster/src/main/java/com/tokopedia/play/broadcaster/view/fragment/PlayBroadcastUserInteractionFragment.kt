@@ -973,7 +973,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun showInteractiveGameResultWidget(showCoachmark:Boolean) {
+    private fun showInteractiveGameResultWidget(showCoachmark: Boolean) {
         interactiveGameResultViewComponent?.show()
         if (showCoachmark) {
             interactiveGameResultViewComponent?.showCoachMark()
@@ -1040,18 +1040,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         val fragment = PlayBroSelectGameBottomSheet.getFragment(childFragmentManager, requireContext().classLoader)
         fragment.show(childFragmentManager)
     }
-
-//    @Deprecated("migrate to slot based leaderboard")
-//    private fun openInteractiveLeaderboardSheet() {
-//        val fragmentFactory = childFragmentManager.fragmentFactory
-//        val leaderBoardBottomSheet = fragmentFactory.instantiate(
-//            requireContext().classLoader,
-//            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
-//        leaderBoardBottomSheet.arguments = Bundle().apply {
-//            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
-//        }
-//        leaderBoardBottomSheet.show(childFragmentManager)
-//    }
 
     private fun openQuizDetailSheet() {
         val quizDetailBottomSheet = PlayQuizDetailBottomSheet.setupQuizDetail(
