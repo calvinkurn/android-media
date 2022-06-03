@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -663,7 +662,6 @@ class MainNavViewModel @Inject constructor(
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
-            Log.e("mepage123", "getFavoriteShops: ", e)
             //find shimmering and change with result value
             findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
                 updateWidget(ErrorStateFavoriteShopDataModel(), it)
