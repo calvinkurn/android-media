@@ -46,7 +46,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     override fun sendAll(channelId: String, streamingUrl: String) {
-//        if(!isRemoteConfigEnabled) return
+        if(!isRemoteConfigEnabled) return
         val mapped = hashMapOf("channel_id" to channelId, "url" to streamingUrl)
         logCollector.getAll().chunked(LIMIT_LOG).forEach { logs ->
             logs.forEach {
