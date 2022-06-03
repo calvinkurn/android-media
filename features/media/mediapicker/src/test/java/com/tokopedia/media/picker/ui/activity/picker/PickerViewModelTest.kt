@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.activity.main
+package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.common.utils.ParamCacheManager
@@ -11,6 +11,7 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.util.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
@@ -117,10 +118,10 @@ class PickerViewModelTest {
 
     companion object {
         val mediaUiModelMockCollection = listOf(
-            MediaUiModel(1, "media 1", "sdcard/images/media1.jpg"),
-            MediaUiModel(2, "media 2", "sdcard/images/media2.jpg"),
-            MediaUiModel(3, "media 3", "sdcard/images/media3.jpg"),
-            MediaUiModel(4, "media 4", "sdcard/images/media4.jpg")
+            MediaUiModel(1, PickerFile("sdcard/images/media1.jpg")),
+            MediaUiModel(2, PickerFile("sdcard/images/media2.jpg")),
+            MediaUiModel(3, PickerFile("sdcard/images/media3.jpg")),
+            MediaUiModel(4, PickerFile("sdcard/images/media4.jpg"))
         )
     }
 }

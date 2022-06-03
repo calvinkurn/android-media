@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.activity.main
+package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

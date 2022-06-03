@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.activity.main
+package com.tokopedia.media.picker.ui.activity.picker
 
 import android.app.Activity
 import android.content.Intent
@@ -18,13 +18,11 @@ import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
-import com.tokopedia.media.picker.ui.activity.main.component.ParentContainerComponent
+import com.tokopedia.media.picker.ui.component.BottomNavComponent
+import com.tokopedia.media.picker.ui.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
-import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
-import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
@@ -36,9 +34,11 @@ import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.utils.toMb
-import com.tokopedia.picker.common.utils.toSec
+import com.tokopedia.picker.common.util.toMb
+import com.tokopedia.picker.common.util.toSec
+import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -47,7 +47,7 @@ import javax.inject.Inject
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , NavToolbarComponent.Listener
-    , PickerActivityListener
+    , PickerActivityContract
     , BottomNavComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
@@ -150,6 +150,7 @@ open class PickerActivity : BaseActivity()
 
         // get pre-included media items
         param.get().includeMedias()
+            .map { it.asPickerFile() }
             .map { it.toUiModel() }
             .also {
                 stateOnChangePublished(it)
@@ -322,13 +323,13 @@ open class PickerActivity : BaseActivity()
         onContinueClicked()
     }
 
-    override fun tabVisibility(isShown: Boolean) {
+    override fun parentTabIsShownAs(isShown: Boolean) {
         if (!param.get().isCommonPageType()) return
 
         bottomNavTab.container().showWithCondition(isShown)
     }
 
-    override fun navigateToCameraPage() {
+    override fun onEmptyStateActionClicked() {
         bottomNavTab.navigateToCameraTab()
     }
 
@@ -337,7 +338,8 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun hasVideoLimitReached(): Boolean {
-        return medias.hasVideoBy(param.get().maxVideoCount())
+        val videoFileSize = medias.filter { it.file?.isVideo() == true }.size
+        return videoFileSize >= param.get().maxVideoCount()
     }
 
     override fun hasMediaLimitReached(): Boolean {
@@ -345,32 +347,32 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMinVideoDuration(model: MediaUiModel): Boolean {
-        return model.videoDuration(applicationContext) <= param.get().minVideoDuration()
+        val duration = model.file?.videoDuration(applicationContext)?: 0L
+        return duration <= param.get().minVideoDuration()
     }
 
     override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
-        return model.videoDuration(applicationContext) > param.get().maxVideoDuration()
+        val duration = model.file?.videoDuration(applicationContext)?: 0L
+        return duration > param.get().maxVideoDuration()
     }
 
     override fun isMaxVideoSize(model: MediaUiModel): Boolean {
-        return model.isMoreThan(param.get().maxVideoFileSize())
+        return model.file?.isSizeMoreThan(param.get().maxVideoFileSize()) == true
     }
 
     override fun isMinImageResolution(model: MediaUiModel): Boolean {
-        return model.isMinImageRes(param.get().minImageResolution())
+        return model.file?.isMinImageRes(param.get().minImageResolution()) == true
     }
 
     override fun isMaxImageResolution(model: MediaUiModel): Boolean {
-        return model.isMaxImageRes(param.get().maxImageResolution())
+        return model.file?.isMaxImageRes(param.get().maxImageResolution()) == true
     }
 
     override fun isMaxImageSize(model: MediaUiModel): Boolean {
-        return model.isMoreThan(param.get().maxImageFileSize())
+        return model.file?.isSizeMoreThan(param.get().maxImageFileSize()) == true
     }
 
-    override fun isMinStorageThreshold(): Boolean {
-        return viewModel.isDeviceStorageFull()
-    }
+    override fun isMinStorageThreshold() = viewModel.isDeviceStorageFull()
 
     override fun onShowMediaLimitReachedGalleryToast() {
         onShowValidationToaster(
