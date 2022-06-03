@@ -188,7 +188,7 @@ class ExplicitView : CardUnify2 {
         }
 
         bindingFailed.containerLocalLoad.refreshBtn?.setOnClickListener {
-            if (viewModel?.loadingState == ExplicitViewModel.LOADING_STATE_QUESTION)
+            if (preferenceAnswer == null)
                 viewModel?.getExplicitContent(templateName)
             else {
                 onLoading()
