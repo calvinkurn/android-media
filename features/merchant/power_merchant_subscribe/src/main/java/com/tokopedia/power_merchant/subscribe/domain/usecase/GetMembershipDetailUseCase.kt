@@ -4,29 +4,29 @@ import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.power_merchant.subscribe.domain.mapper.BenefitPackageMapper
-import com.tokopedia.power_merchant.subscribe.domain.model.BenefitPackageResponse
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.domain.mapper.MembershipDetailMapper
+import com.tokopedia.power_merchant.subscribe.domain.model.MembershipDetailResponse
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetBenefitPackageUseCase @Inject constructor(
+class GetMembershipDetailUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository,
-    private val benefitPackageMapper: BenefitPackageMapper
-) : BaseGqlUseCase<BenefitPackageHeaderUiModel>() {
+    private val membershipDetailMapper: MembershipDetailMapper
+) : BaseGqlUseCase<MembershipDetailUiModel>() {
 
-    override suspend fun executeOnBackground(): BenefitPackageHeaderUiModel {
+    override suspend fun executeOnBackground(): MembershipDetailUiModel {
         val gqlRequest = GraphqlRequest(
             BENEFIT_PACKAGE_QUERY,
-            BenefitPackageResponse::class.java, params.parameters
+            MembershipDetailResponse::class.java, params.parameters
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
-        val gqlError = gqlResponse.getError(BenefitPackageResponse::class.java)
+        val gqlError = gqlResponse.getError(MembershipDetailResponse::class.java)
         if (gqlError.isNullOrEmpty()) {
-            val benefitPackageResponse: BenefitPackageResponse =
-                gqlResponse.getData(BenefitPackageResponse::class.java)
-            return benefitPackageMapper.mapToBenefitPackageHeader(benefitPackageResponse)
+            val membershipDetailResponse: MembershipDetailResponse =
+                gqlResponse.getData(MembershipDetailResponse::class.java)
+            return membershipDetailMapper.mapToUiModel(membershipDetailResponse)
         } else {
             throw MessageErrorException(gqlError.firstOrNull()?.message.orEmpty())
         }
@@ -42,14 +42,13 @@ class GetBenefitPackageUseCase @Inject constructor(
         private const val SHOP_ID_PARAM = "shopId"
 
         val BENEFIT_PACKAGE_QUERY = """
-            query BenefitPackage(${'$'}shopId: Int!) {
+            query MembershipDetail(${'$'}shopId: Int!) {
                shopLevel(input: {
                   shopID: "${'$'}shopId"
                   source: "android"
                   lang: "id"
                }){
                   result {
-                     shopLevel
                      period
                      itemSold
                      niv

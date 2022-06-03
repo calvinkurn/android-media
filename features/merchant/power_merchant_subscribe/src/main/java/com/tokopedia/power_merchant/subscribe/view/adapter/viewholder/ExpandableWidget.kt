@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,7 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmExpandableBinding
@@ -22,7 +28,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ExpandableWidget(
     itemView: View,
-    private val listener: Listener,
     private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetExpandableUiModel>(itemView) {
 
@@ -37,21 +42,22 @@ class ExpandableWidget(
             viewPmBenefitSection.setOnExpandedChanged(true)
             setupExpandableItem(element)
             setupPmSection()
-            setupInfoIncreaseBenefit(element.grade?.gradeName?:PMConstant.ShopGrade.PM)
-
-
+            val gradeName = element.grade?.gradeName ?: PMConstant.ShopGrade.PM
+            setupInfoIncreaseBenefit(gradeName, element.isPmActive())
         }
     }
 
-    private fun setupInfoIncreaseBenefit(grade:String) = binding?.run {
+    private fun setupInfoIncreaseBenefit(grade: String, isPmActive: Boolean) = binding?.run {
         val textColor = PMCommonUtils.getHexColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_G500
         )
-        textDescription.text = getString(R.string.pm_info_benefit_increase_desc,textColor).parseAsHtml()
-        if (grade != PMConstant.ShopGrade.PM){
+        textDescription.text = getString(
+            R.string.pm_info_benefit_increase_desc, textColor
+        ).parseAsHtml()
+        if (grade != PMConstant.ShopGrade.PM && isPmActive) {
             cardInfoBenefit.show()
-        }else{
+        } else {
             cardInfoBenefit.hide()
         }
     }
@@ -74,6 +80,7 @@ class ExpandableWidget(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupExpandableItem(element: WidgetExpandableUiModel) {
         val expandableAdapter =
             BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(
@@ -92,10 +99,5 @@ class ExpandableWidget(
             expandableAdapter.data.addAll(element.items)
             expandableAdapter.notifyDataSetChanged()
         }
-    }
-
-    interface Listener {
-        fun showUpdateInfoBottomSheet(gradeName: String)
-        fun onMembershipStatusPmProClickListener()
     }
 }

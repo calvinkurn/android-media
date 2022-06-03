@@ -76,7 +76,6 @@ class WidgetAdapterFactoryImpl(
             )
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(
                 parent,
-                widgetListener,
                 powerMerchantTracking
             )
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(
