@@ -8,6 +8,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOr
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -35,6 +36,9 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     @RelaxedMockK
     protected lateinit var getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>
 
+    @RelaxedMockK
+    protected lateinit var userSession: UserSessionInterface
+
     protected lateinit var tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper
 
     protected lateinit var tokoFoodOrderStatusMapper: TokoFoodOrderStatusMapper
@@ -47,6 +51,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         tokoFoodOrderDetailMapper = TokoFoodOrderDetailMapper(mockk(relaxed = true), mockk(relaxed = true))
         tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
         viewModel = TokoFoodOrderTrackingViewModel(
+            userSession,
             CoroutineTestDispatchersProvider,
             getTokoFoodOrderDetailUseCase,
             getTokoFoodOrderStatusUseCase,

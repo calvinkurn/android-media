@@ -10,14 +10,14 @@ class OrderTrackingNavigator(
     private val tracking: TokoFoodPostPurchaseAnalytics
 ) {
 
-    fun goToHelpPage(orderId: String?, appUrl: String) {
-        orderId?.let { tracking.clickCallHelpInStickyButton(it, "") }
+    fun goToHelpPage(orderId: String?, appUrl: String, merchantId: String) {
+        orderId?.let { tracking.clickCallHelpInStickyButton(it, merchantId) }
         RouteManager.route(fragment.context, appUrl)
     }
 
     fun goToMerchantPage(trackingWrapperUiModel: TrackingWrapperUiModel, appUrl: String) {
         with(trackingWrapperUiModel) {
-            tracking.clickBuyAgainButton(orderId, shopId, foodItems)
+            tracking.clickBuyAgainButton(orderId, trackingWrapperUiModel.merchantData, foodItems)
         }
         RouteManager.route(fragment.context, appUrl)
     }

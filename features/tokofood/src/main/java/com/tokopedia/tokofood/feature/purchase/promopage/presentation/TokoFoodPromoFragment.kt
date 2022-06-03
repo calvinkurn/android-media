@@ -29,11 +29,11 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
+import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
-import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
@@ -235,7 +235,8 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                     renderGlobalError(it.throwable ?: ResponseErrorException())
                     it.throwable?.let { throwable ->
                         renderGlobalError(throwable)
-                        TokofoodErrorLogger.logExceptionToScalyr(
+                        TokofoodErrorLogger.logExceptionToServerLogger(
+                            TokofoodErrorLogger.PAGE.PROMO,
                             throwable,
                             TokofoodErrorLogger.ErrorType.ERROR_PAGE,
                             userSession.deviceId.orEmpty(),

@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -32,6 +33,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.MerchantDataUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
@@ -89,7 +91,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onResume() {
         super.onResume()
-        tracking.viewOrderDetailPage("")
+        tracking.viewOrderDetailPage(viewModel.getMerchantData()?.merchantId.orEmpty())
     }
 
     override fun onCreateView(
@@ -145,12 +147,15 @@ class BaseTokoFoodOrderTrackingFragment :
         with(orderDetailResultUiModel) {
             orderTrackingAdapter.removeOrderTrackingData()
             orderTrackingAdapter.updateOrderTracking(orderDetailList)
-            updateViewsOrderCompleted(actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey)
+            updateViewsOrderCompleted(
+                actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatusKey,
+                orderDetailResultUiModel.merchantData
+            )
         }
     }
 
     override fun onClickDriverCall() {
-        tracking.clickCallDriverIcon(orderId, "")
+        tracking.clickCallDriverIcon(orderId, viewModel.getMerchantData()?.merchantId.orEmpty())
         viewModel.fetchDriverPhoneNumber(orderId)
     }
 
@@ -190,11 +195,17 @@ class BaseTokoFoodOrderTrackingFragment :
                     setupViews(
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
-                        it.data.toolbarLiveTrackingUiModel
+                        it.data.toolbarLiveTrackingUiModel,
+                        it.data.merchantData
                     )
                     fetchOrderLiveTracking(orderId)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -208,6 +219,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateDriverCall(it.data)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_DRIVER_PHONE_NUMBER,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_DRIVER_PHONE_NUMBER
+                    )
                     showErrorToaster("")
                 }
             }
@@ -234,7 +250,7 @@ class BaseTokoFoodOrderTrackingFragment :
         )
         driverCallBottomSheet.setTrackingListener {
             tracking.clickCallDriverCtaInBottomSheet(
-                orderId, ""
+                orderId, viewModel.getMerchantData()?.merchantId.orEmpty()
             )
         }
         driverCallBottomSheet.show(childFragmentManager)
@@ -253,6 +269,11 @@ class BaseTokoFoodOrderTrackingFragment :
                     updateOrderCompleted(it.data)
                 }
                 is Fail -> {
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_COMPLETED_ORDER_POST_PURCHASE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -273,7 +294,8 @@ class BaseTokoFoodOrderTrackingFragment :
                 updateViewsOrderCompleted(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
-                    orderStatusKey
+                    orderStatusKey,
+                    orderDetailResultUiModel.merchantData
                 )
             }
         }
@@ -288,14 +310,16 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun setupViews(
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
-        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel
+        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
+        merchantData: MerchantDataUiModel
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
                 updateViewsOrderCompleted(
                     actionButtonsUiModel,
                     toolbarLiveTrackingUiModel,
-                    orderStatus
+                    orderStatus,
+                    merchantData
                 )
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
@@ -318,9 +342,10 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun updateViewsOrderCompleted(
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        orderStatus: String
+        orderStatus: String,
+        merchantDataModel: MerchantDataUiModel
     ) {
-        setupStickyButton(actionButtonsUiModel)
+        setupStickyButton(actionButtonsUiModel, merchantDataModel)
         setSwipeRefreshEnabled()
         setToolbarLiveTracking(toolbarLiveTrackingUiModel, orderStatus)
     }
@@ -345,13 +370,16 @@ class BaseTokoFoodOrderTrackingFragment :
         toolbarHandler?.setToolbarScrolling(orderStatus)
     }
 
-    private fun setupStickyButton(actionButtons: ActionButtonsUiModel) {
+    private fun setupStickyButton(
+        actionButtons: ActionButtonsUiModel,
+        merchantData: MerchantDataUiModel
+    ) {
         binding?.run {
             containerOrderTrackingHelpButton.hide()
             containerOrderTrackingActionsButton.apply {
                 setOrderTrackingNavigator(navigator)
                 setupActionButtons(
-                    TrackingWrapperUiModel(orderId, "", viewModel.getFoodItems()),
+                    TrackingWrapperUiModel(orderId, viewModel.getFoodItems(), merchantData),
                     actionButtons,
                     childFragmentManager
                 )
@@ -380,6 +408,20 @@ class BaseTokoFoodOrderTrackingFragment :
                 ).show()
             }
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.POST_PURCHASE,
+            throwable,
+            errorType,
+            viewModel.userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     companion object {
