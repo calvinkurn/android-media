@@ -21,4 +21,4 @@ import dagger.Component
         SessionModule::class],
     dependencies = [BaseAppComponent::class])
 interface HomeAccountTopAdsComponentsStub : HomeAccountUserComponents {
-}d
+}
