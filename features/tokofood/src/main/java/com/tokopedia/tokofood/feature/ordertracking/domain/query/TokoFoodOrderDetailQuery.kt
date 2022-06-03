@@ -22,6 +22,7 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
               time
             }
             merchant {
+              merchantId
               displayName
               distanceInKm
             }
@@ -31,6 +32,10 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
               info
             }
             items {
+              cartId
+              categoryId
+              categoryName
+              itemId
               displayName
               price
               quantity

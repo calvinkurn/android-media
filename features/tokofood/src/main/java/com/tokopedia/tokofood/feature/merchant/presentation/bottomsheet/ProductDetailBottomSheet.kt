@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokofood.databinding.BottomsheetProductDetailLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -70,7 +69,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 if (productUiModel.isCustomizable) {
                     clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
                 }
-                if (productUiModel.orderQty.isZero()) {
+                if (!productUiModel.isAtc) {
                     clickListener.onAtcButtonClicked(
                             productUiModel = productUiModel,
                             cardPositions = this

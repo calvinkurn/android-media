@@ -14,6 +14,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListener) : BottomSheetUnify() {
 
     private var selectedProductId: String = ""
+    private var orderNote: String = ""
 
     interface OnSaveNoteButtonClickListener {
         fun onSaveNoteButtonClicked(productId: String, orderNote: String)
@@ -52,17 +53,18 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
     }
 
     private fun setupView(binding: BottomsheetOrderNoteLayoutBinding?) {
-        binding?.notesInput?.minLine = MIN_LINES
         binding?.run {
-            binding.notesInput.editText.addTextChangedListener(object : TextWatcher {
+            this.notesInput.minLine = MIN_LINES
+            this.notesInput.editText.setText(orderNote)
+            this.notesInput.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
                     binding.saveNotesButton.isEnabled = s.isNotBlank()
                 }
             })
-            binding.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
-            binding.saveNotesButton.setOnClickListener {
+            this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
+            this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
                 clickListener.onSaveNoteButtonClicked(selectedProductId, orderNote)
             }
@@ -73,8 +75,8 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
         this.selectedProductId = productId
     }
 
-    fun renderOrderNote(orderNote: String) {
-        binding?.notesInput?.editText?.setText(orderNote)
+    fun setOrderNote(orderNote: String) {
+        this.orderNote = orderNote
     }
 
     fun show(fragmentManager: FragmentManager) {

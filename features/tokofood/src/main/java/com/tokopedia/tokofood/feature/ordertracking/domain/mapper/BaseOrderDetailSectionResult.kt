@@ -106,6 +106,10 @@ open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
     ) {
         addAll(foodList.take(Int.ONE).map {
             FoodItemUiModel(
+                cartId = it.cartId,
+                categoryId = it.categoryId,
+                categoryName = it.categoryName,
+                itemId = it.itemId,
                 foodName = it.displayName,
                 quantity = it.quantity,
                 priceStr = it.price,

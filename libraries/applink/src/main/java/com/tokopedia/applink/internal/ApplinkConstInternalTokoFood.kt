@@ -7,6 +7,7 @@ object ApplinkConstInternalTokoFood {
     @JvmField
     val HOST_FOOD = "food"
 
+    //tokopedia-android-internal://food
     @JvmField
     val INTERNAL_TOKO_FOOD = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FOOD"
 
