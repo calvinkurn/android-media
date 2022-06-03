@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.activateCheckout.helper
 import android.os.Bundle
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.InstallmentBottomSheetDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.common.analytics.OccBottomSheetImpression
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
@@ -10,13 +11,14 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterIns
 object OccBundleHelper {
 
     fun setBundleForBottomSheetPartner(
+        listofTenureDetail: List<TenureDetail>,
+        selectedPosition: Int,
         listOfGateway: PaylaterGetOptimizedModel,
         gateWayId: String,
         variantName: String,
         productId: String,
         tenureSelected: String,
-        quantity: Int,
-        emiAmount: String
+        quantity: Int
     ): Bundle {
 
         val bundle = Bundle().apply {
@@ -44,14 +46,18 @@ object OccBundleHelper {
                 SelectGateWayBottomSheet.CURRENT_QUANTITY,
                 quantity
             )
-            putString(
-                SelectGateWayBottomSheet.SELECTED_EMI,
-                emiAmount
-            )
-
+            if (listofTenureDetail.size > selectedPosition) {
+                putString(
+                    SelectGateWayBottomSheet.SELECTED_EMI,
+                    listofTenureDetail[selectedPosition].monthly_installment.orEmpty()
+                )
+            } else {
+                putString(
+                    SelectGateWayBottomSheet.SELECTED_EMI,
+                    ""
+                )
+            }
         }
-
-
         return bundle
     }
 

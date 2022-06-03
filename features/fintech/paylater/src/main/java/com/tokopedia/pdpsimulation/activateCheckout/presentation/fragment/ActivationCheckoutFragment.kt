@@ -22,12 +22,13 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.InstallmentBott
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
+import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper.showToaster
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -44,7 +45,6 @@ import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.convertPriceVa
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -127,20 +127,9 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         )
                 is Fail ->
                     when (it.throwable) {
-                        is ShowToasterException -> showToaster(it.throwable.message)
+                        is ShowToasterException -> baseLayoutForActivation.showToaster(it.throwable.message)
                     }
             }
-        }
-    }
-
-    private fun showToaster(atcErrorMessage: String?) {
-        atcErrorMessage?.let {
-            Toaster.build(
-                baseLayoutForActivation,
-                it,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).show()
         }
     }
 
@@ -631,34 +620,21 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun openBottomSheet(it: List<TenureDetail>) {
-        if (it.size > selectedTenurePosition) {
-            SelectGateWayBottomSheet.show(
+        ActivationHelper.navigateToBottomSheet(
+            BottomSheetType.GateWayBottomSheet(
                 OccBundleHelper.setBundleForBottomSheetPartner(
+                    it,
+                    selectedTenurePosition,
                     listOfGateway,
                     payLaterActivationViewModel.selectedGatewayId,
                     payLaterActivationViewModel.variantName,
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
-                    quantity,
-                    it[selectedTenurePosition].monthly_installment.orEmpty()
-                ), childFragmentManager
-            ).setOnDismissListener {
-                setTenureDetailData()
-            }
-        } else {
-            SelectGateWayBottomSheet.show(
-                OccBundleHelper.setBundleForBottomSheetPartner(
-                    listOfGateway,
-                    payLaterActivationViewModel.selectedGatewayId,
-                    payLaterActivationViewModel.variantName,
-                    payLaterActivationViewModel.selectedProductId,
-                    payLaterActivationViewModel.selectedTenureSelected,
-                    quantity,
-                    ""
-                ), childFragmentManager
-            ).setOnDismissListener {
-                setTenureDetailData()
-            }
+                    quantity
+                )
+            ), childFragmentManager
+        ) {
+            setTenureDetailData()
         }
     }
 
@@ -832,4 +808,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             return fragment
         }
     }
+}
+
+sealed class BottomSheetType {
+    data class GateWayBottomSheet(val bundleData: Bundle) : BottomSheetType()
 }
