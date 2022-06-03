@@ -15,7 +15,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 internal class MyShopProductAdapterDelegate private constructor() {
 
     internal class Product(
-        private val onSelected: (ProductUiModel) -> Unit,
+        private val onSelected: (ProductUiModel, Int) -> Unit,
     ) : TypedAdapterDelegate<
             MyShopProductAdapter.Model.Product,
             MyShopProductAdapter.Model,

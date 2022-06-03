@@ -98,7 +98,10 @@ class ProductTagUiModelMapper @Inject constructor() {
                         priceFmt = it.price,
                         isDiscount = it.discountPercentage != 0.0,
                         discount = it.discountPercentage,
-                        discountFmt = "${it.discountPercentage}%",
+                        discountFmt = when(it.discountPercentage % 1.0 == 0.0) {
+                            true -> "${it.discountPercentage.toString().split(".")[0]}%"
+                            else -> "${it.discountPercentage}%"
+                        },
                         priceOriginal = 0.0,
                         priceOriginalFmt = it.originalPrice,
                         priceDiscount = 0.0,
@@ -114,6 +117,13 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.data.products.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
+            header = SearchHeaderUiModel(
+                totalData = response.wrapper.header.totalData,
+                totalDataText = response.wrapper.header.totalDataText,
+                responseCode = response.wrapper.header.responseCode,
+                keywordProcess = response.wrapper.header.keywordProcess,
+                componentId = response.wrapper.header.componentId,
+            ),
             suggestion = response.wrapper.data.suggestion.text,
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
@@ -122,7 +132,7 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int): PagedGlobalSearchShopResponse {
+    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int, param: SearchParamUiModel): PagedGlobalSearchShopResponse {
         return PagedGlobalSearchShopResponse(
             totalShop = response.wrapper.totalShop,
             pagedData = PagedDataUiModel(
@@ -141,6 +151,13 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.shops.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
+            header = SearchHeaderUiModel(
+                totalData = response.wrapper.header.totalData,
+                totalDataText = response.wrapper.header.totalDataText,
+                responseCode = response.wrapper.header.responseCode,
+                keywordProcess = response.wrapper.header.keywordProcess,
+                componentId = param.componentId,
+            )
         )
     }
 

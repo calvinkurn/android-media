@@ -19,7 +19,7 @@ internal class ShopCardViewHolder private constructor() {
 
     internal class Shop(
         private val binding: ItemProductTagShopListBinding,
-        private val onSelected: (ShopUiModel) -> Unit,
+        private val onSelected: (ShopUiModel, Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopCardAdapter.Model.Shop) {
@@ -36,7 +36,7 @@ internal class ShopCardViewHolder private constructor() {
                 clShopStatus.showWithCondition(item.shop.isShopAccessible.not())
 
                 btnSeeShop.setOnClickListener {
-                    onSelected(item.shop)
+                    onSelected(item.shop, adapterPosition)
                 }
             }
         }
@@ -54,7 +54,7 @@ internal class ShopCardViewHolder private constructor() {
 
             fun create(
                 parent: ViewGroup,
-                onSelected: (ShopUiModel) -> Unit
+                onSelected: (ShopUiModel, Int) -> Unit
             ) = Shop(
                 binding = ItemProductTagShopListBinding.inflate(
                     LayoutInflater.from(parent.context),

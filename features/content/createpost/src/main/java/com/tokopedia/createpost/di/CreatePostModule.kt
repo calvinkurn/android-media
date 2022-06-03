@@ -7,7 +7,10 @@ import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.presenter.CreatePostPresenter
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalyticImpl
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -27,5 +30,11 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
         return CoroutineDispatchersProvider
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideFeedAccountTypeAnalytic(userSession: UserSessionInterface): FeedAccountTypeAnalytic {
+        return FeedAccountTypeAnalyticImpl(userSession)
     }
 }

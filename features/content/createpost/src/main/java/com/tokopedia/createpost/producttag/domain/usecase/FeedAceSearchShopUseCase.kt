@@ -33,6 +33,12 @@ class FeedAceSearchShopUseCase @Inject constructor(
             query FeedAceSearchShop(${"$$PARAMS"}: String!) {
               aceSearchShop($PARAMS: ${"$$PARAMS"}) {
                 total_shop
+                header {
+                  total_data
+                  total_data_text
+                  response_code
+                  keyword_process
+                }
                 shops {
                   shop_id
                   shop_name

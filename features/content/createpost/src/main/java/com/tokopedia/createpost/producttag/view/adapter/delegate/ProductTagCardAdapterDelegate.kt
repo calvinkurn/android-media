@@ -61,7 +61,7 @@ internal class ProductTagCardAdapterDelegate private constructor() {
     }
 
     internal class Product(
-        private val onSelected: (ProductUiModel) -> Unit,
+        private val onSelected: (ProductUiModel, Int) -> Unit,
     ) : TypedAdapterDelegate<
             ProductTagCardAdapter.Model.Product,
             ProductTagCardAdapter.Model,

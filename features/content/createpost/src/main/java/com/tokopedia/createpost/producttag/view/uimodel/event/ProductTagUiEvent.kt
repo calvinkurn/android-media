@@ -1,9 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel.event
 
-import com.tokopedia.createpost.producttag.view.uimodel.NetworkResult
-import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.SearchParamUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 
 /**
@@ -22,4 +19,14 @@ sealed interface ProductTagUiEvent {
 
     data class SetProductFilterProductCount(val result: NetworkResult<String>): ProductTagUiEvent
     data class SetShopFilterProductCount(val result: NetworkResult<String>): ProductTagUiEvent
+
+    data class HitGlobalSearchProductTracker(
+        val header: SearchHeaderUiModel,
+        val param: SearchParamUiModel,
+    ): ProductTagUiEvent
+
+    data class HitGlobalSearchShopTracker(
+        val header: SearchHeaderUiModel,
+        val param: SearchParamUiModel,
+    ): ProductTagUiEvent
 }
