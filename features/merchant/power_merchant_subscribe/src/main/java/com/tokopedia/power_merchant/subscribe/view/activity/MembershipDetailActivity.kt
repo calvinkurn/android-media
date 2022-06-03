@@ -21,7 +21,6 @@ class MembershipDetailActivity : BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
 
         initInjector()
-        title = getString(R.string.pm_benefit_package_title_activity)
     }
 
     override fun getNewFragment(): Fragment {

@@ -26,7 +26,7 @@
         <activity
             android:name=".view.activity.MembershipDetailActivity"
             android:exported="false"
-            android:label="@string/pm_benefit_package_title_activity"
+            android:label="@string/pm_membership_detail_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
