@@ -986,7 +986,7 @@ class TestMainNavViewModel {
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } returns listOf(NavWishlistModel())
+        coEvery { wishlistUseCase.executeOnBackground() } returns Pair(listOf(NavWishlistModel()), true)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1003,7 +1003,9 @@ class TestMainNavViewModel {
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(NavFavoriteShopModel())
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(
+            NavFavoriteShopModel()
+        ), true)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1020,7 +1022,7 @@ class TestMainNavViewModel {
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { wishlistUseCase.executeOnBackground() } returns emptyList()
+        coEvery { wishlistUseCase.executeOnBackground() } returns Pair(listOf(), false)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1038,7 +1040,7 @@ class TestMainNavViewModel {
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
         every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns emptyList()
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(), false)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1102,7 +1104,7 @@ class TestMainNavViewModel {
 
         // Initial favorite shop
         every { userSession.isLoggedIn } returns true
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop1)
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop1), true)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1115,7 +1117,7 @@ class TestMainNavViewModel {
                 && it.favoriteShops.contains(favoriteShop1) } == true)
 
         // Refresh data
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop2)
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop2), true)
         viewModel.refreshFavoriteShopData()
 
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
@@ -1140,7 +1142,7 @@ class TestMainNavViewModel {
 
         // Initial wishlist data
         every { userSession.isLoggedIn } returns true
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist1)
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns Pair(listOf(wishlist1), true)
 
         viewModel = createViewModel(
             userSession = userSession,
@@ -1153,7 +1155,7 @@ class TestMainNavViewModel {
                 && it.wishlist.contains(wishlist1) } == true)
 
         // Refresh data
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist2)
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns Pair(listOf(wishlist2), true)
         viewModel.refreshWishlistData()
 
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
@@ -1178,7 +1180,7 @@ class TestMainNavViewModel {
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
 
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns Pair(listOf(wishlist), true)
 
         viewModel.refreshWishlistData()
 
@@ -1204,7 +1206,7 @@ class TestMainNavViewModel {
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
 
-        coEvery { wishlistNavUseCase.executeOnBackground() } returns listOf(wishlist)
+        coEvery { wishlistNavUseCase.executeOnBackground() } returns Pair(listOf(wishlist), true)
 
         viewModel.getMainNavData(true)
 
@@ -1230,7 +1232,7 @@ class TestMainNavViewModel {
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
 
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop), true)
 
         viewModel.refreshFavoriteShopData()
 
@@ -1256,7 +1258,7 @@ class TestMainNavViewModel {
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
 
-        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns listOf(favoriteShop)
+        coEvery { favoriteShopsNavUseCase.executeOnBackground() } returns Pair(listOf(favoriteShop), true)
 
         viewModel.getMainNavData(true)
 
@@ -1555,7 +1557,7 @@ class TestMainNavViewModel {
 
     @Test
     fun `given 1 wishlist with enable me page rollence then get wishlist should show only 1 wishlist full width`() {
-        val mockList1Wishlist = listOf(NavWishlistModel())
+        val mockList1Wishlist = Pair(listOf(NavWishlistModel()), true)
         val getWishlistNavUseCase = mockk<GetWishlistNavUseCase>()
         coEvery {
             getWishlistNavUseCase.executeOnBackground()
@@ -1575,7 +1577,7 @@ class TestMainNavViewModel {
 
     @Test
     fun `given 1 favorite shop with enable me page rollence then get favorite shop should show only 1 favorite shop full width`() {
-        val mockList1FavShop = listOf(NavFavoriteShopModel())
+        val mockList1FavShop = Pair(listOf(NavFavoriteShopModel()), true)
         val getFavoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
         coEvery {
             getFavoriteShopsNavUseCase.executeOnBackground()

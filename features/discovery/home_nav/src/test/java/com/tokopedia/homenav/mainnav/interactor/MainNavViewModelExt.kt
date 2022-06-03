@@ -103,11 +103,11 @@ fun createViewModel (
     }
 
     val getFavoriteShopUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf(NavFavoriteShopModel()) }
+        coEvery { it.executeOnBackground() }.answers { Pair(listOf(NavFavoriteShopModel()), true) }
     }
 
     val getWishlistUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf(NavWishlistModel()) }
+        coEvery { it.executeOnBackground() }.answers { Pair(listOf(NavWishlistModel()),true) }
     }
 
     val getReviewProductUseCaseMock = getOrUseDefault(getReviewProductUseCase) {
