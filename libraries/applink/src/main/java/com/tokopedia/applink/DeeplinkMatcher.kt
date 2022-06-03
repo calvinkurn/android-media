@@ -34,6 +34,7 @@ import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SNAPSHOT
+import com.tokopedia.applink.DeepLinkChecker.TOKOFOOD
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TRAVEL_HOMEPAGE
 import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
@@ -101,6 +102,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, null) to SHOP)
         add(Pattern(EQ, 2, null) to PRODUCT)
         add(Pattern(EQ, 3, mapOf(1 to "voucher")) to SHOP)
+        add(Pattern(EQ, 1, mapOf(0 to "gofood")) to TOKOFOOD)
     }
 
     fun match(uri: Uri): Int {
