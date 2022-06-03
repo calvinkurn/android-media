@@ -51,6 +51,7 @@ import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -424,7 +425,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             removeAllScrollListener()
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
-                is Fail -> onErrorGetHomeLayout(it.throwable)
+                is Fail -> {
+                    logExceptionTokoFoodHome(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
+                    onErrorGetHomeLayout(it.throwable)
+                }
             }
 
             rvHome?.post {
@@ -474,6 +482,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
 
                 is Fail -> {
+                    logExceptionTokoFoodHome(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_SET_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_SET_ADDRESS
+                    )
                     showToaster(it.throwable.message)
                 }
             }
@@ -796,4 +809,19 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
         universalShareBottomSheet?.show(childFragmentManager, this)
     }
+
+    private fun logExceptionTokoFoodHome(
+        throwable: Throwable,
+        errorType: String,
+        description: String,
+    ){
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.HOME,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
+    }
+
 }

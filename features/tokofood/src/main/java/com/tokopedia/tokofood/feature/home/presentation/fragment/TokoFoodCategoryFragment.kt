@@ -42,6 +42,7 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -58,6 +59,7 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCatego
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -71,6 +73,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentTokofoodCategoryBinding>()
     private val viewModel by lazy {
@@ -238,7 +243,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
-                is Fail -> onErrorGetCategoryLayout(it.throwable)
+                is Fail -> {
+                    logExceptionTokoFoodCategory(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
+                    onErrorGetCategoryLayout(it.throwable)
+                }
             }
 
             addScrollListeners()
@@ -249,6 +261,13 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             removeScrollListeners()
             when (it) {
                 is Success -> showCategoryLayout(it.data)
+                is Fail -> {
+                    logExceptionTokoFoodCategory(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+                    )
+                }
             }
             addScrollListeners()
         }
@@ -408,5 +427,19 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun goToPurchasePage() {
         navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+    }
+
+    private fun logExceptionTokoFoodCategory(
+        throwable: Throwable,
+        errorType: String,
+        description: String,
+    ){
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.CATEGORY,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
     }
 }

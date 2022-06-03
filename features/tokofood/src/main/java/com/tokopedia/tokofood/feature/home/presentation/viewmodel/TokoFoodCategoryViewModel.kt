@@ -143,7 +143,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
             _categoryLoadMore.postValue(Success(data))
         }){
-
+            _categoryLoadMore.postValue(Fail(it))
         }
     }
 
