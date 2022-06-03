@@ -670,7 +670,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(requireContext()).apply {
             setListener(this@FeedPlusFragment)
             setAnalyticModel(PlayWidgetFeedsAnalyticModel())
 //            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(feedPlayWidgetAnalytic))

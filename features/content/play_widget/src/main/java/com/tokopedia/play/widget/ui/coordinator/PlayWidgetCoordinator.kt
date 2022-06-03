@@ -1,16 +1,14 @@
 package com.tokopedia.play.widget.ui.coordinator
 
-import android.app.Activity
+import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.di.DaggerPlayWidgetComponent
 import com.tokopedia.play.widget.di.PlayWidgetComponent
 import com.tokopedia.play.widget.di.PlayWidgetComponentCreator
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
@@ -27,10 +25,11 @@ import kotlinx.coroutines.cancelChildren
 /**
  * Created by jegul on 13/10/20
  */
-class PlayWidgetCoordinator(
+class PlayWidgetCoordinator constructor(
+    context: Context,
     lifecycleOwner: LifecycleOwner? = null,
     mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
-    workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
+    workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -77,15 +76,7 @@ class PlayWidgetCoordinator(
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
 
-        val context = when (lifecycleOwner) {
-            is Activity -> lifecycleOwner
-            is Fragment -> lifecycleOwner.context
-            else -> null
-        }
-
-        if (context != null) {
-            widgetComponent = PlayWidgetComponentCreator.getOrCreate(context)
-        }
+        widgetComponent = PlayWidgetComponentCreator.getOrCreate(context.applicationContext)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)

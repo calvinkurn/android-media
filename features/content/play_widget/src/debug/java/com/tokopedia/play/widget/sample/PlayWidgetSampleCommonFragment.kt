@@ -44,7 +44,7 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
     private fun setupView(view: View) {
         val sampleData = getSampleData()
         val coordinatorMap = List(sampleData.size) {
-            PlayWidgetCoordinator(this).apply {
+            PlayWidgetCoordinator(requireContext()).apply {
                 setAnalyticListener(PlayWidgetSampleAnalytic(requireContext()))
             }
         }.associateWith { null }
