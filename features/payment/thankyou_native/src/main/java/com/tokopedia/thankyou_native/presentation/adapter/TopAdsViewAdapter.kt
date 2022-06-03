@@ -67,9 +67,14 @@ class TopAdsViewViewHolder(
         })
         topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
-                itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
-                    ImpresionTask(TopAdsViewViewHolder::class.java.canonicalName).execute(viewUrl)
-                    hitTopAdsImpression(viewUrl)
+                if (!topAdsUIModel.impressHolder.isInvoke) {
+                    itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
+                        ImpresionTask(TopAdsViewViewHolder::class.java.canonicalName).execute(
+                            viewUrl
+                        )
+                        hitTopAdsImpression(viewUrl)
+                        topAdsUIModel.impressHolder.invoke()
+                    }
                 }
             }
         })
