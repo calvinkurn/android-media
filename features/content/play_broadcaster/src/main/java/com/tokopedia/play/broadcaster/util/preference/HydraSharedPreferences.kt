@@ -119,6 +119,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_PERMISSION = "permission_%s"
         private const val KEY_FIRST_QUIZ_PRIZE = "first_quiz_prize_%s"
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
-        private const val KEY_FIRST_GAME_RESULT = "first_game_result%s"
+        private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
     }
 }
