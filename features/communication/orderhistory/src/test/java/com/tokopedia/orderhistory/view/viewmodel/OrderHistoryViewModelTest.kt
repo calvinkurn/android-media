@@ -108,16 +108,14 @@ class OrderHistoryViewModelTest {
         val userId = "1234"
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
 
         viewModel.addToWishListV2(productId, userId, mockListener)
 
         verify { addToWishlistV2UseCase.setParams(productId, userId) }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -126,15 +124,13 @@ class OrderHistoryViewModelTest {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addToWishListV2(productId, "", mockListener)
 
         verify { addToWishlistV2UseCase.setParams(productId, "") }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
