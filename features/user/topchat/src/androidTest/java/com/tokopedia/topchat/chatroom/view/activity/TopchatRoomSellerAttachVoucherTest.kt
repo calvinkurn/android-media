@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
@@ -22,6 +23,7 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
 
     @Test

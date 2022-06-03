@@ -8,7 +8,7 @@ data class OptionsItem(
     val caption: String = "",
 
     @SerializedName("value")
-    val value: String = ""
+    var value: String = ""
 )
 
 data class Property(

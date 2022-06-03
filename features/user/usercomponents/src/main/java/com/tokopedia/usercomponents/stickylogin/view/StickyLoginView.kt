@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.usercomponents.stickylogin.R
+import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
@@ -40,7 +40,7 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_S
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefStickyLogin
-import com.tokopedia.usercomponents.stickylogin.databinding.LayoutWidgetStickyLoginBinding
+import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel

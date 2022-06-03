@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.usercomponents.stickylogin.R
+import com.tokopedia.usercomponents.R
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class EllipsizedTextView @JvmOverloads constructor(

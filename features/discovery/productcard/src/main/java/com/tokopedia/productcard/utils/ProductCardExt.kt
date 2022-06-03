@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -17,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
@@ -26,6 +28,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
@@ -444,3 +447,21 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
         else ->
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
+
+fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
+    val viewStub = findViewById<ViewStub?>(viewStubId.id)
+    if (viewStub == null) {
+        return findViewById<T>(viewId.id)
+    } else {
+        viewStub.inflate()
+    }
+    return findViewById<T>(viewId.id)
+}
+
+fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+    if (isShow) {
+        findViewById<T>(viewStubId, viewId)?.show()
+    } else {
+        findViewById<T>(viewId.id)?.gone()
+    }
+}

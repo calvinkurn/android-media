@@ -1,6 +1,5 @@
 package com.tokopedia.usercomponents.explicit.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
@@ -46,17 +45,20 @@ class ExplicitView : CardUnify2 {
     private val bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this, false)
 
     private var templateName = ""
+    private var pageName = ""
+    private var preferenceAnswer: Boolean? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         checkAttribute(attrs)
         initView()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, templateName: String) : super(
+    constructor(context: Context, attrs: AttributeSet?, templateName: String, pageName: String) : super(
         context,
         attrs
     ) {
         this.templateName = templateName
+        this.pageName = pageName
         initView()
     }
 
@@ -71,15 +73,21 @@ class ExplicitView : CardUnify2 {
             try {
                 //you must set template name!
                 templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
+                pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
 
-                if (GlobalConfig.DEBUG && templateName.isEmpty())
+                if (GlobalConfig.DEBUG && templateName.isEmpty() && pageName.isEmpty())
                     throw IllegalArgumentException(
                         """
-                            Template name is NULL! You must declare template name!
+                            TEMPLATE NAME or PAGE NAME is NULL! You must declare its!
+                            
                             if you use xml, please declare
-                            example: app:template_name="PUT_YOUR_TEMPLATE_NAME"
-                            if you create from programmatically please put your template name in AttributeSet or when create view
-                            example: val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME")
+                            example:
+                            app:template_name="PUT_YOUR_TEMPLATE_NAME"
+                            app:page_name="PUT_YOUR_PAGE_NAME"
+                            
+                            if you create from programmatically please put your TEMPLATE NAME and PAGE NAME in AttributeSet or when create view
+                            example:
+                            val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME")
                         """.trimIndent()
                     )
             } finally {
@@ -166,7 +174,8 @@ class ExplicitView : CardUnify2 {
                 btnPositifAction.isLoading = true
                 btnNegatifAction.isEnabled = false
             }
-            viewModel?.sendAnswer(bindingQuestion.btnPositifAction.text.toString())
+            preferenceAnswer = true
+            saveAnswer()
         }
 
         bindingQuestion.btnNegatifAction.setOnClickListener {
@@ -174,11 +183,23 @@ class ExplicitView : CardUnify2 {
                 btnNegatifAction.isLoading = true
                 btnPositifAction.isEnabled = false
             }
-            viewModel?.sendAnswer(bindingQuestion.btnNegatifAction.text.toString())
+            preferenceAnswer = false
+            saveAnswer()
         }
 
         bindingFailed.containerLocalLoad.refreshBtn?.setOnClickListener {
-            viewModel?.getExplicitContent(templateName)
+            if (preferenceAnswer == null)
+                viewModel?.getExplicitContent(templateName)
+            else {
+                onLoading()
+                saveAnswer()
+            }
+        }
+    }
+
+    private fun saveAnswer() {
+        if (preferenceAnswer != null) {
+            viewModel?.sendAnswer(preferenceAnswer)
         }
     }
 
@@ -241,7 +262,6 @@ class ExplicitView : CardUnify2 {
         addView(view)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun setViewFailed() {
         bindingFailed.containerLocalLoad.apply {
             title?.text = context.getString(R.string.explicit_failed_title)
