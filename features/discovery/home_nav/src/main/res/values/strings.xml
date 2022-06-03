@@ -114,4 +114,6 @@
     <string name="empty_state_non_logged_in_desc">Masuk atau daftar ke Tokopedia biar bisa lihat daftar transaksi, wishlist, dan toko yang kamu follow di sini!</string>
 
     <string name="global_view_all">Lihat Semua</string>
+
+    <string name="wishlist_cashback">Cashback</string>
 </resources>

@@ -7,10 +7,10 @@ data class FavoriteShopData(
     @SerializedName("userShopFollow")
     @Expose
     val userShopFollow: FavoriteShopResult? = FavoriteShopResult()
-)
-
-data class FavoriteShopResult(
-    @SerializedName("result")
-    @Expose
-    val favoriteShops: FavoriteShops? = FavoriteShops()
-)
+){
+    data class FavoriteShopResult(
+        @SerializedName("result")
+        @Expose
+        val favoriteShops: FavoriteShops? = FavoriteShops()
+    )
+}

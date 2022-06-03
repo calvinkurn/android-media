@@ -15,8 +15,8 @@ import javax.inject.Inject
  * Created by Frenzel on 18/04/22
  */
 class GetFavoriteShopsNavUseCase @Inject constructor (
-    private val graphqlUseCase: GraphqlUseCase<FavoriteShopData>,
-    private val userSession: UserSessionInterface
+        private val graphqlUseCase: GraphqlUseCase<FavoriteShopData>,
+        private val userSession: UserSessionInterface
 ): UseCase<Pair<List<NavFavoriteShopModel>, Boolean>>(){
 
     init {
@@ -47,8 +47,8 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
                 "              }\n" +
                 "            }"
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setTypeClass(FavoriteShopData::class.java)
         graphqlUseCase.setRequestParams(generateParam(userId = userSession.userId.toInt()))
+        graphqlUseCase.setTypeClass(FavoriteShopData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
