@@ -29,7 +29,6 @@ class FavoriteShopViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_favorite_shop_list
-        private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
         private const val EDGE_MARGIN = 16f
         private const val SPACING_BETWEEN = 8f
         private const val MAX_CARD_HEIGHT = 80f
@@ -55,7 +54,7 @@ class FavoriteShopViewHolder(itemView: View,
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
         if(visitableList.isEmpty()){
             visitableList.add(EmptyStateFavoriteShopDataModel())
-        } else if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
+        } else if(element.showViewAll){
             visitableList.add(OtherFavoriteShopModel())
             binding?.favoriteShopRv?.setHeightBasedOnCardMaxHeight()
         }

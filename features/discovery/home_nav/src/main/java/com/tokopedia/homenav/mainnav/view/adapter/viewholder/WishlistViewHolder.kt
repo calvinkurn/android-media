@@ -29,7 +29,6 @@ class WishlistViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_wishlist_list
-        private const val MAX_WISHLIST_TO_SHOW = 5
         private const val EDGE_MARGIN = 16f
         private const val SPACING_BETWEEN = 8f
         private const val MAX_CARD_HEIGHT = 80f
@@ -55,7 +54,7 @@ class WishlistViewHolder(itemView: View,
         visitableList.addAll(element.wishlist.map { WishlistModel(it) })
         if (visitableList.isEmpty()) {
             visitableList.add(EmptyStateWishlistDataModel())
-        } else if(element.wishlist.size >= MAX_WISHLIST_TO_SHOW) {
+        } else if(element.showViewAll) {
             visitableList.add(OtherWishlistModel())
             binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()
         }

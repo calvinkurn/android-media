@@ -9,6 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  * Created by Frenzel on 18/04/22
  */
 data class WishlistDataModel(
+        val showViewAll: Boolean = false,
         val wishlist: List<NavWishlistModel>
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = "wishlist"

@@ -641,13 +641,15 @@ class MainNavViewModel @Inject constructor(
             updateWidget(ShimmerFavoriteShopDataModel(), it.index)
         }
         try {
-            val favoriteShopList = getFavoriteShopsNavUseCase.get().executeOnBackground()
+            val favoriteShopResult = getFavoriteShopsNavUseCase.get().executeOnBackground()
+            val favoriteShopList = favoriteShopResult.first
+            val hasNext = favoriteShopResult.second
 
             if (favoriteShopList.isNotEmpty()) {
                 if(favoriteShopList.size == SIZE_LAYOUT_SHOW_FULL_WIDTH){
                     favoriteShopList[INDEX_FOR_FULL_WIDTH].fullWidth = true
                 }
-                val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopList)
+                val favoriteShopsItemModel = FavoriteShopListDataModel(showViewAll = hasNext, favoriteShops = favoriteShopList)
 
                 //find shimmering and change with result value
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
@@ -655,7 +657,7 @@ class MainNavViewModel @Inject constructor(
                 }
             } else {
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
-                    updateWidget(FavoriteShopListDataModel(listOf()), it)
+                    updateWidget(FavoriteShopListDataModel(favoriteShops = listOf()), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -691,20 +693,22 @@ class MainNavViewModel @Inject constructor(
             updateWidget(ShimmerWishlistDataModel(), it.index)
         }
         try {
-            val wishlist = getWishlistNavUseCase.get().executeOnBackground()
+            val wishlistResult = getWishlistNavUseCase.get().executeOnBackground()
+            val wishlist = wishlistResult.first
+            val hasNext = wishlistResult.second
 
             if (wishlist.isNotEmpty()) {
                 if(wishlist.size == SIZE_LAYOUT_SHOW_FULL_WIDTH){
                     wishlist[INDEX_FOR_FULL_WIDTH].fullWidth = true
                 }
-                val wishlistModel = WishlistDataModel(wishlist)
+                val wishlistModel = WishlistDataModel(showViewAll = hasNext, wishlist = wishlist)
 
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                     updateWidget(wishlistModel, it)
                 }
             } else {
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
-                    updateWidget(WishlistDataModel(listOf()), it)
+                    updateWidget(WishlistDataModel(wishlist = listOf()), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -794,9 +798,9 @@ class MainNavViewModel @Inject constructor(
                     it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                     TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant),
                     it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    WishlistDataModel(listOf()),
+                    WishlistDataModel(wishlist = listOf()),
                     it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    FavoriteShopListDataModel(listOf()),
+                    FavoriteShopListDataModel(favoriteShops = listOf()),
                     SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant)
                 )
             }
