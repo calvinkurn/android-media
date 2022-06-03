@@ -16,7 +16,7 @@
     tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-        android:id="@+id/choose_address_widget"
+        android:id="@+id/widget_choose_addres"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

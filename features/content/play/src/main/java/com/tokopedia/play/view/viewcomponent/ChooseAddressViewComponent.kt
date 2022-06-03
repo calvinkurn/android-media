@@ -16,6 +16,8 @@ class ChooseAddressViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
+    private val chooseAddressWidget: ChooseAddressWidget = findViewById(R.id.widget_choose_addres)
+
     fun showWithHeight(height: Int) {
         if (rootView.height != height) {
             val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
@@ -34,5 +36,7 @@ class ChooseAddressViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    interface Listener {}
+    interface Listener {
+        fun getFragmentForAddress(view: ChooseAddressViewComponent) : Fragment
+    }
 }
