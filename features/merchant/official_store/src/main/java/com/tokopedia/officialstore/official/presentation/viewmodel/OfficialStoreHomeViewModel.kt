@@ -324,22 +324,16 @@ class OfficialStoreHomeViewModel @Inject constructor(
         model: RecommendationItem,
         wishlistV2ActionListener: WishlistV2ActionListener
     ) {
-        if (model.isTopAds) {
-            launchCatchError(block = {
-                _topAdsWishlistResult.value = addTopAdsWishlist(model)
-                _topAdsWishlistResult.value?.apply {
-                    when (this) {
-                        is Success -> wishlistV2ActionListener.onSuccessAddWishlist(
-                            AddToWishlistV2Response.Data.WishlistAddV2(success = true), model.productId.toString())
-                        is Fail -> wishlistV2ActionListener.onSuccessAddWishlist(
-                            AddToWishlistV2Response.Data.WishlistAddV2(success = false), model.productId.toString())
-                    }
-                }
-            }) {
-                wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
+        launchCatchError(coroutineContext, block={
+            addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = addToWishlistV2UseCase.executeOnBackground()
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, model.productId.toString())
             }
-        } else {
-            doAddWishlistV2(model, wishlistV2ActionListener)
+        }){
+            wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
         }
     }
 
@@ -360,17 +354,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
-    private fun doAddWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                 if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())
-            },
-            onError = {
-                actionListener.onErrorAddWishList(it, model.productId.toString())
-            })
-    }
-
     fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
@@ -388,13 +371,17 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
-                } },
-            onError = { wishlistV2ActionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
+        launchCatchError(coroutineContext, block={
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = deleteWishlistV2UseCase.executeOnBackground()
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }){
+            wishlistV2ActionListener.onErrorRemoveWishlist(it, model.productId.toString())
+        }
     }
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
