@@ -22,9 +22,9 @@ class ProofOfDeliveryActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         var fragment: ProofOfDeliveryFragment? = null
         if (intent.data?.lastPathSegment != null) {
-            var orderId = intent.data?.lastPathSegment?.toLong()
-            var imageId = intent.getStringExtra(PodConstant.QUERY_IMAGE_ID)
-            var description = intent.getStringExtra(PodConstant.QUERY_DESCRIPTION)
+            val orderId = intent.data?.lastPathSegment?.toLong()
+            val imageId = intent.getStringExtra(PodConstant.QUERY_IMAGE_ID)
+            val description = intent.getStringExtra(PodConstant.QUERY_DESCRIPTION)
             fragment = ProofOfDeliveryFragment.createFragment(orderId, imageId, description)
         }
         return fragment
