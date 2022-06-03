@@ -257,7 +257,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     }
 
     private fun eventLabel(vararg label: Any): String {
-        return label.joinToString { " - " }
+        return label.joinToString(separator = " - ")
     }
 
     companion object {
