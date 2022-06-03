@@ -6,6 +6,8 @@ val GQL_Affiliate_Validate: String = """query validateAffiliateUserStatus(${"$"}
       Status
       IsRegistered
       IsEligible
+      IsReviewed
+      IsSystemDown
       Error {
         ErrorType
         Message

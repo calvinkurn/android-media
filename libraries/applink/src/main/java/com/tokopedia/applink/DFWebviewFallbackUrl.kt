@@ -25,6 +25,9 @@ object DFWebviewFallbackUrl {
     // Salam Umrah
     const val SALAM_UMRAH = "https://m.tokopedia.com/s/umroh"
 
+    // Digital
+    const val DIGITAL_SMART_BILLS = "https://www.tokopedia.com/bayar-sekaligus"
+
     //Entertainment
     const val ENTERTAINMENT_EVENT = "https://www.tokopedia.com/events"
     const val ENTERTAINMENT_DEALS = "https://www.tokopedia.com/deals"

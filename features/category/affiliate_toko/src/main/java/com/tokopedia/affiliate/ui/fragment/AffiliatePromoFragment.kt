@@ -15,7 +15,15 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.ALMOST_OOS
+import com.tokopedia.affiliate.AVAILABLE
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.EMPTY_STOCK
+import com.tokopedia.affiliate.ON_REGISTERED
+import com.tokopedia.affiliate.ON_REVIEWED
+import com.tokopedia.affiliate.PRODUCT_INACTIVE
+import com.tokopedia.affiliate.SHOP_INACTIVE
+import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
@@ -23,9 +31,12 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
+import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextFieldInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionErrorCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
@@ -33,7 +44,6 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCa
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,15 +51,14 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
-import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
+class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
         AffiliateLinkTextFieldInterface, AffiliatePromoInterface {
 
     @Inject
@@ -118,6 +127,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         }
         setupViewPager()
         showDefaultState()
+        affiliatePromoViewModel.getAffiliateValidateUser()
     }
 
     fun handleBack() {
@@ -196,52 +206,60 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
-            adapter.clearAllElements()
-            if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
-                showData(true)
-                if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
-                    view?.rootView?.let {
-                        Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
-                                Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                    }
-                    showDefaultState()
-                    sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
-                } else {
-                    affiliateSearchData.searchAffiliate?.data?.error?.let {
-                        adapter.addElement(AffiliatePromotionErrorCardModel(it))
-                    }
-                    val errorLabel = when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                            AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                            AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
-                        AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                            AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
-                        else -> AffiliateAnalytics.LabelKeys.NOT_URL
-                    }
-                    sendSearchEvent(errorLabel)
-                }
-            } else {
-                affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
-                    showData(false)
-                    items.forEach {
-                        it?.let {
-                            val isBlackListedUser = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
-                            if(isBlackListedUser){
-                                it.status?.isLinkGenerationAllowed = !isBlackListedUser
-                            }
-                            adapter.addElement(AffiliatePromotionCardModel(it))
-                        }
-                    }
-                    if(items.isNotEmpty()) {
-                        items.first()?.let {
-                            sendEnhancedTracker(it)
-                        }
-                    }
-
-                }
-            }
+            onGetAffiliateSearchData(affiliateSearchData)
         })
+
+        affiliatePromoViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            onGetValidateUserData(validateUserdata)
+        })
+        affiliatePromoViewModel.getAffiliateAnnouncement().observe(this,{
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(it,
+                activity)
+        })
+    }
+
+    private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
+        adapter.clearAllElements()
+        if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
+            showData(true)
+            if (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus == 0) {
+                view?.rootView?.let {
+                    Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+                showDefaultState()
+                sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
+            } else {
+                affiliateSearchData.searchAffiliate?.data?.error?.let {
+                    adapter.addElement(AffiliatePromotionErrorCardModel(it))
+                }
+                val errorLabel = when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
+                    AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
+                        AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
+                    AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
+                        AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
+                    AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
+                        AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
+                    else -> AffiliateAnalytics.LabelKeys.NOT_URL
+                }
+                sendSearchEvent(errorLabel)
+            }
+        } else {
+            affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
+                showData(false)
+                items.forEach {
+                    it?.let {
+                        adapter.addElement(AffiliatePromotionCardModel(it))
+                    }
+                }
+                if(items.isNotEmpty()) {
+                    items.first()?.let {
+                        sendEnhancedTracker(it)
+                    }
+                }
+
+            }
+        }
     }
 
     private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
@@ -331,6 +349,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         }
     }
 
+    private fun disableSearchButton() {
+        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
+    }
+
     override fun onEditState(state: Boolean) {
         AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
@@ -363,6 +385,21 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     override fun enterLinkButtonClicked() {
         product_link_et.editingState(true)
+    }
+
+    override fun onSystemDown() {
+        disableSearchButton()
+        affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
+        affiliatePromoViewModel.getAnnouncementInformation()
+    }
+
+    override fun onReviewed() {
+        affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
+        affiliatePromoViewModel.getAnnouncementInformation()
+    }
+
+    override fun onUserRegistered() {
+        affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
     }
 }
 

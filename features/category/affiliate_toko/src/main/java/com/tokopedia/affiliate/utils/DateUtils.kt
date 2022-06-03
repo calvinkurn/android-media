@@ -12,7 +12,7 @@ import kotlin.Exception
 
 class DateUtils {
 
-    fun formatDate(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = dd_MMM_yyyy_HH_mm, dateString: String): String {
+    fun formatDate(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): String {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
             fromFormat.isLenient = false
