@@ -1,8 +1,6 @@
 package com.tokopedia.media.picker.ui.core
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -18,15 +16,9 @@ import com.tokopedia.media.picker.helper.utils.PickerCameraViewActions
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
-import okhttp3.internal.notify
-import org.junit.After
-import org.junit.Before
 
 abstract class CameraPageTest : PickerTest() {
-
     object Robot {
-        val countingIdlingResource = CountingIdlingResource("CameraPageIdlingResource")
-
         fun clickCapturePhoto() {
             onView(
                 withId(R.id.btn_take_camera)
@@ -138,5 +130,9 @@ abstract class CameraPageTest : PickerTest() {
                 withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
+    }
+
+    companion object {
+        val countingIdlingResource = CountingIdlingResource("CameraPageIdlingResource")
     }
 }
