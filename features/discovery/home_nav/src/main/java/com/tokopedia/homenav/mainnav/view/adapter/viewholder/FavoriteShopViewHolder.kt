@@ -12,6 +12,7 @@ import com.tokopedia.homenav.databinding.HolderFavoriteShopListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.FavoriteShopTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.FavoriteShopAdapter
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.OtherFavoriteShopModel
@@ -52,7 +53,9 @@ class FavoriteShopViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.favoriteShops.map { FavoriteShopModel(it) })
-        if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
+        if(visitableList.isEmpty()){
+            visitableList.add(EmptyStateFavoriteShopDataModel())
+        } else if(element.favoriteShops.size >= MAX_FAVORITE_SHOPS_TO_SHOW){
             visitableList.add(OtherFavoriteShopModel())
             binding?.favoriteShopRv?.setHeightBasedOnCardMaxHeight()
         }

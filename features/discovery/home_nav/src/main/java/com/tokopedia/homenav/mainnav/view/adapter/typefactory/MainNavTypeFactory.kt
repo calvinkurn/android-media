@@ -45,9 +45,5 @@ interface MainNavTypeFactory {
 
     fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int
 
-    fun type(emptyStateWishlistDataModel: EmptyStateWishlistDataModel): Int
-
-    fun type(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel): Int
-
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }

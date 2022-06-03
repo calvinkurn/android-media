@@ -18,10 +18,8 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -961,7 +959,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given using rollence variant when user not logged in should add empty state for each section`() {
+    fun `given using rollence variant when user not logged in should add empty data for each section`() {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn } returns false
@@ -969,15 +967,17 @@ class TestMainNavViewModel {
         viewModel = createViewModel(
             userSession = userSession
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateWishlistDataModel } == true)
-        Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any{ it is EmptyStateFavoriteShopDataModel } == true)
-        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
-        Assert.assertTrue(transactionListModel.orderListModel.orderList.isEmpty())
-        Assert.assertTrue(transactionListModel.orderListModel.paymentList.isEmpty())
-        Assert.assertTrue(transactionListModel.orderListModel.reviewList.isEmpty())
+        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find{ it is WishlistDataModel } as WishlistDataModel?
+        Assert.assertTrue(wishlistModel!=null && wishlistModel.wishlist.isEmpty())
+        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find{ it is FavoriteShopListDataModel } as FavoriteShopListDataModel?
+        Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
+        val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
+        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
+        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.paymentList.isEmpty())
+        Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.reviewList.isEmpty())
     }
 
     @Test
@@ -992,7 +992,7 @@ class TestMainNavViewModel {
             userSession = userSession,
             getWishlistNavUseCase = wishlistUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel } == true)
     }
@@ -1009,13 +1009,13 @@ class TestMainNavViewModel {
             userSession = userSession,
             getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel } == true)
     }
 
     @Test
-    fun `given empty data when get wishlist should add empty state`() {
+    fun `given empty data when get wishlist should add empty wishlist`() {
         val userSession = mockk<UserSessionInterface>()
         val wishlistUseCase = mockk<GetWishlistNavUseCase>()
 
@@ -1026,13 +1026,14 @@ class TestMainNavViewModel {
             userSession = userSession,
             getWishlistNavUseCase = wishlistUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateWishlistDataModel } == true)
+        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as WishlistDataModel?
+        assert(wishlistModel!=null && wishlistModel.wishlist.isEmpty())
     }
 
     @Test
-    fun `given empty data when get favorite shop should add empty state`() {
+    fun `given empty data when get favorite shop should add empty favorite shops`() {
         val userSession = mockk<UserSessionInterface>()
         val favoriteShopsNavUseCase = mockk<GetFavoriteShopsNavUseCase>()
 
@@ -1043,9 +1044,10 @@ class TestMainNavViewModel {
             userSession = userSession,
             getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
-        assert(viewModel.mainNavLiveData.value?.dataList?.any { it is EmptyStateFavoriteShopDataModel } == true)
+        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as FavoriteShopListDataModel?
+        assert(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
     }
 
     @Test
@@ -1060,7 +1062,7 @@ class TestMainNavViewModel {
             userSession = userSession,
             getWishlistNavUseCase = wishlistUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
     }
@@ -1077,7 +1079,7 @@ class TestMainNavViewModel {
             userSession = userSession,
             getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
     }
@@ -1106,7 +1108,7 @@ class TestMainNavViewModel {
             userSession = userSession,
             getFavoriteShopsNavUseCase = favoriteShopsNavUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is FavoriteShopListDataModel
@@ -1144,7 +1146,7 @@ class TestMainNavViewModel {
             userSession = userSession,
             getWishlistNavUseCase = wishlistNavUseCase
         )
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         assert(viewModel.mainNavLiveData.value?.dataList?.any { it is WishlistDataModel
@@ -1171,7 +1173,7 @@ class TestMainNavViewModel {
         coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
@@ -1197,7 +1199,7 @@ class TestMainNavViewModel {
         coEvery { wishlistNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel = createViewModel(getWishlistNavUseCase = wishlistNavUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateWishlistDataModel } == true)
@@ -1223,7 +1225,7 @@ class TestMainNavViewModel {
         coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel = createViewModel(getFavoriteShopsNavUseCase = favoriteShopsNavUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)
@@ -1249,7 +1251,7 @@ class TestMainNavViewModel {
         coEvery { favoriteShopsNavUseCase.executeOnBackground() } throws MessageErrorException("")
 
         viewModel = createViewModel(getFavoriteShopsNavUseCase = favoriteShopsNavUseCase)
-        viewModel.setIsMePageUsingRollenceVariant(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
         viewModel.getMainNavData(true)
 
         Assert.assertTrue(viewModel.mainNavLiveData.value?.dataList?.any { it is ErrorStateFavoriteShopDataModel } == true)

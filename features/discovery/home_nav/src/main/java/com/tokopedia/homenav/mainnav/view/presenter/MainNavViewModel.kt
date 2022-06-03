@@ -40,11 +40,9 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
@@ -638,7 +636,7 @@ class MainNavViewModel @Inject constructor(
                 }
             } else {
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
-                    updateWidget(EmptyStateFavoriteShopDataModel(), it)
+                    updateWidget(FavoriteShopListDataModel(listOf()), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -687,7 +685,7 @@ class MainNavViewModel @Inject constructor(
                 }
             } else {
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
-                    updateWidget(EmptyStateWishlistDataModel(), it)
+                    updateWidget(WishlistDataModel(listOf()), it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -777,9 +775,9 @@ class MainNavViewModel @Inject constructor(
                     it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                     TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant),
                     it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
-                    EmptyStateWishlistDataModel(),
+                    WishlistDataModel(listOf()),
                     it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
-                    EmptyStateFavoriteShopDataModel(),
+                    FavoriteShopListDataModel(listOf()),
                     SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant)
                 )
             }
