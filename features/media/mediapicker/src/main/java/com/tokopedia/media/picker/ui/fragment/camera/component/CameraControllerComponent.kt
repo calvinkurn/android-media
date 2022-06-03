@@ -36,9 +36,8 @@ class CameraControllerComponent(
     private val activityListener: PickerActivityListener?,
     private val controllerListener: Listener,
     parent: ViewGroup,
-) : UiComponent(parent, R.id.uc_camera_controller)
-    , ViewTreeObserver.OnScrollChangedListener
-    , CameraSliderAdapter.Listener {
+) : UiComponent(parent, R.id.uc_camera_controller), ViewTreeObserver.OnScrollChangedListener,
+    CameraSliderAdapter.Listener {
 
     private val adapterData = CameraSelectionUiModel.create()
 
@@ -147,7 +146,7 @@ class CameraControllerComponent(
 
     fun setThumbnailPreview(model: MediaUiModel) {
         if (!param.isMultipleSelectionType()) return
-        imgThumbnail.smallThumbnail(model){
+        imgThumbnail.smallThumbnail(model) {
             controllerListener.onThumbnailLoaded()
         }
         imgThumbnail.setOnClickListener {
@@ -230,7 +229,8 @@ class CameraControllerComponent(
         try {
             videoDurationTimer?.cancel()
             videoDurationTimer = null
-        } catch (t: Throwable) {}
+        } catch (t: Throwable) {
+        }
     }
 
     private fun onTakeCamera() {
@@ -276,14 +276,14 @@ class CameraControllerComponent(
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 
-    private fun setCameraModeSelected(index: Int){
-        if(index == cameraModeIndex) return
+    private fun setCameraModeSelected(index: Int) {
+        if (index == cameraModeIndex) return
         updateCameraModeRecyclerItem(cameraModeIndex, false)
         cameraModeIndex = index
         updateCameraModeRecyclerItem(cameraModeIndex, true)
     }
 
-    private fun updateCameraModeRecyclerItem(index: Int, recyclerItemState: Boolean){
+    private fun updateCameraModeRecyclerItem(index: Int, recyclerItemState: Boolean) {
         adapterData[index].isSelected = recyclerItemState
         adapter.notifyItemChanged(index)
     }
