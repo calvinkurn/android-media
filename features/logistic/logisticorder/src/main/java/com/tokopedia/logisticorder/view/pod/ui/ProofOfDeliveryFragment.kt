@@ -85,7 +85,6 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         onBackButtonListener()
         initImage()
-        initTextDescription()
     }
 
     private fun onBackButtonListener() {
@@ -121,22 +120,27 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                 requireContext(),
                 userSession.accessToken,
                 url,
-            ) {
-                showError()
-            }
+                onReadyListener = {
+                    showImage()
+                },
+                onFailedListener = {
+                    showError()
+                }
+            )
         } else {
             showError()
         }
-
     }
 
-    private fun initTextDescription() {
-        var textDescription = podData?.description
-        if (textDescription.isNullOrEmpty()) {
-            textDescription = getString(R.string.pod_label_description)
-        }
+    private fun showImage() {
         binding?.run {
-            proofDescription.text = textDescription
+            var textDescription = podData?.description
+            if (textDescription.isNullOrEmpty()) {
+                textDescription = getString(R.string.pod_label_description)
+            }
+            binding?.run {
+                proofDescription.text = textDescription
+            }
         }
     }
 
