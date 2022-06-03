@@ -25,18 +25,15 @@ class CameraPageUiTest : CameraPageTest() {
 
     private val interceptor = TestPickerInterceptor()
 
+    @Before
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
-    }
-
-    @Before
-    fun setIdlingResource(){
         IdlingRegistry.getInstance().register(Robot.countingIdlingResource)
     }
 
     @After
-    fun releaseIdlingResource(){
+    override fun tearDown(){
         IdlingRegistry.getInstance().unregister(Robot.countingIdlingResource)
     }
 
@@ -78,6 +75,7 @@ class CameraPageUiTest : CameraPageTest() {
         Robot.clickCloseButton()
 
         // Then
+        Thread.sleep(1000)
         Assert.assertActivityDestroy(this)
     }
 
