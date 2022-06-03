@@ -41,7 +41,8 @@ object LogisticImageDeliveryHelper {
         url: String,
         drawableImagePlaceholder: Drawable? = null,
         drawableImageError: Drawable? = null,
-        onFailedListener : ((Unit)-> Unit)? = null
+        onReadyListener: ((Unit) -> Unit)? = null,
+        onFailedListener: ((Unit) -> Unit)? = null
     ) {
 
         val authKey = String.format("%s %s", HEADER_VALUE_BEARER, accessToken)
@@ -69,6 +70,7 @@ object LogisticImageDeliveryHelper {
                         isFirstResource: Boolean
                     ): Boolean {
                         // no-ops
+                        onReadyListener?.invoke(Unit)
                         return false
                     }
 
