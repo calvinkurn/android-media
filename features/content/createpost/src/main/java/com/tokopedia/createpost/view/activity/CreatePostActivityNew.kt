@@ -330,8 +330,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
-                showHideExpandIcon(!createPostViewModel.isEditState)
-                if (!createPostViewModel.isEditState)
+                showHideExpandIcon(!it.isEditState)
+                if (!it.isEditState)
                     setClickListenerToOpenBottomSheet()
             }
 
