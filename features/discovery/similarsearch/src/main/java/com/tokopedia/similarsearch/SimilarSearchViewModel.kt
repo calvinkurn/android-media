@@ -22,12 +22,12 @@ import com.tokopedia.similarsearch.title.TitleViewModel
 import com.tokopedia.similarsearch.utils.asObjectDataLayerAddToCart
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -337,7 +337,7 @@ internal class SimilarSearchViewModel(
                     onSuccess = { result ->
                         if (result is com.tokopedia.usecase.coroutines.Success) {
                             wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                        } else {
+                        } else if (result is Fail) {
                             addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
                         } },
                     onError = {
@@ -348,7 +348,7 @@ internal class SimilarSearchViewModel(
             deleteWishlistV2UseCase.setParams(productId, userSession.userId)
             deleteWishlistV2UseCase.execute(
                     onSuccess = { result ->
-                        if (result is com.tokopedia.usecase.coroutines.Success) {
+                        if (result is Success) {
                             removeWishlistEventLiveData.postValue(Event(true))
                             postUpdateWishlistOriginalProductEvent(productId,false)
                         } else {

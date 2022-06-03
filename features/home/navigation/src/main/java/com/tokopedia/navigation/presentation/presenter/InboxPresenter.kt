@@ -25,6 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -267,6 +268,8 @@ class InboxPresenter @Inject constructor(
                 onSuccess = { result ->
                     if (result is Success) {
                         actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                    } else if (result is Fail) {
+                        actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
                     } },
                 onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
@@ -290,8 +293,8 @@ class InboxPresenter @Inject constructor(
     fun onDestroy() {
         this.getRecommendationUseCase.unsubscribe()
         this.getNotificationUseCase.unsubscribe()
-        addToWishListV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
+        this.addToWishListV2UseCase.cancelJobs()
+        this.deleteWishlistV2UseCase.cancelJobs()
         this.inboxView = null
     }
 
