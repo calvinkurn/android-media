@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="@dimen/play_dp_6"
-        android:maxLines="2"
+        android:maxLines="3"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/iv_quiz_option"
         app:layout_constraintEnd_toStartOf="@+id/ll_quiz_option_right"
