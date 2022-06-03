@@ -127,7 +127,7 @@ class ProductTagNavigationViewModelTest {
         robot.use {
             /** Setup State */
             robot.getViewModel().apply {
-                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "", ""))
             }
 
             /** Test State */
@@ -152,7 +152,7 @@ class ProductTagNavigationViewModelTest {
 
         robot.use {
             robot.recordState {
-                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, ""))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, "", ""))
             }.andThen {
                 productTagSource.productTagSourceStack.last().assertEqualTo(source)
                 globalSearchProduct.param.query.assertEqualTo(query)
@@ -177,7 +177,7 @@ class ProductTagNavigationViewModelTest {
 
         robot.use {
             robot.recordState {
-                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString(), ""))
             }.andThen {
                 productTagSource.productTagSourceStack.last().assertEqualTo(source)
                 shopProduct.param.query.assertEqualTo(query)
@@ -201,7 +201,7 @@ class ProductTagNavigationViewModelTest {
 
         robot.use {
             robot.recordEvent {
-                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString()))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString(), ""))
             }.andThen {
                 val lastEvent = last()
                 if(lastEvent is ProductTagUiEvent.ShowError) {
@@ -253,7 +253,7 @@ class ProductTagNavigationViewModelTest {
         robot.use {
             robot.recordState {
                 /** Building up stack */
-                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+                submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "", ""))
                 submitAction(ProductTagAction.ShopSelected(selectedShop))
 
                 /** Select another tag source */

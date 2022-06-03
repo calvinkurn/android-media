@@ -49,6 +49,13 @@ class GlobalSearchModelBuilder {
                 nextCursor = nextCursor,
                 hasNextPage = hasNextPage
             ),
+            header = SearchHeaderUiModel(
+                totalDataText = "$size",
+                totalData = size,
+                responseCode = 200,
+                keywordProcess = "",
+                componentId = "",
+            ),
             suggestion = suggestion,
             ticker = ticker,
         )
@@ -69,7 +76,14 @@ class GlobalSearchModelBuilder {
             },
             hasNextPage = hasNextPage,
             nextCursor = nextCursor,
-        )
+        ),
+        header = SearchHeaderUiModel(
+            totalDataText = "$size",
+            totalData = size,
+            responseCode = 200,
+            keywordProcess = "",
+            componentId = "",
+        ),
     )
 
     fun buildSortFilterResponseModel(

@@ -49,7 +49,7 @@ class GlobalSearchProductViewModelTest {
         )
 
         robot.getViewModel().apply {
-            submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, ""))
+            submitAction(ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "", ""))
         }
     }
 
