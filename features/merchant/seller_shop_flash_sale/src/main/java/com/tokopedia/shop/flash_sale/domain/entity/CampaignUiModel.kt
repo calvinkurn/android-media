@@ -1,7 +1,7 @@
 package com.tokopedia.shop.flash_sale.domain.entity
 
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
-import java.util.*
+import java.util.Date
 
 data class CampaignUiModel(
     val campaignId: Long,

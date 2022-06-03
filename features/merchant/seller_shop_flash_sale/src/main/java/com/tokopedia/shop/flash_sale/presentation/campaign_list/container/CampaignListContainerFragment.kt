@@ -23,6 +23,7 @@ import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.adapter.TabPagerAdapter
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText

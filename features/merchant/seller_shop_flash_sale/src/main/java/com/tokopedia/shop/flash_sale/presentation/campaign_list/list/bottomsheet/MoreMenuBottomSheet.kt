@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list.list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.list.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuBinding
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.adapter.CampaignListMoreMenuAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
