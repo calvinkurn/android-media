@@ -2,7 +2,7 @@ package com.tokopedia.media.preview.managers
 
 import android.content.Context
 import android.os.Environment
-import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.picker.common.util.isVideoFormat
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 

@@ -12,7 +12,7 @@ import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.picker.widget.drawerselector.adapter.DrawerSelectionAdapter
-import com.tokopedia.picker.common.utils.Unify_N0
+import com.tokopedia.picker.common.util.Unify_N0
 
 class DebugDrawerSelectionWidget : FrameLayout {
 

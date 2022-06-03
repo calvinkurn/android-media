@@ -14,7 +14,7 @@ import com.tokopedia.media.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.media.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.media.picker.ui.adapter.utils.MediaDiffUtil
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.fastSubtract
+import com.tokopedia.picker.common.util.wrapper.PickerFile
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(
@@ -94,11 +94,11 @@ class GalleryAdapter(
         this.itemSelectedListener = itemSelectedListener
     }
 
-    private fun getItem(position: Int) = listDiffer.currentList.getOrNull(position)
+    private fun getItem(position: Int)
+        = listDiffer.currentList.getOrNull(position)
 
-    private fun isSelected(media: MediaUiModel): Boolean {
-        return selectedMedias.any { it.file == media.file }
-    }
+    private fun isSelected(media: MediaUiModel)
+        = selectedMedias.any { it.file == media.file }
 
     private fun addSelected(media: MediaUiModel, position: Int) {
         mutate {
@@ -117,6 +117,33 @@ class GalleryAdapter(
     private fun mutate(runnable: Runnable) {
         runnable.run()
         itemSelectedListener?.invoke(selectedMedias)
+    }
+
+    /**
+     * A custom subtract for remove selected by subtraction
+     *
+     * @param: list [MediaUiModel]
+     * @return: a new list subtracted [MediaUiModel]
+     */
+    private fun List<MediaUiModel>.fastSubtract(
+        medias: List<MediaUiModel>
+    ): List<MediaUiModel> {
+        val elements = mutableMapOf<PickerFile?, Boolean>()
+        val results = mutableListOf<MediaUiModel>()
+
+        medias.forEach {
+            elements[it.file] = true
+        }
+
+        for (i in this.indices) {
+            if (elements.containsKey(this[i].file)) {
+                continue
+            }
+
+            results.add(this[i])
+        }
+
+        return results
     }
 
     class GalleryPickerViewHolder(

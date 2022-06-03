@@ -28,11 +28,11 @@ class VideoPreview(
             viewPlayer.player = videoPlayer.player()
             videoControl.player = videoPlayer.player()
 
-            videoPlayer.videoUrl = media.data.path
+            videoPlayer.videoUrl = media.data.file?.path.orEmpty()
 
             it.setOnClickListener {
-                if(videoPlayer.player().isPlaying){
-                    if(!videoControl.isVisible) videoControl.show() else videoControl.hide()
+                if (videoPlayer.player().isPlaying) {
+                    videoControl.showWithCondition(!videoControl.isVisible)
                 }
             }
 

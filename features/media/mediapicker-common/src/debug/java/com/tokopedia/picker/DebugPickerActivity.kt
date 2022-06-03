@@ -12,6 +12,7 @@ import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.picker.common.util.wrapper.PickerFile
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,7 +45,10 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
         if (requestCode == REQUEST_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
-            val uiModels = elements.originalPaths.map { File(it).toUiModel() }
+            val uiModels = elements.originalPaths
+                .map { PickerFile(it) }
+                .map { it.toUiModel() }
+
             binding?.drawerSelector?.addAllData(uiModels)
         }
     }

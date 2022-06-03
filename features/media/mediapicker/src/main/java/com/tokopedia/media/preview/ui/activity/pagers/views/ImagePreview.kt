@@ -41,7 +41,7 @@ class ImagePreview(
         return rootLayoutView(context).also {
             mImageViewRef = it.findViewById(R.id.img_preview)
 
-            mImageViewRef.loadImage(media.data.path, properties = {
+            mImageViewRef.loadImage(media.data.file?.path, properties = {
                 listener({_, _ ->
                     mImageViewRef.post {
                         wrapperWidth = it.width
