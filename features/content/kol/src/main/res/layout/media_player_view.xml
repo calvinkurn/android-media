@@ -19,11 +19,18 @@
         android:visibility="gone"
         app:controller_layout_id="@layout/kol_video_control_view"/>
 
-    <ProgressBar android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
         android:layout_gravity="center"
+        app:loader_type="circular"
         android:visibility="gone"/>
+
+
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:visibility="gone"
