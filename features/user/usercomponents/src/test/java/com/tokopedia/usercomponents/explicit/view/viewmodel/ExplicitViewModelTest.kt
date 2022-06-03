@@ -85,7 +85,7 @@ class ExplicitViewModelTest {
 
     @Test
     fun `send answer - positif button - success`() {
-        val answer = "yes"
+        val answer = true
         val data = AnswerDataModel()
         val message = data.explicitprofileSaveMultiAnswers.message
         val expected = Success(message)
@@ -102,7 +102,7 @@ class ExplicitViewModelTest {
 
     @Test
     fun `send answer - positif button - failed`() {
-        val answer = "yes"
+        val answer = true
         val data = Throwable()
         val param = InputParam()
 
@@ -117,7 +117,7 @@ class ExplicitViewModelTest {
 
     @Test
     fun `send answer - negatif button - success`() {
-        val answer = "no"
+        val answer = false
         val data = AnswerDataModel()
         val message = data.explicitprofileSaveMultiAnswers.message
         val param = InputParam()
@@ -134,7 +134,7 @@ class ExplicitViewModelTest {
 
     @Test
     fun `send answer - negatif button - failed`() {
-        val answer = "no"
+        val answer = false
         val data = Throwable()
         val param = InputParam()
 
