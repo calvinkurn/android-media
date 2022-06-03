@@ -12,7 +12,8 @@ import android.provider.MediaStore.Files.FileColumns.*
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.utils.isGifFormat
+import com.tokopedia.picker.common.util.isGifFormat
+import com.tokopedia.picker.common.util.wrapper.PickerFile
 import java.io.File
 
 interface LoaderDataSource {
@@ -88,7 +89,7 @@ open class LoaderDataSourceImpl(
         val name = cursor.getString(cursor.getColumnIndex(projection[1]))
 
         if (name != null) {
-            return Media(id, name, path)
+            return Media(id, PickerFile(path))
         }
 
         return null
