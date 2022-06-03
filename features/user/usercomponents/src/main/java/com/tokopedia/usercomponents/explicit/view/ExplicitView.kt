@@ -29,12 +29,16 @@ import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
+import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
 import com.tokopedia.usercomponents.explicit.di.DaggerExplicitComponent
 import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
 class ExplicitView : CardUnify2 {
+
+    @Inject
+    lateinit var explicitAnalytics: ExplicitAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,7 +166,12 @@ class ExplicitView : CardUnify2 {
     }
 
     private fun initListener() {
+        bindingQuestion.root.setOnClickListener {
+            explicitAnalytics.trackClickCard(pageName, templateName)
+        }
+
         bindingQuestion.imgDismiss.setOnClickListener {
+            explicitAnalytics.trackClickDismissButton(pageName, templateName)
             viewModel?.updateState()
             dismiss()
         }
@@ -170,6 +179,7 @@ class ExplicitView : CardUnify2 {
         bindingSuccess.imgSuccessDismiss.setOnClickListener { dismiss() }
 
         bindingQuestion.btnPositifAction.setOnClickListener {
+            explicitAnalytics.trackClickPositifButton(pageName, templateName)
             bindingQuestion.apply {
                 btnPositifAction.isLoading = true
                 btnNegatifAction.isEnabled = false
@@ -179,6 +189,7 @@ class ExplicitView : CardUnify2 {
         }
 
         bindingQuestion.btnNegatifAction.setOnClickListener {
+            explicitAnalytics.trackClickNegatifButton(pageName, templateName)
             bindingQuestion.apply {
                 btnNegatifAction.isLoading = true
                 btnPositifAction.isEnabled = false
