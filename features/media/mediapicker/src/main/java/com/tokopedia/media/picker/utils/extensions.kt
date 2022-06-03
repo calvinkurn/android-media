@@ -43,7 +43,7 @@ fun View.setBottomMargin(value: Int) {
     layoutParams.setMargins(0, 0, 0, value)
 }
 
-fun ImageView.pickerLoadImage(path: String) {
+fun ImageView.pickerLoadImage(path: String, onLoaded: () -> Unit = {}) {
     val thumbnailSize = context.dimensionPixelOffsetOf(mediaPickerR.dimen.picker_thumbnail_size)
     val roundedSize = context.dimensionOf(mediaPickerR.dimen.picker_thumbnail_rounded)
 
@@ -60,6 +60,9 @@ fun ImageView.pickerLoadImage(path: String) {
         setRoundedRadius(roundedSize)
         isAnimate(true)
         setPlaceHolder(-1)
+        listener(onSuccess = { _, _ ->
+            onLoaded()
+        })
 
         if (isFitCenter) {
             fitCenter()

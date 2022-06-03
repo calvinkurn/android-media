@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.camera
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
@@ -10,6 +11,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.picker.common.types.ModeType
+import org.junit.After
+import org.junit.Before
 
 @UiTest
 class CameraPhotoOnlyUiTest : CameraPageTest() {
@@ -24,16 +27,23 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
 
     private val interceptor = TestPickerInterceptor()
 
+    @Before
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
+        IdlingRegistry.getInstance().register(countingIdlingResource)
+    }
+
+    @After
+    override fun tearDown() {
+        IdlingRegistry.getInstance().unregister(countingIdlingResource)
     }
 
     @Test
     fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
 
         // Then
         Assert.assertCaptureImage()
@@ -63,7 +73,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
     fun should_open_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickLanjutButton()
 
         // Then
@@ -85,7 +95,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
     fun should_open_preview_activity_onThumbnailClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickPreviewThumbnail()
 
         // Then

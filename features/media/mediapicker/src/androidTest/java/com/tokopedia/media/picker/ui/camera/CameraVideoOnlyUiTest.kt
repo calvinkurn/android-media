@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.camera
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
@@ -7,6 +8,8 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -21,9 +24,16 @@ class CameraVideoOnlyUiTest : CameraPageTest() {
 
     private val interceptor = TestPickerInterceptor()
 
+    @Before
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
+        IdlingRegistry.getInstance().register(countingIdlingResource)
+    }
+
+    @After
+    override fun tearDown() {
+        IdlingRegistry.getInstance().unregister(countingIdlingResource)
     }
 
     @Test

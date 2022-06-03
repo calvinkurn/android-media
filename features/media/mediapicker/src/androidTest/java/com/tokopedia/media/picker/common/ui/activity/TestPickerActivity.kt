@@ -22,5 +22,4 @@ class TestPickerActivity : PickerActivity() {
             putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
         }, REQUEST_PREVIEW_PAGE)
     }
-
 }

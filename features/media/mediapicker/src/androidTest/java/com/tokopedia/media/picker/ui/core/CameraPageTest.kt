@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -17,12 +18,13 @@ import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import org.hamcrest.CoreMatchers.not
 
 abstract class CameraPageTest : PickerTest() {
-
     object Robot {
-        fun clickCaptureButton() {
+        fun clickCapturePhoto() {
             onView(
                 withId(R.id.btn_take_camera)
             ).perform(click())
+
+            countingIdlingResource.increment()
         }
 
         fun clickFlipCameraButton() {
@@ -32,14 +34,12 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun clickPreviewThumbnail() {
-            Thread.sleep(5000)
             onView(
                 withId(R.id.img_thumbnail)
             ).perform(click())
         }
 
         fun clickLanjutButton() {
-            Thread.sleep(5000)
             onView(
                 withId(R.id.btn_done)
             ).perform(click())
@@ -49,6 +49,8 @@ abstract class CameraPageTest : PickerTest() {
             onView(
                 withId(R.id.btn_action)
             ).perform(click())
+
+            Thread.sleep(1000)
         }
 
         fun clickFlashButton(): Pair<Int, Int>? {
@@ -96,11 +98,14 @@ abstract class CameraPageTest : PickerTest() {
                 withId(R.id.lst_camera_mode)
             ).perform(swipeLeft())
         }
+
+        fun decrement() {
+            if (!countingIdlingResource.isIdleNow) countingIdlingResource.decrement()
+        }
     }
 
     object Assert {
         fun assertCaptureImage() {
-            Thread.sleep(2000)
             onView(
                 withId(R.id.img_thumbnail)
             ).check(matches(isDisplayed()))
@@ -113,12 +118,10 @@ abstract class CameraPageTest : PickerTest() {
         }
 
         fun verifyOpenPreviewActivity() {
-            Thread.sleep(3000)
             intended(hasComponent(TestPreviewActivity::class.java.name))
         }
 
         fun assertActivityDestroy(pickerTest: PickerTest) {
-            Thread.sleep(2000)
             assert(pickerTest.activityTestRule.activity.isDestroyed)
         }
 
@@ -127,5 +130,9 @@ abstract class CameraPageTest : PickerTest() {
                 withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
+    }
+
+    companion object {
+        val countingIdlingResource = CountingIdlingResource("CameraPageIdlingResource")
     }
 }

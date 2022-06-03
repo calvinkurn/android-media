@@ -1,5 +1,6 @@
 package com.tokopedia.media.picker.ui.camera
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
@@ -7,6 +8,8 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -22,9 +25,16 @@ class CameraPageUiTest : CameraPageTest() {
 
     private val interceptor = TestPickerInterceptor()
 
+    @Before
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
+        IdlingRegistry.getInstance().register(countingIdlingResource)
+    }
+
+    @After
+    override fun tearDown() {
+        IdlingRegistry.getInstance().unregister(countingIdlingResource)
     }
 
     @Test
@@ -42,7 +52,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
 
         // Then
         Assert.assertCaptureImage()
@@ -65,6 +75,7 @@ class CameraPageUiTest : CameraPageTest() {
         Robot.clickCloseButton()
 
         // Then
+        Thread.sleep(1000)
         Assert.assertActivityDestroy(this)
     }
 
@@ -72,7 +83,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_open_image_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickLanjutButton()
 
         // Then
@@ -115,7 +126,7 @@ class CameraPageUiTest : CameraPageTest() {
     fun should_open_preview_activity_onThumbnailClicker() {
         // When
         startCameraPage()
-        Robot.clickCaptureButton()
+        Robot.clickCapturePhoto()
         Robot.clickPreviewThumbnail()
 
         // Then
@@ -136,7 +147,7 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     private companion object {
-        private const val CAPTURED_VIDEO_DURATION = 2000L
+        private const val CAPTURED_VIDEO_DURATION = 3000L
         private const val VIDEO_MIN_DURATION = 1000
     }
 }
