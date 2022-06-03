@@ -25,7 +25,6 @@ class InfoPmIfNotActiveBottomSheet :
     override fun setupView() = binding?.run {
         val title = context?.getString(R.string.pm_active_cta_if_pm_not_active).orEmpty()
         setTitle(title)
-
     }
 
     fun show(fm: FragmentManager) {
