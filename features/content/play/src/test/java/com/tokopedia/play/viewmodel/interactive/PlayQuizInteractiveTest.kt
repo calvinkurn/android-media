@@ -165,7 +165,7 @@ class PlayQuizInteractiveTest {
         )
         val err = MessageErrorException("Error gk bs jawab y")
 
-        coEvery { mockAnswerQuizUseCase.executeOnBackground() } throws err
+        coEvery { mockRepo.answerQuiz(any(), any()) } throws err
 
         createPlayViewModelRobot (
             playChannelWebSocket = socket,
