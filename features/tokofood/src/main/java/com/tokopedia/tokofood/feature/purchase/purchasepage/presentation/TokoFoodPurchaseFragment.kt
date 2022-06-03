@@ -52,6 +52,7 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
@@ -932,14 +933,17 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                 }
         )
-        addOnBottomSheet.show(parentFragmentManager, "")
+        addOnBottomSheet.show(parentFragmentManager)
     }
 
-    override fun onTextChangeNoteAndVariantClicked() {
-        // Todo : navigate to edit variant page
-        view?.let {
-            Toaster.build(it, "onTextChangeNoteAndVariantClicked", Toaster.LENGTH_SHORT).show()
-        }
+    override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
+        val productUiModel = TokoFoodPurchaseUiModelMapper.mapUiModelToCustomizationUiModel(element)
+        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
+            productUiModel = productUiModel,
+            cartId = element.cartId,
+            merchantId = shopId
+        )
+        navigateToNewFragment(orderCustomizationFragment)
     }
 
     override fun onToggleShowHideUnavailableItemsClicked() {

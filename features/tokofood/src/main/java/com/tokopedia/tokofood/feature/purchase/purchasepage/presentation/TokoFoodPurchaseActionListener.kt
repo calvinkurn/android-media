@@ -21,7 +21,7 @@ interface TokoFoodPurchaseActionListener {
 
     fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel)
 
-    fun onTextChangeNoteAndVariantClicked()
+    fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel)
 
     fun onToggleShowHideUnavailableItemsClicked()
 

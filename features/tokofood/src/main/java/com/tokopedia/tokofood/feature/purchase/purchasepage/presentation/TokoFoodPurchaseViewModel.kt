@@ -481,7 +481,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         cartData.productId == product.id && cartData.getMetadata()?.variants?.any { cartVariant ->
                             var isSameVariants = false
                             run checkVariant@ {
-                                product.variants.forEach { productVariant ->
+                                product.variantsParam.forEach { productVariant ->
                                     if (cartVariant.variantId == productVariant.variantId && cartVariant.optionId == productVariant.optionId) {
                                         isSameVariants = true
                                         return@checkVariant

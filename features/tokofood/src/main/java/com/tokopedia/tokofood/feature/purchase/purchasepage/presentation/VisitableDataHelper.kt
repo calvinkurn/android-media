@@ -38,7 +38,7 @@ object VisitableDataHelper {
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
                         && data.id == param.productId
                         && data.cartId == param.cartId
-                        && data.variants == param.variants
+                        && data.variantsParam == param.variants
             when {
                 isMatchingProduct -> {
                     (data as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.let { productVisitable ->

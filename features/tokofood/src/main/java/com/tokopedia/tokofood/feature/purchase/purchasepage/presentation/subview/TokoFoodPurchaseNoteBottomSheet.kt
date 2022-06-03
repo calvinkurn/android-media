@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.R
@@ -38,6 +39,12 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
         super.onViewCreated(view, savedInstanceState)
         viewBinding?.let {
             renderNotes(it)
+        }
+    }
+
+    fun show(fm: FragmentManager) {
+        if (!isVisible) {
+            show(fm, TAG)
         }
     }
 
@@ -95,5 +102,9 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
                 dismiss()
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "TokoFoodPurchaseNoteBottomSheet"
     }
 }
