@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.camera.component
+package com.tokopedia.media.picker.ui.component
 
 import android.os.CountDownTimer
 import android.os.Handler
@@ -16,9 +16,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
-import com.tokopedia.media.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
-import com.tokopedia.media.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
+import com.tokopedia.media.picker.ui.adapter.managers.SliderLayoutManager
 import com.tokopedia.media.picker.ui.uimodel.CameraSelectionUiModel
 import com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
 import com.tokopedia.media.picker.utils.anim.CameraButton.animStartRecording
@@ -26,14 +26,14 @@ import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.toReadableFormat
-import com.tokopedia.picker.common.utils.visibleWithCondition
+import com.tokopedia.picker.common.util.toReadableFormat
+import com.tokopedia.picker.common.util.visibleWithCondition
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
 class CameraControllerComponent(
     private val param: PickerParam,
-    private val activityListener: PickerActivityListener?,
+    private val activityContract: PickerActivityContract?,
     private val controllerListener: Listener,
     parent: ViewGroup,
 ) : UiComponent(parent, R.id.uc_camera_controller)
@@ -232,13 +232,13 @@ class CameraControllerComponent(
     }
 
     private fun onTakeCamera() {
-        if (isVideoMode() && activityListener?.hasVideoLimitReached() == true) {
-            activityListener.onShowVideoLimitReachedCameraToast()
+        if (isVideoMode() && activityContract?.hasVideoLimitReached() == true) {
+            activityContract.onShowVideoLimitReachedCameraToast()
             return
         }
 
-        if (activityListener?.hasMediaLimitReached() == true) {
-            activityListener.onShowMediaLimitReachedCameraToast()
+        if (activityContract?.hasMediaLimitReached() == true) {
+            activityContract.onShowMediaLimitReachedCameraToast()
             return
         }
 

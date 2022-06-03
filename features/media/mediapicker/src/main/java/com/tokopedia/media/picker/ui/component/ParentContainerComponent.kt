@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.activity.main.component
+package com.tokopedia.media.picker.ui.component
 
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager

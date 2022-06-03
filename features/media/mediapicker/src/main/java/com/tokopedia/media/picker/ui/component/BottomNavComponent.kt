@@ -1,8 +1,7 @@
-package com.tokopedia.media.picker.ui.activity.main.component
+package com.tokopedia.media.picker.ui.component
 
 import android.graphics.Color
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.utils.addOnTabSelected

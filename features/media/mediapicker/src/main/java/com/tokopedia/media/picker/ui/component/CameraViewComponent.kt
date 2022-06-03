@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.camera.component
+package com.tokopedia.media.picker.ui.component
 
 import android.view.ViewGroup
 import android.widget.Space
@@ -20,7 +20,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.utils.FileCamera
+import com.tokopedia.picker.common.util.FileCamera
 
 class CameraViewComponent(
     private val param: PickerParam,
