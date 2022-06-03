@@ -32,6 +32,8 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         const val OTHER_REASON_TITLE= "otherReasonTitle"
         const val IS_SHOW_OTHER_REASON = "is_show_other_reason"
         const val TIME_STAMP = "time_stamp"
+        const val minLength = 1
+        const val maxLength = 29
         fun newInstance(bundle: Bundle?): ChatBotProvideRatingFragment {
             val fragment = ChatBotProvideRatingFragment()
             fragment.arguments = bundle
@@ -62,7 +64,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (s.toString().length in 1..29) {
+                        if (s.toString().length >= minLength && s.toString().length <= maxLength) {
                             disableSubmitButton()
                             warning_text.show()
                         } else {
