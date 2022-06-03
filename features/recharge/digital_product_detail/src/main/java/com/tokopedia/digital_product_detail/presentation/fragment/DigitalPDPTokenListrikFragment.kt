@@ -768,8 +768,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpTokenListrikClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpTokenListrikClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }

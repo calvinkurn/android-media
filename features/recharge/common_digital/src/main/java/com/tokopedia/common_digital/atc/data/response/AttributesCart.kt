@@ -59,6 +59,7 @@ data class AttributesCart(
         @Expose
         var smsState: String? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("user_input_price")
         @Expose
         var userInputPrice: UserInputPrice? = null,

@@ -947,8 +947,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpPulsaClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }
