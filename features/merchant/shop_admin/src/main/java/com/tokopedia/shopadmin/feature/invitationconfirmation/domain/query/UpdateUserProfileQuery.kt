@@ -9,7 +9,7 @@ internal object UpdateUserProfileQuery: GqlQueryInterface {
     private const val EMAIL_KEY = "email"
 
     private val GQL_QUERY = """
-        mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}email: String!, ${'$'}otpToken: String!, ${'$'}shopManageID: String!, ${'$'}acceptBecomeAdmin: Boolean!) {
+        mutation ${OPERATION_NAME}(${'$'}email: String!) {
           ${OPERATION_NAME}(input: {
             email: ${'$'}email
           }) {
