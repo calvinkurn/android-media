@@ -115,7 +115,7 @@ interface ProductListSectionContract {
         fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
-        fun trackEventClickDropdownQuickFilter()
+        fun trackEventClickDropdownQuickFilter(filterTitle: String)
         fun trackEventApplyDropdownQuickFilter()
     }
 

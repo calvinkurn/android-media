@@ -935,13 +935,13 @@ object SearchTracking {
         )
     }
 
-    fun trackEventClickDropdownQuickFilter(filterName: String, filterValue: String, isSelected: Boolean, userId: String?) {
+    fun trackEventClickDropdownQuickFilter(filterTitle: String, userId: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
-                SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
+                SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
                 SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
