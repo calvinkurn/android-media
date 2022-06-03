@@ -1044,12 +1044,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 data is CartShopHolderData -> {
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
                     var hasSelectDeletedProducts = false
+                    var selectedNonDeletedProducts = 0
                     data.productUiModelList.forEach { cartItemHolderData ->
                         if (cartIds.contains(cartItemHolderData.cartId)) {
                             toBeDeletedProducts.add(cartItemHolderData)
                             if (cartItemHolderData.isSelected) {
                                 hasSelectDeletedProducts = true
                             }
+                        } else if (cartItemHolderData.isSelected) {
+                            selectedNonDeletedProducts += 1
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
@@ -1066,7 +1069,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             toBeRemovedItems.add(data)
                             toBeRemovedIndices.add(index)
                         } else {
-                            if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts)) {
+                            // update selection
+                            data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
+                            data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
+                            if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
                                 actionListener.checkBoAffordability(data)
                             }
                             toBeUpdatedIndices.add(index)
