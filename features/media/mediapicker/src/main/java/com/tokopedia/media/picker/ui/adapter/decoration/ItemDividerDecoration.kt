@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils
+package com.tokopedia.media.picker.ui.adapter.decoration
 
 import android.content.Context
 import android.graphics.Canvas

@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.camera.recyclers.managers
+package com.tokopedia.media.picker.ui.adapter.managers
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
