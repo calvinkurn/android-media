@@ -944,6 +944,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
                 SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )
         )
     }
@@ -957,6 +958,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
                 SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )
         )
     }
