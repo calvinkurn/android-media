@@ -45,7 +45,7 @@ object PickerCameraViewActions {
         }
     }
 
-    fun getRecordVideoViewAction(duration: Long): ViewAction{
+    fun getRecordVideoViewAction(duration: Long): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
                 return ViewMatchers.isAssignableFrom(View::class.java)
@@ -59,9 +59,9 @@ object PickerCameraViewActions {
                 view?.performClick()
 
                 Handler().postDelayed({
-                    CameraPageTest.Robot.countingIdlingResource.increment()
+                    CameraPageTest.countingIdlingResource.increment()
                     view?.performClick()
-                },duration)
+                }, duration)
             }
         }
     }
