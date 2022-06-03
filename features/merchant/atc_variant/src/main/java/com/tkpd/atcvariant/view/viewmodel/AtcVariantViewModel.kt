@@ -40,6 +40,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -378,17 +379,19 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(productId, userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    updateActivityResult(shouldRefreshPreviousPage = true)
-                    updateButtonAndWishlistLocally(productId)
-                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                } },
-            onError = {
-                wishlistV2ActionListener.onErrorAddWishList(it, productId)
-            })
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = addToWishlistV2UseCase.executeOnBackground()
+            if (result is Success) {
+                updateActivityResult(shouldRefreshPreviousPage = true)
+                updateButtonAndWishlistLocally(productId)
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }) {
+            wishlistV2ActionListener.onErrorAddWishList(it, productId)
+        }
     }
 
     private fun updateButtonAndWishlistLocally(productId: String) {
