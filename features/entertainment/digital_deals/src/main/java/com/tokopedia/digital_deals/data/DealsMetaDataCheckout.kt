@@ -35,6 +35,7 @@ data class DealsMetaDataCheckout(
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
         val totalPrice: Int = 0
@@ -57,6 +58,7 @@ data class ItemMapCheckout(
         @SerializedName("commission_type")
         @Expose
         val commissionType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
         val currencyPrice: Int = 0,
@@ -116,6 +118,7 @@ data class ItemMapCheckout(
         @SerializedName("payment_type")
         @Expose
         val paymentType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,
@@ -160,6 +163,7 @@ data class ItemMapCheckout(
         @SerializedName("start_time")
         @Expose
         val startTime:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
         val totalPrice: Int = 0,

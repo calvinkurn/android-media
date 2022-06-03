@@ -52,6 +52,7 @@ data class HotelRoomData(
             @Expose
             val price: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceAmount")
             @Expose
             val priceAmount: Int = 0

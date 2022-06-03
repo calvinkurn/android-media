@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -41,6 +42,7 @@ data class Product(
         @SerializedName("pre_validate")
         @Expose
         val preValidate: Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,

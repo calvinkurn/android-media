@@ -61,7 +61,7 @@ class SmartBillsViewModel @Inject constructor(
             )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_DURATION_MINUTES).build()
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
@@ -255,6 +255,8 @@ class SmartBillsViewModel @Inject constructor(
         const val DEFAULT_OS_TYPE = "1"
         const val IDEMPOTENCY_KEY = "Idempotency-Key"
         const val CONTENT_TYPE = "Content-Type"
+
+        const val CACHE_DURATION_MINUTES = 5
 
         const val HARD_CODE_EMPTY_RESPONSE = "error get base data: [favorite] empty favorite data"
     }

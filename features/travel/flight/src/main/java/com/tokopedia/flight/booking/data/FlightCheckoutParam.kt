@@ -18,6 +18,7 @@ data class FlightCheckoutParam(
         var promoCode: String = ""
 ) {
     data class CartItem(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("productID")
             @Expose
             var productId: Int = 0,

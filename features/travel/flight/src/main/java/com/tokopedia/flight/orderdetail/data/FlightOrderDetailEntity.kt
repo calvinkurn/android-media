@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderdetail.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -504,6 +505,7 @@ class OrderDetailPassenger(
         @SerializedName("price")
         @Expose
         val price: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("priceNumeric")
         @Expose
         val priceNumeric: Long = 0,

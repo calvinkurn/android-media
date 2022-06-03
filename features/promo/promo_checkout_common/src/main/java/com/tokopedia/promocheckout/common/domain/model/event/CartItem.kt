@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -19,6 +20,7 @@ data class CartItem(
         @SerializedName("discount")
         @Expose
         val discount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("discounted_price")
         @Expose
         val discountedPrice: Int = 0,
@@ -40,6 +42,7 @@ data class CartItem(
         @SerializedName("mrp")
         @Expose
         val mrp: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,
@@ -61,6 +64,7 @@ data class CartItem(
         @SerializedName("title")
         @Expose
         val title: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
         val totalPrice: Int = 0,

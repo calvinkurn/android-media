@@ -552,7 +552,8 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             }
         }
         binding.emoneyPdpViewPager.show()
-        binding.emoneyPdpProductWidget.showPaddingBottom(resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
+        binding.emoneyPdpProductWidget.showPaddingBottom(
+            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6) ?: 0)
         binding.emoneyBuyWidgetLayout.hide()
     }
 
@@ -570,8 +571,11 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         binding.emoneyBuyWidgetLayout.show()
         binding.emoneyBuyWidget.setVisibilityLayout(true)
         binding.emoneyBuyWidgetLayout.invalidate()
-        binding.emoneyPdpProductWidget.showPaddingBottom(kotlin.math.max(resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64), binding.emoneyBuyWidgetLayout.measuredHeight)
-                + resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
+        binding.emoneyPdpProductWidget.showPaddingBottom(
+            kotlin.math.max(
+                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64) ?: 0,
+                binding.emoneyBuyWidgetLayout.measuredHeight
+            ) + (context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6) ?:0) )
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {

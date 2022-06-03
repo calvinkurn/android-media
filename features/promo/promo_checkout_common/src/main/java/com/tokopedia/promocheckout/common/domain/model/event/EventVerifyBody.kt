@@ -103,6 +103,7 @@ data class MetaDataVerify(
         @SerializedName("total_tax_amount")
         @Expose
         val totalTaxAmount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
         val totalTicketPrice: Int = 0,
@@ -123,6 +124,7 @@ data class EntityPackageVerify(
         @SerializedName("description")
         @Expose
         val description: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_per_seat")
         @Expose
         val pricePerSeat: Int = 0,
@@ -209,6 +211,7 @@ data class EntityAddressVerify(
 
 @Parcelize
 data class ConfigurationVerify(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,

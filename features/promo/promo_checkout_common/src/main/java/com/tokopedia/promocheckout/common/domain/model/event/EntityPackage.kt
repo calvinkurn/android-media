@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -14,6 +15,7 @@ data class EntityPackage(
         @SerializedName("address")
         @Expose
         val address: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("base_price")
         @Expose
         val basePrice: Int = 0,
@@ -26,6 +28,7 @@ data class EntityPackage(
         @SerializedName("commision_type")
         @Expose
         val commisionType: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
         val currencyPrice: Float = 0f,
@@ -53,12 +56,14 @@ data class EntityPackage(
         @SerializedName("package_id")
         @Expose
         val packageId: String = "0",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("package_price")
         @Expose
         val packagePrice: Int = 0,
         @SerializedName("payment_type")
         @Expose
         val paymentType: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_per_seat")
         @Expose
         val pricePerSeat: Int = 0,

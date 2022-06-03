@@ -32,6 +32,7 @@ data class Order(
         @SerializedName("sp_id")
         var spId: Int? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("is_insurance_price")
         var isInsurancePrice: Int? = null
 ) : Parcelable

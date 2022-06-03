@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -85,6 +86,7 @@ data class MetaData(
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
         val totalTicketPrice: Int = 0,
