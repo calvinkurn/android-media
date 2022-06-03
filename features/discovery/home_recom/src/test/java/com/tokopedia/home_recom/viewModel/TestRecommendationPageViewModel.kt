@@ -155,15 +155,13 @@ class TestRecommendationPageViewModel {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
 
         verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -171,15 +169,13 @@ class TestRecommendationPageViewModel {
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishlistV2(recommendation.productId.toString(), mockListener)
 
         verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
