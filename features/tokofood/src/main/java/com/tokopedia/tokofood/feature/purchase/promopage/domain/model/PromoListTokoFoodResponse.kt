@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 class PromoListTokoFoodResponse(
+    @SerializedName("promo_list_tokofood")
+    @Expose
+    val promoListTokoFood: PromoListTokoFood = PromoListTokoFood()
+)
+
+class PromoListTokoFood(
     @SerializedName("message")
     @Expose
     val message: String = "",

@@ -22,8 +22,6 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatchers.io) {
 
-    private val isDebug = false
-
     companion object {
         private const val PARAMS_KEY = "params"
 
@@ -62,28 +60,17 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: UpdateParam): Flow<CartTokoFoodResponse> = flow {
-        if (isDebug) {
-            kotlinx.coroutines.delay(1000)
-            emit(getDummyResponse())
-        } else {
-            val param = generateParams(
-                params,
-                CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
-            )
-            val response =
-                repository.request<Map<String, Any>, UpdateCartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.cartResponse.isSuccess()) {
-                emit(response.cartResponse)
-            } else {
-                throw MessageErrorException(response.cartResponse.getMessageIfError())
-            }
-        }
-    }
-
-    private fun getDummyResponse(): CartTokoFoodResponse {
-        return CartTokoFoodResponse(
-            status = TokoFoodCartUtil.SUCCESS_STATUS
+        val param = generateParams(
+            params,
+            CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress()).generateString()
         )
+        val response =
+            repository.request<Map<String, Any>, UpdateCartTokoFoodResponse>(graphqlQuery(), param)
+        if (response.cartResponse.isSuccess()) {
+            emit(response.cartResponse)
+        } else {
+            throw MessageErrorException(response.cartResponse.getMessageIfError())
+        }
     }
 
 }

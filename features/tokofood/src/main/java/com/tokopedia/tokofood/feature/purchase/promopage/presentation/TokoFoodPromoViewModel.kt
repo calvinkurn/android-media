@@ -41,20 +41,20 @@ class TokoFoodPromoViewModel @Inject constructor(
     fun loadData() {
         launchCatchError(block = {
             promoListTokoFoodUseCase(Unit).collect { it ->
-                if (it.isSuccess()) {
+                if (it.promoListTokoFood.isSuccess()) {
                     _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
                     _fragmentUiModel.value =
-                        TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)
+                        TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.promoListTokoFood.data)
                     _visitables.value =
-                        TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
-                    it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
+                        TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.promoListTokoFood.data)
+                    it.promoListTokoFood.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
                         ?.let { message ->
                             _changeRestrictionMessage.value = message
                         }
                 } else {
                     _uiEvent.value = UiEvent(
                         state = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE,
-                        throwable = MessageErrorException(it.message)
+                        throwable = MessageErrorException(it.promoListTokoFood.message)
                     )
                 }
             }
