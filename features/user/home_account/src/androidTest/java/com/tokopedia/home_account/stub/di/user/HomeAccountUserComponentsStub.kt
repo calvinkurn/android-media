@@ -9,7 +9,6 @@ import dagger.Component
 /**
  * @author by nisie on 10/15/18.
  */
-@HomeAccountUserScope
 @SessionCommonScope
 @Component(
     modules = [FakeHomeAccountUserModules::class,
