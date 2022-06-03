@@ -74,25 +74,25 @@ class ExplicitView : CardUnify2 {
                 //you must set template name!
                 templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
                 pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
-
-                if (GlobalConfig.DEBUG && templateName.isEmpty() && pageName.isEmpty())
-                    throw IllegalArgumentException(
-                        """
-                            TEMPLATE NAME or PAGE NAME is NULL! You must declare its!
-                            
-                            if you use xml, please declare
-                            example:
-                            app:template_name="PUT_YOUR_TEMPLATE_NAME"
-                            app:page_name="PUT_YOUR_PAGE_NAME"
-                            
-                            if you create from programmatically please put your TEMPLATE NAME and PAGE NAME in AttributeSet or when create view
-                            example:
-                            val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME")
-                        """.trimIndent()
-                    )
             } finally {
                 recycle()
             }
+
+            if (GlobalConfig.DEBUG && (templateName.isEmpty() || pageName.isEmpty()))
+                throw IllegalArgumentException(
+                    """
+                        TEMPLATE NAME or PAGE NAME is NULL! You must declare its!
+                        
+                        if you use xml, please declare
+                        example:
+                        app:template_name="PUT_YOUR_TEMPLATE_NAME"
+                        app:page_name="PUT_YOUR_PAGE_NAME"
+                        
+                        if you create from programmatically please put your TEMPLATE NAME and PAGE NAME in AttributeSet or when create view
+                        example:
+                        val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME")
+                    """.trimIndent()
+                )
         }
     }
 
