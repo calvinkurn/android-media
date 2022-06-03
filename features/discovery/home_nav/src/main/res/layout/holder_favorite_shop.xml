@@ -4,7 +4,8 @@
     android:layout_width="@dimen/nav_card_me_page_size"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_favshop"
         android:layout_width="match_parent"
@@ -57,7 +58,7 @@
                 android:id="@+id/text_shop_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Otten Coffee Jakarta"
+                tools:text="Otten Coffee Jakarta"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/Unify_NN950"
@@ -71,7 +72,7 @@
             android:id="@+id/text_shop_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Jakarta"
+            tools:text="Jakarta"
             android:maxLines="1"
             android:ellipsize="end"
             app:typographyWeight="reguler"

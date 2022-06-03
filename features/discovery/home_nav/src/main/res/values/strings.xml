@@ -57,8 +57,6 @@
     <string name="transaction_empty">Status belanjaanmu nanti bisa dicek di sini, lho!</string>
     <string name="transaction_view_all">Lihat Semua</string>
 
-    <string name="favorite_shop_others_count">%d Toko\nLainnya</string>
-
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
     <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
 

@@ -16,15 +16,13 @@
             app:typographyWeight="reguler"
             app:typographyType="display_3"
             android:textColor="@color/Unify_NN600"
-            android:gravity="center_vertical"
             android:layout_marginVertical="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/empty_image"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_weight="1"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/empty_image"
