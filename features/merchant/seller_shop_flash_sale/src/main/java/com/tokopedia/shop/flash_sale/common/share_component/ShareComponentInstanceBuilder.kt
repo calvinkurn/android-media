@@ -13,7 +13,6 @@ import com.tokopedia.shop.flash_sale.common.constant.Constant
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
 import com.tokopedia.shop.flash_sale.common.extension.digitsOnly
 import com.tokopedia.shop.flash_sale.common.extension.formatTo
-import com.tokopedia.shop.flash_sale.common.extension.splitByThousand
 import com.tokopedia.shop.flash_sale.common.resource.ResourceProvider
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING
@@ -22,7 +21,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -55,7 +53,6 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
         private const val QUESTION_MARK = "?"
         private const val DELIMITER = "."
-        private const val RUPIAH = "Rp "
     }
 
     fun build(
@@ -248,7 +245,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
     }
 
     private fun formatOriginalPrice(originalPrice : String) : String {
-        return originalPrice.digitsOnly().splitByThousand()
+        return originalPrice.digitsOnly().toString()
     }
 
     private fun formatDiscountPrice(discountedPrice: String, isOngoing: Boolean): String {
@@ -261,12 +258,11 @@ class ShareComponentInstanceBuilder @Inject constructor(
     }
 
     private fun maskDiscountedPrice(
-        prefix: String = RUPIAH,
         delimiter: String = DELIMITER,
         discountedPrice: String
     ): String {
         try {
-            val template = "${prefix.trim()}%s${delimiter}%s"
+            val template = "%s${delimiter}%s"
 
             val splitResult = discountedPrice.split(delimiter)
 
