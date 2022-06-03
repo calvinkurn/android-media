@@ -42,11 +42,11 @@ data class InboxTicketListResponse(
                     @SerializedName("read_status")
                     val readStatus: String? = "",
                     @SerializedName("read_status_id")
-                    val readStatusId: Int = 0,
+                    val readStatusId: String? = "",
                     @SerializedName("status")
                     val status: String? = "",
                     @SerializedName("status_id")
-                    val statusId: Int = 0,
+                    val statusId: String? = "",
                     @SerializedName("subject")
                     val subject: String? = "",
                     @SerializedName("url_detail")
