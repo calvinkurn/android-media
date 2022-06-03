@@ -1,6 +1,5 @@
 package com.tokopedia.imagepreview.imagesecure
 
-import android.content.Context
 import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import android.view.ViewGroup
 import com.tokopedia.design.image.TouchImageView
@@ -10,6 +9,7 @@ import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.Exception
@@ -20,7 +20,6 @@ import java.util.ArrayList
  * The main purpose of this change is to support load image secure
  */
 class TouchImageAdapterKt(
-    private val context: Context,
     private val fileLoc: ArrayList<String>?,
     private val userSessionInterface: UserSessionInterface,
     private val isSecure: Boolean
@@ -46,8 +45,8 @@ class TouchImageAdapterKt(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val imageView = TouchImageView(context) { StateSize: Float ->
-            if (StateSize <= 1) {
+        val imageView = TouchImageView(container.context) { stateSize: Float ->
+            if (stateSize <= 1) {
                 imageStateChangeListener?.onStateDefault()
             } else {
                 imageStateChangeListener?.onStateZoom()
@@ -73,14 +72,14 @@ class TouchImageAdapterKt(
         if (isSecure) {
             imageView.loadSecureImage(source, userSessionInterface)
         } else {
-            ImageLoader.LoadImage(imageView, source)
+            imageView.loadImage(source)
         }
     }
 
     private fun loadImageFromFile(imageView: ImageView, thumbnail: String) {
         if (!TextUtils.isEmpty(thumbnail)) {
             val bitmap = getBitmapFromPath(thumbnail, DEF_WIDTH, DEF_HEIGHT, false)
-            imageView.setImageBitmap(bitmap)
+            imageView.loadImage(bitmap)
         }
     }
 

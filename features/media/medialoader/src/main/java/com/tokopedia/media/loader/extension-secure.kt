@@ -9,11 +9,11 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.user.session.UserSessionInterface
 
 inline fun ImageView.loadSecureImage(
-    url: String,
+    url: String?,
     userSession: UserSessionInterface,
     crossinline properties: Properties.() -> Unit = {}
 ) {
-    if (userSession.accessToken.isEmpty()) return
+    if (userSession.accessToken.isEmpty() || url.isNullOrEmpty()) return
     call(
         url,
         Properties()
@@ -27,15 +27,12 @@ inline fun ImageView.loadSecureImage(
 
 fun loadSecureImageWithEmptyTarget(
     context: Context,
-    url: String,
+    url: String?,
     userSession: UserSessionInterface,
     properties: Properties.() -> Unit = {},
     mediaTarget: MediaBitmapEmptyTarget<Bitmap>
 ) {
-    if (userSession.accessToken.isEmpty()) {
-        Toast.makeText(context, "(Dev) - access token not found", Toast.LENGTH_SHORT).show()
-        return
-    }
+    if (userSession.accessToken.isEmpty() || url.isNullOrEmpty()) return
     MediaLoaderTarget.loadImage(
         context,
         Properties()

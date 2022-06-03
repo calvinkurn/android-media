@@ -25,17 +25,16 @@ import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.ArrayList
 
-class ImageSecurePreviewActivity: ImagePreviewActivity() {
+class ImageSecurePreviewActivity : ImagePreviewActivity() {
 
     private var touchImageAdapter: TouchImageAdapterKt? = null
     private var isSecure: Boolean = false
     private var userSession: UserSessionInterface? = null
 
     override fun setupAdapter() {
-        isSecure = intent.extras?.getBoolean(IS_SECURE, false)?: false
+        isSecure = intent.extras?.getBoolean(IS_SECURE, false) ?: false
         userSession = UserSession(this@ImageSecurePreviewActivity).apply {
-            touchImageAdapter = TouchImageAdapterKt(
-                this@ImageSecurePreviewActivity, fileLocations, this, isSecure)
+            touchImageAdapter = TouchImageAdapterKt(fileLocations, this, isSecure)
             touchImageAdapter?.setOnImageStateChangeListener(
                 object : TouchImageAdapterKt.OnImageStateChange {
                     override fun onStateDefault() {
@@ -55,9 +54,15 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
     override fun actionDownloadAndSavePicture() {
         val filenameParam = FileUtil.generateUniqueFileNameDateFormat(viewPager.currentItem)
         val notificationId = filenameParam.hashCode()
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(this, ANDROID_GENERAL_CHANNEL)
-        notifyProcessDownload(filenameParam, notificationId, notificationBuilder, notificationManager)
+        notifyProcessDownload(
+            filenameParam,
+            notificationId,
+            notificationBuilder,
+            notificationManager
+        )
         downloadImage(filenameParam, notificationId, notificationBuilder, notificationManager)
     }
 
@@ -66,14 +71,15 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
         notificationId: Int,
         notificationBuilder: NotificationCompat.Builder,
         notificationManager: NotificationManager
-    )  {
+    ) {
         notificationBuilder.setContentTitle(filenameParam)
             .setContentText(getString(R.string.download_in_process))
             .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
                     resources,
-                    com.tokopedia.design.R.drawable.ic_big_notif_customerapp)
+                    com.tokopedia.design.R.drawable.ic_big_notif_customerapp
+                )
             )
             .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
@@ -89,7 +95,8 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
         val mediaTarget = MediaBitmapEmptyTarget<Bitmap>(
             onReady = {
                 onResourceImageReady(
-                    filenameParam, it, notificationId, notificationBuilder, notificationManager)
+                    filenameParam, it, notificationId, notificationBuilder, notificationManager
+                )
             },
             onFailed = {
                 showFailedDownload(notificationId, notificationBuilder)
@@ -119,7 +126,8 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
             fileAndUri = PublicFolderUtil.putImageToPublicFolder(
                 this@ImageSecurePreviewActivity,
                 bitmap = resource,
-                fileName = filenameParam)
+                fileName = filenameParam
+            )
         } catch (e: Throwable) {
             showFailedDownload(notificationId, notificationBuilder)
             return
@@ -148,7 +156,8 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         val pIntent = PendingIntent.getActivity(
-            this@ImageSecurePreviewActivity, 0, intent, 0)
+            this@ImageSecurePreviewActivity, 0, intent, 0
+        )
 
         notificationBuilder.setContentText(getString(R.string.download_success))
             .setProgress(0, 0, false)
@@ -159,14 +168,16 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
         notificationManager.notify(notificationId, notificationBuilder.build());
         this@ImageSecurePreviewActivity.window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
     }
 
     private fun showSnackBar(resultUri: Uri) {
         val snackBar = SnackbarManager.make(
             findViewById<View>(android.R.id.content),
             getString(R.string.download_success),
-            Snackbar.LENGTH_SHORT)
+            Snackbar.LENGTH_SHORT
+        )
         snackBar.setAction(getString(R.string.label_open)) {
             openImageDownloaded(resultUri)
         }
@@ -174,7 +185,8 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 this@ImageSecurePreviewActivity.window.setFlags(
                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                )
             }
         })
         snackBar.show()
@@ -185,14 +197,15 @@ class ImageSecurePreviewActivity: ImagePreviewActivity() {
 
         @JvmStatic
         @JvmOverloads
-        fun getCallingIntent(context: Context,
-                             imageUris: ArrayList<String>,
-                             imageDesc: ArrayList<String>? = null,
-                             position: Int = 0,
-                             title: String? = null,
-                             description: String? = null,
-                             disableDownloadButton: Boolean = true,
-                             isSecure: Boolean = false
+        fun getCallingIntent(
+            context: Context,
+            imageUris: ArrayList<String>,
+            imageDesc: ArrayList<String>? = null,
+            position: Int = 0,
+            title: String? = null,
+            description: String? = null,
+            disableDownloadButton: Boolean = true,
+            isSecure: Boolean = false
         ): Intent {
             val intent = Intent(context, ImageSecurePreviewActivity::class.java)
             val bundle = Bundle()

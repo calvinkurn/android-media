@@ -206,13 +206,9 @@ class TopchatImageUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
         if (element.attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
-            element.imageSecureUrl?.let {
-                attachmentUnify?.loadSecureImage(it, userSession)
-            }
+            attachmentUnify?.loadSecureImage(element.imageSecureUrl, userSession)
         } else {
-            element.imageUrl?.let {
-                attachmentUnify?.loadImage(it)
-            }
+            attachmentUnify?.loadImage(element.imageUrl)
         }
     }
 
