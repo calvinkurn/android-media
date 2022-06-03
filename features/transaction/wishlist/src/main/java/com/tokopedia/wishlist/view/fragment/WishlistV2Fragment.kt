@@ -702,6 +702,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         super.onPause()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setRefreshing()
+    }
+
     private fun stopProgressDeletionHandler() {
         handler.removeCallbacks(progressDeletionRunnable)
     }
