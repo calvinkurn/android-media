@@ -1,4 +1,7 @@
 <resources>
+    <!--Common-->
+    <string name="action_back">Kembali</string>
+
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
 
@@ -75,4 +78,19 @@
     <string name="shop_close_primary_cta">Buka Toko Sekarang</string>
     <string name="shop_close_secondary_cta">Batal</string>
     <string name="shop_close_foot_note">Kamu dapat mengatur kembali jam buka dan tutup toko di Pengaturan Toko</string>
+
+    <!--Draft-->
+    <string name="draftlist_title_full">Draft campaign penuh</string>
+    <string name="draftlist_title_available">Draft campaign-mu</string>
+    <string name="draftlist_description_full">Klik salah satu draft untuk melanjutkan campaign atau hapus untuk membuat campaign baru.</string>
+    <string name="draftlist_description_available">Klik salah satu draft untuk melanjutkan campaign.</string>
+    <string name="draftlist_date_delimiter">﹣</string>
+    <string name="action_yes_stop">Ya, Hentikan</string>
+    <string name="draftdelete_title">Yakin hapus draft campaign?</string>
+    <string name="draftdelete_desc">Detail campaign “%s” yang sudah diatur akan dihapus permanen.</string>
+    <string name="draftdelete_question_title">Kenapa kamu ingin membatalkan campaign ini?</string>
+    <string name="draftdelete_question_other_placeholder">Tuliskan alasanmu di sini</string>
+    <string name="draftdelete_question_other_placeholder_short">Alasan</string>
+    <string name="draftdelete_question_other_text">Alasan Lain:</string>
+
 </resources>

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.flash_sale.di.scope.ShopFlashSaleScope
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerViewModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListViewModel
+import com.tokopedia.shop.flash_sale.presentation.draft.viewmodel.DraftDeleteViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -26,4 +27,10 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignListViewModel::class)
     internal abstract fun provideCampaignListViewModel(viewModel: CampaignListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DraftDeleteViewModel::class)
+    internal abstract fun provideDraftDeleteViewModel(viewModel: DraftDeleteViewModel): ViewModel
+
 }
