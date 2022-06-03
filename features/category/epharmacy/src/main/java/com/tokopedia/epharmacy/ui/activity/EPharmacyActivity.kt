@@ -21,5 +21,4 @@ class EPharmacyActivity : BaseViewModelActivity<EPharmacyViewModel>() {
     override fun getNewFragment(): Fragment {
         return UploadPrescriptionFragment()
     }
-
 }
