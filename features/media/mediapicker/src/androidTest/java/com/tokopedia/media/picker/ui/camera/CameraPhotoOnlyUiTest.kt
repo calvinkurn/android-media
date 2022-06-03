@@ -31,12 +31,12 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
     override fun setUp() {
         super.setUp()
         pickerComponent?.inject(interceptor)
-        IdlingRegistry.getInstance().register(Robot.countingIdlingResource)
+        IdlingRegistry.getInstance().register(countingIdlingResource)
     }
 
     @After
     override fun tearDown() {
-        IdlingRegistry.getInstance().unregister(Robot.countingIdlingResource)
+        IdlingRegistry.getInstance().unregister(countingIdlingResource)
     }
 
     @Test
