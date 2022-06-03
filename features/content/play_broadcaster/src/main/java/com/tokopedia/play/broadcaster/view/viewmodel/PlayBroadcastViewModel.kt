@@ -167,7 +167,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             } else "0"
         )
 
-    var hasLeaderBoard: Boolean = false
+    val hasLeaderBoard: Boolean
+        get() = if (_quizDetailState.value is QuizDetailStateUiModel.Success) {
+            (_quizDetailState.value as QuizDetailStateUiModel.Success).leaderboardSlots.isNotEmpty()
+        } else false
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -1005,7 +1008,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
-            hasLeaderBoard = leaderboardSlots.isNotEmpty()
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
@@ -1016,10 +1018,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
             if (leaderboardSlots.isNotEmpty()) {
-                hasLeaderBoard = true
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
                 sharedPref.setNotFirstGameResult()
-                delay(TimeUnit.SECONDS.toMillis(DEFAULT_GAME_RESULT_AUTO_DISMISS_IN_SECOND))
+                delay(DEFAULT_GAME_RESULT_AUTO_DISMISS)
                 _uiEvent.emit(PlayBroadcastEvent.DismissGameResultCoachMark)
             }
         }) {
@@ -1513,7 +1514,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
-        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS_IN_SECOND = 5L
+        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
 
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
