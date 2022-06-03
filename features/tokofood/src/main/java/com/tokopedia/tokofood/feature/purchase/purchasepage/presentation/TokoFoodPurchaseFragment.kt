@@ -407,14 +407,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
                         val errorMetadata = checkoutData.getErrorMetadataObject()
                         when {
-                            errorMetadata.popupErrorMessage.text.isNotEmpty() -> {
+                            errorMetadata?.popupErrorMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
                             }
-                            errorMetadata.popupMessage.text.isNotEmpty() -> {
+                            errorMetadata?.popupMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(false, errorMetadata.popupMessage)
                             }
                             else -> {
-                                showDefaultCheckoutGeneralError()
+                                showDefaultCheckoutGeneralError(checkoutData.message.takeIf { it.isNotBlank() })
                             }
                         }
                     }
@@ -849,8 +849,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun getOkayMessage(): String = context?.getString(R.string.text_purchase_okay).orEmpty()
 
-    private fun showDefaultCheckoutGeneralError() {
-        val errorMessage = context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
+    private fun showDefaultCheckoutGeneralError(message: String? = null) {
+        val errorMessage =
+            message ?: context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
         val actionMessage = context?.getString(R.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
             viewModel.setPaymentButtonLoading(true)
