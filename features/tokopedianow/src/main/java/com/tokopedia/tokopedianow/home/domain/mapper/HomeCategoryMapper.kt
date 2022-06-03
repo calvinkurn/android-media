@@ -35,6 +35,7 @@ object HomeCategoryMapper {
             size = response?.size.orZero()
         )
 
+        // Add "Semua Kategori" item to the list
         newCategoryList.add(
             TokoNowCategoryItemUiModel(
                 warehouseId = warehouseId,
@@ -42,6 +43,7 @@ object HomeCategoryMapper {
             )
         )
 
+        // Map response category items to ui model and add all of them
         newCategoryList.addAll(
             responseCategoryList.map {
                 TokoNowCategoryItemUiModel(
