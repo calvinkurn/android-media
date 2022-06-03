@@ -6,12 +6,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -114,13 +112,13 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) { globalEvent ->
             when (globalEvent.state) {
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
-                    onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
+                    onFailedToLoadMiniCartChatListBottomSheet(globalEvent, fragment)
                 }
             }
         }
     }
 
-    private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
+    private fun onFailedToLoadMiniCartChatListBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
         shoppingSummaryBottomSheet.dismiss()
         miniCartChatListBottomSheet.dismiss()
         if (globalEvent.data != null && globalEvent.data is MiniCartData) {
@@ -134,11 +132,11 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                         outOfService,
                         object : GlobalErrorBottomSheetActionListener {
                             override fun onGoToHome() {
-                                RouteManager.route(context, ApplinkConst.HOME)
+                                miniCartChatListBottomSheet.dismiss()
                             }
 
                             override fun onRefreshErrorPage() {
-                                showSimplifiedSummaryBottomSheet(fragment)
+                                // No-op
                             }
                         })
                 }
@@ -163,7 +161,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                     }
 
                     override fun onRefreshErrorPage() {
-                        showSimplifiedSummaryBottomSheet(fragment)
+                        showMiniCartChatListBottomSheet(fragment)
                     }
                 })
         }
@@ -309,7 +307,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     /**
      * Function to show simplified summary bottom sheet
      */
-    fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
+    private fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.value?.shoppingSummaryBottomSheetData?.let {
             shoppingSummaryBottomSheet.show(it, fragment.parentFragmentManager, context)
         }
