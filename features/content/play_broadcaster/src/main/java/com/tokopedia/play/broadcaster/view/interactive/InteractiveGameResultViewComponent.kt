@@ -9,6 +9,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
 
@@ -20,7 +21,7 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
 ) : ViewComponent(container, R.id.view_game_result) {
 
     private val job = SupervisorJob()
-    private val vAnchorBottom = findViewById<View>(com.tokopedia.play_common.R.id.v_anchor_bottom)
+    private val vAnchorBottom = findViewById<View>(commonR.id.v_anchor_bottom)
     private val coachMark: CoachMark2 = CoachMark2(container.context)
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
