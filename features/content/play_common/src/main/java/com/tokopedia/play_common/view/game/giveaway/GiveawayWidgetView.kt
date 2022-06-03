@@ -88,12 +88,18 @@ class GiveawayWidgetView : ConstraintLayout {
             context.getString(R.string.play_giveaway_header_hint)
         )
 
+        getHeader().maxLength = MAX_TITLE_LENGTH
+
         binding.flTap.isHapticFeedbackEnabled = true
         binding.flTap.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 
             mListener?.onTapTapClicked(this)
         }
+    }
+
+    companion object {
+        private const val MAX_TITLE_LENGTH = 40
     }
 
     interface Listener {
