@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -17,8 +18,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flash_sale.common.extension.showError
-import com.tokopedia.shop.flash_sale.common.extension.slideDown
-import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
@@ -177,13 +176,17 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
-            tabsUnify.getUnifyTabLayout().slideDown()
+            tabsUnify.gone()
+            tabsUnify.getUnifyTabLayout().gone()
+            alignRecyclerViewToToolbarBottom()
         }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
         binding?.run {
-            tabsUnify.getUnifyTabLayout().slideUp()
+            tabsUnify.visible()
+            tabsUnify.getUnifyTabLayout().visible()
+            alignRecyclerViewToTabsBottom()
         }
     }
 
@@ -257,6 +260,34 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun alignRecyclerViewToToolbarBottom() {
+        val set = ConstraintSet()
+        set.clone(binding?.container)
+        set.connect(
+            binding?.viewPager?.id ?: return,
+            ConstraintSet.TOP,
+            binding?.header?.id ?: return,
+            ConstraintSet.BOTTOM
+        )
+
+        set.applyTo(binding?.container)
+    }
+
+
+    private fun alignRecyclerViewToTabsBottom() {
+        val set = ConstraintSet()
+        set.clone(binding?.container)
+        set.connect(
+            binding?.viewPager?.id ?: return,
+            ConstraintSet.TOP,
+            binding?.tabsUnify?.id ?: return,
+            ConstraintSet.BOTTOM
+        )
+
+        set.applyTo(binding?.container)
+    }
+
+
     private fun focusTo(discountStatusId: Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
@@ -271,4 +302,5 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             upcomingStatusTab.select()*/
         }
     }
+
 }
