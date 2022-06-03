@@ -9,7 +9,6 @@ import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
-import com.tokopedia.createpost.view.plist.*
 import dagger.Component
 
 /**
@@ -33,9 +32,5 @@ interface CreatePostComponent {
 
     fun inject(baseCreatePostFragmentNew: BaseCreatePostFragmentNew)
     fun inject(createPostActivityNew: CreatePostActivityNew)
-    fun inject(shopProductListFragment: ShopProductListFragment)
-    fun inject(shopProductSearchPageListParentFragment: ShopProductSearchPageListParentFragment)
-    fun inject(barangSearchResultFragment: BarangSearchResultFragment)
-    fun inject(tokoSearchResultFragment: TokoSearchResultFragment)
     fun inject(productTagActivity: ProductTagActivity)
 }
