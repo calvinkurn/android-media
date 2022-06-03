@@ -19,7 +19,7 @@ data class AgreeConsent(
 data class AgreeConsentData(
     @SerializedName("success")
     @Expose
-    val success: Boolean = false,
+    val isSuccess: Boolean = false,
     @SerializedName("message")
     @Expose
     val message: String = ""
