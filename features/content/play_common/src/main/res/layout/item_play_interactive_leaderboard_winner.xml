@@ -92,7 +92,7 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:text="Chat"
+            android:text="@string/play_interactive_winner_chat"
             android:textColor="@color/green_500"
             android:id="@+id/tv_winner_chat"
             android:layout_width="0dp"
