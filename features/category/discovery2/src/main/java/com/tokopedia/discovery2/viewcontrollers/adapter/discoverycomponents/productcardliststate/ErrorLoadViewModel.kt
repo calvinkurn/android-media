@@ -50,12 +50,12 @@ class ErrorLoadViewModel(val application: Application,
                             hitMerchantVoucherFirstPageCall(it)
                         ComponentNames.BannerInfinite.componentName ->
                             bannerInfiniteUseCase.loadFirstPageComponents(
-                                    components.id,
+                                    components.parentComponentId,
                                     components.pageEndPoint
                             )
                         ComponentNames.ShopCardInfinite.componentName ->
                             shopCardInfiniteUseCase.loadFirstPageComponents(
-                                    components.id,
+                                    components.parentComponentId,
                                     components.pageEndPoint
                             )
                         else ->
