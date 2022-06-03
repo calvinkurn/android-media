@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter
+package com.tokopedia.media.picker.ui.adapter
 
 import android.Manifest.permission.*
 import android.content.Intent

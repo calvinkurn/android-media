@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.activity.album.adapter
+package com.tokopedia.media.picker.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

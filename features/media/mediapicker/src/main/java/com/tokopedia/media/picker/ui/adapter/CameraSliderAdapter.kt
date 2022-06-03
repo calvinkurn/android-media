@@ -1,4 +1,4 @@
-package com.tokopedia.media.picker.ui.fragment.camera.recyclers.adapter
+package com.tokopedia.media.picker.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
