@@ -11,45 +11,38 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterIns
 object OccBundleHelper {
 
     fun setBundleForBottomSheetPartner(
-        listofTenureDetail: List<TenureDetail>,
-        selectedPosition: Int,
-        listOfGateway: PaylaterGetOptimizedModel,
-        gateWayId: String,
-        variantName: String,
-        productId: String,
-        tenureSelected: String,
-        quantity: Int
+        bundelData: BundleData
     ): Bundle {
 
         val bundle = Bundle().apply {
             putParcelable(
                 SelectGateWayBottomSheet.GATEWAY_LIST,
-                listOfGateway
+                bundelData.listOfGateway
             )
             putString(
                 SelectGateWayBottomSheet.SELECTED_GATEWAY,
-                gateWayId
+                bundelData.gateWayId
             )
             putString(
                 SelectGateWayBottomSheet.CURRENT_VARINT,
-                variantName
+                bundelData.variantName
             )
             putString(
                 SelectGateWayBottomSheet.CURRENT_PRODUCT_ID,
-                productId
+                bundelData.productId
             )
             putString(
                 SelectGateWayBottomSheet.CURRENT_SELECTED_TENURE,
-                tenureSelected
+                bundelData.tenureSelected
             )
             putInt(
                 SelectGateWayBottomSheet.CURRENT_QUANTITY,
-                quantity
+                bundelData.quantity
             )
-            if (listofTenureDetail.size > selectedPosition) {
+            if (bundelData.listofTenureDetail.size > bundelData.selectedPosition) {
                 putString(
                     SelectGateWayBottomSheet.SELECTED_EMI,
-                    listofTenureDetail[selectedPosition].monthly_installment.orEmpty()
+                    bundelData.listofTenureDetail[bundelData.selectedPosition].monthly_installment.orEmpty()
                 )
             } else {
                 putString(
@@ -62,24 +55,39 @@ object OccBundleHelper {
     }
 
 
-    fun setBundleForInstalmentBottomSheet(installmentBottomSheetDetail: InstallmentBottomSheetDetail): Bundle
-    {
+    fun setBundleForInstalmentBottomSheet(installmentBottomSheetDetail: InstallmentBottomSheetDetail): Bundle {
         val bundle = Bundle().apply {
             installmentBottomSheetDetail.gatwayToChipMap[installmentBottomSheetDetail.gatewayIdSelected]?.let { checkoutData ->
-                val eventImpression = OccBottomSheetImpression().apply{
+                val eventImpression = OccBottomSheetImpression().apply {
                     productPrice = installmentBottomSheetDetail.selectedProductPrice
-                    userStatus =checkoutData.userState ?: ""
-                    tenureOption = checkoutData.tenureDetail[installmentBottomSheetDetail.selectedTenure].tenure
-                    payLaterPartnerName = checkoutData.gateway_name?:""
+                    userStatus = checkoutData.userState ?: ""
+                    tenureOption =
+                        checkoutData.tenureDetail[installmentBottomSheetDetail.selectedTenure].tenure
+                    payLaterPartnerName = checkoutData.gateway_name ?: ""
                 }
                 putParcelable(PayLaterInstallmentFeeInfo.IMPRESSION_DETAIL, eventImpression)
             }
             putParcelable(
-                PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,installmentBottomSheetDetail.installmentDetail)
+                PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
+                installmentBottomSheetDetail.installmentDetail
+            )
         }
         return bundle
 
 
     }
 
+
 }
+
+
+data class BundleData(
+    val listofTenureDetail: List<TenureDetail>,
+    val selectedPosition: Int,
+    val listOfGateway: PaylaterGetOptimizedModel,
+    val gateWayId: String,
+    val variantName: String,
+    val productId: String,
+    val tenureSelected: String,
+    val quantity: Int
+)

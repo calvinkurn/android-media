@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +26,8 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedM
 import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper.setTextToDisplay
 import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper.showToaster
+import com.tokopedia.pdpsimulation.activateCheckout.helper.BottomSheetType
+import com.tokopedia.pdpsimulation.activateCheckout.helper.BundleData
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
@@ -613,6 +616,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         ActivationHelper.navigateToBottomSheet(
             BottomSheetType.GateWayBottomSheet(
                 OccBundleHelper.setBundleForBottomSheetPartner(
+                    BundleData(
                     it,
                     selectedTenurePosition,
                     listOfGateway,
@@ -620,7 +624,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     payLaterActivationViewModel.variantName,
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
-                    quantity
+                    quantity)
                 )
             ), childFragmentManager
         ) {
@@ -672,6 +676,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun quantityTextWatcher() {
         detailHeader.quantityEditor.editText.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -798,8 +803,4 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             return fragment
         }
     }
-}
-
-sealed class BottomSheetType {
-    data class GateWayBottomSheet(val bundleData: Bundle) : BottomSheetType()
 }

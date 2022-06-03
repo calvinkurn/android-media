@@ -1,9 +1,9 @@
 package com.tokopedia.pdpsimulation.activateCheckout.helper
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
-import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.BottomSheetType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
@@ -45,3 +45,9 @@ object ActivationHelper {
             this.text = textToDisplay
     }
 }
+
+
+sealed class BottomSheetType {
+    data class GateWayBottomSheet(val bundleData: Bundle) : BottomSheetType()
+}
+
