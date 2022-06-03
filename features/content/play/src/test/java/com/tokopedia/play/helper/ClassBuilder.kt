@@ -20,8 +20,8 @@ class ClassBuilder {
         chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
         channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
         channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
-        interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(),
-        interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
+        interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
+        interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(TestHtmlTextTransformer()),
         cartMapper: PlayCartMapper = PlayCartMapper(),
         playUserReportMapper: PlayUserReportReasoningMapper = PlayUserReportReasoningMapper()
     ) = PlayUiModelMapper(
