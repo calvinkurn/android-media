@@ -11,7 +11,9 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.shop.flash_sale.common.constant.Constant
 import com.tokopedia.shop.flash_sale.common.constant.DateConstant
+import com.tokopedia.shop.flash_sale.common.extension.digitsOnly
 import com.tokopedia.shop.flash_sale.common.extension.formatTo
+import com.tokopedia.shop.flash_sale.common.extension.splitByThousand
 import com.tokopedia.shop.flash_sale.common.resource.ResourceProvider
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignBanner
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CAMPAIGN_STATUS_ID_ONGOING
@@ -20,6 +22,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -46,6 +49,13 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
         private const val PAGE_NAME = "ShopFS"
         private const val THUMBNAIL_IMAGE = ""
+
+        private const val FIRST_SEGMENT = 0
+        private const val SECOND_SEGMENT = 1
+
+        private const val QUESTION_MARK = "?"
+        private const val DELIMITER = "."
+        private const val RUPIAH = "Rp "
     }
 
     fun build(
@@ -157,7 +167,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_BEFORE,
-                    value = product?.originalPrice.toString()
+                    value = formatOriginalPrice(product?.originalPrice.toString())
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_AFTER,
@@ -182,7 +192,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER,
-                    value = formatDiscountPrice(product?.discountedPrice.orEmpty(), isOngoing)
+                    value = formatOriginalPrice(product?.originalPrice.toString())
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_DISCOUNT,
@@ -199,7 +209,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_BEFORE,
-                    value = product?.originalPrice.toString()
+                    value = formatOriginalPrice(product?.originalPrice.toString())
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_AFTER,
@@ -221,7 +231,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_BEFORE,
-                    value = product?.originalPrice.toString()
+                    value = formatOriginalPrice(product?.originalPrice.toString())
                 )
                 addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER,
@@ -237,18 +247,48 @@ class ShareComponentInstanceBuilder @Inject constructor(
         }
     }
 
+    private fun formatOriginalPrice(originalPrice : String) : String {
+        return originalPrice.digitsOnly().splitByThousand()
+    }
+
     private fun formatDiscountPrice(discountedPrice: String, isOngoing: Boolean): String {
-        return discountedPrice
-        /*return if (isOngoing) {
-            discountedPrice?.orEmpty().toString()
-        } else {
-            val formattedDiscountPrice = discountedPrice?.splitByThousand().orEmpty()
-            if (formattedDiscountPrice.isNotEmpty()) {
-                formattedDiscountPrice.replaceFirst(".", "?")
-            } else {
-                formattedDiscountPrice
+        if (isOngoing) {
+            val discountedPriceNumber = discountedPrice.digitsOnly()
+            return discountedPriceNumber.toString()
+        }
+
+        return maskDiscountedPrice(discountedPrice = discountedPrice)
+    }
+
+    private fun maskDiscountedPrice(
+        prefix: String = RUPIAH,
+        delimiter: String = DELIMITER,
+        discountedPrice: String
+    ): String {
+        try {
+            val template = "${prefix.trim()}%s${delimiter}%s"
+
+            val splitResult = discountedPrice.split(delimiter)
+
+            if (splitResult.isEmpty()) {
+                return discountedPrice
             }
-        }*/
+
+            val firstSegment = splitResult[FIRST_SEGMENT]
+            val firstSegmentDigitOnly = firstSegment.digitsOnly().toString()
+
+            var replacement = Constant.EMPTY_STRING
+            repeat(firstSegmentDigitOnly.length) {
+                replacement += QUESTION_MARK
+            }
+
+            val secondSegment = splitResult[SECOND_SEGMENT]
+
+            return String.format(template, replacement, secondSegment)
+        } catch (e: Exception) {
+            return discountedPrice
+        }
+
     }
 
     private fun findTitle(param: Param, isOngoing: Boolean): String {
