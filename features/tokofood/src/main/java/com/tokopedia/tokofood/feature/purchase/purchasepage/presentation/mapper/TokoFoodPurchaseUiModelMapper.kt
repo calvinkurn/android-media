@@ -183,53 +183,6 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    private fun List<CheckoutTokoFoodProductVariant>.mapVariantIntoCustomListItem(): List<CustomListItem> {
-        val customListItems = mutableListOf<CustomListItem>()
-        // add on selections widget
-        this.forEach { variant ->
-            customListItems.add(
-                CustomListItem(
-                    listItemType = CustomListItemType.PRODUCT_ADD_ON,
-                    addOnUiModel = variant.mapVariantToAddOnUiModel()
-                )
-            )
-        }
-        if (customListItems.isNotEmpty()) {
-            // order input widget
-            customListItems.add(
-                CustomListItem(
-                    listItemType = CustomListItemType.ORDER_NOTE_INPUT,
-                    addOnUiModel = null
-                )
-            )
-        }
-        return customListItems.toList()
-    }
-
-    private fun CheckoutTokoFoodProductVariant.mapVariantToAddOnUiModel(): AddOnUiModel {
-        return AddOnUiModel(
-            id = this.variantId,
-            name = this.name,
-            isRequired = this.rules.selectionRules.isRequired,
-            maxQty = this.rules.selectionRules.maxQuantity,
-            minQty = this.rules.selectionRules.minQuantity,
-            options = mapOptionDetailsToOptionUiModels(this.rules.selectionRules.maxQuantity, this.options)
-        )
-    }
-
-    private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
-        return optionDetails.map { optionDetail ->
-            OptionUiModel(
-                isSelected = false,
-                id = optionDetail.optionId,
-                name = optionDetail.name,
-                price = optionDetail.price,
-                priceFmt = optionDetail.priceFmt,
-                selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
-            )
-        }
-    }
-
     private fun mapGeneralTickerUiModel(message: String,
                                         isError: Boolean): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
@@ -319,11 +272,15 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     private fun getAddOnsAndParamPairList(variants: List<CheckoutTokoFoodProductVariant>): List<Pair<String, UpdateProductVariantParam>> {
-        return variants.flatMap { variant ->
-            variant.options.map { option ->
-                "${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId)
+        val pairList = mutableListOf<Pair<String, UpdateProductVariantParam>>()
+        variants.forEach { variant ->
+            variant.options.forEach { option ->
+                if (option.isSelected) {
+                    pairList.add("${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId))
+                }
             }
         }
+        return pairList
     }
 
     private fun mapPromoUiModel(promo: CheckoutTokoFoodPromo): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
@@ -363,6 +320,53 @@ object TokoFoodPurchaseUiModelMapper {
         return TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel().apply {
             isCollapsed = false
             this.isEnabled = isEnabled
+        }
+    }
+
+    private fun List<CheckoutTokoFoodProductVariant>.mapVariantIntoCustomListItem(): List<CustomListItem> {
+        val customListItems = mutableListOf<CustomListItem>()
+        // add on selections widget
+        this.forEach { variant ->
+            customListItems.add(
+                CustomListItem(
+                    listItemType = CustomListItemType.PRODUCT_ADD_ON,
+                    addOnUiModel = variant.mapVariantToAddOnUiModel()
+                )
+            )
+        }
+        if (customListItems.isNotEmpty()) {
+            // order input widget
+            customListItems.add(
+                CustomListItem(
+                    listItemType = CustomListItemType.ORDER_NOTE_INPUT,
+                    addOnUiModel = null
+                )
+            )
+        }
+        return customListItems.toList()
+    }
+
+    private fun CheckoutTokoFoodProductVariant.mapVariantToAddOnUiModel(): AddOnUiModel {
+        return AddOnUiModel(
+            id = this.variantId,
+            name = this.name,
+            isRequired = this.rules.selectionRules.isRequired,
+            maxQty = this.rules.selectionRules.maxQuantity,
+            minQty = this.rules.selectionRules.minQuantity,
+            options = mapOptionDetailsToOptionUiModels(this.rules.selectionRules.maxQuantity, this.options)
+        )
+    }
+
+    private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
+        return optionDetails.map { optionDetail ->
+            OptionUiModel(
+                isSelected = optionDetail.isSelected,
+                id = optionDetail.optionId,
+                name = optionDetail.name,
+                price = optionDetail.price,
+                priceFmt = optionDetail.priceFmt,
+                selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
+            )
         }
     }
 

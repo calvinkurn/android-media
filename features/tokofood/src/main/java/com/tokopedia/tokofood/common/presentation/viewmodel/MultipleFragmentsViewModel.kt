@@ -209,26 +209,6 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
-    fun testUpdateCart() {
-        launchCatchError(block = {
-            val testParam = UpdateParam()
-            updateCartTokoFoodUseCase(testParam).collect {
-                if (it.isSuccess()) {
-                    loadCartList("tes")
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
-                }
-            }
-        }, onError = {
-            cartDataValidationState.emit(
-                UiEvent(
-                    state = UiEvent.EVENT_FAILED_UPDATE_CART,
-                    throwable = it
-                )
-            )
-        })
-
-    }
-
     fun addToCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
             addToCartTokoFoodUseCase(updateParam).collect {
