@@ -39,7 +39,7 @@
 
                 <data
                     android:host="@string/host_food"
-                    android:path="@string/path_tokofood_merchant_list"
+                    android:path="@string/path_tokofood_merchant"
                     android:scheme="@string/internal_scheme" />
 
                 <data

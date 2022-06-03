@@ -72,4 +72,7 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Food
+    const val KEY_ROLLENCE_FOOD = "m1_gofood"
 }

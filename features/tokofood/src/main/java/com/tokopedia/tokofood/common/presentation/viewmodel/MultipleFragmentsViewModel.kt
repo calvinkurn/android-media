@@ -8,9 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
-import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
-import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.RemoveItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
@@ -23,7 +22,6 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.Result
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -96,10 +94,11 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         cartDataState.value = response.data
     }
 
-    fun deleteProduct(productId: String, cartId: String, source: String) {
+    fun deleteProduct(productId: String, cartId: String, source: String, shopId: String? = null) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-            val removeCartParam = getProductParamById(productId, cartId)
+            val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
+            val removeCartParam = getProductParamById(productId, cartId, paramShopId)
             removeCartTokoFoodUseCase(removeCartParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
@@ -121,10 +120,11 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
-    fun deleteUnavailableProducts(source: String) {
+    fun deleteUnavailableProducts(source: String, shopId: String? = null) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-            val removeCartParam = getUnavailableProductsParam()
+            val paramShopId = shopId ?: this@MultipleFragmentsViewModel.shopId
+            val removeCartParam = getUnavailableProductsParam(paramShopId)
             removeCartTokoFoodUseCase(removeCartParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
@@ -145,11 +145,8 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 
     fun updateNotes(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
-            val param = updateParam.apply {
-                shopId = this@MultipleFragmentsViewModel.shopId
-            }
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
-            updateCartTokoFoodUseCase(param).collect {
+            updateCartTokoFoodUseCase(updateParam).collect {
                 if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
@@ -269,28 +266,28 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         )
     }
 
-    private fun getProductParamById(productId: String, cartId: String): CartTokoFoodParam {
+    private fun getProductParamById(productId: String, cartId: String, shopId: String): RemoveCartTokoFoodParam {
         val cartList = listOf(
-            CartItemTokoFoodParam(
+            RemoveItemTokoFoodParam(
                 cartId = cartId.toLongOrZero(),
                 productId = productId,
                 shopId = shopId
             )
         )
-        return CartTokoFoodParam(carts = cartList)
+        return RemoveCartTokoFoodParam(carts = cartList)
     }
 
-    private fun getUnavailableProductsParam(): CartTokoFoodParam {
+    private fun getUnavailableProductsParam(shopId: String): RemoveCartTokoFoodParam {
         val cartList = cartDataState.value.unavailableSection.products
             .asSequence()
             .map {
-                CartItemTokoFoodParam(
+                RemoveItemTokoFoodParam(
                     cartId = it.cartId.toLongOrZero(),
                     productId = it.productId,
                     shopId = shopId
                 )
             }.toList()
-        return CartTokoFoodParam(carts = cartList)
+        return RemoveCartTokoFoodParam(carts = cartList)
     }
 
 }

@@ -374,7 +374,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
@@ -537,9 +537,10 @@ public interface ApplinkConst {
     }
 
     interface TokoFood {
+        String MAIN_PATH = "tokopedia://food";
         String HOME = "tokopedia://food/home";
         String CATEGORY = "tokopedia://food/category";
-        String MERCHANT = "tokopedia://food/merchant";
+        String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
         String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
         String TOKOFOOD_ORDER = "tokopedia://food/order";
     }

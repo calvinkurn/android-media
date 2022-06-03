@@ -29,7 +29,7 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
 
         private fun generateParams(param: UpdateParam,
                                    additionalAttr: String): Map<String, Any> {
-            val cartParam = UpdateProductMapper.getProductParamById(
+            val cartParam = UpdateProductMapper.getUpdateProductParamById(
                 param.productList,
                 additionalAttr,
                 param.shopId
