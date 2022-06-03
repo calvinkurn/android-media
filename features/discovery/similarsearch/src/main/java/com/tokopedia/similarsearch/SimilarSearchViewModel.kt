@@ -336,8 +336,10 @@ internal class SimilarSearchViewModel(
             addToWishlistV2UseCase.execute(
                     onSuccess = { result ->
                         if (result is com.tokopedia.usecase.coroutines.Success) {
-                            wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId) }
-                        },
+                            wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                        } else {
+                            addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
+                        } },
                     onError = {
                         addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
                     })
@@ -345,9 +347,13 @@ internal class SimilarSearchViewModel(
         else {
             deleteWishlistV2UseCase.setParams(productId, userSession.userId)
             deleteWishlistV2UseCase.execute(
-                    onSuccess = {
-                        removeWishlistEventLiveData.postValue(Event(true))
-                        postUpdateWishlistOriginalProductEvent(productId,false) },
+                    onSuccess = { result ->
+                        if (result is com.tokopedia.usecase.coroutines.Success) {
+                            removeWishlistEventLiveData.postValue(Event(true))
+                            postUpdateWishlistOriginalProductEvent(productId,false)
+                        } else {
+                            removeWishlistEventLiveData.postValue(Event(false))
+                        } },
                     onError = { removeWishlistEventLiveData.postValue(Event(false)) })
         }
     }
@@ -578,5 +584,11 @@ internal class SimilarSearchViewModel(
 
     fun getAddToCartFailedMessage(): String {
         return addToCartFailedMessage
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
     }
 }
