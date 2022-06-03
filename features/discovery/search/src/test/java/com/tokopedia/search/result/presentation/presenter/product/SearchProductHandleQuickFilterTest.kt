@@ -180,7 +180,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private fun `Then verify dropdown quick filter bottomsheet has opened and track sent`(filter: Filter) {
         verify {
             productListView.openBottomsheetMultipleOptionsQuickFilter(filter)
-            productListView.trackEventClickDropdownQuickFilter()
+            productListView.trackEventClickDropdownQuickFilter(filter.title)
         }
     }
 
@@ -207,7 +207,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(optionList: List<Option>) {
         verify {
             productListView.applyDropdownQuickFilter(optionList)
-            productListView.trackEventApplyDropdownQuickFilter()
+            productListView.trackEventApplyDropdownQuickFilter(optionList)
         }
 
         val actualActiveOptions = productListPresenter.quickFilterOptionList.filter { it.inputState.toBoolean() }

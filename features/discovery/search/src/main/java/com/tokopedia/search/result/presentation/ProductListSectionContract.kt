@@ -116,7 +116,7 @@ interface ProductListSectionContract {
         fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
-        fun trackEventApplyDropdownQuickFilter()
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
     interface Presenter : CustomerPresenter<View>{

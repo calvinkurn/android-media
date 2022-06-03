@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
@@ -19,6 +20,7 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.ID
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
+import com.tokopedia.search.utils.toDropdownQuickFilterEventLabel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -935,28 +937,26 @@ object SearchTracking {
         )
     }
 
-    fun trackEventClickDropdownQuickFilter(filterTitle: String, userId: String?) {
+    fun trackEventClickDropdownQuickFilter(filterTitle: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
                 SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
-                SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )
         )
     }
 
-    fun trackEventApplyDropdownQuickFilter(filterName: String, filterValue: String, isSelected: Boolean, userId: String?) {
+    fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
-                SearchTrackingConstant.EVENT_LABEL, "$filterName - $filterValue - $isSelected",
-                SearchTrackingConstant.USER_ID, userId,
+                SearchTrackingConstant.EVENT_LABEL, optionList?.toDropdownQuickFilterEventLabel(),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )

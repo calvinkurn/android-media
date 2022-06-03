@@ -1635,7 +1635,7 @@ class ProductListPresenter @Inject constructor(
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
         view.applyDropdownQuickFilter(optionList)
-        view.trackEventApplyDropdownQuickFilter()
+        view.trackEventApplyDropdownQuickFilter(optionList)
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
