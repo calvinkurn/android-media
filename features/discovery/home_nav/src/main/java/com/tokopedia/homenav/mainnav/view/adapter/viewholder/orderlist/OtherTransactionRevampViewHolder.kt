@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderOtherFavoriteShopBinding
+import com.tokopedia.homenav.databinding.HolderViewAllRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -18,22 +18,22 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 class OtherTransactionRevampViewHolder (itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionRevampModel>(itemView) {
-    private var binding: HolderOtherFavoriteShopBinding? by viewBinding()
+    private var binding: HolderViewAllRevampBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_other_favorite_shop
+        val LAYOUT = R.layout.holder_view_all_revamp
     }
 
     private fun setForegroundClickViewAllCard() {
         val outValue = TypedValue()
         itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-        binding?.cardViewAllFavshop?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
+        binding?.cardViewAll?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
     }
 
     override fun bind(otherTransactionRevampModel: OtherTransactionRevampModel) {
         setForegroundClickViewAllCard()
-        binding?.cardViewAllFavshop?.setCta(itemView.resources.getString(R.string.transaction_view_all))
-        binding?.cardViewAllFavshop?.cardView?.setOnClickListener {
+        binding?.cardViewAll?.setCta(itemView.resources.getString(R.string.transaction_view_all))
+        binding?.cardViewAll?.cardView?.setOnClickListener {
             val tracking = TrackingTransactionSection.getClickViewAllTransaction()
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
             RouteManager.route(itemView.context, ApplinkConst.PURCHASE_ORDER)

@@ -115,14 +115,6 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return ErrorWishlistViewHolder.LAYOUT
     }
 
-    override fun type(emptyStateWishlistDataModel: EmptyStateWishlistDataModel): Int {
-        return EmptyWishlistViewHolder.LAYOUT
-    }
-
-    override fun type(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel): Int {
-        return EmptyFavoriteShopViewHolder.LAYOUT
-    }
-
     override fun type(visitable: HomeNavExpandableDataModel): Int {
         return HomeNavExpandableViewHolder.LAYOUT
     }
@@ -145,8 +137,6 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
             ShimmeringFavoriteShopViewHolder.LAYOUT -> ShimmeringFavoriteShopViewHolder(view)
             ShimmeringWishlistViewHolder.LAYOUT -> ShimmeringWishlistViewHolder(view)
-            EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
-            EmptyFavoriteShopViewHolder.LAYOUT -> EmptyFavoriteShopViewHolder(view)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
             ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
             HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)

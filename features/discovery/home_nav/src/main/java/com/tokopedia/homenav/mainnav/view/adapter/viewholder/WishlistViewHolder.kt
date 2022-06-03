@@ -12,6 +12,7 @@ import com.tokopedia.homenav.databinding.HolderWishlistListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.WishlistTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistAdapter
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
@@ -52,7 +53,9 @@ class WishlistViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.wishlist.map { WishlistModel(it) })
-        if(element.wishlist.size >= MAX_WISHLIST_TO_SHOW){
+        if (visitableList.isEmpty()) {
+            visitableList.add(EmptyStateWishlistDataModel())
+        } else if(element.wishlist.size >= MAX_WISHLIST_TO_SHOW) {
             visitableList.add(OtherWishlistModel())
             binding?.wishlistRv?.setHeightBasedOnCardMaxHeight()
         }

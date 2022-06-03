@@ -7,26 +7,23 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderOtherFavoriteShopBinding
+import com.tokopedia.homenav.databinding.HolderViewAllRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.OtherFavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherFavoriteShopModel>(itemView) {
-    private var binding: HolderOtherFavoriteShopBinding? by viewBinding()
+    private var binding: HolderViewAllRevampBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_other_favorite_shop
+        val LAYOUT = R.layout.holder_view_all_revamp
     }
 
     override fun bind(otherFavoriteShopModel: OtherFavoriteShopModel) {
         val context = itemView.context
         setForegroundClickViewAllCard()
-        binding?.cardViewAllFavshop?.setCta(context.getString(R.string.global_view_all))
-        binding?.cardViewAllFavshop?.descriptionView?.gone()
-        binding?.cardViewAllFavshop?.titleView?.gone()
+        binding?.cardViewAll?.setCta(context.getString(R.string.global_view_all))
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnFavoriteShopViewAll()
@@ -37,6 +34,6 @@ class OtherFavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavLi
     private fun setForegroundClickViewAllCard() {
         val outValue = TypedValue()
         itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-        binding?.cardViewAllFavshop?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
+        binding?.cardViewAll?.cardView?.foreground = itemView.context.getDrawable(outValue.resourceId)
     }
 }
