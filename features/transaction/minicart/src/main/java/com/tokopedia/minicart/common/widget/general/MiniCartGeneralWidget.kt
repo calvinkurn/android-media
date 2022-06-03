@@ -77,6 +77,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     private fun initializeView(fragment: Fragment) {
         // Init Total Amount Button
         binding.miniCartTotalAmount.apply {
+            val labelText = context.getString(R.string.mini_cart_widget_label_purchase_summary)
+            setLabelTitle(labelText)
             enableAmountChevron(true)
             amountChevronView.setOnClickListener {
                 showSimplifiedSummaryBottomSheet(fragment)
@@ -84,6 +86,8 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             amountCtaView.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
             }
+            val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
+            setCtaText(ctaText)
         }
         // Init Chat Button
         val chatIcon = getIconUnifyDrawable(
@@ -177,12 +181,12 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     }
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        setTotalAmountLoading(false)
         if (miniCartSimplifiedData.miniCartWidgetData.isShopActive) {
             renderAvailableWidget(miniCartSimplifiedData)
         } else {
             renderUnavailableWidget(miniCartSimplifiedData)
         }
-        setTotalAmountLoading(false)
         setAmountViewLayoutParams()
     }
 
@@ -194,19 +198,18 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                 labelTitleView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                 setLabelTitle(labelText)
             } else {
-                labelTitleView.gone()
+                val defaultLabelText = context.getString(R.string.mini_cart_widget_label_purchase_summary)
+                setLabelTitle(defaultLabelText)
             }
-            val labelAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording
-            if (labelAmountText.isNotBlank()) {
-                amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-                setAmount(labelAmountText)
-            } else {
-                amountView.gone()
+            val labelAmountText = miniCartSimplifiedData.miniCartWidgetData.totalProductPriceWording.ifBlank {
+                context.getString(R.string.mini_cart_widget_label_total_price_unavailable_default)
             }
-            totalAmountAdditionalButton.layoutParams.width = 0
-            totalAmountAdditionalButton.requestLayout()
+            amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+            setAmount(labelAmountText)
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
+            // TODO: Fix TotalAmount.setAdditionalButton(null) doesn't hide the chat button.
+            setAdditionalButton(null)
             enableAmountChevron(false)
         }
     }
