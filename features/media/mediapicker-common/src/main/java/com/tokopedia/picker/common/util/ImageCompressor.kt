@@ -1,5 +1,5 @@
 @file:Suppress("SameParameterValue")
-package com.tokopedia.picker.common.utils
+package com.tokopedia.picker.common.util
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,7 +10,6 @@ import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import com.tokopedia.utils.image.ImageProcessingUtil.writeImageToTkpdPath
 import java.io.File
-import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
 

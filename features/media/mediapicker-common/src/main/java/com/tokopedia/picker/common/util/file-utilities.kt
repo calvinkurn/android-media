@@ -1,5 +1,4 @@
-@file:JvmName("PickerUtilities")
-package com.tokopedia.picker.common.utils
+package com.tokopedia.picker.common.util
 
 import android.content.Context
 import android.graphics.BitmapFactory
