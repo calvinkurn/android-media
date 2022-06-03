@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.fragment.BottomSheetType
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 
 object ActivationHelper {
 
@@ -33,5 +34,14 @@ object ActivationHelper {
                 Toaster.TYPE_ERROR
             ).show()
         }
+    }
+
+
+    fun Typography.setTextToDisplay (textToDisplay: String?)
+    {
+        if(textToDisplay.isNullOrBlank())
+            this.visibility = View.GONE
+        else
+            this.text = textToDisplay
     }
 }

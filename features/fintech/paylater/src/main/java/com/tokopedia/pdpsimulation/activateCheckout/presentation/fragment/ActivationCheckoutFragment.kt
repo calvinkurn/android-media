@@ -23,6 +23,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOpti
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper.setTextToDisplay
 import com.tokopedia.pdpsimulation.activateCheckout.helper.ActivationHelper.showToaster
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
@@ -413,22 +414,11 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { it ->
             setGatewayProductImage(it)
-            if (!it.gateway_name.isNullOrBlank())
-                gatewayDetailLayout.getwayBrandName.text =
-                    it.gateway_name
-            else
-                gatewayDetailLayout.getwayBrandName.visibility = View.GONE
 
-            if (!it.subtitle.isNullOrBlank())
-                gatewayDetailLayout.subheaderGateway.text =
-                    it.subtitle
-            else
-                gatewayDetailLayout.subheaderGateway.visibility = View.GONE
-            if (!it.subtitle2.isNullOrBlank())
-                gatewayDetailLayout.subheaderGatewayDetail.text =
-                    it.subtitle2
-            else
-                gatewayDetailLayout.subheaderGatewayDetail.visibility = View.GONE
+            gatewayDetailLayout.getwayBrandName.setTextToDisplay(it.gateway_name)
+            gatewayDetailLayout.subheaderGateway.setTextToDisplay(it.subtitle)
+            gatewayDetailLayout.subheaderGatewayDetail.setTextToDisplay(it.subtitle2)
+
             if (it.tenureDetail.isNotEmpty()) {
                 gatewayDetailLayout.additionalDetail.text = data.footer.orEmpty()
             } else {
