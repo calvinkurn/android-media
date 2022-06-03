@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuBinding
-import com.tokopedia.shop.flash_sale.common.extension.showToaster
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,36 +36,32 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<SsfsBottomsheetMoreMenuBinding>()
     private val campaignName by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME).orEmpty() }
     private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus }
-    private var onMenuClick: (CampaignListMoreMenu) -> Unit = {}
 
     private val availableCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share, {}),
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit, {}),
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel, {}),
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail, {}),
+        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val upcomingCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share, {}),
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit, {}),
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel, {}),
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail, {}),
+        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val ongoingCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share, {
-            binding?.root showToaster getString(R.string.sfs_share)
-        }),
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit, {
-            binding?.root showToaster getString(R.string.sfs_edit)
-        }),
-        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel, {
-            binding?.root showToaster getString(R.string.sfs_cancel)
-        }),
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail, {
-            binding?.root showToaster getString(R.string.sfs_view_detail)
-        }),
+        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
+
+    private var onCancelMenuSelected: () -> Unit = {}
+    private var onViewCampaignDetailMenuSelected: () -> Unit = {}
+    private var onEditCampaignMenuSelected: () -> Unit = {}
+    private var onShareCampaignMenuSelected: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +88,6 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         val recyclerViewAdapter = CampaignListMoreMenuAdapter()
         recyclerViewAdapter.setOnMenuClick { menu ->
             menu.onClick()
-            onMenuClick(menu)
             dismiss()
         }
 
@@ -116,7 +110,19 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setOnItemClickListener(onMenuClick: (CampaignListMoreMenu) -> Unit) {
-        this.onMenuClick = onMenuClick
+    fun setOnShareCampaignMenuSelected(onShareCampaignMenuSelected: () -> Unit) {
+        this.onShareCampaignMenuSelected = onShareCampaignMenuSelected
+    }
+
+    fun setOnEditCampaignMenuSelected(onEditCampaignMenuSelected: () -> Unit) {
+        this.onEditCampaignMenuSelected = onEditCampaignMenuSelected
+    }
+
+    fun setOnCancelCampaignMenuSelected(onCancelMenuSelected: () -> Unit) {
+        this.onCancelMenuSelected = onCancelMenuSelected
+    }
+
+    fun setOnViewCampaignMenuSelected(onViewCampaignDetailMenuSelected: () -> Unit) {
+        this.onViewCampaignDetailMenuSelected = onViewCampaignDetailMenuSelected
     }
 }
