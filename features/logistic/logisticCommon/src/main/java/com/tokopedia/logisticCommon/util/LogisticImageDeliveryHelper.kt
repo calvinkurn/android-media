@@ -4,9 +4,13 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.Url
 
@@ -36,7 +40,8 @@ object LogisticImageDeliveryHelper {
         accessToken: String,
         url: String,
         drawableImagePlaceholder: Drawable? = null,
-        drawableImageError: Drawable? = null
+        drawableImageError: Drawable? = null,
+        onFailedListener : ((Unit)-> Unit)? = null
     ) {
 
         val authKey = String.format("%s %s", HEADER_VALUE_BEARER, accessToken)
@@ -45,6 +50,29 @@ object LogisticImageDeliveryHelper {
         this?.let { imgProof ->
             Glide.with(context)
                 .load(newUrl)
+                .listener((object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        onFailedListener?.invoke(Unit)
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        // no-ops
+                        return false
+                    }
+
+                }))
                 .placeholder(drawableImagePlaceholder)
                 .error(drawableImageError)
                 .dontAnimate()
@@ -53,5 +81,7 @@ object LogisticImageDeliveryHelper {
 
 
     }
+
+
 }
 

@@ -507,22 +507,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
 
-        startActivityForResult(intent, PodConstant.REQUEST_POD)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            PodConstant.REQUEST_POD -> {
-                if (requestCode == PodConstant.RESULT_FAIL_LOAD_IMAGE) {
-                    handleFailedLoadImagePod()
-                }
-            }
-        }
-    }
-
-    //POD view : handle when error
-    private fun handleFailedLoadImagePod() {
-        Toaster.build(requireView(), getString(R.string.error_message_failed_get_image)).show()
+        startActivity(intent)
     }
 }

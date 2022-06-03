@@ -74,4 +74,6 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="label_back">Kembali</string>
     <string name="screen_name_pod">Proof of Delivery</string>
     <string name="error_message_failed_get_image">"Oops, terjadi kesalahan dalam memuat gambar"</string>
+    <string name="pod_label_description">"Foto sepenuhnya diambil dan merupakan tanggung jawab kurir. Tokopedia tidak bertanggung jawab atas hasil foto yang terlampir."</string>
+    <string name="pod_not_valid_proof">Oops, bukti pengiriman tidak tersedia atau sudah kadaluarsa</string>
 </resources>
