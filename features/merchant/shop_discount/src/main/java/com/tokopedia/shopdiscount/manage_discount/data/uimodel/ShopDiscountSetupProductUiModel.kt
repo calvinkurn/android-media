@@ -58,13 +58,12 @@ data class ShopDiscountSetupProductUiModel(
             val isProductDiscounted: Boolean = false,
             val isVariant: Boolean = false,
             val isMultiLoc: Boolean = false,
-            val errorType: Int = 0,
+            var errorType: Int = 0,
             val selectedSlashPriceStatus: Int = 0
         ) : Parcelable
 
         @Parcelize
         data class VariantStatus(
-            var errorType: Int = 0,
             val isMultiLoc: Boolean = false,
             var isVariantEnabled: Boolean? = null
         ) : Parcelable
@@ -118,6 +117,7 @@ data class ShopDiscountSetupProductUiModel(
                 const val PARTIAL_ABUSIVE_ERROR = 2
                 const val ALL_ABUSIVE_ERROR = 3
                 const val R2_ABUSIVE_ERROR = 4
+                const val START_DATE_ERROR = 5
             }
         }
 

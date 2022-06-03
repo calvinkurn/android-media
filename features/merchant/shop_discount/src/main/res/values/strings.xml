@@ -158,6 +158,7 @@
     <string name="shop_discount_manage_product_error_r2_abusive_format">Melebihi batas maks. %1s</string>
     <string name="shop_discount_manage_product_error_r2_abusive_spanned_text">Pelajari</string>
     <string name="shop_discount_manage_product_error_r2_abusive_ticker_desc_format">Batas maks. harga diskon <![CDATA[<b>%1s.</b>]]> Harga diskon harus lebih rendah dari rata-rata harga jual. <![CDATA[<a href="">Terapkan</a>]]></string>
+    <string name="shop_discount_manage_product_error_start_date">Waktu mulai harus min. 5 menit dari waktu \nsaat ini</string>
 
     <!--Shop discount manage product multi loc-->
     <string name="shop_discount_manage_product_discount_multi_loc_manage_toolbar_title">Atur Diskon Lokasi</string>

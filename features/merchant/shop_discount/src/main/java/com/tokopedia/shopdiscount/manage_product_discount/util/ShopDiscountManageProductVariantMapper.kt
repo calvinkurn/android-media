@@ -27,9 +27,9 @@ object ShopDiscountManageProductVariantMapper {
                 maxOrder = it.listProductWarehouse.firstOrNull()?.maxOrder.orEmpty(),
                 isMultiLoc = it.variantStatus.isMultiLoc,
                 slashPriceStatusId = it.slashPriceInfo.slashPriceStatusId,
-                valueErrorType = it.variantStatus.errorType,
                 isAbusive = it.listProductWarehouse.any { it.abusiveRule },
-                averageSoldPrice = it.listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
+                averageSoldPrice = it.listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero(),
+                productErrorType = productData.productStatus.errorType
             )
         }
     }
