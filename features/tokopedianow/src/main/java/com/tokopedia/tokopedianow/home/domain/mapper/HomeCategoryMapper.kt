@@ -14,8 +14,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
 object HomeCategoryMapper {
 
     private const val MAX_CATEGORY_ITEM_COUNT = 19
-    private const val THRESHOLD_CATEGORY_ITEM_COUNT = 7
-    private const val GRID_SPAN_COUNT_MORE_THAN_SEVEN = 2
+    private const val THRESHOLD_CATEGORY_ITEM_COUNT = 6
+    private const val GRID_SPAN_COUNT_MORE_THAN_THRESHOLD = 2
     private const val GRID_SPAN_COUNT_DEFAULT = 1
 
     fun mapToCategoryLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
@@ -32,9 +32,14 @@ object HomeCategoryMapper {
         val newCategoryList = mutableListOf<TokoNowCategoryItemUiModel>()
         val responseCategoryList = response?.take(MAX_CATEGORY_ITEM_COUNT).orEmpty()
         val gridSpanCount = getGridSpanCount(
-            size = response?.size.orZero(),
-            warehouseId = warehouseId,
-            newCategoryList = newCategoryList
+            size = response?.size.orZero()
+        )
+
+        newCategoryList.add(
+            TokoNowCategoryItemUiModel(
+                warehouseId = warehouseId,
+                appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
+            )
         )
 
         newCategoryList.addAll(
@@ -51,17 +56,9 @@ object HomeCategoryMapper {
         return TokoNowCategoryListUiModel(newCategoryList, gridSpanCount)
     }
 
-    private fun getGridSpanCount(size: Int, warehouseId: String, newCategoryList: MutableList<TokoNowCategoryItemUiModel>): Int {
+    private fun getGridSpanCount(size: Int): Int {
         return if (size > THRESHOLD_CATEGORY_ITEM_COUNT) {
-            if (size > MAX_CATEGORY_ITEM_COUNT) {
-                newCategoryList.add(
-                    TokoNowCategoryItemUiModel(
-                        warehouseId = warehouseId,
-                        appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
-                    )
-                )
-            }
-            GRID_SPAN_COUNT_MORE_THAN_SEVEN
+            GRID_SPAN_COUNT_MORE_THAN_THRESHOLD
         } else {
             GRID_SPAN_COUNT_DEFAULT
         }
