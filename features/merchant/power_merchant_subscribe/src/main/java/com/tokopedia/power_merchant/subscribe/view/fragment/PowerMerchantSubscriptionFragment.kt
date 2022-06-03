@@ -168,6 +168,15 @@ open class PowerMerchantSubscriptionFragment :
         bottomSheet.show(childFragmentManager)
     }
 
+    override fun showHelpPmNotActive() {
+        val bottomSheet = InfoPmIfNotActiveBottomSheet.createInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
     override fun goToMembershipDetail() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
     }
