@@ -48,7 +48,7 @@ class QuizChoicesView : ConstraintLayout {
         }
 
         bgDrawable = MethodChecker.getDrawable(context, commonR.drawable.bg_quiz_choice)
-        defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN600)
+        defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN950)
         filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
     }
 
@@ -78,7 +78,7 @@ class QuizChoicesView : ConstraintLayout {
              * Other choices beside user's answer, if correct = icon is green and false is red
              */
             is PlayQuizOptionState.Other -> {
-                binding.tvQuizQuestion.setTextColor(defaultFontColor) 
+                binding.tvQuizQuestion.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_NN600))
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
@@ -168,6 +168,6 @@ class QuizChoicesView : ConstraintLayout {
 
     companion object{
         private const val QUIZ_OPTION_RADIUS = 20f
-        private const val QUIZ_OPTION_STROKE_WIDTH = 1
+        private const val QUIZ_OPTION_STROKE_WIDTH = 2
     }
 }
