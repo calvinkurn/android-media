@@ -2957,6 +2957,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val updateIndices = updateListResult.second
         val removeIndices = updateListResult.first
         if (removeIndices.size > 1) {
+            // on multiple deletion, notify data set changed to prevent indices race condition
             cartAdapter.notifyDataSetChanged()
         } else {
             updateIndices.forEach {
