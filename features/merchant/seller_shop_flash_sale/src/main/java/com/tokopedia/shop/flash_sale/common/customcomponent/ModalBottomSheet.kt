@@ -6,7 +6,9 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.shop.flash_sale.common.util.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 open class ModalBottomSheet: BottomSheetUnify() {
@@ -34,6 +36,7 @@ open class ModalBottomSheet: BottomSheetUnify() {
             val bsLayout = view as LinearLayout
             changeToModalLayout(bsLayout)
             setAlignToCenter(bsLayout)
+            setSoftKeyboardHandler(bsLayout)
         } catch (e: Exception) { /* no-op */ }
     }
 
@@ -59,5 +62,26 @@ open class ModalBottomSheet: BottomSheetUnify() {
         }.toInt()
         bsLayout.background = requireContext().getDrawable(com.tokopedia.unifycomponents.R.drawable.notification_big_bg)
         bsLayout.requestLayout()
+    }
+
+    private fun setSoftKeyboardHandler(bsLayout: LinearLayout) {
+        KeyboardHandler(view ?: return, object : KeyboardHandler.OnKeyBoardVisibilityChangeListener{
+            override fun onKeyboardShow() {
+                bsLayout.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+                bsLayout.requestLayout()
+            }
+
+            override fun onKeyboardHide() {
+                setAlignToCenter(bsLayout)
+            }
+        })
+    }
+
+    fun refreshLayout() {
+        try {
+            val bsLayout = view as LinearLayout
+            changeToModalLayout(bsLayout)
+            setAlignToCenter(bsLayout)
+        } catch (e: Exception) { /* no-op */ }
     }
 }

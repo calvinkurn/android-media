@@ -16,6 +16,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignList
 import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
 import com.tokopedia.shop.flash_sale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
+import com.tokopedia.shop.flash_sale.common.constant.DraftConstant.MAX_DRAFT_COUNT
 import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flash_sale.common.extension.showError
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
@@ -26,6 +27,7 @@ import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
+import com.tokopedia.shop.flash_sale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -43,7 +45,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
-        private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
@@ -137,6 +138,10 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
 
     private fun setupView() {
         binding?.btnCreateCampaign?.setOnClickListener { handleCreateCampaign() }
+        binding?.btnDraft?.setOnClickListener {
+            DraftListBottomSheet.showUsingCampaignUiModel(childFragmentManager,
+                viewModel.getCampaignDrafts(), ::onDeleteDraftSuccess)
+        }
         setupSearchBar()
         setupScrollListener()
         setupTabChangeListener()
@@ -354,8 +359,7 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
     private fun handleCreateCampaign() {
         val campaignDrafts = viewModel.getCampaignDrafts()
         if (campaignDrafts.size >= MAX_DRAFT_COUNT) {
-            //TODO: Call bottomsheet draft list
-            println()
+            DraftListBottomSheet.showUsingCampaignUiModel(childFragmentManager, campaignDrafts, ::onDeleteDraftSuccess)
         } else {
             //TODO: Navigate to info campaign page
             println()
@@ -396,7 +400,6 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
-
     private fun handleDraftCount(draftCount: Int) {
         val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
         binding?.btnDraft?.text = wording
@@ -427,6 +430,10 @@ class CampaignListFragment: BaseSimpleListFragment<CampaignAdapter, CampaignUiMo
         }
     }
 
-
-
+    private fun onDeleteDraftSuccess() {
+        viewModel.getCampaignDrafts(
+            MAX_DRAFT_COUNT,
+            FIRST_PAGE
+        )
+    }
 }
