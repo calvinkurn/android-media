@@ -39,24 +39,60 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus }
 
     private val availableCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_share,
+            R.drawable.ic_sfs_share
+        ) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_edit,
+            R.drawable.ic_sfs_edit
+        ) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_cancel,
+            R.drawable.ic_sfs_cancel
+        ) { onCancelMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_view_detail,
+            R.drawable.ic_sfs_detail
+        ) { onViewCampaignDetailMenuSelected() },
     )
 
     private val upcomingCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_share,
+            R.drawable.ic_sfs_share
+        ) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_edit,
+            R.drawable.ic_sfs_edit
+        ) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_cancel,
+            R.drawable.ic_sfs_cancel
+        ) { onCancelMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_view_detail,
+            R.drawable.ic_sfs_detail
+        ) { onViewCampaignDetailMenuSelected() },
     )
 
     private val ongoingCampaignMoreMenu = listOf(
-        CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_share,
+            R.drawable.ic_sfs_share
+        ) { onShareCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_edit,
+            R.drawable.ic_sfs_edit
+        ) { onEditCampaignMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_stop,
+            R.drawable.ic_sfs_cancel
+        ) { onCancelMenuSelected() },
+        CampaignListMoreMenu(
+            R.string.sfs_view_detail,
+            R.drawable.ic_sfs_detail
+        ) { onViewCampaignDetailMenuSelected() },
     )
 
     private var onCancelMenuSelected: () -> Unit = {}
@@ -101,13 +137,10 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getMenus(): List<CampaignListMoreMenu> {
         return when (campaignStatus) {
-            CampaignStatus.DRAFT -> emptyList()
             CampaignStatus.AVAILABLE -> availableCampaignMoreMenu
             CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
             CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
-            CampaignStatus.FINISHED -> emptyList()
-            CampaignStatus.CANCELLED -> emptyList()
-            null -> emptyList()
+            else -> emptyList()
         }
     }
 

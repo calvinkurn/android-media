@@ -131,7 +131,7 @@ class CampaignAdapter(
                     binding.tpgCampaignStatus.textColor(Unify_NN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_finished)
                 }
-                CampaignStatus.CANCELLED -> {
+                CampaignStatus.CANCELLED, CampaignStatus.ONGOING_CANCELLATION -> {
                     binding.tpgCampaignStatus.setStatus(R.string.sfs_cancelled)
                     binding.tpgCampaignStatus.textColor(Unify_RN500)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_cancelled)
