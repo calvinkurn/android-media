@@ -12,14 +12,13 @@ import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.websocket.response.*
-import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -58,6 +57,8 @@ class PlayViewModelWebSocketTest {
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val testDispatcher = CoroutineTestDispatchers
+
+    private val modelBuilder = UiModelBuilder.get()
 
     @Before
     fun setUp() {
@@ -592,6 +593,161 @@ class PlayViewModelWebSocketTest {
 
             //TODO("Please Check this")
 //            state.winnerBadge.shouldShow.assertTrue()
+        }
+    }
+    @Test
+    fun `when quiz is finish get user winner status from socket but  user is not join the game, then it does nothing`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildQuiz(id = "1")
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "2"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns false
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("11")
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val event = robot.recordEvent {
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
+
+            event.assertEqualTo(emptyList())
+        }
+    }
+
+    @Test
+    fun `when quiz is ongoing, user join the game that has a reward, user the winner`() {
+        val model = uiModelBuilder.buildQuiz(id = "1", listOfChoices =
+        listOf(
+            modelBuilder.buildQuizChoices(id = "12",text = "25 June", type = PlayQuizOptionState.Default('a')),
+            modelBuilder.buildQuizChoices(id = "13",text = "26 June", type = PlayQuizOptionState.Default('b')),
+            modelBuilder.buildQuizChoices(id = "14",text = "27 June", type = PlayQuizOptionState.Default('c'))
+        ),
+            reward = "Ikan Hiu")
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "12"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("1")
+            it.setLoggedIn(true)
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(modelBuilder.buildQuizChoices(id = "12",text = "25 June", type = PlayQuizOptionState.Default('a'))))
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
+
+            event.last().assertInstanceOf<ShowWinningDialogEvent>()
+        }
+    }
+
+    @Test
+    fun `when quiz is ongoing, user join the game that has a reward, user the loser - wrong answer`() {
+        val model = uiModelBuilder.buildQuiz(id = "1", listOfChoices =
+        listOf(
+            modelBuilder.buildQuizChoices(id = "12",text = "25 June", type = PlayQuizOptionState.Default('a')),
+            modelBuilder.buildQuizChoices(id = "13",text = "26 June", type = PlayQuizOptionState.Default('b')),
+            modelBuilder.buildQuizChoices(id = "14",text = "27 June", type = PlayQuizOptionState.Default('c'))
+        ),
+            reward = "Ikan Hiu")
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "12"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("9")
+            it.setLoggedIn(true)
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(modelBuilder.buildQuizChoices(id = "14",text = "27 June", type = PlayQuizOptionState.Default('a'))))
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
+
+            event.last().assertEqualTo(
+                ShowCoachMarkWinnerEvent(
+                    PlayUserWinnerStatusSocketResponse.loserTitle,
+                    PlayUserWinnerStatusSocketResponse.loserText
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when quiz is ongoing, user join the game that has no  reward just show leaderboard`() {
+        val model = uiModelBuilder.buildQuiz(id = "1", listOfChoices =
+        listOf(
+            modelBuilder.buildQuizChoices(id = "12",text = "25 June", type = PlayQuizOptionState.Default('a')),
+            modelBuilder.buildQuizChoices(id = "13",text = "26 June", type = PlayQuizOptionState.Default('b')),
+            modelBuilder.buildQuizChoices(id = "14",text = "27 June", type = PlayQuizOptionState.Default('c'))
+        ),
+            reward = "Ikan Hiu")
+
+        coEvery { repo.getCurrentInteractive(any()) } returns model
+
+        coEvery { repo.answerQuiz(any(), any()) } returns "12"
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("9")
+            it.setLoggedIn(true)
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val eventAndState = robot.recordStateAndEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(modelBuilder.buildQuizChoices(id = "14",text = "27 June", type = PlayQuizOptionState.Default('a'))))
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
         }
     }
 }
