@@ -1,11 +1,11 @@
-package com.tokopedia.shop.pageheader.domain.interactor
+package com.tokopedia.shop.common.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
