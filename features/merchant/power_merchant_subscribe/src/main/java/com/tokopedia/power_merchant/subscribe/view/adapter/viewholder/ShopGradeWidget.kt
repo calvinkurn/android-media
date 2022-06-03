@@ -223,7 +223,6 @@ class ShopGradeWidget(
 
     private fun setupShopScore(element: WidgetShopGradeUiModel) = binding?.run {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
-        val isPm = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isPmProActive = isPmPro && isPmActive
         val isPmProIdle = isPmPro && element.pmStatus == PMStatusConst.IDLE
@@ -265,14 +264,14 @@ class ShopGradeWidget(
             pmProStatusInfoView.setOnClickListener {
                 listener.showPmProStatusInfo(getPmProStatusInfo(element))
             }
-        }else if (isPm && element.shopScore > 60){
+        } else if (isPmActive) {
             pmProStatusInfoView.visible()
             pmProStatusInfoView.hideIcon()
             pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
             pmProStatusInfoView.setOnClickListener {
                 listener.showHelpPmNotActive()
             }
-        }else{
+        } else {
             pmProStatusInfoView.gone()
         }
 
