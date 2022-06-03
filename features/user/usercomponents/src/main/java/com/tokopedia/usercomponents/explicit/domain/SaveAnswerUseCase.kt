@@ -23,13 +23,13 @@ class SaveAnswerUseCase @Inject constructor(
 
     override suspend fun execute(params: InputParam): AnswerDataModel {
         val parameters = mapOf(
-            INPUT to params
+            PARAM_INPUT to params
         )
 
         return repository.request(graphqlQuery(), parameters)
     }
 
     companion object {
-        private const val INPUT = "input"
+        private const val PARAM_INPUT = "input"
     }
 }

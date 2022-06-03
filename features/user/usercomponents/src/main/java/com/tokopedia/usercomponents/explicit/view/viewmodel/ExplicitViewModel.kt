@@ -41,8 +41,8 @@ class ExplicitViewModel @Inject constructor(
             val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
             val sections = response.explicitprofileGetQuestion.template.sections
 
-            if (activeConfig && sections.isNotEmpty() && sections[0].questions.isNotEmpty()) {
-                val property = sections[0].questions[0].property
+            if (activeConfig && sections.isNotEmpty() && sections.first().questions.isNotEmpty()) {
+                val property = sections.first().questions.first().property
                 _explicitContent.value = Success(Pair(activeConfig, property))
                 setPreferenceAnswer(response.explicitprofileGetQuestion.template)
             } else {
@@ -60,15 +60,15 @@ class ExplicitViewModel @Inject constructor(
         preferenceAnswer.apply {
             templateId = template.id
             templateName = template.name
-            sections[0].sectionId = template.sections[0].sectionID
-            sections[0].questions[0].questionId = template.sections[0].questions[0].questionId
+            sections.first().sectionId = template.sections.first().sectionID
+            sections.first().questions.first().questionId = template.sections.first().questions.first().questionId
         }
 
-        val options = template.sections[0].questions[0].property.options
+        val options = template.sections.first().questions.first().property.options
 
         if (options.isNotEmpty()) {
-            preferenceOptions[0].apply {
-                value = options[0].value
+            preferenceOptions.first().apply {
+                value = options.first().value
             }
         }
 
@@ -80,8 +80,8 @@ class ExplicitViewModel @Inject constructor(
     }
 
     fun sendAnswer(answers: Boolean?) {
-        preferenceAnswer.sections[0].questions[0].answerValue =
-            if (answers == true) preferenceOptions[0].value else preferenceOptions[1].value
+        preferenceAnswer.sections.first().questions.first().answerValue =
+            if (answers == true) preferenceOptions.first().value else preferenceOptions[1].value
 
         launchCatchError(coroutineContext, {
             val response = saveAnswerUseCase(preferenceAnswer)

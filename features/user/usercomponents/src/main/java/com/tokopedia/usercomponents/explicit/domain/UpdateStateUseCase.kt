@@ -26,12 +26,12 @@ class UpdateStateUseCase @Inject constructor(
 
     override suspend fun execute(params: UpdateStateParam): UpdateStateDataModel {
         val parameter = mapOf(
-            INPUT to params
+            PARAM_INPUT to params
         )
         return repository.request(graphqlQuery(), parameter)
     }
 
     companion object {
-        private const val INPUT = "input"
+        private const val PARAM_INPUT = "input"
     }
 }

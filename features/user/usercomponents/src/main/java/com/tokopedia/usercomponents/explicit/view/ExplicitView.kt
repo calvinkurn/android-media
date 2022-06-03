@@ -10,7 +10,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -79,20 +79,7 @@ class ExplicitView : CardUnify2 {
             }
 
             if (GlobalConfig.DEBUG && (templateName.isEmpty() || pageName.isEmpty()))
-                throw IllegalArgumentException(
-                    """
-                        TEMPLATE NAME or PAGE NAME is NULL! You must declare its!
-                        
-                        if you use xml, please declare
-                        example:
-                        app:template_name="PUT_YOUR_TEMPLATE_NAME"
-                        app:page_name="PUT_YOUR_PAGE_NAME"
-                        
-                        if you create from programmatically please put your TEMPLATE NAME and PAGE NAME in AttributeSet or when create view
-                        example:
-                        val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME")
-                    """.trimIndent()
-                )
+                throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
         }
     }
 
@@ -108,7 +95,7 @@ class ExplicitView : CardUnify2 {
                 .build()
             component.inject(this)
 
-            if (it is AppCompatActivity) {
+            if (it is ComponentActivity) {
                 viewModel = ViewModelProvider(it, viewModelFactory).get(ExplicitViewModel::class.java)
 
                 initObserver()
@@ -301,7 +288,7 @@ class ExplicitView : CardUnify2 {
         context.startActivity(intent)
     }
 
-    private fun showShadow(show: Boolean) {
-        this.cardType = if (show) TYPE_SHADOW else TYPE_CLEAR
+    private fun showShadow(isShow: Boolean) {
+        this.cardType = if (isShow) TYPE_SHADOW else TYPE_CLEAR
     }
 }

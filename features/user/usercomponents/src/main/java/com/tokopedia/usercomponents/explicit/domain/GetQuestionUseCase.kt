@@ -47,14 +47,14 @@ class GetQuestionUseCase @Inject constructor(
 
     override suspend fun execute(params: String): QuestionDataModel {
         val parameters = mapOf(
-            CHECK_ACTIVE to false,
-            TEMPLATE_NAME to params
+            PARAM_CHECK_ACTIVE to false,
+            PARAM_TEMPLATE_NAME to params
         )
         return repository.request(graphqlQuery(), parameters)
     }
 
     companion object {
-        private const val CHECK_ACTIVE = "checkActive"
-        private const val TEMPLATE_NAME = "templateName"
+        private const val PARAM_CHECK_ACTIVE = "checkActive"
+        private const val PARAM_TEMPLATE_NAME = "templateName"
     }
 }
