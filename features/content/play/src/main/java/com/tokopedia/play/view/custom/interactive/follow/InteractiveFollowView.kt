@@ -46,9 +46,8 @@ class InteractiveFollowView : ConstraintLayout {
     }
 
     fun setBadgeUrl(badgeUrl: String) {
-        binding.ivBadge.shouldShowWithAction(badgeUrl.isNotEmpty()){
-            binding.ivBadge.setImageUrl(badgeUrl)
-        }
+        binding.ivBadge.showWithCondition(badgeUrl.isNotEmpty())
+        if(badgeUrl.isNotEmpty()) binding.ivBadge.setImageUrl(badgeUrl)
     }
 
     fun setPartnerName(name: String) {

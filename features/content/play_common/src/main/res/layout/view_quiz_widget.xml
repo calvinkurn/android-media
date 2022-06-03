@@ -57,6 +57,7 @@
     <include
         android:id="@+id/view_game_reward"
         layout="@layout/view_game_reward"
+        app:layout_constrainedWidth="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_dp_12"
