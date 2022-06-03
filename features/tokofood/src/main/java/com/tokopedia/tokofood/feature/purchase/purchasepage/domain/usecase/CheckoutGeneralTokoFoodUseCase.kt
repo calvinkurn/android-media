@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadata.TokoFoodCheckoutMetadata
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartInfoParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.CheckoutGeneralTokoFoodCartParam
@@ -13,6 +14,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.param.C
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class CheckoutGeneralTokoFoodUseCase @Inject constructor(
@@ -32,7 +34,6 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
               success
               error
               error_state
-              error_metadata
               message
               data{
                 callback_url
@@ -59,12 +60,15 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
 
         private const val PARAMS_KEY = "params"
 
+        private const val ZERO_PERCENT = "0%"
+        private const val ENCODING = "utf-8"
+
         private fun generateParam(tokoFood: CheckoutTokoFood): Map<String, Any> {
             val checkoutMetadata = TokoFoodCheckoutMetadata(
                 shop = tokoFood.data.shop,
                 userAddress = tokoFood.data.userAddress,
-                availableSection = tokoFood.data.availableSection,
-                unavailableSection = tokoFood.data.unavailableSection,
+                availableSection = tokoFood.data.availableSection.mapToCheckoutGeneralParam(),
+                unavailableSection = tokoFood.data.unavailableSection.mapToCheckoutGeneralParam(),
                 shipping = tokoFood.data.shipping,
                 shoppingSummary = tokoFood.data.shoppingSummary
             )
@@ -82,6 +86,26 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
                     )
                 )
             return mapOf(PARAMS_KEY to param)
+        }
+
+        private fun CheckoutTokoFoodAvailabilitySection.mapToCheckoutGeneralParam(): CheckoutTokoFoodAvailabilitySection {
+            return this.copy(
+                products = this.products.map { product ->
+                    product.copy(
+                        discountPercentage = product.discountPercentage.getEncodedDiscountPercentage()
+                    )
+                }
+            )
+        }
+
+        private fun String.getEncodedDiscountPercentage(): String {
+            val discountPercentage =
+                if (isBlank()) {
+                    ZERO_PERCENT
+                } else {
+                    this
+                }
+            return URLEncoder.encode(discountPercentage, ENCODING)
         }
 
     }

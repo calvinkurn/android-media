@@ -595,7 +595,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         _uiEvent.value = PurchaseUiEvent(
                             state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER,
                             data = response.checkoutGeneralTokoFood.data,
-                            throwable = MessageErrorException(response.checkoutGeneralTokoFood.data.errorMetadata)
+                            throwable = MessageErrorException(response.checkoutGeneralTokoFood.data.message)
                         )
                     }
                 }

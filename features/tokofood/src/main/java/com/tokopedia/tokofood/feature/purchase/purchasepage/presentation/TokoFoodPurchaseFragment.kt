@@ -770,7 +770,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
                 override fun onGoToHome() {
-                    // TODO: Go To Homepage
+                    navigateToNewFragment(TokoFoodHomeFragment.createInstance())
                 }
 
                 override fun onRetry() {
@@ -786,7 +786,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
                 }
             }
-        )
+        ).apply {
+            setOnDismissListener {
+                viewModel.setPaymentButtonLoading(false)
+            }
+        }
         bottomSheet.show(parentFragmentManager)
     }
 
