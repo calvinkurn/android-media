@@ -40,9 +40,6 @@ class ExplicitView : CardUnify2 {
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
 
-    private var analyticsSource = ""
-    private var analyticsTemplate = ""
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModel: ExplicitViewModel? = null
@@ -170,11 +167,11 @@ class ExplicitView : CardUnify2 {
 
     private fun initListener() {
         bindingQuestion.root.setOnClickListener {
-            explicitAnalytics.trackClickCard(analyticsSource, analyticsTemplate)
+            explicitAnalytics.trackClickCard(pageName, templateName)
         }
 
         bindingQuestion.imgDismiss.setOnClickListener {
-            explicitAnalytics.trackClickDismissButton(analyticsSource, analyticsTemplate)
+            explicitAnalytics.trackClickDismissButton(pageName, templateName)
             viewModel?.updateState()
             dismiss()
         }
@@ -182,7 +179,7 @@ class ExplicitView : CardUnify2 {
         bindingSuccess.imgSuccessDismiss.setOnClickListener { dismiss() }
 
         bindingQuestion.btnPositifAction.setOnClickListener {
-            explicitAnalytics.trackClickPositifButton(analyticsSource, analyticsTemplate)
+            explicitAnalytics.trackClickPositifButton(pageName, templateName)
             bindingQuestion.apply {
                 btnPositifAction.isLoading = true
                 btnNegatifAction.isEnabled = false
@@ -192,7 +189,7 @@ class ExplicitView : CardUnify2 {
         }
 
         bindingQuestion.btnNegatifAction.setOnClickListener {
-            explicitAnalytics.trackClickNegatifButton(analyticsSource, analyticsTemplate)
+            explicitAnalytics.trackClickNegatifButton(pageName, templateName)
             bindingQuestion.apply {
                 btnNegatifAction.isLoading = true
                 btnPositifAction.isEnabled = false
