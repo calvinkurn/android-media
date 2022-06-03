@@ -3020,7 +3020,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             sharingUrlParam = sharingUrlParam,
             userStatus = userStatus,
             maxReward = maxReward,
-            isSender = isSender
+            isSender = isSender,
+            isEligible = true
         )
 
         val homeSharingWidgetUiModel = HomeSharingReferralWidgetUiModel(
@@ -3061,6 +3062,49 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getReferralResult
             .verifySuccessEquals(Success(referral))
+    }
+
+    @Test
+    fun `when get referral not eligible should not add referral widget to home layout list`() {
+        val id = "155"
+        val slug = "slug"
+        val isEligible = false
+        val localCacheModel = LocalCacheModel()
+
+        val layoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "tokonow_referral",
+                header = Header(
+                    name = "Tokonow Referral",
+                    serverTimeUnix = 0
+                ),
+                widgetParam = slug,
+                token = ""
+            )
+        )
+
+        val referral = HomeReferralDataModel(isEligible = isEligible)
+
+        onGetHomeLayoutData_thenReturn(layoutResponse, localCacheModel)
+        onGetReferralSenderHome_thenReturn(slug, referral)
+
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        val layoutList = listOf(TokoNowChooseAddressWidgetUiModel("0"))
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        verifyGetReferralSenderHomeUseCaseCalled(slug)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.getReferralResult
+            .verifyValueEquals(null)
     }
 
     @Test

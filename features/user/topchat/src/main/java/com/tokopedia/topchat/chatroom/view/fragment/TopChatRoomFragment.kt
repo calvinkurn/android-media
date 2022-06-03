@@ -43,6 +43,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
@@ -145,6 +146,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 /**
@@ -162,7 +164,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener {
+    ReminderTickerViewHolder.Listener, ProductBundlingListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -208,6 +210,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
     private var seenAttachmentVoucher = HashSet<String>()
+    private var seenAttachmentProductBundling = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -300,6 +303,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     chatMenu?.hideMenu()
                 }
                 adapter.setSrwBubbleState(isExpanded)
+            }
+
+            override fun shouldShowOnBoarding(): Boolean {
+                return replyBubbleOnBoarding.hasBeenShown()
             }
         })
     }
@@ -960,7 +967,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this,
+            this, this
         )
     }
 
@@ -2907,6 +2914,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivity(intent)
     }
 
+    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
+        TopChatAnalyticsKt.eventClickProductBundlingCta(
+            element.productBundling.bundleItem?.first()?.productId?: "",
+            element.productBundling.bundleId?: ""
+        )
+        if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it,
+                    element.productBundling.ctaBundling?.buttonAndroidLink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
+        if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
+            TopChatAnalyticsKt.eventViewProductBundling(
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
+            )
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -2926,7 +2956,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_UPDATE_STOCK = 120
 
         private const val ELLIPSIZE_MAX_CHAR = 20
-        private const val SECOND_DIVIDER = 1000
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"

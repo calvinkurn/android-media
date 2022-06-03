@@ -1,7 +1,13 @@
 package com.tokopedia.product.addedit.draft.presentation.viewmodel
 
+import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductDraftFlowUseCase
+import com.tokopedia.product.addedit.draft.presentation.data.repository.MockedDraftRepository
+import com.tokopedia.product.addedit.draft.presentation.data.repository.MockedDraftRepositoryException
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -128,6 +134,42 @@ class AddEditProductDraftViewModelTest: AddEditProductDraftViewModelTestFixture(
         }
 
         assert(viewModel.deleteAllDraft.value is Fail)
+    }
+
+    @Test
+    fun `When get all product draft flow should be successful`() = runBlocking {
+        getAllProductDraftFlowUseCase = GetAllProductDraftFlowUseCase(MockedDraftRepository())
+
+        viewModel = AddEditProductDraftViewModel(
+            CoroutineTestDispatchersProvider,
+            deleteProductDraftUseCase,
+            deleteAllProductDraftUseCase,
+            getAllProductDraftUseCase,
+            getAllProductDraftFlowUseCase
+        )
+
+        val listDraft = listOf(ProductDraft())
+        val result = Success(listDraft)
+        viewModel.drafts
+            .verifySuccessEquals(result)
+    }
+
+    @Test
+    fun `When get all product drafts flow being error, should return an error`() = runBlocking {
+        getAllProductDraftFlowUseCase = GetAllProductDraftFlowUseCase(MockedDraftRepositoryException())
+
+        viewModel = AddEditProductDraftViewModel(
+            CoroutineTestDispatchersProvider,
+            deleteProductDraftUseCase,
+            deleteAllProductDraftUseCase,
+            getAllProductDraftUseCase,
+            getAllProductDraftFlowUseCase
+        )
+
+        val exception = NullPointerException()
+        val result = Fail(exception)
+        viewModel.drafts
+            .verifyErrorEquals(result)
     }
 
     private fun verifySuccessResult(prevData: Any, currentData: Any) {
