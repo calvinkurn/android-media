@@ -280,6 +280,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.TOKOFOOD:
+                    openTokoFood(uriData);
                     screenName = "";
                     break;
                 default:
