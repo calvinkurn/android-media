@@ -775,13 +775,17 @@ open class TopChatViewModel @Inject constructor(
         userId: String,
         wishlistActionListener: WishlistV2ActionListener
     ) {
-        addToWishlistV2UseCase.setParams(productId, userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) wishlistActionListener.onSuccessAddWishlist(result.data, productId)},
-            onError = {
-                wishlistActionListener.onErrorAddWishList(it, productId)
-            })
+        launchCatchError(block = {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = addToWishlistV2UseCase.executeOnBackground()
+            if (result is Success) {
+                wishlistActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }, onError = {
+            wishlistActionListener.onErrorAddWishList(it, productId)
+        })
     }
 
     fun removeFromWishList(
@@ -793,13 +797,17 @@ open class TopChatViewModel @Inject constructor(
     fun removeFromWishListV2(
         productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
     ) {
-        deleteWishlistV2UseCase.setParams(productId, userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
-                } },
-            onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
+        launchCatchError(block = {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = deleteWishlistV2UseCase.executeOnBackground()
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishListActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }, onError = {
+            wishListActionListener.onErrorRemoveWishlist(it, productId)
+        })
     }
 
     fun getExistingChat(messageId: String, isInit: Boolean = false) {
@@ -1177,12 +1185,6 @@ open class TopChatViewModel @Inject constructor(
 
     fun updateMessageId(messageId: String) {
         roomMetaData.updateMessageId(messageId)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
     }
 
     companion object {
