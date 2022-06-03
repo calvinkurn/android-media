@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.createpost.databinding.ItemSortListBinding
+import com.tokopedia.createpost.createpost.databinding.ItemContentCreationSortListBinding
 import com.tokopedia.createpost.producttag.view.uimodel.SortUiModel
 
 /**
@@ -39,7 +39,7 @@ internal class SortAdapter(
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ViewHolder {
             return ViewHolder(
-                ItemSortListBinding.inflate(
+                ItemContentCreationSortListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
@@ -50,7 +50,7 @@ internal class SortAdapter(
     }
 
     class ViewHolder(
-        internal val binding: ItemSortListBinding,
+        internal val binding: ItemContentCreationSortListBinding,
         private val onSelected: (SortUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
