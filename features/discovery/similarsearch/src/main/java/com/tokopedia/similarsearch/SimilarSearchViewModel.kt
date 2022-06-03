@@ -348,7 +348,7 @@ internal class SimilarSearchViewModel(
             deleteWishlistV2UseCase.setParams(productId, userSession.userId)
             deleteWishlistV2UseCase.execute(
                     onSuccess = { result ->
-                        if (result is Success) {
+                        if (result is com.tokopedia.usecase.coroutines.Success) {
                             removeWishlistEventLiveData.postValue(Event(true))
                             postUpdateWishlistOriginalProductEvent(productId,false)
                         } else {
