@@ -2,7 +2,9 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
