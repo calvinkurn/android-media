@@ -4,13 +4,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Shop(
-    @SerializedName("id")
+    @SerializedName("shopID")
     @Expose
     val id: String? = "",
-    @SerializedName("name")
+    @SerializedName("shopName")
     @Expose
     val name: String? = "",
-    @SerializedName("image")
+    @SerializedName("logo")
     @Expose
     val imageUrl: String? = "",
     @SerializedName("location")
@@ -22,12 +22,6 @@ data class Shop(
     @SerializedName("badge")
     @Expose
     val badge: List<ShopBadge>? = listOf(),
-    @SerializedName("stats")
-    @Expose
-    val stats: ShopStats? = ShopStats(),
-    @SerializedName("paging")
-    @Expose
-    val paging: ShopPaging? = ShopPaging(),
     @SerializedName("error")
     @Expose
     val error: String? = ""

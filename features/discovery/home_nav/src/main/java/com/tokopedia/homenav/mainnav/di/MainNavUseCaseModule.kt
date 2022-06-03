@@ -161,9 +161,9 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideGetFavoriteShopUseCase(graphqlRepository: GraphqlRepository): GetFavoriteShopsNavUseCase{
+    fun provideGetFavoriteShopUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface): GetFavoriteShopsNavUseCase{
         val useCase = GraphqlUseCase<FavoriteShopData>(graphqlRepository)
-        return GetFavoriteShopsNavUseCase(useCase)
+        return GetFavoriteShopsNavUseCase(useCase, userSession)
     }
 
     @MainNavScope

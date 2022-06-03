@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
+import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -7,7 +8,6 @@ import com.tokopedia.homenav.mainnav.data.pojo.wishlist.*
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.asLowerCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -17,12 +17,13 @@ import javax.inject.Inject
  */
 class GetWishlistNavUseCase @Inject constructor (
         private val graphqlUseCase: GraphqlUseCase<WishlistData>
-): UseCase<List<NavWishlistModel>>(){
+): UseCase<Pair<List<NavWishlistModel>, Boolean>>(){
 
     init {
         val query = """
             query GetWishlist(${'$'}params:WishlistV2Params){
               wishlist_v2(params:${'$'}params){
+                has_next_page
                 items {
                   id
                   name
@@ -103,7 +104,7 @@ class GetWishlistNavUseCase @Inject constructor (
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): List<NavWishlistModel> {
+    override suspend fun executeOnBackground(): Pair<List<NavWishlistModel>, Boolean> {
         val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?:Wishlist())
         val wishlistList = mutableListOf<NavWishlistModel>()
         responseData.data.wishlistItems?.map {
@@ -122,7 +123,7 @@ class GetWishlistNavUseCase @Inject constructor (
                 variant = it.variant.orEmpty()
             ))
         }
-        return wishlistList
+        return Pair(wishlistList, responseData.data.hasNext?:false)
     }
 
     private fun List<Category>.generateCategoryBreadcrumb() : String {

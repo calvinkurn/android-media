@@ -7,7 +7,7 @@ data class ShopBadge(
     @SerializedName("title")
     @Expose
     val title: String? = "",
-    @SerializedName("image_url")
+    @SerializedName("imageURL")
     @Expose
     val imageUrl: String? = ""
 )

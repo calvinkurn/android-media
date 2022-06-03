@@ -4,64 +4,59 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShopData
+import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShopParam
 import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShops
 import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by Frenzel on 18/04/22
  */
 class GetFavoriteShopsNavUseCase @Inject constructor (
-        private val graphqlUseCase: GraphqlUseCase<FavoriteShopData>
-): UseCase<List<NavFavoriteShopModel>>(){
+        private val graphqlUseCase: GraphqlUseCase<FavoriteShopData>,
+        private val userSession: UserSessionInterface
+): UseCase<Pair<List<NavFavoriteShopModel>, Boolean>>(){
 
     init {
         val query = """
-            query GetFavoriteShop(${'$'}page:Int, ${'$'}per_page:Int) {
-              favorite_shop(page:${'$'}page, per_page:${'$'}per_page){
-                shops{
-                  image
-                  location
-                  id
-                  name
-                  reputation{
-                    tooltip
-                    badge
-                    reputation_score
-                    score
-                    min_badge_score
-                    badge_level
+            query GetUserShopFollow(${'$'}input: UserShopFollowParam){
+              userShopFollow(input:${'$'}input){
+                result {
+                  userShopFollowDetail{
+                    shopID
+                    shopName
+                    location
+                    logo
+                    badge{
+                      title
+                      imageURL
+                    }
+                    reputation{
+                      score
+                      tooltip
+                      reputationScore
+                      minBadgeScore
+                      badge
+                      badgeLevel
+                    }
                   }
-                  badge{
-                    title
-                    image_url
-                  }
-                  stats{
-                    total_product
-                    total_etalase
-                    total_sold
-                  }
+                  haveNext
+                  totalCount
                 }
-                paging{
-                  current
-                  uri_previous
-                  uri_next
-                }
-                error
-              } 
+              }
             }
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(setParams().parameters)
+        graphqlUseCase.setRequestParams(generateParam(FavoriteShopParam(userId = userSession.userId)))
         graphqlUseCase.setTypeClass(FavoriteShopData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): List<NavFavoriteShopModel> {
-        val responseData = Success(graphqlUseCase.executeOnBackground().favoriteShops?:FavoriteShops())
+    override suspend fun executeOnBackground(): Pair<List<NavFavoriteShopModel>, Boolean> {
+        val responseData = Success(graphqlUseCase.executeOnBackground().result?.favoriteShops?:FavoriteShops())
         val favoriteShopList = mutableListOf<NavFavoriteShopModel>()
         responseData.data.shops?.map {
             favoriteShopList.add(NavFavoriteShopModel(
@@ -72,23 +67,15 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
                 badgeImageUrl = it.badge?.firstOrNull()?.imageUrl.orEmpty()
             ))
         }
-        return favoriteShopList
+        val totalCount = responseData.data.totalCount?:0
+        return Pair(favoriteShopList, totalCount>favoriteShopList.size)
     }
 
-    private fun setParams(
-        page: Int = PARAM_PAGE_VALUE,
-        itemsPerPage: Int = PARAM_ITEMS_PER_PAGE_VALUE
-    ) = RequestParams.create().apply {
-        parameters.clear()
-        putInt(PARAM_PAGE, page)
-        putInt(PARAM_ITEMS_PER_PAGE, itemsPerPage)
+    private fun generateParam(param: FavoriteShopParam): Map<String, Any?> {
+        return mapOf(PARAM to param)
     }
-
 
     companion object{
-        private const val PARAM_PAGE = "page"
-        private const val PARAM_ITEMS_PER_PAGE = "per_page"
-        private const val PARAM_PAGE_VALUE = 1
-        private const val PARAM_ITEMS_PER_PAGE_VALUE = 5
+        private const val PARAM = "input"
     }
 }

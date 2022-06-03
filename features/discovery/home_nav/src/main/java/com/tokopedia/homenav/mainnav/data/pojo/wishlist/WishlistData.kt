@@ -10,6 +10,9 @@ data class WishlistData(
 )
 
 data class Wishlist(
+    @SerializedName("has_next_page")
+    @Expose
+    val hasNext: Boolean? = false,
     @SerializedName("items")
     @Expose
     val wishlistItems: List<WishlistItem>? = listOf()
