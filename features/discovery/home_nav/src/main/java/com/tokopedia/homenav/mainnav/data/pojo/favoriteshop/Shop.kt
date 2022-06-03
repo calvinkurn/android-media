@@ -16,9 +16,12 @@ data class Shop(
     @SerializedName("location")
     @Expose
     val location: String? = "",
+    @SerializedName("reputation")
+    @Expose
+    val reputation: ShopReputation? = ShopReputation(),
     @SerializedName("badge")
     @Expose
-    val badge: ShopBadge? = ShopBadge(),
+    val badge: List<ShopBadge>? = listOf(),
     @SerializedName("error")
     @Expose
     val error: String? = ""

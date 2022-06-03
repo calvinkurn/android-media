@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class FavoriteShopData(
     @SerializedName("userShopFollow")
     @Expose
-    val userShopFollow: FavoriteShopResult? = FavoriteShopResult()
-)
-
-data class FavoriteShopResult(
-    @SerializedName("result")
-    @Expose
-    val favoriteShops: FavoriteShops? = FavoriteShops()
-)
+    val result: FavoriteShopResult? = FavoriteShopResult()
+){
+    data class FavoriteShopResult(
+        @SerializedName("result")
+        @Expose
+        val favoriteShops: FavoriteShops? = FavoriteShops()
+    )
+}

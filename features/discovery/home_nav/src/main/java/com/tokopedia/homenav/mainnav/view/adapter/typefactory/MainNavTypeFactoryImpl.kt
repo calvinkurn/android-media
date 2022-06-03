@@ -86,11 +86,11 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     }
 
     override fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel): Int {
-        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
     override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
-        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
     override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
