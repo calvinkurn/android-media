@@ -500,7 +500,7 @@ class PlayViewModel @AssistedInject constructor(
             if (videoLatencyPerformanceMonitoring.hasStarted) {
                 videoLatencyPerformanceMonitoring.stop()
                 val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / 1000
-                playLog.logTimeToFirstByte(durationInSecond.toString())
+                playLog.logTimeToFirstByte(durationInSecond.toInt())
             }
         }
 
@@ -2226,7 +2226,7 @@ class PlayViewModel @AssistedInject constructor(
         //Also, setup remote config value
         playLog.setupRemoteConfig(isMonitoringLogEnabled)
 
-        playLog.logDownloadSpeed("$speedInMBps MBps")
+        playLog.logDownloadSpeed(speedInMBps)
     }
 
     fun getUserReportList(){

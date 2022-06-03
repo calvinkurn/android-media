@@ -14,13 +14,13 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
 
     private var isRemoteConfigEnabled: Boolean = false
 
-    override fun logTimeToFirstByte(timeToFirstByte: String) {
+    override fun logTimeToFirstByte(timeToFirstByte: Int) {
         logCollector.collect(
             Pair("timeToFirstByte", timeToFirstByte)
         )
     }
 
-    override fun logDownloadSpeed(downloadSpeed: String) {
+    override fun logDownloadSpeed(downloadSpeed: Int) {
         logCollector.collect(
             Pair("downloadSpeed", downloadSpeed)
         )
