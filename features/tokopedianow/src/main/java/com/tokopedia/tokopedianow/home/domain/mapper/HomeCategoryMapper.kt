@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -12,7 +13,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
 
 object HomeCategoryMapper {
 
-    private const val MAX_CATEGORY_ITEM_COUNT = 9
+    private const val MAX_CATEGORY_ITEM_COUNT = 19
+    private const val THRESHOLD_CATEGORY_ITEM_COUNT = 7
     private const val GRID_SPAN_COUNT_MORE_THAN_SEVEN = 2
     private const val GRID_SPAN_COUNT_DEFAULT = 1
 
@@ -28,25 +30,13 @@ object HomeCategoryMapper {
 
     fun mapToCategoryList(response: List<CategoryResponse>?, warehouseId: String): TokoNowCategoryListUiModel {
         val newCategoryList = mutableListOf<TokoNowCategoryItemUiModel>()
-        // set all categories entry point for being the first item of category grid depending on the size of category
-        var gridSpanCount: Int = GRID_SPAN_COUNT_DEFAULT
         val responseCategoryList = response?.take(MAX_CATEGORY_ITEM_COUNT).orEmpty()
+        val gridSpanCount = getGridSpanCount(
+            size = response?.size.orZero(),
+            warehouseId = warehouseId,
+            newCategoryList = newCategoryList
+        )
 
-        when (responseCategoryList.size) {
-            MAX_CATEGORY_ITEM_COUNT -> {
-                newCategoryList.add(
-                    TokoNowCategoryItemUiModel(
-                        warehouseId = warehouseId,
-                        appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
-                    )
-                )
-                gridSpanCount = GRID_SPAN_COUNT_MORE_THAN_SEVEN
-            }
-            MAX_CATEGORY_ITEM_COUNT - 1 -> {
-                gridSpanCount = GRID_SPAN_COUNT_MORE_THAN_SEVEN
-            }
-        }
-        // then set category response
         newCategoryList.addAll(
             responseCategoryList.map {
                 TokoNowCategoryItemUiModel(
@@ -59,5 +49,21 @@ object HomeCategoryMapper {
         )
 
         return TokoNowCategoryListUiModel(newCategoryList, gridSpanCount)
+    }
+
+    private fun getGridSpanCount(size: Int, warehouseId: String, newCategoryList: MutableList<TokoNowCategoryItemUiModel>): Int {
+        return if (size > THRESHOLD_CATEGORY_ITEM_COUNT) {
+            if (size > MAX_CATEGORY_ITEM_COUNT) {
+                newCategoryList.add(
+                    TokoNowCategoryItemUiModel(
+                        warehouseId = warehouseId,
+                        appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
+                    )
+                )
+            }
+            GRID_SPAN_COUNT_MORE_THAN_SEVEN
+        } else {
+            GRID_SPAN_COUNT_DEFAULT
+        }
     }
 }
