@@ -9,21 +9,19 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import kotlinx.coroutines.*
+import com.tokopedia.play_common.R as commonR
 
 /**
  * @author by astidhiyaa on 18/04/22
  */
-class InteractiveGameResultViewComponent (container: ViewGroup,
-                                          listener: Listener,
+class InteractiveGameResultViewComponent(
+    container: ViewGroup,
+    listener: Listener,
 ) : ViewComponent(container, R.id.view_game_result) {
 
-    private val job = SupervisorJob()
     private val vAnchorBottom = findViewById<View>(commonR.id.v_anchor_bottom)
     private val coachMark: CoachMark2 = CoachMark2(container.context)
-    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     init {
         rootView.setOnClickListener {
@@ -31,15 +29,6 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
         }
 
         coachMark.onDismissListener = { vAnchorBottom.gone() }
-    }
-
-    fun showCoachMark() {
-        scope.launch {
-            showCoachMark(
-                title = "",
-                subtitle = "Lihat pemenang, hasil, dan\npeserta game di sini ya"
-            )
-        }
     }
 
     fun showCoachMark(title: String, subtitle: String) {

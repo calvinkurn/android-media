@@ -973,10 +973,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun showInteractiveGameResultWidget(showCoachmark: Boolean) {
+    private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
         interactiveGameResultViewComponent?.show()
-        if (showCoachmark) {
-            interactiveGameResultViewComponent?.showCoachMark()
+        if (showCoachMark) {
+            interactiveGameResultViewComponent?.showCoachMark("", getString(R.string.play_bro_interactive_game_result_coachmark),)
         }
     }
 
