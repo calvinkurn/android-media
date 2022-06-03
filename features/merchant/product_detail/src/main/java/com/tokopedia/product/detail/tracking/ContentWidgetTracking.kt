@@ -20,7 +20,7 @@ object ContentWidgetTracking {
         val componentType = data.componentType
         val componentPosition = data.componentPosition
 
-        val mapEvent = hashMapOf(
+        val mapEvent = hashMapOf<String, Any>(
             "event" to ProductTrackingConstant.Tracking.PROMO_VIEW,
             "eventAction" to ACTION_IMPRESSION_CHANNEL_CARD,
             "eventCategory" to ProductTrackingConstant.Category.PDP,
@@ -30,10 +30,10 @@ object ContentWidgetTracking {
             "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
-            "ecommerce" to mapOf(
-                "promoView" to mapOf(
-                    "promotions" to listOf(
-                        mapOf(
+            "ecommerce" to hashMapOf(
+                "promoView" to hashMapOf(
+                    "promotions" to arrayListOf(
+                        hashMapOf(
                             "creative_name" to componentName,
                             "creative_slot" to componentPosition,
                             "item_id" to data.channelId,
