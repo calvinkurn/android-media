@@ -235,6 +235,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onDestroy() {
         super.onDestroy()
         compositeSubs.clear()
+        stopLocationUpdate()
+    }
+
+    private fun stopLocationUpdate() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
     }
 
     private fun initView() {
@@ -500,19 +505,20 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 )
             } else {
                 fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                    createLocationCallback(), null)
+                    locationCallback, null)
             }
 
         }
     }
 
-    private fun createLocationCallback(): LocationCallback {
-        return object : LocationCallback() {
+    private val locationCallback : LocationCallback =
+        object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
                     //send to maps
                     hasRequestedLocation = true
                 }
+                stopLocationUpdate()
                 binding?.loaderCurrentLocation?.visibility = View.GONE
                 currentLat = locationResult.lastLocation.latitude
                 currentLong = locationResult.lastLocation.longitude
@@ -521,8 +527,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     isPositiveFlow = true)
             }
         }
-    }
-
 
     override fun onItemClicked(placeId: String) {
         if (!isEdit) {

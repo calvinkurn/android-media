@@ -23,7 +23,7 @@ object ProductCarouselListAttachmentViewHolderBinder {
     ) {
         recyclerView?.apply {
             setHasFixedSize(true)
-            setRecycledViewPool(adapterListener.getProductCarouselViewPool())
+            setRecycledViewPool(adapterListener.getCarouselViewPool())
             adapter = rvAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

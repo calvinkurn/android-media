@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
@@ -203,8 +204,12 @@ class PlayViewerIdGenerator {
         }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val parentViewPrinter = ViewHierarchyPrinter(
+        parentPrintCondition, customIdPrefix = "P", packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
     private val fileWriter = FileWriter()
 
     @Test
