@@ -1181,12 +1181,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun sendTrackingSuccessRegister() {
-        registerAnalytics.trackSuccessRegister(
+        registerAnalytics.xtrackSuccessRegister(
                 userSession.loginMethod,
                 userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
                 userSession.isGoldMerchant,
                 userSession.shopId,
                 userSession.shopName

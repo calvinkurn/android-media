@@ -272,9 +272,6 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
                 userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
                 userSession.isGoldMerchant,
                 userSession.shopId,
                 userSession.shopName

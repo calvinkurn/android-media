@@ -448,15 +448,12 @@ class RegisterAnalytics @Inject constructor() {
     fun trackSuccessRegister(
             loginMethod: String,
             userId: String,
-            name: String,
-            email: String,
-            phoneNumber: String,
             isGoldMerchant: Boolean,
             shopId: String,
             shopName:String
     ) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId.toString(), name, email)
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId.toString())
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone(userId.toString())
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle(userId.toString())
         }
@@ -496,7 +493,7 @@ class RegisterAnalytics @Inject constructor() {
         sendBranchRegisterEvent(userId, MEDIUM_PHONE)
     }
 
-    private fun onSuccessRegisterEmail(userId: String, name: String, email: String) {
+    private fun onSuccessRegisterEmail(userId: String) {
         trackSuccessClickEmailSignUpButton()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,

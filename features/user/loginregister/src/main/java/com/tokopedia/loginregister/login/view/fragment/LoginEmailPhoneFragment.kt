@@ -1117,8 +1117,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (userSession.isLoggedIn) {
                 val userData = UserData()
                 userData.userId = userSession.userId
-                userData.email = userSession.email
-                userData.phoneNumber = userSession.phoneNumber
                 userData.medium = userSession.loginMethod
 
                 //Identity Event
