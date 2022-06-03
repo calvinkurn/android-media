@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.utils.Unify_G500
-import com.tokopedia.picker.common.utils.Unify_N700_96
-import com.tokopedia.picker.common.utils.Unify_Static_White
+import com.tokopedia.picker.common.util.Unify_G500
+import com.tokopedia.picker.common.util.Unify_N700_96
+import com.tokopedia.picker.common.util.Unify_Static_White
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
