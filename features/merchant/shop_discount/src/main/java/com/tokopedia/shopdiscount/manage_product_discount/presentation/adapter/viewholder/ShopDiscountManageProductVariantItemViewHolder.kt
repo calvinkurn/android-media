@@ -408,7 +408,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
                         show()
                         val tickerDesc = String.format(
                             getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
-                            averageSoldPrice
+                            averageSoldPrice.getCurrencyFormatted()
                         )
                         setHtmlDescription(tickerDesc)
                         setDescriptionClickEvent(object: TickerCallback {
