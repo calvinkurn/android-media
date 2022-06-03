@@ -44,7 +44,7 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -1042,7 +1042,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openQuizDetailSheet() {
-        val quizDetailBottomSheet = PlayQuizDetailBottomSheet.setupQuizDetail(
+        val quizDetailBottomSheet = PlayBroInteractiveBottomSheet.setupQuizDetail(
             childFragmentManager,
             requireContext().classLoader
         )
@@ -1050,7 +1050,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openLeaderboardSheet() {
-        val ongoingLeaderboardBottomSheet = PlayQuizDetailBottomSheet.setupOngoingLeaderboard(
+        val ongoingLeaderboardBottomSheet = PlayBroInteractiveBottomSheet.setupOngoingLeaderboard(
             childFragmentManager,
             requireContext().classLoader
         )

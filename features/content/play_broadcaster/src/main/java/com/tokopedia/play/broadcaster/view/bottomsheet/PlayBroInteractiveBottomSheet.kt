@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
-class PlayQuizDetailBottomSheet @Inject constructor(
+class PlayBroInteractiveBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
@@ -233,12 +233,12 @@ class PlayQuizDetailBottomSheet @Inject constructor(
             classLoader: ClassLoader,
             type: Type,
             size: Size? = Size.HALF,
-        ): PlayQuizDetailBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayQuizDetailBottomSheet
+        ): PlayBroInteractiveBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
             return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayQuizDetailBottomSheet::class.java.name,
-            ) as PlayQuizDetailBottomSheet).apply {
+                PlayBroInteractiveBottomSheet::class.java.name,
+            ) as PlayBroInteractiveBottomSheet).apply {
                 arguments = Bundle().apply {
                     putString(ARG_TYPE, type.toString())
                     putString(ARG_SIZE, size.toString())
@@ -249,21 +249,21 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         fun setupQuizDetail(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayQuizDetailBottomSheet {
+        ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.QUIZ_DETAIL, Size.HALF)
         }
 
         fun setupOngoingLeaderboard(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayQuizDetailBottomSheet {
+        ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.HALF)
         }
 
         fun setupReportLeaderboard(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayQuizDetailBottomSheet {
+        ): PlayBroInteractiveBottomSheet {
             return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.FULL)
         }
     }

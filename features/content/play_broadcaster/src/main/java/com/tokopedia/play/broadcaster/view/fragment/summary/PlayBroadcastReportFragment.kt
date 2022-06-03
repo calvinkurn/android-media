@@ -16,7 +16,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -162,7 +162,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     }
 
     private fun openInteractiveLeaderboardSheet() {
-        val leaderboardReportBottomSheet = PlayQuizDetailBottomSheet.setupReportLeaderboard(
+        val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
             childFragmentManager,
             requireContext().classLoader
         )
