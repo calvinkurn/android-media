@@ -18,6 +18,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListContainerBinding
 import com.tokopedia.shop.flash_sale.common.extension.showError
+import com.tokopedia.shop.flash_sale.common.extension.slideDown
+import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.TabMeta
@@ -176,16 +178,14 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
-            tabsUnify.gone()
-            tabsUnify.getUnifyTabLayout().gone()
+            tabsUnify.getUnifyTabLayout().slideDown()
             alignRecyclerViewToToolbarBottom()
         }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
         binding?.run {
-            tabsUnify.visible()
-            tabsUnify.getUnifyTabLayout().visible()
+            tabsUnify.getUnifyTabLayout().slideUp()
             alignRecyclerViewToTabsBottom()
         }
     }
