@@ -51,13 +51,6 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
             mOnBackListener?.invoke()
         }
 
-        toolbarSubtitle.setOnClickListener {
-            mOnClickListener?.invoke()
-        }
-
-        toolbarExpandIcon.setOnClickListener {
-            mOnClickListener?.invoke()
-        }
     }
 
     var icon: String = ""
@@ -82,6 +75,19 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
     fun getToolbarParentView(): ConstraintLayout {
         return toolbarParent
+    }
+    fun showHideExpandIcon(shouldShowExpandIcon: Boolean){
+        toolbarExpandIcon.visibility = if(shouldShowExpandIcon) View.VISIBLE else View.GONE
+    }
+    fun setClickListenerToOpenBottomSheet(){
+        toolbarExpandIcon.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+
+        toolbarSubtitle.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+
     }
 
     fun setOnBackClickListener(listener: AccountClickListener?) {

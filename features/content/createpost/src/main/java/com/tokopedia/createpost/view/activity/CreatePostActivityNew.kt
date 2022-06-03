@@ -30,7 +30,6 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
@@ -185,17 +184,21 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         if (intent.getStringExtra(PARAM_TYPE) == null) {
             val uris = bundle.get(BundleData.URIS)
             val finalUri =
-                if (uris.toString().endsWith(","))
-                    (uris as CharSequence).subSequence(0, uris.length - 1)
-                else
-                    uris as CharSequence
+                uris?.let {
+                    if (it.toString().endsWith(","))
+                        (it as CharSequence).subSequence(0, it.length - 1)
+                    else
+                        it as CharSequence
+                }
 
-            val list = (finalUri).split(",")
+            val list = (finalUri)?.split(",")
             val createPostViewModel = CreatePostViewModel()
-            list.forEach { uri ->
-                val type = if (isVideoFile(Uri.parse(uri))) MediaType.VIDEO else MediaType.IMAGE
-                val mediaModel = MediaModel(path = uri, type = type)
-                createPostViewModel.fileImageList.add(mediaModel)
+            list?.let {
+                it.forEach { uri ->
+                    val type = if (isVideoFile(Uri.parse(uri))) MediaType.VIDEO else MediaType.IMAGE
+                    val mediaModel = MediaModel(path = uri, type = type)
+                    createPostViewModel.fileImageList.add(mediaModel)
+                }
             }
             intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
@@ -282,6 +285,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
+        createPostViewModel.authorType = selectedFeedAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
@@ -314,13 +318,28 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(feedAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-        selectedFeedAccount = if(mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
-        else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: mFeedAccountList.first()
+        selectedFeedAccount = if (mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
+        else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
+            ?: mFeedAccountList.first()
+
+        val createPostViewModel =
+            (intent?.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
+       createPostViewModel?.let {
+           if (it.isEditState){
+               selectedFeedAccount = findAccountByAuthorIdOfPost(mFeedAccountList, it.editAuthorId)
+           }
+       }
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
+            createPostViewModel?.let {
+                showHideExpandIcon(!it.isEditState)
+                if (!it.isEditState)
+                    setClickListenerToOpenBottomSheet()
+            }
+
 
             setOnBackClickListener {
                 onBackPressed()
@@ -336,6 +355,16 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             visibility = View.VISIBLE
         }
         setSupportActionBar(toolbarCommon)
+    }
+
+    private fun findAccountByAuthorIdOfPost(
+        feedAccountList: List<FeedAccountUiModel>,
+        authorId: String
+    ): FeedAccountUiModel {
+        val acc = feedAccountList.find {
+            it.id == authorId
+        }
+        return acc ?: FeedAccountUiModel.Empty
     }
 
     private fun backWithActionResult() {
