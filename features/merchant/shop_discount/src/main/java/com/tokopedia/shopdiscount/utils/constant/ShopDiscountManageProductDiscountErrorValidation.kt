@@ -13,5 +13,6 @@ annotation class ShopDiscountManageProductDiscountErrorValidation {
         const val ERROR_PRICE_MAX = 1
         const val ERROR_PRICE_MIN = 2
         const val ERROR_R2_ABUSIVE = 3
+        const val ERROR_START_DATE = 4
     }
 }
