@@ -41,7 +41,7 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                         putString(ARGUMENTS_DESCRIPTION, description)
                     }
                 } else {
-                    toastError()
+                    showError()
                 }
             }
         }
@@ -121,11 +121,11 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                 requireContext(),
                 userSession.accessToken,
                 url,
-                requireContext().getDrawable(R.drawable.ic_image_error),
-                requireContext().getDrawable(R.drawable.ic_image_error)
-            )
+            ) {
+                showError()
+            }
         } else {
-            toastError()
+            showError()
         }
 
     }
@@ -140,8 +140,11 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun toastError(textError: String? = null) {
-        Toaster.build(requireView(), textError ?: getString(R.string.error_message_failed_get_image), Toaster.TYPE_NORMAL).show()
+    private fun showError() {
+        binding?.viewImageNotValid?.visibility = View.VISIBLE
+        binding?.btnDismiss?.setOnClickListener {
+            requireActivity().finish()
+        }
     }
 
 }
