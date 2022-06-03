@@ -1,5 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.HomePageTracking.FORMAT_4_VALUE_UNDERSCORE
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
@@ -22,6 +23,7 @@ object LegoBannerTracking : BaseTrackerConst() {
     private const val CLICK_VIEW_ALL_ON_LEGO_6_AUTO = "lego banner 6 auto click view all"
     private const val CLICK_VIEW_ALL_ON_LEGO_4 = "lego banner 4 image click view all"
     private const val CLICK_VIEW_ALL_ON_LEGO_3 = "lego banner 3 image click view all"
+    private const val CLICK_VIEW_ALL_ON_LEGO_2 = "lego banner 2 image click view all"
 
     private const val IMPRESSION_HOME_BANNER = "home banner impression"
 
@@ -85,6 +87,11 @@ object LegoBannerTracking : BaseTrackerConst() {
         getTracker().sendGeneralEvent(getLegoBannerThreeViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
+    fun sendLegoBannerTwoClickViewAll(channelModel: ChannelModel) {
+        val tracking = getLegoBannerTwoViewAllClick(channelModel, channelModel.channelHeader.name)
+        getTracker().sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+    }
+
     private fun getLegoBannerSixViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String, isAuto: Boolean = false): HashMap<String, Any> {
         val legoSixClickAllActionName = if (isAuto) CLICK_VIEW_ALL_ON_LEGO_6_AUTO else CLICK_VIEW_ALL_ON_LEGO_6
         return DataLayer.mapOf(
@@ -139,6 +146,19 @@ object LegoBannerTracking : BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
+    private fun getLegoBannerTwoViewAllClick(channelModel: ChannelModel, headerName: String) : Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Action.KEY, CLICK_VIEW_ALL_ON_LEGO_2)
+        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, headerName))
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CampaignCode.KEY, channelModel.trackingAttributionModel.campaignCode)
+        bundle.putString(ChannelId.KEY, channelModel.id)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        return Pair(Event.CLICK_HOMEPAGE, bundle)
+    }
+
     private fun getLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         val legoSixClickActionName = CLICK_ON_LEGO_6
@@ -156,6 +176,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -179,6 +200,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -238,6 +260,8 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
@@ -256,6 +280,8 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
@@ -316,6 +342,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                     )
                 })
                 .appendChannelId(channel.id)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 

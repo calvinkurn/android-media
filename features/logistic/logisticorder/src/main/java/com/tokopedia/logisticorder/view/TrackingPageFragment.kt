@@ -202,23 +202,18 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun setLastDriverData(lastDriver: LastDriverModel) {
         binding?.tippingGojekLayout?.run {
-            driverLayout.visibility = View.GONE
-            imgFindDriver.visibility = View.VISIBLE
-            btnInformation.visibility = View.GONE
+            tippingLayout.visibility = View.GONE
 
-            tippingText.text = lastDriver.name
-            tippingDescription.text = lastDriver.licenseNumber
             if (lastDriver.photo.isNotEmpty()) {
-                imgFindDriver.setImageUrl(lastDriver.photo)
+                imgDriver.setImageUrl(lastDriver.photo)
             }
-            btnTipping.let {
-                it.text = getString(R.string.last_driver_button)
-                it.setOnClickListener {
-                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:${lastDriver.phone}")
-                    }
-                    startActivity(callIntent)
+            driverName.text = lastDriver.name
+            driverPhone.text = lastDriver.licenseNumber
+            btnCall.setOnClickListener {
+                val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                    this.data = Uri.parse("tel:${lastDriver.phone}")
                 }
+                startActivity(callIntent)
             }
         }
     }
@@ -226,16 +221,41 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun setTippingData(data: TrackingDataModel) {
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
-
-            if (tippingData.tippingLastDriver.name.isEmpty()) {
-                driverLayout.visibility = View.GONE
-                imgFindDriver.visibility = View.VISIBLE
+            if (tippingData.status == OPEN) {
+                imgFindDriver.setImageUrl(ICON_OPEN_TIPPING_GOJEK)
+                btnTipping.isInverse = true
             } else {
-                driverLayout.visibility = View.VISIBLE
-                imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
-
+                imgFindDriver.visibility = View.GONE
+                bgActiveUp.visibility = View.GONE
+                context?.let { ctx ->
+                    tippingLayout.setCardBackgroundColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    tippingText.setTextColor(textColor)
+                    tippingDescription.setTextColor(textColor)
+                }
+            }
+            if (tippingData.tippingLastDriver.name.isEmpty()) {
+                driverName.text = getString(R.string.driver_not_found_title)
+                driverPhone.text = getString(R.string.driver_not_found_subtitle)
+                btnInformation.visibility = View.GONE
+            } else {
+                if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
+                    imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
+                }
                 driverName.text = tippingData.tippingLastDriver.name
-                driverPhone.text = getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
+                driverPhone.text = tippingData.tippingLastDriver.licenseNumber
+            }
+
+            if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
+                btnCall.setOnClickListener {
+                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                        this.data = Uri.parse("tel:${tippingData.tippingLastDriver.phone}")
+                    }
+                    startActivity(callIntent)
+                }
+            } else {
+                borderBtnCall.visibility = View.GONE
+                btnCall.visibility = View.GONE
             }
 
             btnTipping.text = when (tippingData.status) {
@@ -251,7 +271,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             btnInformation.setOnClickListener {
                 DriverInfoBottomSheet().show(parentFragmentManager)
             }
-
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
                     SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
@@ -367,7 +386,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun startSuccessCountdown() {
         binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
-        Observable.timer(5, TimeUnit.SECONDS)
+        Observable.timer(NEW_DRIVER_COUNT_DOWN, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Subscriber<Long>() {
@@ -393,7 +412,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setHistoryView(model: TrackOrderModel) {
-        if (model.invalid || model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        if (model.invalid || model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.trackingHistory?.visibility = View.GONE
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
@@ -448,7 +467,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.notificationHelpStep?.visibility = View.VISIBLE
             binding?.notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
-        } else if (model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+        } else if (model.orderStatus == INVALID_ORDER_STATUS || model.change == 0 || model.trackHistory.isEmpty()) {
             binding?.emptyUpdateNotification?.visibility = View.VISIBLE
             binding?.notificationText?.text = getString(R.string.warning_no_courier_change)
             binding?.notificationHelpStep?.visibility = View.GONE
@@ -485,9 +504,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     companion object {
         private const val PER_SECOND = 1000
         private const val LIVE_TRACKING_VIEW_REQ = 1
+        private const val NEW_DRIVER_COUNT_DOWN = 5L
+        private const val INVALID_ORDER_STATUS = 501
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
+        private const val ICON_OPEN_TIPPING_GOJEK = "https://images.tokopedia.net/img/android/tipping/Group 3125093.png"
 
         fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
             return TrackingPageFragment().apply {
