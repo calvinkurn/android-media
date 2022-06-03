@@ -141,7 +141,8 @@
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_feed_volume_mute" />
+        app:srcCompat="@drawable/ic_feed_volume_mute"
+        android:contentDescription="@string/feed_post_content_video_volume_btn_desc" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

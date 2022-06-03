@@ -272,7 +272,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
+                context?.let {
+                    tag_picture.loadImageRounded(
+                        tags.items[0].thumbnail,
+                        it.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    )
+                }
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
