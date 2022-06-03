@@ -198,7 +198,7 @@ open class PickerActivity : BaseActivity()
                 }
             ) {
                 navToolbar.showContinueButtonAs(
-                    medias.isNotEmpty()
+                    medias.isNotEmpty() && param.get().isMultipleSelectionType()
                 )
             }
         }

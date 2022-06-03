@@ -37,6 +37,7 @@ class MyCouponUseCase @Inject constructor(private val myCouponRepository: MyCoup
             val componentsItem = ComponentsItem()
             componentsItem.position = index
             componentsItem.name = subComponentName
+            componentsItem.parentListSize = itemList.size
             componentsItem.parentComponentName = parentComponentName
             componentsItem.parentComponentId = compId
             val dataItem = mutableListOf<MyCoupon>()
