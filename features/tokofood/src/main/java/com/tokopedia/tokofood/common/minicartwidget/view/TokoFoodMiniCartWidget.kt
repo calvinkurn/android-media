@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
@@ -54,7 +55,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
-        viewBinding?.totalAmountMiniCart?.apply {
+        viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
             if (isTotalAmountLoading) {
                 isTotalAmountLoading = false
@@ -62,6 +63,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             setLabelTitle(miniCartUiModel.shopName)
             setAmount(miniCartUiModel.totalPriceFmt)
             setCtaText(context?.getString(R.string.minicart_order, miniCartUiModel.totalProductQuantity).orEmpty())
+            amountCtaView.visible()
             amountCtaView.setOnClickListener {
                 onButtonClickAction()
             }
