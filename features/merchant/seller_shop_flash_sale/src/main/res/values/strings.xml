@@ -92,5 +92,6 @@
     <string name="draftdelete_question_other_placeholder">Tuliskan alasanmu di sini</string>
     <string name="draftdelete_question_other_placeholder_short">Alasan</string>
     <string name="draftdelete_question_other_text">Alasan Lain:</string>
+    <string name="draftdelete_error_minchar">Kurang dari %d karakter</string>
 
 </resources>

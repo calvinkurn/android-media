@@ -10,8 +10,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flash_sale.common.constant.DraftConstant.DRAFT_REASON_MINCHAR
 import com.tokopedia.shop.flash_sale.common.customcomponent.ModalBottomSheet
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.presentation.draft.adapter.DraftDeleteQuestionAdapter
@@ -64,15 +66,7 @@ class DraftDeleteBottomSheet(
         setupTitle()
         setupEtQuestionOther()
         setupQuestionList()
-
-        btnStop?.setOnClickListener {
-            if (btnStop?.isLoading == true) return@setOnClickListener
-            viewModel.doCancellation(draftItemModel ?: return@setOnClickListener)
-            btnStop?.isLoading = true
-        }
-        btnBack?.setOnClickListener {
-            dismiss()
-        }
+        setupButtonsView()
 
         viewModel.getQuestionListData()
     }
@@ -129,8 +123,14 @@ class DraftDeleteBottomSheet(
         rvQuestionList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvQuestionList?.adapter = questionListAdapter.apply {
             setSelectionChangedListener {
+                if (it != otherReasonText) {
+                    viewModel.setCancellationReason(it)
+                }
+                etQuestionOther?.editText?.setText("")
                 etQuestionOther?.isEnabled = it == otherReasonText
-                viewModel.setCancellationReason(it)
+                etQuestionOther?.setMessage("")
+                etQuestionOther?.isInputError = false
+                view?.post { btnStop?.isEnabled = it != otherReasonText }
             }
         }
     }
@@ -144,7 +144,29 @@ class DraftDeleteBottomSheet(
                 etQuestionOther?.setLabel(getString(R.string.draftdelete_question_other_placeholder))
             }
         }
+        etQuestionOther?.editText?.afterTextChanged {
+            val errorMessage = if (it.length < DRAFT_REASON_MINCHAR) {
+                getString(R.string.draftdelete_error_minchar, DRAFT_REASON_MINCHAR)
+            } else ""
+            etQuestionOther?.isInputError = errorMessage.isNotEmpty()
+            etQuestionOther?.setMessage(errorMessage)
+            btnStop?.isEnabled = errorMessage.isEmpty()
+
+            viewModel.setCancellationReason(it)
+        }
         etQuestionOther?.isEnabled = false
+    }
+
+    private fun setupButtonsView() {
+        btnStop?.isEnabled = false
+        btnStop?.setOnClickListener {
+            if (btnStop?.isLoading == true) return@setOnClickListener
+            viewModel.doCancellation(draftItemModel ?: return@setOnClickListener)
+            btnStop?.isLoading = true
+        }
+        btnBack?.setOnClickListener {
+            dismiss()
+        }
     }
 
     fun show(manager: FragmentManager?) {
