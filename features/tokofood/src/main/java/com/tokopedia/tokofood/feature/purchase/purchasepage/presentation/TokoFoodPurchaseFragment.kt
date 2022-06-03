@@ -303,14 +303,22 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
-                    (it.data as? CheckoutTokoFood)?.let { response ->
-                        shopId = response.data.shop.shopId
-                        activityViewModel?.loadCartList(response)
-                        if (response.data.popupMessage.isNotEmpty()) {
-                            showToaster(response.data.popupMessage, getOkayMessage()) {}
-                        }
-                        if (response.data.popupErrorMessage.isNotEmpty()) {
-                            showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
+                    (it.data as? Pair<*,*>)?.let { pair ->
+                        (pair.first as? CheckoutTokoFood)?.let { response ->
+                            (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
+                                shopId = response.data.shop.shopId
+                                activityViewModel?.loadCartList(response)
+                                when {
+                                    response.data.popupErrorMessage.isNotEmpty() -> {
+                                        showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
+                                    }
+                                    response.data.popupMessage.isNotEmpty() -> {
+                                        if (!isPreviousPopupPromo || !response.data.isPromoPopupType()) {
+                                            showToaster(response.data.popupMessage, getOkayMessage()) {}
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

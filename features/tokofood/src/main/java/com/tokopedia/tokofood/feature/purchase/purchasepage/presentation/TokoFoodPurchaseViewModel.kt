@@ -139,20 +139,24 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
+                val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
                 checkoutTokoFoodResponse.value = it
                 shopId.value = it.data.shop.shopId
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 val isEnabled = it.isEnabled()
                 _visitables.value =
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value.second)
-                        .toMutableList()
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
+                        it,
+                        isEnabled,
+                        !_isAddressHasPinpoint.value.second
+                    ).toMutableList()
                 checkoutTokoFoodResponse.value?.let { checkoutResponse ->
                     _trackerLoadCheckoutData.emit(checkoutResponse.data)
                 }
                 if (_isAddressHasPinpoint.value.second) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
-                        data = it
+                        data = it to isPreviousPopupPromo
                     )
                 } else {
                     val cacheAddressId = _isAddressHasPinpoint.value.first
@@ -163,7 +167,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
                                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
-                                    data = it
+                                    data = it to isPreviousPopupPromo
                                 )
                             } else {
                                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
@@ -205,9 +209,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadDataPartial() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
+                val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
                 _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
-                    data = it
+                    data = it to isPreviousPopupPromo
                 )
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it

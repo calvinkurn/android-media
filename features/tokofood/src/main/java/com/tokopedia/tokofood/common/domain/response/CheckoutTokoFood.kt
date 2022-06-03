@@ -53,6 +53,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("popup_error_message")
     @Expose
     val popupErrorMessage: String = "",
+    @SerializedName("popup_message_type")
+    @Expose
+    val popupMessageType: String = "",
     @SerializedName("shop")
     @Expose
     val shop: CheckoutTokoFoodShop = CheckoutTokoFoodShop(),
@@ -95,7 +98,13 @@ data class CheckoutTokoFoodData(
     @SerializedName("checkout_additional_data")
     @Expose
     val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData()
-)
+) {
+    companion object {
+        private const val POPUP_TYPE_PROMO = "promo"
+    }
+
+    fun isPromoPopupType(): Boolean = popupMessageType == POPUP_TYPE_PROMO
+}
 
 data class CheckoutTokoFoodShop(
     @SerializedName("shop_id")
@@ -291,6 +300,9 @@ data class CheckoutTokoFoodShipping(
 )
 
 data class CheckoutTokoFoodPromo(
+    @SerializedName("is_promo_applied")
+    @Expose
+    val isPromoApplied: Boolean = false,
     @SerializedName("hide_promo")
     @Expose
     val hidePromo: Boolean = false,

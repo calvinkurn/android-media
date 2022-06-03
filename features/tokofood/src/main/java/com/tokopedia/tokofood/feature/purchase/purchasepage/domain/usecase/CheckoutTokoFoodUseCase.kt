@@ -41,6 +41,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
             data {
               popup_message
               popup_error_message
+              popup_message_type
               shop {
                 shop_id
                 name
@@ -161,6 +162,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 price_fmt
               }
               promo {
+                is_promo_applied
                 hide_promo
                 title
                 subtitle
