@@ -103,7 +103,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         viewModel.getTabsMeta()
-
     }
 
     private fun observeTabsMeta() {
