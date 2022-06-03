@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -77,11 +78,19 @@ class ProductCardViewHolder(
             val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
-            clickListener.onDecreaseQtyButtonClicked(
-                    productId = productUiModel.id,
-                    quantity = quantity,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
-            )
+            if (quantity.isZero()) {
+                clickListener.onDeleteButtonClicked(
+                        cartId = productUiModel.cartId,
+                        productId = productUiModel.id,
+                        cardPositions = Pair(dataSetPosition, adapterPosition)
+                )
+            } else {
+                clickListener.onDecreaseQtyButtonClicked(
+                        productId = productUiModel.id,
+                        quantity = quantity,
+                        cardPositions = Pair(dataSetPosition, adapterPosition)
+                )
+            }
         }
     }
 
