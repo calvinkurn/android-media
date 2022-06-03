@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class UserConsentPayload (
     @SerializedName("collection_id")
     var collectionId: String = "",
+    @SerializedName("verion")
+    var version: String = "",
     @SerializedName("purpose")
     var purposes: MutableList<PurposeDataModel> = mutableListOf()
 ) {

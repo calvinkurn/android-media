@@ -140,12 +140,9 @@ object DeeplinkMapper {
      * Expected query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
      */
     private fun getQuery(uriString: String, uri: Uri): String? {
-        val uriStringAfterQMark = uriString.substringAfter("?")
-        if (uriStringAfterQMark.contains("#")) {
-            return uriStringAfterQMark
-        } else {
-            return uri.query
-        }
+        return if (uriString.contains("?")) {
+            uriString.substringAfter("?")
+        } else uri.query
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {
@@ -299,8 +296,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
             DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
-            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
-            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.host(ApplinkConst.AFFILIATE_HOST) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
             DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
             DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
@@ -474,7 +470,6 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.HOST_PLAY_NOTIF_VIDEO) { _, _, _, _ -> ApplinkConstInternalGlobal.YOUTUBE_VIDEO },
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink)},
-            DLP.startWith(ApplinkConst.ADD_FINGERPRINT_ONBOARDING) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.SETTING_PROFILE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
@@ -525,7 +520,12 @@ object DeeplinkMapper {
     private fun putToTop(index: Int) {
         // Uncomment this for performance for RouteManager. Currently disabled in production
         // Requirement: deeplinkPatternTokopediaSchemeList should be order-independent
-        // deeplinkPatternTokopediaSchemeList.add(0, deeplinkPatternTokopediaSchemeList.removeAt(index))
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            deeplinkPatternTokopediaSchemeList.add(
+                0,
+                deeplinkPatternTokopediaSchemeList.removeAt(index)
+            )
+        }
     }
 
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {

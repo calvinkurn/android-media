@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_digital">Digital</string>
     <string name="host_digital" translatable="false">digital</string>
     <string name="host_recharge" translatable="false">recharge</string>
     <string name="host_deals_slug" translatable="false">deals-slug</string>

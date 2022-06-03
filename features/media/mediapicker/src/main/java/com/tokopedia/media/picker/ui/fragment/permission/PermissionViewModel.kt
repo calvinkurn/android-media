@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import javax.inject.Inject
 
@@ -35,26 +36,31 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun getDynamicPermissionList() {
         _permissionList.value = PermissionUiModel.getOrCreate(
             cacheManager.get().pageType(),
-            cacheManager.get().isVideoModeOnly()
+            cacheManager.get().modeType()
         )
     }
 
     fun initOrCreateDynamicWording() {
         val (title, message) = when (cacheManager.get().pageType()) {
-            PageType.CAMERA -> if (cacheManager.get().isImageModeOnly()) {
-                Pair(
-                    R.string.picker_title_camera_photo_permission,
-                    R.string.picker_message_camera_photo_permission,
-                )
-            } else {
-                Pair(
-                    R.string.picker_title_camera_video_permission,
-                    R.string.picker_message_camera_video_permission,
-                )
+            PageType.CAMERA -> {
+                when (cacheManager.get().modeType()) {
+                    ModeType.IMAGE_ONLY -> {
+                        Pair(
+                            R.string.picker_title_camera_photo_permission,
+                            R.string.picker_message_camera_photo_permission,
+                        )
+                    }
+                    else -> {
+                        Pair(
+                            R.string.picker_title_camera_video_permission,
+                            R.string.picker_message_camera_video_permission,
+                        )
+                    }
+                }
             }
             PageType.GALLERY -> Pair(
                 R.string.picker_title_gallery_permission,

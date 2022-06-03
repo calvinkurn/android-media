@@ -37,6 +37,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
+
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

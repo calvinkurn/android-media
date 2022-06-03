@@ -597,9 +597,14 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val data = getHomeReferralUseCase.execute(item.slug)
-            homeLayoutItemList.mapSharingReferralData(item, data)
-            _getReferralResult.postValue(Success(data))
+            val referral = getHomeReferralUseCase.execute(item.slug)
+
+            if(referral.isEligible) {
+                homeLayoutItemList.mapSharingReferralData(item, referral)
+                _getReferralResult.postValue(Success(referral))
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
         }) {
             homeLayoutItemList.removeItem(item.id)
             _getReferralResult.postValue(Fail(it))

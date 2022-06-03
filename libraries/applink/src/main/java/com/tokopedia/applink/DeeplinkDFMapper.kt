@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.SMART_BILLS
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
@@ -40,6 +41,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_CATEGORY_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_HOMEPAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
@@ -63,7 +65,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BAS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
@@ -211,6 +212,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
+    const val DF_DIGITAL = "df_digital"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -266,6 +268,10 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))
+
+            add(DFP({
+                it.startsWith(SMART_BILLS)
+            }, DF_DIGITAL, R.string.title_digital, { DFWebviewFallbackUrl.DIGITAL_SMART_BILLS }))
 
             // Discovery
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DF_BASE, R.string.title_similar_search))
@@ -478,7 +484,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(DEALS_BRAND_PAGE) ||
                         it.startsWith(DEALS_CATEGORY_PAGE) ||
                         it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE) ||
-                        it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE)
+                        it.startsWith(DEALS_BRAND_DETAIL_PAGE)
             }, DF_ENTERTAINMENT, R.string.title_entertainment, { DFWebviewFallbackUrl.ENTERTAINMENT_DEALS }))
 
             // Salam
