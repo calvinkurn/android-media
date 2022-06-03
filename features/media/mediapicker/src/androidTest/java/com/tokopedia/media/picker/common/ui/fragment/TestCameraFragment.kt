@@ -11,7 +11,7 @@ class TestCameraFragment : CameraFragment() {
 
     override fun onThumbnailLoaded() {
         super.onThumbnailLoaded()
-        CameraPageTest.Robot.resumeThread()
+        CameraPageTest.Robot.decrement()
     }
 
     companion object {

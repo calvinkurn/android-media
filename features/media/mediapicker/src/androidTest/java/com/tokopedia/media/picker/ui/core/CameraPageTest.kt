@@ -99,7 +99,7 @@ abstract class CameraPageTest : PickerTest() {
             ).perform(swipeLeft())
         }
 
-        fun resumeThread() {
+        fun decrement() {
             if (!countingIdlingResource.isIdleNow) countingIdlingResource.decrement()
         }
     }
