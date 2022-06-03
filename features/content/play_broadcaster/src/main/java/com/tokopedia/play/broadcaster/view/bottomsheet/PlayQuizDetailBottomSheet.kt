@@ -19,7 +19,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.partial.game.QuizOptionDetailViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -28,11 +27,12 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 class PlayQuizDetailBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
-    ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
+) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
@@ -87,8 +87,8 @@ class PlayQuizDetailBottomSheet @Inject constructor(
                 }
             }
         }
-        if (sheetType.isNotBlank()){
-            when (sheetType){
+        if (sheetType.isNotBlank()) {
+            when (sheetType) {
                 Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
                 Type.LEADERBOARD.toString() -> setupLeaderBoard()
             }
@@ -96,15 +96,16 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         }
     }
 
-    private fun setupQuizDetail(){
+    private fun setupQuizDetail() {
         leaderboardSheetView.setTitle(getString(com.tokopedia.play.broadcaster.R.string.play_bro_ongoing_bottomsheet_title))
         parentViewModel.getQuizDetailData()
     }
 
-    private fun setupLeaderBoard(){
+    private fun setupLeaderBoard() {
         leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
         parentViewModel.getLeaderboardWithSlots()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -192,7 +193,8 @@ class PlayQuizDetailBottomSheet @Inject constructor(
             "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
             winner.id,
             winner.topChatMessage
-        )    }
+        )
+    }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
@@ -247,22 +249,22 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         fun setupQuizDetail(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ) :PlayQuizDetailBottomSheet {
-            return getFragment(fragmentManager,classLoader,Type.QUIZ_DETAIL,Size.HALF)
+        ): PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.QUIZ_DETAIL, Size.HALF)
         }
 
         fun setupOngoingLeaderboard(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ) :PlayQuizDetailBottomSheet {
-            return getFragment(fragmentManager,classLoader,Type.LEADERBOARD,Size.HALF)
+        ): PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.HALF)
         }
 
         fun setupReportLeaderboard(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ) :PlayQuizDetailBottomSheet {
-            return getFragment(fragmentManager,classLoader,Type.LEADERBOARD,Size.FULL)
+        ): PlayQuizDetailBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.FULL)
         }
     }
 
@@ -272,6 +274,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         LEADERBOARD,
         QUIZ_DETAIL
     }
+
     enum class Size {
         FULL,
         HALF
