@@ -79,7 +79,12 @@ data class PromoListTokoFoodButton(
     @SerializedName("link")
     @Expose
     val link: String = ""
-)
+) {
+    companion object {
+        const val REFRESH_ACTION = "1"
+        const val REDIRECT_ACTION = "2"
+    }
+}
 
 data class PromoListTokoFoodEmptyState(
     @SerializedName("title")

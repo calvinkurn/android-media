@@ -8,8 +8,8 @@ data class UiEvent(
     companion object {
         const val EVENT_SUCCESS_LOAD_PROMO_PAGE = 111
         const val EVENT_FAILED_LOAD_PROMO_PAGE = 222
-        const val EVENT_RENDER_GLOBAL_ERROR_KYC = 333
-        const val EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE = 444
-        const val EVENT_SHOW_TOASTER = 555
+        const val EVENT_ERROR_PAGE_PROMO_PAGE = 333
+        const val EVENT_SHOW_TOASTER = 444
+        const val EVENT_NO_COUPON = 555
     }
 }
