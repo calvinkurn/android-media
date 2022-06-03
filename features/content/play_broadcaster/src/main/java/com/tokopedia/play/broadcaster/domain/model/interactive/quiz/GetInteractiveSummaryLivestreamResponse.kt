@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class GetInteractiveSummaryLivestreamResponse(
     @SerializedName("playInteractiveGetSummaryLivestream")
-    val playInteractiveGetSummaryLivestream : PlayInteractiveGetSummaryLivestream
+    val playInteractiveGetSummaryLivestream : PlayInteractiveGetSummaryLivestream = PlayInteractiveGetSummaryLivestream()
 ) {
     data class PlayInteractiveGetSummaryLivestream(
         @SerializedName("participantCount")
-        val participantCount: Int,
+        val participantCount: Int = 0,
     )
 }
