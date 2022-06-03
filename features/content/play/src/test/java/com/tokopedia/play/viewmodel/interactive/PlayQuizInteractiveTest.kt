@@ -3,16 +3,12 @@ package com.tokopedia.play.viewmodel.interactive
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.interactive.AnswerQuizResponse
-import com.tokopedia.play.data.interactive.PostInteractiveTapResponse
 import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
 import com.tokopedia.play.domain.interactive.AnswerQuizUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.repo.PlayViewerMockRepository
-import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
@@ -20,12 +16,10 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.QuizAnsweredEvent
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -279,5 +273,76 @@ class PlayQuizInteractiveTest {
 
     @Test
     fun `given quiz is finish and has no reward, only show leaderboard`() {
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
+            id = interactiveId,
+            title = title,
+            waitingDuration = waitingDuration,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(
+                endTime = duration,
+            ),
+            reward = "", // no reward
+            listOfChoices = listOf(
+                modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
+                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+            )
+        )
+
+        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val eventAndState = it.recordStateAndEvent {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                setLoggedIn(true)
+                setUserId("1")
+
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given quiz is finish and not received any socket userwinner, only show leaderboard`() {
+        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
+            id = interactiveId,
+            title = title,
+            waitingDuration = 0L,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(
+                endTime = duration,
+            ),
+            reward = "Ikan Koi",
+            listOfChoices = listOf(
+                modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
+                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
+            )
+        )
+
+        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
+
+        createPlayViewModelRobot (
+            playChannelWebSocket = socket,
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        ).use {
+            val eventAndState = it.recordStateAndEvent {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+                setLoggedIn(true)
+                setUserId("1")
+
+                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
+            }
+            eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            eventAndState.first.interactive.interactive.assertInstanceOf<InteractiveUiModel.Unknown>()
+        }
     }
 }
