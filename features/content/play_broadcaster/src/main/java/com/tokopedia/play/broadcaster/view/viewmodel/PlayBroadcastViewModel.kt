@@ -114,8 +114,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
-    val observableChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
-        get() = _observableChannelInfo
     val observableTotalView: LiveData<TotalViewUiModel>
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
@@ -145,10 +143,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = getCurrentSetupDataStore().getInteractiveId()
     val activeInteractiveTitle: String
         get() = getCurrentSetupDataStore().getActiveInteractiveTitle()
-    val setupInteractiveTitle: String
-        get() = getCurrentSetupDataStore().getSetupInteractiveTitle()
-    val selectedInteractiveDuration: Long
-        get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
         get() = findSuitableInteractiveDurations()
     val observableLivePusherStatistic: LiveData<LivePusherStatistic>
@@ -158,19 +152,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
-
-    val summaryLeaderboardInfo: SummaryLeaderboardInfo
-        get() = SummaryLeaderboardInfo(
-            _observableLeaderboardInfo.value != null,
-            if (_observableLeaderboardInfo.value is NetworkResult.Success) {
-                (_observableLeaderboardInfo.value as NetworkResult.Success).data.totalParticipant
-            } else "0"
-        )
-
-    val hasLeaderBoard: Boolean
-        get() = if (_quizDetailState.value is QuizDetailStateUiModel.Success) {
-            (_quizDetailState.value as QuizDetailStateUiModel.Success).leaderboardSlots.isNotEmpty()
-        } else false
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -486,7 +467,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun getChannelDetail() = getChannelById(channelId)
+    private suspend fun getChannelDetail() = getChannelById(channelId)
 
     private suspend fun createChannel() {
         val channelId = repo.createChannel()

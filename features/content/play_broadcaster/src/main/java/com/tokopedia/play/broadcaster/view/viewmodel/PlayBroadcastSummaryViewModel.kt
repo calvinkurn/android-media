@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -41,10 +42,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
-    @Assisted private val hasLeaderBoard: Boolean,
     private val dispatcher: CoroutineDispatchers,
     private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
     private val getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase,
+    private val getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val userSession: UserSessionInterface,
     private val playBroadcastMapper: PlayBroadcastMapper,
@@ -58,8 +59,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         fun create(
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
-            productSectionList: List<ProductTagSectionUiModel>,
-            hasLeaderBoard: Boolean,
+            productSectionList: List<ProductTagSectionUiModel>
         ): PlayBroadcastSummaryViewModel
     }
 
@@ -262,9 +262,10 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         reportChannelSummary.duration,
                                         isEligiblePostVideo(reportChannelSummary.duration),
                                     )
-
+            getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
+            val leaderboard = getSellerLeaderboardUseCase.executeOnBackground()
             val metrics = mutableListOf<TrafficMetricUiModel>().apply {
-                if (hasLeaderBoard) {
+                if (leaderboard.data.slots.isNotEmpty()) {
                     add(TrafficMetricUiModel(
                             type = TrafficMetricType.GameParticipants,
                             count = participantResponse.playInteractiveGetSummaryLivestream.participantCount.toString(),
