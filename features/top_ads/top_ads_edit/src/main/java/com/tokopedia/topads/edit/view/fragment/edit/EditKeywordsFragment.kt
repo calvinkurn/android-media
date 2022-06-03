@@ -26,6 +26,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DEFAULT_NEW_KEYWORD_VALUE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -395,17 +396,27 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onEditType(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
-        val type = (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt
-        sheet.show(childFragmentManager, type)
+        val item = (adapter.items.getOrNull(pos) as? EditKeywordItemViewModel)
+
+        val type = item?.data?.typeInt
+        if (type != null) {
+            sheet.show(childFragmentManager, type)
+        }
+
         sheet.onSelect = { typeKey ->
             val typeInt = if (typeKey == BROAD_TYPE)
                 BROAD_POSITIVE
             else
                 EXACT_POSITIVE
-            (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt = typeInt
-            if ((adapter.items[pos] as EditKeywordItemViewModel).data.typeInt != type) {
-                actionStatusChange(pos)
+
+
+            item?.let {
+                item.data.typeInt = typeInt
+                if (item.data.typeInt != type) {
+                    actionStatusChange(pos)
+                }
             }
+
             adapter.notifyItemChanged(pos)
         }
     }
@@ -801,7 +812,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
                 if (it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword
+                    it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
                 adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)

@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import io.mockk.every
 import io.mockk.mockk
@@ -45,7 +46,7 @@ class PermissionViewModelTest {
         )
 
         every { cacheManager.get().pageType() } returns PageType.CAMERA
-        every { cacheManager.get().isVideoModeOnly() } returns false
+        every { cacheManager.get().modeType() } returns ModeType.IMAGE_ONLY
 
         // When
         viewModel.getDynamicPermissionList()
@@ -69,7 +70,7 @@ class PermissionViewModelTest {
         )
 
         every { cacheManager.get().pageType() } returns PageType.CAMERA
-        every { cacheManager.get().isVideoModeOnly() } returns true
+        every { cacheManager.get().modeType() } returns ModeType.VIDEO_ONLY
 
         // When
         viewModel.getDynamicPermissionList()
@@ -145,7 +146,7 @@ class PermissionViewModelTest {
         )
 
         every { cacheManager.get().pageType() } returns PageType.CAMERA
-        every { cacheManager.get().isImageModeOnly() } returns true
+        every { cacheManager.get().modeType() } returns ModeType.IMAGE_ONLY
 
         // When
         viewModel.initOrCreateDynamicWording()
@@ -163,7 +164,7 @@ class PermissionViewModelTest {
         )
 
         every { cacheManager.get().pageType() } returns PageType.CAMERA
-        every { cacheManager.get().isImageModeOnly() } returns false
+        every { cacheManager.get().modeType() } returns ModeType.VIDEO_ONLY
 
         // When
         viewModel.initOrCreateDynamicWording()

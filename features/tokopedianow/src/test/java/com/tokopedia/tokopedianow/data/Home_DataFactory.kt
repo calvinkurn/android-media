@@ -94,6 +94,14 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
         ),
         HomeLayoutResponse(
             id = "2122",
+            layout = "left_carousel_atc",
+            header = Header(
+                name = "Mix Left Atc Carousel",
+                serverTimeUnix = 0
+            )
+        ),
+        HomeLayoutResponse(
+            id = "2333",
             layout = "left_carousel",
             header = Header(
                 name = "Mix Left Carousel",
@@ -329,7 +337,19 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createMixLeftDataModel(
+fun createLeftCarouselAtcDataModel(
+    id: String,
+    headerName: String,
+): HomeLeftCarouselAtcUiModel {
+    return HomeLeftCarouselAtcUiModel(
+        id = id,
+        name = "",
+        header = TokoNowDynamicHeaderUiModel(title = headerName),
+        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+    )
+}
+
+fun createLeftCarouselDataModel(
     id: String,
     groupId: String,
     headerName: String,

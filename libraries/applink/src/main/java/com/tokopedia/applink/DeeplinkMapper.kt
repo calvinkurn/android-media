@@ -140,12 +140,9 @@ object DeeplinkMapper {
      * Expected query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
      */
     private fun getQuery(uriString: String, uri: Uri): String? {
-        val uriStringAfterQMark = uriString.substringAfter("?")
-        if (uriStringAfterQMark.contains("#")) {
-            return uriStringAfterQMark
-        } else {
-            return uri.query
-        }
+        return if (uriString.contains("?")) {
+            uriString.substringAfter("?")
+        } else uri.query
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {
@@ -479,6 +476,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
             DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
+            DLP.exact(ApplinkConst.INPUT_INACTIVE_NUMBER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
         )
 
     fun getTokopediaSchemeList():List<DLP>{

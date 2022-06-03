@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.common.feature.draft.data.db
 import androidx.room.*
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AddEditProductDraftDao {
@@ -17,10 +18,13 @@ interface AddEditProductDraftDao {
     fun getDraft(productId: Long): AddEditProductDraftEntity?
 
     @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
+    fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>>
+
+    @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity>
 
     @Query("SELECT COUNT(*) FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
-    fun getAllDraftsCount(shopId: String): Long
+    fun getAllDraftsCountFlow(shopId: String): Flow<Long>
 
     @Query("UPDATE ${AddEditProductDraftConstant.DB_TABLE} SET ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = :inverseIsUploading WHERE ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = :isUploading")
     fun updateLoadingForAll(isUploading: Boolean, inverseIsUploading: Boolean = !isUploading)
