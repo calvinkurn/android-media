@@ -188,28 +188,31 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Open Dropdown Quick Filter and Apply Option`() {
         val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilter = searchProductModel.quickFilterModel.filter[0]
-        val selectedOptions = listOf(
-            selectedFilter.options[0],
-            selectedFilter.options[1]
-        )
+        selectedFilter.options[0].inputState = "true"
+        selectedFilter.options[1].inputState = "true"
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
         `When Open Dropdown Quick Filter`(selectedFilter)
-        `When Apply Dropdown Quick Filter`(selectedOptions)
+        `When Apply Dropdown Quick Filter`(selectedFilter.options)
 
-        `Then verify dropdown quick filter bottomsheet has applied and track sent`(selectedOptions)
+        `Then verify dropdown quick filter bottomsheet has applied and track sent`(selectedFilter.options)
     }
 
     private fun `When Apply Dropdown Quick Filter`(optionList: List<Option>?) {
         productListPresenter.onApplyDropdownQuickFilter(optionList)
     }
 
-    private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(optionList: List<Option>?) {
+    private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(optionList: List<Option>) {
         verify {
             productListView.applyDropdownQuickFilter(optionList)
             productListView.trackEventApplyDropdownQuickFilter()
         }
+
+        val actualActiveOptions = productListPresenter.quickFilterOptionList.filter { it.inputState.toBoolean() }
+        val expectedOptionList = optionList.filter { it.inputState.toBoolean() }
+
+        assertOptionList(actualActiveOptions, expectedOptionList)
     }
 }
