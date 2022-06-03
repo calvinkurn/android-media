@@ -33,7 +33,7 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     @After
-    override fun tearDown(){
+    override fun tearDown() {
         IdlingRegistry.getInstance().unregister(Robot.countingIdlingResource)
     }
 
