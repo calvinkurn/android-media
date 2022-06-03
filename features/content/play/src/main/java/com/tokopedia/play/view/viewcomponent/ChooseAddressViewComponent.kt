@@ -18,6 +18,37 @@ class ChooseAddressViewComponent(
 
     private val chooseAddressWidget: ChooseAddressWidget = findViewById(R.id.widget_choose_addres)
 
+    private val insideListener = object : ChooseAddressWidget.ChooseAddressWidgetListener{
+        override fun onLocalizingAddressUpdatedFromWidget() {
+            //TODO("Not yet implemented")
+        }
+
+        override fun onLocalizingAddressUpdatedFromBackground() {
+            //TODO("Not yet implemented")
+        }
+
+        override fun onLocalizingAddressServerDown() {
+            //TODO("Not yet implemented")
+        }
+
+        override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+            //TODO("Not yet implemented")
+        }
+
+        override fun getLocalizingAddressHostFragment(): Fragment = listener.getFragmentForAddress(this@ChooseAddressViewComponent)
+
+        override fun getLocalizingAddressHostSourceData(): String = "login"
+
+        override fun onLocalizingAddressLoginSuccess() {
+            //TODO("Not yet implemented")
+        }
+
+    }
+
+    init {
+        chooseAddressWidget.bindChooseAddress(insideListener)
+    }
+
     fun showWithHeight(height: Int) {
         if (rootView.height != height) {
             val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
