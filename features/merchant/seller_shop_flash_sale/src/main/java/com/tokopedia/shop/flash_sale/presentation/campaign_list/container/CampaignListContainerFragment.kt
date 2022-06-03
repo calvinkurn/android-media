@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -102,7 +103,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         viewModel.getTabsMeta()
-
     }
 
     private fun observeTabsMeta() {
@@ -178,12 +178,14 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
             tabsUnify.getUnifyTabLayout().slideDown()
+            alignRecyclerViewToToolbarBottom()
         }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
         binding?.run {
             tabsUnify.getUnifyTabLayout().slideUp()
+            alignRecyclerViewToTabsBottom()
         }
     }
 
@@ -257,6 +259,34 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun alignRecyclerViewToToolbarBottom() {
+        val set = ConstraintSet()
+        set.clone(binding?.container)
+        set.connect(
+            binding?.viewPager?.id ?: return,
+            ConstraintSet.TOP,
+            binding?.header?.id ?: return,
+            ConstraintSet.BOTTOM
+        )
+
+        set.applyTo(binding?.container)
+    }
+
+
+    private fun alignRecyclerViewToTabsBottom() {
+        val set = ConstraintSet()
+        set.clone(binding?.container)
+        set.connect(
+            binding?.viewPager?.id ?: return,
+            ConstraintSet.TOP,
+            binding?.tabsUnify?.id ?: return,
+            ConstraintSet.BOTTOM
+        )
+
+        set.applyTo(binding?.container)
+    }
+
+
     private fun focusTo(discountStatusId: Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
@@ -271,4 +301,5 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             upcomingStatusTab.select()*/
         }
     }
+
 }

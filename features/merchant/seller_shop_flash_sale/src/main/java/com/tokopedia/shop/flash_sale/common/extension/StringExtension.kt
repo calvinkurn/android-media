@@ -4,9 +4,9 @@ import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun String.digitsOnly(): Int {
+fun String.digitsOnly(): Long {
     return try {
-        this.filter { it.isDigit() }.toInt()
+        this.filter { it.isDigit() }.toLong()
     } catch (e: Exception) {
         0
     }

@@ -1,6 +1,7 @@
 <resources>
     <!--Common-->
     <string name="action_back">Kembali</string>
+    <string name="sfs_please_wait">Tunggu sebentar</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>

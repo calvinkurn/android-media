@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
 import com.tokopedia.shop.flash_sale.common.constant.Constant.EMPTY_STRING
@@ -19,7 +20,6 @@ import com.tokopedia.shop.flash_sale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flash_sale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flash_sale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flash_sale.common.extension.showError
-import com.tokopedia.shop.flash_sale.common.extension.showToaster
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.share_component.ShareComponentInstanceBuilder
@@ -92,6 +92,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         arguments?.getInt(BUNDLE_KEY_CAMPAIGN_COUNT).orZero()
     }
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
+
     private val campaignAdapter by lazy {
         CampaignAdapter(
             onCampaignClicked,
@@ -142,11 +144,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaignDrafts()
         observeShareComponentMetadata()
         viewModel.getRemainingQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
-        viewModel.getCampaignDrafts(
-            MAX_DRAFT_COUNT,
-            FIRST_PAGE
-        )
-
     }
 
     private fun setupView() {
@@ -210,6 +207,49 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
     }
 
+
+    private fun observeRemainingQuota() {
+        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.cardView?.visible()
+                    displayRemainingQuota(result.data.remainingCampaignQuota)
+
+                    binding?.btnDraft?.isLoading = true
+                    viewModel.getCampaignDrafts(
+                        MAX_DRAFT_COUNT,
+                        FIRST_PAGE
+                    )
+
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
+    }
+
+
+    private fun observeCampaignDrafts() {
+        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    binding?.btnDraft?.isLoading = false
+
+                    val draftCount = result.data.campaigns.size
+                    viewModel.setCampaignDrafts(result.data.campaigns)
+                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
+                    handleDraftCount(draftCount)
+                }
+                is Fail -> {
+                    binding?.btnDraft?.isLoading = false
+                    binding?.root showError result.throwable
+                    binding?.cardView?.gone()
+                }
+            }
+        }
+    }
+
     private fun observeCampaigns() {
         viewModel.campaigns.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -228,22 +268,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
 
-    private fun observeCampaignDrafts() {
-        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    val draftCount = result.data.campaigns.size
-                    viewModel.setCampaignDrafts(result.data.campaigns)
-                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
-                    handleDraftCount(draftCount)
-                }
-                is Fail -> {
-                    binding?.cardView?.gone()
-                }
-            }
-        }
-    }
-
     private fun observeCampaignCreation() {
         viewModel.campaignCreation.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -257,27 +281,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun observeRemainingQuota() {
-        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    displayRemainingQuota(result.data.remainingCampaignQuota)
-                }
-                is Fail -> {
-                    binding?.root showError result.throwable
-                }
-            }
-        }
-    }
-
     private fun observeShareComponentMetadata() {
         viewModel.shareComponentMetadata.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    dismissLoaderDialog()
                     val metadata = result.data
                     displayShareBottomSheet(metadata)
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.root showError result.throwable
                 }
             }
@@ -482,7 +495,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected {}
         bottomSheet.setOnCancelCampaignMenuSelected {}
-        bottomSheet.setOnShareCampaignMenuSelected { viewModel.getShareComponentMetadata(campaign.campaignId) }
+        bottomSheet.setOnShareCampaignMenuSelected {
+            showLoaderDialog()
+            viewModel.getShareComponentMetadata(campaign.campaignId)
+        }
         bottomSheet.setOnEditCampaignMenuSelected {}
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -520,10 +536,19 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             shareModel,
             linkerShareResult,
             requireActivity(),
-            view,
+            view ?: return,
             outgoingText
         )
         shareComponentBottomSheet?.dismiss()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sfs_please_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
     }
 
 }
