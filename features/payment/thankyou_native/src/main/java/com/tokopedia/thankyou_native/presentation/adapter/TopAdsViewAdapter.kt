@@ -25,17 +25,13 @@ class TopAdsViewAdapter(
         RecyclerView.Adapter<TopAdsViewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewViewHolder {
-        //val parentWidth = parent.width
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.thanks_item_top_ads_view, parent, false)
-        //val layoutParams = view.layoutParams
-        //layoutParams.width = parentWidth - 16.toPx()
-        val widthFraction = if (topAdsUIModelList.size > 1) 0.90f else 1.0f
+        val widthFraction = if (topAdsUIModelList.size > 1) WIDTH_FRACTION_MULTIPLE else WIDTH_FRACTION_SINGLE
         val params = view.layoutParams
         params.width = (widthFraction * getScreenWidth()).toInt()
         view.layoutParams = params
         return  TopAdsViewViewHolder(view, onclick)
-
     }
 
     override fun onBindViewHolder(holder: TopAdsViewViewHolder, position: Int) {
@@ -46,6 +42,11 @@ class TopAdsViewAdapter(
 
     fun addItems(topAdsUIModels: List<TopAdsUIModel>) {
         this.topAdsUIModelList.addAll(topAdsUIModels)
+    }
+
+    companion object {
+        const val WIDTH_FRACTION_MULTIPLE = 0.90f
+        const val WIDTH_FRACTION_SINGLE = 1.0f
     }
 
 }
