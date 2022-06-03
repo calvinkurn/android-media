@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -46,6 +47,7 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import rx.Subscriber
 import java.util.concurrent.TimeoutException
@@ -283,13 +285,15 @@ open class RecommendationPageViewModel @Inject constructor(
     }
 
     fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
-        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
-            onError = {
-                actionListener.onErrorAddWishList(it, productId)
-            })
+        launch(dispatcher.getMainDispatcher()) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     private fun doAddToWishlist(productId: String, callback: (Boolean, Throwable?) -> Unit) {
@@ -338,11 +342,15 @@ open class RecommendationPageViewModel @Inject constructor(
     }
 
     fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
-        deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-                onSuccess = { result ->
-                    if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, productId) },
-                onError = { actionListener.onErrorRemoveWishlist(it, productId) })
+        launch(dispatcher.getMainDispatcher()) {
+            deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){

@@ -18,6 +18,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -53,15 +54,15 @@ class OrderHistoryViewModel @Inject constructor(
     }
 
     fun addToWishListV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
-        addWishlistV2UseCase.setParams(productId, userId)
-        addWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                } },
-            onError = {
-                wishlistV2ActionListener.onErrorAddWishList(it, productId)
-            })
+        launch(contextProvider.main) {
+            addWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(contextProvider.io) { addWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     private fun onSuccessGetHistoryProduct(orderHistory: ChatHistoryProductResponse) {

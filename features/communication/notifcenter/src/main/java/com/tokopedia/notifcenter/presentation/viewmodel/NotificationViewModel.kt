@@ -27,6 +27,7 @@ import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -45,6 +46,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface INotificationViewModel {
@@ -350,24 +352,29 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun doAddToWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
-        addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
-        addWishListV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    actionListener.onSuccessAddWishlist(result.data, productId)}
-            },
-            onError = {
-                actionListener.onErrorAddWishList(it, productId) })
+        launch(dispatcher.main) {
+            addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { addWishListV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     override fun removeWishlistV2(
         model: RecommendationItem,
         actionListener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString()) },
-            onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }
     }
 
     fun clearNotifCounter(
