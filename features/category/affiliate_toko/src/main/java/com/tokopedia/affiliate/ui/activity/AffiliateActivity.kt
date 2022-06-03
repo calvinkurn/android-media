@@ -25,7 +25,11 @@ import com.tokopedia.affiliate.THIRD_TAB
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.ui.custom.*
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+import com.tokopedia.affiliate.ui.custom.IBottomClickListener
+import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
@@ -50,6 +54,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
@@ -283,7 +288,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
+                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 showAffiliatePortal()
             } else{
                 showLoginPortal()

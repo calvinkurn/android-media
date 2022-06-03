@@ -219,7 +219,7 @@
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
-/features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
+/features/user/usercomponents/                          @tokopedia/android-minionkevin-dev
 /features/user/campaign_shake_landing/                  @tokopedia/android-minionkevin-dev
 /features/user/home_account/                        	@tokopedia/android-minionkevin-dev
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev

@@ -278,7 +278,7 @@ ext {
             sessioncommon                   : ":features:user:sessioncommon",
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
-            stickyLogin                     : ":features:user:stickylogin",
+            usercomponents                  : ":features:user:usercomponents",
             topchat                         : ":features:user:topchat",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
