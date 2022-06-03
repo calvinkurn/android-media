@@ -3,10 +3,7 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
-import com.tokopedia.homenav.mainnav.data.pojo.payment.PaymentQuery
 import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
 import com.tokopedia.homenav.mainnav.domain.usecases.query.ProductRevWaitForFeedbackQuery
 import com.tokopedia.usecase.coroutines.Success
@@ -41,13 +38,21 @@ class GetReviewProductUseCase (
                     )
                 )
             }
+
+            /*
+                normally we limit 5 data, has next used for create empty review order
+                to generate 5 data and 1 empty data then show 5 data with view all card
+            */
+            if (responseData.data.hasNext) {
+                navReviewList.add(NavReviewOrder())
+            }
         }
         return navReviewList
     }
 
     companion object{
         private const val LIMIT = "limit"
-        private const val MAX_LIMIT = 6
+        private const val MAX_LIMIT = 5
         private const val PAGE = "page"
         private const val PAGE_REVIEW = 1
     }

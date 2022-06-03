@@ -12,7 +12,8 @@ object QueryReviewProduct {
     const val PRODUCT_WAIT_WAIT_FEEDBACK_QUERY_NAME = "ProductRevWaitForFeedbackQuery"
     const val PRODUCT_WAIT_WAIT_FEEDBACK_QUERY = "" +
             "query productrevWaitForFeedback(\$limit: Int!, \$page: Int!) {\n" +
-            "  productrevWaitForFeedback(limit: \$limit, page: \$page) {\n" +
+            "  productrevWaitForFeedback(limit: \$limit, page: \$page) {" +
+            "    hasNext\n" +
             "    list {\n" +
             "      reputationIDStr\n" +
             "      product {\n" +
