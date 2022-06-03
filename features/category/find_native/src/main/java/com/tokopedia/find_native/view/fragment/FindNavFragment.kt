@@ -726,6 +726,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
         super.onDestroyView()
     }
 }

@@ -10,11 +10,11 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCaseSeller
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -180,18 +180,22 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         deleteWishlistV2UseCase.setParams(productId, userSession.userId)
         deleteWishlistV2UseCase.execute(
             onSuccess = {
-                val prodTags = postTagLive.value
-                (postDetailLive.value as? Success)?.data?.let {
-                    (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                if (it is Success) {
+                    val prodTags = postTagLive.value
+                    (postDetailLive.value as? Success)?.data?.let {
+                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                    }
+
+                    if (prodTags == null || position >= prodTags.items.size) {
+                        listener.onErrorRemoveWishlist(Throwable(), productId)
+                    }
+
+                    prodTags?.items?.get(position)?.isWishlisted = false
+                    postTagLive.value = prodTags
+                } else if (it is Fail) {
+                    listener.onErrorRemoveWishlist(it.throwable, productId)
                 }
-
-                if (prodTags == null || position >= prodTags.items.size){
-                    listener.onErrorRemoveWishlist(Throwable(), productId)
-                }
-
-                prodTags?.items?.get(position)?.isWishlisted = false
-                postTagLive.value = prodTags },
-
+            },
             onError = {
                 listener.onErrorRemoveWishlist(it, productId)})
     }
@@ -229,18 +233,22 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         addToWishlistV2UseCase.setParams(productId, userSession.userId)
         addToWishlistV2UseCase.execute(
             onSuccess = {
-                val prodTags = postTagLive.value ?:
-                (postDetailLive.value as? Success)?.data?.let {
-                    (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                if (it is Success) {
+                    val prodTags = postTagLive.value
+                            ?: (postDetailLive.value as? Success)?.data?.let {
+                                (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                            }
+
+                    if (prodTags == null || position >= prodTags.items.size) {
+                        listener.onErrorAddWishList(Throwable(), productId)
+                    }
+
+                    prodTags?.items?.get(position)?.isWishlisted = true
+                    postTagLive.value = prodTags
+                } else if (it is Fail) {
+                    listener.onErrorAddWishList(it.throwable, productId)
                 }
-
-                if (prodTags == null || position >= prodTags.items.size){
-                    listener.onErrorAddWishList(Throwable(), productId)
-                }
-
-                prodTags?.items?.get(position)?.isWishlisted = true
-                postTagLive.value = prodTags},
-
+            },
             onError = {
                 listener.onErrorAddWishList(it, productId) })
     }

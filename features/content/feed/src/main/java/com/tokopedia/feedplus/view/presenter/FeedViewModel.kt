@@ -52,6 +52,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -454,14 +455,16 @@ class FeedViewModel @Inject constructor(
         onSuccess: (String, String, String, Boolean, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
         context: Context
     ) {
-        addToWishlistV2UseCase.setParams(productId, userSession.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)},
-            onError = {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+        launch(baseDispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)
+            } else if (result is Fail) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                 onFail.invoke(errorMessage)
-            })
+            }
+        }
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel =

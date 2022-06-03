@@ -689,6 +689,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchSortFilter = null
         sortFilterBottomSheet = null
         Toaster.onCTAClick = View.OnClickListener { }
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
     }
 
     override fun onDetach() {

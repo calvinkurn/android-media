@@ -89,6 +89,9 @@ open class RecentViewViewModel @Inject constructor(
                 if (result is Success) {
                     _addWishlistV2Response.postValue(Success(result.data))
                     wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } else if (result is Fail) {
+                    _addWishlistV2Response.postValue(Fail(result.throwable))
+                    wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
                 } },
             onError = {
                 _addWishlistV2Response.postValue(Fail(it))
@@ -119,8 +122,16 @@ open class RecentViewViewModel @Inject constructor(
                 onSuccess = { result ->
                     if (result is Success) {
                         _removeWishlistV2Response.postValue(Success(result.data))
+                    } else if (result is Fail) {
+                        _removeWishlistV2Response.postValue(Fail(result.throwable))
                     } },
                 onError = {
                     _removeWishlistV2Response.postValue(Fail(it)) })
+    }
+
+    override fun onCleared() {
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
+        super.onCleared()
     }
 }

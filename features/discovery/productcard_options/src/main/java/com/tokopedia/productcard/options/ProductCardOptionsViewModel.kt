@@ -19,6 +19,7 @@ import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -226,6 +227,8 @@ internal class ProductCardOptionsViewModel(
             onSuccess = { result ->
                 if (result is Success) {
                     onSuccessRemoveWishlistV2(result.data)
+                } else if (result is Fail) {
+                    onErrorRemoveWishlist()
                 } },
             onError = { onErrorRemoveWishlist() })
     }
@@ -291,6 +294,8 @@ internal class ProductCardOptionsViewModel(
             onSuccess = { result ->
                 if (result is Success) {
                     onSuccessAddWishlistV2(result.data)
+                } else if (result is Fail) {
+                    onErrorAddWishlist()
                 } },
             onError = {
                 onErrorAddWishlist()
@@ -444,4 +449,10 @@ internal class ProductCardOptionsViewModel(
     fun getShareProductEventLiveData(): LiveData<Event<ProductData>> = shareProductEventLiveData
 
     fun getIsLoadingEventLiveData(): LiveData<Event<Boolean>> = isLoadingEventLiveData
+
+    override fun onCleared() {
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
+        super.onCleared()
+    }
 }
