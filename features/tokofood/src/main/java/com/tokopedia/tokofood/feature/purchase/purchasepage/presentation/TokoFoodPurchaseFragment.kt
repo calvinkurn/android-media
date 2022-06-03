@@ -37,10 +37,12 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
@@ -56,7 +58,6 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
@@ -685,7 +686,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress()
+            REQUEST_CODE_CHANGE_ADDRESS -> {
+                if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS) {
+                    onResultFromChangeAddress(data)
+                }
+            }
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
             REQUEST_CODE_PAYMENT -> {
                 when (resultCode) {
@@ -713,8 +718,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun onResultFromChangeAddress() {
+    private fun onResultFromChangeAddress(intent: Intent?) {
+        showToaster(
+            context?.getString(R.string.text_purchase_success_edit_address).orEmpty(),
+            getOkayMessage()
+        )
         loadData()
+        intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
+            val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
+            viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
+        }
     }
 
     private fun onResultFromPaymentSuccess() {
@@ -910,7 +923,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeShippingAddressClicked() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
+            putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+        }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 

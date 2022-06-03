@@ -57,6 +57,7 @@
     <string name="text_purchase_order_list">Daftar Pesanan</string>
     <string name="text_purchase_add_order">Tambah Pesanan</string>
     <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
+    <string name="text_purchase_success_edit_address">Berhasil mengubah alamat</string>
 
     <!-- Merchant Page -->
     <string name="action_share">Share</string>
