@@ -4,14 +4,13 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
@@ -86,20 +85,22 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         notifyItemChanged(adapterPosition)
     }
 
-    fun updateAtcStatus(isAtc: Boolean, dataSetPosition: Int, adapterPosition: Int) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.isAtc = isAtc
-        notifyItemChanged(adapterPosition)
-    }
-
-    fun updateOrderQty(orderQty: Int, dataSetPosition: Int) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.orderQty = orderQty
-    }
-
     fun updateCustomOrderQty(cartId: String, orderQty: Int, dataSetPosition: Int) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.firstOrNull { it.cartId == cartId }?.qty = orderQty
     }
 
     fun removeCustomOrder(cartId: String, dataSetPosition: Int) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.removeFirst { it.cartId == cartId }
+    }
+
+    fun resetProductUiModel(dataSetPosition: Int, adapterPosition: Int) {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.run {
+            isAtc = false
+            cartId = ""
+            orderQty = Int.ONE
+            orderNote = ""
+            customOrderDetails = mutableListOf()
+        }
+        notifyItemChanged(adapterPosition)
     }
 }
