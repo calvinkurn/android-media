@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -157,14 +158,17 @@ class ProductManageListAdapter(
         val deletedProductIndex = visitables.indexOfFirst {
             it is ProductUiModel && it.id == productId
         }
-        visitables.removeAt(deletedProductIndex)
-        notifyItemRemoved(deletedProductIndex)
+        if (deletedProductIndex > RecyclerView.NO_POSITION) {
+            visitables.removeAt(deletedProductIndex)
+            notifyItemRemoved(deletedProductIndex)
+        }
     }
 
     override fun deleteProducts(productIds: List<String>) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
         productIds.forEach { id ->
-            visitables.indexOfFirst { it is ProductUiModel && it.id == id }.let { index ->
+            visitables.indexOfFirst { it is ProductUiModel && it.id == id }
+                .takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
             }
