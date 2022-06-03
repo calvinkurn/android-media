@@ -52,8 +52,6 @@ class PlayBroadcastUiMapper(
     private val textTransformer: HtmlTextTransformer
 ) : PlayBroadcastMapper {
 
-    private val decodeHtml = DefaultHtmlTextTransformer()
-
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
         etalaseList.map {
             val type = EtalaseType.getByType(it.type, it.id)
@@ -432,13 +430,13 @@ class PlayBroadcastUiMapper(
     override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
         return with(response.playInteractiveQuizDetail) {
             QuizDetailDataUiModel(
-                question = decodeHtml.transform(question),
-                reward = decodeHtml.transform(reward),
+                question = textTransformer.transform(question),
+                reward = textTransformer.transform(reward),
                 countDownEnd = countdownEnd,
                 choices = choices.map {
                     QuizDetailDataUiModel.Choice(
                         id = it.id,
-                        text = decodeHtml.transform(it.text),
+                        text = textTransformer.transform(it.text),
                         isCorrectAnswer = it.isCorrectAnswer,
                         participantCount = it.participantCount
                     )
@@ -449,13 +447,13 @@ class PlayBroadcastUiMapper(
 
     override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
         return PlayLeaderboardUiModel(
-            title = decodeHtml.transform(dataUiModel.question),
-            reward = decodeHtml.transform(dataUiModel.reward),
+            title = textTransformer.transform(dataUiModel.question),
+            reward = textTransformer.transform(dataUiModel.reward),
             choices = dataUiModel.choices.mapIndexed { index, choice ->
                 QuizChoicesUiModel(
                     index = index,
                     id = choice.id,
-                    text = decodeHtml.transform(choice.text),
+                    text = textTransformer.transform(choice.text),
                     type = PlayQuizOptionState.Participant(
                         alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
@@ -481,7 +479,7 @@ class PlayBroadcastUiMapper(
                 choice = QuizChoicesUiModel(
                     index = choiceIndex,
                     id = choice.id,
-                    text = decodeHtml.transform(choice.text),
+                    text = textTransformer.transform(choice.text),
                     type = PlayQuizOptionState.Participant(
                         generateAlphabetChoices(choiceIndex),
                         choice.isCorrectAnswer,
@@ -513,7 +511,7 @@ class PlayBroadcastUiMapper(
     override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else decodeHtml.transform(slot.question),
+                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else textTransformer.transform(slot.question),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
                         rank = index+1,
@@ -528,7 +526,7 @@ class PlayBroadcastUiMapper(
                 QuizChoicesUiModel(
                     index = index,
                     id = choice.id,
-                    text = decodeHtml.transform(choice.text),
+                    text = textTransformer.transform(choice.text),
                     type = PlayQuizOptionState.Participant(
                         alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
@@ -539,7 +537,7 @@ class PlayBroadcastUiMapper(
             },
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
-                reward = decodeHtml.transform(slot.reward),
+                reward = textTransformer.transform(slot.reward),
                 leaderBoardType = getLeaderboardType(slot.type)
                 )
         }
