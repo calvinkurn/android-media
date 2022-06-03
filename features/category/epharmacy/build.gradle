@@ -17,7 +17,6 @@ buildscript {
 }
 dependencies {
     implementation projectOrAar(rootProject.ext.features.basemvvm)
-    implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -28,31 +27,25 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    //implementation project(rootProject.ext.features.medialoader)
-    //implementation project(rootProject.ext.features.mediauploader)
-    //implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
