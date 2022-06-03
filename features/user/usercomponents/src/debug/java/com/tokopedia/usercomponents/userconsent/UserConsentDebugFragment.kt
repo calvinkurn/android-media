@@ -35,7 +35,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
         viewBinding?.buttonLoadConsent?.setOnClickListener {
             loadConsentComponent(
                 viewBinding?.textCollextionId?.editText?.text.toString(),
-                "1"
+                viewBinding?.textCollextionVersion?.editText?.text.toString()
             )
             viewBinding?.sampleUserConsent?.show()
             viewBinding?.textPayloadData?.hide()
@@ -53,7 +53,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
 
             override fun onActionClicked(payload: UserConsentPayload) {
                 viewBinding?.textPayloadData?.apply {
-                    text = payload.toString()
+                    text = "PAYLOAD: \n\n${payload.toString()}"
                 }?.show()
             }
 
