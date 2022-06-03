@@ -9,22 +9,27 @@ import com.tokopedia.home_component.util.toDpInt
  * Created by dhaba
  */
 class OfficialBenefitItemDecoration : RecyclerView.ItemDecoration() {
+    companion object {
+        private var MARGIN_OUTSIDE_CARD = 16f.toDpInt()
+        private var MARGIN_INSIDE_CARD = 4f.toDpInt()
+    }
+
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
         when {
             parent.getChildAdapterPosition(view) == 0 -> {
-                outRect.left = 16f.toDpInt()
-                outRect.right = 4f.toDpInt()
+                outRect.left = MARGIN_OUTSIDE_CARD
+                outRect.right = MARGIN_INSIDE_CARD
             }
             parent.getChildAdapterPosition(view) == state.itemCount-1 -> {
-                outRect.right = 16f.toDpInt()
-                outRect.left = 4f.toDpInt()
+                outRect.right = MARGIN_OUTSIDE_CARD
+                outRect.left = MARGIN_INSIDE_CARD
             }
             else -> {
-                outRect.left = 4f.toDpInt()
-                outRect.right = 4f.toDpInt()
+                outRect.left = MARGIN_INSIDE_CARD
+                outRect.right = MARGIN_INSIDE_CARD
             }
         }
     }

@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:orientation="horizontal" />
 
@@ -27,10 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpager_banner_category"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="false"
