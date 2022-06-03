@@ -76,7 +76,8 @@ class PlayBottomSheetFragment @Inject constructor(
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
         PlayInteractiveLeaderboardViewComponent.Listener,
-        ShopCouponSheetViewComponent.Listener
+        ShopCouponSheetViewComponent.Listener,
+        ChooseAddressViewComponent.Listener
 {
 
     companion object {
@@ -89,6 +90,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
+    private val chooseAddressView by viewComponent { ChooseAddressViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -275,6 +277,7 @@ class PlayBottomSheetFragment @Inject constructor(
         variantSheetView.hide()
         couponSheetView.hide()
         leaderboardSheetView.hide()
+        chooseAddressView.hide()
     }
 
     private fun setupObserve() {
@@ -422,6 +425,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             val productSheetState = it[BottomInsetsType.ProductSheet]
             val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
+            val chooseAddressWidgetState = it[BottomInsetsType.ChooseAddress]
 
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
@@ -432,6 +436,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 when (leaderboardSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                     is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
+                }
+            } else if (chooseAddressWidgetState != null && !chooseAddressWidgetState.isPreviousStateSame) {
+                when (chooseAddressWidgetState) {
+                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(chooseAddressWidgetState.estimatedInsetsHeight)
                 }
             }
 
@@ -455,6 +464,11 @@ class PlayBottomSheetFragment @Inject constructor(
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
+            }
+
+            it[BottomInsetsType.ChooseAddress]?.let { state ->
+                if (state is BottomInsetsState.Shown) chooseAddressView.showWithHeight(state.estimatedInsetsHeight)
+                else chooseAddressView.hide()
             }
         })
     }
