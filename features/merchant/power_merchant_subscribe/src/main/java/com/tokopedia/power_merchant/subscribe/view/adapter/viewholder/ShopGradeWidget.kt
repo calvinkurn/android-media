@@ -251,14 +251,28 @@ class ShopGradeWidget(
                     root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                 tvPmShopGradeThreshold.layoutParams = layoutParams
             }
-            pmProStatusInfoView.visible()
-            pmProStatusInfoView.setOnClickListener {
-                listener.showPmProStatusInfo(getPmProStatusInfo(element))
-            }
         } else {
             pmProStatusInfoView.gone()
             tvPmShopGradeThreshold.visible()
             tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
+        }
+
+        if (isPmProActive) {
+            pmProStatusInfoView.visible()
+            pmProStatusInfoView.showIcon()
+            pmProStatusInfoView.setText(R.string.pm_check_pm_pro_status_info)
+            pmProStatusInfoView.setOnClickListener {
+                listener.showPmProStatusInfo(getPmProStatusInfo(element))
+            }
+        } else if (isPmActive) {
+            pmProStatusInfoView.visible()
+            pmProStatusInfoView.hideIcon()
+            pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
+            pmProStatusInfoView.setOnClickListener {
+                listener.showHelpPmNotActive()
+            }
+        } else {
+            pmProStatusInfoView.gone()
         }
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
@@ -390,6 +404,7 @@ class ShopGradeWidget(
 
     interface Listener {
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
+        fun showHelpPmNotActive()
         fun goToMembershipDetail()
     }
 }
