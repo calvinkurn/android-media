@@ -33,7 +33,9 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
         // Set recent/applink item data
         if (data.selectedProductId.isNotEmpty()) {
             val product = getProductFromId(data.dataCollections, data.selectedProductId)
-            product?.let { inputView.setInputText(it.attributes.desc) }
+            if (!product?.attributes?.desc.isNullOrEmpty()){
+                inputView.setInputText(product?.attributes?.desc ?: "")
+            } else inputView.setInputText("")
         }
     }
 

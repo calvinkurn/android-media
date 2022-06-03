@@ -67,7 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
-    <com.tokopedia.stickylogin.view.StickyLoginView
+    <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
         android:id="@+id/sticky_login_tokonow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

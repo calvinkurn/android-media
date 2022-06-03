@@ -17,10 +17,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DEFAULT_NEW_KEYWORD_VALUE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
@@ -135,6 +137,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidList = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
         bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
         tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
+        view.findViewById<TextFieldUnify>(R.id.biaya_pencarian).hide()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -467,31 +470,20 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
     }
 
-    private fun removeEmptyViewIfSelectedKeywordsNotEmpty() {
-        stepperModel?.let {
-            if (it.selectedKeywordStage.size > 0 &&
-                bidInfoAdapter.items.getOrNull(0) is BidInfoEmptyViewModel
-            ) {
-                bidInfoAdapter.items.removeAt(0)
-            }
-        }
-    }
-
     private fun resetView() {
-        if (bidInfoAdapter.items.size == 0) {
-            onEmptySuggestion()
-        } else {
-            removeEmptyViewIfSelectedKeywordsNotEmpty()
-
+        bidInfoAdapter.items.clear()
+        if (stepperModel?.selectedKeywordStage?.isNotEmpty() == true) {
             stepperModel?.selectedKeywordStage?.forEach {
-                if(it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword
+                if (it.bidSuggest == "0")
+                    it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(CLICK_ADDED_KEYWORD, "",
-                stepperModel?.selectedKeywordStage!!
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(
+                CLICK_ADDED_KEYWORD, "", stepperModel?.selectedKeywordStage!!
             )
             bidInfoAdapter.notifyDataSetChanged()
+        } else {
+            onEmptySuggestion()
         }
         setCount()
     }

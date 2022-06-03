@@ -5,7 +5,7 @@
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -13,12 +13,11 @@
         android:id="@+id/img_title"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/img_title"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -26,12 +25,12 @@
         android:id="@+id/tv_title"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         android:background="@drawable/background_event_pdp_shimmering"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -39,12 +38,11 @@
         android:id="@+id/tv_sub_title"
         android:layout_width="@dimen/dimen_dp_320"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/tv_sub_title"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -52,12 +50,10 @@
         android:id="@+id/tv_sub_sub_title"
         android:layout_width="@dimen/dimen_dp_280"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
-        />
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/tv_sub_sub_title"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -65,12 +61,10 @@
         android:id="@+id/img_one"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
-        />
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/tv_sub_sub_title"
         app:layout_constraintLeft_toLeftOf="@+id/img_one"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -78,12 +72,10 @@
         android:id="@+id/title_one"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
-        />
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_one"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -91,12 +83,11 @@
         android:id="@+id/img_two"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_one"
         app:layout_constraintLeft_toLeftOf="@+id/img_two"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -104,12 +95,12 @@
         android:id="@+id/title_two"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         android:background="@drawable/background_event_pdp_shimmering"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_two"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -117,12 +108,11 @@
         android:id="@+id/img_three"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_two"
         app:layout_constraintLeft_toLeftOf="@+id/img_two"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -130,9 +120,8 @@
         android:id="@+id/title_three"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
     <View
@@ -146,7 +135,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/line"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -154,12 +143,11 @@
         android:id="@+id/img_four"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/line"
         app:layout_constraintLeft_toLeftOf="@+id/img_two"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -167,12 +155,11 @@
         android:id="@+id/title_four"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_four"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -180,12 +167,11 @@
         android:id="@+id/img_five"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_four"
         app:layout_constraintLeft_toLeftOf="@+id/img_two"
         android:layout_marginLeft="@dimen/spacing_lvl6"
@@ -193,12 +179,11 @@
         android:id="@+id/title_five"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_five"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -206,12 +191,11 @@
         android:id="@+id/img_six"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering_circle"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         app:layout_constraintTop_toBottomOf="@+id/title_five"
         app:layout_constraintLeft_toLeftOf="@+id/img_two"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -220,9 +204,8 @@
         android:id="@+id/title_six"
         android:layout_width="@dimen/dimen_dp_200"
         android:layout_height="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
-        app:use_gradient="true"
-        android:background="@drawable/background_event_pdp_shimmering"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

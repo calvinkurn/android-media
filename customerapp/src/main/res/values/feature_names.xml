@@ -105,6 +105,8 @@
     <string name="recharge_slice_main_path">/main</string>
     <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
     <string name="smart_bills_action_bar_title">Bayar Sekaligus</string>
+    <string name="df_title_digital">Digital</string>
+
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -340,6 +342,8 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>

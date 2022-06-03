@@ -100,6 +100,7 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
         const val DEFAULT_VALUE_OF_NAVSOURCE_TOKONOW = "tokonow"
+        const val DEFAULT_VALUE_OF_NAVSOURCE_TOKOCABANG = "tokocabang"
         const val HOME = "home"
     }
 }
