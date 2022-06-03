@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.*
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
@@ -51,7 +52,7 @@ class AffiliateHomeViewModelTest{
     /**************************** getAnnouncementInformation() *******************************************/
     @Test
     fun getAnnouncementInformation(){
-        val affiliateAnnouncementData : AffiliateAnnouncementData = mockk(relaxed = true)
+        val affiliateAnnouncementData : AffiliateAnnouncementDataV2 = mockk(relaxed = true)
         coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
 
         affiliateHomeViewModel.getAnnouncementInformation()
@@ -66,8 +67,6 @@ class AffiliateHomeViewModelTest{
 
         affiliateHomeViewModel.getAnnouncementInformation()
 
-        assertEquals(affiliateHomeViewModel.getAffiliateErrorMessage().value, throwable)
-        assertEquals(affiliateHomeViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/
@@ -97,7 +96,7 @@ class AffiliateHomeViewModelTest{
     fun getAffiliatePerformance(){
         val affiliateUserPerformaListData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
         val defaultMetricData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics(
-            null,"","1",null,null,null,0,null
+            TOTAL_ITEMS_METRIC_TYPE,"","1",null,null,null,0,null
         )
         val performData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData(
             null,null,null,null, arrayListOf(defaultMetricData)
