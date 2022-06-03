@@ -238,7 +238,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var bidInfoDataItem: List<GroupEditInput.Group.TopadsSuggestionBidSetting>? = null
         var bidGroup = 0
 
-        if (isAutoBid) {
+        if (!isAutoBid) {
             if (fragments?.get(0) is EditKeywordsFragment) {
                 val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
                 addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
