@@ -33,12 +33,14 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import kotlin.math.min
 import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class SimilarSearchViewModel(
-        dispatcherProvider: CoroutineDispatchers,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
@@ -265,7 +267,6 @@ internal class SimilarSearchViewModel(
     private fun createOriginalProductWishlistActionListener() = object : WishListActionListener {
         override fun onSuccessRemoveWishlist(productId: String?) {
             removeWishlistEventLiveData.postValue(Event(true))
-
             postUpdateWishlistOriginalProductEvent(productId,false)
         }
 
@@ -279,7 +280,6 @@ internal class SimilarSearchViewModel(
 
         override fun onSuccessAddWishlist(productId: String?) {
             addWishlistEventLiveData.postValue(Event(true))
-
             postUpdateWishlistOriginalProductEvent(productId,true)
         }
     }
@@ -332,29 +332,26 @@ internal class SimilarSearchViewModel(
 
     private fun toggleWishlistV2ForProduct(productId: String, isWishlisted: Boolean, wishlistV2ActionListener: WishlistV2ActionListener) {
         if (!isWishlisted) {
-            addToWishlistV2UseCase.setParams(productId, userSession.userId)
-            addToWishlistV2UseCase.execute(
-                    onSuccess = { result ->
-                        if (result is com.tokopedia.usecase.coroutines.Success) {
-                            wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                        } else if (result is Fail) {
-                            addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
-                        } },
-                    onError = {
-                        addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
-                    })
+            launch(dispatcherProvider.main) {
+                addToWishlistV2UseCase.setParams(productId, userSession.userId)
+                val result = withContext(dispatcherProvider.io) { addToWishlistV2UseCase.executeOnBackground() }
+                if (result is com.tokopedia.usecase.coroutines.Success) {
+                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } else if (result is Fail) {
+                    wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+                }
+            }
         }
         else {
-            deleteWishlistV2UseCase.setParams(productId, userSession.userId)
-            deleteWishlistV2UseCase.execute(
-                    onSuccess = { result ->
-                        if (result is com.tokopedia.usecase.coroutines.Success) {
-                            removeWishlistEventLiveData.postValue(Event(true))
-                            postUpdateWishlistOriginalProductEvent(productId,false)
-                        } else {
-                            removeWishlistEventLiveData.postValue(Event(false))
-                        } },
-                    onError = { removeWishlistEventLiveData.postValue(Event(false)) })
+            launch(dispatcherProvider.main) {
+                deleteWishlistV2UseCase.setParams(productId, userSession.userId)
+                val result = withContext(dispatcherProvider.io) { deleteWishlistV2UseCase.executeOnBackground() }
+                if (result is com.tokopedia.usecase.coroutines.Success) {
+                    wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, productId)
+                } else if (result is Fail) {
+                    wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, productId)
+                }
+            }
         }
     }
 
@@ -584,11 +581,5 @@ internal class SimilarSearchViewModel(
 
     fun getAddToCartFailedMessage(): String {
         return addToCartFailedMessage
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.testutils.shouldBe
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -97,7 +98,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         userId: String
     ) {
         verify { addToWishlistV2UseCase.setParams(originalProduct.id, userId) }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -143,7 +144,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         userId: String
     ) {
         verify { deleteWishlistV2UseCase.setParams(originalProduct.id, userId) }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -195,9 +196,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
     private fun `Given add wishlistV2 API will be successful`() {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
     }
 
     private fun `Then assert add wishlist event is true`() {
@@ -267,7 +266,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
 
         `Given user is logged in with user id`(userId)
         `Given view already created and has similar search data`(similarProductModelCommon)
-        `Given add wishlistV2 API will fail`(originalProduct)
+        `Given add wishlistV2 API will fail`()
 
         `When handle view toggle wishlistV2 Original product`()
 
@@ -285,14 +284,10 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         }
     }
 
-    private fun `Given add wishlistV2 API will fail`(
-        originalProduct: Product
-    ) {
+    private fun `Given add wishlistV2 API will fail`() {
         val mockThrowable = mockk<Throwable>("fail")
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
     }
 
     private fun `Then assert add wishlist event is false`() {
@@ -375,9 +370,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
     private fun `Given remove wishlistV2 API will be successful`() {
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
     }
 
     private fun `Then assert remove wishlist event is true`() {
@@ -455,9 +448,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
     }
 
     private fun `Then assert remove wishlist Original product event is false`() {
