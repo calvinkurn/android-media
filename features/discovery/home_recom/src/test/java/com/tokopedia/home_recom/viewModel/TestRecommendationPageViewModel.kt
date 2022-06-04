@@ -39,6 +39,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.topads.sdk.domain.model.Image
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -151,11 +152,25 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `verify add to wishlistV2`(){
+    fun `verify add to wishlistV2 success`(){
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail`() {
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addWishlistV2(recommendation.productId.toString(), mockListener)
