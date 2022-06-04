@@ -674,7 +674,7 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify add to wishlistV2` () {
+    fun `verify add to wishlistV2 returns success` () {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -689,12 +689,42 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `verify remove wishlistV2`(){
+    fun `verify add to wishlistV2 returns fail` () {
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishlistV2(recommItem, mockListener)

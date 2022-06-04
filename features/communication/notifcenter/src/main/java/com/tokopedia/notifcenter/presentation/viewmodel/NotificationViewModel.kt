@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -27,7 +26,6 @@ import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -44,8 +42,6 @@ import kotlinx.coroutines.withContext
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -476,12 +472,6 @@ class NotificationViewModel @Inject constructor(
                 }
             }
         )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        addWishListV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
     }
 
     companion object {
