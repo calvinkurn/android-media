@@ -145,7 +145,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         RecentViewTracking.trackEventOpenScreen(context)
     }
 
-    fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
+    fun onWishlistClicked(productId: Int, isWishlist: Boolean) {
         showLoadingProgress()
 
         var isUsingV2 = false
@@ -153,33 +153,66 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
             if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
         }
         if (!isWishlist) {
-            if (isUsingV2) viewModel.addToWishlistV2(productId.toString(), object :
-                WishlistV2ActionListener {
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                    onErrorRemoveWishlist(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable))
-                }
-
-                override fun onSuccessAddWishlist(
-                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                    productId: String
-                ) {
-                    context?.let { context ->
-                        view?.let { v ->
-                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            if (isUsingV2) {
+                viewModel.addToWishlistV2(productId.toString(), object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        context?.let { context ->
+                            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                            }
                         }
                     }
-                }
 
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                override fun onSuccessRemoveWishlist(
-                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                    productId: String
-                ) {}
-            })
-            else viewModel.addToWishlist(productId.toString())
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {}
+                })
+            } else viewModel.addToWishlist(productId.toString())
         } else {
-            if (isUsingV2) viewModel.removeFromWishlistV2(productId.toString())
-            else viewModel.removeFromWishlist(productId.toString())
+            if (isUsingV2) {
+                viewModel.removeFromWishlistV2(productId.toString(), object : WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {}
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        context?.let { context ->
+                            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                            }
+                        }
+                    }
+
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                    }
+
+                })
+            } else viewModel.removeFromWishlist(productId.toString())
         }
     }
 
@@ -239,28 +272,11 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         }
     }
 
-    private fun onSuccessAddWishlistV2(data: AddToWishlistV2Response.Data.WishlistAddV2, productID: String) {
-        dismissLoadingProgress()
-        for (i in adapter.list.indices) {
-            if (adapter.list[i] is RecentViewDetailProductDataModel) {
-                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
-                if (productID == feedDetailViewModel.productId) {
-                    feedDetailViewModel.isWishlist = true
-                    adapter.notifyItemChanged(i)
-                    break
-                }
-            }
-        }
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(data, context, v)
-            }
-        }
-    }
-
     private fun goToWishList() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
-        startActivity(intent)
+        context?.let { context ->
+            val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+            startActivity(intent)
+        }
     }
 
     private fun onErrorRemoveWishlist(errorMessage: String) {
@@ -284,25 +300,6 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
         view?.let {
             Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
-        }
-    }
-
-    private fun onSuccessRemoveWishlistV2(productID: String, result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
-        dismissLoadingProgress()
-        for (i in adapter.list.indices) {
-            if (adapter.list[i] is RecentViewDetailProductDataModel) {
-                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
-                if (productID == feedDetailViewModel.productId) {
-                    feedDetailViewModel.isWishlist = true
-                    adapter.notifyItemChanged(i)
-                    break
-                }
-            }
-        }
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
-            }
         }
     }
 

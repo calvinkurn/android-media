@@ -124,9 +124,7 @@ class RecentViewViewModelTest {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
         viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
             removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
@@ -134,7 +132,7 @@ class RecentViewViewModelTest {
         viewModel.addToWishlistV2(productId, mockListener)
 
         verify { addToWishlistV2UseCase.setParams(productId, userSession.userId) }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -143,9 +141,7 @@ class RecentViewViewModelTest {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
             removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
@@ -153,7 +149,7 @@ class RecentViewViewModelTest {
         viewModel.addToWishlistV2(productId, mockListener)
 
         verify { addToWishlistV2UseCase.setParams(productId, userSession.userId) }
-        coVerify { addToWishlistV2UseCase.execute(any(), any()) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -162,16 +158,15 @@ class RecentViewViewModelTest {
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(Success(resultWishlistRemoveV2))
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
 
         viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
             removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.removeFromWishlistV2(productId)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeFromWishlistV2(productId, mockListener)
 
         verify { deleteWishlistV2UseCase.setParams(productId, userSession.userId) }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -180,15 +175,14 @@ class RecentViewViewModelTest {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
             removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.removeFromWishlistV2(productId)
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeFromWishlistV2(productId, mockListener)
 
         verify { deleteWishlistV2UseCase.setParams(productId, userSession.userId) }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 }

@@ -20,6 +20,8 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -29,7 +31,7 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class RecentViewViewModel @Inject constructor(
-        baseDispatcher: CoroutineDispatchers,
+        private val baseDispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
@@ -46,14 +48,8 @@ open class RecentViewViewModel @Inject constructor(
     val addWishlistResponse: LiveData<Result<String>> get() = _addWishlistResponse
     private val _addWishlistResponse = MutableLiveData<Result<String>>()
 
-    val addWishlistV2Response: LiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>> get() = _addWishlistV2Response
-    private val _addWishlistV2Response = MutableLiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>()
-
     val removeWishlistResponse: LiveData<Result<String>> get() = _removeWishlistResponse
     private val _removeWishlistResponse = MutableLiveData<Result<String>>()
-
-    val removeWishlistV2Response: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>> get() = _removeWishlistV2Response
-    private val _removeWishlistV2Response = MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
 
     fun getRecentView() {
         recentViewUseCase.apply {
@@ -83,20 +79,15 @@ open class RecentViewViewModel @Inject constructor(
     }
 
     fun addToWishlistV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(productId, userSession.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    _addWishlistV2Response.postValue(Success(result.data))
-                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                } else if (result is Fail) {
-                    _addWishlistV2Response.postValue(Fail(result.throwable))
-                    wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
-                } },
-            onError = {
-                _addWishlistV2Response.postValue(Fail(it))
-                wishlistV2ActionListener.onErrorAddWishList(it, productId)
-            })
+        launch(baseDispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     fun removeFromWishlist(productId: String) {
@@ -116,22 +107,15 @@ open class RecentViewViewModel @Inject constructor(
             })
     }
 
-    fun removeFromWishlistV2(productId: String) {
-        deleteWishlistV2UseCase.setParams(productId, userSession.userId)
-        deleteWishlistV2UseCase.execute(
-                onSuccess = { result ->
-                    if (result is Success) {
-                        _removeWishlistV2Response.postValue(Success(result.data))
-                    } else if (result is Fail) {
-                        _removeWishlistV2Response.postValue(Fail(result.throwable))
-                    } },
-                onError = {
-                    _removeWishlistV2Response.postValue(Fail(it)) })
-    }
-
-    override fun onCleared() {
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
-        super.onCleared()
+    fun removeFromWishlistV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launch(baseDispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 }
