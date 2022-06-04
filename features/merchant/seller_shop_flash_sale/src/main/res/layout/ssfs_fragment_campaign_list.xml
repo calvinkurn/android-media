@@ -107,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:minWidth="@dimen/unify_space_96"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -28,11 +28,13 @@ import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flash_sale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.adapter.CampaignAdapter
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.listener.RecyclerViewScrollListener
+import com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationActivity
 import com.tokopedia.shop.flash_sale.presentation.draft.bottomsheet.DraftListBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -381,7 +383,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 ::onDeleteDraftSuccess
             )
         } else {
-            //TODO: Navigate to info campaign page
+            CampaignInformationActivity.start(requireActivity(), PageMode.CREATE)
         }
     }
 
@@ -420,7 +422,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val title = if (tabPosition == TAB_POSITION_FIRST) {
             getString(R.string.sfs_no_active_campaign_title)
         } else {
-            getString(R.string.sfs_placeholder_no_campaign_history_title)
+            getString(R.string.sfs_no_campaign_history_title)
         }
 
         binding?.emptyState?.setTitle(title)
