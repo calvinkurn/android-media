@@ -18,18 +18,24 @@
     <string name="sfs_product">Produk</string>
     <string name="sfs_registered_to_an_event">Terdaftar Event</string>
     <string name="sfs_create_campaign">Buat Campaign</string>
+    <string name="sfs_monitor_campaign">Pantau Campaign Aktif</string>
     <string name="sfs_search_campaign">Cari Campaign</string>
     <string name="sfs_share">Bagikan</string>
     <string name="sfs_cancel">Batalkan</string>
     <string name="sfs_view_detail">Lihat Detail</string>
     <string name="sfs_edit">Edit</string>
     <string name="sfs_stop">Hentikan</string>
-    <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
-    <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
-    <string name="sfs_no_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
 
-    <string name="sfs_placeholder_no_campaign_title">Saat ini tidak ada %s</string>
+    <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
+    <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
+
+    <string name="sfs_no_active_campaign_title">Saat ini tidak ada campaign aktif</string>
+    <string name="sfs_no_active_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
+
+    <string name="sfs_placeholder_no_campaign_history_title">Belum ada riwayat campaign</string>
+    <string name="sfs_no_campaign_history_description">Pantau campaign yang tersedia, sedang berlangsung, dan mendatang di campaign aktif ya.</string>
+
     <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>

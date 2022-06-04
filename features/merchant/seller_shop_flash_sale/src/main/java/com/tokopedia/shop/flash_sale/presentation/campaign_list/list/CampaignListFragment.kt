@@ -51,7 +51,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     companion object {
         private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
-        private const val BUNDLE_KEY_CAMPAIGN_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
@@ -64,14 +63,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         @JvmStatic
         fun newInstance(
             tabPosition: Int,
-            campaignStatusName: String,
             campaignStatusIds: IntArray,
-            totalCampaign: Int,
+            totalCampaign: Int
         ): CampaignListFragment {
             val fragment = CampaignListFragment()
             fragment.arguments = Bundle().apply {
                 putInt(BUNDLE_KEY_TAB_POSITION, tabPosition)
-                putString(BUNDLE_KEY_CAMPAIGN_STATUS_NAME, campaignStatusName)
                 putIntArray(BUNDLE_KEY_CAMPAIGN_STATUS_ID, campaignStatusIds)
                 putInt(BUNDLE_KEY_CAMPAIGN_COUNT, totalCampaign)
             }
@@ -82,10 +79,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private val tabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_TAB_POSITION).orZero()
-    }
-
-    private val campaignStatusName by lazy {
-        arguments?.getString(BUNDLE_KEY_CAMPAIGN_STATUS_NAME).orEmpty()
     }
 
     private val campaignStatusIds by lazy {
@@ -120,6 +113,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private val viewModel by lazy { viewModelProvider.get(CampaignListViewModel::class.java) }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
+    private var onNavigateToActiveCampaignTab: () -> Unit = {}
     private var shareComponentBottomSheet: UniversalShareBottomSheet? = null
 
     override fun getScreenName(): String = CampaignListFragment::class.java.canonicalName.orEmpty()
@@ -309,15 +303,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onScrollUp = onScrollUp
     }
 
+    fun setOnNavigateToActiveCampaignListener(onNavigateToActiveCampaignTab : () -> Unit){
+        this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
+    }
+
     private fun setupTabChangeListener() {
         val listener = object : CampaignListContainerFragment.TabChangeListener {
             override fun onTabChanged() {
+                binding?.cardView?.gone()
                 if (totalCampaign == ZERO) {
                     showEmptyState()
-                    binding?.cardView?.gone()
                 } else {
                     hideEmptyState()
-                    binding?.cardView?.visible()
                 }
             }
         }
@@ -428,20 +425,42 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showEmptyState() {
-        val title = String.format(
-            getString(R.string.sfs_placeholder_no_campaign_title),
-            campaignStatusName.lowercase()
-        )
-        val description = getString(R.string.sfs_no_campaign_description)
-
+        binding?.cardView?.gone()
         binding?.searchBar?.gone()
         binding?.recyclerView?.gone()
 
-        binding?.btnCreateCampaignEmptyState?.isVisible = tabPosition == TAB_POSITION_FIRST
+        val buttonWording = if (tabPosition == TAB_POSITION_FIRST) {
+            getString(R.string.sfs_create_campaign)
+        } else {
+            getString(R.string.sfs_monitor_campaign)
+        }
+
+        val buttonOnClickAction =  if (tabPosition == TAB_POSITION_FIRST) {
+            {  }
+        } else {
+            { onNavigateToActiveCampaignTab() }
+        }
+
+        binding?.btnCreateCampaignEmptyState?.text = buttonWording
+        binding?.btnCreateCampaignEmptyState?.setOnClickListener { buttonOnClickAction() }
 
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+
+        val title = if (tabPosition == TAB_POSITION_FIRST) {
+            getString(R.string.sfs_no_active_campaign_title)
+        } else {
+            getString(R.string.sfs_placeholder_no_campaign_history_title)
+        }
+
         binding?.emptyState?.setTitle(title)
+
+        val description = if (tabPosition == TAB_POSITION_FIRST) {
+            getString(R.string.sfs_no_active_campaign_description)
+        } else {
+            getString(R.string.sfs_no_campaign_history_description)
+        }
+
         binding?.emptyState?.setDescription(description)
     }
 

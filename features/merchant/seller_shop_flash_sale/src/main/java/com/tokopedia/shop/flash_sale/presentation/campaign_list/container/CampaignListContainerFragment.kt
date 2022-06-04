@@ -232,12 +232,12 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         tabs.forEachIndexed { index, tab ->
             val fragment = CampaignListFragment.newInstance(
                 index,
-                tab.name,
                 tab.status.toIntArray(),
                 tab.totalCampaign
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
+            fragment.setOnNavigateToActiveCampaignListener { focusTo(TAB_POSITION_FIRST) }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
             pages.add(Pair(tabName, fragment))
@@ -288,19 +288,10 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
 
-    private fun focusTo(discountStatusId: Int) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DELAY_IN_MILLIS)
-
-            /*val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-
-            val matchedTab = tabs.find { tab -> tab.discountStatusId == discountStatusId }
-            val tabPosition = matchedTab?.tabPosition.orZero()
-            val upcomingStatusTab =
-                tabLayout?.getTabAt(tabPosition) ?: return@launch
-            upcomingStatusTab.select()*/
-        }
+    private fun focusTo(tabPosition : Int) {
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        val tab = tabLayout?.getTabAt(tabPosition)
+        tab?.select()
     }
 
 }
