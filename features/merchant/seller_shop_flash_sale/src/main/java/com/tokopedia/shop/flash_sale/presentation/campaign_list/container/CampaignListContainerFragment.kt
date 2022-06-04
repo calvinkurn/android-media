@@ -39,22 +39,16 @@ import javax.inject.Inject
 class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val NOT_SET = 0
-        private const val DELAY_IN_MILLIS: Long = 300
+        private const val DELAY_IN_MILLIS: Long = 400
         private const val TAB_POSITION_FIRST = 0
         private const val TAB_POSITION_SECOND = 1
-        private const val BUNDLE_KEY_PREVIOUS_CAMPAIGN_STATUS_ID = "previous_discount_status_id"
+        private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
 
         @JvmStatic
-        fun newInstance(
-            previouslySelectedDiscountStatusId: Int = 0
-        ): CampaignListContainerFragment {
+        fun newInstance(autoFocusTabPosition: Int = TAB_POSITION_FIRST): CampaignListContainerFragment {
             return CampaignListContainerFragment().apply {
                 val bundle = Bundle()
-                bundle.putInt(
-                    BUNDLE_KEY_PREVIOUS_CAMPAIGN_STATUS_ID,
-                    previouslySelectedDiscountStatusId
-                )
+                bundle.putInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION, autoFocusTabPosition)
                 arguments = bundle
             }
         }
@@ -62,12 +56,10 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignListContainerBinding>()
-    private var previouslySelectedCampaignStatusId = 0
-    private val currentCampaignStatusId by lazy {
-        arguments?.getInt(
-            BUNDLE_KEY_PREVIOUS_CAMPAIGN_STATUS_ID
-        ) ?: NOT_SET
+    private val autoFocusTabPosition by lazy {
+        arguments?.getInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION).orZero()
     }
+
     private var listener: TabChangeListener? = null
 
     @Inject
@@ -199,15 +191,10 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         fun onTabChanged()
     }
 
-    private fun isRedirectionFromAnotherPage(): Boolean {
-        return previouslySelectedCampaignStatusId != NOT_SET
-    }
-
     private fun displayTabs(tabs: List<TabMeta>) {
         val fragments = createFragments(tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
-        val previouslySelectedPosition = viewModel.getSelectedTabPosition()
 
         binding?.run {
             viewPager.adapter = pagerAdapter
@@ -215,12 +202,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
-
-                if (isRedirectionFromAnotherPage()) {
-                    focusTo(currentCampaignStatusId)
-                } else {
-                    focusToPreviousTab(tab, previouslySelectedPosition, currentPosition)
-                }
+                focusTo(autoFocusTabPosition)
             }
         }
     }
@@ -244,20 +226,6 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
 
         return pages
-    }
-
-    private fun focusToPreviousTab(
-        tab: TabLayout.Tab,
-        previouslySelectedPosition: Int,
-        currentlyRenderedTabPosition: Int
-    ) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DELAY_IN_MILLIS)
-            if (previouslySelectedPosition == currentlyRenderedTabPosition) {
-                tab.select()
-            }
-        }
     }
 
     private fun alignRecyclerViewToToolbarBottom() {
@@ -289,9 +257,14 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
 
     private fun focusTo(tabPosition : Int) {
-        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-        val tab = tabLayout?.getTabAt(tabPosition)
-        tab?.select()
+        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DELAY_IN_MILLIS)
+            val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+            val tab = tabLayout?.getTabAt(tabPosition)
+            tab?.select()
+        }
+
     }
 
 }
