@@ -486,7 +486,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
         val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected {}
-        bottomSheet.setOnCancelCampaignMenuSelected {}
+        bottomSheet.setOnCancelCampaignMenuSelected { handleCancelCampaign(campaign.thematicParticipation) }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
             viewModel.getShareComponentMetadata(campaign.campaignId)
@@ -541,6 +541,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun dismissLoaderDialog() {
         loaderDialog.dialog.dismiss()
+    }
+
+    private fun handleCancelCampaign(isParticipatingThematicCampaign : Boolean) {
+        if (isParticipatingThematicCampaign) {
+            binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
+            return
+        }
     }
 
 }

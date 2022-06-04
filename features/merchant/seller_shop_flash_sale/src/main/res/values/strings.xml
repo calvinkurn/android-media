@@ -26,6 +26,7 @@
     <string name="sfs_edit">Edit</string>
     <string name="sfs_stop">Hentikan</string>
     <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
+    <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
