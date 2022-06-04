@@ -269,7 +269,6 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         `Given add wishlistV2 API will fail`()
 
         `When handle view toggle wishlistV2 Original product`()
-
         `Then verify add wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
     }
 
@@ -292,15 +291,6 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
 
     private fun `Then assert add wishlist event is false`() {
         val addWishlistEventLiveData = similarSearchViewModel.getAddWishlistEventLiveData().value
-
-        addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
-            false,
-            "Add wishlist event should be false"
-        )
-    }
-
-    private fun `Then assert add wishlistV2 event is false`() {
-        val addWishlistEventLiveData = similarSearchViewModel.getAddWishlistV2EventLiveData().value
 
         addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
             false,
@@ -347,12 +337,14 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         val originalProduct = similarProductModelOriginalProductWishlisted.getOriginalProduct()
 
         `Given user is logged in with user id`(userId)
+
         `Given view already created and has similar search data`(similarProductModelOriginalProductWishlisted)
         `Given remove wishlistV2 API will be successful`()
 
         `When handle view toggle wishlistV2 Original product`()
 
         `Then verify remove wishlistV2 API is called with product id equals to Original product id`(originalProduct, userId)
+        `Then assert remove wishlistV2 success field is true`()
         `Then assert Original product is wishlisted is false, and update wishlist Original product event is false`()
     }
 
@@ -457,15 +449,6 @@ internal class HandleViewToggleWishlistOriginalProductTest: SimilarSearchTestFix
         removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
             false,
             "Remove wishlist event should be false"
-        )
-    }
-
-    private fun `Then assert remove wishlistV2 Original product event is false`() {
-        val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistV2EventLiveData().value
-
-        removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
-            false,
-            "Remove wishlistV2 event should be false"
         )
     }
 
