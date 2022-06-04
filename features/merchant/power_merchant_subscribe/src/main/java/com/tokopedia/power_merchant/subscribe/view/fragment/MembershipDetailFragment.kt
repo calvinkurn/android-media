@@ -381,8 +381,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     ): MembershipDataUiModel {
         return MembershipDataUiModel(
             shopScore = data?.shopScore.orZero(),
-            totalOrder = data?.totalOrder.orZero(),
-            netIncome = data?.netIncome.orZero(),
+            totalOrder = data?.totalOrderLast90Days.orZero(),
+            netIncome = data?.netIncomeLast90Days.orZero(),
             orderThreshold = orderThreshold,
             netIncomeThreshold = netIncomeThreshold,
             netIncomeThresholdFmt = netIncomeThresholdFmt,

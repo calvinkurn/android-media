@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreLevelModel
 
 data class MembershipDetailResponse(
     @Expose
@@ -9,7 +10,13 @@ data class MembershipDetailResponse(
     val shopLevel: ShopLevel = ShopLevel(),
     @Expose
     @SerializedName("goldGetPMGradeBenefitInfo")
-    val data: GoldGetPMGradeBenefitInfo? = null
+    val data: GoldGetPMGradeBenefitInfo? = null,
+    @Expose
+    @SerializedName("goldGetPMShopInfo")
+    val pmShopInfo: PMShopInfoModel? = null,
+    @Expose
+    @SerializedName("shopScoreLevel")
+    val shopScoreInfo: ShopScoreLevelModel? = null
 ) {
     data class ShopLevel(
         @Expose
@@ -50,9 +57,15 @@ data class MembershipDetailResponse(
     data class CurrentPmGradeModel(
         @Expose
         @SerializedName("grade_name")
-        val gradeName: String? = "",
+        val gradeName: String? = ""
+    )
+
+    data class PMShopInfoModel(
+        @SerializedName("item_sold_one_month")
         @Expose
-        @SerializedName("shop_score")
-        val shopScore: Int? = 0
+        val itemSold: Long = 0,
+        @SerializedName("niv_one_month")
+        @Expose
+        val netIncome: Long = 0
     )
 }
