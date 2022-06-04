@@ -508,6 +508,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
         binding?.cardViewCreateDiscount?.isVisible = selectedProductCount == 0
 
         if (selectedProductCount == ZERO) {
+            binding?.cardViewCreateDiscount?.gone()
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
         } else {
