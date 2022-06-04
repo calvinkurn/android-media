@@ -24,7 +24,6 @@ import com.tokopedia.shop.flash_sale.common.extension.showToaster
 import com.tokopedia.shop.flash_sale.common.extension.slideDown
 import com.tokopedia.shop.flash_sale.common.extension.slideUp
 import com.tokopedia.shop.flash_sale.common.share_component.ShareComponentInstanceBuilder
-import com.tokopedia.shop.flash_sale.common.util.DateManager
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
@@ -101,8 +100,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    @Inject
-    lateinit var dateManager: DateManager
 
     @Inject
     lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
@@ -137,11 +134,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeCampaigns()
-        observeRemainingQuota()
         observeCampaignCreation()
-        observeCampaignDrafts()
+        observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
-        viewModel.getRemainingQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        viewModel.getCampaignPrerequisiteData()
     }
 
     private fun setupView() {
@@ -205,44 +201,17 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
     }
 
-
-    private fun observeRemainingQuota() {
-        viewModel.campaignAttribute.observe(viewLifecycleOwner) { result ->
+    private fun observeCampaignPrerequisiteData() {
+        viewModel.campaignPrerequisiteData.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    binding?.cardView?.visible()
-                    displayRemainingQuota(result.data.remainingCampaignQuota)
-
-                    binding?.btnDraft?.isLoading = true
-                    viewModel.getCampaignDrafts(
-                        MAX_DRAFT_COUNT,
-                        FIRST_PAGE
-                    )
-
+                    viewModel.setCampaignDrafts(result.data.drafts)
+                    handleDraftCount(result.data.drafts.size)
+                    displayRemainingQuota(result.data.remainingQuota)
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
-                }
-            }
-        }
-    }
 
-
-    private fun observeCampaignDrafts() {
-        viewModel.campaignDrafts.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    binding?.btnDraft?.isLoading = false
-
-                    val draftCount = result.data.campaigns.size
-                    viewModel.setCampaignDrafts(result.data.campaigns)
-                    binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
-                    handleDraftCount(draftCount)
-                }
-                is Fail -> {
-                    binding?.btnDraft?.isLoading = false
-                    binding?.root showError result.throwable
-                    binding?.cardView?.gone()
                 }
             }
         }
@@ -310,11 +279,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun setupTabChangeListener() {
         val listener = object : CampaignListContainerFragment.TabChangeListener {
             override fun onTabChanged() {
-                binding?.cardView?.gone()
                 if (totalCampaign == ZERO) {
                     showEmptyState()
+                    binding?.cardView?.gone()
                 } else {
                     hideEmptyState()
+                    binding?.cardView?.visible()
                 }
             }
         }
@@ -425,7 +395,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showEmptyState() {
-        binding?.cardView?.gone()
         binding?.searchBar?.gone()
         binding?.recyclerView?.gone()
 
@@ -441,6 +410,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             { onNavigateToActiveCampaignTab() }
         }
 
+        binding?.btnCreateCampaignEmptyState?.visible()
         binding?.btnCreateCampaignEmptyState?.text = buttonWording
         binding?.btnCreateCampaignEmptyState?.setOnClickListener { buttonOnClickAction() }
 
@@ -480,6 +450,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun handleDraftCount(draftCount: Int) {
         val wording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
         binding?.btnDraft?.text = wording
+        binding?.btnDraft?.isVisible = draftCount.isMoreThanZero()
     }
 
     private fun displayRemainingQuota(remainingQuota: Int) {
@@ -509,10 +480,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun onDeleteDraftSuccess() {
         binding?.cardView showToaster getString(R.string.sfs_draft_deleted)
-        viewModel.getCampaignDrafts(
-            MAX_DRAFT_COUNT,
-            FIRST_PAGE
-        )
+        viewModel.getCampaignPrerequisiteData()
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
