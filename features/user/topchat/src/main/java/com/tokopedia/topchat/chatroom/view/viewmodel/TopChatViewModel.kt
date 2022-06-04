@@ -775,17 +775,15 @@ open class TopChatViewModel @Inject constructor(
         userId: String,
         wishlistActionListener: WishlistV2ActionListener
     ) {
-        launchCatchError(block = {
+        launch(dispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userId)
-            val result = addToWishlistV2UseCase.executeOnBackground()
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishlistActionListener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 wishlistActionListener.onErrorAddWishList(result.throwable, productId)
             }
-        }, onError = {
-            wishlistActionListener.onErrorAddWishList(it, productId)
-        })
+        }
     }
 
     fun removeFromWishList(
@@ -797,17 +795,15 @@ open class TopChatViewModel @Inject constructor(
     fun removeFromWishListV2(
         productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
     ) {
-        launchCatchError(block = {
+        launch(dispatcher.main) {
             deleteWishlistV2UseCase.setParams(productId, userId)
-            val result = deleteWishlistV2UseCase.executeOnBackground()
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
             } else if (result is Fail) {
                 wishListActionListener.onErrorRemoveWishlist(result.throwable, productId)
             }
-        }, onError = {
-            wishListActionListener.onErrorRemoveWishlist(it, productId)
-        })
+        }
     }
 
     fun getExistingChat(messageId: String, isInit: Boolean = false) {
