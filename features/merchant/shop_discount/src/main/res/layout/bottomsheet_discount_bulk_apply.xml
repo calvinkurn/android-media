@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,23 +11,26 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btnApply"
         android:scrollbars="vertical"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btnApply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:paddingBottom="@dimen/unify_space_24">
+            android:layout_marginEnd="@dimen/unify_space_16">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgInformation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                app:typographyType="heading_5"
                 android:maxLines="1"
                 android:paddingTop="@dimen/unify_space_8"
                 android:text="@string/sd_discount_period"
@@ -121,6 +124,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgProductDiscount"
                 android:layout_width="0dp"
+                app:typographyType="heading_5"
                 android:layout_height="wrap_content"
                 android:text="@string/sd_product_discount"
                 app:layout_constraintBottom_toBottomOf="@+id/contentSwitcher"
@@ -166,7 +170,8 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/sd_max_purchase"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dividerBottom" />
+                app:layout_constraintTop_toBottomOf="@+id/dividerBottom"
+                app:typographyType="heading_5" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgOptional"
@@ -174,6 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_4"
                 android:text="@string/sd_optional"
+                android:textColor="@color/Unify_NN500"
                 app:layout_constraintBottom_toBottomOf="@+id/tpgMaxPurchase"
                 app:layout_constraintEnd_toStartOf="@+id/quantityEditor"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -187,7 +193,10 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:layout_marginBottom="@dimen/unify_space_64"
                 android:text="@string/sd_max_purchase_description"
+                android:textColor="@color/Unify_NN500"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tpgOptional"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tpgMaxPurchase"
@@ -214,24 +223,20 @@
         android:id="@+id/btnApply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/view"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_12"
         android:enabled="false"
         android:text="@string/sd_apply"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:unifyButtonRightLoader="false"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         tools:visibility="visible" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_height="@dimen/sd_space_1"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
@@ -239,6 +244,10 @@
         android:layout_height="@dimen/unify_space_64"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/content"
         app:loader_type="circular" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
