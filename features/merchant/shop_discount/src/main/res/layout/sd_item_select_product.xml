@@ -45,10 +45,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgSkuNumber"
         android:layout_width="0dp"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:paddingTop="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/unify_space_4"
+        tools:visibility="gone"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/labelVariantCount"
         app:layout_constraintStart_toStartOf="@+id/tpgProductName"
-        app:layout_constraintTop_toTopOf="@+id/labelVariantCount"
+        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
         app:typographyType="small"
         tools:text="SKU: NICE 1" />
 

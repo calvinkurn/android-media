@@ -1,8 +1,9 @@
 package com.tokopedia.shopdiscount.select.presentation
 
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -20,6 +21,7 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
         private const val ALPHA_CHIP_DISABLED = 0.3f
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
+        private const val MARGIN_TOP = 4
     }
 
     fun bind(
@@ -45,13 +47,16 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
                 product.stock,
             )
         )
+        handleConstraint(product)
     }
 
     private fun displayProductSku(sku: String) {
-        binding.tpgSkuNumber.isVisible = sku.isNotEmpty()
         if (sku.isNotEmpty()) {
+            binding.tpgSkuNumber.visible()
             val template = binding.tpgSkuNumber.context.getString(R.string.sd_sku)
             binding.tpgSkuNumber.text = String.format(template, sku)
+        } else {
+            binding.tpgSkuNumber.gone()
         }
     }
 
@@ -73,7 +78,7 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
 
     private fun handleVariantAppearance(product: ReservableProduct) {
         if (product.countVariant == ZERO) {
-            binding.labelVariantCount.invisible()
+            binding.labelVariantCount.gone()
         } else {
             binding.labelVariantCount.visible()
         }
@@ -112,5 +117,38 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
             binding.tpgSkuNumber.enable()
             binding.checkBox.enable()
         }
+    }
+
+    private fun handleConstraint(product: ReservableProduct) {
+        if (product.countVariant == ZERO) {
+            constraintPriceTypographyToSkuNumberBottom()
+        } else {
+            revertToOriginalConstraint()
+        }
+    }
+
+    private fun constraintPriceTypographyToSkuNumberBottom() {
+        val set = ConstraintSet()
+        set.clone(binding.card)
+        set.connect(
+            binding.tpgPrice.id,
+            ConstraintSet.TOP,
+            binding.tpgSkuNumber.id,
+            ConstraintSet.BOTTOM
+        )
+        set.applyTo(binding.card)
+    }
+
+    private fun revertToOriginalConstraint() {
+        val set = ConstraintSet()
+        set.clone(binding.card)
+        set.connect(
+            binding.tpgPrice.id,
+            ConstraintSet.TOP,
+            binding.labelVariantCount.id,
+            ConstraintSet.BOTTOM,
+            MARGIN_TOP
+        )
+        set.applyTo(binding.card)
     }
 }
