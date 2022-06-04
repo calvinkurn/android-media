@@ -27,6 +27,7 @@
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
     <string name="sfs_no_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
+    <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
 
     <string name="sfs_placeholder_no_campaign_title">Saat ini tidak ada %s</string>
     <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
