@@ -324,16 +324,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         model: RecommendationItem,
         wishlistV2ActionListener: WishlistV2ActionListener
     ) {
-        launchCatchError(coroutineContext, block={
+        launch(dispatchers.main) {
             addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-            val result = addToWishlistV2UseCase.executeOnBackground()
+            val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishlistV2ActionListener.onSuccessAddWishlist(result.data, model.productId.toString())
             } else if (result is Fail) {
                 wishlistV2ActionListener.onErrorAddWishList(result.throwable, model.productId.toString())
             }
-        }){
-            wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
         }
     }
 
@@ -371,16 +369,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
-        launchCatchError(coroutineContext, block={
+        launch(dispatchers.main) {
             deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-            val result = deleteWishlistV2UseCase.executeOnBackground()
+            val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
             } else if (result is Fail) {
                 wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
             }
-        }){
-            wishlistV2ActionListener.onErrorRemoveWishlist(it, model.productId.toString())
         }
     }
 

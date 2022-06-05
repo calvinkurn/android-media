@@ -808,9 +808,10 @@ class OfficialStoreHomeViewModelTest {
     @Test
     fun verify_add_to_wishlistv2_returns_fail() {
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishlistV2UseCase.executeOnBackground() } throws Exception()
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addWishlistV2(recommendationItem, mockListener)
@@ -840,7 +841,7 @@ class OfficialStoreHomeViewModelTest {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.executeOnBackground() } throws Exception()
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeWishlistV2(recommItem, mockListener)
