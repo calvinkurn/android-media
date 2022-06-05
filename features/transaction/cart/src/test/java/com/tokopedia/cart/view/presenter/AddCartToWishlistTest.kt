@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -115,16 +116,14 @@ class AddCartToWishlistTest : BaseCartTest() {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
         every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishListV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<AddToWishlistV2Response.Data.WishlistAddV2>) -> Unit>().invoke(Success(resultWishlistAddV2))
-        }
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
         every { userSessionInterface.userId } returns "1"
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         cartListPresenter.processAddToWishlistV2(productId, "1", mockListener)
 
         verify { addToWishListV2UseCase.setParams(productId, "1") }
-        coVerify { addToWishListV2UseCase.execute(any(), any()) }
+        coVerify { addToWishListV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -134,16 +133,14 @@ class AddCartToWishlistTest : BaseCartTest() {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { addToWishListV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
         every { userSessionInterface.userId } returns "1"
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         cartListPresenter.processAddToWishlistV2(productId, "1", mockListener)
 
         verify { addToWishListV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
-        coVerify { addToWishListV2UseCase.execute(any(), any()) }
+        coVerify { addToWishListV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -152,18 +149,14 @@ class AddCartToWishlistTest : BaseCartTest() {
         val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            firstArg<(Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>) -> Unit>().invoke(
-                Success(resultWishlistRemoveV2)
-            )
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
         every { userSessionInterface.userId } returns "1"
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         cartListPresenter.processRemoveFromWishlistV2(productId, "1", mockListener)
 
         verify { deleteWishlistV2UseCase.setParams(productId, "1") }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
     @Test
@@ -172,15 +165,13 @@ class AddCartToWishlistTest : BaseCartTest() {
         val mockThrowable = mockk<Throwable>("fail")
 
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
-        coEvery { deleteWishlistV2UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() }returns Fail(mockThrowable)
         every { userSessionInterface.userId } returns "1"
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         cartListPresenter.processRemoveFromWishlistV2(productId, "1", mockListener)
 
         verify { deleteWishlistV2UseCase.setParams(productId, "1") }
-        coVerify { deleteWishlistV2UseCase.execute(any(), any()) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 }

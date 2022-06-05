@@ -66,6 +66,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -175,8 +176,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         compositeSubscription.unsubscribe()
         addWishListUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
         boAffordabilityJob?.cancel()
         coroutineContext.cancelChildren()
         view = null
@@ -761,13 +760,15 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(productId, userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) wishListActionListener.onSuccessAddWishlist(result.data, productId)},
-            onError = {
-                wishListActionListener.onErrorAddWishList(it, productId)
-            })
+        launch(dispatchers.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishListActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
@@ -775,13 +776,15 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.setParams(productId, userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
-                } },
-            onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
+        launch(dispatchers.main) {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishListActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {

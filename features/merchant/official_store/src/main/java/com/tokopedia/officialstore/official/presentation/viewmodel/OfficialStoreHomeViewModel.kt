@@ -435,10 +435,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         super.onCleared()
         getRecommendationUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
-        addToWishlistV2UseCase.cancelJobs()
         topAdsWishlishedUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
-        deleteWishlistV2UseCase.cancelJobs()
         getDisplayHeadlineAds.cancelJobs()
     }
 
