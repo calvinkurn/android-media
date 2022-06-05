@@ -683,14 +683,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.get().execute(onSuccess = { result ->
-            if (result is Success) listener.onSuccessRemoveWishlist(result.data, productId)
-        }, onError = {
-            val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-            ProductDetailLogger.logThrowable(it, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-            listener.onErrorRemoveWishlist(it, productId)
-        })
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.get().executeOnBackground() }
+            if (result is Success) {
+                listener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+                listener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     fun addWishList(productId: String,
@@ -721,16 +724,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.get().execute(onSuccess = { result ->
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                ProductDetailLogger.logThrowable(result.throwable, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+                listener.onErrorAddWishList(result.throwable, productId)
             }
-        }, onError = {
-            val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-            ProductDetailLogger.logThrowable(it, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-            listener.onErrorAddWishList(it, productId)
-        })
+        }
     }
 
     fun loadRecommendation(pageName: String,

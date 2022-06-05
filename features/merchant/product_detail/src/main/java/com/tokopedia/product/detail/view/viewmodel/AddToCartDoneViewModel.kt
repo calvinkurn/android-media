@@ -27,6 +27,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -102,12 +103,15 @@ class AddToCartDoneViewModel @Inject constructor(
     }
 
     fun addWishListV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
-        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-            },
-            onError = { wishlistV2ActionListener.onErrorAddWishList(it, productId) })
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     fun removeWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {
@@ -132,11 +136,15 @@ class AddToCartDoneViewModel @Inject constructor(
     }
 
     fun removeWishListV2(productId: String, actionListener: WishlistV2ActionListener) {
-        deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, productId) },
-            onError = { actionListener.onErrorRemoveWishlist(it, productId) })
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
