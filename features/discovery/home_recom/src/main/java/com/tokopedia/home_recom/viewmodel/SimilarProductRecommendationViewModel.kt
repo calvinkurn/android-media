@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -32,6 +33,8 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -367,13 +370,15 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     }
 
     fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
-        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
-            onError = {
-                actionListener.onErrorAddWishList(it, productId)
-            })
+        launch(dispatcher.getMainDispatcher()) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     /**
@@ -402,19 +407,15 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     }
 
     fun removeWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener){
-        deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
-                } },
-            onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
+        launch(dispatcher.getMainDispatcher()) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }
     }
 
     companion object{
