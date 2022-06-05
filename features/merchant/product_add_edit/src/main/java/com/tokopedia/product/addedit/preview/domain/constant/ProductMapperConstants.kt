@@ -36,7 +36,7 @@ object ProductMapperConstants {
         }
 
     fun getTimeUnitString(timeUnit: Int) = when (timeUnit) {
-        UNIT_DAY -> UNIT_WEEK_STRING
+        UNIT_DAY -> UNIT_DAY_STRING
         UNIT_WEEK -> UNIT_WEEK_STRING
         else -> UNIT_MONTH_STRING
     }
