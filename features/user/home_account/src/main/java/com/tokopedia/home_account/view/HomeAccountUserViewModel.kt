@@ -28,6 +28,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -153,19 +155,23 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getBuyerData() {
-        launchCatchError(block = {
-            val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
-            val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
+        launch {
+            try {
+                coroutineScope {
+                    val homeAccountUser =  async { getHomeAccountUserUseCase(Unit) }
+                    val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
 
-            val accountModel = homeAccountUser.await().apply {
-                this.linkStatus = linkStatus.await().response
+                    val accountModel = homeAccountUser.await().apply {
+                        this.linkStatus = linkStatus.await().response
+                    }
+                    _buyerAccountData.value = Success(accountModel)
+                    // This is executed after setting live data to save load time
+                    saveAttributeOnLocal(accountModel)
+                }
+            } catch (e: Exception) {
+                _buyerAccountData.value = Fail(e)
             }
-            _buyerAccountData.value = Success(accountModel)
-            // This is executed after setting live data to save load time
-            saveAttributeOnLocal(accountModel)
-        }, onError = {
-            _buyerAccountData.value = Fail(it)
-        })
+        }
     }
 
     fun getFirstRecommendation() {
