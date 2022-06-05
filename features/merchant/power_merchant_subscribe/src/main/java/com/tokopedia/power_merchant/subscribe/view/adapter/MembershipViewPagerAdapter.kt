@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmMembershipPageBinding
@@ -72,20 +73,29 @@ class MembershipViewPagerAdapter : RecyclerView.Adapter<MembershipViewPagerAdapt
                 } else {
                     if (page is PMGradeWithBenefitsUiModel.PM) {
                         tvPmMembershipPassingGrade.visible()
-                        tvPmMembershipPassingGrade.text = getPassingGradeInfo(item)
+                        tvPmMembershipPassingGrade.text = getPassingGradeInfo()
                         membershipChecklistPmProView.gone()
                         membershipChecklistPmView.gone()
                     } else {
-                        tvPmMembershipPassingGrade.gone()
-                        membershipChecklistPmView.gone()
-                        membershipChecklistPmProView.visible()
-                        membershipChecklistPmProView.show(item)
+                        val currentShopLevel = items.firstOrNull { it.gradeBenefit.isTabActive }
+                            ?.gradeBenefit?.getShopLevel().orZero()
+                        if (page.getShopLevel() < currentShopLevel) {
+                            tvPmMembershipPassingGrade.visible()
+                            tvPmMembershipPassingGrade.text = getPassingGradeInfo()
+                            membershipChecklistPmView.gone()
+                            membershipChecklistPmProView.gone()
+                        } else {
+                            tvPmMembershipPassingGrade.gone()
+                            membershipChecklistPmView.gone()
+                            membershipChecklistPmProView.visible()
+                            membershipChecklistPmProView.show(item)
+                        }
                     }
                 }
             }
         }
 
-        private fun getPassingGradeInfo(item: MembershipDataUiModel): String {
+        private fun getPassingGradeInfo(): String {
             val gradeName = items.firstOrNull { it.gradeBenefit.isTabActive }
                 ?.gradeBenefit?.tabLabel.orEmpty()
             return itemView.context.getString(R.string.pm_membership_passing_grade_info, gradeName)
