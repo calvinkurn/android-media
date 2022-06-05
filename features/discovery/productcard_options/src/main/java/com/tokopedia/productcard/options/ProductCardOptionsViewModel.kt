@@ -29,11 +29,13 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Named
 
 internal class ProductCardOptionsViewModel(
-        dispatcherProvider: CoroutineDispatchers,
+        private val dispatcherProvider: CoroutineDispatchers,
         val productCardOptionsModel: ProductCardOptionsModel?,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
@@ -199,11 +201,14 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun removeWishlistV2() {
-        try {
-            tryRemoveWishlistV2()
-        }
-        catch(throwable: Throwable) {
-            catchRemoveWishlistError(throwable)
+        launch(dispatcherProvider.main) {
+            deleteWishlistV2UseCase.setParams(getProductId(), userSession.userId)
+            val result = withContext(dispatcherProvider.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                onSuccessRemoveWishlistV2(result.data)
+            } else if (result is Fail) {
+                onErrorRemoveWishlist()
+            }
         }
     }
 
@@ -221,18 +226,6 @@ internal class ProductCardOptionsViewModel(
         removeWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
     }
 
-    private fun tryRemoveWishlistV2() {
-        deleteWishlistV2UseCase.setParams(getProductId(), userSession.userId)
-        deleteWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    onSuccessRemoveWishlistV2(result.data)
-                } else if (result is Fail) {
-                    onErrorRemoveWishlist()
-                } },
-            onError = { onErrorRemoveWishlist() })
-    }
-
     private fun catchRemoveWishlistError(throwable: Throwable?) {
         throwable?.printStackTrace()
         onErrorRemoveWishlist()
@@ -247,11 +240,14 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun addWishlistV2() {
-        try {
-            tryAddWishlistV2()
-        }
-        catch(throwable: Throwable) {
-            catchAddWishlistError(throwable)
+        launch(dispatcherProvider.main) {
+            addToWishlistV2UseCase.setParams(getProductId(), userSession.userId)
+            val result = withContext(dispatcherProvider.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                onSuccessAddWishlistV2(result.data)
+            } else if (result is Fail) {
+                onErrorAddWishlist()
+            }
         }
     }
 
@@ -286,20 +282,6 @@ internal class ProductCardOptionsViewModel(
     private fun tryAddWishlist(wishListActionListener: WishListActionListener) {
         addWishListUseCase.unsubscribe()
         addWishListUseCase.createObservable(getProductId(), userSession.userId, wishListActionListener)
-    }
-
-    private fun tryAddWishlistV2() {
-        addToWishlistV2UseCase.setParams(getProductId(), userSession.userId)
-        addToWishlistV2UseCase.execute(
-            onSuccess = { result ->
-                if (result is Success) {
-                    onSuccessAddWishlistV2(result.data)
-                } else if (result is Fail) {
-                    onErrorAddWishlist()
-                } },
-            onError = {
-                onErrorAddWishlist()
-            })
     }
 
     private fun catchAddWishlistError(throwable: Throwable?) {
