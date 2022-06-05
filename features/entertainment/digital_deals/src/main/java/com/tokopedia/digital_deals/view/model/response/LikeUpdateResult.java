@@ -27,9 +27,8 @@ public class LikeUpdateResult {
     @SerializedName("feedback")
     private String feedback;
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
-    private int productId;
+    private String productId;
 
     public void setCode(String code) {
         this.code = code;
@@ -87,11 +86,19 @@ public class LikeUpdateResult {
         this.feedback = feedback;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public int getProductIdInInt() {
+        if (productId.isEmpty()) {
+            return 0;
+        } else {
+            return Integer.parseInt(productId);
+        }
+    }
+
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
