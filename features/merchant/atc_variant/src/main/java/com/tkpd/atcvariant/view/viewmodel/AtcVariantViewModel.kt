@@ -47,6 +47,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -379,9 +380,9 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
-        viewModelScope.launchCatchError(dispatcher.io, block = {
+        viewModelScope.launch(dispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userId)
-            val result = addToWishlistV2UseCase.executeOnBackground()
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
                 updateButtonAndWishlistLocally(productId)
@@ -389,8 +390,6 @@ class AtcVariantViewModel @Inject constructor(
             } else if (result is Fail) {
                 wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
             }
-        }) {
-            wishlistV2ActionListener.onErrorAddWishList(it, productId)
         }
     }
 
