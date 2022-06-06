@@ -149,12 +149,13 @@ open class DraftDeleteBottomSheet(
         etQuestionOther?.editText?.afterTextChanged {
             val errorMessage = if (it.length < DRAFT_REASON_MINCHAR) {
                 getString(R.string.draftdelete_error_minchar, DRAFT_REASON_MINCHAR)
-            } else ""
+            } else {
+                viewModel.setCancellationReason(it)
+                ""
+            }
             etQuestionOther?.isInputError = errorMessage.isNotEmpty()
             etQuestionOther?.setMessage(errorMessage)
             btnStop?.isEnabled = errorMessage.isEmpty()
-
-            viewModel.setCancellationReason(it)
         }
         etQuestionOther?.isEnabled = false
     }
