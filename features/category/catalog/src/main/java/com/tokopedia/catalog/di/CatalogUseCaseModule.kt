@@ -110,12 +110,6 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun provideGraphQlRepository(@ApplicationContext repository: GraphqlRepository): GraphqlRepository {
-        return repository
-    }
-
-    @CatalogScope
-    @Provides
     fun addWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
