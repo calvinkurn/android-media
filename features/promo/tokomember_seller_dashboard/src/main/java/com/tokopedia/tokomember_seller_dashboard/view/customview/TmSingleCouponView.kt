@@ -40,6 +40,7 @@ class TmSingleCouponView @JvmOverloads constructor(
     private var shopName = ""
     private var shopAvatar = ""
     private var chipPercentageClickListener:ChipPercentageClickListener?= null
+    private var maxTransactionListener:MaxTransactionListener?= null
 
     init {
         View.inflate(context, R.layout.tm_dash_single_coupon, this)
@@ -82,7 +83,7 @@ class TmSingleCouponView @JvmOverloads constructor(
                 selectedChipPositionCashback = position
                 isShowCashPercentage = if (position == CashbackType.PERCENTAGE){
                     textFieldPercentCashback.show()
-                    //chipPercentageClickListener?.onClickPercentageChip()
+                    chipPercentageClickListener?.onClickPercentageChip()
                     chipCashBackCouponValidation()
                     true
                 } else{
@@ -96,6 +97,7 @@ class TmSingleCouponView @JvmOverloads constructor(
         chipGroupCashbackType.addChips(arrayListOf(CHIP_LABEL_RUPIAH, CHIP_LABEL_PERCENTAGE))
         maxCashBackFieldValidation()
         minTransactionFieldValidation()
+        quotaValidation()
     }
 
     fun getSingleCouponData():TmSingleCouponData{
@@ -134,6 +136,7 @@ class TmSingleCouponView @JvmOverloads constructor(
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
+                    maxTransactionListener?.onQuotaCashbackChange()
                     ivPreviewCoupon.setCouponValue(number.toString())
                 }
             })
@@ -157,6 +160,17 @@ class TmSingleCouponView @JvmOverloads constructor(
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     ivPreviewCoupon.setCouponBenefit(number.toString())
+                }
+            })
+        }
+    }
+
+    private fun quotaValidation(){
+        textFieldQuota.let {
+            it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    maxTransactionListener?.onQuotaCashbackChange()
                 }
             })
         }
@@ -198,7 +212,15 @@ class TmSingleCouponView @JvmOverloads constructor(
         this.chipPercentageClickListener = chipPercentageClickListener
     }
 
+    fun setMaxTransactionListener(maxTransactionListener:MaxTransactionListener){
+        this.maxTransactionListener = maxTransactionListener
+    }
+
     interface ChipPercentageClickListener{
         fun onClickPercentageChip()
+    }
+
+    interface MaxTransactionListener{
+        fun onQuotaCashbackChange()
     }
 }

@@ -3,12 +3,12 @@ package com.tokopedia.tokomember_seller_dashboard.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardColorFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardColorFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 
-class TokomemberCardColorAdapter(private val visitableList: ArrayList<Visitable<*>>,
-                                 private val typeFactory: TokomemberCardColorFactory) :
-    BaseAdapter<TokomemberCardColorFactory>(typeFactory, visitableList) {
+class TmCardColorAdapter(private val visitableList: ArrayList<Visitable<*>>,
+                                 private val typeFactory: TmCardColorFactory) :
+    BaseAdapter<TmCardColorFactory>(typeFactory, visitableList) {
 
     fun addItems(data: ArrayList<Visitable<*>>) {
         visitableList.clear()

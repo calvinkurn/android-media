@@ -47,13 +47,10 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.*
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TokomemberDashColorItemDecoration
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardBgFactory
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardColorFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardBgFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardColorFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.TokomemberCardMapper
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBg
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
@@ -91,12 +88,12 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TmDashCreateViewModel::class.java)
     }
-    private val adapterBg: TokomemberCardBgAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TokomemberCardBgAdapter(arrayListOf(), TokomemberCardBgFactory(this))
+    private val adapterBg: TmCardBgAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TmCardBgAdapter(arrayListOf(), TmCardBgFactory(this))
     }
 
-    private val adapterColor: TokomemberCardColorAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TokomemberCardColorAdapter(arrayListOf(), TokomemberCardColorFactory(this))
+    private val adapterColor: TmCardColorAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TmCardColorAdapter(arrayListOf(), TmCardColorFactory(this))
     }
 
     override fun onAttach(context: Context) {
@@ -352,7 +349,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         }
     }
 
-    override fun onItemDisplayedCardBg(tokoCardItem: Visitable<*>, position: Int) {
+    override fun onItemDisplayedCardBg(tokoCardItem: Visitable<*>?, position: Int) {
 
     }
 
@@ -360,8 +357,8 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
 
     }
 
-    override fun onItemClickCardCBg(tokoCardItem: Visitable<*>, position: Int) {
-        if (isColorPalleteClicked && position != 1) {
+    override fun onItemClickCardCBg(tokoCardItem: Visitable<*>?, position: Int) {
+        if (isColorPalleteClicked && position != -1) {
             adapterBg.notifyItemChanged(position)
             if (tokoCardItem is TokomemberCardBg) {
 

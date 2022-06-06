@@ -1,13 +1,10 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
-import android.text.InputType
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -17,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.accordion.AccordionDataUnify
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -36,51 +35,13 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_SUBTITLE_PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_SUBTITLE_VIP
-import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_TITLE_PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.ACCORDION_TITLE_VIP
-import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_CREATE_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_COUPON_PREVIEW_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_SUBTITLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.IDR
-import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_AUTO
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_TYPE_MANUAL
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_ERROR_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.TERMS
-import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDate
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
-import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.util.VIP
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmCouponListItemPreview
+import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.collapse
+import com.tokopedia.tokomember_seller_dashboard.view.animation.TmExpandView.expand
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
@@ -93,14 +54,16 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_multiple.*
+import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private var selectedChipPositionDate: Int = 0
-    private var tmCouponPremium: TmSingleCouponView? = null
-    private var tmCouponVip: TmSingleCouponView? = null
     private var selectedCalendar: Calendar? = null
     private var selectedTime = ""
     private var startTime: Calendar? = null
@@ -125,6 +88,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var imageSquare = ""
     private var imagePortrait = ""
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
+    private var isCollapsedVip = true
+    private var isCollapsedPremium = true
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -257,10 +222,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if (it.data?.membershipValidateBenefit?.resultStatus?.code == "200") {
                         errorState.isValidateCouponError = false
-                      //  uploadImagePremium()
+                        uploadImagePremium()
                         closeLoadingDialog()
-                        openPreviewPage()
                     } else {
+                        closeLoadingDialog()
+                        setButtonState()
                         setButtonState()
                         handleProgramPreValidateError()
                     }
@@ -287,6 +253,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         }
                         is UploadResult.Error -> {
                             closeLoadingDialog()
+                            setButtonState()
                             view?.let { it1 ->
                                 Toaster.build(
                                     it1,
@@ -328,6 +295,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                         }
                         is UploadResult.Error -> {
                             closeLoadingDialog()
+                            setButtonState()
                             view?.let { it1 ->
                                 Toaster.build(
                                     it1,
@@ -340,7 +308,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
-                   /* errorState.isUploadVipError = true
+                    errorState.isUploadVipError = true
                     setButtonState()
                     closeLoadingDialog()
                     view?.let { it1 ->
@@ -350,9 +318,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             Toaster.TYPE_ERROR,
                             Toaster.LENGTH_LONG
                         ).show()
-                    }*/
-                    closeLoadingDialog()
-                    openPreviewPage()
+                    }
                 }
                 else -> {
                 }
@@ -392,19 +358,19 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         when (couponType) {
 
             PREMIUM -> {
-                tmCouponPremium?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
-                tmCouponPremium?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
-                tmCouponPremium?.setErrorMinTransaction(validationError?.minPurchase ?: "")
-                tmCouponPremium?.setErrorQuota(validationError?.quota ?: "")
-                accordionUnifyPremium.expandAllGroup()
+                tmPremiumCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                tmPremiumCoupon?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
+                tmPremiumCoupon?.setErrorMinTransaction(validationError?.minPurchase ?: "")
+                tmPremiumCoupon?.setErrorQuota(validationError?.quota ?: "")
+                //accordionUnifyPremium.expandAllGroup()
             }
 
             VIP -> {
-                tmCouponVip?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
-                tmCouponVip?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
-                tmCouponVip?.setErrorMinTransaction(validationError?.minPurchase ?: "")
-                tmCouponVip?.setErrorQuota(validationError?.quota ?: "")
-                accordionUnifyVIP.expandAllGroup()
+                tmVipCoupon?.setErrorMaxBenefit(validationError?.benefitMax ?: "")
+                tmVipCoupon?.setErrorCashbackPercentage(validationError?.benefitPercent ?: "")
+                tmVipCoupon?.setErrorMinTransaction(validationError?.minPurchase ?: "")
+                tmVipCoupon?.setErrorQuota(validationError?.quota ?: "")
+              //  accordionUnifyVIP.expandAllGroup()
             }
         }
     }
@@ -482,8 +448,6 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun openPreviewPage() {
-        uploadImagePremium()
-        uploadImageVip()
 
         val maxBenefit =
             (couponPremiumData?.maxCashback.toIntSafely() * couponPremiumData?.quota.toIntSafely()) +
@@ -522,6 +486,32 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
     }
 
+    private fun initTotalTransactionAmount() {
+        tmPremiumCoupon?.setMaxTransactionListener(object : TmSingleCouponView.MaxTransactionListener{
+            override fun onQuotaCashbackChange() {
+                setTotalTransactionAmount()
+            }
+        })
+
+        tmPremiumCoupon?.setMaxTransactionListener(object : TmSingleCouponView.MaxTransactionListener{
+            override fun onQuotaCashbackChange() {
+                setTotalTransactionAmount()
+            }
+        })
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setTotalTransactionAmount() {
+        val interMediatePremiumData = tmPremiumCoupon?.getSingleCouponData()
+        val interMediateVipData = tmPremiumCoupon?.getSingleCouponData()
+        tvTotalTransaction.text = "Rp" + CurrencyFormatHelper.convertToRupiah(
+            ((CurrencyFormatHelper.convertRupiahToInt(interMediatePremiumData?.maxCashback ?: "") *
+                    interMediatePremiumData?.quota.toIntSafely()) +
+                    (CurrencyFormatHelper.convertRupiahToInt(interMediateVipData?.maxCashback ?: "") *
+                            interMediateVipData?.quota.toIntSafely())).toString())
+    }
+
     private fun renderHeader() {
 
         headerKupon?.apply {
@@ -542,9 +532,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private fun renderButton() {
 
+        val webViewTnc = View.inflate(context,R.layout.tm_dash_tnc_coupon_creation,null)
+        webViewTnc.webview.loadUrl("https://www.tokopedia.com/help/article/a-0837?refid=pg-11")
         val bottomSheetUnify = BottomSheetUnify()
         bottomSheetUnify.apply {
             setTitle(TERNS_AND_CONDITION)
+            setChild(webViewTnc)
             showCloseIcon = true
             isDragable = true
             setCloseClickListener {
@@ -554,7 +547,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         val ss = SpannableString(COUPON_TERMS_CONDITION)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                bottomSheetUnify.show(childFragmentManager, "")
+                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/help/article/a-0837?refid=pg-11"))
+               // bottomSheetUnify.show(childFragmentManager, "")
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -570,14 +564,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        tvTermsAndCondition.text = Html.fromHtml(ss.toString())
+        tvTermsAndCondition.text = ss
         tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         btnContinue.setOnClickListener {
             it.isEnabled = false
             it.isClickable = false
-            couponPremiumData = tmCouponPremium?.getSingleCouponData()
-            couponVip = tmCouponVip?.getSingleCouponData()
+            couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
+            couponVip = tmVipCoupon?.getSingleCouponData()
             preValidateCouponPremium(couponPremiumData)
         }
     }
@@ -615,95 +609,72 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     }
 
     private fun uploadImagePremium() {
+
         context?.let { ctx ->
-            val file =
-                tmCouponPremium?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
-            if (file != null) {
-                tmCouponListPremiumItemPreview = TmCouponListItemPreview(
-                    file.absolutePath, "Premium", couponPremiumData?.quota ?: ""
-                )
-             //   tmDashCreateViewModel.uploadImagePremium(file)
-            }
+            CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+                withContext(Dispatchers.IO) {
+                    val file = tmPremiumCoupon?.getCouponView()
+                        ?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
+                    if (file != null) {
+                        tmCouponListPremiumItemPreview = TmCouponListItemPreview(
+                            file.absolutePath, "Premium", couponPremiumData?.quota ?: "")
+                        tmDashCreateViewModel.uploadImagePremium(file)
+                    }
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
         }
     }
 
     private fun uploadImageVip() {
         context?.let { ctx ->
-            val file = tmCouponVip?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
-            if (file != null) {
-                tmCouponListVipItemPreview = TmCouponListItemPreview(
-                    file.absolutePath, "VIP", couponVip?.quota ?: ""
-                )
-             //   tmDashCreateViewModel.uploadImageVip(file)
-            }
+            CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+                withContext(Dispatchers.IO) {
+                    val file = tmVipCoupon?.getCouponView()
+                        ?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
+                    if (file != null) {
+                        tmCouponListVipItemPreview = TmCouponListItemPreview(
+                            file.absolutePath, "VIP", couponPremiumData?.quota ?: "")
+                        tmDashCreateViewModel.uploadImageVip(file)
+                    }
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
         }
     }
 
     private fun renderMultipleCoupon() {
-        tmCouponPremium = this.context?.let { TmSingleCouponView(it) }
-        tmCouponPremium?.setShopData(shopName, shopAvatar)
-        tmCouponPremium?.setChipPercentageClickListener(object : TmSingleCouponView.ChipPercentageClickListener{
-            override fun onClickPercentageChip() {
-                accordionUnifyPremium.expandGroup(0)
-            }
-        })
-        val itemAccordionPremium = tmCouponPremium?.let {
-            AccordionDataUnify(
-                title = ACCORDION_TITLE_PREMIUM,
-                expandableView = it,
-                isExpanded = false,
-                icon = context?.getDrawable(R.drawable.ic_tokomember_premium),
-                subtitle = ACCORDION_SUBTITLE_PREMIUM
-            ).apply {
-                borderBottom = true
-                borderTop = true
-            }
-        }
-        tmCouponVip = this.context?.let { TmSingleCouponView(it) }
-        tmCouponVip?.setShopData(shopName, shopAvatar)
-        tmCouponVip?.setChipPercentageClickListener(object : TmSingleCouponView.ChipPercentageClickListener{
-            override fun onClickPercentageChip() {
-                accordionUnifyVIP.expandGroup(0)
-            }
-        })
-        val itemAccordionVip = tmCouponVip?.let {
-            AccordionDataUnify(
-                title = ACCORDION_TITLE_VIP,
-                subtitle = ACCORDION_SUBTITLE_VIP,
-                expandableView = it,
-                isExpanded = false,
-                icon = context?.getDrawable(R.drawable.ic_tokomember_vip)
-            ).apply {
-                borderBottom = false
-                borderTop = false
+        tmPremiumCoupon?.setShopData(shopName, shopAvatar)
+        tmVipCoupon?.setShopData(shopName, shopAvatar)
+
+        icArrowPremium.setOnClickListener {
+            isCollapsedPremium = if (isCollapsedPremium) {
+                icArrowPremium?.animate()?.rotation(180f)?.duration = 100L
+                expand(tmPremiumCoupon)
+                !isCollapsedPremium
+            } else{
+                icArrowPremium?.animate()?.rotation(0f)?.duration = 100L
+                collapse(tmPremiumCoupon)
+                !isCollapsedPremium
             }
         }
 
-        if (itemAccordionPremium != null) {
-            accordionUnifyPremium.addGroup(itemAccordionPremium)
+        icArrowVip.setOnClickListener {
+            isCollapsedVip = if (isCollapsedVip) {
+                icArrowVip?.animate()?.rotation(180f)?.duration = 100L
+                expand(tmVipCoupon)
+                !isCollapsedVip
+            } else{
+                icArrowVip?.animate()?.rotation(0f)?.duration = 100L
+                collapse(tmVipCoupon)
+                !isCollapsedVip
+            }
         }
-        if (itemAccordionVip != null) {
-            accordionUnifyVIP.addGroup(itemAccordionVip)
-        }
-        accordionUnifyPremium.onItemClick = ::handleAccordionClickPremium
-        accordionUnifyVIP.onItemClick = ::handleAccordionClickVip
 
-    }
+        initTotalTransactionAmount()
 
-    private fun handleAccordionClickPremium(position: Int, expanded: Boolean) {
-        if (expanded) {
-            accordionUnifyPremium.expandGroup(position)
-        } else {
-            accordionUnifyPremium.collapseGroup(position)
-        }
-    }
-
-    private fun handleAccordionClickVip(position: Int, expanded: Boolean) {
-        if (expanded) {
-            accordionUnifyVIP.expandGroup(position)
-        } else {
-            accordionUnifyVIP.collapseGroup(position)
-        }
     }
 
     private fun renderProgram() {
@@ -894,6 +865,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             }
         }
     }
+
 
     companion object {
         const val DATA = 1

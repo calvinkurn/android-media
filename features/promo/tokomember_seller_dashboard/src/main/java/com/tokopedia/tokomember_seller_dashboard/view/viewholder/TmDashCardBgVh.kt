@@ -9,10 +9,12 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBg
 import kotlinx.android.synthetic.main.tm_dash_colorbg_item.view.*
+
 var lastItemSelectedPosBg = -1
 var selectedItemPosBg = -1
-class TokomemberDashCardBgVh(val view: View, val listener: TokomemberCardBgAdapterListener)
-    : AbstractViewHolder<TokomemberCardBg>(view) {
+
+class TmDashCardBgVh(val itemView: View, private val listener: TokomemberCardBgAdapterListener) :
+    AbstractViewHolder<TokomemberCardBg>(itemView) {
 
     private val tmCardColorBg = itemView.colorBg
     private val tmCardColorBgSelector = itemView.viewBgSelector
@@ -21,24 +23,23 @@ class TokomemberDashCardBgVh(val view: View, val listener: TokomemberCardBgAdapt
         element?.apply {
             tmCardColorBg.loadImage(imageUrl)
         }
+        if (adapterPosition == selectedItemPosBg) {
+            tmCardColorBgSelector.show()
+        } else {
+            tmCardColorBgSelector.hide()
+        }
         itemView.setOnClickListener {
             selectedItemPosBg = adapterPosition
             lastItemSelectedPosBg = if (lastItemSelectedPosBg == -1)
                 selectedItemPosBg
             else {
-                if (element != null) {
-                    listener.onItemClickCardCBg(tokoCardItem = element,position = lastItemSelectedPosBg)
-                }
+                listener.onItemClickCardCBg(
+                    tokoCardItem = element,
+                    position = lastItemSelectedPosBg
+                )
                 selectedItemPosBg
             }
-            if (element != null) {
-                listener.onItemClickCardCBg(tokoCardItem = element,position = selectedItemPosBg)
-            }
-        }
-        if (adapterPosition == selectedItemPosBg) {
-            tmCardColorBgSelector.show()
-        } else {
-            tmCardColorBgSelector.hide()
+            listener.onItemClickCardCBg(tokoCardItem = element, position = selectedItemPosBg)
         }
     }
 
