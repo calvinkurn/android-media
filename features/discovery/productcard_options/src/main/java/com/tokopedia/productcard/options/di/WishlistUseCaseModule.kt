@@ -31,17 +31,13 @@ internal class WishlistUseCaseModule {
 
     @ProductCardOptionsScope
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @ProductCardOptionsScope
-    @Provides
-    fun provideAddToWishlistV2UseCaseModule(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+    fun provideAddToWishlistV2UseCaseModule(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @ProductCardOptionsScope
     @Provides
-    fun provideDeleteWishlistV2UseCaseModule(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun provideDeleteWishlistV2UseCaseModule(@ApplicationContext graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
