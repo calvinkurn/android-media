@@ -92,6 +92,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads";
     private static final int SHIFTING_INDEX = 1;
     private static final int TOP_ADS_BANNER_COUNT = 2;
+    private static final int HEADLINE_ADS_BANNER_COUNT = 2;
 
     @Inject
     InboxPresenter presenter;
@@ -116,10 +117,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private String talkUnreadCount = "";
     private CpmModel headlineData;
     private boolean isAdded;
+    private int pageNum = 0;
     private boolean isTopAdsBannerAdded;
     private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
     private int toAdsBannerExperimentPosition = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED;
     private TopAdsImageViewModel topAdsBannerInProductCards;
+    private List<Integer> headlineIndexList;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -255,6 +258,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             public void onRefresh() {
                 isAdded = false;
                 isTopAdsBannerAdded = false;
+                pageNum = 0;
                 endlessRecyclerViewScrollListener.resetState();
                 adapter.clearAllElements();
                 adapter.addElement(getData());
@@ -456,24 +460,37 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 || adapter == null) {
             return;
         }
+        setHeadlineIndexList(data);
+    }
 
-        headlineExperimentPosition = data.getData().get(0).getCpm().getPosition()
-                + adapter.getList().size();
+    private void setHeadlineIndexList(CpmModel data) {
+        headlineIndexList = new ArrayList<>();
+        int size = data.getHeader().getTotalData();
+        for (int i = 0; i< size; i++){
+            headlineIndexList.add(data.getData().get(i).getCpm().getPosition()+adapter.getList().size());
+        }
     }
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
         this.visitables = list;
         adapter.addElement(list);
+        int index = 0;
+        if (pageNum == 0) {
+            headlineExperimentPosition = headlineIndexList.get(0);
+        } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
+            headlineExperimentPosition = headlineIndexList.get(1);
+            index = 1;
+        }
 
-        if (headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED
-                && headlineExperimentPosition <= adapter.getList().size() && !isAdded) {
+        if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
+                && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
             if (isTopAdsBannerAdded) {
                 adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
-                        new TopadsHeadlineUiModel(headlineData, 0));
+                        new TopadsHeadlineUiModel(headlineData, 0, index));
             } else {
                 adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0));
+                        new TopadsHeadlineUiModel(headlineData, 0, index));
             }
             isAdded = true;
         }
@@ -487,6 +504,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             }
             isTopAdsBannerAdded = true;
         }
+        pageNum++;
     }
 
     @Override

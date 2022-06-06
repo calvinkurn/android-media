@@ -139,14 +139,13 @@ class ManageAddressViewModelTest {
     fun `Delete Address Success`() {
         every {
             deletePeopleAddressUseCase.execute(any(), any(), any())
-        } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+        }answers {
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
 
-        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.resultRemovedAddress.value)
     }
 
     @Test
@@ -155,7 +154,6 @@ class ManageAddressViewModelTest {
         every {
             deletePeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 

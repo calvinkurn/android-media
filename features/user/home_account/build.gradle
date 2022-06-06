@@ -123,6 +123,9 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     //test
     // Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk

@@ -48,3 +48,8 @@ data class SalesTransactionDetail(
         return typeFactory.type(this)
     }
 }
+class TickerDownloadFeeTransactionModel() : ParcelableViewModel<SaldoDetailTransactionFactory>{
+    override fun type(typeFactory: SaldoDetailTransactionFactory): Int {
+        return typeFactory.type(this)
+    }
+}
