@@ -67,10 +67,9 @@
             android:ellipsize="end"
             android:lines="1"
             android:gravity="center"
-            android:textSize="12sp"
-            app:typographyType="body_3"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_68"
-            android:textStyle="bold"
             tools:text="50 Toko Poin"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -84,7 +83,6 @@
             android:singleLine="true"
             android:textColor="@color/Unify_G500"
             app:typographyType="small"
-            android:textSize="10sp"
             tools:text="Kupon Baru" />
 
         <com.tokopedia.unifyprinciples.Typography
