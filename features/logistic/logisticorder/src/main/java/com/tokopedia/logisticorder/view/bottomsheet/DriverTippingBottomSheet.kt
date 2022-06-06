@@ -153,8 +153,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     descriptionView.elevation = 2f
                     description = setTippingDescription(logisticDriverModel.prepayment.info)
                 }
-                binding.etNominalTip.setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
-                binding.etNominalTip.editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+                binding.etNominalTip.run {
+                    setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
+                    editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+                }
 
                 binding.btnTipping.setOnClickListener {
                     val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.editText.text.toString())
