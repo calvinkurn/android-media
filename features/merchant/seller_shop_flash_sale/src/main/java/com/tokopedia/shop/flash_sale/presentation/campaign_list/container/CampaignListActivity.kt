@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
-import com.tokopedia.shop.flash_sale.presentation.draft.bottomsheet.DraftListBottomSheet
 
 class CampaignListActivity: BaseSimpleActivity() {
 
@@ -37,7 +36,5 @@ class CampaignListActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
         setContentView(R.layout.ssfs_activity_campaign_list)
-
-        DraftListBottomSheet().show(supportFragmentManager)
     }
 }

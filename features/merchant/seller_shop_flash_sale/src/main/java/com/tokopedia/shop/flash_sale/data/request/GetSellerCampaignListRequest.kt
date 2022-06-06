@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetSellerCampaignListRequest(
+    @SuppressLint("Invalid Data Type") @SerializedName("shop_id")
+    val shopId: Long,
     @SerializedName("seller_campaign_type")
     val sellerCampaignType: Int,
     @SerializedName("list_type")
