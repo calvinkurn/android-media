@@ -65,22 +65,20 @@ class TopAdsViewViewHolder(
                 }
             }
         })
-        topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-                if (!topAdsUIModel.impressHolder.isInvoke) {
-                    itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
-                        ImpresionTask(TopAdsViewViewHolder::class.java.canonicalName).execute(
-                            viewUrl
-                        )
-                        hitTopAdsImpression(viewUrl)
-                        topAdsUIModel.impressHolder.invoke()
-                    }
-                }
-            }
-        })
+
         topAdsImageView.loadImage(topAdsUIModel.topAdsImageViewModel, 8.toPx(), onLoadFailed = {
             topAdsImageView.gone()
         })
+
+        itemView.addOnImpressionListener(topAdsUIModel.impressHolder) {
+            if (!topAdsUIModel.impressHolder.isInvoke) {
+                ImpresionTask(TopAdsViewViewHolder::class.java.canonicalName).execute(
+                    topAdsUIModel.topAdsImageViewModel.imageUrl
+                )
+                hitTopAdsImpression(topAdsUIModel.topAdsImageViewModel.imageUrl.orEmpty())
+                topAdsUIModel.impressHolder.invoke()
+            }
+        }
 
     }
 
