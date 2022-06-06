@@ -13,6 +13,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -46,6 +47,7 @@ class ShopGradeWidget(
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
+        const val SATURATION_ACTIVE = 1.0f
         const val SATURATION_INACTIVE = 0.0f
     }
 
@@ -126,7 +128,6 @@ class ShopGradeWidget(
                 com.tokopedia.unifyprinciples.R.color.Unify_NN400
             )
         )
-
     }
 
     private fun View?.stepSeparatorInActive() {
@@ -138,75 +139,32 @@ class ShopGradeWidget(
         )
     }
 
-
     private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val imgUrl: Triple<Int, Int, String> =
-            if (element.isNewSeller) {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE
-
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_INACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
-                        )
-                    }
-                }
-            } else {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_PM_ACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_PM_INACTIVE
-                        )
-                    }
-                }
+        val imgUrl: Triple<Int, Int, String> = when {
+            isPmPro && isPmActive -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                    PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+                )
             }
+            !isPmPro && isPmActive -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                    PMConstant.Images.IMG_TOPED_PM_ACTIVE
+                )
+            }
+            else -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
+                    PMConstant.Images.IMG_TOPED_PM_INACTIVE
+                )
+            }
+        }
         binding?.imgPmShopGradeIllustration?.loadImageWithoutPlaceholder(imgUrl.third)
         setTopedImageSize(Pair(imgUrl.first, imgUrl.second))
     }
@@ -257,22 +215,26 @@ class ShopGradeWidget(
             tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
         }
 
-        if (isPmProActive) {
-            pmProStatusInfoView.visible()
-            pmProStatusInfoView.showIcon()
-            pmProStatusInfoView.setText(R.string.pm_check_pm_pro_status_info)
-            pmProStatusInfoView.setOnClickListener {
-                listener.showPmProStatusInfo(getPmProStatusInfo(element))
+        when {
+            isPmProActive -> {
+                pmProStatusInfoView.visible()
+                pmProStatusInfoView.showIcon()
+                pmProStatusInfoView.setText(R.string.pm_check_pm_pro_status_info)
+                pmProStatusInfoView.setOnClickListener {
+                    listener.showPmProStatusInfo(getPmProStatusInfo(element))
+                }
             }
-        } else if (isPmActive) {
-            pmProStatusInfoView.visible()
-            pmProStatusInfoView.hideIcon()
-            pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
-            pmProStatusInfoView.setOnClickListener {
-                listener.showHelpPmNotActive()
+            isPmActive -> {
+                pmProStatusInfoView.visible()
+                pmProStatusInfoView.hideIcon()
+                pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
+                pmProStatusInfoView.setOnClickListener {
+                    listener.showHelpPmNotActive()
+                }
             }
-        } else {
-            pmProStatusInfoView.gone()
+            else -> {
+                pmProStatusInfoView.gone()
+            }
         }
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
@@ -336,7 +298,7 @@ class ShopGradeWidget(
     }
 
     private fun getShopScoreTextColor(element: WidgetShopGradeUiModel): String {
-        val minScore = 1
+        val minScore = Int.ONE
         return when (element.shopScore) {
             in minScore..element.shopScoreThreshold -> {
                 PMCommonUtils.getHexColor(
@@ -354,7 +316,7 @@ class ShopGradeWidget(
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = binding?.run {
         tvPmShopGrade.text = getPmTireLabel(element)
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
-        imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
+        showBadgeImageUrl(element)
 
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
@@ -366,6 +328,19 @@ class ShopGradeWidget(
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
         tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))
+    }
+
+    private fun showBadgeImageUrl(element: WidgetShopGradeUiModel) {
+        binding?.run {
+            val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+            val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+            val imageUrl = when {
+                isPmPro && isPmActive -> PMConstant.Images.PM_PRO_BADGE
+                !isPmPro && isPmActive -> PMConstant.Images.PM_BADGE
+                else -> PMConstant.Images.PM_BADGE_INACTIVE
+            }
+            imgPmShopGrade.loadImageWithoutPlaceholder(imageUrl)
+        }
     }
 
     private fun getPmTireLabel(element: WidgetShopGradeUiModel): String {
