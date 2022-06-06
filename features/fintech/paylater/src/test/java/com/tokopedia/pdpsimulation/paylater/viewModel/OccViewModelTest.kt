@@ -138,9 +138,10 @@ class OccViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart("", 0)
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Success).data,
+            addToCartMultiDataModel
+        )
     }
 
     @Test
@@ -153,9 +154,10 @@ class OccViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart("", 0)
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Fail).throwable,
+            mockThrowable
+        )
     }
 
 

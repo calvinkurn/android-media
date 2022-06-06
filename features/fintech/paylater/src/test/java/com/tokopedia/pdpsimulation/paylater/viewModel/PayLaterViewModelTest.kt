@@ -219,9 +219,10 @@ class PayLaterViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart(detail,"")
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Success).data,
+            addToCartMultiDataModel
+        )
     }
 
     @Test
@@ -235,9 +236,10 @@ class PayLaterViewModelTest {
         }
         viewModel.shopId = ""
         viewModel.addProductToCart(detail,"")
-        verify {
-            addToCartUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Fail).throwable,
+            mockThrowable
+        )
     }
 
 }
