@@ -56,13 +56,12 @@ class OrderHistoryViewModel @Inject constructor(
     fun addToWishListV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         launch(contextProvider.main) {
             addWishlistV2UseCase.setParams(productId, userId)
-            when (val result = withContext(contextProvider.io) { addWishlistV2UseCase.executeOnBackground() }) {
-                is Success -> {
-                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-                }
-                is Fail -> {
-                    wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
-                }
+            val result = withContext(contextProvider.io) { addWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishlistV2ActionListener.onErrorAddWishList(error, productId)
             }
         }
     }
