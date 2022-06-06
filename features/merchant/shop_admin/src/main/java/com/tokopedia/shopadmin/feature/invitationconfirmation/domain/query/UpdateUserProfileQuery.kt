@@ -10,9 +10,7 @@ internal object UpdateUserProfileQuery: GqlQueryInterface {
 
     private val GQL_QUERY = """
         mutation ${OPERATION_NAME}(${'$'}email: String!) {
-          ${OPERATION_NAME}(input: {
-            email: ${'$'}email
-          }) {
+          ${OPERATION_NAME}(email: ${'$'}email) {
               isSuccess
               errors
             }
