@@ -18,7 +18,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 9/26/18.
  */
-class GetContentFormUseCase @Inject constructor(
+class GetContentFormUseCase @Inject internal constructor(
         @ActivityContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase) : UseCase<GetContentFormDomain>() {
 
