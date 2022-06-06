@@ -165,6 +165,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
+
+            textInputCoupon.setError(false) //need to reset textInput state
             e.message?.let {
                 textInputCoupon.setMessage(it)
                 textInputCoupon.setError(true)
