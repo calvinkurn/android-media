@@ -18,35 +18,32 @@ import javax.inject.Inject
 
 class SellerCampaignDetailMapper @Inject constructor() {
     fun map(data: GetSellerCampaignListResponse): CampaignUiModel {
-        val campaign = data.getSellerCampaignList.campaign
-            .take(1)
-            .map {
-                CampaignUiModel(
-                    it.campaignId.toLongOrZero(),
-                    it.campaignName,
-                    it.endDate.epochToDate().formatTo(DateConstant.DATE),
-                    it.endDate.epochToDate().formatTo(DateConstant.TIME_WIB),
-                    it.isCancellable,
-                    it.isShareable,
-                    it.notifyMeCount,
-                    it.startDate.epochToDate().formatTo(DateConstant.DATE),
-                    it.startDate.epochToDate().formatTo(DateConstant.TIME_WIB),
-                    it.statusId.toIntOrZero().convert(),
-                    it.thematicParticipation,
-                    CampaignUiModel.ProductSummary(
-                        it.productSummary.totalItem,
-                        it.productSummary.soldItem,
-                        it.productSummary.reservedProduct,
-                        it.productSummary.submittedProduct,
-                        it.productSummary.deletedProduct,
-                        it.productSummary.visibleProductCount
-                    ),
-                    it.startDate.epochToDate(),
-                    it.endDate.epochToDate(),
-                )
-            }
-            .first()
-        return campaign
+        val campaign = data.getSellerCampaignList.campaign.first()
+        return with(campaign) {
+            CampaignUiModel(
+                campaignId.toLongOrZero(),
+                campaignName,
+                endDate.epochToDate().formatTo(DateConstant.DATE),
+                endDate.epochToDate().formatTo(DateConstant.TIME_WIB),
+                isCancellable,
+                isShareable,
+                notifyMeCount,
+                startDate.epochToDate().formatTo(DateConstant.DATE),
+                startDate.epochToDate().formatTo(DateConstant.TIME_WIB),
+                statusId.toIntOrZero().convert(),
+                thematicParticipation,
+                CampaignUiModel.ProductSummary(
+                    productSummary.totalItem,
+                    productSummary.soldItem,
+                    productSummary.reservedProduct,
+                    productSummary.submittedProduct,
+                    productSummary.deletedProduct,
+                    productSummary.visibleProductCount
+                ),
+                startDate.epochToDate(),
+                endDate.epochToDate(),
+            )
+        }
     }
 
     private fun Int.convert(): CampaignStatus {
