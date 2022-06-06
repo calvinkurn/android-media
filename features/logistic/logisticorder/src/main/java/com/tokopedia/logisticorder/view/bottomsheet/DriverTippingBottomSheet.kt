@@ -139,10 +139,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.rvChipsTip.apply {
                     layoutManager = chipsLayoutManagerTipping
                     adapter = tippingValueAdapter
-                    addItemDecoration( object : SpacingItemDecoration(8,8) {
+                    addItemDecoration( object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
-                            val itemWidth = parent.measuredWidth / 4
+                            val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
                             view.layoutParams.width = itemWidth
                         }
                     })
@@ -210,7 +210,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         descriptionList.forEach { desc ->
             val start = description.indexOf(desc, last)
             last = start + desc.length
-            result.setSpan(BulletSpan(16), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            result.setSpan(BulletSpan(TIPPING_DESCRIPTION_BULLET_GAP_WIDTH), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return result
     }
@@ -265,5 +265,11 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun showSoftError(error: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, error)
         view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
+    }
+
+    companion object {
+        private const val TIPPING_SPACING = 8
+        private const val TIPPING_WIDTH_DIVIDER = 4
+        private const val TIPPING_DESCRIPTION_BULLET_GAP_WIDTH = 16
     }
 }
