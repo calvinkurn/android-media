@@ -361,7 +361,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     }
 
     override fun onItemClickCardCBg(tokoCardItem: Visitable<*>, position: Int) {
-        if (isColorPalleteClicked && position != 1) {
+        if (isColorPalleteClicked && position != -1) {
             adapterBg.notifyItemChanged(position)
             if (tokoCardItem is TokomemberCardBg) {
 

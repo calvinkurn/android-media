@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -52,9 +53,25 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
                     shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
                     shopName = it.data.userShopInfo?.info?.shopName?:""
-                    tmEligibilityViewModel.checkEligibility(shopId, true)
+                    tmEligibilityViewModel.checkUserEligibility()
                 }
                 is Fail -> {
+                }
+            }
+        })
+
+        tmEligibilityViewModel.userEligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
+            when (it){
+                is Success ->{
+                    if(it.data.rbacAuthorizeAccess?.isAuthorized == true) {
+                        tmEligibilityViewModel.checkEligibility(shopId, true)
+                    }
+                    else{
+                        Toast.makeText(context, it.data.rbacAuthorizeAccess?.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else -> {
+
                 }
             }
         })
@@ -77,7 +94,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
          //       TokomemberDashHomeActivity.openActivity(shopId, context)
-              TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
+                TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
                 activity?.finish()
                 // redirect to dashboard
             }
