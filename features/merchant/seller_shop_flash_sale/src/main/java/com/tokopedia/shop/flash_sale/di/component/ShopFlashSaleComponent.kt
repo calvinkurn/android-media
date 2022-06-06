@@ -9,6 +9,7 @@ import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.Campai
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.CampaignListFragment
 import com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationActivity
 import com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationFragment
+import com.tokopedia.shop.flash_sale.presentation.creation.campaign_rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import dagger.Component
 
 @ShopFlashSaleScope
@@ -20,6 +21,7 @@ interface ShopFlashSaleComponent {
     fun inject(activity: CampaignListActivity)
     fun inject(fragment: CampaignListContainerFragment)
     fun inject(fragment: CampaignListFragment)
+    fun inject(fragment: MerchantCampaignTNCBottomSheet)
 
     fun inject(activity: CampaignInformationActivity)
     fun inject(fragment: CampaignInformationFragment)
