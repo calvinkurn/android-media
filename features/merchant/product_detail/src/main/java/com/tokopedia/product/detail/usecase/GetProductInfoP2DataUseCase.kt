@@ -261,11 +261,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             }
             validateTradeIn {
               isEligible
-              isDiagnosed
-              useKyc
               usedPrice
-              remainingPrice
-              message
               widgetString
             }
             cartRedirection {

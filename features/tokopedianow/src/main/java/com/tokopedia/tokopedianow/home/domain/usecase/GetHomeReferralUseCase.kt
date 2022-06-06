@@ -2,12 +2,14 @@ package com.tokopedia.tokopedianow.home.domain.usecase
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetHomeReferralUseCase @Inject constructor(
     private val validateReferralUserUseCase: ValidateReferralUserUseCase,
     private val getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase,
-    private val getReferralReceiverHomeUseCase: GetReferralReceiverHomeUseCase
+    private val getReferralReceiverHomeUseCase: GetReferralReceiverHomeUseCase,
+    private val userSession: UserSessionInterface
 ) {
 
     companion object {
@@ -16,18 +18,22 @@ class GetHomeReferralUseCase @Inject constructor(
     }
 
     suspend fun execute(slug: String): HomeReferralDataModel {
-        val response = validateReferralUserUseCase.execute(slug)
-        if (response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
-            val status = response.gamiReferralValidateUser.status
-            val isSender = REFERRAL_SENDER == status
+        return if(userSession.isLoggedIn) {
+            val response = validateReferralUserUseCase.execute(slug)
+            if (response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
+                val status = response.gamiReferralValidateUser.status
+                val isSender = REFERRAL_SENDER == status
 
-            return if (isSender) {
-                getReferralSender(slug, status)
+                if (isSender) {
+                    getReferralSender(slug, status)
+                } else {
+                    getReferralReceiver(slug, status)
+                }
             } else {
-                getReferralReceiver(slug, status)
+                HomeReferralDataModel(isEligible = false)
             }
         } else {
-            throw MessageErrorException()
+            HomeReferralDataModel(isEligible = false)
         }
     }
 
@@ -46,7 +52,8 @@ class GetHomeReferralUseCase @Inject constructor(
                 sharingUrlParam = "$slug/${gamiReferralSenderHome.sharingMetaData.sharingUrl}",
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
-                isSender = true
+                isSender = true,
+                isEligible = true
             )
         } else {
             throw MessageErrorException(gamiReferralSenderHome.resultStatus.reason)
@@ -62,7 +69,8 @@ class GetHomeReferralUseCase @Inject constructor(
             return HomeReferralDataModel(
                 userStatus = status.toString(),
                 maxReward = reward.maxReward,
-                isSender = false
+                isSender = false,
+                isEligible = true
             )
         } else {
             throw MessageErrorException(gamiReferralReceiverHome.resultStatus.reason)

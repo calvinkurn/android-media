@@ -408,9 +408,11 @@ class TokoNowRepurchaseFragment:
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 
-    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+    override fun getParallaxState(): Map<String, Float> = mapOf()
 
-    }
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { /* nothing to do */ }
+
+    override fun saveParallaxState(mapParallaxState: Map<String, Float>) { /* nothing to do */ }
 
     private fun initInjector() {
         DaggerRepurchaseComponent.builder()

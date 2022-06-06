@@ -1521,8 +1521,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE,
-                        it.data.firstOrNull()?.isFromCache
-                            ?: false
+                        it.data.firstOrNull()?.isFromCache.orFalse()
                     )
                     onSuccessGetTickers(it.data)
                 }
