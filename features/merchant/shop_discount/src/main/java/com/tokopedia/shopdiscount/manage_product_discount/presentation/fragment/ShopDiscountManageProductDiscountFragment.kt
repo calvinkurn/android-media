@@ -249,7 +249,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
         numberFormatter.applyPattern(NUMBER_PATTERN)
         textFieldDiscountPercentage?.apply {
-            appendText(getString(R.string.sd_percent))
+            appendText("%   ")
             textInputLayout.errorIconDrawable = null
             textInputLayout.editText?.let {
                 it.filters = arrayOf(InputFilter.LengthFilter(DISCOUNT_PERCENTAGE_MAX_DIGIT))

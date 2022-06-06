@@ -275,7 +275,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
 
     private fun setupTextFieldDiscountPercentage(uiModel: ShopDiscountManageProductVariantItemUiModel) {
         textFieldDiscountPercentage?.apply {
-            appendText(getString(R.string.sd_percent))
+            appendText("%")
             textInputLayout.errorIconDrawable = null
             textInputLayout.editText?.let {
                 it.removeTextChangedListener(textFieldDiscountPriceWatcher)

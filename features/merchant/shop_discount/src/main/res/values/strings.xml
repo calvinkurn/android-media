@@ -15,7 +15,7 @@
     <string name="sd_max_purchase_description">Atur batas maks. pembelian produk untuk pembeli.</string>
     <string name="sd_apply">Terapkan</string>
     <string name="sd_rupiah">Rp</string>
-    <string name="sd_percent">%  </string>
+    <string name="sd_percent">%</string>
     <string name="sd_discount">Diskon</string>
     <string name="sd_invalid_discount_amount">Min. Rp100</string>
     <string name="sd_invalid_discount_percentage">Diskon harus 1–99%</string>
@@ -150,6 +150,7 @@
     <string name="shop_discount_manage_product_discount_edit_toolbar_title">Ubah Diskon Produk</string>
     <string name="shop_discount_manage_product_period_section_title">Periode Diskon</string>
     <string name="shop_discount_manage_product_max_order_title">Maks. pembelian</string>
+    <string name="shop_discount_manage_product_max_order_desc">Atur batas maks. pembelian produk oleh \npembeli.</string>
     <string name="shop_discount_manage_product_max_order_info">(Opsional)</string>
     <string name="shop_discount_manage_product_discount_original_price_format">%1s - %2s</string>
     <string name="shop_discount_manage_product_discount_multi_loc_ticker_desc"><![CDATA[Harga diskon akan otomatis terpasang untuk lokasi yang aktif. <a href="">Selengkapnya</a>]]></string>

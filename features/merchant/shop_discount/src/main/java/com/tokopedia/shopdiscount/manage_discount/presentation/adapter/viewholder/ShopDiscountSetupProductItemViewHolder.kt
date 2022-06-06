@@ -118,7 +118,7 @@ class ShopDiscountSetupProductItemViewHolder(
         val totalStock = getTotalStock(uiModel)
         val totalLocation = uiModel.mappedResultData.totalLocation
         textTotalStock.shouldShowWithAction(
-            !totalStock.isZero() && uiModel.productStatus.errorType == NO_ERROR
+            !totalStock.isZero() && uiModel.productStatus.errorType == NO_ERROR && uiModel.productStatus.isProductDiscounted
         ) {
             val totalStockFormattedString =
                 when {
