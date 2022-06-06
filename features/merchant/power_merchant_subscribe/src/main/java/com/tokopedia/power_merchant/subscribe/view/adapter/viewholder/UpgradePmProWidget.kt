@@ -46,46 +46,59 @@ class UpgradePmProWidget(
     private fun setupNewSeller(element: WidgetUpgradePmProUiModel) {
         val shopInfo = element.shopInfo
         val shopLevel = shopInfo.shopLevel
-        val scoreShowTickerEligble = 70
+        val scoreShowTickerEligible = 70
         binding?.run {
             tvPmUpgradePmProDesc.text = getString(
                 R.string.pm_desc_next_update,
                 element.nextMonthlyRefreshDate
             )
+            val eligibleForUpdateProAdvance =
+                element.shopGrade == PMConstant.ShopGrade.PM
+                        && shopInfo.shopScore > scoreShowTickerEligible
+                        && shopLevel == PMConstant.ShopLevel.TWO
+            val eligibleForUpdateProExpert =
+                element.shopGrade == PMConstant.ShopGrade.PM
+                        && shopInfo.shopScore > scoreShowTickerEligible
+                        && shopLevel == PMConstant.ShopLevel.THREE
+            val eligibleForUpdateProUltimate =
+                element.shopGrade == PMConstant.ShopGrade.PM
+                        && shopInfo.shopScore > scoreShowTickerEligible
+                        && shopLevel == PMConstant.ShopLevel.FOUR
 
-            if (shopInfo.shopScore > scoreShowTickerEligble) {
-                when (shopLevel) {
-                    PMConstant.ShopLevel.TWO -> {
-                        tickerPmWidget.setHtmlDescription(
-                            root.context.getString(
-                                R.string.pm_ticker_eligble_upgrade,
-                                PMConstant.EligbleShopGrade.PRO_ADVANCE,
-                                element.nextMonthlyRefreshDate
-                            )
+            when {
+                eligibleForUpdateProAdvance -> {
+                    tickerPmWidget.setHtmlDescription(
+                        root.context.getString(
+                            R.string.pm_ticker_eligble_upgrade,
+                            PMConstant.EligbleShopGrade.PRO_ADVANCE,
+                            element.nextMonthlyRefreshDate
                         )
-                    }
-                    PMConstant.ShopLevel.THREE -> {
-                        tickerPmWidget.setHtmlDescription(
-                            root.context.getString(
-                                R.string.pm_ticker_eligble_upgrade,
-                                PMConstant.EligbleShopGrade.PRO_EXPERT,
-                                element.nextMonthlyRefreshDate
-                            )
-                        )
-                    }
-                    PMConstant.ShopLevel.FOUR -> {
-                        tickerPmWidget.setHtmlDescription(
-                            root.context.getString(
-                                R.string.pm_ticker_eligble_upgrade,
-                                PMConstant.EligbleShopGrade.PRO_ULTIMATE,
-                                element.nextMonthlyRefreshDate
-                            )
-                        )
-                    }
+                    )
+                    tickerPmWidget.show()
                 }
-                tickerPmWidget.show()
-            } else {
-                tickerPmWidget.hide()
+                eligibleForUpdateProExpert -> {
+                    tickerPmWidget.setHtmlDescription(
+                        root.context.getString(
+                            R.string.pm_ticker_eligble_upgrade,
+                            PMConstant.EligbleShopGrade.PRO_EXPERT,
+                            element.nextMonthlyRefreshDate
+                        )
+                    )
+                    tickerPmWidget.show()
+                }
+                eligibleForUpdateProUltimate -> {
+                    tickerPmWidget.setHtmlDescription(
+                        root.context.getString(
+                            R.string.pm_ticker_eligble_upgrade,
+                            PMConstant.EligbleShopGrade.PRO_ULTIMATE,
+                            element.nextMonthlyRefreshDate
+                        )
+                    )
+                    tickerPmWidget.show()
+                }
+                else -> {
+                    tickerPmWidget.hide()
+                }
             }
         }
     }
