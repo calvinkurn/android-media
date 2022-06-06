@@ -73,6 +73,10 @@ object RollenceKey {
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
 
+    // Global Menu (Me Page)
+    const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
+
     // Review
     const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 }
