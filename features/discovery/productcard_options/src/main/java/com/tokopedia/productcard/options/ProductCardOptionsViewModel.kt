@@ -431,10 +431,4 @@ internal class ProductCardOptionsViewModel(
     fun getShareProductEventLiveData(): LiveData<Event<ProductData>> = shareProductEventLiveData
 
     fun getIsLoadingEventLiveData(): LiveData<Event<Boolean>> = isLoadingEventLiveData
-
-    override fun onCleared() {
-        addToWishlistV2UseCase.cancelJobs()
-        deleteWishlistV2UseCase.cancelJobs()
-        super.onCleared()
-    }
 }
