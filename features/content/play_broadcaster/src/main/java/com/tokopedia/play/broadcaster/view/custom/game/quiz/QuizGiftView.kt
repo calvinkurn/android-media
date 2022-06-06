@@ -1,29 +1,21 @@
 package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
 import android.content.Context
-import android.graphics.Typeface
 import android.text.InputFilter
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
 import com.tokopedia.play_common.util.extension.showKeyboard
-import kotlinx.android.synthetic.main.view_quiz_gift.view.*
-import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on April 01, 2022
@@ -75,8 +67,8 @@ class QuizGiftView : ConstraintLayout {
                 bindingGiftInput.root.hide()
                 bindingGiftInput.etBroQuizGift.setText("")
             }
+            bindingGiftInput.etBroQuizGift.showKeyboard(false)
         }
-
         bindingGiftInput.etBroQuizGift.afterTextChanged {
             mOnChangedListener?.invoke(it)
         }

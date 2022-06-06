@@ -10,7 +10,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
@@ -102,6 +102,6 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayQuizDetailBottomSheet::class)
-    abstract fun getPlayQuizDetailBottomSheet(fragment: PlayQuizDetailBottomSheet) : Fragment
+    @FragmentKey(PlayBroInteractiveBottomSheet::class)
+    abstract fun getPlayBroInteractiveBottomSheet(fragment: PlayBroInteractiveBottomSheet) : Fragment
 }

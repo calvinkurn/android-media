@@ -10,15 +10,17 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.R as commonR
 
 /**
  * @author by astidhiyaa on 18/04/22
  */
-class InteractiveGameResultViewComponent (container: ViewGroup,
-                                          listener: Listener,
+class InteractiveGameResultViewComponent(
+    container: ViewGroup,
+    listener: Listener,
 ) : ViewComponent(container, R.id.view_game_result) {
 
-    private val vAnchorBottom = findViewById<View>(R.id.v_anchor_bottom)
+    private val vAnchorBottom = findViewById<View>(commonR.id.v_anchor_bottom)
     private val coachMark: CoachMark2 = CoachMark2(container.context)
 
     init {

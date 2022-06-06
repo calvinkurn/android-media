@@ -51,7 +51,6 @@ class GiveawayFormView : ConstraintLayout {
         true,
     )
     private val timePickerBinding = ViewPlayInteractiveTimePickerBinding.bind(binding.root)
-    private val bottomSheetHeaderBinding = BottomSheetHeaderBinding.bind(timePickerBinding.root)
 
     private val timerPickerBehavior = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
@@ -99,7 +98,7 @@ class GiveawayFormView : ConstraintLayout {
     fun setLoading(isLoading: Boolean) {
         timePickerBinding.btnApply.isLoading = isLoading
         timePickerBinding.btnApply.isClickable = !isLoading
-        bottomSheetHeaderBinding.ivSheetClose.isClickable = !isLoading
+        timePickerBinding.ivSheetClose.isClickable = !isLoading
 
         val touchListener =
             if (isLoading) OnTouchListener { _, _ -> true }
@@ -169,7 +168,7 @@ class GiveawayFormView : ConstraintLayout {
         }
 
         binding.icCloseGiveawayForm.setOnClickListener { back() }
-        bottomSheetHeaderBinding.ivSheetClose.setOnClickListener { back() }
+        timePickerBinding.ivSheetClose.setOnClickListener { back() }
 
         setEnabledContinue(shouldEnable = false)
 

@@ -11,6 +11,7 @@
         android:id="@+id/view_interactive_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -18,15 +19,14 @@
         android:id="@+id/view_interactive_finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="end"
         android:layout_marginTop="@dimen/play_dp_12"
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <include
+    <com.tokopedia.play_common.view.game.GameResultWidgetView
         android:layout_gravity="end"
         android:id="@+id/view_game_result"
-        layout="@layout/view_game_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"

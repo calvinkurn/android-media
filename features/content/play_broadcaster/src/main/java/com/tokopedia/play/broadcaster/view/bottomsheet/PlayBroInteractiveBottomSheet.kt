@@ -7,7 +7,10 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -16,22 +19,26 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.partial.game.QuizOptionDetailViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
-class PlayQuizDetailBottomSheet @Inject constructor(
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
+class PlayBroInteractiveBottomSheet @Inject constructor(
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
         get() = arguments?.getString(ARG_TYPE) ?: ""
+    private val sheetSize
+        get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.toString()
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -68,27 +75,37 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.65f).toInt()
+        when (sheetSize) {
+            Size.HALF.toString() -> {
+                binding.root.layoutParams = binding.root.layoutParams.apply {
+                    height = (getScreenHeight() * 0.65f).toInt()
+                }
+            }
+            Size.FULL.toString() -> {
+                binding.root.layoutParams = binding.root.layoutParams.apply {
+                    height = (getScreenHeight() * 1f).toInt()
+                }
+            }
         }
-        if (sheetType.isNotBlank()){
-            when (sheetType){
-                Type.QUIZ_DETAIL.toString().lowercase() -> setupQuizDetail()
-                Type.LEADERBOARD.toString().lowercase() -> setupLeaderBoard()
+        if (sheetType.isNotBlank()) {
+            when (sheetType) {
+                Type.QUIZ_DETAIL.toString() -> setupQuizDetail()
+                Type.LEADERBOARD.toString() -> setupLeaderBoard()
             }
             observeQuizDetail()
         }
     }
 
-    private fun setupQuizDetail(){
+    private fun setupQuizDetail() {
         leaderboardSheetView.setTitle(getString(com.tokopedia.play.broadcaster.R.string.play_bro_ongoing_bottomsheet_title))
         parentViewModel.getQuizDetailData()
     }
 
-    private fun setupLeaderBoard(){
+    private fun setupLeaderBoard() {
         leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
         parentViewModel.getLeaderboardWithSlots()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -161,6 +178,24 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         dismiss()
     }
 
+    override fun onChatWinnerButtonClicked(
+        view: PlayInteractiveLeaderboardViewComponent,
+        winner: PlayWinnerUiModel,
+        position: Int
+    ) {
+        analytic.onClickChatWinnerIcon(
+            parentViewModel.channelId,
+            parentViewModel.interactiveId,
+            parentViewModel.activeInteractiveTitle
+        )
+        RouteManager.route(
+            requireContext(),
+            "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
+            winner.id,
+            winner.topChatMessage
+        )
+    }
+
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
@@ -188,25 +223,60 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
 
     companion object {
-        const val ARG_TYPE = "ARG_TYPE"
+        private const val ARG_TYPE = "ARG_TYPE"
+        private const val ARG_SIZE = "ARG_SIZE"
+        private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
 
         private const val TAG = "PlayQuizDetailBottomSheet"
-        fun getFragment(
+        private fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader
-        ): PlayQuizDetailBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayQuizDetailBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            classLoader: ClassLoader,
+            type: Type,
+            size: Size? = Size.HALF,
+        ): PlayBroInteractiveBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
+            return oldInstance ?: (fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayQuizDetailBottomSheet::class.java.name
-            ) as PlayQuizDetailBottomSheet
+                PlayBroInteractiveBottomSheet::class.java.name,
+            ) as PlayBroInteractiveBottomSheet).apply {
+                arguments = Bundle().apply {
+                    putString(ARG_TYPE, type.toString())
+                    putString(ARG_SIZE, size.toString())
+                }
+            }
+        }
+
+        fun setupQuizDetail(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): PlayBroInteractiveBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.QUIZ_DETAIL, Size.HALF)
+        }
+
+        fun setupOngoingLeaderboard(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): PlayBroInteractiveBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.HALF)
+        }
+
+        fun setupReportLeaderboard(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): PlayBroInteractiveBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.LEADERBOARD, Size.FULL)
         }
     }
 
-    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString().lowercase()
+    private fun isOngoingBottomsheet() = sheetType == Type.QUIZ_DETAIL.toString()
 
     enum class Type {
         LEADERBOARD,
         QUIZ_DETAIL
+    }
+
+    enum class Size {
+        FULL,
+        HALF
     }
 }

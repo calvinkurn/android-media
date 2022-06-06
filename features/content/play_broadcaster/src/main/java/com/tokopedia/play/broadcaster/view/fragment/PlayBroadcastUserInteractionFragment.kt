@@ -14,24 +14,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -39,8 +35,8 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
-import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -48,8 +44,7 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -62,7 +57,9 @@ import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummary
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
-import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.partial.ActionBarLiveViewComponent
+import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.ProductTagViewComponent
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
@@ -135,6 +132,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val interactiveGameResultViewComponent by viewComponentOrNull { InteractiveGameResultViewComponent(it, object : InteractiveGameResultViewComponent.Listener {
         override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
             parentViewModel.submitAction(PlayBroadcastAction.ClickGameResultWidget)
+            view.hideCoachMark()
         }
     }) }
 
@@ -158,6 +156,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /** Game */
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClicked() {
+                interactiveGameResultViewComponent?.hideCoachMark()
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 openSelectInteractiveSheet()
             }
@@ -255,12 +254,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
         iconProduct.setOnClickListener {
+            interactiveGameResultViewComponent?.hideCoachMark()
+            gameIconView.cancelCoachMark()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
-
+            interactiveGameResultViewComponent?.hideCoachMark()
             gameIconView.cancelCoachMark()
 
             if (message.isBlank()) {
@@ -724,8 +725,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
-                    is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
-                    is PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
+                    PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
+                    PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
                     is PlayBroadcastEvent.CreateInteractive.Success -> {
                         analytic.onStartInteractive(
                             channelId = parentViewModel.channelId,
@@ -734,6 +735,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             durationInMs = event.durationInMs,
                         )
                     }
+                    is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
+                    PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
                     else -> {}
                 }
             }
@@ -884,7 +887,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
-                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -911,7 +913,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
-                interactiveGameResultViewComponent?.show()
             }
             InteractiveUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
@@ -972,6 +973,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
+        interactiveGameResultViewComponent?.show()
+        if (showCoachMark) {
+            interactiveGameResultViewComponent?.showCoachMark("", getString(R.string.play_bro_interactive_game_result_coachmark),)
+        }
+    }
+
+    private fun dismissGameResultCoachMark() {
+        interactiveGameResultViewComponent?.hideCoachMark()
+    }
+
     private fun isPinnedFormVisible(): Boolean {
         val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
         return formView != null && formView.visibility == View.VISIBLE
@@ -1029,33 +1041,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         fragment.show(childFragmentManager)
     }
 
-    private fun openInteractiveLeaderboardSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val leaderBoardBottomSheet = fragmentFactory.instantiate(
-            requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
-        leaderBoardBottomSheet.arguments = Bundle().apply {
-            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
-        }
-        leaderBoardBottomSheet.show(childFragmentManager)
-    }
-
     private fun openQuizDetailSheet() {
-        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.QUIZ_DETAIL)
+        val quizDetailBottomSheet = PlayBroInteractiveBottomSheet.setupQuizDetail(
+            childFragmentManager,
+            requireContext().classLoader
+        )
+        quizDetailBottomSheet.show(childFragmentManager)
     }
 
     private fun openLeaderboardSheet() {
-        openInteractiveBottomSheet(PlayQuizDetailBottomSheet.Type.LEADERBOARD)
-    }
-
-    private fun openInteractiveBottomSheet(type: PlayQuizDetailBottomSheet.Type) {
-        val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
+        val ongoingLeaderboardBottomSheet = PlayBroInteractiveBottomSheet.setupOngoingLeaderboard(
             childFragmentManager,
-            requireContext().classLoader)
-        playQuizDetailBottomSheet.arguments = Bundle().apply {
-            putString(PlayQuizDetailBottomSheet.ARG_TYPE, type.toString().lowercase())
-        }
-        playQuizDetailBottomSheet.show(childFragmentManager)
+            requireContext().classLoader
+        )
+        ongoingLeaderboardBottomSheet.show(childFragmentManager)
     }
 
     companion object {

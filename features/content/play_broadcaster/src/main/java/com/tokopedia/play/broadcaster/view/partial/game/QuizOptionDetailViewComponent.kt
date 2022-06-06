@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.ui.leaderboard.adapter.PlayBroadcastGameParticipantAdapter
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -44,7 +45,7 @@ class QuizOptionDetailViewComponent(
         listener.loadMoreParticipant()
     }
 
-    private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
+    private val errorView: ConstraintLayout = findViewById(commonR.id.cl_leaderboard_error)
     private val emptyParticipantView: ConstraintLayout = findViewById(R.id.cl_participant_empty)
     private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
     private val ivSheetBack: ImageView = findViewById(R.id.iv_sheet_back)
@@ -60,7 +61,7 @@ class QuizOptionDetailViewComponent(
             listener.onBackButtonClicked(this)
         }
 
-        findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
+        findViewById<UnifyButton>(commonR.id.btn_action_leaderboard_error).setOnClickListener {
             listener.onRefreshButtonClicked(this)
         }
 
@@ -84,7 +85,10 @@ class QuizOptionDetailViewComponent(
         rvChoice.show()
         rvWinner.show()
         rvParticipant.show()
-        emptyParticipantView.showWithCondition(choiceDetail.participants.isEmpty())
+        emptyParticipantView.showWithCondition(
+            choiceDetail.participants.isEmpty()
+                    && choiceDetail.winners.isEmpty()
+        )
         if (ongoing)
             tvEmptyParticipant.text = getString(R.string.play_bro_ongoing_bottomsheet_empty_participant_message)
         else {

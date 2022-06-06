@@ -52,6 +52,7 @@ import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -72,6 +73,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 /**
  * Created by mzennis on 24/05/20.
@@ -112,8 +114,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
-    val observableChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
-        get() = _observableChannelInfo
     val observableTotalView: LiveData<TotalViewUiModel>
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
@@ -143,10 +143,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = getCurrentSetupDataStore().getInteractiveId()
     val activeInteractiveTitle: String
         get() = getCurrentSetupDataStore().getActiveInteractiveTitle()
-    val setupInteractiveTitle: String
-        get() = getCurrentSetupDataStore().getSetupInteractiveTitle()
-    val selectedInteractiveDuration: Long
-        get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
         get() = findSuitableInteractiveDurations()
     val observableLivePusherStatistic: LiveData<LivePusherStatistic>
@@ -156,15 +152,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
-
-    val summaryLeaderboardInfo: SummaryLeaderboardInfo
-        get() = SummaryLeaderboardInfo(
-            _observableLeaderboardInfo.value != null,
-            if (_observableLeaderboardInfo.value is NetworkResult.Success) {
-                (_observableLeaderboardInfo.value as NetworkResult.Success).data.totalParticipant
-            } else "0"
-        )
-
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -480,7 +467,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    suspend fun getChannelDetail() = getChannelById(channelId)
+    private suspend fun getChannelDetail() = getChannelById(channelId)
 
     private suspend fun createChannel() {
         val channelId = repo.createChannel()
@@ -705,7 +692,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
+    private fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
         setInteractiveId(interactive.id)
         setActiveInteractiveTitle(interactive.title)
         when (interactive) {
@@ -715,29 +702,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
+    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.value = giveaway
-
         if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            //TODO("Get leaderboard")
-//            val channelId = mChannelData?.id ?: return
-//
-//            try {
-//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-//                setLeaderboardBadgeState(interactiveLeaderboard)
-//
-//                _interactive.update {
-//                    it.copy(interactive = InteractiveUiModel.Unknown)
-//                }
-//            } catch (e: Throwable) {}
+            displayGameResultWidgetIfHasLeaderBoard()
         }
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
         _interactive.value = quiz
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished){
-            //TODO("Get leaderboard")
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
+            displayGameResultWidgetIfHasLeaderBoard()
         }
     }
 
@@ -866,6 +841,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 val currentInteractive = interactiveMapper.mapGiveaway(
                     result,
                     TimeUnit.SECONDS.toMillis(result.waitingDuration.toLong())
+                )
+                handleActiveInteractiveFromNetwork(currentInteractive)
+            }
+            is QuizResponse -> {
+                val currentInteractive = interactiveMapper.mapQuiz(
+                    result,
+                    TimeUnit.SECONDS.toMillis(result.waitingDuration)
                 )
                 handleActiveInteractiveFromNetwork(currentInteractive)
             }
@@ -1010,6 +992,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
+        }
+    }
+
+    private fun displayGameResultWidgetIfHasLeaderBoard() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            if (leaderboardSlots.isNotEmpty()) {
+                _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
+                sharedPref.setNotFirstGameResult()
+                delay(DEFAULT_GAME_RESULT_AUTO_DISMISS)
+                _uiEvent.emit(PlayBroadcastEvent.DismissGameResultCoachMark)
+            }
+        }) {
+            it.printStackTrace()
         }
     }
 
@@ -1264,11 +1260,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 newInteractive
             }
 
-            delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            //TODO("Get Leaderboard")
-
+            if (interactive.waitingDuration > 0)
+                delay(interactive.waitingDuration)
+            else
+                delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            displayGameResultWidgetIfHasLeaderBoard()
             _interactive.value = InteractiveUiModel.Unknown
-
         }) {
             _interactive.value = InteractiveUiModel.Unknown
         }
@@ -1276,16 +1273,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatcher.computation, block = {
-            _interactive.update {
+            val interactive = _interactive.getAndUpdate {
                 if (it !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
                 val interactive = it.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
                 )
                 interactive
             }
-            delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-            //TODO("Get Leaderboard")
-
+            if (interactive.waitingDuration > 0)
+                delay(interactive.waitingDuration)
+            else
+                delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+            displayGameResultWidgetIfHasLeaderBoard()
             _interactive.value = InteractiveUiModel.Unknown
         }) {
             _interactive.value = InteractiveUiModel.Unknown
@@ -1399,8 +1398,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
             _quizFormData.update {
+                val defaultIndex = max(0, quizConfig.eligibleStartTimeInMs.indexOf(
+                    TimeUnit.MINUTES.toMillis(DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE)))
                 QuizFormDataUiModel(
-                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(defaultIndex) ?: 0,
                     options = initialOptions
                 )
             }
@@ -1493,6 +1494,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
+        private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
+        private const val DEFAULT_GAME_RESULT_AUTO_DISMISS = 5000L
 
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }

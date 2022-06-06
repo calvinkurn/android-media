@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -37,6 +38,7 @@ class PlayBroadcastSummaryViewModelRobot(
     getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
     setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
+    getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
 ) : Closeable {
 
     private val viewModel = PlayBroadcastSummaryViewModel(
@@ -52,6 +54,7 @@ class PlayBroadcastSummaryViewModelRobot(
         getRecommendedChannelTagsUseCase = getRecommendedChannelTagsUseCase,
         setChannelTagsUseCase = setChannelTagsUseCase,
         getChannelUseCase = getChannelUseCase,
+        getInteractiveSummaryLivestreamUseCase = getInteractiveSummaryLivestreamUseCase,
     )
 
     fun recordState(fn: suspend PlayBroadcastSummaryViewModelRobot.() -> Unit): PlayBroadcastSummaryUiState {

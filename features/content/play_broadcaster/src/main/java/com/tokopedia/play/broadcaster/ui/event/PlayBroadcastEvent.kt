@@ -27,4 +27,7 @@ sealed interface PlayBroadcastEvent {
         data class Success(val durationInMs: Long) : CreateInteractive
         data class Error(val error: Throwable) : CreateInteractive
     }
+
+    data class ShowInteractiveGameResultWidget(val showCoachMark: Boolean): PlayBroadcastEvent
+    object DismissGameResultCoachMark : PlayBroadcastEvent
 }
