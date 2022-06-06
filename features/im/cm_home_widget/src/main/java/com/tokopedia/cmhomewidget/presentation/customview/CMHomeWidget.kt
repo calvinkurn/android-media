@@ -126,13 +126,17 @@ class CMHomeWidget @JvmOverloads constructor(
     private fun setItemsInRecyclerView() {
         val itemsList = ArrayList<CMHomeWidgetVisitable>()
         cmHomeWidgetData?.cmHomeWidgetProductCardData?.let {
-            itemsList.addAll(it)
+            if (it.isNotEmpty()) {
+                itemsList.addAll(it)
+            }
         }
         cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-            itemsList.add(it[paymentDataIndex])
+            if (it.isNotEmpty()) {
+                itemsList.add(it[paymentDataIndex])
+            }
         }
         cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
-            itemsList.add(it)
+                itemsList.add(it)
         }
         if (itemsList.isNotEmpty()) {
             binding.root.visibility = View.VISIBLE

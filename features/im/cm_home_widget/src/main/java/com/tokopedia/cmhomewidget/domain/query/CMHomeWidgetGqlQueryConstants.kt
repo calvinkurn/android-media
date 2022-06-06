@@ -11,6 +11,7 @@ const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
             campaign_id
             session_id
             widget_title
+            widget_type
             products {
                 id
                 name
