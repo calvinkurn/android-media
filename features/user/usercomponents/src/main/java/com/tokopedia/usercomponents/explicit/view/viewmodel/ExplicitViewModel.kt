@@ -46,7 +46,7 @@ class ExplicitViewModel @Inject constructor(
                 _explicitContent.value = Success(Pair(activeConfig, property))
                 setPreferenceAnswer(response.explicitprofileGetQuestion.template)
             } else {
-                _explicitContent.value = Success(Pair(activeConfig, null))
+                _explicitContent.value = Success(Pair(false, null))
             }
             _isQuestionLoading.value = false
         }, {

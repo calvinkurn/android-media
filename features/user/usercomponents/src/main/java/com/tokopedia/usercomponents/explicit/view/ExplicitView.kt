@@ -35,7 +35,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
-class ExplicitView : CardUnify2 {
+class ExplicitView : CardUnify2, ExplicitAction {
 
     @Inject
     lateinit var explicitAnalytics: ExplicitAnalytics
@@ -50,6 +50,8 @@ class ExplicitView : CardUnify2 {
 
     private var templateName = ""
     private var pageName = ""
+    private var pagePath = ""
+    private var pageType = ""
     private var preferenceAnswer: Boolean? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -57,12 +59,14 @@ class ExplicitView : CardUnify2 {
         initView()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, templateName: String, pageName: String) : super(
+    constructor(context: Context, attrs: AttributeSet?, templateName: String, pageName: String, pagePath: String, pageType: String) : super(
         context,
         attrs
     ) {
         this.templateName = templateName
         this.pageName = pageName
+        this.pagePath = pagePath
+        this.pageType = pageType
         initView()
     }
 
@@ -78,11 +82,13 @@ class ExplicitView : CardUnify2 {
                 //you must set template name!
                 templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
                 pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
+                pagePath = getString(R.styleable.ExplicitView_page_path) ?: ""
+                pageType = getString(R.styleable.ExplicitView_page_type) ?: ""
             } finally {
                 recycle()
             }
 
-            if (GlobalConfig.DEBUG && (templateName.isEmpty() || pageName.isEmpty()))
+            if (GlobalConfig.DEBUG && (templateName.isEmpty() || pageName.isEmpty() || pagePath.isEmpty() || pageType.isEmpty()))
                 throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
         }
     }
@@ -117,9 +123,9 @@ class ExplicitView : CardUnify2 {
                 is Success -> {
                     if (it.data.first) {
                         setViewQuestion(it.data.second)
-                        onQuestion()
+                        onQuestionShow()
                     } else {
-                        dismiss()
+                        onDismiss()
                     }
                 }
                 is Fail -> {
@@ -130,7 +136,7 @@ class ExplicitView : CardUnify2 {
 
         viewModel?.statusSaveAnswer?.observe(lifecycleOwner) {
             when (it) {
-                is Success -> onSuccess()
+                is Success -> onSubmitSuccessShow()
                 is Fail -> onFailed()
             }
         }
@@ -154,35 +160,23 @@ class ExplicitView : CardUnify2 {
 
     private fun initListener() {
         bindingQuestion.root.setOnClickListener {
-            explicitAnalytics.trackClickCard(pageName, templateName)
+            explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
         }
 
         bindingQuestion.imgDismiss.setOnClickListener {
-            explicitAnalytics.trackClickDismissButton(pageName, templateName)
+            explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
             viewModel?.updateState()
-            dismiss()
+            onDismiss()
         }
 
-        bindingSuccess.imgSuccessDismiss.setOnClickListener { dismiss() }
+        bindingSuccess.imgSuccessDismiss.setOnClickListener { onDismiss() }
 
         bindingQuestion.btnPositifAction.setOnClickListener {
-            explicitAnalytics.trackClickPositifButton(pageName, templateName)
-            bindingQuestion.apply {
-                btnPositifAction.isLoading = true
-                btnNegatifAction.isEnabled = false
-            }
-            preferenceAnswer = true
-            saveAnswer()
+            onButtonPositifClicked()
         }
 
         bindingQuestion.btnNegatifAction.setOnClickListener {
-            explicitAnalytics.trackClickNegatifButton(pageName, templateName)
-            bindingQuestion.apply {
-                btnNegatifAction.isLoading = true
-                btnPositifAction.isEnabled = false
-            }
-            preferenceAnswer = false
-            saveAnswer()
+            onButtonNegatifClicked()
         }
 
         bindingFailed.containerLocalLoad.refreshBtn?.setOnClickListener {
@@ -201,11 +195,7 @@ class ExplicitView : CardUnify2 {
         }
     }
 
-    private fun dismiss() {
-        this.hide()
-    }
-
-    private fun onLoading() {
+    override fun onLoading() {
         showShadow(true)
         bindingQuestion.apply {
             imgShimmer.visible()
@@ -220,7 +210,7 @@ class ExplicitView : CardUnify2 {
         replaceView(bindingQuestion.root)
     }
 
-    private fun onQuestion() {
+    override fun onQuestionShow() {
         showShadow(true)
         bindingQuestion.apply {
             imgShimmer.gone()
@@ -243,13 +233,37 @@ class ExplicitView : CardUnify2 {
         replaceView(bindingQuestion.root)
     }
 
-    private fun onSuccess() {
+    override fun onButtonPositifClicked() {
+        explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
+        bindingQuestion.apply {
+            btnPositifAction.isLoading = true
+            btnNegatifAction.isEnabled = false
+        }
+        preferenceAnswer = true
+        saveAnswer()
+    }
+
+    override fun onButtonNegatifClicked() {
+        explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
+        bindingQuestion.apply {
+            btnNegatifAction.isLoading = true
+            btnPositifAction.isEnabled = false
+        }
+        preferenceAnswer = false
+        saveAnswer()
+    }
+
+    override fun onSubmitSuccessShow() {
         showShadow(true)
         initSuccessMessageText()
         replaceView(bindingSuccess.root)
     }
 
-    private fun onFailed() {
+    override fun onDismiss() {
+        this.hide()
+    }
+
+    override fun onFailed() {
         showShadow(false)
         setViewFailed()
         replaceView(bindingFailed.containerLocalLoad)
