@@ -17,17 +17,15 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import java.lang.ref.WeakReference
 
 object AppUpdateManagerWrapper {
-    @JvmField
-    val REQUEST_CODE_IMMEDIATE = 12135
+    private const val REQUEST_CODE_IMMEDIATE = 12135
+    private const val REQUEST_CODE_FLEXIBLE = 12136
+
     private var INAPP_UPDATE = "inappupdate"
     private var INAPP_UPDATE_PREF = "inappupdate_pref"
     private var KEY_INAPP_TYPE = "inapp_type"
 
     private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
     private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
-
-    @JvmField
-    val REQUEST_CODE_FLEXIBLE = 12136
 
     private var appUpdateManager: AppUpdateManager? = null
 
