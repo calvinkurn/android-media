@@ -105,6 +105,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse

@@ -139,7 +139,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
-    
+
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
     private lateinit var feedFloatingButton: FeedFloatingButton
@@ -214,7 +214,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         requestFeedTab()
         initFab()
     }
-    
+
     private fun setupView(view: View) {
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
@@ -679,6 +679,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             })
         }
+
+        renderCompleteFab()
     }
 
     private fun setFeedBackgroundCrossfader() {

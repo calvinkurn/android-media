@@ -146,19 +146,19 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
-        activityListener?.setFeedAccountList(
-            feedContentForm.authors.map {
-                FeedAccountUiModel(
-                    id = it.id,
-                    name = it.name,
-                    iconUrl = it.thumbnail,
-                    badge = it.badge,
-                    type = it.type,
-                )
-            }
-        )
-        createPostModel.shopName = feedContentForm.authors.first().name
-        createPostModel.shopBadge = feedContentForm.authors.first().badge
+        val feedAccountList = feedContentForm.authors.map {
+            FeedAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+            )
+        }
+
+        activityListener?.setFeedAccountList(feedAccountList)
+        createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
+        createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
@@ -174,9 +174,10 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     it.type)
             })
         }
+        createPostModel.productTagSources = feedContentForm.productTagSources
         createContentPostViewModel.setNewContentData(createPostModel)
-
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(VIEW_MODEL, createPostModel)

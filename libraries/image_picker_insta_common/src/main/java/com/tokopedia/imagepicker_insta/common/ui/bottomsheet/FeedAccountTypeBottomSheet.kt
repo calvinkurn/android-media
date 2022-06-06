@@ -7,12 +7,11 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.imagepicker_insta.common.R
 import com.tokopedia.imagepicker_insta.common.databinding.BottomSheetFeedAccountTypeBinding
 import com.tokopedia.imagepicker_insta.common.ui.adapter.FeedAccountTypeAdapter
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.imagepicker_insta.common.ui.itemdecoration.FeedAccountTypeItemDecoration
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022
@@ -26,15 +25,16 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     private val adapter: FeedAccountTypeAdapter by lazy {
         FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
             override fun onClick(item: FeedAccountUiModel) {
+                mAnalytic?.clickAccountTypeItem(item)
                 dismiss()
                 mListener?.onAccountClick(item)
             }
         })
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
+    private var mAnalytic: FeedAccountTypeAnalytic? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +83,10 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         if(isAdded) adapter.updateData(mFeedAccountList)
 
         return this
+    }
+
+    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
+        mAnalytic = analytic
     }
 
     companion object {

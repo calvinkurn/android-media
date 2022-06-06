@@ -76,6 +76,8 @@ class SearchApiConst {
         const val TYPO = "typo"
         const val IS_FULFILLMENT = "is_fulfillment"
         const val GIFTING = "gift"
+        const val FROM = "from"
+        const val PAGE_SOURCE = "page_source"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"

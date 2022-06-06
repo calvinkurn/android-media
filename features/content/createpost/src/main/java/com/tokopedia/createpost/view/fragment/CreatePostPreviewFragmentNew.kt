@@ -26,6 +26,8 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
@@ -81,9 +83,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
-        private const val PARAM_PRODUCT = "product"
+        private const val PARAM_PRODUCT = "product" /** TODO: gonna delete it soon */
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_BADGE = "shop_badge"
+        private const val PARAM_PRODUCT_TAG_SOURCE = "product_tag_source"
+        private const val PARAM_AUTHOR_ID = "author_id"
+        private const val PARAM_AUTHOR_TYPE = "author_type"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -568,6 +573,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
             intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
             intent.putExtra(PARAM_SHOP_BADGE, createPostModel.shopBadge)
+            intent.putExtra(PARAM_PRODUCT_TAG_SOURCE, createPostModel.productTagSources.joinToString(separator = ","))
+            intent.putExtra(PARAM_AUTHOR_ID, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.id)
+            intent.putExtra(PARAM_AUTHOR_TYPE, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.type)
             startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
         }
     }
@@ -582,17 +590,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun getAttachProductResult(data: Intent?) {
-        val product = data?.getSerializableExtra(
-            PARAM_PRODUCT) as ShopPageProduct
-
-        product.let {
-            val relatedProductItem = mapResultToRelatedProductItem(it)
-            if(!isProductAlreadyAddedOnImage(relatedProductItem)) {
-                createPostModel.productIdList.add(it.pId!!)
-                createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
-                    relatedProductItem)
-            }
+        val relatedProductItem = mapResultToRelatedProductItem(data)
+        if(!isProductAlreadyAddedOnImage(relatedProductItem)) {
+            createPostModel.productIdList.add(relatedProductItem.id)
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
+                relatedProductItem)
         }
+
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
 
@@ -610,15 +614,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         updateResultIntent()
     }
 
-    private fun mapResultToRelatedProductItem(item: ShopPageProduct): RelatedProductItem {
+    private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
         return RelatedProductItem(
-            id = item.pId!!,
-            name = item.name!!,
-            price = item.price?.priceIdr!!,
-            image = item.pImage?.img!!,
-            priceOriginalFmt = item.campaign?.oPriceFormatted!!,
-            priceDiscountFmt = item.campaign?.dPriceFormatted!!,
-            isDiscount = (item.campaign?.dPrice?.toInt()?:0)!=0
+            id = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_ID) ?: "",
+            name = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_NAME) ?: "",
+            price = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE) ?: "",
+            image = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_IMAGE) ?: "",
+            priceOriginalFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
+            priceDiscountFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
+            isDiscount = data?.getBooleanExtra(ProductTagParentFragment.RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
         )
     }
 

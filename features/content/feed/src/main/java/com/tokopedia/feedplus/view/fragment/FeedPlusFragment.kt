@@ -272,6 +272,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val IS_FOLLOWED = "is_followed"
         private const val POST_TYPE = "post_type"
         private const val SHOP_NAME = "shop_name"
+        private const val PARAM_TYPE = "author_type"
         private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
         private const val TYPE_LONG_VIDEO: String = "long-video"
         private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
@@ -1699,7 +1700,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
             sheet.onEdit = {
-                openEditPostPage(caption, postId.toString())
+                openEditPostPage(caption, postId.toString(), authorId)
             }
 
             sheet.onClosedClicked = {
@@ -1712,14 +1713,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
     }
-    private fun openEditPostPage(caption: String, postId: String) {
+    private fun openEditPostPage(caption: String, postId: String, authorId: String) {
         var createPostViewModel = CreatePostViewModel()
         createPostViewModel.caption = caption
         createPostViewModel.postId = postId
+        createPostViewModel.editAuthorId = authorId
 
         val intent = RouteManager.getIntent(context,INTERNAL_AFFILIATE_CREATE_POST_V2)
-        intent.putExtra("author_type",TYPE_CONTENT_PREVIEW_PAGE)
-        intent.putExtra(CreatePostViewModel.TAG,createPostViewModel)
+        intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+        intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
         startActivity(intent)
     }
 
