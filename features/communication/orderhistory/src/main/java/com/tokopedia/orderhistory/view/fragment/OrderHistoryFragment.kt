@@ -216,8 +216,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster("test", it) }
     }
 
     override fun onSuccessAddWishlist(
