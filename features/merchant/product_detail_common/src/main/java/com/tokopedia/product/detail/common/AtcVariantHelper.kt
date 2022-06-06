@@ -33,6 +33,7 @@ object AtcVariantHelper {
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
     const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
+    const val KEY_SHOW_QTY_EDITOR = "show_qty_editor"
 
     /**
      * For PDP and ProductBundle only
@@ -121,6 +122,7 @@ object AtcVariantHelper {
                        extParams: String = "",
                        dismissAfterTransaction: Boolean = false,
                        saveAfterClose: Boolean = true,
+                       showQuantityEditor: Boolean = false,
                        startActivitResult: (Intent, Int) -> Unit) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT,
                 productId,
@@ -128,9 +130,11 @@ object AtcVariantHelper {
                 pageSource.source,
                 isTokoNow.toString(),
                 trackerCdListName)
+        val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         intent.putExtra(KEY_EXT_PARAMS, extParams)
+        intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 

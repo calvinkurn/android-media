@@ -55,7 +55,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `success get selected option ids`() {
-        decideSuccessValueHitGqlAggregator("2147818569", true)
+        decideSuccessValueHitGqlAggregator("2147818569", true, true)
 
         val selectedOptionIds = viewModel.getSelectedOptionIds()
 
@@ -64,7 +64,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `success get variant data`() {
-        decideSuccessValueHitGqlAggregator("2147818569", true)
+        decideSuccessValueHitGqlAggregator("2147818569", true, true)
 
         val variantData = viewModel.getVariantData()
 
@@ -89,13 +89,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
         }
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -132,13 +132,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
         }
     }
 
@@ -147,13 +147,34 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any(), any())
+        }
+
+        Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
+    }
+
+    @Test
+    fun `test must hit gql when showQtyEditor and mini cart null`() {
+        val aggregatorParams = generateParamsVariantFulfilled("2147818569",
+                false,
+                true)
+
+        aggregatorParams.showQtyEditor = true
+
+        coEvery {
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns AggregatorMiniCartUiModel()
+
+        viewModel.decideInitialValue(aggregatorParams, true)
+
+        coVerify {
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), any(), any(), any())
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
@@ -168,12 +189,37 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render initial variant with given parent id and hit gql non tokonow`() {
-        decideSuccessValueHitGqlAggregator("2147818569", false)
+        decideSuccessValueHitGqlAggregator("2147818569", false, false)
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
         assertVisitables(visitablesData,
                 showQuantityEditor = false,
+                expectedSelectedProductId = "2147818576",
+                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+                expectedSelectedStockFmt = "Stock : 10",
+                expectedSelectedOptionIdsLevelOne = "254080",
+                expectedSelectedOptionIdsLevelTwo = "254085",
+                expectedVariantName = listOf("Merah", "M"),
+                expectedQuantity = 0,
+                expectedMinOrder = 3,
+                cashBackPercentage = 102,
+                uspImageUrl = "icon usp",
+                isTokoCabang = true
+        )
+        assertStockCopy("")
+        assertButton()
+        assertRestrictionData(assertSuccess = false)
+    }
+
+    @Test
+    fun `render initial variant with given parent id and hit gql non tokonow showQtyEditor`() {
+        decideSuccessValueHitGqlAggregator("2147818569", false, true)
+
+        val visitablesData = (viewModel.initialData.value as Success).data
+
+        assertVisitables(visitablesData,
+                showQuantityEditor = true,
                 expectedSelectedProductId = "2147818576",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
                 expectedSelectedStockFmt = "Stock : 10",
@@ -198,7 +244,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render initial variant with given parent id and hit gql tokonow`() {
-        decideSuccessValueHitGqlAggregator("2147818569", true)
+        decideSuccessValueHitGqlAggregator("2147818569", true, true)
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
@@ -227,7 +273,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render initial variant with given child id and hit gql tokonow campaign hide gimmick`() {
-        decideSuccessValueHitGqlAggregator("2147818593", true)
+        decideSuccessValueHitGqlAggregator("2147818593", true, true)
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
@@ -266,7 +312,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render initial variant with given child id not buyable and hit gql tokonow`() {
-        decideSuccessValueHitGqlAggregator("2147818570", true)
+        decideSuccessValueHitGqlAggregator("2147818570", true, true)
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
@@ -603,7 +649,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on success update atc tokonow`() = runBlocking {
-        decideSuccessValueHitGqlAggregator("2147818576", true)
+        decideSuccessValueHitGqlAggregator("2147818576", true, true)
         val actionButtonAtc = 2
         val updateCartRequest = slot<List<UpdateCartRequest>>()
         val updateAtcResponse = UpdateCartV2Data(status = "OK", data = Data(message = "sukses gan"))
@@ -626,7 +672,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `on fail update atc`() = runBlocking {
-        decideSuccessValueHitGqlAggregator("2147818576", true)
+        decideSuccessValueHitGqlAggregator("2147818576", true, true)
         val actionButtonAtc = 2
         val updateCartRequest = slot<List<UpdateCartRequest>>()
         val failUpdataAtcResponse = UpdateCartV2Data(status = "", error = listOf("asd"))
@@ -819,7 +865,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val mainImageTag = "some tag"
         val type = ProductDetailGallery.Item.Type.Image
 
-        decideSuccessValueHitGqlAggregator("2147818569", true)
+        decideSuccessValueHitGqlAggregator("2147818569", true, true)
 
         val defaultItem = ProductDetailGallery.Item(
             id = "",
