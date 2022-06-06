@@ -2612,55 +2612,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when trackSwitchService with intended serviceType and only has origin model should return appropriate data`() {
-        val intendedServiceType = "2h"
-        val localCacheModel = createLocalCacheModel()
-
-        viewModel.switchService(localCacheModel, intendedServiceType)
-
-        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
-            userId = "",
-            whIdOrigin = "222222",
-            whIdDestination = "111111",
-            isNow15 = false,
-            isImpressionTracker = false
-        ))
-    }
-
-    @Test
-    fun `when trackSwitchService with intended serviceType and only has origin model should return zero for warehouse id destination`() {
-        val intendedServiceType = "15m"
-
-        val localCacheModel = createLocalCacheModel(warehouses = listOf(
-            LocalWarehouseModel(
-                warehouse_id = 111111,
-                service_type = "15m"
-            )
-        ))
-
-        viewModel.switchService(localCacheModel, intendedServiceType)
-
-        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
-            userId = "",
-            whIdOrigin = "0",
-            whIdDestination = "111111",
-            isNow15 = true,
-            isImpressionTracker = false
-        ))
-    }
-
-    @Test
-    fun `when trackSwitchService with intended serviceType throws error should do nothing`() {
-        val intendedServiceType = "2h"
-        val localCacheModel = createLocalCacheModel()
-
-        onGetUserSession_returnNull()
-
-        viewModel.switchService(localCacheModel, intendedServiceType)
-        viewModel.homeSwitchServiceTracker.verifyValueEquals(null)
-    }
-
-    @Test
     fun `when switchService with intended service error should set live data value fail`() {
         val localCacheModel = LocalCacheModel(
             service_type = "2h"
