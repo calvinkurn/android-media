@@ -3323,7 +3323,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun setupPlayWidget() {
-        playWidgetCoordinator = PlayWidgetCoordinator(requireContext()).apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@ShopPageHomeFragment)
         }
     }

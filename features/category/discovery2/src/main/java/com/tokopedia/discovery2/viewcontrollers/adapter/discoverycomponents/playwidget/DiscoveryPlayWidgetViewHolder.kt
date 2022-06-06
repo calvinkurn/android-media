@@ -25,7 +25,7 @@ import com.tokopedia.user.session.UserSession
 
 class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), PlayWidgetListener, PlayWidgetInListAnalyticListener {
     private lateinit var discoveryPlayWidgetViewModel: DiscoveryPlayWidgetViewModel
-    private val playWidgetViewHolder: PlayWidgetViewHolder = PlayWidgetViewHolder(itemView, PlayWidgetCoordinator(fragment.requireContext(), fragment.viewLifecycleOwner).apply {
+    private val playWidgetViewHolder: PlayWidgetViewHolder = PlayWidgetViewHolder(itemView, PlayWidgetCoordinator(fragment).apply {
         setListener(this@DiscoveryPlayWidgetViewHolder)
         setAnalyticModel(PlayWidgetDiscoveryAnalyticModel())
 //        setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(this@DiscoveryPlayWidgetViewHolder))

@@ -32,7 +32,7 @@ class PlayWidgetCoordinator constructor(
     lifecycleOwner: LifecycleOwner,
     mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
-    private val autoHandleLifecycleMethod: Boolean = false,
+    private val autoHandleLifecycleMethod: Boolean = true,
 ) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -140,9 +140,10 @@ class PlayWidgetCoordinator constructor(
         mWidget?.setWidgetListener(mListener)
     }
 
-    fun setAnalyticModel(model: PlayWidgetAnalyticModel?, trackingQueue: TrackingQueue) {
+    fun setAnalyticModel(model: PlayWidgetAnalyticModel?) {
         val widgetComponent = this.widgetComponent
-        if (model == null || widgetComponent == null) {
+        val trackingQueue = this.trackingQueue
+        if (model == null || widgetComponent == null || trackingQueue == null) {
             mAnalyticListener = null
             mWidget?.setAnalyticListener(null)
             return
