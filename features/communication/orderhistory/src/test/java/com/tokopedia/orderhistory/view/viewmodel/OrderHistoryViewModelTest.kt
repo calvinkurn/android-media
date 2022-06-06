@@ -131,6 +131,7 @@ class OrderHistoryViewModelTest {
 
         verify { addToWishlistV2UseCase.setParams(productId, "") }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        verify { mockListener.onErrorAddWishList(mockThrowable, productId) }
     }
 
     @Test
