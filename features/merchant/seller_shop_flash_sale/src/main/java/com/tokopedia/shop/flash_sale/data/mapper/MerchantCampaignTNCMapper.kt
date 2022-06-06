@@ -7,8 +7,8 @@ import javax.inject.Inject
 class MerchantCampaignTNCMapper @Inject constructor() {
     fun map(data: GetMerchantCampaignTNCResponse): MerchantCampaignTNC{
         val error = MerchantCampaignTNC.Error(
-            error_code = data.getMerchantCampaignTNC.error.error_code,
-            error_message = data.getMerchantCampaignTNC.error.error_message
+            errorCode = data.getMerchantCampaignTNC.error.errorCode,
+            errorMessage = data.getMerchantCampaignTNC.error.errorMessage
         )
         return MerchantCampaignTNC(
             title = data.getMerchantCampaignTNC.title,

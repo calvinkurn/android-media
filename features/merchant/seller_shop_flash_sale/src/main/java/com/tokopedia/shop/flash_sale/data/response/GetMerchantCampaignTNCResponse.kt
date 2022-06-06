@@ -16,8 +16,8 @@ data class GetMerchantCampaignTNCResponse(
     )
     data class Error(
         @SerializedName("error_code")
-        val error_code: Int = 0,
+        val errorCode: Int = 0,
         @SerializedName("error_message")
-        val error_message: String = "",
+        val errorMessage: String = "",
     )
 }

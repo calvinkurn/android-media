@@ -28,6 +28,7 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
     companion object {
         private const val KEY_SHOW_TICKER_AND_BUTTON = "KEY_SHOW_TICKER_AND_BUTTON"
         private const val KEY_TNC_REQUEST = "KEY_TNC_REQUEST"
+        private const val TAG = "MerchantCampaignTNCBottomSheet"
 
         @JvmStatic
         fun createInstance(
@@ -48,7 +49,6 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
                 setChild(view)
             }
 
-        private const val TAG = "MerchantCampaignTNCBottomSheet"
     }
 
     @Inject

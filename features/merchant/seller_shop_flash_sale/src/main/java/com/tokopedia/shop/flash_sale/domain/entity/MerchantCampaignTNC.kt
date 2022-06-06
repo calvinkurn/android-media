@@ -9,8 +9,8 @@ data class MerchantCampaignTNC(
     val error: Error = Error()
 ) {
     data class Error(
-        val error_code: Int = 0,
-        val error_message: String = "",
+        val errorCode: Int = 0,
+        val errorMessage: String = "",
     )
 
     @Parcelize
