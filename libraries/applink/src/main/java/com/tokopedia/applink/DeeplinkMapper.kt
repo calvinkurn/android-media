@@ -492,7 +492,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
             DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
             DLP.exact(ApplinkConst.INPUT_INACTIVE_NUMBER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-            DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
+            DLP.exact(ApplinkConst.ADD_PHONE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.matchPattern(ApplinkConst.PRODUCT_EDUCATIONAL, targetDeeplink = { _, _, _, idList ->
                 UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
