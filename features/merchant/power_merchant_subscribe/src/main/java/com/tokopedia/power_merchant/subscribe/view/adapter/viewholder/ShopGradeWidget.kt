@@ -47,7 +47,6 @@ class ShopGradeWidget(
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
-        const val SATURATION_ACTIVE = 1.0f
         const val SATURATION_INACTIVE = 0.0f
     }
 
@@ -59,7 +58,6 @@ class ShopGradeWidget(
         showTopedIllustration(element)
         setupCurrentGradeStepper(element)
     }
-
 
     private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
         binding?.run {
