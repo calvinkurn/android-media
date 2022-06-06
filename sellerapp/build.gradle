@@ -216,7 +216,9 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    
+    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
+    implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
+    implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
@@ -238,7 +240,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
-    implementation projectOrAar(rootProject.ext.features.profile)
+    implementation projectOrAar(rootProject.ext.features.people)
     implementation projectOrAar(rootProject.ext.features.contactUs)
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.logout)
@@ -384,9 +386,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
-    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
-        exclude group: 'com.android.support'
-    }
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

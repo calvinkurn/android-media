@@ -15,12 +15,15 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.CONSTANT_0
+import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
+import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -133,59 +136,50 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun addProductToCart(
-        parentPosition: Int,
-        position: Int,
-        productId: String,
-        quantity: Int,
-        shopId: String,
-        isGeneralCartATC: Boolean
+        discoATCRequestParams: DiscoATCRequestParams
     ) {
-        val miniCartItem = getMiniCartItem(productId)
+        val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
+            getMiniCartItem(discoATCRequestParams.productId) else null
         when {
             miniCartItem == null -> addItemToCart(
-                parentPosition,
-                position,
-                productId,
-                shopId,
-                quantity,
-                isGeneralCartATC
+                discoATCRequestParams
             )
-            quantity.isZero() -> removeItemCart(
-                parentPosition,
-                position,
+            discoATCRequestParams.quantity.isZero() -> removeItemCart(
+                discoATCRequestParams.parentPosition,
+                discoATCRequestParams.position,
                 miniCartItem,
-                isGeneralCartATC
+                discoATCRequestParams.isGeneralCartATC
             )
             else -> updateItemCart(
-                parentPosition,
-                position,
+                discoATCRequestParams.parentPosition,
+                discoATCRequestParams.position,
                 miniCartItem,
-                quantity,
-                isGeneralCartATC
+                discoATCRequestParams.quantity,
+                discoATCRequestParams.isGeneralCartATC
             )
         }
     }
 
 
     private fun addItemToCart(
-        parentPosition: Int,
-        position: Int,
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        isGeneralCartATC: Boolean
+        discoATCRequestParams: DiscoATCRequestParams
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
+            productId = discoATCRequestParams.productId,
+            shopId = discoATCRequestParams.shopId?:"",
+            quantity = discoATCRequestParams.quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            _miniCartAdd.postValue(Success(DiscoveryAddToCartDataModel(it,isGeneralCartATC)))
+            _miniCartAdd.postValue(Success(DiscoveryAddToCartDataModel(it, discoATCRequestParams)))
         }, {
             _miniCartAdd.postValue(Fail(it))
-            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
+            _miniCartOperationFailed.postValue(
+                Pair(
+                    discoATCRequestParams.parentPosition,
+                    discoATCRequestParams.position
+                )
+            )
         })
     }
 
@@ -459,8 +453,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getShareUTM(data:PageInfo) : String{
         var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if(data.campaignCode != null && data.campaignCode.length > 11){
-            campaignCode = data.campaignCode.substring(0,11)
+        if(data.campaignCode != null && data.campaignCode.length > CONSTANT_11){
+            campaignCode = data.campaignCode.substring(CONSTANT_0, CONSTANT_11)
         }
         return "${data.identifier}-${campaignCode}"
     }

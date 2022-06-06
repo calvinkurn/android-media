@@ -35,7 +35,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -56,6 +55,7 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.databinding.FragmentCreateReviewBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
@@ -120,7 +120,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         const val RATING_3 = 3
         const val RATING_4 = 4
         const val RATING_5 = 5
-        private const val SAME_ARGS_ERROR = 9
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
@@ -821,12 +820,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         if (throwable is MessageErrorException) {
             finishIfRoot(
                 success = false,
-                message = getString(R.string.review_error_not_found),
+                message = throwable.getErrorMessage(context, getString(R.string.review_error_not_found)),
                 feedbackId = if (isEditMode) feedbackId else getFeedbackId()
             )
         } else {
             binding?.reviewRoot?.let {
-                NetworkErrorHelper.showEmptyState(context, it) {
+                NetworkErrorHelper.showEmptyState(context, it, throwable.getErrorMessage(context)) {
                     getReviewDetailData()
                 }
             }
@@ -966,7 +965,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onFailSubmitReview(throwable: Throwable) {
         stopLoading()
         showLayout()
-        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
+        showToasterError(throwable.getErrorMessage(context, getString(R.string.review_create_fail_toaster)))
         logToCrashlytics(throwable)
     }
 
@@ -974,17 +973,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopLoading()
         showLayout()
         logToCrashlytics(throwable)
-        (throwable as? MessageErrorException)?.let {
-            if (throwable.errorCode.toIntOrZero() == SAME_ARGS_ERROR) {
-                view?.let {
-                    showToasterError(throwable.message ?: getString(R.string.review_edit_fail))
-                }
-            } else {
-                showToasterError(getString(R.string.review_edit_fail))
-            }
-            return
-        }
-        showToasterError(getString(R.string.review_edit_fail))
+        showToasterError(throwable.getErrorMessage(context, getString(R.string.review_edit_fail)))
     }
 
     private fun showShimmering() {
@@ -1032,12 +1021,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         if (throwable is MessageErrorException) {
             finishIfRoot(
                 success = false,
-                message = getString(R.string.review_error_not_found),
+                message = throwable.getErrorMessage(context, getString(R.string.review_error_not_found)),
                 feedbackId = if (isEditMode) feedbackId else getFeedbackId()
             )
         } else {
             binding?.reviewRoot?.let {
-                NetworkErrorHelper.showEmptyState(context, it) {
+                NetworkErrorHelper.showEmptyState(context, it, throwable.getErrorMessage(context)) {
                     getReviewData()
                 }
             }

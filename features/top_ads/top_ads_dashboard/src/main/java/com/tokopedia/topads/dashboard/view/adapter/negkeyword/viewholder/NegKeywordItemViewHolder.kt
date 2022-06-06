@@ -2,56 +2,74 @@ package com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.topads_dash_item_neg_keyword_card.view.*
-
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 7/6/20.
  */
 
-class NegKeywordItemViewHolder(val view: View,
-                               var onSelectMode: ((select: Boolean) -> Unit)) : NegKeywordViewHolder<NegKeywordItemModel>(view) {
+class NegKeywordItemViewHolder(
+    val view: View,
+    var onSelectMode: ((select: Boolean) -> Unit),
+) : NegKeywordViewHolder<NegKeywordItemModel>(view) {
+
+    private val cardView: CardUnify = view.findViewById(R.id.card_view)
+    private val itemCard: ConstraintLayout = view.findViewById(R.id.item_card)
+    private val keyTitle: Typography = view.findViewById(R.id.key_title)
+    private val checkBox: CheckboxUnify = view.findViewById(R.id.check_box)
+    private val label: Label = view.findViewById(R.id.label)
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_dash_item_neg_keyword_card
+        val LAYOUT = R.layout.topads_dash_item_neg_keyword_card
     }
 
-    override fun bind(item: NegKeywordItemModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
+    override fun bind(
+        item: NegKeywordItemModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean,
+    ) {
         item.let {
             if (selectMode) {
-                view.check_box.visibility = View.VISIBLE
+                checkBox.visibility = View.VISIBLE
             } else {
-                view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
-                view.check_box.visibility = View.GONE
+                cardView.setBackgroundColor(ContextCompat.getColor(
+                    view.context, R.color.topads_dash_white))
+                checkBox.visibility = View.GONE
             }
-            view.key_title.text = it.result.keywordTag
-            view.label.text = it.result.keywordTypeDesc
-            view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
-            view.check_box.isChecked = item.isChecked
-            if (!view.check_box.isChecked) {
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+            keyTitle.text = it.result.keywordTag
+            label.text = it.result.keywordTypeDesc
+            label.setLabelType(Label.GENERAL_LIGHT_GREEN)
+            checkBox.isChecked = item.isChecked
+            if (!checkBox.isChecked) {
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_dash_white))
             } else {
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_select_color))
             }
-            view.item_card.setOnClickListener {
+            itemCard.setOnClickListener {
                 if (selectMode) {
-                    view.check_box.isChecked = !view.check_box.isChecked
-                    item.isChecked = view.check_box.isChecked
-                    if (view.check_box.isChecked)
-                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                    checkBox.isChecked = !checkBox.isChecked
+                    item.isChecked = checkBox.isChecked
+                    if (checkBox.isChecked)
+                        cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                            R.color.topads_select_color))
                     else
-                        view.card_view?.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                        cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                            R.color.topads_dash_white))
                 }
             }
-            view.item_card.setOnLongClickListener {
+            itemCard.setOnLongClickListener {
                 item.isChecked = true
-                view.check_box.isChecked = true
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                checkBox.isChecked = true
+                cardView.setBackgroundColor(ContextCompat.getColor(
+                    view.context, R.color.topads_select_color))
                 onSelectMode.invoke(true)
                 true
             }

@@ -110,6 +110,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
 
         const val TITLE = "title"
         const val SUB_TITLE = "subtitle"
@@ -524,7 +525,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position, userSession.userId)
                 toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
 
                 updateFeedUpdateVisibility(position)
@@ -698,7 +699,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun showNormalTextWhiteToolbar() {
         if (toolbarType != TOOLBAR_GRADIENT) {
-            feedBackgroundCrossfader.reverseTransition(200)
+            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
@@ -714,7 +715,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun showWhiteTextTransparentToolbar() {
         if (toolbarType != TOOLBAR_WHITE) {
-            feedBackgroundCrossfader.reverseTransition(200)
+            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE

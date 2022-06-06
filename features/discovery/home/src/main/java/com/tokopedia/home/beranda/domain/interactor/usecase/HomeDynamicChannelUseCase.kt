@@ -696,7 +696,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
                                         } else {
-                                            atfData.status = AtfKey.STATUS_ERROR
+                                            atfData.status = AtfKey.STATUS_EMPTY
                                         }
                                     }
                                     homeData.atfData?.isProcessingAtf = false

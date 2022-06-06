@@ -372,6 +372,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun showError(error: Throwable) {
+        hideContent()
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
             requireContext(), error, ErrorHandler.Builder().build()
         )
@@ -430,7 +431,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun closeViewWithMessageAlert(error: Throwable) {
         loaderCheckout.visibility = View.GONE
-
         if (cartPassData?.isFromPDP == true) {
             val intent = Intent()
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, error)

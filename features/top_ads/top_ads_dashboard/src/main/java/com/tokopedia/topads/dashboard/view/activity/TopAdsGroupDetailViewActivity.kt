@@ -74,7 +74,7 @@ import com.tokopedia.topads.dashboard.tracker.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.BidSwitchManualBudgetBottomSheet
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.CardUnify

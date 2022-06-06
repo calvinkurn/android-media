@@ -129,6 +129,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 name
                 tagLine
                 url
+                ownerID
               }
               shopLastActive
               location
@@ -260,11 +261,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             }
             validateTradeIn {
               isEligible
-              isDiagnosed
-              useKyc
               usedPrice
-              remainingPrice
-              message
               widgetString
             }
             cartRedirection {

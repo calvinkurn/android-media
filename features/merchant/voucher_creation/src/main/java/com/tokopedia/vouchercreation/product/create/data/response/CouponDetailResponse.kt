@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.data.response
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -62,7 +63,7 @@ data class Voucher(
         val finishTime: String = "",
         @Expose
         @SerializedName("voucher_id")
-        val voucherId: Int = 0,
+        val voucherId: String = "",
         @Expose
         @SerializedName("voucher_image")
         val voucherImage: String = "",
@@ -110,10 +111,11 @@ data class Voucher(
         val productIds: List<ProductId> = emptyList(),
         @Expose
         @SerializedName("galadriel_voucher_id")
-        val galadrielVoucherId: Long = 0,
+        val galadrielVoucherId: String = "",
 )
 
 @Parcelize
+@SuppressLint("Invalid Data Type")
 data class ProductId(
         @Expose
         @SerializedName("parent_product_id")

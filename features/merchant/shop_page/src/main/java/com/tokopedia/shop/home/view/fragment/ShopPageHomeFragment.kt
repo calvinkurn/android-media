@@ -118,7 +118,7 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomShee
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
@@ -1057,7 +1057,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             viewModel?.userId.orEmpty(),
             shopHomeCarousellProductUiModel?.header?.title ?: "",
             shopHomeCarousellProductUiModel?.name ?: "",
-            customDimensionShopPage
+            customDimensionShopPage,
+                shopHomeProductViewModel?.recommendationType ?: "",
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: "",
         )
     }
 
@@ -1116,7 +1118,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeAdapter.setProductListEmptyState(isOwner)
         } else {
             addChangeProductGridSection(totalProductData)
-            shopHomeAdapter.setProductListData(productList)
+            shopHomeAdapter.setProductListData(productList, isOwner)
             updateScrollListenerState(hasNextPage)
         }
     }
@@ -2033,11 +2035,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
-                isLogin,
                 shopHomeProductViewModel.name ?: "",
                 shopHomeProductViewModel.id ?: "",
                 shopHomeProductViewModel.displayedPrice ?: "",
                 shopHomeProductViewModel.recommendationType ?: "",
+                    shopHomeProductViewModel.categoryBreadcrumbs ?: "",
                 shopName,
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
@@ -2073,7 +2075,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
-                customDimensionShopPage
+                customDimensionShopPage,
+                    shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
             )
             goToPDP(it.id ?: "")
         }
@@ -2208,11 +2211,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     ) {
         shopPageHomeTracking.impressionProductPersonalization(
             isOwner,
-            isLogin,
             shopHomeProductViewModel?.name ?: "",
             shopHomeProductViewModel?.id ?: "",
             shopHomeProductViewModel?.displayedPrice ?: "",
             shopHomeProductViewModel?.recommendationType ?: "",
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: "",
             viewModel?.userId.orEmpty(),
             shopName,
             ShopUtil.getActualPositionFromIndex(itemPosition),
@@ -2239,7 +2242,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopName,
             ShopUtil.getActualPositionFromIndex(itemPosition),
             shopHomeCarousellProductUiModel?.header?.title ?: "",
-            customDimensionShopPage
+            customDimensionShopPage,
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
         )
     }
 

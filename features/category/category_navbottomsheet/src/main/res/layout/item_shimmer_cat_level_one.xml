@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/imageShimmer"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
@@ -15,9 +15,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/textShimmer"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="wrap_content"
@@ -27,7 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageShimmer"
         android:textSize="@dimen/sp_10"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <View
         android:layout_width="match_parent"

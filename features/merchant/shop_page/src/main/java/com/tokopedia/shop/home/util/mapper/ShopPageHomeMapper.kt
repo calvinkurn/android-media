@@ -44,7 +44,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -674,6 +674,7 @@ object ShopPageHomeMapper {
                 isShowFreeOngkir = it.isShowFreeOngkir
                 freeOngkirPromoIcon = it.freeOngkirPromoIcon
                 recommendationType = it.recommendationType
+                categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
             }

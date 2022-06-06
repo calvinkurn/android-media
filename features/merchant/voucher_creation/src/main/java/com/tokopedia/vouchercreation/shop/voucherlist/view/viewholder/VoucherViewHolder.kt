@@ -7,12 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 import timber.log.Timber
 import kotlin.reflect.KFunction1
 
@@ -34,6 +35,8 @@ class VoucherViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_voucher_list
     }
 
+    private var binding: ItemMvcVoucherListBinding? by viewBinding()
+
     init {
         moreButton = itemView?.findViewById(R.id.iu_more_button)
         btnMvcMore = itemView?.findViewById(R.id.btnMvcMore)
@@ -41,26 +44,26 @@ class VoucherViewHolder(
     }
 
     override fun bind(element: VoucherUiModel) {
-        with(itemView) {
+        binding?.apply {
             tvMvcVoucherName.text = element.name
 
             val description = "${element.typeFormatted} ${element.discountAmtFormatted}"
             tvMvcVoucherDescription.text = description
 
             if (element.isVps) {
-                label_vps.show()
-                label_subsidy.gone()
-                tpg_package_name.text = element.packageName
-                tpg_package_name.show()
+                labelVps.show()
+                labelSubsidy.gone()
+                tpgPackageName.text = element.packageName
+                tpgPackageName.show()
             } else {
-                label_vps.gone()
-                tpg_package_name.gone()
+                labelVps.gone()
+                tpgPackageName.gone()
             }
 
             if (element.isSubsidy && !element.isVps) {
-                label_subsidy.show()
-                label_vps.gone()
-            } else label_subsidy.gone()
+                labelSubsidy.show()
+                labelVps.gone()
+            } else labelSubsidy.gone()
 
             val remainingAmount = element.quota - element.confirmedQuota
             val remainingVoucherText = "<b>${remainingAmount}</b>/${element.quota}"
@@ -73,7 +76,7 @@ class VoucherViewHolder(
             setupVoucherCtaButton(element)
             setVoucherDate(element)
 
-            imgMvcVoucherType?.setOnClickListener {
+            imgMvcVoucherType.setOnClickListener {
                 listener.onVoucherIconClickListener(element.status)
                 listener.onVoucherClickListener(element.id)
             }
@@ -83,7 +86,7 @@ class VoucherViewHolder(
             btnMvcMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
             }
-            setOnClickListener {
+            root.setOnClickListener {
                 listener.onVoucherClickListener(element.id)
             }
         }
@@ -98,14 +101,14 @@ class VoucherViewHolder(
         if (isActiveVoucher) {
             val startTime = DateTimeUtils.reformatUnsafeDateTime(element.startTime, newFormat)
             val finishTime = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, newFormat)
-            itemView.tvMvcVoucherDuration.text = String.format("%s - %s", startTime, finishTime)
+            binding?.tvMvcVoucherDuration?.text = String.format("%s - %s", startTime, finishTime)
         } else {
             /**
              * this is not fix, need to confirm which date(create/update/start/finish)
              * must be shown for voucher type deleted, ended, progress and stopped
              * */
             val createdTime = DateTimeUtils.reformatUnsafeDateTime(element.createdTime, newFormat)
-            itemView.tvMvcVoucherDuration.text = createdTime
+            binding?.tvMvcVoucherDuration?.text = createdTime
         }
     }
 
@@ -133,9 +136,9 @@ class VoucherViewHolder(
                 }
                 else -> {
                     if (element.type != VoucherTypeConst.FREE_ONGKIR && !element.isSubsidy && !element.isVps) {
-                        btnMvcVoucherCta?.visible()
+                        binding?.btnMvcVoucherCta?.visible()
                     } else {
-                        btnMvcVoucherCta?.invisible()
+                        binding?.btnMvcVoucherCta?.invisible()
                     }
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
@@ -144,7 +147,7 @@ class VoucherViewHolder(
                     moreButton?.gone()
                 }
             }
-            btnMvcVoucherCta?.run {
+            binding?.btnMvcVoucherCta?.run {
                 this.buttonType = buttonType
                 this.buttonVariant = buttonVariant
                 text = context.getString(stringRes)
@@ -157,23 +160,21 @@ class VoucherViewHolder(
 
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
-            with(itemView.imgMvcVoucherType) {
-                val drawableRes = when {
-                    isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
-                    !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
-                    isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_publik
-                    !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
-                    else -> R.drawable.ic_mvc_cashback_publik
-                }
-                loadImageDrawable(drawableRes)
+            val drawableRes = when {
+                isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
+                !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
+                isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_publik
+                !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
+                else -> R.drawable.ic_mvc_cashback_publik
             }
+            binding?.imgMvcVoucherType?.loadImageDrawable(drawableRes)
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
 
     private fun showPromoCode(isPublicVoucher: Boolean, voucherCode: String) {
-        with(itemView) {
+        binding?.apply {
             val isVisible = !isPublicVoucher
             if (isVisible) viewMvcVoucherCodeBg.visible() else viewMvcVoucherCodeBg.invisible()
             if (isVisible) tvLblCode.visible() else tvLblCode.invisible()
@@ -183,41 +184,41 @@ class VoucherViewHolder(
     }
 
     private fun setVoucherStatus(element: VoucherUiModel) {
-        with(itemView) {
+        binding?.apply {
             val statusStr: String
             val colorRes: Int
             val statusIndicatorBg: Int
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
-                    statusStr = context.getString(R.string.mvc_ongoing)
+                    statusStr = root.context.getString(R.string.mvc_ongoing)
                     colorRes = com.tokopedia.unifyprinciples.R.color.Green_G500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_green
                 }
                 VoucherStatusConst.NOT_STARTED -> {
-                    statusStr = context.getString(R.string.mvc_future)
+                    statusStr = root.context.getString(R.string.mvc_future)
                     colorRes = com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
                 }
                 VoucherStatusConst.STOPPED -> {
-                    statusStr = context.getString(R.string.mvc_stopped)
+                    statusStr = root.context.getString(R.string.mvc_stopped)
                     colorRes = com.tokopedia.unifyprinciples.R.color.Red_R500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_red
                 }
                 VoucherStatusConst.DELETED -> {
-                    statusStr = context.getString(R.string.mvc_deleted)
+                    statusStr = root.context.getString(R.string.mvc_deleted)
                     colorRes = com.tokopedia.unifyprinciples.R.color.Red_R500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_red
                 }
                 else -> {
-                    statusStr = context.getString(R.string.mvc_ended)
+                    statusStr = root.context.getString(R.string.mvc_ended)
                     colorRes = com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
                 }
             }
 
             tvMvcVoucherStatus.text = statusStr
-            tvMvcVoucherStatus.setTextColor(context.getResColor(colorRes))
-            viewMvcVoucherStatus.background = context.getResDrawable(statusIndicatorBg)
+            tvMvcVoucherStatus.setTextColor(root.context.getResColor(colorRes))
+            viewMvcVoucherStatus.background = root.context.getResDrawable(statusIndicatorBg)
         }
     }
 

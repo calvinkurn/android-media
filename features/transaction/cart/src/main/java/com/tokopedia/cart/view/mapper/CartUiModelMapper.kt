@@ -403,6 +403,7 @@ object CartUiModelMapper {
             productCashBack = product.productCashback
             notes = product.productNotes
             originalNotes = notes
+            placeholderNote = cartData.placeholderNote
             maxNotesLength = cartData.maxCharNote
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {

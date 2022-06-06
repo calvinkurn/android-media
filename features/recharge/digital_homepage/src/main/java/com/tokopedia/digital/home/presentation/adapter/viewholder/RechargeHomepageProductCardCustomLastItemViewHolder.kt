@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardTypeFactory
@@ -36,6 +38,11 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
             hideLoading()
             setupInitialView(element)
             setupList(element)
+
+            binding.root.addOnImpressionListener(section) {
+                listener.onRechargeSectionItemImpression(section)
+            }
+
         } else {
             showLoading()
             listener.loadRechargeSectionData(element.visitableId())
@@ -46,7 +53,15 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
         with(binding) {
             // handle background color
             try {
-                containerRechargeCustomLastItem.setBackgroundColor(Color.parseColor(element.section.label2))
+                if (element.section.label2.isNotEmpty())
+                    containerRechargeCustomLastItem.setBackgroundColor(Color.parseColor(element.section.label2))
+                else
+                    containerRechargeCustomLastItem.setBackgroundColor(
+                        MethodChecker.getColor(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                    )
             } catch (t: Throwable) {
                 t.printStackTrace()
             }

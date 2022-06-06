@@ -14,10 +14,13 @@ class GenerateKeyPojo {
 }
 
 data class GenerateKeyData(
-        var key: String = "",
-        var server_timestamp: String = "",
-        var error: String = "",
+    @SerializedName("key")
+    var key: String = "",
+    @SerializedName("server_timestamp")
+    var server_timestamp: String = "",
+    @SerializedName("error")
+    var error: String = "",
 
-        @Transient
-        var taskId: String = ""
+    @Transient
+    var taskId: String = ""
 )

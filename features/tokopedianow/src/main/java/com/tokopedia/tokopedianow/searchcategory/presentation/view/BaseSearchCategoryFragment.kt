@@ -38,6 +38,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -106,10 +107,10 @@ import javax.inject.Inject
 import kotlin.collections.set
 
 abstract class BaseSearchCategoryFragment:
-        BaseDaggerFragment(),
-        ChooseAddressListener,
-        BannerComponentListener,
-        TitleListener,
+    BaseDaggerFragment(),
+    ChooseAddressListener,
+    BannerComponentListener,
+    TitleListener,
     CategoryFilterListener,
     QuickFilterListener,
     SortFilterBottomSheet.Callback,
@@ -160,12 +161,10 @@ abstract class BaseSearchCategoryFragment:
 
     private val searchCategoryToolbarHeight: Int
         get() {
-            val defaultHeight = resources
-                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+            val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height).orZero()
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding =
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
 
             return height + padding
         }
@@ -240,8 +239,7 @@ abstract class BaseSearchCategoryFragment:
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
-        val toolbarTransitionRangePixel =
-                resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
+        val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
 
         return NavRecyclerViewScrollListener(
                 navToolbar = navToolbar,
@@ -351,7 +349,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
         params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
@@ -797,10 +795,10 @@ abstract class BaseSearchCategoryFragment:
         if (!isVisible) {
             headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
         } else {
-            val background = VectorDrawableCompat.create(
-                resources, R.drawable.tokopedianow_ic_header_background, context?.theme
-            )
-            headerBackground?.setImageDrawable(background)
+            context?.resources?.apply {
+                val background = VectorDrawableCompat.create(this, R.drawable.tokopedianow_ic_header_background, context?.theme)
+                headerBackground?.setImageDrawable(background)
+            }
         }
         headerBackground?.showWithCondition(isVisible)
     }
