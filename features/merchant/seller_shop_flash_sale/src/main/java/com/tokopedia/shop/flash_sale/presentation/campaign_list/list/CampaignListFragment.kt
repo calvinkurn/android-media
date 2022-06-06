@@ -59,6 +59,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
+        private const val DRAFT_SERVER_SAVING_DURATION = 1000L
 
         @JvmStatic
         fun newInstance(
@@ -542,10 +543,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDeleteDraftSuccess() {
-        viewModel.getCampaignDrafts(
-            MAX_DRAFT_COUNT,
-            FIRST_PAGE
-        )
+        binding?.btnDraft?.isLoading = true
+        // add delay to wait until server done to saving data,
+        // with this delay we can get more actual draft data
+        view?.postDelayed( {
+            viewModel.getCampaignDrafts(MAX_DRAFT_COUNT, FIRST_PAGE)
+        }, DRAFT_SERVER_SAVING_DURATION)
     }
 
     private fun showCancelCampaignBottomSheet(id: Long, title: String, status: CampaignStatus?) {
@@ -555,6 +558,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             Toaster.build(view ?: return@CancelCampaignBottomSheet, toasterMessage,
                 Toaster.LENGTH_SHORT, actionText = toasterActionText
             ).show()
+            view?.post {
+                clearAllData()
+                getCampaigns(FIRST_PAGE)
+            }
         }
         bottomSheet.show(childFragmentManager)
     }
