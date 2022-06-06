@@ -91,7 +91,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val tickerPagerAdapter = TickerPagerAdapter(it, listTicker)
             tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    redirectToWebView(linkUrl)
+                    redirectLink(linkUrl)
                 }
 
             })
@@ -100,6 +100,14 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                 addPagerView(tickerPagerAdapter, listTicker)
             }
         }
+    }
+
+    private fun redirectLink(linkUrl: CharSequence) {
+//        if (RouteManager.isSupportApplink(context, linkUrl.toString())) {
+            RouteManager.route(context, linkUrl.toString())
+//        } else {
+//            redirectToWebView(linkUrl)
+//        }
     }
 
     private fun redirectToWebView(linkUrl: CharSequence) {
