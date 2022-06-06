@@ -58,6 +58,7 @@ import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
 import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayoutManager
@@ -286,8 +287,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onLocalizingAddressServerDown() {}
 
-    override fun onClickHomeIcon(applink: String) {
+    override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, verticalPosition: Int) {
+        analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
         RouteManager.route(context, applink)
+    }
+
+    override fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int) {
+        analytics.impressionIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
     }
 
     override fun onClickMerchant(merchant: Merchant) {

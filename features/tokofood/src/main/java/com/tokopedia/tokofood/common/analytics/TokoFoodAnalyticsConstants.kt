@@ -9,12 +9,17 @@ object TokoFoodAnalyticsConstants {
     const val DESTINATION_ID = "destinationId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
+    const val GOFOOD_PAGENAME = "gofood"
 
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val OPEN_SCREEN = "openScreen"
     const val CLICK_PG = "clickPG"
     const val PHYSICAL_GOODS = "physical Goods"
     const val ADD_TO_CART = "add_to_cart"
+    const val VIEW_ITEM = "view_item"
+
+    //home
+    const val EMPTY_DATA = "null"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"

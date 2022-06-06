@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodIconBinding
@@ -46,6 +47,15 @@ class TokoFoodHomeIconsViewHolder(
         }
         iconRecyclerView?.adapter = adapter
         iconRecyclerView?.layoutManager = GridLayoutManager(itemView.context, GRID_ITEM, GridLayoutManager.VERTICAL, false)
+        setItemViewImpression(element)
+    }
+
+    private fun setItemViewImpression(element: TokoFoodHomeIconsUiModel) {
+        itemView.addOnImpressionListener(element) {
+            element.listIcons?.let {
+                homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), adapterPosition)
+            }
+        }
     }
 
     internal inner class TokoFoodIconAdapter: RecyclerView.Adapter<TokoFoodIconViewHolder>() {
@@ -91,12 +101,13 @@ class TokoFoodHomeIconsViewHolder(
             tgIcon?.text = item.name
 
             bindingIcon.root.setOnClickListener {
-                homeIconsListener?.onClickHomeIcon(item.applinks)
+                homeIconsListener?.onClickHomeIcon(item.applinks, listOf(item), adapterPosition)
             }
         }
     }
 
     interface TokoFoodHomeIconsListener {
-        fun onClickHomeIcon(applink: String)
+        fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, verticalPosition: Int)
+        fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int)
     }
 }

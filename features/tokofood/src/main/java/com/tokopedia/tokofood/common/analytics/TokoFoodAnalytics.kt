@@ -19,6 +19,7 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_CLICK_PAYMENT = "click pilih pembayaran in tokofood checkout page"
     const val EVENT_ACTION_VIEW_PROMO_PAGE = "view tokofood promo page"
     const val EVENT_ACTION_CLICK_LCA = "click LCA widget"
+    const val EVENT_ACTION_CLICK_CATEGORY_ICONS = "click category icons"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"
