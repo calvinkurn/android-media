@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
@@ -34,7 +35,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 20/04/22
  */
-class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
+class InteractiveSetupDialogFragment @Inject constructor(
+    val analytic: PlayBroadcastInteractiveAnalytic,
+) : DialogFragment() {
 
     private var mDataSource: DataSource? = null
 
@@ -148,6 +151,7 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
             formView.setListener(object : GiveawayFormView.Listener {
                 override fun onExit(view: GiveawayFormView) { dismiss() }
                 override fun onDone(view: GiveawayFormView, data: GiveawayFormView.Data) {
+                    analytic.onClickContinueGiveaway(viewModel.channelId, viewModel.channelTitle)
                     viewModel.submitAction(
                         PlayBroadcastAction.CreateGiveaway(
                             title = data.title,
