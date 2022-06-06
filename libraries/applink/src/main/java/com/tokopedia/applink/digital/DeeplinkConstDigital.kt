@@ -5,6 +5,7 @@ object DeeplinkConstDigital {
             "pulsa" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2",
             "axis" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0838",
             "im3" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0856",
+            "bolt" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2",
             "3" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0897",
             "pulsa-xl" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0817",
             "paket-smartfren" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0888",
@@ -19,6 +20,7 @@ object DeeplinkConstDigital {
             "paket-internet-im3" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-internet-mentari" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-internet-tri" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0897",
+            "paket-internet-bolt" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2",
             "paket-internet-simpati" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0812",
 
             "paket-data/telkomsel" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0812",
@@ -28,6 +30,7 @@ object DeeplinkConstDigital {
             "paket-data/im3" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-data/mentari" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-data/tri" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0897",
+            "paket-data/bolt" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2",
             "paket-data/simpati" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0812",
 
             "roaming" to "tokopedia://digital/form?category_id=20&menu_id=314&template=roamingv2",
@@ -40,6 +43,7 @@ object DeeplinkConstDigital {
 
             "pulsa/axis" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0838",
             "pulsa/im3" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0856",
+            "pulsa/bolt" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2",
             "pulsa/tri" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0897",
             "pulsa/xl" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0817",
             "pulsa/smartfren" to "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2&client_number=0888",
@@ -54,6 +58,7 @@ object DeeplinkConstDigital {
             "paket-internet/im3" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-internet/mentari" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0856",
             "paket-internet/tri" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0897",
+            "paket-internet/bolt" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2",
             "paket-internet/simpati" to "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2&client_number=0812",
 
             "tv-kabel" to "tokopedia://digital/form?category_id=8&menu_id=154&template=general",
