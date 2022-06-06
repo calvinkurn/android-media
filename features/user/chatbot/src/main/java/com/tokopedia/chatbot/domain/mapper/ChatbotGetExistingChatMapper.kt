@@ -6,7 +6,6 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply

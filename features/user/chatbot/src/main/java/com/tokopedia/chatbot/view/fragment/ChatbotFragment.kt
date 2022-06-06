@@ -385,17 +385,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
-        presenter.checkVideoUploadEligibility(msgId = messageId,{
-            userVideoUploadEligible = true
-        },{
-            userVideoUploadEligible = false
-        })
         showTicker()
-
-        presenter.getVideoUploadPolicy("fLapDZ") {
-            maxFileSize = it.uploadPolicy.sourcePolicy.vodPolicy.maxFileSize
-            listOfAllowedExtention = it.uploadPolicy.sourcePolicy.vodPolicy.allowedExtention.split(",").toTypedArray().toList()
-        }
 
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()

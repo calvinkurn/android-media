@@ -150,13 +150,6 @@ interface ChatbotContract {
         fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
-        fun checkVideoUploadEligibility(
-            msgId: String,
-            isEligible: (Boolean) -> Unit,
-            error: (UploadVideoEligibilityResponse.TopBotUploadVideoEligibility.HeaderVideoEligibility) -> Unit
-        )
-
-        fun getVideoUploadPolicy(source: String, response: (ChatbotVODUploadPolicyResponse) -> Unit)
 
         fun uploadVideo(
             videoModel: VideoUploadUiModel,

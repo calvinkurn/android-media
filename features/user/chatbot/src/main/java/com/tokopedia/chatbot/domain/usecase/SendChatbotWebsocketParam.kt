@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 
@@ -201,8 +202,7 @@ object SendChatbotWebsocketParam {
         data.addProperty("message", "Uploaded Video")
         data.addProperty(
             "attachment_type", Integer.parseInt(
-                AttachmentType
-                    .Companion.TYPE_VIDEO_UPLOAD
+                ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
             )
         )
         data.addProperty("file_path", "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=41e55036b08144c38d9ae1144788e5cb")

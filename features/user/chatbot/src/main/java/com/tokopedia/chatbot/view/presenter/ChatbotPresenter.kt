@@ -135,8 +135,6 @@ class ChatbotPresenter @Inject constructor(
     private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
     private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
     private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
-    private val chatbotVideoUploadEligibilityUseCase: ChatbotVideoUploadEligibilityUseCase,
-    private val chatbotUploadPolicyUseCase: ChatbotUploadPolicyUseCase,
     private val uploaderUseCase : UploaderUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
@@ -576,43 +574,6 @@ class ChatbotPresenter @Inject constructor(
             })
         }
 
-    }
-
-    override fun checkVideoUploadEligibility(
-        msgId: String,
-        isEligible: (Boolean) -> Unit,
-        error: (UploadVideoEligibilityResponse.TopBotUploadVideoEligibility.HeaderVideoEligibility) -> Unit
-    ) {
-        launchCatchError(
-            block = {
-               val gqlResponse =  chatbotVideoUploadEligibilityUseCase.getUserVideoUploadEligibility(msgId)
-                val response = gqlResponse.getData<UploadVideoEligibilityResponse>(
-                    UploadVideoEligibilityResponse::class.java)
-                isEligible(response.topbotUploadVideoEligibility.data.isEligibile)
-                error(response.topbotUploadVideoEligibility.header.reason)
-
-                    },
-            onError = {
-
-            }
-        )
-
-    }
-
-    override fun getVideoUploadPolicy(
-        source: String,
-        response: (ChatbotVODUploadPolicyResponse) -> Unit
-    ) {
-        launchCatchError(
-            block = {
-                val gqlResponse = chatbotUploadPolicyUseCase.getChatbotUploadPolicy(source)
-                val uploadPolicyResponse = gqlResponse.getData<ChatbotVODUploadPolicyResponse>(ChatbotVODUploadPolicyResponse::class.java)
-                response(uploadPolicyResponse)
-            },
-            onError = {
-
-            }
-        )
     }
 
     override fun uploadVideo(
