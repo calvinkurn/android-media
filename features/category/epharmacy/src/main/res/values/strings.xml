@@ -6,5 +6,6 @@
     <string name="epharmacy_upload_instruction_1">Pastikan seluruh bagian kertas terlihat dan dapat terbaca</string>
     <string name="epharmacy_upload_instruction_2">Upload foto resep sesuai dengan obat yang dibeli</string>
     <string name="epharmacy_upload_instruction_3">Boleh upload lebih dari 1 resep dari dokter/klinik/kunjungan berbeda</string>
+    <string name="epharmacy_foto_resep">Foto Resep</string>
 
 </resources>
