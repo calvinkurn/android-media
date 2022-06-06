@@ -13,6 +13,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.Url
+import java.util.*
 
 /**
  * Created by irpan on 23/05/22.
@@ -45,7 +46,7 @@ object LogisticImageDeliveryHelper {
         onFailedListener: ((Unit) -> Unit)? = null
     ) {
 
-        val authKey = String.format("%s %s", HEADER_VALUE_BEARER, accessToken)
+        val authKey = String.format(Locale.getDefault(),"%s %s", HEADER_VALUE_BEARER, accessToken)
         val newUrl = GlideUrl(url, LazyHeaders.Builder().addHeader(HEADER_KEY_AUTH, authKey).build())
 
         this?.let { imgProof ->

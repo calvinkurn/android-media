@@ -126,6 +126,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia-android-internal://logistic/shipping/pod/167075392?image_id=kero-21e88f99-771e-4b60-aa40-871877101a24&description=Foto%20sepenuhnya%20diambil%20dan%20merupakan%20tanggung%20jawab%20kurir.%20Tokopedia%20tidak%20bertanggung%20jawab%20atas%20hasil%20foto%20yang%20terlampir."
     }
 }

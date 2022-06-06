@@ -11,9 +11,9 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_proof"
         android:layout_width="match_parent"
-        android:minHeight="300dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:minHeight="300dp"
         android:src="@color/transparent"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,11 +30,13 @@
         android:paddingVertical="10dp"
         android:textAlignment="center"
         android:textColor="@color/Unify_Static_White"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/img_proof"
         app:layout_constraintEnd_toEndOf="@id/img_proof"
         app:layout_constraintStart_toStartOf="@id/img_proof"
         app:typographyType="body_3"
-        tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir." />
+        tools:text="Foto sepenuhnya diambil dan merupakan tanggung jawab kurir."
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_back"
@@ -50,34 +52,6 @@
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="filled" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/view_image_not_valid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dms_proof_background_image_static_black"
-        android:visibility="gone">
+    <include layout="@layout/partial_proof_of_delivery_error" android:id="@+id/partial_pod_error"/>
 
-        <ImageView
-            android:id="@+id/btn_dismiss"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="40dp"
-            android:src="@drawable/ic_dismiss"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingHorizontal="16dp"
-            android:text="@string/pod_not_valid_proof"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

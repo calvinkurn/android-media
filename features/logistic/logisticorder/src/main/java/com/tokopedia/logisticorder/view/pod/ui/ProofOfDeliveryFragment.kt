@@ -16,7 +16,6 @@ import com.tokopedia.logisticorder.databinding.FragmentProofOfDeliveryBinding
 import com.tokopedia.logisticorder.view.pod.data.ProofOfDeliveryModel
 import com.tokopedia.logisticorder.view.pod.di.DaggerProofOfDeliveryComponent
 import com.tokopedia.logisticorder.view.pod.di.ProofOfDeliveryComponent
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -121,7 +120,7 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                 userSession.accessToken,
                 url,
                 onReadyListener = {
-                    showImage()
+                    showUI()
                 },
                 onFailedListener = {
                     showError()
@@ -132,23 +131,28 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showImage() {
+    private fun showUI() {
         binding?.run {
             var textDescription = podData?.description
             if (textDescription.isNullOrEmpty()) {
                 textDescription = getString(R.string.pod_label_description)
             }
             binding?.run {
+                proofDescription.visibility = View.VISIBLE
                 proofDescription.text = textDescription
             }
+
         }
     }
 
     private fun showError() {
-        binding?.viewImageNotValid?.visibility = View.VISIBLE
-        binding?.btnDismiss?.setOnClickListener {
-            requireActivity().finish()
+        binding?.partialPodError?.run {
+            viewImageNotValid?.visibility = View.VISIBLE
+            btnDismiss?.setOnClickListener {
+                requireActivity().finish()
+            }
         }
+
     }
 
 }
