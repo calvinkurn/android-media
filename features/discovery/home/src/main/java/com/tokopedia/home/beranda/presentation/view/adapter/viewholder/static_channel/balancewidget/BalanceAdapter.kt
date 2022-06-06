@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -50,11 +51,7 @@ import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -185,16 +182,8 @@ class BalanceAdapter(
                     home_tv_balance?.show()
                     home_tv_btn_action_balance?.show()
 
-                    renderBalanceText(
-                        element?.balanceTitleTextAttribute,
-                        element?.balanceTitleTagAttribute,
-                        home_tv_balance
-                    )
-                    renderBalanceText(
-                        element?.balanceSubTitleTextAttribute,
-                        element?.balanceSubTitleTagAttribute,
-                        home_tv_btn_action_balance
-                    )
+                    renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, home_tv_balance)
+                    renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
 
                     if (element.reserveBalance.isNotEmpty()) {
                         home_tv_reserve_balance?.visible()
@@ -391,16 +380,8 @@ class BalanceAdapter(
                 BalanceDrawerItemModel.STATE_ERROR -> {
                     home_progress_bar_balance_layout?.gone()
                     home_container_action_balance?.show()
-                    renderBalanceText(
-                        element.balanceTitleTextAttribute,
-                        element.balanceTitleTagAttribute,
-                        home_tv_balance
-                    )
-                    renderBalanceText(
-                        element.balanceSubTitleTextAttribute,
-                        element.balanceSubTitleTagAttribute,
-                        home_tv_btn_action_balance
-                    )
+                    renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, home_tv_balance)
+                    renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, home_tv_btn_action_balance)
                     home_container_balance?.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRetryWalletApp()},
@@ -533,14 +514,12 @@ class BalanceAdapter(
             )
         }
 
-        private fun renderBalanceText(
-            textAttr: BalanceTextAttribute?,
-            tagAttr: BalanceTagAttribute?,
-            textView: TextView
-        ) {
+        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.home_balance_default_text_size) {
+            textView.setTypeface(null, Typeface.NORMAL)
 
             textView.background = null
             textView.text = null
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
             if (tagAttr != null && tagAttr.text.isNotEmpty()) {
                 renderTagAttribute(tagAttr, textView)
             } else if (textAttr != null && textAttr.text.isNotEmpty()) {

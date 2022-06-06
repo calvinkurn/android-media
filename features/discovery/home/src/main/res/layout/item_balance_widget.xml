@@ -67,9 +67,10 @@
             android:ellipsize="end"
             android:lines="1"
             android:gravity="center"
-            app:typographyType="small"
-            app:typographyWeight="bold"
+            android:textSize="12sp"
+            app:typographyType="body_3"
             android:textColor="@color/Unify_N700_68"
+            android:textStyle="bold"
             tools:text="50 Toko Poin"/>
 
         <com.tokopedia.unifyprinciples.Typography
