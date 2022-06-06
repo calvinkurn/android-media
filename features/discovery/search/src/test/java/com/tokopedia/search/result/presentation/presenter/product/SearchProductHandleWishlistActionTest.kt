@@ -113,6 +113,22 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
     }
 
     @Test
+    fun `Handle success remove wishlist action for recommendation product`() {
+        val productCardOptionsModel = ProductCardOptionsModel(
+            productId = "12345",
+            isTopAds = false,
+            isWishlisted = true,
+            isRecommendation = true
+        ).also {
+            it.wishlistResult = ProductCardOptionsModel.WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true)
+        }
+
+        `When handle wishlist action`(productCardOptionsModel)
+
+        `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel)
+    }
+
+    @Test
     fun `Handle success wishlist action for recommendation - topads product`() {
         val productCardOptionsModel = ProductCardOptionsModel(
             productId = "12345",
@@ -129,9 +145,8 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
     }
 
     private fun `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
-        val isAddWishlist = !productCardOptionsModel.isWishlisted
         verifyOrder {
-            productListView.trackWishlistRecommendationProductLoginUser(isAddWishlist)
+            productListView.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
