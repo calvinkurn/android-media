@@ -6,7 +6,8 @@
     "list": [
       {
         "content": "Apakah stok tersedia?",
-        "intent": "stock_availability"
+        "intent": "stock_availability",
+        "label": ""
       }
     ]
   }

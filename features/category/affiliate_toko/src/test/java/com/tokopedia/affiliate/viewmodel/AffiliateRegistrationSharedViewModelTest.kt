@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -26,9 +28,10 @@ import org.junit.Test
 class AffiliateRegistrationSharedViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
+    private val affiliateAffiliateAnnouncementUseCase : AffiliateAnnouncementUseCase = mockk()
     private var affiliateRegistrationSharedViewModel = spyk(AffiliateRegistrationSharedViewModel(
         userSessionInterface,
-        affiliateValidateUserStatus))
+        affiliateValidateUserStatus,affiliateAffiliateAnnouncementUseCase))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -56,12 +59,12 @@ class AffiliateRegistrationSharedViewModelTest {
         val affiliateValidateUserData =
             AffiliateValidateUserData(AffiliateValidateUserData.ValidateAffiliateUserStatus(
                 AffiliateValidateUserData.ValidateAffiliateUserStatus.Data(
-                    null, isEligible = true, isRegistered = false, null)))
+                    null, isEligible = true, isRegistered = false, isReviewed = false,isSystemDown = false,null)))
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
 
         affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
 
-        assertEquals(affiliateRegistrationSharedViewModel.getUserAction().value,
+        assertEquals(affiliateRegistrationSharedViewModel.getLoginScreenAction().value,
             AffiliateRegistrationSharedViewModel.UserAction.SignUpAction)
     }
 
@@ -70,7 +73,7 @@ class AffiliateRegistrationSharedViewModelTest {
         val affiliateValidateUserData =
             AffiliateValidateUserData(AffiliateValidateUserData.ValidateAffiliateUserStatus(
                 AffiliateValidateUserData.ValidateAffiliateUserStatus.Data(
-                    null, isEligible = false, isRegistered = false, null)))
+                    null, isEligible = false, isRegistered = false, isReviewed = false,isSystemDown = false,null)))
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
 
         affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
@@ -84,7 +87,7 @@ class AffiliateRegistrationSharedViewModelTest {
         val affiliateValidateUserData =
             AffiliateValidateUserData(AffiliateValidateUserData.ValidateAffiliateUserStatus(
                 AffiliateValidateUserData.ValidateAffiliateUserStatus.Data(
-                    null, isEligible = true, isRegistered = true, null)))
+                    null, isEligible = true, isRegistered = true, isReviewed = false,isSystemDown = false,null)))
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
 
         affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
@@ -94,11 +97,24 @@ class AffiliateRegistrationSharedViewModelTest {
     }
 
     @Test
+    fun getAffiliateSystemDownTest() {
+        val affiliateValidateUserData =
+            AffiliateValidateUserData(AffiliateValidateUserData.ValidateAffiliateUserStatus(
+                AffiliateValidateUserData.ValidateAffiliateUserStatus.Data(
+                    null, isEligible = true, isRegistered = true, isReviewed = false,isSystemDown = true,null)))
+        coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
+
+        affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
+
+        assertEquals(affiliateRegistrationSharedViewModel.getLoginScreenAction().value,
+            AffiliateRegistrationSharedViewModel.UserAction.SystemDown)
+    }
+    @Test
     fun getAffiliateValidateUserProgressBarTest() {
         val affiliateValidateUserData =
             AffiliateValidateUserData(AffiliateValidateUserData.ValidateAffiliateUserStatus(
                 AffiliateValidateUserData.ValidateAffiliateUserStatus.Data(
-                    null, isEligible = true, isRegistered = true, null)))
+                    null, isEligible = true, isRegistered = true, isReviewed = false,isSystemDown = true,null)))
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
 
         affiliateRegistrationSharedViewModel.getAffiliateValidateUser()
@@ -178,5 +194,23 @@ class AffiliateRegistrationSharedViewModelTest {
             arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>())
     }
 
+    @Test
+    fun getAnnouncementInformation(){
+        val affiliateAnnouncementData : AffiliateAnnouncementDataV2 = mockk(relaxed = true)
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
+
+        affiliateRegistrationSharedViewModel.getAnnouncementInformation()
+
+        assertEquals(affiliateRegistrationSharedViewModel.getAffiliateAnnouncement().value,affiliateAnnouncementData)
+    }
+
+    @Test
+    fun getAnnouncementValidateException() {
+        val throwable = Throwable("Validate Data Exception")
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } throws throwable
+
+        affiliateRegistrationSharedViewModel.getAnnouncementInformation()
+
+    }
 
 }

@@ -3,8 +3,12 @@ package com.tokopedia.encryption.security
 import android.util.Base64
 import com.tokopedia.encryption.utils.Constants
 import java.security.*
+import java.security.interfaces.RSAPublicKey
+import java.security.spec.MGF1ParameterSpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
+import javax.crypto.spec.OAEPParameterSpec
+import javax.crypto.spec.PSource
 
 class RSA {
 
@@ -22,25 +26,46 @@ class RSA {
 
     fun encrypt(message: String,
                 key: PublicKey,
-                algorithm: String = Constants.RSA_ALGORITHM,
-                encoder: ((ByteArray) -> (String))): String {
+                algorithm: String = Constants.RSA_PKCS1_ALGORITHM,
+                encoder: ((ByteArray) -> (String)) = { bytes ->
+                    Base64.encodeToString(bytes, Base64.DEFAULT)
+                }): String {
         val cipher: Cipher = Cipher.getInstance(algorithm)
-        cipher.init(Cipher.ENCRYPT_MODE, key)
+        if (Constants.RSA_OAEP_ALGORITHM == algorithm) {
+            val oaepParameterSpec = OAEPParameterSpec(
+                "SHA-256", "MGF1",
+                MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT
+            )
+            cipher.init(Cipher.ENCRYPT_MODE, key, oaepParameterSpec)
+        } else {
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+        }
         val encryptedBytes = cipher.doFinal(message.toByteArray(Charsets.UTF_8))
         return encoder(encryptedBytes)
     }
 
-    fun stringToPublicKey(keyInString: String): PublicKey {
+    fun stringToPublicKey(keyInString: String): RSAPublicKey {
         val publicBytes: ByteArray = Base64.decode(keyInString, Base64.DEFAULT)
         val keySpec = X509EncodedKeySpec(publicBytes)
         val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
-        return keyFactory.generatePublic(keySpec)
+        return (keyFactory.generatePublic(keySpec) as RSAPublicKey)
     }
 
     fun decrypt(message: String, key: PrivateKey,
-                decoder: ((String) -> (ByteArray))): String {
-        val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
-        cipher.init(Cipher.DECRYPT_MODE, key)
+                algorithm: String = Constants.RSA_PKCS1_ALGORITHM,
+                decoder: ((String) -> (ByteArray)) = { bytes ->
+                    Base64.decode(bytes, Base64.DEFAULT)
+                }): String {
+        val cipher: Cipher = Cipher.getInstance(algorithm)
+        if (Constants.RSA_OAEP_ALGORITHM == algorithm) {
+            val oaepParameterSpec = OAEPParameterSpec(
+                "SHA-256", "MGF1",
+                MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT
+            )
+            cipher.init(Cipher.DECRYPT_MODE, key, oaepParameterSpec)
+        } else {
+            cipher.init(Cipher.DECRYPT_MODE, key)
+        }
         return String(cipher.doFinal(decoder(message)), Charsets.UTF_8)
     }
 }
