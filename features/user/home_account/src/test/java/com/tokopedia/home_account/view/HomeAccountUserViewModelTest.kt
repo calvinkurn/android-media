@@ -110,7 +110,6 @@ class HomeAccountUserViewModelTest {
             dispatcher
         )
 
-//        viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
         viewModel.shortcutData.observeForever(shortCutResponse)
         viewModel.safeModeStatus.observeForever(safeStatusResponse)
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintResult)
