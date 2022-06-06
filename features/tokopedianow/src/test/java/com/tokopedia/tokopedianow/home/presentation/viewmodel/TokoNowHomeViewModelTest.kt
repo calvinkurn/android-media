@@ -2629,7 +2629,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when trackSwitchService with intended serviceType and only has origin model should return zero for warehouse id destination`() {
-        val intendedServiceType = "2h"
+        val intendedServiceType = "15m"
 
         val localCacheModel = createLocalCacheModel(warehouses = listOf(
             LocalWarehouseModel(
@@ -2642,9 +2642,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
             userId = "",
-            whIdOrigin = "111111",
-            whIdDestination = "0",
-            isNow15 = false,
+            whIdOrigin = "0",
+            whIdDestination = "111111",
+            isNow15 = true,
             isImpressionTracker = false
         ))
     }
