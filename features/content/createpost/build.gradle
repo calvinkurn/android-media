@@ -103,6 +103,15 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation 'androidx.fragment:fragment-ktx:1.2.0'
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {
@@ -113,4 +122,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply plugin: 'kotlin-android'

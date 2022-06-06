@@ -7,6 +7,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -2072,5 +2073,21 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParam = "kumamoto"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/" + queryParam
         assertEqualsDeepLinkMapper(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, queryParam), expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed creation product search applink customerapp`() {
+        val applink = ApplinkConst.FEED_CREATION_PRODUCT_SEARCH
+        val internalApplink = ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
+
+        assertEqualsDeepLinkMapper(applink, internalApplink)
+    }
+
+    @Test
+    fun `check feed creation shop search applink customerapp`() {
+        val applink = ApplinkConst.FEED_CREATION_SHOP_SEARCH
+        val internalApplink = ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
+
+        assertEqualsDeepLinkMapper(applink, internalApplink)
     }
 }
