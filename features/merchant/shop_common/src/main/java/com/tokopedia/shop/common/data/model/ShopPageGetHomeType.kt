@@ -1,4 +1,4 @@
-package com.tokopedia.shop.pageheader.data.model
+package com.tokopedia.shop.common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
