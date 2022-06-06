@@ -26,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
-class DraftDeleteBottomSheet(
+open class DraftDeleteBottomSheet(
     private val draftItemModel: DraftItemModel? = null,
     private val onDeleteDraftSuccess: () -> Unit = {}
 ): ModalBottomSheet() {
@@ -38,7 +38,8 @@ class DraftDeleteBottomSheet(
 
     @Inject
     lateinit var viewModel: DraftDeleteViewModel
-    private var typographyDraftDeleteDesc: Typography? = null
+    protected var typographyDraftDeleteDesc: Typography? = null
+    protected var typographyQuestionTitle: Typography? = null
     private var etQuestionOther: TextAreaUnify2? = null
     private var rvQuestionList: RecyclerView? = null
     private var questionListAdapter = DraftDeleteQuestionAdapter()
@@ -86,6 +87,7 @@ class DraftDeleteBottomSheet(
         btnStop = contentView?.findViewById(R.id.btnStop)
         btnBack = contentView?.findViewById(R.id.btnBack)
         typographyDraftDeleteDesc = contentView?.findViewById(R.id.typographyDraftDeleteDesc)
+        typographyQuestionTitle = contentView?.findViewById(R.id.typographyQuestionTitle)
         setChild(contentView)
     }
 

@@ -28,9 +28,12 @@ import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flash_sale.domain.entity.aggregate.ShareComponentMetadata
+import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flash_sale.presentation.campaign_list.dialog.showNoCampaignQuotaDialog
+import com.tokopedia.shop.flash_sale.presentation.cancelation.CancelCampaignBottomSheet
 import com.tokopedia.shop.flash_sale.presentation.draft.bottomsheet.DraftListBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -484,17 +487,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
     }
 
-    private fun onDeleteDraftSuccess() {
-        viewModel.getCampaignDrafts(
-            MAX_DRAFT_COUNT,
-            FIRST_PAGE
-        )
-    }
-
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {
-        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignName, campaign.status)
+        val bottomSheet = MoreMenuBottomSheet.newInstance(campaign.campaignId,
+            campaign.campaignName, campaign.status)
         bottomSheet.setOnViewCampaignMenuSelected {}
-        bottomSheet.setOnCancelCampaignMenuSelected {}
+        bottomSheet.setOnCancelCampaignMenuSelected { id: Long, title: String, status: CampaignStatus? ->
+            showCancelCampaignBottomSheet(id, title, status)
+        }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
             viewModel.getShareComponentMetadata(campaign.campaignId)
@@ -540,6 +539,24 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             outgoingText
         )
         shareComponentBottomSheet?.dismiss()
+    }
+
+    private fun onDeleteDraftSuccess() {
+        viewModel.getCampaignDrafts(
+            MAX_DRAFT_COUNT,
+            FIRST_PAGE
+        )
+    }
+
+    private fun showCancelCampaignBottomSheet(id: Long, title: String, status: CampaignStatus?) {
+        val toasterActionText = getString(R.string.action_oke)
+        val toasterMessage = getString(R.string.cancelcampaign_message_success, title)
+        val bottomSheet = CancelCampaignBottomSheet(id, title, status) {
+            Toaster.build(view ?: return@CancelCampaignBottomSheet, toasterMessage,
+                Toaster.LENGTH_SHORT, actionText = toasterActionText
+            ).show()
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showLoaderDialog() {
