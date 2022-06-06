@@ -132,11 +132,11 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                         outOfService,
                         object : GlobalErrorBottomSheetActionListener {
                             override fun onGoToHome() {
-                                miniCartChatListBottomSheet.dismiss()
+                                // No-op
                             }
 
                             override fun onRefreshErrorPage() {
-                                // No-op
+                                showMiniCartChatListBottomSheet(fragment)
                             }
                         })
                 }
