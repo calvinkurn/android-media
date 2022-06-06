@@ -2954,11 +2954,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun removeLocalCartItem(updateListResult: Pair<List<Int>, List<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
-        updateListResult.first.forEach {
-            onNeedToRemoveViewItem(it)
-        }
-        updateListResult.second.forEach {
-            onNeedToUpdateViewItem(it)
+        val updateIndices = updateListResult.second
+        val removeIndices = updateListResult.first
+        if (removeIndices.size > 1) {
+            // on multiple deletion, notify data set changed to prevent indices race condition
+            cartAdapter.notifyDataSetChanged()
+        } else {
+            updateIndices.forEach {
+                onNeedToUpdateViewItem(it)
+            }
+            removeIndices.forEach {
+                onNeedToRemoveViewItem(it)
+            }
         }
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
