@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:text="@string/play_bro_next_action"
-            android:enabled="false"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="@id/ic_close_quiz_form"
             app:layout_constraintEnd_toEndOf="parent"
