@@ -1,12 +1,16 @@
-package com.tokopedia.wishlist.data.model.response
+package com.tokopedia.wishlistcommon.data.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetWishlistV2Response(
-	@SerializedName("wishlist_v2")
-	val wishlistV2: WishlistV2 = WishlistV2()) {
-
+	@SerializedName("data")
+	val data: Data = Data()
+) {
+	data class Data(
+		@SerializedName("wishlist_v2")
+		val wishlistV2: WishlistV2 = WishlistV2()
+	) {
 		data class WishlistV2(
 			@SerializedName("error_message")
 			val errorMessage: String = "",
@@ -40,8 +44,8 @@ data class GetWishlistV2Response(
 
 			@SerializedName("empty_state")
 			val emptyState: EmptyState = EmptyState()
-	) {
-		data class Item(
+		) {
+			data class Item(
 
 				@SerializedName("original_price")
 				val originalPrice: String = "",
@@ -127,8 +131,8 @@ data class GetWishlistV2Response(
 
 				@SerializedName("sold_count")
 				val soldCount: String = ""
-		) {
-			data class LabelGroupItem(
+			) {
+				data class LabelGroupItem(
 					@SerializedName("position")
 					val position: String = "",
 
@@ -140,9 +144,9 @@ data class GetWishlistV2Response(
 
 					@SerializedName("url")
 					val url: String = ""
-			)
+				)
 
-			data class WholesalePriceItem(
+				data class WholesalePriceItem(
 					@SuppressLint("Invalid Data Type")
 					@SerializedName("price")
 					val price: String = "",
@@ -152,17 +156,17 @@ data class GetWishlistV2Response(
 
 					@SerializedName("minimum")
 					val minimum: String = ""
-			)
+				)
 
-			data class BadgesItem(
+				data class BadgesItem(
 					@SerializedName("image_url")
 					val imageUrl: String = "",
 
 					@SerializedName("title")
 					val title: String = ""
-			)
+				)
 
-			data class BebasOngkir(
+				data class BebasOngkir(
 
 					@SerializedName("image_url")
 					val imageUrl: String = "",
@@ -172,9 +176,9 @@ data class GetWishlistV2Response(
 
 					@SerializedName("title")
 					val title: String = ""
-			)
+				)
 
-			data class CategoryItem(
+				data class CategoryItem(
 
 					@SerializedName("category_name")
 					val categoryName: String = "",
@@ -182,9 +186,9 @@ data class GetWishlistV2Response(
 					@SuppressLint("Invalid Data Type")
 					@SerializedName("category_id")
 					val categoryId: Int = -1
-			)
+				)
 
-			data class Shop(
+				data class Shop(
 
 					@SerializedName("is_tokonow")
 					val isTokonow: Boolean = false,
@@ -203,26 +207,26 @@ data class GetWishlistV2Response(
 
 					@SerializedName("url")
 					val url: String = ""
-			) {
-				data class Fulfillment(
+				) {
+					data class Fulfillment(
 
 						@SerializedName("text")
 						val text: String = "",
 
 						@SerializedName("is_fulfillment")
 						val isFulfillment: Boolean = false
-				)
-			}
+					)
+				}
 
-			data class Buttons(
+				data class Buttons(
 
 					@SerializedName("additional_buttons")
 					val additionalButtons: List<AdditionalButtonsItem> = emptyList(),
 
 					@SerializedName("primary_button")
 					val primaryButton: PrimaryButton = PrimaryButton()
-			) {
-				data class AdditionalButtonsItem(
+				) {
+					data class AdditionalButtonsItem(
 
 						@SerializedName("action")
 						val action: String = "",
@@ -232,9 +236,9 @@ data class GetWishlistV2Response(
 
 						@SerializedName("url")
 						val url: String = ""
-				)
+					)
 
-				data class PrimaryButton(
+					data class PrimaryButton(
 
 						@SerializedName("action")
 						val action: String = "",
@@ -244,11 +248,11 @@ data class GetWishlistV2Response(
 
 						@SerializedName("url")
 						val url: String = ""
-				)
+					)
+				}
 			}
-		}
 
-		data class EmptyState(
+			data class EmptyState(
 
 				@SerializedName("button")
 				val button: Button = Button(),
@@ -258,8 +262,8 @@ data class GetWishlistV2Response(
 
 				@SerializedName("type")
 				val type: String = ""
-		) {
-			data class Button(
+			) {
+				data class Button(
 
 					@SerializedName("action")
 					val action: String = "",
@@ -269,10 +273,10 @@ data class GetWishlistV2Response(
 
 					@SerializedName("url")
 					val url: String = ""
-			)
-		}
+				)
+			}
 
-		data class SortFiltersItem(
+			data class SortFiltersItem(
 
 				@SerializedName("selection_type")
 				val selectionType: Int = -1,
@@ -292,8 +296,8 @@ data class GetWishlistV2Response(
 
 				@SerializedName("text")
 				val text: String = ""
-		) {
-			data class OptionsItem(
+			) {
+				data class OptionsItem(
 
 					@SerializedName("is_selected")
 					val isSelected: Boolean = false,
@@ -306,7 +310,8 @@ data class GetWishlistV2Response(
 
 					@SerializedName("text")
 					val text: String = ""
-			)
+				)
+			}
 		}
 	}
 }

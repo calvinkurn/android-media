@@ -765,8 +765,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishListActionListener.onSuccessAddWishlist(result.data, productId)
-            } else if (result is Fail) {
-                wishListActionListener.onErrorAddWishList(result.throwable, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorAddWishList(error, productId)
             }
         }
     }
@@ -781,8 +782,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
-            } else if (result is Fail) {
-                wishListActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
             }
         }
     }
@@ -1367,19 +1369,24 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             source = SOURCE_CART
         }
 
-        getWishlistV2UseCase.loadWishlistV2(requestParams, onSuccess = { result ->
-            view?.let {
-                if (result.wishlistV2.items.isNotEmpty()) {
-                    it.renderWishlistV2(result.wishlistV2.items, true)
+        launch(dispatchers.main) {
+            getWishlistV2UseCase.setParams(requestParams)
+            val result = withContext(dispatchers.io) { getWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                view?.let {
+                    if (result.data.items.isNotEmpty()) {
+                        it.renderWishlistV2(result.data.items, true)
+                    }
+                    it.setHasTriedToLoadWishList()
+                    it.stopAllCartPerformanceTrace()
                 }
-                it.setHasTriedToLoadWishList()
-                it.stopAllCartPerformanceTrace()
+            } else {
+                val error = (result as Fail).throwable
+                Timber.d(error)
+                view?.setHasTriedToLoadWishList()
+                view?.stopAllCartPerformanceTrace()
             }
-        }, onError = {
-            it.printStackTrace()
-            view?.setHasTriedToLoadWishList()
-            view?.stopAllCartPerformanceTrace()
-        })
+        }
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {

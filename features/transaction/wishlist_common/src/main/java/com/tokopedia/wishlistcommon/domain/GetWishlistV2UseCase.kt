@@ -1,36 +1,34 @@
 package com.tokopedia.wishlistcommon.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.wishlist.data.model.WishlistV2Params
-import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_V2
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistV2", GQL_WISHLIST_V2)
-class GetWishlistV2UseCase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetWishlistV2Response>(graphqlRepository) {
-
-    fun loadWishlistV2(param: WishlistV2Params, onSuccess: (response: GetWishlistV2Response) -> Unit,
-                       onError: (Throwable) -> Unit) {
-        try {
-            val params = setParams(param)
-            this.setTypeClass(GetWishlistV2Response::class.java)
-            this.setRequestParams(params)
-            this.setGraphqlQuery(GetWishlistV2())
-            execute({
-                onSuccess(it)
-            }, {
-                onError(it)
-            })
+class GetWishlistV2UseCase @Inject constructor(private val graphqlRepository: GraphqlRepository):
+    UseCase<Result<GetWishlistV2Response.Data.WishlistV2>>() {
+    private var params: Map<String, Any?>? = null
+    override suspend fun executeOnBackground(): Result<GetWishlistV2Response.Data.WishlistV2> {
+        return try {
+            val request = GraphqlRequest(GetWishlistV2(), GetWishlistV2Response.Data::class.java)
+            val response = graphqlRepository.response(listOf(request)).getSuccessData<GetWishlistV2Response.Data>()
+            Success(response.wishlistV2)
         } catch (e: Exception) {
-            onError(e)
+            Fail(e)
         }
-
     }
 
-    private fun setParams(param: WishlistV2Params): Map<String, Any?> {
-        return mapOf(PARAMS to param)
+    fun setParams(param: WishlistV2Params) {
+        params = mapOf(PARAMS to param)
     }
 
     companion object {

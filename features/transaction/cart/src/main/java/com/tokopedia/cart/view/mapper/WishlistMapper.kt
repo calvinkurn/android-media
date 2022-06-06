@@ -3,7 +3,7 @@ package com.tokopedia.cart.view.mapper
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import java.util.*
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class WishlistMapper @Inject constructor() {
         return cartWishlistItemHolderDataList
     }
 
-    fun convertToViewHolderModelListV2(wishlists: List<GetWishlistV2Response.WishlistV2.Item>): ArrayList<CartWishlistItemHolderData> {
+    fun convertToViewHolderModelListV2(wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>): ArrayList<CartWishlistItemHolderData> {
         val cartWishlistItemHolderDataList = ArrayList<CartWishlistItemHolderData>()
         wishlists.forEach {
             cartWishlistItemHolderDataList.add(convertToViewHolderModelV2(it))
@@ -70,7 +70,7 @@ class WishlistMapper @Inject constructor() {
         return cartWishlistItemHolderData
     }
 
-    private fun convertToViewHolderModelV2(wishlist: GetWishlistV2Response.WishlistV2.Item): CartWishlistItemHolderData {
+    private fun convertToViewHolderModelV2(wishlist: GetWishlistV2Response.Data.WishlistV2.Item): CartWishlistItemHolderData {
         val cartWishlistItemHolderData = CartWishlistItemHolderData()
         cartWishlistItemHolderData.id = wishlist.id
         cartWishlistItemHolderData.name = wishlist.name
