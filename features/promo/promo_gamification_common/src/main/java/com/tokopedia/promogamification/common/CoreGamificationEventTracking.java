@@ -7,7 +7,7 @@ package com.tokopedia.promogamification.common;
 public interface CoreGamificationEventTracking {
 
     interface Event {
-        String CLICK_LUCKY_EGG = "luckyEggClick";
+        String CLICK_LUCKY_EGG = "clickHomepage";
         String VIEW_LUCKY_EGG = "luckyEggView";
     }
 
