@@ -85,7 +85,7 @@ object PMConstant {
         const val PRO_ULTIMATE = "ultimate"
     }
 
-    object EligbleShopGrade {
+    object EligibleShopGrade {
         const val PRO_ADVANCE = "PM PRO Advanced"
         const val PRO_EXPERT = "PM PRO Expert"
         const val PRO_ULTIMATE = "PM PRO Ultimate"

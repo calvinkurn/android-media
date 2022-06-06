@@ -70,7 +70,7 @@ class UpgradePmProWidget(
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligbleShopGrade.PRO_ADVANCE,
+                            PMConstant.EligibleShopGrade.PRO_ADVANCE,
                             element.nextMonthlyRefreshDate
                         )
                     )
@@ -80,7 +80,7 @@ class UpgradePmProWidget(
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligbleShopGrade.PRO_EXPERT,
+                            PMConstant.EligibleShopGrade.PRO_EXPERT,
                             element.nextMonthlyRefreshDate
                         )
                     )
@@ -90,7 +90,7 @@ class UpgradePmProWidget(
                     tickerPmWidget.setHtmlDescription(
                         root.context.getString(
                             R.string.pm_ticker_eligble_upgrade,
-                            PMConstant.EligbleShopGrade.PRO_ULTIMATE,
+                            PMConstant.EligibleShopGrade.PRO_ULTIMATE,
                             element.nextMonthlyRefreshDate
                         )
                     )
