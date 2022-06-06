@@ -10,14 +10,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Media implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
-    private int id;
-    @SuppressLint("Invalid Data Type")
+    private String id;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("title")
     @Expose
     private String title;
@@ -45,8 +43,8 @@ public class Media implements Parcelable {
     }
 
     protected Media(Parcel in) {
-        id = in.readInt();
-        productId = in.readInt();
+        id = in.readString();
+        productId = in.readString();
         title = in.readString();
         isThumbnail = in.readInt();
         type = in.readString();
@@ -68,19 +66,19 @@ public class Media implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -147,8 +145,8 @@ public class Media implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeInt(productId);
+        dest.writeString(id);
+        dest.writeString(productId);
         dest.writeString(title);
         dest.writeInt(isThumbnail);
         dest.writeString(type);
