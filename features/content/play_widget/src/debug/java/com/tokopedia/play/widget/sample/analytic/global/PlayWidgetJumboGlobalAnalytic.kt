@@ -2,12 +2,8 @@ package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
-import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
-import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -64,7 +60,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = EVENT_VIEW_ITEM,
+            event = PROMO_VIEW,
             eventCategory = model.category,
             eventAction = "impression on play sgc channel",
             eventLabel = eventLabel(
@@ -107,7 +103,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = EVENT_CLICK_ITEM,
+            event = PROMO_CLICK,
             eventCategory = model.category,
             eventAction = "click",
             eventLabel = eventLabel(
@@ -219,8 +215,8 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
     }
 
     companion object {
-        private const val EVENT_VIEW_ITEM = "view_item"
-        private const val EVENT_CLICK_ITEM = "select_content"
+        private const val PROMO_VIEW = "promoView"
+        private const val PROMO_CLICK = "promoClick"
 
         private const val EVENT_VIEW = "viewContentIris"
         private const val EVENT_CLICK = "clickContent"

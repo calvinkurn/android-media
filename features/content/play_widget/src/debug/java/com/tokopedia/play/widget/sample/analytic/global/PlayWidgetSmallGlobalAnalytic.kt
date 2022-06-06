@@ -12,7 +12,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -61,7 +60,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         businessWidgetPosition: Int,
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = EVENT_VIEW_ITEM,
+            event = PROMO_VIEW,
             eventCategory = model.category,
             eventAction = "impression on play sgc channel",
             eventLabel = eventLabel(
@@ -104,7 +103,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         businessWidgetPosition: Int,
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = EVENT_CLICK_ITEM,
+            event = PROMO_CLICK,
             eventCategory = model.category,
             eventAction = "click",
             eventLabel = eventLabel(
@@ -249,8 +248,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     }
 
     companion object {
-        private const val EVENT_VIEW_ITEM = "view_item"
-        private const val EVENT_CLICK_ITEM = "select_content"
+        private const val PROMO_VIEW = "promoView"
+        private const val PROMO_CLICK = "promoClick"
 
         private const val EVENT_VIEW = "viewContentIris"
         private const val EVENT_CLICK = "clickContent"
