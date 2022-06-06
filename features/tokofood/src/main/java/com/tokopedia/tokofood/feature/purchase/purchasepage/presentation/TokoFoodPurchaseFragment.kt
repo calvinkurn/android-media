@@ -772,18 +772,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
     }
 
-    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
-        val cartList = productList.map {
-            CartItemTokoFoodParam(
-                productId = it.id,
-                quantity = it.quantity
-            )
-        }
-        return CartTokoFoodParam(
-            carts = cartList
-        )
-    }
-
     private fun showConsentBottomSheet(data: CheckoutTokoFoodConsentBottomSheet) {
         if (data.isShowBottomsheet) {
             consentBottomSheet = TokoFoodPurchaseConsentBottomSheet.createInstance(
@@ -952,7 +940,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
-    override fun onTextSetPinpointClicked() {}
+    override fun onTextSetPinpointClicked() {
+        val locationPass =
+            LocationPass().apply {
+                latitude = TokoFoodPurchaseViewModel.TOTO_LATITUDE
+                longitude = TokoFoodPurchaseViewModel.TOTO_LONGITUDE
+            }
+        navigateToSetPinpoint(locationPass)
+    }
 
     override fun onTextAddItemClicked() {
         navigateToMerchantPage(shopId)

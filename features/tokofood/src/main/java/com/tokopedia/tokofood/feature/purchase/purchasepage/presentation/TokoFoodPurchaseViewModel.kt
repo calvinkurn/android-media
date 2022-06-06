@@ -653,8 +653,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     companion object {
         private const val SOURCE = "checkout_page"
 
-        private const val TOTO_LATITUDE = "-6.2216771"
-        private const val TOTO_LONGITUDE = "106.8184023"
+        const val TOTO_LATITUDE = "-6.2216771"
+        const val TOTO_LONGITUDE = "106.8184023"
 
         private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
     }
