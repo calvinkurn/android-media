@@ -10,6 +10,7 @@ import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetLargeGlobalAna
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetMediumGlobalAnalytic
 import com.tokopedia.play.widget.sample.analytic.global.PlayWidgetSmallGlobalAnalytic
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -18,13 +19,14 @@ import dagger.assisted.AssistedInject
  * Created by kenny.hadisaputra on 31/05/22
  */
 class PlayWidgetGlobalAnalytic @AssistedInject constructor(
-    @Assisted val model: PlayWidgetAnalyticModel,
+    @Assisted private val model: PlayWidgetAnalyticModel,
+    @Assisted private val trackingQueue: TrackingQueue,
     private val smallAnalytic: PlayWidgetSmallGlobalAnalytic.Factory,
     private val mediumAnalytic: PlayWidgetMediumGlobalAnalytic.Factory,
     private val largeAnalytic: PlayWidgetLargeGlobalAnalytic.Factory,
     private val jumboAnalytic: PlayWidgetJumboGlobalAnalytic.Factory,
 ) : PlayWidgetInListAnalyticListener,
-    PlayWidgetInListSmallAnalyticListener by smallAnalytic.create(model),
+    PlayWidgetInListSmallAnalyticListener by smallAnalytic.create(model, trackingQueue),
     PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model),
     PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model),
     PlayWidgetInListJumboAnalyticListener by jumboAnalytic.create(model)
@@ -32,6 +34,9 @@ class PlayWidgetGlobalAnalytic @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(model: PlayWidgetAnalyticModel): PlayWidgetGlobalAnalytic
+        fun create(
+            model: PlayWidgetAnalyticModel,
+            trackingQueue: TrackingQueue,
+        ): PlayWidgetGlobalAnalytic
     }
 }

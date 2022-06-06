@@ -8,6 +8,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -18,12 +20,16 @@ import dagger.assisted.AssistedInject
  */
 class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     @Assisted val model: PlayWidgetAnalyticModel,
+    @Assisted val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface,
 ) : PlayWidgetInListSmallAnalyticListener {
 
     @AssistedFactory
     interface Factory {
-        fun create(model: PlayWidgetAnalyticModel): PlayWidgetSmallGlobalAnalytic
+        fun create(
+            model: PlayWidgetAnalyticModel,
+            trackingQueue: TrackingQueue,
+        ): PlayWidgetSmallGlobalAnalytic
     }
 
     private val irisSessionId: String
@@ -50,41 +56,40 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    "event" to EVENT_VIEW_ITEM,
-                    "eventAction" to "impression on play sgc channel",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
-                        model.prefix, /** prefix **/
-                        item.channelType.toTrackingType(), /** videoType **/
-                        item.partner.id, /** partnerID **/
-                        item.channelId, /** channelID **/
-                        channelPositionInList + 1, /** position **/
-                        businessWidgetPosition, /** businessPosition **/
-                        "is autoplay $isAutoPlay", /** isAutoPlay **/
-                        "", /** duration **/ //TODO("Ask Aryo")
-                        item.promoType.toTrackingString(), /** promoType **/
-                        item.recommendationType, /** recommendationType **/
-                        "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                        "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                        WIDGET_SIZE, /** widgetSize **/
-                    ),
-                    "businessUnit" to "play",
-                    "currentSite" to currentSite,
-                    "promotions" to listOf(
-                        mapOf(
-                            "creative_name" to model.promotionsCreativeName,
-                            "creative_slot" to channelPositionInList + 1,
-                            "item_id" to item.channelId,
-                            "item_name" to model.promotionsItemName,
-                        ),
-                    ),
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+        trackingQueue.putEETracking(
+            event = EventModel(
+                event = EVENT_VIEW_ITEM,
+                action = "impression on play sgc channel",
+                category = model.category,
+                label = eventLabel(
+                    model.prefix, /** prefix **/
+                    item.channelType.toTrackingType(), /** videoType **/
+                    item.partner.id, /** partnerID **/
+                    item.channelId, /** channelID **/
+                    channelPositionInList + 1, /** position **/
+                    businessWidgetPosition, /** businessPosition **/
+                    "is autoplay $isAutoPlay", /** isAutoPlay **/
+                    "", /** duration **/ //TODO("Ask Aryo")
+                    item.promoType.toTrackingString(), /** promoType **/
+                    item.recommendationType, /** recommendationType **/
+                    "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
+                    "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                    WIDGET_SIZE, /** widgetSize **/
                 )
+            ),
+            enhanceECommerceMap = hashMapOf(
+                "creative_name" to model.promotionsCreativeName,
+                "creative_slot" to channelPositionInList + 1,
+                "item_id" to item.channelId,
+                "item_name" to model.promotionsItemName,
+            ),
+            customDimension = hashMapOf(
+                "businessUnit" to "play",
+                "currentSite" to currentSite,
+                "sessionIris" to irisSessionId,
+                "userId" to userId,
             )
+        )
     }
 
     override fun onClickChannelCard(
@@ -95,41 +100,40 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    "event" to EVENT_CLICK_ITEM,
-                    "eventAction" to "click",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
-                        model.prefix, /** prefix **/
-                        item.channelType.toTrackingType(), /** videoType **/
-                        item.partner.id, /** partnerID **/
-                        item.channelId, /** channelID **/
-                        channelPositionInList + 1, /** position **/
-                        businessWidgetPosition, /** businessPosition **/
-                        "is autoplay $isAutoPlay", /** isAutoPlay **/
-                        "", /** duration **/ //TODO("Ask Aryo")
-                        item.promoType.toTrackingString(), /** promoType **/
-                        item.recommendationType, /** recommendationType **/
-                        "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                        "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                        WIDGET_SIZE, /** widgetSize **/
-                    ),
-                    "businessUnit" to "play",
-                    "currentSite" to currentSite,
-                    "promotions" to listOf(
-                        mapOf(
-                            "creative_name" to model.promotionsCreativeName,
-                            "creative_slot" to channelPositionInList + 1,
-                            "item_id" to item.channelId,
-                            "item_name" to model.promotionsItemName,
-                        ),
-                    ),
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+        trackingQueue.putEETracking(
+            event = EventModel(
+                event = EVENT_CLICK_ITEM,
+                action = "click",
+                category = model.category,
+                label = eventLabel(
+                    model.prefix, /** prefix **/
+                    item.channelType.toTrackingType(), /** videoType **/
+                    item.partner.id, /** partnerID **/
+                    item.channelId, /** channelID **/
+                    channelPositionInList + 1, /** position **/
+                    businessWidgetPosition, /** businessPosition **/
+                    "is autoplay $isAutoPlay", /** isAutoPlay **/
+                    "", /** duration **/ //TODO("Ask Aryo")
+                    item.promoType.toTrackingString(), /** promoType **/
+                    item.recommendationType, /** recommendationType **/
+                    "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
+                    "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                    WIDGET_SIZE, /** widgetSize **/
                 )
+            ),
+            enhanceECommerceMap = hashMapOf(
+                "creative_name" to model.promotionsCreativeName,
+                "creative_slot" to channelPositionInList + 1,
+                "item_id" to item.channelId,
+                "item_name" to model.promotionsItemName,
+            ),
+            customDimension = hashMapOf(
+                "businessUnit" to "play",
+                "currentSite" to currentSite,
+                "sessionIris" to irisSessionId,
+                "userId" to userId,
             )
+        )
     }
 
     /**

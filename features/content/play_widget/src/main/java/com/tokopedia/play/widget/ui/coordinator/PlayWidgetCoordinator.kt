@@ -1,5 +1,7 @@
 package com.tokopedia.play.widget.ui.coordinator
 
+import android.app.Activity
+import android.app.Service
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -17,6 +19,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +29,10 @@ import kotlinx.coroutines.cancelChildren
  * Created by jegul on 13/10/20
  */
 class PlayWidgetCoordinator constructor(
-    context: Context,
-    lifecycleOwner: LifecycleOwner? = null,
+    lifecycleOwner: LifecycleOwner,
     mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val autoHandleLifecycleMethod: Boolean = false,
 ) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -73,10 +76,28 @@ class PlayWidgetCoordinator constructor(
 
     private var widgetComponent: PlayWidgetComponent? = null
 
-    init {
-        lifecycleOwner?.let { configureLifecycle(it) }
+    private var trackingQueue: TrackingQueue? = null
+    private val trackingLifecycleObserver = LifecycleEventObserver { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_PAUSE -> trackingQueue?.sendAll()
+            else -> {}
+        }
+    }
 
-        widgetComponent = PlayWidgetComponentCreator.getOrCreate(context.applicationContext)
+    init {
+        val context: Context? = when (lifecycleOwner) {
+            is Activity -> lifecycleOwner
+            is Fragment -> lifecycleOwner.context
+            is Service -> lifecycleOwner
+            else -> null
+        }
+
+        if (context != null) {
+            trackingQueue = TrackingQueue(context)
+            widgetComponent = PlayWidgetComponentCreator.getOrCreate(context.applicationContext)
+        }
+
+        configureLifecycle(lifecycleOwner)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -119,7 +140,7 @@ class PlayWidgetCoordinator constructor(
         mWidget?.setWidgetListener(mListener)
     }
 
-    fun setAnalyticModel(model: PlayWidgetAnalyticModel?) {
+    fun setAnalyticModel(model: PlayWidgetAnalyticModel?, trackingQueue: TrackingQueue) {
         val widgetComponent = this.widgetComponent
         if (model == null || widgetComponent == null) {
             mAnalyticListener = null
@@ -129,7 +150,7 @@ class PlayWidgetCoordinator constructor(
 
         val analyticFactory = widgetComponent.getGlobalAnalyticFactory()
         mAnalyticListener = DefaultPlayWidgetInListAnalyticListener(
-            analyticFactory.create(model)
+            analyticFactory.create(model, trackingQueue)
         )
         mWidget?.setAnalyticListener(mAnalyticListener)
     }
@@ -156,6 +177,10 @@ class PlayWidgetCoordinator constructor(
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(trackingLifecycleObserver)
+
+        if (!autoHandleLifecycleMethod) return
+
         if (lifecycleOwner is Fragment) {
             lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, Observer {
                 it.lifecycle.addObserver(this)
