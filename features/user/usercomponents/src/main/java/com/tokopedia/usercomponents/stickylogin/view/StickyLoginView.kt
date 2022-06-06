@@ -2,6 +2,7 @@ package com.tokopedia.usercomponents.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -20,7 +21,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.R
+import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
@@ -40,16 +47,11 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_S
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefStickyLogin
-import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
+import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
+import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -151,7 +153,10 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-            stickyLoginAction?.onClick()
+//            stickyLoginAction?.onClick()
+
+            val intent = Intent(context, UserConsentDebugActivity::class.java)
+            context?.startActivity(intent)
         }
 
         viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
