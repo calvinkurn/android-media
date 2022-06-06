@@ -27,9 +27,9 @@ class PlayWidgetGlobalAnalytic @AssistedInject constructor(
     private val jumboAnalytic: PlayWidgetJumboGlobalAnalytic.Factory,
 ) : PlayWidgetInListAnalyticListener,
     PlayWidgetInListSmallAnalyticListener by smallAnalytic.create(model, trackingQueue),
-    PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model),
-    PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model),
-    PlayWidgetInListJumboAnalyticListener by jumboAnalytic.create(model)
+    PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model, trackingQueue),
+    PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model, trackingQueue),
+    PlayWidgetInListJumboAnalyticListener by jumboAnalytic.create(model, trackingQueue)
 {
 
     @AssistedFactory

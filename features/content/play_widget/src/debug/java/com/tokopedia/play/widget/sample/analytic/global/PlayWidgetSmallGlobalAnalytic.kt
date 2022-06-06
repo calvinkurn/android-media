@@ -8,12 +8,15 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import java.util.HashMap
 
 /**
  * Created by kenny.hadisaputra on 31/05/22
@@ -56,44 +59,39 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
-        trackingQueue.putEETracking(
-            event = EventModel(
-                event = EVENT_VIEW_ITEM,
-                action = "impression on play sgc channel",
-                category = model.category,
-                label = eventLabel(
-                    model.prefix, /** prefix **/
-                    item.channelType.toTrackingType(), /** videoType **/
-                    item.partner.id, /** partnerID **/
-                    item.channelId, /** channelID **/
-                    channelPositionInList + 1, /** position **/
-                    businessWidgetPosition, /** businessPosition **/
-                    "is autoplay $isAutoPlay", /** isAutoPlay **/
-                    "", /** duration **/ //TODO("Ask Aryo")
-                    item.promoType.toTrackingString(), /** promoType **/
-                    item.recommendationType, /** recommendationType **/
-                    "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                    "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                    WIDGET_SIZE, /** widgetSize **/
-                )
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = EVENT_VIEW_ITEM,
+            eventCategory = model.category,
+            eventAction = "impression on play sgc channel",
+            eventLabel = eventLabel(
+                model.prefix, /** prefix **/
+                item.channelType.toTrackingType(), /** videoType **/
+                item.partner.id, /** partnerID **/
+                item.channelId, /** channelID **/
+                channelPositionInList + 1, /** position **/
+                businessWidgetPosition, /** businessPosition **/
+                "is autoplay $isAutoPlay", /** isAutoPlay **/
+                "", /** duration **/ //TODO("Ask Aryo")
+                item.promoType.toTrackingString(), /** promoType **/
+                item.recommendationType, /** recommendationType **/
+                "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
+                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                WIDGET_SIZE, /** widgetSize **/
             ),
-            enhanceECommerceMap = hashMapOf(
-                "promotions" to listOf(
-                    mapOf(
-                        "creative_name" to model.promotionsCreativeName,
-                        "creative_slot" to channelPositionInList + 1,
-                        "item_id" to item.channelId,
-                        "item_name" to model.promotionsItemName,
-                    )
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = model.promotionsItemName,
+                    creative = model.promotionsCreativeName,
+                    position = (channelPositionInList + 1).toString()
                 )
-            ),
-            customDimension = hashMapOf(
-                "businessUnit" to "play",
-                "currentSite" to currentSite,
-                "sessionIris" to irisSessionId,
-                "userId" to userId,
             )
-        )
+        ).appendUserId(userId)
+            .appendBusinessUnit(BUSINESS_UNIT)
+            .appendCurrentSite(currentSite)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
     override fun onClickChannelCard(
@@ -104,44 +102,39 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
-        trackingQueue.putEETracking(
-            event = EventModel(
-                event = EVENT_CLICK_ITEM,
-                action = "click",
-                category = model.category,
-                label = eventLabel(
-                    model.prefix, /** prefix **/
-                    item.channelType.toTrackingType(), /** videoType **/
-                    item.partner.id, /** partnerID **/
-                    item.channelId, /** channelID **/
-                    channelPositionInList + 1, /** position **/
-                    businessWidgetPosition, /** businessPosition **/
-                    "is autoplay $isAutoPlay", /** isAutoPlay **/
-                    "", /** duration **/ //TODO("Ask Aryo")
-                    item.promoType.toTrackingString(), /** promoType **/
-                    item.recommendationType, /** recommendationType **/
-                    "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                    "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                    WIDGET_SIZE, /** widgetSize **/
-                )
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = EVENT_CLICK_ITEM,
+            eventCategory = model.category,
+            eventAction = "click",
+            eventLabel = eventLabel(
+                model.prefix, /** prefix **/
+                item.channelType.toTrackingType(), /** videoType **/
+                item.partner.id, /** partnerID **/
+                item.channelId, /** channelID **/
+                channelPositionInList + 1, /** position **/
+                businessWidgetPosition, /** businessPosition **/
+                "is autoplay $isAutoPlay", /** isAutoPlay **/
+                "", /** duration **/ //TODO("Ask Aryo")
+                item.promoType.toTrackingString(), /** promoType **/
+                item.recommendationType, /** recommendationType **/
+                "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
+                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                WIDGET_SIZE, /** widgetSize **/
             ),
-            enhanceECommerceMap = hashMapOf(
-                "promotions" to listOf(
-                    mapOf(
-                        "creative_name" to model.promotionsCreativeName,
-                        "creative_slot" to channelPositionInList + 1,
-                        "item_id" to item.channelId,
-                        "item_name" to model.promotionsItemName,
-                    )
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = item.channelId,
+                    name = model.promotionsItemName,
+                    creative = model.promotionsCreativeName,
+                    position = (channelPositionInList + 1).toString()
                 )
-            ),
-            customDimension = hashMapOf(
-                "businessUnit" to "play",
-                "currentSite" to currentSite,
-                "sessionIris" to irisSessionId,
-                "userId" to userId,
             )
-        )
+        ).appendUserId(userId)
+            .appendBusinessUnit(BUSINESS_UNIT)
+            .appendCurrentSite(currentSite)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
     /**
@@ -278,6 +271,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
 
         private const val EVENT_VIEW = "viewContentIris"
         private const val EVENT_CLICK = "clickContent"
+
+        private const val BUSINESS_UNIT = "play"
 
         private const val WIDGET_SIZE = "small"
     }
