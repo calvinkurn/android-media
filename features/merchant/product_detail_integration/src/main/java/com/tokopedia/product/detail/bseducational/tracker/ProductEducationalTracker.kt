@@ -15,18 +15,19 @@ object ProductEducationalTracker {
     const val OK_BUTTON = "oke"
 
     fun onImpressView(trackingQueue: TrackingQueue,
-                      position:Int,
+                      position: Int,
                       typeFlag: String,
                       eduTitle: String,
                       eduDesc: String,
                       productId: String,
                       shopId: String,
-                      userId: String) {
+                      userId: String,
+                      eventCategory: String) {
         val typeFlagString = generateTypeFlagString(typeFlag)
 
         val mapEvent = DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, "${ProductTrackingConstant.Category.PDP} $typeFlagString",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, eventCategory,
                 ProductTrackingConstant.Tracking.KEY_ACTION, "impression - $typeFlagString",
                 ProductTrackingConstant.Tracking.KEY_LABEL, "",
                 ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
@@ -54,12 +55,13 @@ object ProductEducationalTracker {
                                eduDesc: String,
                                shopId: String,
                                productId: String,
-                               userId: String) {
+                               userId: String,
+                               eventCategory: String) {
         val typeFlagString = generateTypeFlagString(typeFlag)
 
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                "${ProductTrackingConstant.Category.PDP} $typeFlagString",
+                eventCategory,
                 "click - cta button on $typeFlagString",
                 "button:$button;title:$eduTitle;description:$eduDesc")
         mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
