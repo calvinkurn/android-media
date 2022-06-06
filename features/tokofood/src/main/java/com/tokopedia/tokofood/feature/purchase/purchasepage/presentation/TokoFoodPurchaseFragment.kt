@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -360,7 +361,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage(shopId)
+                PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    val emptyProductShopId = (it.data as? String).orEmpty()
+                    if (emptyProductShopId.isBlank()) {
+                        navigateToHomePage()
+                    } else {
+                        navigateToMerchantPage(emptyProductShopId)
+                    }
+                }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
@@ -665,6 +673,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             context?.getString(R.string.text_purchase_success_delete, productCount).orEmpty(),
             getOkayMessage()
         )
+    }
+
+    private fun navigateToHomePage() {
+        TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
+            navigateToNewFragment(homeFragment)
+        }
     }
 
     private fun navigateToMerchantPage(merchantId: String) {

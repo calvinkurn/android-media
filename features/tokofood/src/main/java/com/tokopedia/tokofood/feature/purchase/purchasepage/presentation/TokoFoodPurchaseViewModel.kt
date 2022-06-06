@@ -138,6 +138,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadData() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
+                if (it.isEmptyProduct()) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
+                        data = it.data.shop.shopId
+                    )
+                    return@collect
+                }
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
                 checkoutTokoFoodResponse.value = it
@@ -209,6 +216,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadDataPartial() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
+                if (it.isEmptyProduct()) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
+                        data = it.data.shop.shopId
+                    )
+                    return@collect
+                }
                 val isPreviousPopupPromo = checkoutTokoFoodResponse.value?.data?.isPromoPopupType() == true
                 _uiEvent.value = PurchaseUiEvent(
                     state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
@@ -304,11 +318,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
         val dataList = getVisitablesValue().toMutableList()
         dataList.removeAll(visitables)
-        if (!hasRemainingProduct()) {
-            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT)
-        } else {
+        if (dataList.hasRemainingProduct()) {
             _visitables.value = dataList
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
+        } else {
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
+                data = shopId
+            )
         }
     }
 
@@ -337,9 +354,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun hasRemainingProduct(): Boolean {
-        val dataList = getVisitablesValue()
-        loop@ for (data in dataList) {
+    private fun List<Visitable<*>>.hasRemainingProduct(): Boolean {
+        loop@ for (data in this) {
             when (data) {
                 is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
                     return true
@@ -638,6 +654,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             dataList.add(index, model)
         }
         _visitables.value = dataList
+    }
+
+    private fun CheckoutTokoFood.isEmptyProduct(): Boolean {
+        return data.availableSection.products.isEmpty() && data.unavailableSection.products.isEmpty()
     }
 
     companion object {
