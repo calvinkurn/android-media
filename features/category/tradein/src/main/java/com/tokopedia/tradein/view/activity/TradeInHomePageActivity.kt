@@ -103,7 +103,6 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setObservers()
-        viewModel.setLaku6(this)
         viewModel.checkLogin()
     }
 
@@ -147,6 +146,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
             )
         } else {
+            viewModel.setLaku6(this)
             setUpEducationalFragment()
         }
     }
