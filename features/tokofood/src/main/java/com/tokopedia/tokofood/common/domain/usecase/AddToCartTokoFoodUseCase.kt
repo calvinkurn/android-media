@@ -53,44 +53,22 @@ class AddToCartTokoFoodUseCase @Inject constructor(
                 product_id
                 quantity
               }
+              bottomsheet {
+                is_show_bottomsheet
+                title
+                description
+                image_url
+                buttons{
+                    text
+                    color
+                    action
+                    link
+                }
+              }
             }
           }
         }
     """.trimIndent()
-
-    // Correct Query but not yet supported in staging
-//    override fun graphqlQuery(): String = """
-//        mutation AddToCartTokofood($$PARAMS_KEY: ATCGeneralParams!) {
-//          add_to_cart_general(params: $$PARAMS_KEY) {
-//            message
-//            status
-//            data {
-//              success
-//              message
-//              carts {
-//                success
-//                message
-//                business_id
-//                cart_id
-//                shop_id
-//                product_id
-//                quantity
-//              }
-//              bottomsheet {
-//                is_show_bottomsheet
-//                title
-//                description
-//                buttons{
-//                    text
-//                    color
-//                    action
-//                    link
-//                }
-//              }
-//            }
-//          }
-//        }
-//    """.trimIndent()
 
     override suspend fun execute(params: UpdateParam): Flow<CartTokoFoodResponse> = flow {
         val param = generateParams(
