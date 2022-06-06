@@ -187,24 +187,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            if (checkoutTokoFoodResponse.value == null) {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE,
-                    throwable = it
-                )
-            } else {
-                _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
-                        lastResponse,
-                        lastResponse.isEnabled(),
-                        !_isAddressHasPinpoint.value.second
-                    ).toMutableList()
-                }
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                    throwable = it
-                )
-            }
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                throwable = it
+            )
             _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
                 isLastLoadStateSuccess = false,
                 shopName = "",
@@ -276,13 +262,17 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             }
                             partialData.tickerErrorShopLevelUiModel != null && tickerErrorIndex < Int.ZERO -> {
                                 getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>().let { firstProductIndex ->
-                                    add(firstProductIndex, partialData.tickerErrorShopLevelUiModel)
+                                    if (firstProductIndex >= Int.ZERO) {
+                                        add(firstProductIndex, partialData.tickerErrorShopLevelUiModel)
+                                    }
                                 }
                             }
                             else -> {
-                                removeAt(tickerErrorIndex)
-                                partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
-                                    add(tickerErrorIndex, tickerErrorUiModel)
+                                if (tickerErrorIndex >= Int.ZERO) {
+                                    removeAt(tickerErrorIndex)
+                                    partialData.tickerErrorShopLevelUiModel?.let { tickerErrorUiModel ->
+                                        add(tickerErrorIndex, tickerErrorUiModel)
+                                    }
                                 }
                             }
                         }
@@ -304,7 +294,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 ).toMutableList()
             }
             _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
                 throwable = it
             )
             _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(

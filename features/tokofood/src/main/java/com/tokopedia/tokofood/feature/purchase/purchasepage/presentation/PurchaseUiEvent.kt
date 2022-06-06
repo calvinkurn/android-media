@@ -8,8 +8,8 @@ data class PurchaseUiEvent(
     companion object {
         const val EVENT_SUCCESS_LOAD_PURCHASE_PAGE = 11
         const val EVENT_NO_PINPOINT = 12
-        const val EVENT_FAILED_LOAD_PURCHASE_PAGE = 22
-        const val EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE = 23
+        const val EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL = 22
+        const val EVENT_FAILED_LOAD_PURCHASE_PAGE = 23
         const val EVENT_EMPTY_PRODUCTS = 33
         const val EVENT_SUCCESS_REMOVE_PRODUCT = 44
         const val EVENT_SCROLL_TO_UNAVAILABLE_ITEMS = 55

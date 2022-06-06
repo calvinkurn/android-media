@@ -327,7 +327,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     hideLoading()
                     renderNoPinpoint()
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -344,7 +344,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -373,10 +373,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData()
+                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
+                    loadData()
+                }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
-                    // TODO: Show error
-                    viewModel.loadData()
+
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
                     (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
