@@ -6,6 +6,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 01/02/22.
@@ -15,8 +16,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -26,8 +27,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onImpressChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -37,8 +38,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onImpressChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -48,8 +49,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -59,8 +60,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
@@ -70,8 +71,8 @@ class PlayWidgetFeedSampleAnalytic : PlayWidgetInListAnalyticListener {
     override fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {

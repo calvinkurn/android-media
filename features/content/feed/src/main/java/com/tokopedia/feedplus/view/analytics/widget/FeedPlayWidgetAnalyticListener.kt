@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.track.TrackApp
@@ -65,18 +66,18 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
     }
 
     override fun onClickChannelCard(
-            view: PlayWidgetSmallView,
-            item: PlayWidgetChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = "promoClick",
                 eventCategory = "feed updates - cmp",
                 eventAction = "click",
-                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType}",
+                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay ${config.autoPlay} - ${item.recommendationType}",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,
@@ -112,18 +113,18 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
     }
 
     override fun onImpressChannelCard(
-            view: PlayWidgetSmallView,
-            item: PlayWidgetChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = "promoView",
                 eventCategory = "feed updates - cmp",
                 eventAction = "impression on play sgc channel",
-                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType}",
+                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay ${config.autoPlay} - ${item.recommendationType}",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,
@@ -136,65 +137,6 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
                 .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
                 .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
                 .build()
-
-        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
-    }
-
-    /***
-     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
-     */
-    override fun onLabelPromoClicked(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = "promoClick",
-            eventCategory = "feed updates - cmp",
-            eventAction = "click",
-            eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = item.channelId,
-                    name = "feed - play sgc channel - $businessWidgetPosition",
-                    creative = item.title,
-                    position = channelPositionInList.toString()
-                )
-            )
-        ).appendUserId(userId)
-            .appendBusinessUnit("content")
-            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .build()
-
-        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
-            event = "promoView",
-            eventCategory = "feed updates - cmp",
-            eventAction = "impression on play sgc channel",
-            eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType} - is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = item.channelId,
-                    name = "feed - play sgc channel - $businessWidgetPosition - ${item.recommendationType}",
-                    creative = item.title,
-                    position = channelPositionInList.toString()
-                )
-            )
-        ).appendUserId(userId)
-            .appendBusinessUnit("content")
-            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }

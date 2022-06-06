@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by jegul on 02/11/20
@@ -91,8 +92,8 @@ interface PlayWidgetInListMediumAnalyticListener {
     fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {}
@@ -100,29 +101,10 @@ interface PlayWidgetInListMediumAnalyticListener {
     fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {}
-
-    /**
-     * Rilisan Spesial
-     */
-    fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
-    ) {}
-
-    fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
     ) {}
 
     /**

@@ -39,6 +39,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
+
     private val cardBannerListener = object : PlayWidgetSmallViewHolder.Banner.Listener {
 
         override fun onBannerClicked(view: View) {
@@ -52,8 +54,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetSmallView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
         }
 
@@ -62,26 +64,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetSmallView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
-            )
-        }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(
-                view = this@PlayWidgetSmallView,
-                item = item,
-                channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
-            )
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(
-                view = this@PlayWidgetSmallView,
-                item = item,
-                channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
         }
     }
@@ -115,6 +99,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        mModel = data
+
         tvTitle.text = data.title
 
         tvSeeAll.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE

@@ -92,8 +92,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
         }
 
@@ -101,8 +101,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
 
             if (mWidgetListener != null
@@ -124,14 +124,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
-        }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
         }
     }
 
@@ -158,7 +150,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         cardTranscodeListener = cardTranscodeListener,
     )
 
-    private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
 
     private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
@@ -259,8 +250,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         val modifiedItems = getModifiedItems(prevModel, data)
         adapter.setItemsAndAnimateChanges(modifiedItems)
-
-        mIsAutoPlay = data.config.autoPlay
     }
 
     /**

@@ -5,6 +5,7 @@ import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyt
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
@@ -54,8 +55,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetSmallView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -70,8 +71,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -97,8 +98,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetSmallView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {
@@ -113,8 +114,8 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -231,24 +232,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 )
             )
     }
-
-    //TODO("ASK")
-    override fun onLabelPromoClicked(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
-
-    //TODO("ASK")
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
 
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"

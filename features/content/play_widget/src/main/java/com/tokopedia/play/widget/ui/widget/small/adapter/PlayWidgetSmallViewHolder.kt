@@ -64,18 +64,6 @@ class PlayWidgetSmallViewHolder {
                 ) {
                     listener.onChannelClicked(view, model, adapterPosition)
                 }
-
-                override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                        listener.onLabelPromoChannelClicked(item, adapterPosition)
-                }
-
-                override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                            listener.onLabelPromoChannelImpressed(item, adapterPosition)
-                }
             })
         }
 
@@ -108,16 +96,6 @@ class PlayWidgetSmallViewHolder {
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int,
-            )
-
-            fun onLabelPromoChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelImpressed(
-                item: PlayWidgetChannelUiModel,
-                position: Int
             )
         }
     }

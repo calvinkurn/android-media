@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.analytic.list.large
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -15,8 +16,8 @@ interface PlayWidgetInListLargeAnalyticListener {
     fun onImpressChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {}
@@ -24,8 +25,8 @@ interface PlayWidgetInListLargeAnalyticListener {
     fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
     ) {}
@@ -68,24 +69,5 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int,
-    ) {}
-
-    /**
-     * Rilisan Spesial
-     */
-    fun onLabelPromoClicked(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
-    ) {}
-
-    fun onLabelPromoImpressed(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
     ) {}
 }

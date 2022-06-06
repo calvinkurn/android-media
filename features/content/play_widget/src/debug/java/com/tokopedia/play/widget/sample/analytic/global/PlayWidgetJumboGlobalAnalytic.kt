@@ -9,6 +9,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
@@ -57,8 +58,8 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
@@ -73,8 +74,8 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -100,8 +101,8 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
@@ -116,8 +117,8 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -201,24 +202,6 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
                 )
             )
     }
-
-    //TODO("ASK")
-    override fun onLabelPromoClicked(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
-
-    //TODO("ASK")
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
 
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"

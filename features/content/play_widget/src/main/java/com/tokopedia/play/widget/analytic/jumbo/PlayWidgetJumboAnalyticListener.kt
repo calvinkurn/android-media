@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.analytic.jumbo
 
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -11,8 +12,8 @@ interface PlayWidgetJumboAnalyticListener {
     fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -25,7 +26,7 @@ interface PlayWidgetJumboAnalyticListener {
     fun onImpressChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
     ) {}
 }

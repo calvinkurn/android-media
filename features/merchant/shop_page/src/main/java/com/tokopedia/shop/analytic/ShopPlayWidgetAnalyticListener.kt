@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.track.TrackApp
@@ -134,12 +135,12 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onImpressChannelCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         val trackerMap = if (isOwnShop) {
             BaseTrackerBuilder().constructBasicPromotionView(
@@ -166,7 +167,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_VIEW,
                     eventCategory = SHOP_PAGE_BUYER,
                     eventAction = "impression on play sgc channel",
-                    eventLabel = "view channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - $isAutoPlay",
+                    eventLabel = "view channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - ${config.autoPlay}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = widgetId,
@@ -182,12 +183,12 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onClickChannelCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            verticalWidgetPosition: Int,
-            businessWidgetPosition: Int,
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+        businessWidgetPosition: Int,
     ) {
         val trackerMap = if (isOwnShop) {
             BaseTrackerBuilder().constructBasicPromotionClick(
@@ -214,7 +215,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_BUYER,
                     eventAction = CLICK,
-                    eventLabel = "click channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - $isAutoPlay",
+                    eventLabel = "click channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - ${config.autoPlay}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = widgetId,
@@ -406,67 +407,6 @@ class ShopPlayWidgetAnalyticListener(
                         SHOP_ID to shopId
                 )
         )
-    }
-
-    /***
-     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
-     */
-    override fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = PROMO_CLICK,
-            eventCategory = SHOP_PAGE_BUYER,
-            eventAction = CLICK,
-            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = item.channelId,
-                    name = "/shoppage play inside banner",
-                    creative = item.title,
-                    position = channelPositionInList.toString()
-                )
-            )
-        )
-            .appendUserId(userId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite(currentSite)
-            .appendShopId(shopId)
-            .build()
-        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        val tracker = BaseTrackerBuilder().constructBasicPromotionView(
-            event = PROMO_VIEW,
-            eventCategory = SHOP_PAGE_BUYER,
-            eventAction = "impression on play sgc channel",
-            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = item.channelId,
-                    name = "/shoppage play inside banner",
-                    creative = item.title,
-                    position = channelPositionInList.toString()
-                )
-            )
-        )
-            .appendUserId(userId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite(currentSite)
-            .appendShopId(shopId)
-            .build()
-        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
     }
 
     private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {

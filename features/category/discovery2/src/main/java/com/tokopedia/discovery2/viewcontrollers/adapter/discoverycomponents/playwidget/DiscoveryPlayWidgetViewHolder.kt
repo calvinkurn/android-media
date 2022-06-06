@@ -98,20 +98,20 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
 
     }
 
-    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, "", verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, "", verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, item.partner.id, verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, item.partner.id, verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, "", verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, "", verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.partner.id, verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.partner.id, verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
     override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
@@ -140,45 +140,5 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
 
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetReminderClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.channelId , isRemindMe)
-    }
-
-    override fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
-    }
-
-    override fun onLabelPromoClicked(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
     }
 }

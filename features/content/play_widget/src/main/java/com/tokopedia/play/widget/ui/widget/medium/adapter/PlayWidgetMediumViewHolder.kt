@@ -121,18 +121,6 @@ class PlayWidgetMediumViewHolder private constructor() {
             override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
                 listener.onMenuActionButtonClicked(view, item, adapterPosition)
             }
-
-            override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                listener.onLabelPromoChannelClicked(item, adapterPosition)
-            }
-
-            override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                    || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                listener.onLabelPromoChannelImpressed(item, adapterPosition)
-            }
         }
 
         init {
@@ -178,16 +166,6 @@ class PlayWidgetMediumViewHolder private constructor() {
 
             fun onMenuActionButtonClicked(
                 view: View,
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelImpressed(
                 item: PlayWidgetChannelUiModel,
                 position: Int
             )

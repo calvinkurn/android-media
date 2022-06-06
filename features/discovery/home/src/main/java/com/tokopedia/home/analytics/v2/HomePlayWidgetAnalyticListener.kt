@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -88,7 +89,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
@@ -99,7 +100,7 @@ class HomePlayWidgetAnalyticListener(
                         "${item.channelId} - " +
                         "$finalChannelPositionInList - " +
                         "$mBusinessWidgetPosition - " +
-                        "$isAutoPlay - " +
+                        "${config.autoPlay} - " +
                         "${item.poolType} - " +
                         "$promoText - " +
                         item.recommendationType,
@@ -121,7 +122,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
@@ -133,7 +134,7 @@ class HomePlayWidgetAnalyticListener(
                         "${item.channelId} - " +
                         "$finalChannelPositionInList - " +
                         "$mBusinessWidgetPosition - " +
-                        "$isAutoPlay - " +
+                        "${config.autoPlay} - " +
                         "${item.poolType} - " +
                         "$promoText - " +
                         item.recommendationType,
@@ -185,82 +186,5 @@ class HomePlayWidgetAnalyticListener(
                         UserId.KEY to userId
                 )
         )
-    }
-
-    /***
-     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
-     */
-    override fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean
-    ) {
-        val finalChannelPositionInList = channelPositionInList + 1
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = Event.PROMO_CLICK,
-            eventCategory = "homepage-cmp",
-            eventAction = Event.CLICK,
-            eventLabel = "click channel - " +
-                    "${item.partner.id} - " +
-                    "${item.channelId} - " +
-                    "$finalChannelPositionInList - " +
-                    "$mBusinessWidgetPosition - " +
-                    "is autoplay $isAutoPlay - " +
-                    "is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = widgetId,
-                    name = item.title,
-                    creative = item.video.coverUrl,
-                    position = finalChannelPositionInList.toString()
-                )
-            )
-        )
-            .appendChannelId(item.channelId)
-            .appendUserId(userId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite("tokopediamarketplace")
-            .build()
-
-        if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean
-    ) {
-        val finalChannelPositionInList = channelPositionInList + 1
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.PROMO_VIEW,
-            eventCategory = "homepage-cmp",
-            eventAction = "impression on play sgc channel",
-            eventLabel = "${item.partner.id} - " +
-                    "${item.channelId} - " +
-                    "$finalChannelPositionInList - " +
-                    "$mBusinessWidgetPosition - " +
-                    "is autoplay $isAutoPlay - " +
-                    "${item.poolType} - " +
-                    "${item.promoType} - " +
-                    "${item.recommendationType} - " +
-                    "is rilisan spesial true",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = widgetId,
-                    name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title} - ${item.recommendationType}",
-                    creative = item.video.coverUrl,
-                    position = finalChannelPositionInList.toString()
-                )
-            )
-        )
-            .appendUserId(userId)
-            .appendChannelId(item.channelId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite("tokopediamarketplace")
-            .build()
-
-        if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 }

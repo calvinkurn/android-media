@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 
 /**
@@ -69,11 +70,22 @@ interface PlayWidgetMediumAnalyticListener {
         isRemindMe: Boolean
     ) {}
 
+    /**
+     * Channel
+     */
+    fun onImpressChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+    ) {
+    }
+
     fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
     }
 
@@ -88,30 +100,6 @@ interface PlayWidgetMediumAnalyticListener {
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int
-    ) {
-    }
-
-    fun onImpressChannelCard(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean
-    ) {
-    }
-
-    fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean
-    ) {
-    }
-
-    fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
     }
 }

@@ -2,11 +2,13 @@ package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
+import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
@@ -55,8 +57,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
@@ -71,8 +73,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -98,8 +100,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
@@ -114,8 +116,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelId, /** channelID **/
                 channelPositionInList + 1, /** position **/
                 businessWidgetPosition, /** businessPosition **/
-                "is autoplay $isAutoPlay", /** isAutoPlay **/
-                "", /** duration **/ //TODO("Ask Aryo")
+                "is autoplay ${config.autoPlay}", /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
@@ -198,7 +200,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventLabel = eventLabel(
                 model.prefix, /** prefix **/
                 verticalWidgetPosition, /** widgetPosition **/
-                "", /** recommendationType **/ //TODO("Ask")
+                "", /** recommendationType **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -230,7 +232,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             eventLabel = eventLabel(
                 model.prefix, /** prefix **/
                 verticalWidgetPosition, /** widgetPosition **/
-                "", /** recommendationType **/ //TODO("Ask")
+                "", /** recommendationType **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -360,7 +362,6 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             )
     }
 
-    //TODO("ASK")
     override fun onClickMoreActionChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -376,7 +377,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     "eventCategory" to model.category,
                     "eventLabel" to eventLabel(
                         model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
+                        item.partner.id, /** partnerId **/
                     ),
                     "businessUnit" to "play",
                     "currentSite" to currentSite,
@@ -386,7 +387,6 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
             )
     }
 
-    //TODO("ASK")
     override fun onClickDeleteChannel(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -402,7 +402,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                     "eventCategory" to model.category,
                     "eventLabel" to eventLabel(
                         model.prefix, /** prefix **/
-                        "", /** partnerId **/ //TODO("Ask")
+                        item.partner.id, /** partnerId **/
                     ),
                     "businessUnit" to "play",
                     "currentSite" to currentSite,
@@ -411,24 +411,6 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 )
             )
     }
-
-    //TODO("ASK")
-    override fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
-
-    //TODO("ASK")
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {}
 
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"

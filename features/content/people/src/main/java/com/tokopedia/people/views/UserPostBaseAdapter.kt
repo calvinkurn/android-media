@@ -151,15 +151,6 @@ open class UserPostBaseAdapter(
             reminderType.reminded
         )
     }
-
-    override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-       //add tracker later
-    }
-
-    override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-        //add tracker later
-    }
-
 }
 
 interface ReminderCallback{
