@@ -140,7 +140,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when wishlist recommendation - topads product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifySequence {
-            productListView.trackWishlistRecommendationProductLoginUser(true)
+            productListView.trackWishlistRecommendationProductLoginUser(productCardOptionsModel.isWishlisted)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
             productListView.hitWishlistClickUrl(productCardOptionsModel)
@@ -177,12 +177,52 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
         `Then verify wishlist tracking model is correct`(expectedWishlistTrackingModel)
     }
 
+    @Test
+    fun `Handle success wishlist action for non-recommendation topads product`() {
+        val productCardOptionsModel = ProductCardOptionsModel(
+            productId = "12345",
+            isTopAds = true,
+            isWishlisted = false,
+            isRecommendation = false
+        ).also {
+            it.wishlistResult = ProductCardOptionsModel.WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true)
+        }
+
+        `Given keyword from view`()
+
+        `When handle wishlist action`(productCardOptionsModel)
+
+        `Then verify view interaction for non-recommendation topads product`(productCardOptionsModel)
+
+        val expectedWishlistTrackingModel = WishlistTrackingModel(
+            isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist,
+            productId = productCardOptionsModel.productId,
+            isTopAds = productCardOptionsModel.isTopAds,
+            isUserLoggedIn = productCardOptionsModel.wishlistResult.isUserLoggedIn,
+            keyword = keyword
+        )
+
+        `Then verify wishlist tracking model is correct`(expectedWishlistTrackingModel)
+    }
+
     private fun `Then verify view interaction for non-recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
             productListView.queryKey
             productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+        }
+
+        confirmVerified(productListView)
+    }
+
+    private fun `Then verify view interaction for non-recommendation topads product`(productCardOptionsModel: ProductCardOptionsModel) {
+        verifyOrder {
+            productListView.queryKey
+            productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
+            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            productListView.hitWishlistClickUrl(productCardOptionsModel)
         }
 
         confirmVerified(productListView)
