@@ -9,7 +9,11 @@ import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.databinding.DialogResultReschedulePickupBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
-class ReschedulePickupResultDialog(private val context: Context) {
+class ReschedulePickupResultDialog(private val context: Context, private val listener: ReschedulePickupResultDialogListener) {
+
+    interface ReschedulePickupResultDialogListener {
+        fun onClickDialog() {}
+    }
 
     private var dialogUnify: DialogUnify? = null
 
@@ -27,6 +31,7 @@ class ReschedulePickupResultDialog(private val context: Context) {
             setChild(binding?.root)
             setPrimaryCTAClickListener {
                 this.dismiss()
+                listener.onClickDialog()
             }
             setOnDismissListener {
                 binding = null

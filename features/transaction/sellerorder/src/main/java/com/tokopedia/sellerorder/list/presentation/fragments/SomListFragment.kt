@@ -74,7 +74,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
@@ -104,7 +103,6 @@ import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-//import com.tokopedia.sellerorder.reschedulepickup.presentation.dialog.ReschedulePickupResultDialog
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -2095,11 +2093,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         onActionCompleted(true, selectedOrderId)
                     }
                 }
-                data.hasExtra(RESULT_RESCHEDULE_PICKUP) -> {
-                    data.getStringExtra(RESULT_RESCHEDULE_PICKUP)?.let { message ->
-                        handleSomReschedulePickupActivityResult(message)
-                    }
-                }
             }
         }
     }
@@ -2135,19 +2128,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 onActionCompleted(true, selectedOrderId)
                 showCommonToaster(view, it)
             }
-        }
-    }
-
-    private fun handleSomReschedulePickupActivityResult(message: String) {
-        context?.let {
-
-            // todo todo
-            showCommonToaster(view, message)
-//            ReschedulePickupResultDialog(it).apply {
-//                init()
-//                setSuccessMessage(message)
-//                show()
-//            }
         }
     }
 

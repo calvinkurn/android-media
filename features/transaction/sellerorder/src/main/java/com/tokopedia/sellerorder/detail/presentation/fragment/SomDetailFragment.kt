@@ -1304,12 +1304,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun handleReschedulePickupResult(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SomConsts.RESULT_RESCHEDULE_PICKUP)) {
-            val resultReschedulePickup = data.getStringExtra(SomConsts.RESULT_RESCHEDULE_PICKUP)
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(SomConsts.RESULT_RESCHEDULE_PICKUP, resultReschedulePickup)
-            })
-            activity?.finish()
+        if (resultCode == Activity.RESULT_OK) {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent())
+                finish()
+            }
         }
     }
 

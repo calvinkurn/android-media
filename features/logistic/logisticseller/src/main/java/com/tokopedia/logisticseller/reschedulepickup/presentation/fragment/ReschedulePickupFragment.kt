@@ -121,14 +121,8 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             loadingDialog?.dismiss()
             when (it) {
                 is Success -> {
-                    if (it.data.success) {
-                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(LogisticSellerConst.RESULT_RESCHEDULE_PICKUP, getString(R.string.template_success_reschedule_pickup, it.data.etaPickup))
-                        })
-                        activity?.finish()
-                    } else {
-                        showErrorDialog(it.data.message)
-                    }
+                    val message = if (it.data.success) getString(R.string.template_success_reschedule_pickup, it.data.etaPickup) else it.data.message
+                    showResultDialog(message, it.data.success)
                 }
                 is Fail -> {
                     showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable), this::saveRescheduleDetail)
@@ -255,14 +249,33 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         }
     }
 
-    private fun showErrorDialog(
+    private fun showResultDialog(
         bodyText: String,
+        isSuccess: Boolean
     ) {
         context?.let {
-            ReschedulePickupResultDialog(it).apply {
+            ReschedulePickupResultDialog(it, setResultDialogListener(isSuccess)).apply {
                 init()
-                setErrorMessage(bodyText)
+                if (isSuccess) {
+                    setSuccessMessage(bodyText)
+                } else {
+                    setErrorMessage(bodyText)
+                }
                 show()
+            }
+        }
+    }
+
+    private fun setResultDialogListener(isSuccess: Boolean) : ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
+        return object : ReschedulePickupResultDialog.ReschedulePickupResultDialogListener {
+            override fun onClickDialog() {
+                super.onClickDialog()
+                if (isSuccess) {
+                    activity?.run {
+                        setResult(Activity.RESULT_OK, Intent())
+                        finish()
+                    }
+                }
             }
         }
     }

@@ -43,7 +43,6 @@ object SomConsts {
     const val RESULT_REJECT_ORDER = "result_reject_order"
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
     const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
-    const val RESULT_RESCHEDULE_PICKUP = "result_reschedule_pickup"
     const val RESULT_SET_DELIVERED = "result_set_delivered"
     const val RESULT_REFRESH_ORDER = "result_refresh_order"
 
