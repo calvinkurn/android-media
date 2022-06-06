@@ -203,17 +203,22 @@ object AppUpdateManagerWrapper {
      */
     @JvmStatic
     fun checkUpdateInFlexibleProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
-        val appContext = activity.applicationContext
-        val appUpdateManager = getInstance(appContext) ?: return
-        appUpdateManager.appUpdateInfo.addOnSuccessListener {
-            if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                    getPrefInAppType(appContext) == AppUpdateType.FLEXIBLE) ||
-                it.installStatus() == InstallStatus.DOWNLOADED) {
-                onSuccessGetInfo(true)
-            } else {
+        try {
+            val appContext = activity.applicationContext
+            val appUpdateManager = getInstance(appContext) ?: return
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {
+                if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                            getPrefInAppType(appContext) == AppUpdateType.FLEXIBLE) ||
+                    it.installStatus() == InstallStatus.DOWNLOADED) {
+                    onSuccessGetInfo(true)
+                } else {
+                    onSuccessGetInfo(false)
+                }
+            }.addOnFailureListener {
                 onSuccessGetInfo(false)
             }
-        }.addOnFailureListener {
+        } catch (e: Exception) {
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
             onSuccessGetInfo(false)
         }
     }
