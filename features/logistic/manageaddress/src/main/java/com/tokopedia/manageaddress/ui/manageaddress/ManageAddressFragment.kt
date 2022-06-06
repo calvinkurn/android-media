@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -41,6 +44,7 @@ import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.ui.manageaddress.shareaddress.ShareAddressFragment
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -54,7 +58,9 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,7 +70,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener {
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
+    ManageAddressItemAdapter.ManageAddressItemAdapterListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -127,6 +134,37 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
         initSearch()
         initSearchView()
+
+        initViewNew()
+    }
+
+    private fun initViewNew() {
+
+        val pages = listOf<Pair<String, Fragment>>(
+            Pair("Feed", ShareAddressFragment()),
+            Pair("Common", ShareAddressFragment())
+        )
+
+        binding?.apply {
+            vpManageAddress.adapter = ViewPagerAdapter(requireActivity(), pages)
+
+            TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
+                tab.setCustomText(pages[position].first)
+            }
+        }
+
+    }
+
+    class ViewPagerAdapter(
+        fragmentActivity: FragmentActivity,
+        private val pages: List<Pair<String, Fragment>>
+    ) : FragmentStateAdapter(fragmentActivity) {
+
+        override fun createFragment(position: Int): Fragment {
+            return pages[position].second
+        }
+
+        override fun getItemCount(): Int = pages.size
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -155,7 +193,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressData = data?.getStringExtra(EXTRA_EDIT_ADDRESS)
             if (addressData != null) {
                 view?.let {
-                    Toaster.build(it, getString(R.string.edit_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                    Toaster.build(it, getString(R.string.edit_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL)
+                        .show()
                 }
             }
         }
@@ -168,7 +207,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openSoftKeyboard() {
         binding?.searchInputView?.searchBarTextField?.let {
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
+                it,
+                InputMethodManager.SHOW_IMPLICIT
+            )
         }
     }
 
@@ -235,9 +277,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         })
 
         viewModel.setDefault.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is ManageAddressState.Success ->
-                    if (isLocalization == true || isFromCheckoutChangeAddress ==  true || isFromCheckoutSnippet == true) {
+                    if (isLocalization == true || isFromCheckoutChangeAddress == true || isFromCheckoutSnippet == true) {
                         bottomSheetLainnya?.dismiss()
                         setChosenAddress()
                     } else {
@@ -247,8 +289,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                 is ManageAddressState.Fail -> {
                     view?.let { view ->
-                        Toaster.build(view, it.throwable?.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            view, it.throwable?.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
 
@@ -262,8 +306,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             when (it) {
                 is Success -> {
                     val data = it.data
-                    context?.let {
-                        context ->
+                    context?.let { context ->
                         if (isFromEditAddress == true) {
                             val newRecipientAddressModel = RecipientAddressModel()
                             newRecipientAddressModel.apply {
@@ -281,10 +324,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                                 editedChosenAddress = newRecipientAddressModel
                             }
                         }
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
-                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType, data.tokonowModel.lastUpdate)
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context,
+                            data.addressId.toString(),
+                            data.cityId.toString(),
+                            data.districtId.toString(),
+                            data.latitude,
+                            data.longitude,
+                            ChooseAddressUtils.setLabel(data),
+                            data.postalCode,
+                            data.tokonowModel.shopId.toString(),
+                            data.tokonowModel.warehouseId.toString(),
+                            TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            data.tokonowModel.serviceType,
+                            data.tokonowModel.lastUpdate
+                        )
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -296,8 +350,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.build(view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            view, it.throwable.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -306,14 +362,26 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_SUCCESS)
+                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(
+                        userSession.userId,
+                        IS_SUCCESS
+                    )
                     val data = it.data
-                    context?.let {
-                        context ->
-                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
-                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
+                    context?.let { context ->
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context,
+                            data.addressId.toString(),
+                            data.cityId.toString(),
+                            data.districtId.toString(),
+                            data.latitude,
+                            data.longitude,
+                            ChooseAddressUtils.setLabel(data),
+                            data.postalCode,
+                            data.tokonowModel.shopId.toString(),
+                            data.tokonowModel.warehouseId.toString(),
+                            TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            data.tokonowModel.serviceType
+                        )
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -327,10 +395,15 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 is Fail -> {
-                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
+                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(
+                        userSession.userId,
+                        IS_NOT_SUCCESS
+                    )
                     view?.let { view ->
-                        Toaster.build(view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            view, it.throwable.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -339,20 +412,27 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    when(it.data.featureId) {
+                    when (it.data.featureId) {
                         ANA_REVAMP_FEATURE_ID -> {
                             goToAddAddress(it.data.eligible)
                         }
                         EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->  goToEditAddress(it.data.eligible, recipientAddressModel) }
+                            it.data.data?.let { recipientAddressModel ->
+                                goToEditAddress(
+                                    it.data.eligible,
+                                    recipientAddressModel
+                                )
+                            }
                         }
                     }
                 }
 
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.build(view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            view, it.throwable.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -362,11 +442,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     }
 
-    private fun observeRemovedAddress(){
+    private fun observeRemovedAddress() {
         viewModel.resultRemovedAddress.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is ManageAddressState.Success ->
-                    Toaster.build(requireView(),getString(R.string.toaster_remove_address_success) , Toaster.TYPE_NORMAL).show()
+                    Toaster.build(requireView(), getString(R.string.toaster_remove_address_success), Toaster.TYPE_NORMAL).show()
                 else -> {
                     //no-op
                 }
@@ -417,7 +497,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 val adapter = recyclerView.adapter
                 val totalItemCount = adapter?.itemCount
                 val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                        .findLastVisibleItemPosition()
+                    .findLastVisibleItemPosition()
 
                 if (maxItemPosition < lastVisibleItemPosition) {
                     maxItemPosition = lastVisibleItemPosition
@@ -582,7 +662,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             btnAlamatUtamaChoose.setOnClickListener {
                 isStayOnPageState = false
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toLong(), true)
+                    viewModel.setDefaultPeopleAddress(data.id, true, prevState, data.id.toLong(), true)
                 }
                 _selectedAddressItem = data
             }
@@ -624,8 +704,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it, throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }
@@ -696,11 +778,20 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setChosenAddressANA(addressDataModel: SaveAddressDataModel) {
         context?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
-                    addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
-                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
-                    TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                it,
+                addressDataModel.id.toString(),
+                addressDataModel.cityId.toString(),
+                addressDataModel.districtId.toString(),
+                addressDataModel.latitude,
+                addressDataModel.longitude,
+                "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                addressDataModel.postalCode,
+                addressDataModel.shopId.toString(),
+                addressDataModel.warehouseId.toString(),
+                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses),
+                addressDataModel.serviceType
+            )
         }
 
         if (isLocalization == true) {
