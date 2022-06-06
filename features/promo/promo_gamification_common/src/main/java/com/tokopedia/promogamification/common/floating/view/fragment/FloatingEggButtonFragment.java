@@ -175,13 +175,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             else
                 isMinimized = false;
         }
-        if(isMinimized){
-            // hide tracker
-            trackingEggHide(tokenId, tokenName);
-        }
-        else{
-            trackingEggHideShow(tokenId, tokenName);
-        }
+        // hide tracker
+        trackingEggHide(tokenId, tokenName, isMinimized);
     }
 
     private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
@@ -802,26 +797,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
-    private void trackingEggHide(int idToken, String name) {
+    private void trackingEggHide(int idToken, String name, boolean isMinimized) {
+        String label = "hide";
+        if(!isMinimized){
+            label = "show";
+        }
         Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.HIDE_LUCKY_EGG,
-                idToken + "_" + name + "hide");
-
-        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
-        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
-        UserSession userSession = new UserSession(getContext());
-        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
-        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
-    }
-
-    private void trackingEggHideShow(int idToken, String name) {
-        Map<String, Object> map = TrackAppUtils.gtmData(
-                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                CoreGamificationEventTracking.Action.HIDE_LUCKY_EGG,
-                idToken + "_" + name + "show");
+                idToken + "_" + name + label);
 
         map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
         map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
