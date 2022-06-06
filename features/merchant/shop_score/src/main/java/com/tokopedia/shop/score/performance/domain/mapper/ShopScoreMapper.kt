@@ -256,7 +256,11 @@ open class ShopScoreMapper @Inject constructor(
                     when (powerMerchantResponse.status) {
                         PMStatusConst.ACTIVE -> {
                             if (powerMerchantResponse.pmTier == PMTier.REGULAR) {
-                                add(ItemStatusPMProUiModel())
+                                add(
+                                    ItemStatusPMUiModel(
+                                        descPM = R.string.description_content_pm_section
+                                    )
+                                )
                                 return@apply
                             } else {
                                 when (shopScore) {
@@ -284,7 +288,8 @@ open class ShopScoreMapper @Inject constructor(
                             }
                         }
                         PMStatusConst.IDLE -> {
-                            add(mapToItemCurrentStatusRMUiModel(isNewSeller))
+                            //add(mapToItemCurrentStatusRMUiModel(isNewSeller))
+                            add(ItemStatusPMProUiModel())
                             return@apply
                         }
                     }

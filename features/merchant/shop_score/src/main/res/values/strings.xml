@@ -27,13 +27,15 @@
 
     <string name="title_header_pm_section">Status tokomu saat ini</string>
     <string name="title_content_pm_section">Nikmati berbagai keuntungan eksklusif dengan gabung PM PRO, yuk!</string>
+    <string name="sub_title_content_pm_section">Tingkatkan skor agar naik langsung jadi PM PRO dan nikmati keuntungannya!</string>
+    <string name="description_content_pm_section">Batas skor PM PRO adalah 70. Perhatikan tips untuk capai Performa Toko maksimal dan jadi PM PRO, ya.</string>
     <string name="desc_content_pm_not_eligible_pm_pro">Penuhi semua syarat untuk bergabung PM PRO dan dapatkan berbagai keuntungan eksklusifnya! &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
-    <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif Power Merchant PRO!</string>
+    <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif PM PRO!</string>
     <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya.</string>
-    <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
+    <string name="desc_content_pm_to_pm_pro_section">Pertahankan skor min. 70 dengan memperhatikan tips untuk capai Performa Toko maksimal, ya.</string>
 
     <string name="title_potential_pm_pro">Selamat! Kamu memenuhi syarat program Power Merchant.</string>
 
@@ -280,6 +282,8 @@
     <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
     <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
+    <string name="title_item_rm_section_pm_benefit_4">Badge PM PRO untuk tingkatkan kepercayaan</string>
+    <string name="title_item_rm_section_pm_benefit_5">Nikmati layanan prioritas Tokopedia Care</string>
     <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
     <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
     <string name="title_new_seller_end_tenure_pop_up">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>

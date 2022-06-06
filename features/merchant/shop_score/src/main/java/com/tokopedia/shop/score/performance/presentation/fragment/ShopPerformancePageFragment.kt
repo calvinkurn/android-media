@@ -242,6 +242,10 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         shopScorePenaltyTracking.impressPotentialPowerMerchant(isNewSeller)
     }
 
+    override fun onItemClickedSeeAllBenefits() {
+        RouteManager.route(context, ShopScoreConstant.POWER_MERCHANT_FEATURES)
+    }
+
     /**
      * ItemPotentialRegularMerchantListener
      */
