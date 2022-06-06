@@ -78,10 +78,14 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 )
             ),
             enhanceECommerceMap = hashMapOf(
-                "creative_name" to model.promotionsCreativeName,
-                "creative_slot" to channelPositionInList + 1,
-                "item_id" to item.channelId,
-                "item_name" to model.promotionsItemName,
+                "promotions" to listOf(
+                    mapOf(
+                        "creative_name" to model.promotionsCreativeName,
+                        "creative_slot" to channelPositionInList + 1,
+                        "item_id" to item.channelId,
+                        "item_name" to model.promotionsItemName,
+                    )
+                )
             ),
             customDimension = hashMapOf(
                 "businessUnit" to "play",
@@ -122,10 +126,14 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 )
             ),
             enhanceECommerceMap = hashMapOf(
-                "creative_name" to model.promotionsCreativeName,
-                "creative_slot" to channelPositionInList + 1,
-                "item_id" to item.channelId,
-                "item_name" to model.promotionsItemName,
+                "promotions" to listOf(
+                    mapOf(
+                        "creative_name" to model.promotionsCreativeName,
+                        "creative_slot" to channelPositionInList + 1,
+                        "item_id" to item.channelId,
+                        "item_name" to model.promotionsItemName,
+                    )
+                )
             ),
             customDimension = hashMapOf(
                 "businessUnit" to "play",
