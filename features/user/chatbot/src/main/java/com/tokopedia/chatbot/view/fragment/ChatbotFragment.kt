@@ -107,6 +107,7 @@ import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
@@ -114,6 +115,9 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -476,11 +480,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun pickImageFromDevice(){
             activity?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
-            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
-            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+//            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+//            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+//            intent.putImagePickerBuilder(builder)
+//            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
+//            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+                val intent = context?.let { context ->
+                    MediaPicker.intentWithGalleryFirst(context) {
+                        pageSource(PageSource.ChatBot)
+                        modeType(ModeType.IMAGE_ONLY)
+                        singleSelectionMode()
+                    }
+                }
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
 
@@ -1229,7 +1241,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return listOf(
-            ImageMenu(),
+            ChatbotImageMenu(),
             VideoMenu()
         )
     }
