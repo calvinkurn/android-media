@@ -54,13 +54,6 @@ object ShopScoreConstant {
     const val BG_ORANGE_TIMER =
         "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_PRO_BENEFIT_URL_1 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_1@3x.png"
-    const val PM_PRO_BENEFIT_URL_2 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_2@3x.png"
-    const val PM_PRO_BENEFIT_URL_3 =
-        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro_3@3x.png"
-
     const val IC_HAS_PENALTY_URL =
         "https://images.tokopedia.net/img/android/shop_score/ic_has_penalty.png"
     const val IC_NO_PENALTY_URL =

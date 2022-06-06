@@ -251,63 +251,40 @@ open class ShopScoreMapper @Inject constructor(
                     )
                     return@apply
                 }
-                //PM PRO Section
-                powerMerchantResponse?.pmTier == PMTier.PRO -> {
-                    if (powerMerchantResponse.status == PMStatusConst.ACTIVE) {
-                        add(ItemStatusPMProUiModel())
-                        return@apply
-                    } else if (powerMerchantResponse.status == PMStatusConst.IDLE) {
-                        add(mapToCardPotentialBenefitNonEligible())
-                        return@apply
-                    }
-                }
-                powerMerchantResponse?.pmTier == PMTier.REGULAR -> {
-                    when {
-                        //RM Section logic
-                        powerMerchantResponse.status == PMStatusConst.INACTIVE -> {
-                            if (isNewSeller) {
-                                add(
-                                    mapToItemCurrentStatusRMUiModel(isNewSeller)
-                                )
+                powerMerchantResponse?.pmTier == PMTier.REGULAR || powerMerchantResponse?.pmTier == PMTier.PRO -> {
+                    //RM Section logic
+                    when (powerMerchantResponse.status) {
+                        PMStatusConst.ACTIVE -> {
+                            if (powerMerchantResponse.pmTier == PMTier.REGULAR) {
+                                add(ItemStatusPMProUiModel())
                                 return@apply
                             } else {
-                                when {
-                                    isEligiblePMPro == true -> {
-                                        add(mapToSectionRMEligibleToPMPro())
-                                        return@apply
-                                    }
-                                    isEligiblePM == true -> {
-                                        add(
-                                            mapToItemCurrentStatusRMUiModel(
-                                                isNewSellerProjection
-                                            )
-                                        )
+                                when (shopScore) {
+                                    in SHOP_SCORE_60..SHOP_SCORE_69 -> {
+                                        add(mapToItemCurrentStatusRMUiModel(isNewSeller))
                                         return@apply
                                     }
                                     else -> {
-                                        add(mapToCardPotentialBenefitNonEligible())
+                                        add(ItemStatusPMProUiModel())
                                         return@apply
                                     }
                                 }
                             }
                         }
-                        //PM Section logic
-                        (powerMerchantResponse.status == PMStatusConst.ACTIVE)
-                                && !isOfficialStore -> {
-                            when (isEligiblePMPro) {
-                                true -> {
-                                    add(mapToSectionPMEligibleToPMPro())
+                        PMStatusConst.INACTIVE -> {
+                            when {
+                                isEligiblePM.orFalse() && shopScore in SHOP_SCORE_60..SHOP_SCORE_69 -> {
+                                    add(mapToSectionRMEligibleToPM())
                                     return@apply
                                 }
-                                else -> {
-                                    add(mapToItemPMUiModel())
+                                !isEligiblePM.orFalse() || shopScore < SHOP_SCORE_60 -> {
+                                    add(mapToCardPotentialBenefitNonEligible())
                                     return@apply
                                 }
                             }
                         }
-                        (powerMerchantResponse.status == PMStatusConst.IDLE &&
-                                !isOfficialStore) -> {
-                            add(mapToCardPotentialBenefitNonEligible())
+                        PMStatusConst.IDLE -> {
+                            add(mapToItemCurrentStatusRMUiModel(isNewSeller))
                             return@apply
                         }
                     }
@@ -949,7 +926,7 @@ open class ShopScoreMapper @Inject constructor(
             } ?: emptyList())
     }
 
-    private fun mapToSectionRMEligibleToPMPro(): SectionRMPotentialPMProUiModel {
+    private fun mapToSectionRMEligibleToPM(): SectionRMPotentialPMProUiModel {
         val potentialPMProPMBenefitList =
             mapToItemPMProBenefit() as? List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>
         return SectionRMPotentialPMProUiModel(
@@ -957,27 +934,18 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToSectionPMEligibleToPMPro(): SectionPMPotentialPMProUiModel {
-        val potentialPMProPMBenefitList =
-            mapToItemPMProBenefit() as? List<SectionPMPotentialPMProUiModel.ItemPMProBenefitUIModel>
-
-        return SectionPMPotentialPMProUiModel(
-            potentialPMProPMBenefitList = potentialPMProPMBenefitList
-        )
-    }
-
     private fun mapToItemPMProBenefit(): List<ItemParentBenefitUiModel> {
         return listOf(
             ItemParentBenefitUiModel(
-                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_1,
+                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_01,
                 titleResources = R.string.title_item_benefit_1_pm_pro
             ),
             ItemParentBenefitUiModel(
-                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_2,
+                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_02,
                 titleResources = R.string.title_item_benefit_2_pm_pro
             ),
             ItemParentBenefitUiModel(
-                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_3,
+                iconUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_03,
                 titleResources = R.string.title_item_benefit_3_pm_pro
             )
         )
@@ -1329,6 +1297,8 @@ open class ShopScoreMapper @Inject constructor(
     }
 
     companion object {
+        const val SHOP_SCORE_60 = 60
+        const val SHOP_SCORE_69 = 69
         const val SHOP_AGE_NINETY = 90
         const val SHOP_AGE_NINETY_SIX = 96
         const val SHOP_AGE_FIFTY_NINE = 59

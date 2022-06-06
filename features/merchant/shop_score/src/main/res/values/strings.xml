@@ -35,12 +35,12 @@
     <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya.</string>
     <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
 
-    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant PRO!</string>
+    <string name="title_potential_pm_pro">Selamat! Kamu memenuhi syarat program Power Merchant.</string>
 
-    <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
-    <string name="title_item_benefit_1_pm_pro">Bebas ongkir dengan biaya layanan lebih ringan</string>
-    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant PRO untuk tingkatkan kepercayaan pembeli</string>
-    <string name="title_item_benefit_3_pm_pro">Nikmati layanan prioritas Tokopedia Care</string>
+    <string name="title_benefit_pm_pro">Toko dengan Power Merchant berpotensi:</string>
+    <string name="title_item_benefit_1_pm_pro"><![CDATA[Dikunjungi pembeli hingga <br><b>2,5 kali lipat</b>]]></string>
+    <string name="title_item_benefit_2_pm_pro"><![CDATA[Menerima pesanan hingga <br><b>2,3 kali lipat</b>]]></string>
+    <string name="title_item_benefit_3_pm_pro"><![CDATA[Meningkatkan penghasilan hingga <br><b>2,2 kali lipat</b>]]></string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
@@ -52,7 +52,7 @@
     <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
     <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
     <string name="see_all_benefit">Lihat Semua Keuntungannya</string>
-    <string name="title_non_eligible_status_power_merchant">Gabung Power Merchant untuk dapatkan berbagai keuntungan menarik!</string>
+    <string name="title_non_eligible_status_power_merchant">Tingkatkan skor agar bisa gabung Power Merchant dan nikmati keuntungannya!</string>
     <string name="description_information_level_text">Level toko mewakili skala bisnismu. Kami menggunakan level untuk memberikan penilaian yang lebih adil untuk setiap skala bisnis yang berbeda.</string>
     
     <string name="title_shop_score_service">Pelayanan tokomu sudah sangat memuaskan pembeli!</string>
@@ -249,7 +249,7 @@
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
     <string name="desc_potential_eligible_power_merchant">Batas skor PM adalah 60. Daftar Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
-    <string name="desc_potential_rm_eligible_power_merchant_pro">Batas skor PM PRO adalah 70. Daftar PM PRO dan nikmati berbagai keuntungan eksklusifnya, ya!</string>
+    <string name="desc_potential_rm_eligible_power_merchant_pro">Gabung ke Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
     
@@ -272,10 +272,11 @@
     <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
     <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
     <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
+    <string name="ss_join_power_merchant">Gabung Power Merchant</string>
 
     <!-- RM not eligible for PM/PM PRO -->
-    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60 dan Power Merchant PRO 70, ya.</string>
-    <string name="title_item_rm_section_not_eligible_all">Toko dengan Power Merchant punya keuntungan:</string>
+    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60, ya.</string>
+    <string name="title_item_rm_section_not_eligible_all">Keuntungan Power Merchant:</string>
     <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
     <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>

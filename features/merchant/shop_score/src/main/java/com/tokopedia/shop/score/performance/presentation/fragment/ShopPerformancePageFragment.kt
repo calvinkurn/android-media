@@ -227,14 +227,14 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onItemClickedGotoPMPro() {
-        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+        goToPowerMerchantSubscribe()
     }
 
     /**
      * ItemStatusPowerMerchantListener
      */
     override fun onItemClickedGoToPMActivation() {
-        goToPowerMerchantSubscribe(PARAM_PM)
+        goToPowerMerchantSubscribe()
         shopScorePenaltyTracking.clickPowerMerchantSection(isNewSeller)
     }
 
@@ -246,7 +246,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemPotentialRegularMerchantListener
      */
     override fun onItemClickedBenefitPotentialRM() {
-        goToPowerMerchantSubscribe(PARAM_PM)
+        goToPowerMerchantSubscribe()
         shopScorePenaltyTracking.clickSeeAllBenefitInRM(isNewSeller)
     }
 
@@ -255,11 +255,11 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onGotoPMProPage() {
-        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+        goToPowerMerchantSubscribe()
     }
 
     override fun onItemClickedGoToPMProActivation() {
-        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+        goToPowerMerchantSubscribe()
     }
 
     /**
@@ -288,7 +288,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemRegularMerchantListener
      */
     override fun onRMSectionToPMPage() {
-        goToPowerMerchantSubscribe(PARAM_PM)
+        goToPowerMerchantSubscribe()
     }
 
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
@@ -384,7 +384,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onPMToPMProPage() {
-        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+        goToPowerMerchantSubscribe()
     }
 
     override fun onProtectedParameterChevronClicked(descParameterRelief: String) {
@@ -805,12 +805,8 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_PENALTY) }
     }
 
-    private fun goToPowerMerchantSubscribe(tab: String) {
-        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab =
-            Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
-                .toString()
-        context?.let { RouteManager.route(context, appLinkPMTab) }
+    private fun goToPowerMerchantSubscribe() {
+        context?.let { RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE) }
     }
 
     private fun setupAdapter() {
