@@ -21,6 +21,7 @@ import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
@@ -36,12 +37,10 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -107,6 +106,8 @@ class WishlistV2ViewModelTest {
         val listBadge = arrayListOf<WishlistV2Response.Data.WishlistV2.Item.BadgesItem>()
         listBadge.add(WishlistV2Response.Data.WishlistV2.Item.BadgesItem(imageUrl = "badgeUrl", title = "testBadge"))
 
+        val tickerState = WishlistV2Response.Data.WishlistV2.TickerState(message = "ticker", type = "announcement")
+
         val wishlistItem1 = WishlistV2Response.Data.WishlistV2.Item(name = "Test1",
                 buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton1), labelGroup = listLabelGroup, badges = listBadge)
         val wishlistItem2 = WishlistV2Response.Data.WishlistV2.Item(name = "Test2",
@@ -162,7 +163,7 @@ class WishlistV2ViewModelTest {
         val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
-        wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList)))
+        wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList, ticker = tickerState)))
         recommendationWidget = RecommendationWidget(tid = "123", recommendationItemList = listRecommendationItem,
                 recommendationFilterChips = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip()), title = "TestRecomm")
 
@@ -464,6 +465,20 @@ class WishlistV2ViewModelTest {
     }
 
     @Test
+    fun mapToRecommendation_onExpectedIndex_whenItemsSize_smallerThenRecomPosition() {
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 2, items = wishlistTwoItemList, page = 2, hasNextPage = true))
+
+        coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "", false)
+
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[2].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[3].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+    }
+
+    @Test
     fun mapToEmptyState_whenQueryIsNotEmpty() {
         val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "test", items = emptyList(), page = 1))
 
@@ -536,5 +551,27 @@ class WishlistV2ViewModelTest {
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+    }
+
+    @Test
+    fun `verify get count delete wishlistV2 returns success`(){
+        val countWishlistV2 = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress(status = "OK")
+
+        coEvery { countDeleteWishlistV2UseCase.executeOnBackground() } returns Success(countWishlistV2)
+
+        wishlistV2ViewModel.getCountDeletionWishlistV2()
+
+        coVerify { countDeleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get count delete wishlistV2 returns fail`(){
+        val mockThrowable = mockk<Throwable>("fail")
+
+        coEvery { countDeleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        wishlistV2ViewModel.getCountDeletionWishlistV2()
+
+        coVerify { countDeleteWishlistV2UseCase.executeOnBackground() }
     }
 }

@@ -35,10 +35,11 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment.Companion.ATC_WISHLIST
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
+class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
                                               private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
@@ -115,23 +116,16 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     fun getCountDeletionWishlistV2() {
-        launch {
-            try {
-                countDeletionWishlistV2UseCase.execute(
-                    onSuccess = { result ->
-                        if (result is Success) {
-                            val successRemoved = result.data.data.successfullyRemovedItems
-                            val totalItems = result.data.data.totalItems
-                            println("++ getCountDeletionWishlistV2 - success removed = $successRemoved, totalItems = $totalItems")
-                            _countDeletionWishlistV2.value = result
-                        }
-                    },
-                    onError = {
-                        _countDeletionWishlistV2.value = Fail(it)
-                    }
-                )
-            } catch (e: Exception) {
-                _countDeletionWishlistV2.value = Fail(e)
+        launch(dispatcher.main) {
+            val result = withContext(dispatcher.io) { countDeletionWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                val successRemoved = result.data.data.successfullyRemovedItems
+                val totalItems = result.data.data.totalItems
+                println("++ getCountDeletionWishlistV2 - success removed = $successRemoved, totalItems = $totalItems")
+                _countDeletionWishlistV2.value = result
+            } else  {
+                val error = (result as Fail).throwable
+                _countDeletionWishlistV2.value = Fail(error)
             }
         }
     }
