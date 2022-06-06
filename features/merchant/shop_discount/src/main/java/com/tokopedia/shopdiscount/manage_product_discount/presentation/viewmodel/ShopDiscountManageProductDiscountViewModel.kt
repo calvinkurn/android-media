@@ -101,7 +101,7 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
             this.endDate = endDate
         }
         if(productData.productStatus.errorType == START_DATE_ERROR) {
-            if (isStartDateError(productData, productData.productStatus.isVariant)) {
+            if (isStartDateError(productData)) {
                 productData.productStatus.errorType = START_DATE_ERROR
             } else {
                 productData.productStatus.errorType = NO_ERROR
@@ -111,18 +111,9 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
     }
 
     private fun isStartDateError(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
-        isVariant: Boolean
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return if (isVariant) {
-            setupProductUiModel.listProductVariant.filter {
-                it.variantStatus.isVariantEnabled == true
-            }.any {
-                checkProductStartDateError(it)
-            }
-        } else {
-            checkProductStartDateError(setupProductUiModel)
-        }
+        return checkProductStartDateError(setupProductUiModel)
     }
 
     private fun checkProductStartDateError(

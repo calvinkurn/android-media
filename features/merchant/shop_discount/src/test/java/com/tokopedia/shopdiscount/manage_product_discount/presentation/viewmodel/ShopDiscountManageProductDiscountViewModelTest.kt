@@ -110,13 +110,60 @@ class ShopDiscountManageProductDiscountViewModelTest {
     }
 
     @Test
-    fun `When call updateProductDiscountPeriodData, then getProductData should return updated start date and end date`() {
+    fun `When call updateProductDiscountPeriodData with given start date is more than 5 minutes and has start date error, then getProductData should return updated start date and end date and errorType should be no error`() {
+        val mockProductData = getMockProductDataWithStartDateError()
+        viewModel.setProductData(mockProductData)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 10)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
+        assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.NO_ERROR)
+    }
+
+    @Test
+    fun `When call updateProductDiscountPeriodData with given start date is less than 5 minutes and has start date error, then getProductData should return updated start date and end date and errorType should be error start date`() {
+        val mockProductData = getMockProductDataWithStartDateError()
+        viewModel.setProductData(mockProductData)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 2)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
+        assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.START_DATE_ERROR)
+    }
+
+    @Test
+    fun `When call updateProductDiscountPeriodData with given start date is less than 5 minutes and no start date error, then getProductData should return updated start date and end date and errorType should be no error`() {
         val mockProductData = getMockProductData()
         viewModel.setProductData(mockProductData)
-        viewModel.updateProductDiscountPeriodData(mockStartDate, mockEndDate)
-        val liveData =  viewModel.updatedDiscountPeriodData
-        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDate.time)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 2)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
         assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.NO_ERROR)
+    }
+
+    private fun getMockProductDataWithStartDateError(): ShopDiscountSetupProductUiModel.SetupProductData {
+        return ShopDiscountSetupProductUiModel.SetupProductData(
+            productId = mockProductId,
+            listProductWarehouse = listOf(
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse()
+            ),
+            mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+                minOriginalPrice = mockOriginalPrice
+            ),
+            productStatus = ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
+                errorType = ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.START_DATE_ERROR
+            )
+        )
     }
 
     @Test
