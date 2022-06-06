@@ -120,6 +120,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     int screenHeight = 0;
     private int tokenId;
     private String tokenName;
+    private UserSession userSession;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -136,6 +137,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
+
+
+        userSession = new UserSession(getContext());
 
         initMinimizeIcon();
         prepareScreenHeight();
@@ -772,7 +776,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
         map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
-        UserSession userSession = new UserSession(getContext());
         map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
@@ -786,15 +789,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
         map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
-        UserSession userSession = new UserSession(getContext());
         map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     private void trackingEggHide(int idToken, String name, boolean isMinimized) {
-        String label = "hide";
+        String label = "_hide";
         if(!isMinimized){
-            label = "show";
+            label = "_show";
         }
         Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
@@ -804,7 +806,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
         map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
-        UserSession userSession = new UserSession(getContext());
         map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
