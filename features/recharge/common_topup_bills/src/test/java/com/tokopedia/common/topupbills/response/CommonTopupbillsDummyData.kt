@@ -3,6 +3,10 @@ package com.tokopedia.common.topupbills.response
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberTrackingData
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
@@ -48,15 +52,17 @@ object CommonTopupbillsDummyData {
         )
     }
 
-    fun getFavoriteNumberSuccess(): TopupBillsFavNumberData {
-        return TopupBillsFavNumberData(
-                favNumber = TopupBillsFavNumber(
-                        favNumberList = listOf(
-                                TopupBillsFavNumberItem(
-                                        clientNumber = "081288888888",
-                                        productId = "5",
-                                        categoryId = "578",
-                                        operatorId = "123"
+    fun getFavoriteNumberSuccess(): TopupBillsPersoFavNumberData {
+        return TopupBillsPersoFavNumberData(
+                persoFavoriteNumber = TopupBillsPersoFavNumber(
+                        items = listOf(
+                                    TopupBillsPersoFavNumberItem(
+                                        title = "081288888888",
+                                        subtitle = "",
+                                        id = "578",
+                                        trackingData = TopupBillsPersoFavNumberTrackingData(
+                                            operatorId = "123"
+                                        )
                                 )
                         )
                 )

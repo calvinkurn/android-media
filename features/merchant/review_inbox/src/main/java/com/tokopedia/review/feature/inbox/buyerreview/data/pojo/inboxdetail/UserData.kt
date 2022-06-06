@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class UserData(
     @SerializedName("user_id")
     @Expose
-    val userId: Long = 0L,
+    val userId: String = "",
 
     @SerializedName("full_name")
     @Expose

@@ -47,6 +47,19 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
                     setMarginsCalendar(view, right = right)
                 }
             }
+            ComponentsList.BannerInfiniteItem.ordinal -> {
+                if (spanIndex.isZero()) {
+                    //settings for left column
+                    val left = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                    setMarginsShopBanner(view, left = left,right = others, top = others, bottom = others)
+                } else {
+                    //settings for right column
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                    val right = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                    setMarginsShopBanner(view, left = others,right = right, top = others, bottom = others)
+                }
+            }
         }
     }
 
@@ -65,6 +78,19 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
 
     private fun setMarginsCalendar(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
         val cardView: CardUnify? = view?.findViewById(R.id.calendar_card_unify)
+        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+
+        params?.let {
+            it.rightMargin = right
+            it.leftMargin = left
+            it.bottomMargin = bottom
+            it.topMargin = top
+            cardView.layoutParams = it
+        }
+    }
+
+    private fun setMarginsShopBanner(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
+        val cardView: CardView? = view?.findViewById(R.id.banner_image_container)
         val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
 
         params?.let {

@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.mapper
 
+import android.content.Context
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemPartner
@@ -8,6 +9,7 @@ import com.tokopedia.play.widget.data.PlayWidgetItemVideo
 import com.tokopedia.play.widget.data.PlayWidgetPromoLabel
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
@@ -33,7 +35,8 @@ import javax.inject.Inject
  */
 
 class PlayWidgetUiMapper @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val playWidgetPreference: PlayWidgetPreference,
 ) {
 
     private val htmlTextTransformer = DefaultHtmlTextTransformer()
@@ -55,7 +58,7 @@ class PlayWidgetUiMapper @Inject constructor(
     }
 
     private fun mapWidgetConfig(data: PlayWidget): PlayWidgetConfigUiModel = PlayWidgetConfigUiModel(
-        autoPlay = data.meta.autoplay,
+        autoPlay = playWidgetPreference.getAutoPlay(data.meta.autoplay),
         autoPlayAmount = data.meta.autoplayAmount,
         autoRefresh = data.meta.autoRefresh,
         autoRefreshTimer = data.meta.autoRefreshTimer,

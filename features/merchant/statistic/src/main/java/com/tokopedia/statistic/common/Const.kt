@@ -31,9 +31,9 @@ object Const {
 
     object TickerPageName {
         const val SHOP_INSIGHT = "seller-statistic"
-        const val BUYER_INSIGHT = "wawasan-pembeli"
+        const val BUYER_INSIGHT = "seller-statistic#wawasan-pembeli"
         const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
-        const val TRAFFIC_INSIGHT = "seller-statistic#wawasan-kunjungan"
+        const val TRAFFIC_INSIGHT = "seller-statistic#wawasan-traffic"
         const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-operasional"
     }
 

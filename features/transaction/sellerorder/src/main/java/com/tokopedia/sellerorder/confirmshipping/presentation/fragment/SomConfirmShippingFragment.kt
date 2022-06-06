@@ -17,16 +17,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
@@ -202,24 +197,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setBtnToChangeCourier() {
         binding?.clChangeCourier?.visibility = View.VISIBLE
         binding?.btnConfirmShipping?.setOnClickListener {
-            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
-            val queryString = rawQuery
-                    .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
-                    .replace(INPUT_AGENCY_ID, currShipmentId.toString())
-                    .replace(INPUT_SP_ID, currShipmentProductId)
-            processChangeCourier(queryString)
+            processChangeCourier(currOrderId, binding?.tfNoResi?.textFieldInput?.text.toString(), currShipmentId, currShipmentProductId.toLongOrZero())
         }
     }
 
     private fun setBtnToConfirmShipping() {
         binding?.clChangeCourier?.visibility = View.GONE
         binding?.btnConfirmShipping?.setOnClickListener {
-            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
-            val queryString = rawQuery
-                    .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
-            processConfirmShipping(queryString)
+            processConfirmShipping(currOrderId, binding?.tfNoResi?.textFieldInput?.text.toString())
         }
         observingConfirmShipping()
     }
@@ -235,16 +220,16 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         intentIntegrator.setCaptureActivity(customClass).initiateScan()
     }
 
-    private fun processConfirmShipping(queryString: String) {
-        somConfirmShippingViewModel.confirmShipping(queryString)
+    private fun processConfirmShipping(orderId: String, shippingRef: String) {
+        somConfirmShippingViewModel.confirmShipping(orderId, shippingRef)
     }
 
-    private fun processChangeCourier(queryString: String) {
-        somConfirmShippingViewModel.changeCourier(queryString)
+    private fun processChangeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
+        somConfirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
     }
 
     private fun getCourierList() {
-        somConfirmShippingViewModel.getCourierList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_courier_list))
+        somConfirmShippingViewModel.getCourierList()
     }
 
     private fun observingConfirmShipping() {

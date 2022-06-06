@@ -255,6 +255,44 @@ class PlayAnalytic(
         }
     }
 
+    fun clickATCBuyWithVariantRSProduct(product: PlayProductUiModel.Product, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section, shopInfo: PlayPartnerInfo){
+        val action = if(productAction == ProductAction.AddToCart) "atc" else "buy"
+
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - $action in varian page in ongoing section",
+                "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(
+                            hashMapOf(
+                            "name" to product.title,
+                            "id" to product.id,
+                            "price" to when(product.price) {
+                                is DiscountedPrice -> product.price.discountedPriceNumber
+                                is OriginalPrice -> product.price.priceNumber
+                            },
+                            "brand" to "",
+                            "category" to "",
+                            "variant" to "",
+                            "category_id" to "",
+                            "quantity" to product.minQty,
+                            "shop_id" to shopInfo.id,
+                            "shop_name" to shopInfo.name,
+                            "shop_type" to shopInfo.type.value
+                        ))
+                        )
+                    )
+            ),
+            generateBaseTracking(product = product, sectionInfo.config.type)
+        )
+    }
+
     fun clickProductAction(product: PlayProductUiModel.Product,
                            sectionInfo: ProductSectionUiModel.Section,
                            cartId: String,
@@ -264,12 +302,18 @@ class PlayAnalytic(
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
                     else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
                     else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             }

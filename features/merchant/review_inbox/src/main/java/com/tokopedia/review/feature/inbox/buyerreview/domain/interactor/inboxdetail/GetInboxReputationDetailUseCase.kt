@@ -68,7 +68,7 @@ class GetInboxReputationDetailUseCase @Inject constructor(
     ): RequestParams {
         return CheckShopFavoritedUseCase.getParam(
             requestParams.getString(GetReviewUseCase.PARAM_USER_ID, ""),
-            domain.inboxReputationDomain.inboxReputation.firstOrNull()?.shopId ?: 0L
+            domain.inboxReputationDomain.inboxReputation.firstOrNull()?.shopId ?:""
         )
     }
 

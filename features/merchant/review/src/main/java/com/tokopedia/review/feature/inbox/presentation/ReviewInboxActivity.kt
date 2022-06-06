@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
@@ -16,7 +17,7 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
     companion object {
         fun createNewInstance(context: Context, tab: String?, source: String?): Intent {
             val intent = Intent(context, ReviewInboxActivity::class.java)
-            intent.putExtra(ReviewInboxConstants.PARAM_TAB, tab ?: "")
+            intent.putExtra(ReviewApplinkConst.PARAM_TAB, tab ?: "")
             intent.putExtra(ReviewInboxConstants.PARAM_SOURCE, source ?: ReviewInboxConstants.DEFAULT_SOURCE)
             return intent
         }
@@ -102,7 +103,7 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
     }
 
     private fun getArgumentsFromApplink() {
-        tab = intent?.getStringExtra(ReviewInboxConstants.PARAM_TAB) ?: ""
+        tab = intent?.getStringExtra(ReviewApplinkConst.PARAM_TAB) ?: ""
         source = intent?.getStringExtra(ReviewInboxConstants.PARAM_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 

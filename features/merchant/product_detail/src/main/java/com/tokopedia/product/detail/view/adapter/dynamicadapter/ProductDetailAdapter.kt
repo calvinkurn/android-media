@@ -110,6 +110,10 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         submitList(listOf(data))
     }
 
+    fun getComponentPositionByName(componentName: String): Int {
+        return currentList.indexOfFirst { it.name() == componentName }
+    }
+
     private fun isLoading(): Boolean {
         val lastIndex = if (currentList.size == 0) -1 else currentList.size -1
         return if (lastIndex > -1) {

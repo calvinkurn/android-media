@@ -39,9 +39,10 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickContentTag(tagName: String) {
+    override fun clickContentTag(tagName: String, isChosen: Boolean) {
+        val actionType = if(isChosen) "click" else "unclick"
         sendClickEvent(
-            "click - content tag",
+            "$actionType - content tag",
             "$shopId - $tagName",
         )
     }

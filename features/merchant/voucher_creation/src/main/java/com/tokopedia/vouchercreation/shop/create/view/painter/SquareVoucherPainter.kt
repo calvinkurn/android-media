@@ -5,7 +5,6 @@ import android.graphics.*
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.IntDef
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.whenAlive
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.getTextSizeFromDimens
 import com.tokopedia.vouchercreation.shop.create.view.enums.PostImageTextType
@@ -44,7 +44,7 @@ class SquareVoucherPainter(private val context: Context,
         private const val BOTTOM_INFO_X = 0.34f
         private const val PROMO_CODE_Y = 0.87f
         private const val PROMO_PERIOD_Y = 0.93f
-
+        private const val MARGIN_TOP_MULTIPLIER = 0.035
         private const val DASH = "-"
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
@@ -143,8 +143,7 @@ class SquareVoucherPainter(private val context: Context,
     private val bottomInfoX = bitmapWidth * BOTTOM_INFO_X
     private val promoCodeY = bitmapHeight * PROMO_CODE_Y
     private val promoPeriodY = bitmapHeight * PROMO_PERIOD_Y
-    private val marginTopMultiplier = 0.035
-    private val valueMarginTop = (bitmapHeight * marginTopMultiplier).toInt()
+    private val valueMarginTop = (bitmapHeight * MARGIN_TOP_MULTIPLIER).toInt()
 
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
@@ -316,7 +315,7 @@ class SquareVoucherPainter(private val context: Context,
     }
 
     private fun getTextView(value: String, type: PostImageTextType) =
-            TextView(context).apply {
+            Typography(context).apply {
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value

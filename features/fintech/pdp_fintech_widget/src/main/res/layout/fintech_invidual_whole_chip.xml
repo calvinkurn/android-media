@@ -10,6 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardContent"
+        android:background="@color/Unify_NN0"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
@@ -68,7 +69,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/fintechwidget_procced_icon"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/barrier"

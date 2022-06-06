@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -63,14 +65,24 @@ class TableViewHolder(
     }
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
+        val dataSet = element.data?.dataSet.orEmpty()
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.sendTableImpressionEvent(
+                model = element,
+                position = this@TableViewHolder.adapterPosition,
+                slidePosition = Int.ZERO,
+                maxSlidePosition = element.data?.dataSet?.size.orZero(),
+                isSlideEmpty = dataSet.getOrNull(Int.ZERO)?.rows.isNullOrEmpty()
+            )
+        }
+
         with(binding) {
             errorStateBinding.commonWidgetErrorState.gone()
             loadingStateBinding.shimmerTableWidgetWidget.gone()
 
-            val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
                 setupTableFilter(element)
-                if (dataSet[0].rows.isEmpty()) {
+                if (dataSet[Int.ZERO].rows.isEmpty()) {
                     setOnTableEmpty(element)
                 } else {
                     tvShcTableOnEmpty.gone()
@@ -81,7 +93,7 @@ class TableViewHolder(
                     shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
-                        listener.sendTableImpressionEvent(element, position, maxPosition, isEmpty)
+                        listener.sendTableImpressionEvent(element, adapterPosition, position, maxPosition, isEmpty)
                     }
                     shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
                         listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
@@ -160,7 +172,6 @@ class TableViewHolder(
             tvShcTableOnEmpty.visible()
         }
         shcTableView.gone()
-        listener.sendTableImpressionEvent(element, 0, 0, true)
     }
 
     private fun showLoadingState() = with(binding) {
@@ -292,6 +303,7 @@ class TableViewHolder(
 
         fun sendTableImpressionEvent(
             model: TableWidgetUiModel,
+            position: Int,
             slidePosition: Int,
             maxSlidePosition: Int,
             isSlideEmpty: Boolean

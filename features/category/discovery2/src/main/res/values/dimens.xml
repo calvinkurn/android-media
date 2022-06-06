@@ -41,5 +41,9 @@
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_100">100dp</dimen>
+    <dimen name="disco_dp_20">20dp</dimen>
+    <dimen name="disco_dp_112">112dp</dimen>
+    <dimen name="dp_88">88dp</dimen>
+    <dimen name="dp_104">104dp</dimen>
 
 </resources>

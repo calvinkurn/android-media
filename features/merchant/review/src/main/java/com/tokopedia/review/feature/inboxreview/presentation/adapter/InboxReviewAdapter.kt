@@ -16,9 +16,9 @@ class InboxReviewAdapter(
         notifyItemRangeInserted(lastIndex, feedbackInboxList.size)
     }
 
-    fun addInboxFeedbackError() {
+    fun addInboxFeedbackError(throwable: Throwable) {
         if (visitables.getOrNull(lastIndex) !is InboxReviewErrorUiModel) {
-            visitables.add(InboxReviewErrorUiModel())
+            visitables.add(InboxReviewErrorUiModel(throwable))
             notifyItemInserted(lastIndex)
         }
     }

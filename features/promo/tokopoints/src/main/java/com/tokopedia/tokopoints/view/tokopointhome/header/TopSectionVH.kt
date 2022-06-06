@@ -56,6 +56,8 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 
 class TopSectionVH(
     itemView: View,
@@ -97,6 +99,8 @@ class TopSectionVH(
     private var textLagi : Typography? = null
     private var containerProgressBar : FrameLayout ? = null
     private var isNextTier = false
+    val maxProgress = 100
+    private var TIME_DELAY_PROGRESS = 1000L
 
     fun bind(model: TopSectionResponse) {
 
@@ -164,14 +168,19 @@ class TopSectionVH(
         if (data?.progressInfoList?.isNotEmpty() == true) {
             currentTier?.text = data.progressInfoList.getOrNull(1)?.nextTierName ?: ""
             val diffAmount = data.progressInfoList.getOrNull(1)?.differenceAmountStr ?: ""
+            val diffAmountCurrent = data.progressInfoList.getOrNull(1)?.nextAmountStr ?: ""
             tierIconProgress?.loadImage(data.progressInfoList[1].nextTierIconImageURL ?: "")
 
             if (digitContainer?.childCount == 0) {
                 if (isContainsRp(diffAmount)) {
                     addRPToTransaction()
-                    setDigitContainerView(diffAmount.removePrefix("Rp").toCharArray())
+                    val digitTextView = DigitTextView(itemView.context)
+                    digitTextView.setValue(diffAmountCurrent.removePrefix("Rp"),diffAmount.removePrefix("Rp"))
+                    digitContainer?.addView(digitTextView)
                 } else {
-                    setDigitContainerView(diffAmount.toCharArray())
+                    val digitTextView = DigitTextView(itemView.context)
+                    digitTextView.setValue(diffAmountCurrent,diffAmount)
+                    digitContainer?.addView(digitTextView)
                     addXToTransaction()
                 }
             }
@@ -491,24 +500,6 @@ class TopSectionVH(
 
     }
 
-    private fun setDigitContainerView(getDigitValue: CharArray) {
-        for (i in getDigitValue){
-            if(i.isDigit()){
-                val digitTextView = DigitTextView(itemView.context)
-                digitTextView.setValue(i.digitToInt())
-                digitContainer?.addView(digitTextView)
-            }
-            else {
-                val dotView =Typography(itemView.context)
-                dotView.text="."
-                dotView.setWeight(Typography.BOLD)
-                digitContainer?.gravity = Gravity.BOTTOM
-                dotView.setTextColor(Color.WHITE)
-                digitContainer?.addView(dotView)
-            }
-        }
-    }
-
     private fun addRPToTransaction(){
         val rpView =Typography(itemView.context)
         rpView.apply {
@@ -526,7 +517,7 @@ class TopSectionVH(
             text = "x"
             setWeight(Typography.BOLD)
             setType(Typography.BODY_3)
-            setTextColor(Color.WHITE)
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White ) )
         }
         digitContainer?.addView(dotView)
     }
@@ -537,7 +528,6 @@ class TopSectionVH(
         val progressValues = getProgress(progressInfoList)
         val progressLast = progressValues.first ?: -1
         val progressCurrent = progressValues.second ?: -1
-        val maxProgress = 100
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
@@ -547,41 +537,59 @@ class TopSectionVH(
             (progressBarWrapper.parent as ViewGroup).clipToPadding = false
             gravity = Gravity.CENTER_VERTICAL
             if (progressLast > 0 && progressLast > progressCurrent) {
-                setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                setProgressIcon(
+                    AppCompatResources.getDrawable(
+                        itemView.context,
+                        R.drawable.tp_tier_progress
+                    )
+                )
                 setValue(maxProgress, true)
             } else {
                 setProgressIcon(null)
                 setValue(progressLast, true)
             }
         }
-
         progressBar?.postDelayed(
             {
-                if (progressBar?.getValue() == maxProgress) {
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
-                } else {
-                    progressBar?.setValue(progressCurrent, true)
-                    progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
-                }
-            }, 1000L
+                handleDelayedProgress(container, progressCurrent)
+            }, TIME_DELAY_PROGRESS
         )
+
+    }
+
+    private fun handleDelayedProgress(container: FrameLayout? , progressCurrent:Int){
+        try {
+            //Check max progress for higher tier and open bottomsheet
+            if (progressBar?.getValue() == maxProgress) {
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
+                }
+            } else {
+                progressBar?.setValue(progressCurrent, true)
+                if (progressCurrent == 0) {
+                    progressBar?.setProgressIcon(null)
+                } else {
+                    progressBar?.setProgressIcon(
+                        AppCompatResources.getDrawable(
+                            itemView.context,
+                            R.drawable.tp_tier_progress
+                        )
+                    )
+                }
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
+                }
+            }
+        } catch (e:Exception){}
+    }
+
+    private fun progressIconProgressCompletionHandle(){
+        if (!isNextTier) {
+            topSectionData?.popupNotification = null
+            refreshOnTierUpgrade.refreshReward(popupNotification)
+        }
     }
 
     private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -37,6 +38,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -62,6 +64,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
+import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
@@ -104,10 +107,10 @@ import javax.inject.Inject
 import kotlin.collections.set
 
 abstract class BaseSearchCategoryFragment:
-        BaseDaggerFragment(),
-        ChooseAddressListener,
-        BannerComponentListener,
-        TitleListener,
+    BaseDaggerFragment(),
+    ChooseAddressListener,
+    BannerComponentListener,
+    TitleListener,
     CategoryFilterListener,
     QuickFilterListener,
     SortFilterBottomSheet.Callback,
@@ -158,12 +161,10 @@ abstract class BaseSearchCategoryFragment:
 
     private val searchCategoryToolbarHeight: Int
         get() {
-            val defaultHeight = resources
-                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+            val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height).orZero()
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding =
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
 
             return height + padding
         }
@@ -238,8 +239,7 @@ abstract class BaseSearchCategoryFragment:
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
-        val toolbarTransitionRangePixel =
-                resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
+        val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
 
         return NavRecyclerViewScrollListener(
                 navToolbar = navToolbar,
@@ -272,22 +272,17 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
-            .addCart()
-            .addGlobalNav()
-
-    protected fun IconBuilder.addCart(): IconBuilder = this
-            .addIcon(
-                    iconId = ID_CART,
-                    disableRouteManager = false,
-                    disableDefaultGtmTracker = disableDefaultCartTracker,
-                    onClick = ::onNavToolbarCartClicked,
-            )
-
     protected open val disableDefaultCartTracker
         get() = false
 
+    protected open val disableDefaultShareTracker
+        get() = false
+
     protected open fun onNavToolbarCartClicked() {
+
+    }
+
+    protected open fun onNavToolbarShareClicked() {
 
     }
 
@@ -299,6 +294,26 @@ abstract class BaseSearchCategoryFragment:
                         disableDefaultGtmTracker = false
                 ) { }
             else this
+
+    protected fun IconBuilder.addCart(): IconBuilder = this
+        .addIcon(
+            iconId = ID_CART,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultCartTracker,
+            onClick = ::onNavToolbarCartClicked,
+        )
+
+    protected fun IconBuilder.addShare(): IconBuilder = this
+        .addIcon(
+            iconId = ID_SHARE,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultShareTracker,
+            onClick = ::onNavToolbarShareClicked,
+        )
+
+    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+        .addCart()
+        .addGlobalNav()
 
     protected open fun getNavToolbarHint(): List<HintData> {
         val hint = getString(R.string.tokopedianow_search_bar_hint)
@@ -334,7 +349,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
         params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
@@ -777,8 +792,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
-        if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
-        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
+        if (!isVisible) {
+            headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        } else {
+            context?.resources?.apply {
+                val background = VectorDrawableCompat.create(this, R.drawable.tokopedianow_ic_header_background, context?.theme)
+                headerBackground?.setImageDrawable(background)
+            }
+        }
         headerBackground?.showWithCondition(isVisible)
     }
 

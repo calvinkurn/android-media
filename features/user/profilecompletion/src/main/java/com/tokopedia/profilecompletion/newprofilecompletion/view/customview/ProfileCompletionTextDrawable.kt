@@ -80,13 +80,13 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * @param text Text to display
      */
     var text: CharSequence?
-        get() = mText
-        set(text) {
-            var text = text
-            if (text == null) text = ""
-            mText = text
-            measureContent()
-        }
+	get() = mText
+	set(text) {
+	    var text = text
+	    if (text == null) text = ""
+	    mText = text
+	    measureContent()
+	}
 
     /**
      * Return the current text size, in pixels
@@ -96,10 +96,10 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * @param size Text size value, in sp
      */
     var textSize: Float
-        get() = mTextPaint.textSize
-        set(size) {
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
-        }
+	get() = mTextPaint.textSize
+	set(size) {
+	    setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
+	}
 
     /**
      * Set the text size, using the supplied complex units
@@ -107,19 +107,21 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * @param size Text size value
      */
     fun setTextSize(unit: Int, size: Float) {
-        val dimension = TypedValue.applyDimension(unit, size,
-                mResources.displayMetrics)
-        setRawTextSize(dimension)
+	val dimension = TypedValue.applyDimension(
+	    unit, size,
+	    mResources.displayMetrics
+	)
+	setRawTextSize(dimension)
     }
 
     /*
      * Set the text size, in raw pixels
      */
     private fun setRawTextSize(size: Float) {
-        if (size != mTextPaint.textSize) {
-            mTextPaint.textSize = size
-            measureContent()
-        }
+	if (size != mTextPaint.textSize) {
+	    mTextPaint.textSize = size
+	    measureContent()
+	}
     }
 
     /**
@@ -136,13 +138,13 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * [Layout.Alignment.ALIGN_OPPOSITE].
      */
     var textAlign: Layout.Alignment
-        get() = mTextAlignment
-        set(align) {
-            if (mTextAlignment != align) {
-                mTextAlignment = align
-                measureContent()
-            }
-        }
+	get() = mTextAlignment
+	set(align) {
+	    if (mTextAlignment != align) {
+		mTextAlignment = align
+		measureContent()
+	    }
+	}
 
     /**
      * Sets the typeface and style in which the text should be displayed,
@@ -152,25 +154,25 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      *
      */
     fun setTypeface(tf: Typeface?, style: Int) {
-        var tf = tf
-        if (style > 0) {
-            tf = if (tf == null) {
-                Typeface.defaultFromStyle(style)
-            } else {
-                Typeface.create(tf, style)
-            }
-            typeface = tf
-            // now compute what (if any) algorithmic styling is needed
-            val typefaceStyle = tf?.style ?: 0
-            val need = style and typefaceStyle.inv()
-            mTextPaint.isFakeBoldText = need and Typeface.BOLD != 0
-            val skewX = if (need and Typeface.ITALIC != 0) -0.25f else 0f
-            mTextPaint.textSkewX = skewX
-        } else {
-            mTextPaint.isFakeBoldText = false
-            mTextPaint.textSkewX = 0f
-            typeface = tf
-        }
+	var tf = tf
+	if (style > 0) {
+	    tf = if (tf == null) {
+		Typeface.defaultFromStyle(style)
+	    } else {
+		Typeface.create(tf, style)
+	    }
+	    typeface = tf
+	    // now compute what (if any) algorithmic styling is needed
+	    val typefaceStyle = tf?.style ?: 0
+	    val need = style and typefaceStyle.inv()
+	    mTextPaint.isFakeBoldText = need and Typeface.BOLD != 0
+	    val skewX = if (need and Typeface.ITALIC != 0) -0.25f else 0f
+	    mTextPaint.textSkewX = skewX
+	} else {
+	    mTextPaint.isFakeBoldText = false
+	    mTextPaint.textSkewX = 0f
+	    typeface = tf
+	}
     }
 
     /**
@@ -185,20 +187,20 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * that you actually want.
      */
     var typeface: Typeface?
-        get() = mTextPaint.typeface
-        set(tf) {
-            if (mTextPaint.typeface !== tf) {
-                mTextPaint.typeface = tf
-                measureContent()
-            }
-        }
+	get() = mTextPaint.typeface
+	set(tf) {
+	    if (mTextPaint.typeface !== tf) {
+		mTextPaint.typeface = tf
+		measureContent()
+	    }
+	}
 
     /**
      * Set a single text color for all states
      * @param color Color value such as [androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)] or [Color.argb]
      */
     fun setTextColor(color: Int) {
-        setTextColor(ColorStateList.valueOf(color))
+	setTextColor(ColorStateList.valueOf(color))
     }
 
     /**
@@ -206,8 +208,8 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * @param colorStateList ColorStateList of text colors, such as inflated from an R.color resource
      */
     fun setTextColor(colorStateList: ColorStateList?) {
-        mTextColors = colorStateList
-        updateTextColors(state)
+	mTextColors = colorStateList
+	updateTextColors(state)
     }
 
     /**
@@ -219,10 +221,10 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * Calling this method with `null` will remove any Path currently attached.
      */
     fun setTextPath(path: Path) {
-        if (mTextPath !== path) {
-            mTextPath = path
-            measureContent()
-        }
+	if (mTextPath !== path) {
+	    mTextPath = path
+	    measureContent()
+	}
     }
 
     /**
@@ -230,161 +232,166 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * the correct bounds when possible.
      */
     private fun measureContent() {
-        //If drawing to a path, we cannot measure intrinsic bounds
-        //We must resly on setBounds being called externally
-        if (mTextPath != null) {
-            //Clear any previous measurement
-            mTextLayout = null
-            mTextBounds.setEmpty()
-        } else {
-            //Measure text bounds
-            val desired = Math.ceil(Layout.getDesiredWidth(mText, mTextPaint).toDouble())
-            mTextLayout = StaticLayout(mText, mTextPaint, desired.toInt(),
-                    mTextAlignment, 1.0f, 0.0f, false)
-            mTextBounds[0, 0, mTextLayout?.width ?: 0] = mTextLayout?.height ?: 0
-        }
+	//If drawing to a path, we cannot measure intrinsic bounds
+	//We must resly on setBounds being called externally
+	if (mTextPath != null) {
+	    //Clear any previous measurement
+	    mTextLayout = null
+	    mTextBounds.setEmpty()
+	} else {
+	    //Measure text bounds
+	    val desired = Math.ceil(Layout.getDesiredWidth(mText, mTextPaint).toDouble())
+	    mTextLayout = StaticLayout(
+		mText, mTextPaint, desired.toInt(),
+		mTextAlignment, 1.0f, 0.0f, false
+	    )
+	    mTextBounds[0, 0, mTextLayout?.width ?: 0] = mTextLayout?.height ?: 0
+	}
 
-        //We may need to be redrawn
-        invalidateSelf()
+	//We may need to be redrawn
+	invalidateSelf()
     }
 
     /**
      * Internal method to apply the correct text color based on the drawable's state
      */
     private fun updateTextColors(stateSet: IntArray): Boolean {
-        val newColor = mTextColors?.getColorForState(stateSet, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        if (mTextPaint.color != newColor) {
-            mTextPaint.color = newColor ?: 0
-            return true
-        }
-        return false
+	val newColor = mTextColors?.getColorForState(
+	    stateSet,
+	    MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+	)
+	if (mTextPaint.color != newColor) {
+	    mTextPaint.color = newColor ?: 0
+	    return true
+	}
+	return false
     }
 
     override fun onBoundsChange(bounds: Rect) {
-        //Update the internal bounds in response to any external requests
-        mTextBounds.set(bounds)
+	//Update the internal bounds in response to any external requests
+	mTextBounds.set(bounds)
     }
 
     override fun isStateful(): Boolean {
-        /*
-         * The drawable's ability to represent state is based on
-         * the text color list set
-         */
-        return mTextColors?.isStateful ?: false
+	/*
+	 * The drawable's ability to represent state is based on
+	 * the text color list set
+	 */
+	return mTextColors?.isStateful ?: false
     }
 
     override fun onStateChange(state: IntArray): Boolean {
-        //Upon state changes, grab the correct text color
-        return updateTextColors(state)
+	//Upon state changes, grab the correct text color
+	return updateTextColors(state)
     }
 
     override fun getIntrinsicHeight(): Int {
-        //Return the vertical bounds measured, or -1 if none
-        return if (mTextBounds.isEmpty) {
-            -1
-        } else {
-            mTextBounds.bottom - mTextBounds.top
-        }
+	//Return the vertical bounds measured, or -1 if none
+	return if (mTextBounds.isEmpty) {
+	    -1
+	} else {
+	    mTextBounds.bottom - mTextBounds.top
+	}
     }
 
     override fun getIntrinsicWidth(): Int {
-        //Return the horizontal bounds measured, or -1 if none
-        return if (mTextBounds.isEmpty) {
-            -1
-        } else {
-            mTextBounds.right - mTextBounds.left
-        }
+	//Return the horizontal bounds measured, or -1 if none
+	return if (mTextBounds.isEmpty) {
+	    -1
+	} else {
+	    mTextBounds.right - mTextBounds.left
+	}
     }
 
     override fun draw(canvas: Canvas) {
-        val bounds = bounds
-        val count = canvas.save()
-        canvas.translate(bounds.left.toFloat(), bounds.top.toFloat())
-        if (mTextPath == null) {
-            //Allow the layout to draw the text
-            mTextLayout?.draw(canvas)
-        } else {
-            //Draw directly on the canvas using the supplied path
-            canvas.drawTextOnPath(mText.toString(), mTextPath!!, 0f, 0f, mTextPaint)
-        }
-        canvas.restoreToCount(count)
+	val bounds = bounds
+	val count = canvas.save()
+	canvas.translate(bounds.left.toFloat(), bounds.top.toFloat())
+	if (mTextPath == null) {
+	    //Allow the layout to draw the text
+	    mTextLayout?.draw(canvas)
+	} else {
+	    //Draw directly on the canvas using the supplied path
+	    canvas.drawTextOnPath(mText.toString(), mTextPath!!, 0f, 0f, mTextPaint)
+	}
+	canvas.restoreToCount(count)
     }
 
     override fun setAlpha(alpha: Int) {
-        if (mTextPaint.alpha != alpha) {
-            mTextPaint.alpha = alpha
-        }
+	if (mTextPaint.alpha != alpha) {
+	    mTextPaint.alpha = alpha
+	}
     }
 
     override fun getOpacity(): Int {
-        return mTextPaint.alpha
+	return mTextPaint.alpha
     }
 
     override fun setColorFilter(cf: ColorFilter?) {
-        if (mTextPaint.colorFilter !== cf) {
-            mTextPaint.colorFilter = cf
-        }
+	if (mTextPaint.colorFilter !== cf) {
+	    mTextPaint.colorFilter = cf
+	}
     }
 
     companion object {
-        /* Platform XML constants for typeface */
-        private const val SANS = 1
-        private const val SERIF = 2
-        private const val MONOSPACE = 3
+	/* Platform XML constants for typeface */
+	private const val SANS = 1
+	private const val SERIF = 2
+	private const val MONOSPACE = 3
 
-        /* Attribute lists to pull default values from the current theme */
-        private val themeAttributes = intArrayOf(
-                android.R.attr.textAppearance
-        )
-        private val appearanceAttributes = intArrayOf(
-                android.R.attr.textSize,
-                android.R.attr.typeface,
-                android.R.attr.textStyle,
-                android.R.attr.textColor
-        )
+	/* Attribute lists to pull default values from the current theme */
+	private val themeAttributes = intArrayOf(
+	    android.R.attr.textAppearance
+	)
+	private val appearanceAttributes = intArrayOf(
+	    android.R.attr.textSize,
+	    android.R.attr.typeface,
+	    android.R.attr.textStyle,
+	    android.R.attr.textColor
+	)
     }
 
     init {
-        //Used to load and scale resource items
-        //Definition of this drawables size
-        //Paint to use for the text
-        mTextPaint.density = mResources.displayMetrics.density
-        mTextPaint.isDither = true
-        var textSize = 15
-        var textColor: ColorStateList? = null
-        var styleIndex = -1
-        var typefaceIndex = -1
+	//Used to load and scale resource items
+	//Definition of this drawables size
+	//Paint to use for the text
+	mTextPaint.density = mResources.displayMetrics.density
+	mTextPaint.isDither = true
+	var textSize = 15
+	var textColor: ColorStateList? = null
+	var styleIndex = -1
+	var typefaceIndex = -1
 
-        //Set default parameters from the current theme
-        val a = context.theme.obtainStyledAttributes(themeAttributes)
-        val appearanceId = a.getResourceId(0, -1)
-        a.recycle()
-        var ap: TypedArray? = null
-        if (appearanceId != -1) {
-            ap = context.obtainStyledAttributes(appearanceId, appearanceAttributes)
-        }
-        if (ap != null) {
-            for (i in 0 until ap.indexCount) {
-                val attr = ap.getIndex(i)
-                when (attr) {
-                    0 -> textSize = a.getDimensionPixelSize(attr, textSize)
-                    1 -> typefaceIndex = a.getInt(attr, typefaceIndex)
-                    2 -> styleIndex = a.getInt(attr, styleIndex)
-                    3 -> textColor = a.getColorStateList(attr)
-                    else -> {
-                    }
-                }
-            }
-            ap.recycle()
-        }
-        setTextColor(textColor ?: ColorStateList.valueOf(-0x1000000))
-        setRawTextSize(textSize.toFloat())
-        var tf: Typeface? = null
-        when (typefaceIndex) {
-            SANS -> tf = Typeface.SANS_SERIF
-            SERIF -> tf = Typeface.SERIF
-            MONOSPACE -> tf = Typeface.MONOSPACE
-        }
-        setTypeface(tf, styleIndex)
+	//Set default parameters from the current theme
+	val a = context.theme.obtainStyledAttributes(themeAttributes)
+	val appearanceId = a.getResourceId(0, -1)
+	a.recycle()
+	var ap: TypedArray? = null
+	if (appearanceId != -1) {
+	    ap = context.obtainStyledAttributes(appearanceId, appearanceAttributes)
+	}
+	if (ap != null) {
+	    for (i in 0 until ap.indexCount) {
+		val attr = ap.getIndex(i)
+		when (attr) {
+		    0 -> textSize = a.getDimensionPixelSize(attr, textSize)
+		    1 -> typefaceIndex = a.getInt(attr, typefaceIndex)
+		    2 -> styleIndex = a.getInt(attr, styleIndex)
+		    3 -> textColor = a.getColorStateList(attr)
+		    else -> {
+		    }
+		}
+	    }
+	    ap.recycle()
+	}
+	setTextColor(textColor ?: ColorStateList.valueOf(-0x1000000))
+	setRawTextSize(textSize.toFloat())
+	var tf: Typeface? = null
+	when (typefaceIndex) {
+	    SANS -> tf = Typeface.SANS_SERIF
+	    SERIF -> tf = Typeface.SERIF
+	    MONOSPACE -> tf = Typeface.MONOSPACE
+	}
+	setTypeface(tf, styleIndex)
     }
 }

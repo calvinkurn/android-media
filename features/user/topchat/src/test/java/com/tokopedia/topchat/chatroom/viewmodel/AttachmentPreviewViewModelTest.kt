@@ -53,4 +53,29 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
             viewModel.showableAttachmentPreviews.value?.firstOrNull()
         )
     }
+
+    @Test
+    fun should_not_get_product_attachment_when_removed() {
+        //Given
+        val testSendAblePreviewOne = TopchatProductAttachmentPreviewUiModel.Builder().build()
+        val testSendAblePreviewTwo = TopchatProductAttachmentPreviewUiModel.Builder().build()
+
+        //When
+        //Init attachment
+        viewModel.addAttachmentPreview(testSendAblePreviewOne)
+        viewModel.addAttachmentPreview(testSendAblePreviewTwo)
+        viewModel.initAttachmentPreview()
+
+        //Remove attachment
+        viewModel.removeAttachmentPreview(testSendAblePreviewOne)
+        val attachmentList = viewModel.getAttachmentsPreview()
+
+        //Then
+        assertEquals(
+            attachmentList.size, 1
+        )
+        assertEquals(
+            attachmentList.first(), testSendAblePreviewTwo
+        )
+    }
 }

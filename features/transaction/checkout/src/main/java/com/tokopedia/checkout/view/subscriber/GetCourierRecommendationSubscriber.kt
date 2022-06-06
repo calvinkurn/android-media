@@ -96,25 +96,32 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
     private fun generateCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, shippingRecommendationData: ShippingRecommendationData): CourierItemData {
         val courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
-        shippingRecommendationData.logisticPromo?.let {
+
+        // set error log
+        shippingRecommendationData.listLogisticPromo.firstOrNull()?.let {
             val disableMsg = it.disableText
             courierItemData.logPromoMsg = disableMsg
             courierItemData.logPromoDesc = it.description
+        }
 
-            // Auto apply Promo Stacking Logistic
-            if (((it.shipperId == shipperId && it.shipperProductId == spId) || shipmentCartItemModel.isAutoCourierSelection)
-                    && it.promoCode.isNotEmpty() && !it.disabled) {
-                courierItemData.logPromoCode = it.promoCode
-                courierItemData.discountedRate = it.discountedRate
-                courierItemData.shippingRate = it.shippingRate
-                courierItemData.benefitAmount = it.benefitAmount
-                courierItemData.promoTitle = it.title
-                courierItemData.isHideShipperName = it.hideShipperName
-                courierItemData.shipperName = it.shipperName
-                courierItemData.etaText = it.etaData.textEta
-                courierItemData.etaErrorCode = it.etaData.errorCode
-                courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
-            }
+        // Auto apply Promo Stacking Logistic
+        val logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
+            ((it.shipperId == shipperId && it.shipperProductId == spId) || shipmentCartItemModel.isAutoCourierSelection)
+                    && it.promoCode.isNotEmpty() && !it.disabled
+        }
+        logisticPromoChosen?.let {
+            courierItemData.logPromoMsg = it.disableText
+            courierItemData.logPromoDesc = it.description
+            courierItemData.logPromoCode = it.promoCode
+            courierItemData.discountedRate = it.discountedRate
+            courierItemData.shippingRate = it.shippingRate
+            courierItemData.benefitAmount = it.benefitAmount
+            courierItemData.promoTitle = it.title
+            courierItemData.isHideShipperName = it.hideShipperName
+            courierItemData.shipperName = it.shipperName
+            courierItemData.etaText = it.etaData.textEta
+            courierItemData.etaErrorCode = it.etaData.errorCode
+            courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
         }
         return courierItemData
     }

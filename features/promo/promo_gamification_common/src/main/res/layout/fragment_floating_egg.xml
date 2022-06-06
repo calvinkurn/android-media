@@ -55,13 +55,12 @@
                 app:typographyWeight="bold"
                 tools:text="01:12:12"/>
         </FrameLayout>
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/minimize_img_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_vertical|start"
-            android:background="@drawable/gami_core_minimize_button"/>
+            android:layout_gravity="center_vertical|start"/>
     </FrameLayout>
 </FrameLayout>

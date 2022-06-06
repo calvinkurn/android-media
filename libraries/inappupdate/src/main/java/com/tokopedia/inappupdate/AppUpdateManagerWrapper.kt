@@ -258,7 +258,7 @@ object AppUpdateManagerWrapper {
             appUpdateManager.completeUpdate()
             clearInAppPref(appContext)
         }
-        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
+        snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_dms_green))
         snackbar.show()
     }
 

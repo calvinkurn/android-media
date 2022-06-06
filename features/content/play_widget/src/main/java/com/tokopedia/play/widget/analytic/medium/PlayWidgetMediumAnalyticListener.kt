@@ -74,4 +74,20 @@ interface PlayWidgetMediumAnalyticListener {
         channelPositionInList: Int
     ) {
     }
+
+    fun onLabelPromoClicked(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
 }

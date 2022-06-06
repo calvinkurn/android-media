@@ -3,10 +3,23 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
-import com.tokopedia.minicart.cartlist.uimodel.*
-import com.tokopedia.minicart.common.data.response.minicartlist.*
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.minicart.common.data.response.minicartlist.Action
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
+import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
+import com.tokopedia.minicart.common.data.response.minicartlist.Shop
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -106,9 +119,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
                             shop = availableGroup.shop,
+                            cartStringId = availableGroup.cartString,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
-                            notesLength = miniCartData.data.maxCharNote)
+                            notesLength = miniCartData.data.maxCharNote,
+                            placeholderNote = miniCartData.data.placeholderNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -138,6 +153,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
                             shop = unavailableGroup.shop,
+                            cartStringId = unavailableGroup.cartString,
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
@@ -208,11 +224,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                   isDisabled: Boolean = false,
                                   unavailableActionId: String = "",
                                   unavailableReason: String = "",
-                                  notesLength: Int = 0): MiniCartProductUiModel {
+                                  notesLength: Int = 0,
+                                  placeholderNote: String = "",
+                                  cartStringId: String = ""): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
             parentId = cartDetail.product.parentId
+            cartString = cartStringId
             productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
@@ -239,6 +258,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
+            this.placeholderNote = placeholderNote
             campaignId = cartDetail.product.campaignId
             attribution = cartDetail.product.productTrackerData.attribution
             warehouseId = cartDetail.product.warehouseId
@@ -340,6 +360,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution
                     productWeight = visitable.productWeight

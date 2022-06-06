@@ -94,14 +94,15 @@ class HomeRecommendationViewModel @Inject constructor(
             try{
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                 val topAdsBanner = topAdsImageViewUseCase.getImageData(
-                        topAdsImageViewUseCase.getQueryMap(
-                                "",
-                                TOPADS_TDN_RECOM_SOURCE,
-                                topAdsBannerNextPage,
-                                homeBannerTopAds.size,
-                                TOPADS_TDN_RECOM_DIMEN,
-                                ""
-                        )
+                    topAdsImageViewUseCase.getQueryMap(
+                        query = "",
+                        source = TOPADS_TDN_RECOM_SOURCE,
+                        pageToken = "",
+                        adsCount = homeBannerTopAds.size,
+                        dimenId = TOPADS_TDN_RECOM_DIMEN,
+                        depId = "",
+                        page = topAdsBannerNextPage
+                    )
                 )
                 incrementTopadsPage()
                 if(topAdsBanner.isEmpty()){

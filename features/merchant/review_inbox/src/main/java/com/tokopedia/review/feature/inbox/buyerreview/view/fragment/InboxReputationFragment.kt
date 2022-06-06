@@ -20,7 +20,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -44,7 +46,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.inbox.R
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.user.session.UserSession
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -275,7 +276,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         reputationId: String, invoice: String, createTime: String,
         revieweeName: String, revieweeImage: String,
         reputationDataUiModel: ReputationDataUiModel, textDeadline: String,
-        adapterPosition: Int, role: Int
+        adapterPosition: Int, role: String
     ) {
         savePassModelToDB(
             getInboxReputationDetailPassModel(
@@ -316,7 +317,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         revieweeName: String,
         textDeadline: String,
         reputationDataUiModel: ReputationDataUiModel,
-        role: Int
+        role: String
     ): InboxReputationDetailPassModel {
         return InboxReputationDetailPassModel(
             reputationDataUiModel, reputationId, revieweeName, revieweeImage,
@@ -451,7 +452,11 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         if (context != null) {
             val appLinks: ArrayList<String> = ArrayList()
             appLinks.add(ApplinkConstInternalSellerapp.SELLER_HOME)
-            appLinks.add(ApplinkConst.REPUTATION)
+            appLinks.add(
+                UriUtil.buildUriAppendParam(
+                ApplinkConst.REPUTATION,
+                mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
+            ))
             val intent: Intent = SellerMigrationActivity.createIntent(
                 context,
                 SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,

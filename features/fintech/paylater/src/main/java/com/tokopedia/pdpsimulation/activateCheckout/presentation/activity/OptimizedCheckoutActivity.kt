@@ -29,7 +29,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     GatewaySelectActivityListner, PdpSimulationCallback {
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
-    private val REQUEST_CODE_LOGIN = 123
+    var productId:String? = null
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -65,6 +65,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
         } else {
             val bundle = Bundle()
             intent.extras?.let {
+                productId = it.getString(PARAM_PRODUCT_ID)
                 bundle.putString(PARAM_GATEWAY_ID, it.getString(PARAM_GATEWAY_ID))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
@@ -79,6 +80,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     companion object {
         const val SCREEN_NAME = "Beli Pakai PayLater"
+        const val REQUEST_CODE_LOGIN = 123
     }
 
     private fun initInjector() =
@@ -111,7 +113,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun getComponent() = pdpSimulationComponent
-    override fun setGatewayValue(gatewaySelected: Int) {
+    override fun setGatewayValue(gatewaySelected: String) {
         (this.fragment as ActivationCheckoutFragment).updateSelectedTenure(gatewaySelected)
     }
 
@@ -123,6 +125,8 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
+        pdpSimulationEvent.productId = productId?:""
+        pdpSimulationAnalytics.get().sendPayLaterSimulationEvent(pdpSimulationEvent)
     }
 
 

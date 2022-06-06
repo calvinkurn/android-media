@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,10 +29,10 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetRecomAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
-import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_list.*
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 
@@ -39,11 +42,18 @@ import javax.inject.Inject
 
 const val CLICK_TERAPKAN = "click - terapkan"
 private const val INSIGHT_BID_PAGE = "topads.insightBid"
+
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
+
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var dailyBudgetTitle: Typography? = null
+    private var dailyBudgetDesc: Typography? = null
+    private var rvDailyBudget: RecyclerView? = null
 
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
     private lateinit var adapter: TopadsDailyBudgetRecomAdapter
     private var currentPosition = 0
+
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
@@ -73,8 +83,17 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_dash_recon_daily_budget_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.topads_dash_recon_daily_budget_list, container, false)
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        dailyBudgetTitle = view.findViewById(R.id.daily_budget_title)
+        dailyBudgetDesc = view.findViewById(R.id.daily_budget_desc)
+        rvDailyBudget = view.findViewById(R.id.rvDailyBudget)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +109,8 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
         }
         rvDailyBudget?.adapter = adapter
         rvDailyBudget?.layoutManager = LinearLayoutManager(context)
-        rvDailyBudget?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        rvDailyBudget?.addItemDecoration(DividerItemDecoration(context,
+            DividerItemDecoration.VERTICAL))
     }
 
     private fun getArgumentData() {
@@ -98,13 +118,18 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyState() {
-        emptyViewDailyBudgetRecommendation?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
-        emptyViewDailyBudgetRecommendation?.visible()
-        emptyViewDailyBudgetRecommendation?.text_title?.text = getString(R.string.topads_dash_empty_daily_budget_title)
-        emptyViewDailyBudgetRecommendation?.text_desc?.text = getString(R.string.topads_dash_empty_daily_budget_desc)
+        view?.findViewById<ConstraintLayout>(R.id.emptyViewDailyBudgetRecommendation)?.apply {
+            visible()
+            findViewById<ImageUnify>(R.id.image_empty)?.setImageDrawable(context?.getResDrawable(
+                com.tokopedia.topads.common.R.drawable.ill_success))
+            findViewById<Typography>(R.id.text_title)?.text =
+                getString(R.string.topads_dash_empty_daily_budget_title)
+            findViewById<Typography>(R.id.text_desc)?.text =
+                getString(R.string.topads_dash_empty_daily_budget_desc)
+        }
         rvDailyBudget?.gone()
-        daily_budget_title?.gone()
-        daily_budget_desc?.gone()
+        dailyBudgetTitle?.gone()
+        dailyBudgetDesc?.gone()
     }
 
     private fun loadData() {
@@ -112,7 +137,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessDailyBudgetRecom(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
-        swipeRefreshLayout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
         setAdapterData(dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation)
     }
 
@@ -128,7 +153,9 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun setTitle(data: List<DataBudget>) {
         val potentialClick = calculatePotentialClick(data)
-        daily_budget_desc?.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_daily_budget_desc), adapter.itemCount, potentialClick))
+        dailyBudgetDesc?.text =
+            Html.fromHtml(String.format(getString(R.string.topads_dash_recom_daily_budget_desc),
+                adapter.itemCount, potentialClick))
     }
 
     private fun calculatePotentialClick(data: List<DataBudget>): Int {
@@ -145,16 +172,24 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok),
+                View.OnClickListener {}).show()
         }
         adapter.notifyItemChanged(currentPosition)
     }
 
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
-        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, INSIGHT_BID_PAGE, ::onSuccessGroupInfo)
-        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
+        topAdsDashboardPresenter.getGroupInfo(resources,
+            adapter.items[pos].groupId, INSIGHT_BID_PAGE, ::onSuccessGroupInfo)
+        val eventLabel =
+            "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN,
+            eventLabel, userSession.userId)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -176,7 +211,11 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun showSuccessToast() {
         view?.let {
-            Toaster.build(it, getString(R.string.topads_dash_success_daily_budget_toast), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it,
+                getString(R.string.topads_dash_success_daily_budget_toast),
+                Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok),
+                View.OnClickListener {}).show()
         }
     }
 }

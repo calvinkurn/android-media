@@ -876,6 +876,16 @@ class HomeAccountUserViewModelTest {
         }
     }
 
+    @Test
+    fun `Set internal buyer data` () {
+        val profileModel = ProfileModel()
+        profileModel.fullName = "yoris"
+        val expectation = UserAccountDataModel(profile = profileModel)
+        viewModel.internalBuyerData = expectation
+
+        assert(viewModel.internalBuyerData!!.profile == profileModel)
+    }
+
     companion object {
         private val successGetCentralizedUserAssetConfigResponse: CentralizedUserAssetDataModel = FileUtil.parse(
             "/success_get_centralized_user_asset_config.json",

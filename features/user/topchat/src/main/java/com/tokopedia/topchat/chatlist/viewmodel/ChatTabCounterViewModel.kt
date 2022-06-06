@@ -18,7 +18,6 @@ import javax.inject.Inject
  */
 
 class ChatTabCounterViewModel @Inject constructor(
-        private val queries: Map<String, String>,
         private val getChatNotificationUseCase: GetChatNotificationUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatcher: CoroutineDispatcher

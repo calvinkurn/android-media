@@ -19,6 +19,8 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
@@ -403,8 +405,6 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
-                    getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(

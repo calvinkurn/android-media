@@ -81,6 +81,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -109,6 +110,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
@@ -116,7 +118,7 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomShee
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
@@ -162,7 +164,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomePlayWidgetListener,
         ShopHomeCardDonationListener,
         MultipleProductBundleListener,
-        SingleProductBundleListener {
+        SingleProductBundleListener,
+        ShopHomeProductListSellerEmptyListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -289,7 +292,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCardDonationListener = this,
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
-            thematicWidgetListener = thematicWidgetProductClickListenerImpl()
+            thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
+            shopHomeProductListSellerEmptyListener = this
         )
     }
 
@@ -437,6 +441,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     is Fail -> {
                         val throwable = it.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        if(throwable is ShopAsyncErrorException){
+                            val actionName  = when(throwable.asyncQueryType){
+                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2 -> {
+                                    ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_PAGE_GET_LAYOUT_V2
+                                }
+                                else -> {
+                                    ""
+                                }
+                            }
+                            sendEmbraceBreadCrumbLogger(
+                                actionName,
+                                shopId,
+                                throwable.stackTraceToString()
+                            )
+                        }
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -445,7 +464,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                             )
@@ -641,8 +660,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     val productListData = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductOnShop = it.data.totalProductData
-                    if (productListData.isNotEmpty())
-                        addProductListHeader()
+                    addProductListHeader()
                     updateProductListData(hasNextPage, productListData, totalProductOnShop)
                     productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
@@ -784,6 +802,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observePlayWidget()
         observePlayWidgetReminderEvent()
         observePlayWidgetReminder()
+    }
+
+    private fun sendEmbraceBreadCrumbLogger(
+        actionName: String,
+        shopId: String,
+        stackTraceString: String
+    ) {
+        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
+            actionName,
+            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
+                shopId,
+                stackTraceString
+            )
+        )
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -1025,7 +1057,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             viewModel?.userId.orEmpty(),
             shopHomeCarousellProductUiModel?.header?.title ?: "",
             shopHomeCarousellProductUiModel?.name ?: "",
-            customDimensionShopPage
+            customDimensionShopPage,
+                shopHomeProductViewModel?.recommendationType ?: "",
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: "",
         )
     }
 
@@ -1080,9 +1114,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         productList: List<ShopHomeProductUiModel>,
         totalProductData: Int
     ) {
-        addChangeProductGridSection(totalProductData)
-        shopHomeAdapter.setProductListData(productList)
-        updateScrollListenerState(hasNextPage)
+        if (totalProductData.isZero()) {
+            shopHomeAdapter.setProductListEmptyState(isOwner)
+        } else {
+            addChangeProductGridSection(totalProductData)
+            shopHomeAdapter.setProductListData(productList, isOwner)
+            updateScrollListenerState(hasNextPage)
+        }
     }
 
     private fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
@@ -1554,7 +1592,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 userId = userId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw
         )
     }
 
@@ -1597,6 +1636,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                bundlePrice = selectedBundle.displayPriceRaw,
                 selectedPackage = selectedBundle.minOrderWording,
                 productId = bundleProducts.productId
         )
@@ -1995,11 +2035,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
-                isLogin,
                 shopHomeProductViewModel.name ?: "",
                 shopHomeProductViewModel.id ?: "",
                 shopHomeProductViewModel.displayedPrice ?: "",
                 shopHomeProductViewModel.recommendationType ?: "",
+                    shopHomeProductViewModel.categoryBreadcrumbs ?: "",
                 shopName,
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
@@ -2035,7 +2075,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
-                customDimensionShopPage
+                customDimensionShopPage,
+                    shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
             )
             goToPDP(it.id ?: "")
         }
@@ -2170,11 +2211,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     ) {
         shopPageHomeTracking.impressionProductPersonalization(
             isOwner,
-            isLogin,
             shopHomeProductViewModel?.name ?: "",
             shopHomeProductViewModel?.id ?: "",
             shopHomeProductViewModel?.displayedPrice ?: "",
             shopHomeProductViewModel?.recommendationType ?: "",
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: "",
             viewModel?.userId.orEmpty(),
             shopName,
             ShopUtil.getActualPositionFromIndex(itemPosition),
@@ -2201,7 +2242,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopName,
             ShopUtil.getActualPositionFromIndex(itemPosition),
             shopHomeCarousellProductUiModel?.header?.title ?: "",
-            customDimensionShopPage
+            customDimensionShopPage,
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
         )
     }
 
@@ -2550,6 +2592,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
+        }
+    }
+
+    override fun chooseProduct() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
         }
     }
 
@@ -3160,7 +3208,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
+        if (!isLoadInitialData && !shopHomeAdapter.isProductGridListPlaceholderExists())
             refreshProductList()
     }
 

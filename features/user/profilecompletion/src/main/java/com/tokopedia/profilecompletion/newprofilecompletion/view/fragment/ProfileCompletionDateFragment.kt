@@ -56,151 +56,184 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddBodViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_profile_completion_dob, container, false)
-        if (profileCompletionFragment != null && profileCompletionFragment?.view != null) {
-            initView(parentView)
-            setViewListener()
-            initialVar()
-            initialObserver()
-            setUpFields()
-        } else if (activity != null) {
-            activity?.finish()
-        }
-        return parentView
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val parentView =
+	    inflater.inflate(R.layout.fragment_profile_completion_dob, container, false)
+	if (profileCompletionFragment != null && profileCompletionFragment?.view != null) {
+	    initView(parentView)
+	    setViewListener()
+	    initialVar()
+	    initialObserver()
+	    setUpFields()
+	} else if (activity != null) {
+	    activity?.finish()
+	}
+	return parentView
     }
 
     private fun initView(view: View) {
-        actxtDate = view.findViewById(R.id.date)
-        actxtMonth = view.findViewById(R.id.month)
-        actxtYear = view.findViewById(R.id.year)
-        actxtContainer = view.findViewById(R.id.autoCompleteTextViewContainer)
-        txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
-        txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
-        progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
-        txtProceed?.isEnabled = false
-        profileCompletionFragment?.canProceed(false)
+	actxtDate = view.findViewById(R.id.date)
+	actxtMonth = view.findViewById(R.id.month)
+	actxtYear = view.findViewById(R.id.year)
+	actxtContainer = view.findViewById(R.id.autoCompleteTextViewContainer)
+	txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
+	txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
+	progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
+	txtProceed?.isEnabled = false
+	profileCompletionFragment?.canProceed(false)
 
-        val drawable = MethodChecker.getDrawable(activity, R.drawable.ic_down_date)
-        drawable.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.SRC_IN)
-        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicWidth)
-        actxtMonth?.setCompoundDrawables(null, null, drawable, null)
+	val drawable = MethodChecker.getDrawable(activity, R.drawable.ic_down_date)
+	drawable.setColorFilter(
+	    MethodChecker.getColor(
+		activity,
+		com.tokopedia.unifyprinciples.R.color.Unify_N200
+	    ), PorterDuff.Mode.SRC_IN
+	)
+	drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicWidth)
+	actxtMonth?.setCompoundDrawables(null, null, drawable, null)
     }
 
     private fun setViewListener() {
-        actxtContainer?.setOnClickListener {
-            actxtMonth?.showDropDown()
-            KeyboardHandler.DropKeyboard(activity, view)
-        }
-        actxtMonth?.setOnClickListener {
-            actxtMonth?.showDropDown()
-            KeyboardHandler.DropKeyboard(activity, view)
-        }
-        actxtMonth?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, pos, rowId ->
-            position = pos + 1
-        }
-        txtProceed?.setOnClickListener {
-            val dateString = actxtDate?.text.toString()
-            val yearString = actxtYear?.text.toString()
+	actxtContainer?.setOnClickListener {
+	    actxtMonth?.showDropDown()
+	    KeyboardHandler.DropKeyboard(activity, view)
+	}
+	actxtMonth?.setOnClickListener {
+	    actxtMonth?.showDropDown()
+	    KeyboardHandler.DropKeyboard(activity, view)
+	}
+	actxtMonth?.onItemClickListener =
+	    AdapterView.OnItemClickListener { parent, view, pos, rowId ->
+		position = pos + 1
+	    }
+	txtProceed?.setOnClickListener {
+	    val dateString = actxtDate?.text.toString()
+	    val yearString = actxtYear?.text.toString()
 
-            if (dateString.isNotEmpty() && yearString.isNotEmpty()) {
-                selectedDate = formatDateParam(yearString.toInt(), position, dateString.toInt())
-            }
+	    if (dateString.isNotEmpty() && yearString.isNotEmpty()) {
+		selectedDate = formatDateParam(yearString.toInt(), position, dateString.toInt())
+	    }
 
-            if (selectedDate.isNotEmpty()) {
-                context?.let { ctx -> viewModel.editBodUserProfile(ctx, selectedDate) }
-            } else {
-                profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_date))
-            }
-        }
-        txtSkip?.setOnClickListener {
-            profileCompletionFragment?.skipView(TAG)
-        }
-        actxtYear?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (charSequence.length == 4) {
-                    val theYear = charSequence.toString().toInt()
-                    if (theYear < YEAR_MIN) {
-                        actxtYear?.setText(YEAR_MIN.toString())
-                    } else if (theYear > YEAR_MAX) {
-                        actxtYear?.setText(YEAR_MAX.toString())
-                    }
-                }
-            }
+	    if (selectedDate.isNotEmpty()) {
+		context?.let { ctx -> viewModel.editBodUserProfile(ctx, selectedDate) }
+	    } else {
+		profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_date))
+	    }
+	}
+	txtSkip?.setOnClickListener {
+	    profileCompletionFragment?.skipView(TAG)
+	}
+	actxtYear?.addTextChangedListener(object : TextWatcher {
+	    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+	    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+		if (charSequence.length == 4) {
+		    val theYear = charSequence.toString().toInt()
+		    if (theYear < YEAR_MIN) {
+			actxtYear?.setText(YEAR_MIN.toString())
+		    } else if (theYear > YEAR_MAX) {
+			actxtYear?.setText(YEAR_MAX.toString())
+		    }
+		}
+	    }
 
-            override fun afterTextChanged(editable: Editable) {}
-        })
+	    override fun afterTextChanged(editable: Editable) {}
+	})
     }
 
     private fun initialVar() {
-        val monthsIndo = DateFormatSymbols(Locale.getDefault()).months
-        val adapter = ArrayAdapter(requireActivity(), androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
-        actxtMonth?.setAdapter(adapter)
+	val monthsIndo = DateFormatSymbols(Locale.getDefault()).months
+	val adapter = ArrayAdapter(
+	    requireActivity(),
+	    androidx.appcompat.R.layout.select_dialog_item_material,
+	    monthsIndo
+	)
+	actxtMonth?.setAdapter(adapter)
 
-        dateObservable = actxtDate?.let { ProfileCompletionEvents.text(it) }
-        yearObservable = actxtYear?.let { ProfileCompletionEvents.text(it) }
-        monthObservable = actxtMonth?.let { ProfileCompletionEvents.select(it) }
+	dateObservable = actxtDate?.let { ProfileCompletionEvents.text(it) }
+	yearObservable = actxtYear?.let { ProfileCompletionEvents.text(it) }
+	monthObservable = actxtMonth?.let { ProfileCompletionEvents.select(it) }
 
-        val dateMapper = dateObservable?.map { text -> text.trim { it <= ' ' } != "" }
-        val yearMapper = yearObservable?.map { text -> text.trim { it <= ' ' } != "" }
-        val monthMapper = monthObservable?.map { integer ->
-            position = integer
-            integer != 0
-        }
+	val dateMapper = dateObservable?.map { text -> text.trim { it <= ' ' } != "" }
+	val yearMapper = yearObservable?.map { text -> text.trim { it <= ' ' } != "" }
+	val monthMapper = monthObservable?.map { integer ->
+	    position = integer
+	    integer != 0
+	}
 
-        val allField = Observable.combineLatest(dateMapper, yearMapper, monthMapper) { date, year, month ->
-            date && month && year
-        }.map { aBoolean -> aBoolean }
+	val allField =
+	    Observable.combineLatest(dateMapper, yearMapper, monthMapper) { date, year, month ->
+		date && month && year
+	    }.map { aBoolean -> aBoolean }
 
-        val onError = Action1 { obj: Throwable ->
-            obj.printStackTrace()
-        }
+	val onError = Action1 { obj: Throwable ->
+	    obj.printStackTrace()
+	}
 
-        allField.subscribe(txtProceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
-        allField.subscribe(Action1 { aBoolean -> profileCompletionFragment?.canProceed(aBoolean) }, onError)
+	allField.subscribe(txtProceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
+	allField.subscribe(
+	    Action1 { aBoolean -> profileCompletionFragment?.canProceed(aBoolean) },
+	    onError
+	)
     }
 
     private fun initialObserver() {
-        viewModel.editBodUserProfileResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.isSuccess) {
-                        profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_DOB)
-                    } else {
-                        if (it.data.birthDateMessage.isNotEmpty()) {
-                            profileCompletionFragment?.onFailedEditProfile(it.data.birthDateMessage)
-                        } else {
-                            profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, RuntimeException()))
-                        }
-                    }
-                }
-                is Fail -> {
-                    profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, it.throwable))
-                }
-            }
-        })
+	viewModel.editBodUserProfileResponse.observe(
+	    viewLifecycleOwner,
+	    androidx.lifecycle.Observer {
+		when (it) {
+		    is Success -> {
+			if (it.data.isSuccess) {
+			    profileCompletionFragment?.onSuccessEditProfile(
+				ProfileCompletionNewConstants.EDIT_DOB
+			    )
+			} else {
+			    if (it.data.birthDateMessage.isNotEmpty()) {
+				profileCompletionFragment?.onFailedEditProfile(it.data.birthDateMessage)
+			    } else {
+				profileCompletionFragment?.onFailedEditProfile(
+				    ErrorHandler.getErrorMessage(
+					context,
+					RuntimeException()
+				    )
+				)
+			    }
+			}
+		    }
+		    is Fail -> {
+			profileCompletionFragment?.onFailedEditProfile(
+			    ErrorHandler.getErrorMessage(
+				context,
+				it.throwable
+			    )
+			)
+		    }
+		}
+	    })
     }
 
     private fun setUpFields() {}
     override fun getScreenName(): String = ""
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     private fun formatDateParam(year: Int, month: Int, dayOfMonth: Int): String {
-        return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
+	return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
     }
 
     companion object {
-        private const val YEAR_MIN = 1937
-        private const val YEAR_MAX = 2007
-        const val TAG = "date"
+	private const val YEAR_MIN = 1937
+	private const val YEAR_MAX = 2007
+	const val TAG = "date"
 
-        fun createInstance(view: ProfileCompletionFragment?): ProfileCompletionDateFragment {
-            val fragment = ProfileCompletionDateFragment()
-            fragment.profileCompletionFragment = view
-            return fragment
-        }
+	fun createInstance(view: ProfileCompletionFragment?): ProfileCompletionDateFragment {
+	    val fragment = ProfileCompletionDateFragment()
+	    fragment.profileCompletionFragment = view
+	    return fragment
+	}
     }
 }

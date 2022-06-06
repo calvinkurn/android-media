@@ -19,16 +19,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/page_description"
-            android:textColor="@color/Unify_N700_68" />
+            android:textColor="@color/Unify_NN600" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/chooseDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
             android:layout_marginTop="@dimen/spacing_lvl6"
-            app:text_field_append_drawable_icon_1="@drawable/ic_down_date"
-            app:text_field_label="@string/hint_bod_setting_profile"/>
+            app:unify_text_field_append_drawable_icon_2="@drawable/ic_down_date"
+            app:unify_text_field_label="@string/hint_bod_setting_profile"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSave"

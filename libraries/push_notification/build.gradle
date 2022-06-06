@@ -47,13 +47,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

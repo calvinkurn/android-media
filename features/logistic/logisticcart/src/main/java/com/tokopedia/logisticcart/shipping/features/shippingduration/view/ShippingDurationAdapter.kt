@@ -24,15 +24,19 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         allServices = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: LogisticPromoUiModel?, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.allServices = shippingDurationUiModels
         this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
         if (preOrderModel?.display == true)  {
             preOrderModel.let { this.mData.add(0, it) }
-            promoUiModel?.let { this.mData.add(1, it) }
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(1, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         } else {
-            promoUiModel?.let { this.mData.add(0, it) }
+            if (promoUiModel.isNotEmpty()) {
+                this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+            }
         }
         if (shippingDurationUiModels[0].etaErrorCode == 1) {
             this.mData.add(0, NotifierModel())
@@ -72,6 +76,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
+        is DividerModel -> DividerViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
@@ -81,6 +86,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             PreOrderViewHolder.LAYOUT -> PreOrderViewHolder(view)
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
+            DividerViewHolder.LAYOUT -> DividerViewHolder(view)
             else -> ShippingDurationViewHolder(view, cartPosition)
         }
     }

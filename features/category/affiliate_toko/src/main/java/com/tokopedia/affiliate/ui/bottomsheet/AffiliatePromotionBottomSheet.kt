@@ -48,6 +48,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     private var currentName: String? = null
     private var currentServiceFormat = ""
     private var commission = ""
+    private var status = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
     private var identifier: String? = null
@@ -78,6 +79,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
+        private const val KEY_STATUS = "KEY_STATUS"
         private const val PERNAH_DIBELI = "pernah dibeli"
         private const val PERNAH_DILIHAT = "pernah dilihat"
 
@@ -92,7 +94,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                         idArray : ArrayList<Int>?,
                         productId : String, productName: String, productImage: String,
                         productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
-                        isLinkGenerationEnabled :Boolean = true,commission: String = ""): AffiliatePromotionBottomSheet {
+                        isLinkGenerationEnabled :Boolean = true,commission: String = "",status: String = ""): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
                 sheetType = bottomSheetType
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
@@ -106,6 +108,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                     putInt(KEY_ORIGIN,origin)
                     putBoolean(KEY_LINK_GEN_ENABLED,isLinkGenerationEnabled)
                     putString(KEY_COMMISON_PRICE,commission)
+                    putString(KEY_STATUS,status)
                 }
             }
         }
@@ -148,6 +151,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                 originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
                 isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
                 commission = bundle.getString(KEY_COMMISON_PRICE,"")
+                status = bundle.getString(KEY_STATUS,"")
             }
 
             if(sheetType == SheetType.ADD_SOCIAL){
@@ -170,20 +174,20 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
             AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,
                     "Contoh: instagram.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_INSTAGRAM_REGEX),
+                AFFILIATE_INSTAGRAM_REGEX, INSTAGRAM_DEFAULT),
             AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,
                     "Contoh: tiktok.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_TIKTOK_REGEX),
+                AFFILIATE_TIKTOK_REGEX, TIKTOK_DEFAULT),
             AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,
                     "Contoh: youtube.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-            AFFILIATE_YT_REGEX),
+            AFFILIATE_YT_REGEX, YOUTUBE_DEFAULT),
             AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,
-                    "Contoh: facebook.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
+                    "Contoh: facebook.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled, defaultText = FACEBOOK_DEFAULT),
             AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,
                     "Contoh: twitter.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_TWITTER_REGEX),
+                AFFILIATE_TWITTER_REGEX, TWITTER_DEFAULT),
             AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,
-                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled))
+                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,defaultText = WWW))
 
         if(sheetType == SheetType.ADD_SOCIAL){
             contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
@@ -250,12 +254,18 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         })
     }
 
-    private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, status: String) {
+    private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, state: String) {
         var eventAction = ""
         var eventCategory = ""
 
         var eventLabel = ""
-        if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) eventLabel = "$productId - $linkID - $currentServiceFormat - $status" else "$productId - $currentServiceFormat - $status"
+        eventLabel = if(status == AffiliateAnalytics.LabelKeys.SUCCESS ) {
+            if(originScreen == ORIGIN_PROMOSIKAN) "$productId - $linkID - $currentServiceFormat - $status - $state"
+            else "$productId - $linkID - $currentServiceFormat - $state"
+        } else {
+            if(originScreen == ORIGIN_PROMOSIKAN) "$productId - $currentServiceFormat - $status - $state"
+            else "$productId - $currentServiceFormat - $state"
+        }
         when(originScreen){
             ORIGIN_HOME -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
@@ -272,6 +282,10 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
             }
             ORIGIN_TERAKHIR_DILIHAT -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+            }
+            ORIGIN_PROMOSIKAN -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
             }
         }

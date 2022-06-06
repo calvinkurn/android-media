@@ -1,14 +1,4 @@
 <resources>
-
-    <style name="pdp_fintech_widget_Widget.Theme.Androidtokopediacore.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/pdp_fintech_widget_black_overlay</item>
-    </style>
-
-    <style name="pdp_fintech_widget_Widget.Theme.Androidtokopediacore.ButtonBar.Fullscreen" parent="">
-        <item name="android:background">@color/pdp_fintech_widget_black_overlay</item>
-        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
-    </style>
-
     <style name="pdp_fintech_widget_Widget.Theme.AppCompat.Translucent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/pdp_fintech_widget_black_transparent</item> <!-- Or any transparency or color you need -->
         <item name="android:windowNoTitle">true</item>

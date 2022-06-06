@@ -4,7 +4,6 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import dagger.Component
 
 /**
@@ -14,5 +13,4 @@ import dagger.Component
 @Component(modules = [ShopInfoModule::class], dependencies = [ShopComponent::class])
 interface ShopInfoComponent {
     fun inject(shopInfoFragment: ShopInfoFragment?)
-    fun inject(bottomSheet: ShopNoteBottomSheet?)
 }

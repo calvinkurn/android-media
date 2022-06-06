@@ -2,6 +2,7 @@ package com.tokopedia.statistic.analytics
 
 import android.content.Context
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -41,6 +42,8 @@ object TrackingHelper {
             context.getString(R.string.stc_product) -> TrackingConstant.SELLER_APP_PRODUCT_INSIGHT
             context.getString(R.string.stc_shop) -> TrackingConstant.SELLER_APP_SHOP_INSIGHT
             context.getString(R.string.stc_buyer) -> TrackingConstant.SELLER_APP_BUYER_INSIGHT
+            context.getString(R.string.stc_operational) -> Const.PageSource.OPERATIONAL_INSIGHT
+            context.getString(R.string.stc_traffic) -> Const.PageSource.TRAFFIC_INSIGHT
             else -> null
         }
     }

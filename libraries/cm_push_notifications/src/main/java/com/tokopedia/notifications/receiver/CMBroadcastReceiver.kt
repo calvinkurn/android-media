@@ -42,6 +42,7 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.notifications.factory.ReviewNotification
 
 
 /**
@@ -186,6 +187,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         clearProductImages(context.applicationContext)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
+                    CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED ->
+                        handleReviewStarClick(context,notificationId, intent, baseNotificationModel)
                 }
             }
         } catch (e: Exception) {
@@ -195,6 +198,19 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             messageMap["data"] = "$intent"
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
             e.printStackTrace()
+        }
+    }
+
+    private fun handleReviewStarClick(
+        context: Context, notificationId: Int,
+        intent: Intent, baseNotificationModel: BaseNotificationModel?
+    ) {
+        val updatedBaseNotificationModel = ReviewNotification
+            .updateReviewAppLink(intent, baseNotificationModel)
+        handleNotificationClick(context, intent, notificationId, updatedBaseNotificationModel)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
+                baseNotificationModel, CMConstant.NotificationType.GENERAL, baseNotificationModel.elementId)
         }
     }
 
@@ -221,6 +237,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)?: BaseNotificationModel()
+        startActivity(context, baseNotificationModel.appLink, intent)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        NotificationManagerCompat.from(context).cancel(notificationId)
+    }
+
+    private fun handleMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         startActivity(context, baseNotificationModel.appLink, intent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -344,8 +366,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         // Notification attribution
         dataManager.attribution(baseNotificationModel)
-
-        handleMainClick(context, intent, notificationId)
+        baseNotificationModel?.let {
+            handleMainClick(context, intent, notificationId, it)
+        }
         handleCouponCode(intent, context)
     }
 
@@ -549,5 +572,4 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         promoCodeAutoApplyUseCase.createObservable(requestParams)
         promoCodeAutoApplyUseCase.execute(null)
     }
-
 }

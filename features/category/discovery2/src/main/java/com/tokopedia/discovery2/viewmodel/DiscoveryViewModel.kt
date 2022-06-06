@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -16,12 +15,16 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.CONSTANT_0
+import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
+import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
@@ -34,6 +37,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
@@ -83,9 +87,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
-    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+    val miniCartAdd: LiveData<Result<DiscoveryAddToCartDataModel>>
         get() = _miniCartAdd
-    private val _miniCartAdd = SingleLiveEvent<Result<AddToCartDataModel>>()
+    private val _miniCartAdd = SingleLiveEvent<Result<DiscoveryAddToCartDataModel>>()
 
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
@@ -132,46 +136,60 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun addProductToCart(
-        parentPosition:Int,
-        position:Int,
-        productId: String,
-        quantity: Int,
-        shopId: String
+        discoATCRequestParams: DiscoATCRequestParams
     ) {
-        val miniCartItem = getMiniCartItem(productId)
+        val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
+            getMiniCartItem(discoATCRequestParams.productId) else null
         when {
-            miniCartItem == null -> addItemToCart(parentPosition,position,productId, shopId, quantity)
-            quantity.isZero() -> removeItemCart(parentPosition,position,miniCartItem)
-            else -> updateItemCart(parentPosition,position,miniCartItem, quantity)
+            miniCartItem == null -> addItemToCart(
+                discoATCRequestParams
+            )
+            discoATCRequestParams.quantity.isZero() -> removeItemCart(
+                discoATCRequestParams.parentPosition,
+                discoATCRequestParams.position,
+                miniCartItem,
+                discoATCRequestParams.isGeneralCartATC
+            )
+            else -> updateItemCart(
+                discoATCRequestParams.parentPosition,
+                discoATCRequestParams.position,
+                miniCartItem,
+                discoATCRequestParams.quantity,
+                discoATCRequestParams.isGeneralCartATC
+            )
         }
     }
 
 
     private fun addItemToCart(
-        parentPosition:Int,
-        position:Int,
-        productId: String,
-        shopId: String,
-        quantity: Int) {
+        discoATCRequestParams: DiscoATCRequestParams
+    ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
+            productId = discoATCRequestParams.productId,
+            shopId = discoATCRequestParams.shopId?:"",
+            quantity = discoATCRequestParams.quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            _miniCartAdd.postValue(Success(it))
+            _miniCartAdd.postValue(Success(DiscoveryAddToCartDataModel(it, discoATCRequestParams)))
         }, {
             _miniCartAdd.postValue(Fail(it))
-            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
+            _miniCartOperationFailed.postValue(
+                Pair(
+                    discoATCRequestParams.parentPosition,
+                    discoATCRequestParams.position
+                )
+            )
         })
     }
 
     private fun updateItemCart(
-        parentPosition:Int,
-        position:Int,
+        parentPosition: Int,
+        position: Int,
         miniCartItem: MiniCartItem,
-        quantity: Int) {
+        quantity: Int,
+        isGeneralCartATC: Boolean
+    ) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,
@@ -206,7 +224,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun removeItemCart(parentPosition: Int, position: Int, miniCartItem: MiniCartItem) {
+    private fun removeItemCart(
+        parentPosition: Int,
+        position: Int,
+        miniCartItem: MiniCartItem,
+        isGeneralCartATC: Boolean
+    ) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -325,14 +348,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
         return mapOf(
-                SOURCE to intentUri.getQueryParameter(SOURCE),
-                COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
-                ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
-                TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
-                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
-                PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
-                CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
-                EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY)
+            SOURCE to intentUri.getQueryParameter(SOURCE),
+            COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
+            ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
+            TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
+            PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
+            PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
+            CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
+            EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
+            RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID)
         )
     }
 
@@ -354,7 +378,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
                 CATEGORY_ID to getCategoryId(bundle),
-                EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
+                EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
+                RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,"")
         )
     }
 
@@ -379,6 +404,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             discoveryBottomNavLiveData.postValue(Fail(Throwable()))
         }
     }
+
     private fun findAnchorTabComponentsIfAny(components: List<ComponentsItem>?) {
         val tabDataComponent = components?.find {
             it.name == ComponentNames.AnchorTabs.componentName && it.renderByDefault
@@ -427,14 +453,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getShareUTM(data:PageInfo) : String{
         var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if(data.campaignCode != null && data.campaignCode.length > 11){
-            campaignCode = data.campaignCode.substring(0,11)
+        if(data.campaignCode != null && data.campaignCode.length > CONSTANT_11){
+            campaignCode = data.campaignCode.substring(CONSTANT_0, CONSTANT_11)
         }
         return "${data.identifier}-${campaignCode}"
     }
 
-    fun updateScroll(dx: Int, dy: Int, newState: Int) {
-        _scrollState.value = ScrollData(dx,dy,newState)
+    fun updateScroll(dx: Int, dy: Int, newState: Int, userPressed: Boolean) {
+        _scrollState.value = ScrollData(dx,dy,newState,!userPressed)
     }
 
     fun resetScroll(){

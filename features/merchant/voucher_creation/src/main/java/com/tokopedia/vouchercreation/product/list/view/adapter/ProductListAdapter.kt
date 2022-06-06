@@ -16,7 +16,7 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
 
     interface OnProductItemClickListener {
         fun onProductCheckBoxClicked(isSelected: Boolean, uiModel: ProductUiModel)
-        fun onRemoveButtonClicked()
+        fun onRemoveButtonClicked(position: Int)
     }
 
     private var productUiModelList: MutableList<ProductUiModel> = mutableListOf()
@@ -127,10 +127,13 @@ class ProductListAdapter(private val listener: OnProductItemClickListener)
     }
 
     override fun onRemoveProductButtonClicked(adapterPosition: Int, dataSetPosition: Int) {
+        listener.onRemoveButtonClicked(dataSetPosition)
+    }
+
+    fun removeSingleProduct(dataSetPosition: Int ) {
         try {
             productUiModelList.removeAt(dataSetPosition)
             notifyDataSetChanged()
-            listener.onRemoveButtonClicked()
         } catch (e: Exception) {
             e.printStackTrace()
         }

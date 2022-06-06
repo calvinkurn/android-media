@@ -1,22 +1,18 @@
-[
-  {
-    "data": {
-      "fetchProgressBarWidgetData": {
-        "data": [
-          {
-            "dataKey": "shopScore",
-            "valueTxt": "98",
-            "maxValueTxt": "100",
-            "value": 98,
-            "maxValue": 100,
-            "state": "GOOD",
-            "subtitle": "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant.",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          }
-        ]
+{
+  "fetchProgressBarWidgetData": {
+    "data": [
+      {
+        "dataKey": "shopScore",
+        "valueTxt": "98",
+        "maxValueTxt": "100",
+        "value": 98,
+        "maxValue": 100,
+        "state": "GOOD",
+        "subtitle": "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant.",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
       }
-    }
+    ]
   }
-]
+}

@@ -73,7 +73,7 @@
         android:layout_marginTop="@dimen/mvc_dimen_24dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sf_product_list">
+        app:layout_constraintTop_toTopOf="@id/product_list_swipe_layout">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_empty_products"

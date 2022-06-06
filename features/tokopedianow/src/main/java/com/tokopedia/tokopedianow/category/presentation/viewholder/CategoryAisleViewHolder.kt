@@ -4,7 +4,7 @@ import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -69,9 +69,10 @@ class CategoryAisleViewHolder(
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
-            val drawable = ContextCompat.getDrawable(
-                itemView.context,
+            val drawable = VectorDrawableCompat.create(
+                itemView.context.resources,
                 R.drawable.tokopedianow_ic_aisle_background,
+                itemView.context.theme
             )
             aisleContainer?.background = drawable
         } catch (throwable: Throwable) {

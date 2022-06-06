@@ -52,6 +52,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
@@ -249,6 +250,8 @@ class TokoNowRepurchaseFragment:
         // TO-DO : analytics
     }
 
+    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
+
     override fun onFindInTokopediaClick() {
         RouteManager.route(context, ApplinkConst.HOME)
     }
@@ -405,9 +408,11 @@ class TokoNowRepurchaseFragment:
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 
-    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+    override fun getParallaxState(): Map<String, Float> = mapOf()
 
-    }
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { /* nothing to do */ }
+
+    override fun saveParallaxState(mapParallaxState: Map<String, Float>) { /* nothing to do */ }
 
     private fun initInjector() {
         DaggerRepurchaseComponent.builder()
@@ -688,7 +693,8 @@ class TokoNowRepurchaseFragment:
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
                 shopId = chooseAddressData.tokonow.shopId.toString(),
                 warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()

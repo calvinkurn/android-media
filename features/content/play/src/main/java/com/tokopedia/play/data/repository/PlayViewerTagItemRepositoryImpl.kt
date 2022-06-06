@@ -14,6 +14,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.tagitem.*
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -77,6 +78,42 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             selectedVariants = selectedVariants,
             categories = categories.orEmpty(),
             stockWording = "",
+        )
+    }
+
+    override suspend fun selectVariantOption(
+        variant: VariantUiModel,
+        selectedOption: VariantOptionWithAttribute
+    ): VariantUiModel = withContext(dispatchers.computation) {
+        val newSelectedVariants = variant.selectedVariants.toMutableMap()
+        newSelectedVariants[selectedOption.variantCategoryKey] = selectedOption.variantId
+
+        val newCategories = VariantCommonMapper.processVariant(
+            variantData = variant.parentVariant,
+            mapOfSelectedVariant = newSelectedVariants,
+            level = selectedOption.level,
+            isPartialySelected = VariantUiModel.isVariantPartiallySelected(newSelectedVariants),
+        )
+
+        if (newCategories.isNullOrEmpty()) return@withContext variant
+        val selectedChild = VariantCommonMapper.selectedProductData(
+            variantData = variant.parentVariant
+        )?.second
+
+        return@withContext if (selectedChild != null) {
+            val newDetail = mapper.mapVariantChildToProduct(
+                child = selectedChild,
+                prevDetail = variant.variantDetail,
+            )
+            variant.copy(
+                variantDetail = newDetail,
+                selectedVariants = newSelectedVariants,
+                categories = newCategories,
+                stockWording = selectedChild.stock?.stockWordingHTML.orEmpty(),
+            )
+        } else variant.copy(
+            categories = newCategories,
+            selectedVariants = newSelectedVariants,
         )
     }
 

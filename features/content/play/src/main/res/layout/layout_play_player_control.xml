@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/play_dms_N700">
+    tools:background="@color/Unify_Static_Black"
+    >
 
     <FrameLayout
         android:id="@+id/fl_play_pause"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/exo_progress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/exo_progress">
+        app:layout_constraintTop_toTopOf="@id/exo_progress"
+        >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_play"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingEnd="@dimen/play_player_control_spacing_right"
-            android:background="@null"
-            app:srcCompat="@drawable/ic_play_play_white"
-            tools:ignore="RtlSymmetry" />
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="PLAY"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_pause"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingEnd="@dimen/play_player_control_spacing_right"
-            android:background="@null"
-            app:srcCompat="@drawable/ic_play_pause_white"
-            tools:ignore="RtlSymmetry" />
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_name="PAUSE"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            />
 
     </FrameLayout>
 
@@ -38,47 +41,10 @@
         android:id="@id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginEnd="@dimen/play_offset_12"
-        app:layout_constraintBottom_toBottomOf="@id/ll_video_time"
-        app:layout_constraintEnd_toStartOf="@id/ll_video_time"
-        app:layout_constraintStart_toEndOf="@id/fl_play_pause"
-        app:layout_constraintTop_toTopOf="@id/ll_video_time" />
-
-    <LinearLayout
-        android:id="@+id/ll_video_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fl_play_pause"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
-            tools:text="00:03"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_Static_White"
-            android:text="@string/play_duration_divider"
-            app:typographyType="body_3"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
-            tools:text="03:19"
-            />
-
-    </LinearLayout>
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -389,7 +389,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShipment.value = if (orderProfile.value.shipment.isDisableChangeCourier) {
                 shipping.copy(serviceErrorMessage = FAIL_GET_RATES_ERROR_MESSAGE, isApplyLogisticPromo = false, logisticPromoShipping = null)
             } else {
-                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
             }
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
@@ -482,7 +482,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val shippingRecommendationData = orderShipment.value.shippingRecommendationData
             if (shippingRecommendationData != null) {
                 globalEvent.value = OccGlobalEvent.Loading
-                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
+                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, shipping.logisticPromoViewModel?.promoCode), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                     if (newShipment != null) {

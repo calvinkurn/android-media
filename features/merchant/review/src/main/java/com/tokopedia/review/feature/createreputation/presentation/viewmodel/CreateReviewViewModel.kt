@@ -124,6 +124,19 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
+    private fun updateBadRatingCategories(badRatingCategoryId: String, selected: Boolean) {
+        _badRatingCategories.value = _badRatingCategories.value.let {
+            if (it is CoroutineSuccess) {
+                val newBadRatingCategories = it.data.map {
+                    if (it.id == badRatingCategoryId) it.copy(selected = selected) else it
+                }
+                CoroutineSuccess(newBadRatingCategories)
+            } else {
+                it
+            }
+        }
+    }
+
     fun submitReview(
         rating: Int,
         reviewText: String,
@@ -417,11 +430,13 @@ class CreateReviewViewModel @Inject constructor(
 
     fun addBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.add(badRatingCategoryId)
+        updateBadRatingCategories(badRatingCategoryId, true)
         updateProgressBarFromBadRatingCategory()
     }
 
     fun removeBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.remove(badRatingCategoryId)
+        updateBadRatingCategories(badRatingCategoryId, false)
         updateProgressBarFromBadRatingCategory()
     }
 

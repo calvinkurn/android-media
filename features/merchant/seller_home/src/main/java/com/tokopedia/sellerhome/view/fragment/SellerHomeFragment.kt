@@ -58,12 +58,12 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -71,7 +71,7 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -133,11 +133,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
-
-        private const val GRADIENT_LEFT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_left.png"
-        private const val GRADIENT_RIGHT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_right.png"
     }
 
     @Inject
@@ -227,12 +222,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
-        val deviceHeight = if (isNewLazyLoad) {
-            deviceDisplayHeight
-        } else {
-            null
-        }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        getWidgetLayout()
+
         (activity as? SellerHomeActivity)?.attachSellerHomeFragmentChangeCallback(this)
     }
 
@@ -341,13 +332,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         return WidgetAdapterFactoryImpl(this)
     }
 
-    override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
+    override fun onItemClicked(t: BaseWidgetUiModel<*>?) {}
 
-    }
-
-    override fun loadData(page: Int) {
-
-    }
+    override fun loadData(page: Int) {}
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         if (fragmentType != FragmentType.HOME) {
@@ -378,15 +365,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onRemoveWidget(position: Int) {}
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val cardValue = model.data?.value ?: "0"
+        val cardValue = model.data?.value ?: Int.ZERO.toString()
         val state = model.data?.state?.name.orEmpty()
-        SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
+        SellerHomeTracking.sendImpressionCardEvent(
+            dataKey = model.dataKey,
+            state = state,
+            cardValue = cardValue,
+            isSingle = isSingle
+        )
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
         SellerHomeTracking.sendClickCardEvent(
-            model.dataKey,
-            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
+            dataKey = model.dataKey,
+            state = model.data?.state?.name.orEmpty(),
+            cardValue = model.data?.value ?: Int.ZERO.toString(),
+            isSingle = isSingle
         )
     }
 
@@ -455,24 +451,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
     }
 
+    override fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {
+        SellerHomeTracking.sendRecommendationTickerCtaClickEvent(element)
+    }
+
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
         showCoachMarkShopScore()
-    }
-
-    private fun showCoachMarkShopScore() {
-        val coachMarkItems by getCoachMarkItems()
-        val isEligibleShowRecommendationCoachMark =
-            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
-        if (isEligibleShowRecommendationCoachMark) {
-            if (coachMarkItems.isNotEmpty()) {
-                coachMark?.onFinishListener = {
-                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
-                }
-                coachMark?.isDismissed = false
-                coachMark?.showCoachMark(coachMarkItems)
-            }
-        }
     }
 
     override fun onScrollToTop() {
@@ -578,6 +563,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendTableImpressionEvent(
         model: TableWidgetUiModel,
+        position: Int,
         slidePosition: Int,
         maxSlidePosition: Int,
         isSlideEmpty: Boolean
@@ -754,6 +740,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }, NOTIFICATION_BADGE_DELAY)
     }
 
+    fun setNotifCenterCounter(count: Int) {
+        this.notifCenterCount = count
+        showNotificationBadge()
+    }
+
+    private fun getWidgetLayout() {
+        val deviceHeight = if (isNewLazyLoad) {
+            deviceDisplayHeight
+        } else {
+            null
+        }
+        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+    }
+
+    private fun showCoachMarkShopScore() {
+        val coachMarkItems by getCoachMarkItems()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark?.onFinishListener = {
+                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                }
+                coachMark?.isDismissed = false
+                coachMark?.showCoachMark(coachMarkItems)
+            }
+        }
+    }
+
     private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
         SellerHomeTracking.sendCalendarFilterClickEvent(element, dateFilter)
         val calendarWidgets = mutableListOf<BaseWidgetUiModel<*>>()
@@ -865,14 +880,27 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         binding?.sahGlobalError?.setActionClickListener {
             reloadPage()
         }
+
+        setupEmptyState()
+        setRecyclerViewLayoutAnimation()
+        setViewBackground()
+    }
+
+    private fun setupEmptyState() {
         emptyState?.run {
             setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
-            setImageDrawable(
-                resources.getDrawable(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
-                    null
+            try {
+                val imageDrawable = requireContext().getResDrawable(
+                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
                 )
-            )
+                if (imageDrawable != null) {
+                    setImageDrawable(imageDrawable)
+                } else {
+                    setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
+                }
+            } catch (e: Exception) {
+                setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
+            }
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
@@ -880,9 +908,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 reloadPage()
             }
         }
-
-        setRecyclerViewLayoutAnimation()
-        setupRamadhanBackgroundGradient()
     }
 
     /**
@@ -1264,8 +1289,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 newWidget.apply {
                                     data = oldWidget.data.also {
                                         if (it is LastUpdatedDataInterface && newData != null) {
-                                            it.lastUpdated.lastUpdatedInMillis = newData.lastUpdated.lastUpdatedInMillis
-                                            it.lastUpdated.needToUpdated = newData.lastUpdated.needToUpdated
+                                            it.lastUpdated.lastUpdatedInMillis =
+                                                newData.lastUpdated.lastUpdatedInMillis
+                                            it.lastUpdated.needToUpdated =
+                                                newData.lastUpdated.needToUpdated
                                         }
                                     }
                                     isLoaded = oldWidget.isLoaded
@@ -1494,8 +1521,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopCustomMetric(
                         SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE,
-                        it.data.firstOrNull()?.isFromCache
-                            ?: false
+                        it.data.firstOrNull()?.isFromCache.orFalse()
                     )
                     onSuccessGetTickers(it.data)
                 }
@@ -1565,6 +1591,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     userSession.deviceId.orEmpty()
                 )
             }
+        }
+    }
+
+    private fun setViewBackground() = binding?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -1930,19 +1966,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    fun setNotifCenterCounter(count: Int) {
-        this.notifCenterCount = count
-        showNotificationBadge()
-    }
-
     @Suppress("UNCHECKED_CAST")
     private fun resetWidgetImpressionHolder() {
         val newWidgetList = adapter.data.map { widget ->
             val isInvoked = widget.impressHolder.isInvoke
             when (widget) {
                 !is SectionWidgetUiModel,
-                !is TickerWidgetUiModel,
-                !is WhiteSpaceUiModel -> {
+                !is TickerWidgetUiModel -> {
                     if (isInvoked) {
                         widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
@@ -1971,7 +2001,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.data.addAll(newWidgets)
             diffUtilResult.dispatchUpdatesTo(adapter)
         } catch (e: Exception) {
-            adapter.notifyDataSetChanged()
+            try {
+                recyclerView?.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } catch (notifyException: Exception) {
+                SellerHomeErrorHandler.logException(notifyException, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+            }
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
@@ -2018,7 +2054,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-                this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
+                this !is DescriptionWidgetUiModel
     }
 
     private fun setRecommendationCoachMarkEligibility() {
@@ -2122,13 +2158,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
-    }
-
-    private fun setupRamadhanBackgroundGradient() {
-        binding?.run {
-            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
-            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
-        }
     }
 
     interface Listener {

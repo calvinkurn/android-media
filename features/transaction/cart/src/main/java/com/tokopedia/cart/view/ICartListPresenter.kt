@@ -134,6 +134,8 @@ interface ICartListPresenter {
 
     fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
 
+    fun getPromoFlag(): Boolean
+
     companion object {
         const val GET_CART_STATE_DEFAULT = 0
         const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1

@@ -135,4 +135,51 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Schedule -->
+    <!-- Product -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_bro_set_schedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_bro_set_product"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_bro_set_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CALENDAR_TIME"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bro_set_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/play_bro_schedule_label"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/ic_bro_set_schedule"
+            app:layout_constraintStart_toEndOf="@id/ic_bro_set_schedule"
+            app:layout_constraintTop_toTopOf="@id/ic_bro_set_schedule"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ic_bro_schedule_checked"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:visibility="invisible"
+            android:src="@drawable/ic_play_bro_preparation_checked"
+            app:layout_constraintEnd_toEndOf="@id/ic_bro_set_schedule"
+            app:layout_constraintTop_toTopOf="@id/ic_bro_set_schedule"
+            tools:visibility="visible"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

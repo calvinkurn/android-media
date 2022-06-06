@@ -18,6 +18,7 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevEditReviewR
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessIndicator
 import com.tokopedia.review.feature.createreputation.model.ProductRevSuccessSubmitReview
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetBadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetReviewTemplate
@@ -752,6 +753,27 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when addBadRatingCategory should update badRatingCategories result`() {
+        val oldBadRatingCategories = BadRatingCategoriesResponse(
+            ProductrevGetBadRatingCategory(
+                listOf(BadRatingCategory(id = "1"), BadRatingCategory(id = "2"))
+            )
+        )
+        val newBadRatingCategories = BadRatingCategoriesResponse(
+            ProductrevGetBadRatingCategory(
+                listOf(BadRatingCategory(id = "1", selected = true), BadRatingCategory(id = "2"))
+            )
+        )
+        val expectedNewBadRatingCategories = Success(newBadRatingCategories.productrevGetBadRatingCategory.list)
+
+        onGetBadRatingCategoriesSuccess_thenReturn(oldBadRatingCategories)
+        viewModel.getBadRatingCategories()
+        viewModel.addBadRatingCategory("1")
+
+        viewModel.badRatingCategories.verifySuccessEquals(expectedNewBadRatingCategories)
+    }
+
+    @Test
     fun `when removeBadRatingCategory should update progress bar accordingly`() {
         val expectedProgressBarState = CreateReviewProgressBarState(isBadRatingReasonSelected = false)
         val badRatingCategoryId = anyString()
@@ -761,6 +783,27 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         viewModel.progressBarState.verifyValueEquals(expectedProgressBarState)
         Assert.assertFalse(viewModel.isBadRatingReasonSelected(true))
+    }
+
+    @Test
+    fun `when removeBadRatingCategory should update badRatingCategories result`() {
+        val oldBadRatingCategories = BadRatingCategoriesResponse(
+            ProductrevGetBadRatingCategory(
+                listOf(BadRatingCategory(id = "1", selected = true), BadRatingCategory(id = "2"))
+            )
+        )
+        val newBadRatingCategories = BadRatingCategoriesResponse(
+            ProductrevGetBadRatingCategory(
+                listOf(BadRatingCategory(id = "1", selected = false), BadRatingCategory(id = "2"))
+            )
+        )
+        val expectedNewBadRatingCategories = Success(newBadRatingCategories.productrevGetBadRatingCategory.list)
+
+        onGetBadRatingCategoriesSuccess_thenReturn(oldBadRatingCategories)
+        viewModel.getBadRatingCategories()
+        viewModel.removeBadRatingCategory("1")
+
+        viewModel.badRatingCategories.verifySuccessEquals(expectedNewBadRatingCategories)
     }
 
     @Test

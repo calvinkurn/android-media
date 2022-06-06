@@ -18,7 +18,7 @@ data class PaylaterGetOptimizedModel(
 
 @Parcelize
 data class CheckoutData(
-    @SerializedName("gateway_id") val gateway_id: Int,
+    @SerializedName("gateway_id") val gateway_id: String,
     @SerializedName("payment_gateway_code") val paymentGatewayCode: String?,
     @SerializedName("gateway_name") val gateway_name: String?,
     @SerializedName("subtitle") val subtitle: String?,
@@ -40,6 +40,7 @@ data class CheckoutData(
 data class TenureDetail(
     var isSelectedTenure: Boolean = false,
     @SerializedName("tenure") val tenure: Int,
+    @SerializedName("tenure_disable") val tenureDisable: Boolean = false,
     @SerializedName("label") val lable: String?,
     @SerializedName("chip_title") val chip_title: String?,
     @SerializedName("monthly_installment") val monthly_installment: String?,

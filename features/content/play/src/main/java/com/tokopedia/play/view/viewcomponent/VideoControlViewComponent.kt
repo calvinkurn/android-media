@@ -7,7 +7,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.android.exoplayer2.ui.R as exoR
 import com.google.android.exoplayer2.ui.TimeBar
+import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -19,8 +21,8 @@ class VideoControlViewComponent(
         listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    private val pcvVideo = rootView as PlayerControlView
-    private val timeBar = pcvVideo.findViewById<DefaultTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+    private val pcvVideo = rootView.findViewById(R.id.player_control) as PlayerControlView
+    private val timeBar = pcvVideo.findViewById<DefaultTimeBar>(exoR.id.exo_progress)
 
     private val scrubListener = object : TimeBar.OnScrubListener {
         override fun onScrubMove(timeBar: TimeBar, position: Long) {
@@ -37,14 +39,6 @@ class VideoControlViewComponent(
 
     init {
         timeBar.addListener(scrubListener)
-    }
-
-    override fun show() {
-        pcvVideo.show()
-    }
-
-    override fun hide() {
-        pcvVideo.hide()
     }
 
     fun setPlayer(exoPlayer: Player?) {

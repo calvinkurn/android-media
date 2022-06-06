@@ -16,6 +16,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -115,6 +116,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
         // Given
         val promoUiModel = PromoUiModel(
+                globalSuccess = true,
                 voucherOrderUiModels = listOf(
                         PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
                 )
@@ -144,6 +146,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         val errorMessage = "error"
         val cartString = "cart123"
         val promoUiModel = PromoUiModel(
+                globalSuccess = true,
                 voucherOrderUiModels = listOf(
                         PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
                 )
@@ -239,6 +242,32 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, true)
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed without error message THEN should show default BO error message`() {
+        // Given
+        val cartPosition = 1
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "ERROR",
+                        message = emptyList()
+                )
+        )
+        every { checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(any()) } just Runs
+        mockkObject(PromoRevampAnalytics)
+        every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
+
+        // When
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
         }
     }

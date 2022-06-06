@@ -10,6 +10,9 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -22,7 +25,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -47,6 +49,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
+    protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -73,12 +76,10 @@ internal open class ProductListPresenterTestFixtures {
             testSchedulersProvider,
             topAdsHeadlineHelper,
             { performanceMonitoring },
+            ChooseAddressPresenterDelegate(chooseAddressView),
+            RequestParamsGenerator(userSession),
         )
         productListPresenter.attachView(productListView)
-
-        verify {
-            productListView.isChooseAddressWidgetEnabled
-        }
     }
 
     protected fun `Then verify visitable list with product items`(

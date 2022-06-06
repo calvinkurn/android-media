@@ -23,16 +23,14 @@ class SellerRemoteConfigAppUpdate(val activity: Activity): ApplicationUpdate {
     }
 
     override fun checkApplicationUpdate(listener: ApplicationUpdate.OnUpdateListener?) {
-        if (remoteConfig != null) {
-            val dataAppUpdate = remoteConfig.getString(ANDROID_SELLER_APP_UPDATE)
-            if (dataAppUpdate.isNotEmpty()) {
-                val gson = Gson()
-                val dataUpdateApp: DataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
-                val detailUpdate: DetailUpdate = generateDetailUpdate(dataUpdateApp)
-                if (detailUpdate.isNeedUpdate)
-                    listener?.onNeedUpdate(detailUpdate)
-                else listener?.onNotNeedUpdate()
-            }
+        val dataAppUpdate = remoteConfig.getString(ANDROID_SELLER_APP_UPDATE)
+        if (dataAppUpdate.isNotEmpty()) {
+            val gson = Gson()
+            val dataUpdateApp: DataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
+            val detailUpdate: DetailUpdate = generateDetailUpdate(dataUpdateApp)
+            if (detailUpdate.isNeedUpdate)
+                listener?.onNeedUpdate(detailUpdate)
+            else listener?.onNotNeedUpdate()
         }
     }
 

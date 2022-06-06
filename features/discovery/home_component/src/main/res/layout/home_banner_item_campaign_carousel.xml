@@ -10,8 +10,7 @@
     app:cardBackgroundColor="@color/product_card_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="@dimen/campaign_widget_card_width"
-    android:layout_height="@dimen/campaign_widget_card_height"
-    tools:layout_height="wrap_content">
+    android:layout_height="@dimen/campaign_widget_card_height">
 
     <ImageView
         android:id="@+id/card_campaign_image"

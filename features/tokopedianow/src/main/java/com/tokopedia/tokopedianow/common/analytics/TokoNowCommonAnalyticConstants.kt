@@ -15,12 +15,17 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
         const val EVENT_CLICK_PG = "clickPG"
+        const val EVENT_VIEW_GROWTH_IRIS = "viewGrowthIris"
+        const val EVENT_CLICK_GROWTH = "clickGrowth"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
+        const val EVENT_CAMPAIGN_CODE = "campaignCode"
+        const val EVENT_WAREHOUSE_ID = "warehouseId"
     }
 
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
+        const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
     }
 
     object KEY {
@@ -37,6 +42,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_49 = "dimension49"
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_90 = "dimension90"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -44,6 +50,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_CATEGORY_ID = "category_id"
+        const val KEY_CHANNEL_ID = "channelId"
+        const val KEY_CAMPAIGN_CODE = "campaignCode"
         const val KEY_PAGE_SOURCE = "pageSource"
         const val KEY_INDEX = "index"
         const val KEY_ITEMS = "items"
@@ -80,10 +88,21 @@ object TokoNowCommonAnalyticConstants {
         const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
         const val CURRENCY_CODE_IDR = "IDR"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "
+        const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
+        const val DEFAULT_NULL_VALUE = "null"
+        const val DEFAULT_CATEGORY_ID = "0"
     }
 
     object ACTION{
         const val EVENT_ACTION_CLICK_CHANGE_ADDRESS_ON_OOC = "click change address on ooc"
         const val EVENT_ACTION_CLICK_SHOP_ON_TOKOPEDIA = "click belanja di tokopedia on ooc"
+        const val EVENT_ACTION_CLICK_SHARE_WIDGET_BUTTON = "click - share button"
+        const val EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES = "click - access photo media and files"
+        const val EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT = "click - channel share bottom sheet - screenshot"
+        const val EVENT_ACTION_CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
+        const val EVENT_ACTION_IMPRESSION_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT = "view - screenshot share bottom sheet"
+        const val EVENT_ACTION_IMPRESSION_SHARING_CHANNEL = "view on sharing channel"
+        const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
+        const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
     }
 }

@@ -9,20 +9,23 @@ import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
-import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
-import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 
 class TagihanDataFactory {
 
     private val gson = Gson()
 
-    fun getFavoriteNumberData(): TopupBillsPersoFavNumberData {
-        return gson.fromJson(
+    fun getFavoriteNumberData(withPrefill: Boolean): PersoFavNumberGroup {
+        val responses = gson.fromJson(
             gson.JsonToString(GET_FAVORITE_NUMBER),
-            TopupBillsPersoFavNumberData::class.java
+            Array<TopupBillsPersoFavNumberData>::class.java
+        ).toList()
+        return PersoFavNumberGroup(
+            favoriteNumberChips = responses[0],
+            favoriteNumberList = responses[1],
+            favoriteNumberPrefill = if (withPrefill) responses[2] else TopupBillsPersoFavNumberData()
         )
     }
 
@@ -65,13 +68,6 @@ class TagihanDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_ADD_TO_CART),
             ResponseCartData::class.java
-        )
-    }
-
-    fun getInquiry(): TopupBillsEnquiryData {
-        return gson.fromJson(
-            gson.JsonToString(GET_INQUIRY),
-            TopupBillsEnquiryData::class.java
         )
     }
 
@@ -139,7 +135,6 @@ class TagihanDataFactory {
         const val GET_TAGIHAN_PRODUCT = "tagihan/get_tagihan_product_mock.json"
         const val GET_TAGIHAN_PRODUCT_WITH_PROMO = "tagihan/get_tagihan_product_with_promo_mock.json"
         const val GET_ADD_TO_CART = "tagihan/get_add_to_cart_mock.json"
-        const val GET_INQUIRY = "tagihan/get_inquiry_mock.json"
 
         const val CATEGORY_ID = "3"
         const val PRODUCT_ID = "291"

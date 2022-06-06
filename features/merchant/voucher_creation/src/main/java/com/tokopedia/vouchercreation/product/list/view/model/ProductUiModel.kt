@@ -29,4 +29,8 @@ data class ProductUiModel(
     fun getSelectedVariants(): List<VariantUiModel> {
         return variants.filter { it.isSelected }
     }
+
+    fun isAllVariantSelected(): Boolean {
+     return getSelectedVariants().size == variants.size
+    }
 }

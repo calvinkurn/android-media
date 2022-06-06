@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/databaseName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="cm_push_notifications" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/titleDatabaseVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:text="VERSION: "
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/databaseName"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/databaseVersionNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@id/titleDatabaseVersion"
+            app:layout_constraintTop_toBottomOf="@id/databaseName"
+            app:typographyType="body_2"
+            tools:text="1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/titleDatabasePath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:text="PATH: "
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleDatabaseVersion"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/databasePath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:paddingEnd="@dimen/unify_space_16"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/titleDatabasePath"
+            app:layout_constraintTop_toBottomOf="@id/titleDatabaseVersion"
+            app:typographyType="body_2"
+            tools:text="/data/user/0/com.tokopedia/databases/cm_push_notifications" />
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/shareDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="SHARE"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:layout_constraintEnd_toStartOf="@+id/copyDatabase"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/databasePath"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/copyDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="COPY"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:layout_constraintEnd_toStartOf="@+id/deleteDatabase"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/shareDatabase"
+            app:layout_constraintTop_toTopOf="@id/shareDatabase"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/deleteDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="DELETE"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/copyDatabase"
+            app:layout_constraintTop_toTopOf="@id/shareDatabase"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

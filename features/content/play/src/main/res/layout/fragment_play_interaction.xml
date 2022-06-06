@@ -48,11 +48,12 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_send_chat_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_size"
         app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
         tools:visibility="visible"
         />
 
@@ -88,15 +89,17 @@
         app:layout_constraintEnd_toStartOf="@id/view_like"
         />
 
-    <include
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/view_kebab_menu"
-        layout="@layout/view_kebab_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="MENU_KEBAB_VERTICAL"
         app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3"
         />
 
     <include
@@ -117,10 +120,11 @@
         layout="@layout/view_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/view_like"
-        app:layout_constraintEnd_toEndOf="@id/view_like"
-        app:layout_constraintBottom_toTopOf="@id/view_like"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_like"
+        app:layout_constraintEnd_toEndOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/view_like"
         tools:visibility="visible"
         />
 
@@ -191,19 +195,17 @@
         tools:visibility="visible"
         />
 
-    <com.google.android.exoplayer2.ui.PlayerControlView
+    <com.tokopedia.play.view.custom.video.PlayVideoControlView
         android:id="@+id/pcv_video"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:controller_layout_id="@layout/layout_play_player_control"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
-        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
-        app:show_timeout="-1"
+        app:layout_constraintTop_toTopOf="@id/view_send_chat"
         tools:visibility="visible"
         />
 

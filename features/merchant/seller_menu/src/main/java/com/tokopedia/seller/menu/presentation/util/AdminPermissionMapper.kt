@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
@@ -14,13 +16,11 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 class AdminPermissionMapper @Inject constructor(private val userSession: UserSessionInterface) {
 
     companion object {
-        private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
         private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
@@ -123,9 +123,11 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
             SellerMigrationActivity.createIntent(context, featureName, SCREEN_NAME, appLinks)
 
     private fun getReputationIntent(context: Context): Intent {
-        return RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-                putExtra(GO_TO_BUYER_REVIEW, true)
-        }
+        val appLink = UriUtil.buildUriAppendParam(
+            ApplinkConst.REPUTATION,
+            mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.SELLER_TAB)
+        )
+        return RouteManager.getIntent(context, appLink)
     }
 
 }

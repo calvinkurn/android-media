@@ -95,7 +95,7 @@ class SomDetailAdapterFactoryImpl(
         fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button)
         fun onSeeInvoice(invoiceUrl: String, invoice: String)
         fun onCopiedInvoice(invoice: String, str: String)
-        fun onClickProduct(orderDetailId: Int)
+        fun onClickProduct(orderDetailId: Long)
         fun onCopiedAddress(address: String, str: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
     }

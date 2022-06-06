@@ -9,6 +9,7 @@ android{
     }
     buildFeatures {
         aidl true
+        viewBinding true
     }
 }
 
@@ -40,6 +41,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+    implementation projectOrAar(rootProject.ext.libraries.telemetry)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.seamlessLoginCommon)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)

@@ -8,16 +8,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterTenureClick
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
@@ -25,6 +32,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractDetailFromList
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -32,6 +40,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterAct
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
@@ -44,6 +53,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    // parent view is required to show the toaster
+
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -59,7 +71,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             arguments?.getString(PARAM_PRODUCT_ID) ?: "",
             (arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0").toInt(),
 
-        )
+            )
     }
 
 
@@ -67,11 +79,25 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
     private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PayLaterSimulationTenureAdapter { payLaterList ->
+        PayLaterSimulationTenureAdapter { payLaterList, position ->
+            sendTenureCLick(position, payLaterList)
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
         }
     }
+
+    private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
+        val allStatusOfPartner = extractDetailFromList(payLaterList)
+        sendEvent(PayLaterTenureClick().apply {
+            productId = payLaterArgsDescriptor.productId
+            linkingStatus = allStatusOfPartner?.first ?: ""
+            userStatus = allStatusOfPartner?.second ?: ""
+            productPrice = payLaterViewModel.finalProductPrice.toString()
+            tenureOption = tenure
+            payLaterPartnerName = allStatusOfPartner?.third.toString()
+        })
+    }
+
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
         interaction = PayLaterOptionInteraction(
@@ -84,7 +110,14 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
-        PayLaterHelper.handleClickNavigation(context, detail, PayLaterHelper.setCustomProductUrl(detail,payLaterArgsDescriptor),
+        PayLaterHelper.handleClickNavigation(context,
+            detail,
+            PayLaterHelper.setCustomProductUrl(detail, payLaterArgsDescriptor),
+            callAddOccApi = {
+                payLaterViewModel.addProductToCart(detail,
+                    payLaterArgsDescriptor.productId
+                )
+            },
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(
                     PayLaterActionStepsBottomSheet::class.java,
@@ -100,20 +133,28 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         )
     }
 
-
+    private fun setSuccessProductCart() {
+        RouteManager.route(context,UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+            payLaterViewModel.cardDetailSelected?.gatewayDetail?.paymentGatewayCode ?: "",
+            payLaterViewModel.cardDetailSelected?.tenure.toString()?:"",
+            "fintech"
+        ))
+    }
 
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
+            PayLaterBundleGenerator.getInstallmentBundle(detail)
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
+    ): View {
+         return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -154,7 +195,34 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 is Fail -> simulationFailed(it.throwable)
             }
         }
+
+        payLaterViewModel.addToCartLiveData.observe(viewLifecycleOwner)
+        {
+            when (it) {
+                is Success -> setSuccessProductCart()
+                is Fail -> setFailProductCart(it.throwable)
+            }
+        }
     }
+
+    private fun setFailProductCart(throwable: Throwable) {
+        when (throwable) {
+            is ShowToasterException -> showToaster(throwable.message)
+            else -> showToaster(ErrorHandler.getErrorMessage(context,throwable))
+        }
+    }
+
+    private fun showToaster(message: String?) {
+        message?.let {
+            Toaster.build(
+                baseSimulationView,
+                it,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
         // hide shimmer
@@ -251,7 +319,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun sendDataToViewModel(data: GetProductV3) {
-        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0) {
+        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0) {
             payLaterViewModel.getPayLaterAvailableDetail(
                 data.campaingnDetail?.discountedPrice
                     ?: 0.0, payLaterArgsDescriptor.productId
@@ -281,7 +349,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun getProductPrice(data: GetProductV3) =
-        if (data.campaingnDetail?.discountedPrice ?: 0.0 != 0.0)
+        if ((data.campaingnDetail?.discountedPrice ?: 0.0) != 0.0)
             PayLaterHelper.convertPriceValueToIdrFormat(
                 data.campaingnDetail?.discountedPrice ?: 0.0, false
             )
@@ -317,6 +385,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     override fun initInjector() = getComponent(PdpSimulationComponent::class.java).inject(this)
 
     companion object {
+
+        const val TYPE_APP_LINK_OCC = 5
 
         @JvmStatic
         fun newInstance(bundle: Bundle): PdpSimulationFragment {

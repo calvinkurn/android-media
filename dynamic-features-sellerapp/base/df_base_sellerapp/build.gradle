@@ -114,6 +114,7 @@ dependencies {
 //    Merchant
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
     implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.snapshot)
@@ -122,5 +123,7 @@ dependencies {
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

@@ -47,7 +47,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Ke Tokopedia NOW! 15 menit tiba" />
+            tools:text="Ke Tokopedia NOW! 20 menit tiba" />
 
         <View
             android:id="@+id/coachMarkTarget"
