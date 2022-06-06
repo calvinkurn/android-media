@@ -222,7 +222,7 @@ class ShopGradeWidget(
                     listener.showPmProStatusInfo(getPmProStatusInfo(element))
                 }
             }
-            isPmActive -> {
+            isPmActive && element.isNewSeller -> {
                 pmProStatusInfoView.visible()
                 pmProStatusInfoView.hideIcon()
                 pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
