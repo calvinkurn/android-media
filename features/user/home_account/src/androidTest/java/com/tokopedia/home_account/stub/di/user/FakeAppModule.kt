@@ -19,7 +19,6 @@ import dagger.Provides
 
 @Module(includes = [NetModule::class])
 class FakeAppModule(private val context: Context) {
-    @ApplicationScope
     @Provides
     @ApplicationContext
     fun provideContext(): Context {
@@ -61,6 +60,4 @@ class FakeAppModule(private val context: Context) {
     fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
     }
-
-
 }
