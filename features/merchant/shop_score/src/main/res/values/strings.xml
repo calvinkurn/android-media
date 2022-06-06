@@ -43,6 +43,13 @@
     <string name="title_item_benefit_1_pm_pro"><![CDATA[Dikunjungi pembeli hingga <br><b>2,5 kali lipat</b>]]></string>
     <string name="title_item_benefit_2_pm_pro"><![CDATA[Menerima pesanan hingga <br><b>2,3 kali lipat</b>]]></string>
     <string name="title_item_benefit_3_pm_pro"><![CDATA[Meningkatkan penghasilan hingga <br><b>2,2 kali lipat</b>]]></string>
+    <string name="ss_pm_pro_potentially_downgraded_section_description">Agar Power Merchant PRO tetap aktif, pastikan skor Performa Toko kamu minimum 70. Lihat skema pengecekan status di halaman Power Merchant PRO.</string>
+    <string name="ss_item_pm_recommendation_title_1">Perbaiki parameter yang berwarna merah</string>
+    <string name="ss_item_pm_recommendation_desc_1">Jika ada parameter performa berwarna merah, perbaiki hingga berwarna hitam atau hijau.</string>
+    <string name="ss_item_pm_recommendation_title_2">Ikuti tips dari setiap parameter</string>
+    <string name="ss_item_pm_recommendation_desc_2">Tips peningkatan performa ada di bagian kanan tiap parameter. Klik panah kanan untuk membacanya.</string>
+    <string name="ss_item_pm_recommendation_title_3">Pastikan kamu tidak terkena penalti</string>
+    <string name="ss_item_pm_recommendation_desc_3">Penalti memengaruhi skor Performa Toko. Agar tidak terkena penalti, hindari melakukan pelanggaran, ya.</string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
@@ -56,7 +63,7 @@
     <string name="see_all_benefit">Lihat Semua Keuntungannya</string>
     <string name="title_non_eligible_status_power_merchant">Tingkatkan skor agar bisa gabung Power Merchant dan nikmati keuntungannya!</string>
     <string name="description_information_level_text">Level toko mewakili skala bisnismu. Kami menggunakan level untuk memberikan penilaian yang lebih adil untuk setiap skala bisnis yang berbeda.</string>
-    
+
     <string name="title_shop_score_service">Pelayanan tokomu sudah sangat memuaskan pembeli!</string>
     <string name="desc_shop_score_service">Tingkatkan terus kualitas tokomu supaya kamu punya kesempatan untuk naik ke level tertinggi, ya.</string>
     <string name="title_shop_performance_promo_creation">Yuk, gunakan fitur-fitur ini supaya tokomu makin berkembang!</string>
@@ -237,7 +244,7 @@
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
-    
+
     <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 
@@ -254,7 +261,7 @@
     <string name="desc_potential_rm_eligible_power_merchant_pro">Gabung ke Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
-    
+
     <string name="menu_title_info_shop_performance">Info</string>
     <string name="menu_title_warning_shop_performance">Penalty</string>
     <string name="title_detail_penalty_label">Detail Pelanggaran</string>

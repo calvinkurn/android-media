@@ -252,7 +252,6 @@ open class ShopScoreMapper @Inject constructor(
                     return@apply
                 }
                 powerMerchantResponse?.pmTier == PMTier.REGULAR || powerMerchantResponse?.pmTier == PMTier.PRO -> {
-                    //RM Section logic
                     when (powerMerchantResponse.status) {
                         PMStatusConst.ACTIVE -> {
                             if (powerMerchantResponse.pmTier == PMTier.REGULAR) {
@@ -1014,7 +1013,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    fun mapToItemFaqUiModel(
+    private fun mapToItemFaqUiModel(
         isNewSeller: Boolean,
         isOfficialStore: Boolean,
         pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant?,
