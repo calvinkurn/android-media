@@ -2,10 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
-import io.mockk.confirmVerified
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.junit.Test
 
 internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFixtures() {
@@ -115,11 +112,38 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
         `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel)
     }
 
+    @Test
+    fun `Handle success wishlist action for recommendation - topads product`() {
+        val productCardOptionsModel = ProductCardOptionsModel(
+            productId = "12345",
+            isTopAds = true,
+            isWishlisted = false,
+            isRecommendation = true
+        ).also {
+            it.wishlistResult = ProductCardOptionsModel.WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true)
+        }
+
+        `When handle wishlist action`(productCardOptionsModel)
+
+        `Then verify view interaction when wishlist recommendation - topads product`(productCardOptionsModel)
+    }
+
     private fun `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
             productListView.trackWishlistRecommendationProductLoginUser(true)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+        }
+
+        confirmVerified(productListView)
+    }
+
+    private fun `Then verify view interaction when wishlist recommendation - topads product`(productCardOptionsModel: ProductCardOptionsModel) {
+        verifySequence {
+            productListView.trackWishlistRecommendationProductLoginUser(true)
+            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            productListView.hitWishlistClickUrl(productCardOptionsModel)
         }
 
         confirmVerified(productListView)
