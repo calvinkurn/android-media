@@ -15,7 +15,6 @@ import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.loadImageNormal
-import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
@@ -77,9 +76,9 @@ class VpsWidgetAdapter(
                 binding?.textName?.setTextColor(Color.parseColor(item.textColor))
                 binding?.textDesc?.setTextColor(Color.parseColor(item.textColor))
             }
-//            if (item.backColor.isNotEmpty()) {
-//                binding?.cardVps?.setGradientBackground(arrayListOf(item.backColor))
-//            }
+            if (item.backColor.isNotEmpty()) {
+                binding?.overlayColor?.setGradientBackground(arrayListOf(item.backColor))
+            }
             itemView.addOnImpressionListener(item){
                 if (!isCacheData) {
                     listener?.onItemImpressed(channelModel, item, adapterPosition, parentPosition)

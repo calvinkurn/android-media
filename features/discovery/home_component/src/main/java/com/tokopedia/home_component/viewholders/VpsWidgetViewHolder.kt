@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcVpsWidgetBinding
-import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.VpsWidgetSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
@@ -31,7 +30,6 @@ class VpsWidgetViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_vps_widget
-        private const val SPAN_SPACING = 8f
     }
     private val binding: GlobalDcVpsWidgetBinding? by viewBinding()
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(itemView.context, VpsWidgetTabletConfiguration.getSpanCount(itemView.context)) }
@@ -89,8 +87,7 @@ class VpsWidgetViewHolder (itemView: View,
         adapter.addData(element)
         binding?.homeComponentVpsRv?.adapter = adapter
         adapter.notifyDataSetChanged()
-        if (binding?.homeComponentVpsRv?.itemDecorationCount == 0) binding?.homeComponentVpsRv?.addItemDecoration(
-            VpsWidgetSpacingItemDecoration(SPAN_SPACING.toDpInt())
-        )
+        if (binding?.homeComponentVpsRv?.itemDecorationCount == 0)
+            binding?.homeComponentVpsRv?.addItemDecoration(VpsWidgetSpacingItemDecoration())
     }
 }
