@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,11 +17,19 @@ import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.usercomponents.userconsent.common.UserConsentPurposeUiModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
 import com.tokopedia.usercomponents.userconsent.di.UserConsentComponentBuilder
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
+import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
 
 class UserConsentWidget : FrameLayout {
@@ -45,6 +54,7 @@ class UserConsentWidget : FrameLayout {
     private var collection: UserConsentCollectionDataModel.CollectionPointDataModel? = null
 
     private var userConsentDescription: UserConsentDescription? = null
+    private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
 
     /** Set action button text */
     var actionText: String
@@ -85,38 +95,30 @@ class UserConsentWidget : FrameLayout {
                         userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
                     }
 
-                    userConsentActionClickListener?.onChecklistClicked(isChecked)
+                    userConsentActionClickListener?.onCheckedChange(isChecked)
                     singleCheckBoxChecked()
                 }
             }
 
             multipleConsent.apply {
-                checkboxPurposeA.setOnCheckedChangeListener { buttonView, isChecked ->
-                    collection?.purposes?.let {
-                        userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                userConsentPurposeAdapter = UserConsentPurposeAdapter(object : UserConsentPurposeViewHolder.UserConsentPurposeListener {
+                    override fun onCheckedChange(
+                        isChecked: Boolean,
+                        purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel
+                    ) {
+                        userConsentActionClickListener?.onCheckedChange(isChecked)
+
+                        val isMandatoryPurpose = collection?.purposes?.find {
+                            it.id == purposeDataModel.id
+                        }?.attribute?.alwaysMandatory == MANDATORY
+
+                        if (isMandatoryPurpose) {
+                            viewBinding.buttonAction.isEnabled = isChecked
+                        }
                     }
+                })
 
-                    userConsentActionClickListener?.onChecklistClicked(isChecked)
-                    multipleCheckBoxChecked()
-                }
-
-                checkboxPurposeB.setOnCheckedChangeListener { buttonView, isChecked ->
-                    collection?.purposes?.let {
-                        userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
-                    }
-
-                    userConsentActionClickListener?.onChecklistClicked(isChecked)
-                    multipleCheckBoxChecked()
-                }
-
-                checkboxPurposeC.setOnCheckedChangeListener { buttonView, isChecked ->
-                    collection?.purposes?.let {
-                        userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
-                    }
-
-                    userConsentActionClickListener?.onChecklistClicked(isChecked)
-                    multipleCheckBoxChecked()
-                }
+                recyclerPurposes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
     }
@@ -198,7 +200,7 @@ class UserConsentWidget : FrameLayout {
         }
 
         when {
-            collection?.attributes?.collectionPointPurposeRequirement == UserConsentConst.MANDATORY -> {
+            collection?.attributes?.collectionPointPurposeRequirement == MANDATORY -> {
                 purposeText = ""
                 collection?.purposes?.forEach {
                     purposeText += "${it.description} ${if (collection?.purposes?.size.orZero() > 1) ", " else ""}"
@@ -206,21 +208,21 @@ class UserConsentWidget : FrameLayout {
 
                 viewBinding?.buttonAction?.isEnabled = true
                 viewBinding?.singleConsent?.apply {
-                    if (collection?.attributes?.collectionPointStatementOnlyFlag == UserConsentConst.NO_CHECKLIST) {
+                    if (collection?.attributes?.collectionPointStatementOnlyFlag == NO_CHECKLIST) {
                         checkboxPurposes.hide()
                         iconMandatoryInfo.show()
-                    } else if (collection?.attributes?.collectionPointStatementOnlyFlag == UserConsentConst.CHECKLIST) {
+                    } else if (collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST) {
                         checkboxPurposes.show()
                         iconMandatoryInfo.hide()
                     }
 
-                    if (collection?.attributes?.policyNoticeType == UserConsentConst.TERM_CONDITION) {
+                    if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
                         descriptionPurposes.text = userConsentDescription?.generateTermConditionSinglePurposeText(
                             true,
                             collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                             purposeText
                         )
-                    } else if (collection?.attributes?.policyNoticeType == UserConsentConst.TERM_CONDITION_POLICY) {
+                    } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
                         descriptionPurposes.text = userConsentDescription?.generateTermConditionPolicySinglePurposeText(
                             true,
                             collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
@@ -228,19 +230,20 @@ class UserConsentWidget : FrameLayout {
                             purposeText
                         )
                     }
+
                     descriptionPurposes.movementMethod = LinkMovementMethod.getInstance()
                 }?.root?.show()
             }
 
-            collection?.attributes?.collectionPointPurposeRequirement == UserConsentConst.OPTIONAL &&
-            collection?.attributes?.collectionPointStatementOnlyFlag == UserConsentConst.CHECKLIST -> {
+            collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
+            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST -> {
                 if (collection?.purposes?.size.orZero() > 1) {
                     viewBinding?.multipleConsent?.apply {
-                        if (collection?.attributes?.policyNoticeType == UserConsentConst.TERM_CONDITION) {
+                        if (collection?.attributes?.policyNoticeType == TERM_CONDITION) {
                             textMainDescription.text = userConsentDescription?.generateTermConditionMultipleOptionalPurposeText(
                                 collection?.attributes?.policyNoticeTnCPageID.orEmpty()
                             )
-                        } else if (collection?.attributes?.policyNoticeType == UserConsentConst.TERM_CONDITION_POLICY) {
+                        } else if (collection?.attributes?.policyNoticeType == TERM_CONDITION_POLICY) {
                             textMainDescription.text = userConsentDescription?.generateTermConditionPolicyMultipleOptionalPurposeText(
                                 collection?.attributes?.policyNoticeTnCPageID.orEmpty(),
                                 collection?.attributes?.policyNoticePolicyPageID.orEmpty()
@@ -248,19 +251,10 @@ class UserConsentWidget : FrameLayout {
                         }
 
                         textMainDescription.movementMethod = LinkMovementMethod.getInstance()
-
-                        if (collection?.purposes?.size.orZero() == 1) {
-                            checkboxPurposeA.text = collection?.purposes?.get(0)?.description
-                            checkboxPurposeB.hide()
-                            checkboxPurposeC.hide()
-                        } else if (collection?.purposes?.size.orZero() == 2) {
-                            checkboxPurposeA.text = collection?.purposes?.get(0)?.description
-                            checkboxPurposeB.text = collection?.purposes?.get(1)?.description
-                            checkboxPurposeC.hide()
-                        } else if (collection?.purposes?.size.orZero() == 3) {
-                            checkboxPurposeA.text = collection?.purposes?.get(0)?.description
-                            checkboxPurposeB.text = collection?.purposes?.get(1)?.description
-                            checkboxPurposeC.text = collection?.purposes?.get(2)?.description
+                        recyclerPurposes.adapter = userConsentPurposeAdapter
+                        userConsentPurposeAdapter?.clearAllItems()
+                        collection?.purposes?.forEach {
+                            userConsentPurposeAdapter?.addItem(UserConsentPurposeUiModel(it))
                         }
                     }?.root?.show()
                 }
@@ -274,26 +268,6 @@ class UserConsentWidget : FrameLayout {
         }
     }
 
-    private fun multipleCheckBoxChecked() {
-        viewBinding?.apply {
-            buttonAction.isEnabled = when {
-                collection?.purposes?.size.orZero() == 1 -> {
-                    multipleConsent.checkboxPurposeA.isChecked
-                }
-                collection?.purposes?.size.orZero() == 2 -> {
-                    multipleConsent.checkboxPurposeA.isChecked &&
-                    multipleConsent.checkboxPurposeB.isChecked
-                }
-                collection?.purposes?.size.orZero() == 3 -> {
-                    multipleConsent.checkboxPurposeA.isChecked &&
-                    multipleConsent.checkboxPurposeB.isChecked &&
-                    multipleConsent.checkboxPurposeC.isChecked
-                }
-                else -> false
-            }
-        }
-    }
-
     override fun invalidate() {
         super.invalidate()
 
@@ -301,11 +275,7 @@ class UserConsentWidget : FrameLayout {
             checkboxPurposes.isChecked = false
         }
 
-        viewBinding?.multipleConsent?.apply {
-            checkboxPurposeA.isChecked = false
-            checkboxPurposeB.isChecked = false
-            checkboxPurposeC.isChecked = false
-        }
+        userConsentPurposeAdapter?.clearAllItems()
     }
 
     private fun setLoader(isLoading: Boolean) {

@@ -42,7 +42,7 @@
 
         <include
             android:id="@+id/multipleConsent"
-            layout="@layout/ui_user_consent_multiple"
+            layout="@layout/ui_user_consent_purposes"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_margin="@dimen/layout_lvl2"

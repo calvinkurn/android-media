@@ -47,7 +47,7 @@ class UserConsentDebugFragment: BaseDaggerFragment() {
         viewBinding?.sampleUserConsent?.apply {
             actionText = viewBinding?.textActionButton?.editText?.text.toString()
         }?.load(viewLifecycleOwner, consentParam, object : UserConsentActionClickListener {
-            override fun onChecklistClicked(isChecked: Boolean) {
+            override fun onCheckedChange(isChecked: Boolean) {
 
             }
 
