@@ -112,13 +112,13 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) { globalEvent ->
             when (globalEvent.state) {
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
-                    onFailedToLoadMiniCartChatListBottomSheet(globalEvent, fragment)
+                    onFailedToLoadMiniCartBottomSheet(globalEvent, fragment)
                 }
             }
         }
     }
 
-    private fun onFailedToLoadMiniCartChatListBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
+    private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
         shoppingSummaryBottomSheet.dismiss()
         miniCartChatListBottomSheet.dismiss()
         if (globalEvent.data != null && globalEvent.data is MiniCartData) {
