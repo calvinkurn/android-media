@@ -23,8 +23,8 @@
             android:layout_width="17.5dp"
             android:layout_height="17.5dp"
             android:layout_gravity="center"
-            app:icon_color_light_enable="@color/white"
-            app:icon_color_night_enable="@color/white"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="CLOSE" />
     </FrameLayout>
 
