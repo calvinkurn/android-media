@@ -1,10 +1,7 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -18,7 +15,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.Invit
 class InvitationConfirmationNavigator(
     private val fragment: Fragment,
     private val invitationConfirmationParam: InvitationConfirmationParam
-): LifecycleObserver {
+) : LifecycleObserver {
     fun goToInvitationAccepted() {
         val params =
             mapOf<String, Any>(Constants.SHOP_NAME_PARAM to invitationConfirmationParam.getShopName())
@@ -42,18 +39,12 @@ class InvitationConfirmationNavigator(
         RouteManager.route(fragment.context, ApplinkConst.HOME)
     }
 
-    fun goToOtp(email: String) {
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP)
-        intent.apply {
+    fun goToOtp(email: String, phoneNumber: String) {
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP).apply {
             putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
-                OTP_TYPE_EMAIL
-            )
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE,
-                MODE_EMAIL
-            )
+            putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
+            putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)
+            putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
             putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         }

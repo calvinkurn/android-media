@@ -454,7 +454,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
-                navigator.goToOtp(getEmailFromTextField())
+                navigator.goToOtp(getEmailFromTextField(), userSession.phoneNumber.orEmpty())
             }
         }
     }
