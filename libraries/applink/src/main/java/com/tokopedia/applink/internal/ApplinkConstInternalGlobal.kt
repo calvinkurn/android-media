@@ -342,17 +342,6 @@ object ApplinkConstInternalGlobal {
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
     /**
-     * LogoutActivity
-     * @applink : tokopedia-android-internal://global/logout
-     * @param   : [PARAM_IS_RETURN_HOME]
-     * default is 'true', set 'false' if you wan get activity result
-     **/
-    const val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    /** for param logout */
-    const val PARAM_IS_RETURN_HOME = "return_to_home"
-    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
-
-    /**
      * TermPrivacyActivity
      * @applink : tokopedia-android-internal://global/term-privacy/{page}/
      **/

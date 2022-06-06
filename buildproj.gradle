@@ -49,6 +49,9 @@ afterEvaluate {
 task("runJacoco")
 task("runUnitTest")
 task("runLintReport")
+task("runLintPr")
+
+def lintPrTaskFile = rootProject.file("tasks.txt")
 
 subprojects {
     tasks.withType(Test) {
@@ -123,6 +126,9 @@ subprojects {
             }
             if (lintTask != null) {
                 rootProject.tasks.runLintReport.dependsOn(lintTask)
+            }
+            if (lintPrTaskFile.exists() && lintPrTaskFile.readLines().contains(lintTask)) {
+                rootProject.tasks.runLintPr.dependsOn(lintTask)
             }
         }
         try {
