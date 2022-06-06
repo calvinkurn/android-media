@@ -709,7 +709,6 @@ open class PowerMerchantSubscriptionFragment :
             netItemValueThreshold = shopInfo?.netItemValuePmProThreshold.orZero(),
             autoExtendDateStr = pmBasicInfo?.pmStatus?.getExpiredTimeFmt(newFormat).orEmpty(),
             shopAge = shopInfo?.shopAge.orZero(),
-            gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
             pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
             shopGrade = shopGrade?.gradeName ?: PMConstant.ShopGrade.PM

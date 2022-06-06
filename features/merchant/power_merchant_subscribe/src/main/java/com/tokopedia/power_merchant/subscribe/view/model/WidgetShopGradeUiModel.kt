@@ -17,7 +17,6 @@ class WidgetShopGradeUiModel(
         val netItemValueThreshold: Long,
         val autoExtendDateStr: String,
         val shopAge: Long = 0L,
-        val gradeBadgeImgUrl: String = "",
         val gradeBackgroundUrl: String = "",
         val pmStatus: String = "",
         val shopGrade: String = ""
