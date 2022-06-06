@@ -75,9 +75,10 @@ class CreateTokoNowCategoryViewModelTest:
     @Test
     fun `test create category view model with L2 category`() {
         val categoryL2 = "1333"
+        val externalServiceType = ""
 
         `Given choose address data`()
-        `Given category view model`(defaultCategoryL1, categoryL2, defaultQueryParamMap)
+        `Given category view model`(defaultCategoryL1, categoryL2, externalServiceType, defaultQueryParamMap)
 
         `Then assert query param has exclude sc category L2`(categoryL2)
         `Then assert category id for tracking`("$defaultCategoryL1/$categoryL2")

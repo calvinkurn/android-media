@@ -2020,6 +2020,36 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given no product in response grid when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf()
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
     fun `given layout list does NOT contain mix left when add product to cart should NOT track add to cart`() {
         val homeLayoutResponse = emptyList<HomeLayoutResponse>()
         val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
@@ -2534,6 +2564,168 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
     }
+
+    @Test
+    fun `given current serviceType and intended serviceType when switchService success should switch the service`() {
+        val currentServiceType = "15m"
+        val intendedServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when trackSwitchService with intended serviceType and only has origin model should return appropriate data`() {
+        val intendedServiceType = "2h"
+        val localCacheModel = createLocalCacheModel()
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
+            userId = "",
+            whIdOrigin = "222222",
+            whIdDestination = "111111",
+            isNow15 = false,
+            isImpressionTracker = false
+        ))
+    }
+
+    @Test
+    fun `when trackSwitchService with intended serviceType and only has origin model should return zero for warehouse id destination`() {
+        val intendedServiceType = "2h"
+
+        val localCacheModel = createLocalCacheModel(warehouses = listOf(
+            LocalWarehouseModel(
+                warehouse_id = 111111,
+                service_type = "15m"
+            )
+        ))
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
+            userId = "",
+            whIdOrigin = "111111",
+            whIdDestination = "0",
+            isNow15 = false,
+            isImpressionTracker = false
+        ))
+    }
+
+    @Test
+    fun `when trackSwitchService with intended serviceType throws error should do nothing`() {
+        val intendedServiceType = "2h"
+        val localCacheModel = createLocalCacheModel()
+
+        onGetUserSession_returnNull()
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when switchService with intended service error should set live data value fail`() {
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
+        val intendedServiceType = "15m"
+        val error = NullPointerException()
+
+        onSetUserPreference_thenReturn(error)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Fail(NullPointerException())
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `check whether need to show on board toaster or not`() {
+        // 2 hour state and 20m coachmark has been shown
+        var result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = true,
+            has2hCoachMarkBeenShown = false
+        )
+        assertEquals(true, result)
+
+        // 20m state and 2 hour coachmark has been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = true
+        )
+        assertEquals(true, result)
+
+        // 2 hour state and 20m coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false
+        )
+        assertEquals(false, result)
+
+        // 20m state and 2 hour coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false
+        )
+        assertEquals(false, result)
+
+        // ooc state
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_OOC,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false
+        )
+        assertEquals(false, result)
+    }
+
 
     @Test
     fun `given current serviceType 15m when switchService success should switch service to 2h`() {

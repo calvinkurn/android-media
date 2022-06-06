@@ -847,8 +847,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun trackSwitchService(localCacheModel: LocalCacheModel, serviceType: String, isImpressionTracker: Boolean = false) {
         launchCatchError(block = {
-            val whIdOrigin = localCacheModel.warehouses.findLast { it.service_type == serviceType }?.warehouse_id.orZero().toString()
-            val whIdDestination = localCacheModel.warehouses.findLast { it.service_type != serviceType }?.warehouse_id.orZero().toString()
+            val whIdOrigin = localCacheModel.warehouses.findLast { it.service_type != serviceType }?.warehouse_id.orZero().toString()
+            val whIdDestination = localCacheModel.warehouses.findLast { it.service_type == serviceType }?.warehouse_id.orZero().toString()
 
             _homeSwitchServiceTracker.postValue(HomeSwitchServiceTracker(
                 userId = userSession.userId,
