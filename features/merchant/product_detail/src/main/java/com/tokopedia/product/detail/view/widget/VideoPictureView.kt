@@ -108,7 +108,10 @@ class VideoPictureView @JvmOverloads constructor(
             val isSelected = selectedPosition == index
             data.copy(isSelected = isSelected)
         } ?: listOf())
-        smoothScroller.scrollThumbnail(selectedPosition)
+
+        binding.pdpMainThumbnailRv.addOneTimeGlobalLayoutListener {
+            smoothScroller.scrollThumbnail(selectedPosition)
+        }
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {

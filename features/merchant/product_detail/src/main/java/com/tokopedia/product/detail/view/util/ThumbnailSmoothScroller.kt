@@ -13,16 +13,18 @@ open class ThumbnailSmoothScroller(context: Context,
     fun scrollThumbnail(selectedPosition: Int) {
         val thumbnailLayoutManager = targetRv.layoutManager as? LinearLayoutManager
         thumbnailLayoutManager?.let {
-            if (selectedPosition >= thumbnailLayoutManager.findLastVisibleItemPosition()) {
+            val lastVisibleItem = thumbnailLayoutManager.findLastVisibleItemPosition()
+            val firstVisibleItem = thumbnailLayoutManager.findFirstVisibleItemPosition()
+            if (selectedPosition >= lastVisibleItem) {
                 targetPosition = selectedPosition
                 thumbnailLayoutManager.startSmoothScroll(
                         this
                 )
-            } else if (selectedPosition == thumbnailLayoutManager.findFirstVisibleItemPosition()) {
-                targetPosition = thumbnailLayoutManager.findFirstVisibleItemPosition() - 1
+            } else if (selectedPosition <= firstVisibleItem) {
+                targetPosition = selectedPosition - 1
                 targetPosition =
-                        if (thumbnailLayoutManager.findFirstVisibleItemPosition() - 1 > 0)
-                            thumbnailLayoutManager.findFirstVisibleItemPosition() - 1
+                        if (selectedPosition - 1 > 0)
+                            selectedPosition - 1
                         else 0
                 thumbnailLayoutManager.startSmoothScroll(
                         this
