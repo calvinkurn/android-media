@@ -2,4 +2,5 @@
 <resources>
     <dimen name="sfs_1_dp">1dp</dimen>
     <dimen name="sfs_8_dp">8dp</dimen>
+    <dimen name="sfs_calendar_height">600dp</dimen>
 </resources>

@@ -12,12 +12,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/sfs_info_campaign" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +39,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/imgCampaignNameHelper"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_campaign_name" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -68,7 +68,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tfuCampaignName"
-                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_schedule_start_date" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
@@ -81,17 +80,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
                 app:layout_constraintTop_toBottomOf="@+id/tfuCampaignName"
-                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_schedule_end_date" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgMinDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:text="@string/sfs_min_duration"
                 app:layout_constraintEnd_toEndOf="@+id/tfuEndDate"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tfuEndDate"
                 app:layout_constraintTop_toBottomOf="@+id/tfuEndDate"
                 app:typographyType="body_3" />
@@ -207,7 +206,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contentSwitcher" />
+                app:layout_constraintTop_toBottomOf="@+id/contentSwitcher"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
