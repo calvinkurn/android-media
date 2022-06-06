@@ -45,8 +45,12 @@ data class CheckoutGeneralTokoFoodData(
 
     fun isSuccess(): Boolean = success == TokoFoodCartUtil.SUCCESS_STATUS_INT
 
-    fun getErrorMetadataObject(): CheckoutErrorMetadata {
-        return Gson().fromJson(errorMetadata, CheckoutErrorMetadata::class.java)
+    fun getErrorMetadataObject(): CheckoutErrorMetadata? {
+        return try {
+            Gson().fromJson(errorMetadata, CheckoutErrorMetadata::class.java)
+        } catch (ex: Exception) {
+            null
+        }
     }
 
 }

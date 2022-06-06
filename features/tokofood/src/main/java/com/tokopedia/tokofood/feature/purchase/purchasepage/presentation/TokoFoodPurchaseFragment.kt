@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
@@ -34,10 +37,12 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
@@ -50,8 +55,10 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
@@ -296,14 +303,22 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
-                    (it.data as? CheckoutTokoFood)?.let { response ->
-                        shopId = response.data.shop.shopId
-                        activityViewModel?.loadCartList(response)
-                        if (response.data.popupMessage.isNotEmpty()) {
-                            showToaster(response.data.popupMessage, getOkayMessage()) {}
-                        }
-                        if (response.data.popupErrorMessage.isNotEmpty()) {
-                            showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
+                    (it.data as? Pair<*,*>)?.let { pair ->
+                        (pair.first as? CheckoutTokoFood)?.let { response ->
+                            (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
+                                shopId = response.data.shop.shopId
+                                activityViewModel?.loadCartList(response)
+                                when {
+                                    response.data.popupErrorMessage.isNotEmpty() -> {
+                                        showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
+                                    }
+                                    response.data.popupMessage.isNotEmpty() -> {
+                                        if (!isPreviousPopupPromo || !response.data.isPromoPopupType()) {
+                                            showToaster(response.data.popupMessage, getOkayMessage()) {}
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -345,7 +360,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage(shopId)
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
@@ -401,14 +416,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
                         val errorMetadata = checkoutData.getErrorMetadataObject()
                         when {
-                            errorMetadata.popupErrorMessage.text.isNotEmpty() -> {
+                            errorMetadata?.popupErrorMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
                             }
-                            errorMetadata.popupMessage.text.isNotEmpty() -> {
+                            errorMetadata?.popupMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(false, errorMetadata.popupMessage)
                             }
                             else -> {
-                                showDefaultCheckoutGeneralError()
+                                showDefaultCheckoutGeneralError(checkoutData.message.takeIf { it.isNotBlank() })
                             }
                         }
                     }
@@ -652,8 +667,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
-    private fun navigateToMerchantPage() {
-        // Todo : navigate to merchant page
+    private fun navigateToMerchantPage(merchantId: String) {
+        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+            .buildUpon()
+            .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
+            .build()
+        TokofoodRouteManager.mapUriToFragment(merchantPageUri)?.let { merchantPageFragment ->
+            navigateToNewFragment(merchantPageFragment)
+        }
     }
 
     private fun scrollToIndex(index: Int) {
@@ -673,7 +694,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress()
+            REQUEST_CODE_CHANGE_ADDRESS -> {
+                if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS) {
+                    onResultFromChangeAddress(data)
+                }
+            }
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
             REQUEST_CODE_PAYMENT -> {
                 when (resultCode) {
@@ -701,8 +726,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun onResultFromChangeAddress() {
+    private fun onResultFromChangeAddress(intent: Intent?) {
+        showToaster(
+            context?.getString(R.string.text_purchase_success_edit_address).orEmpty(),
+            getOkayMessage()
+        )
         loadData()
+        intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
+            val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
+            viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
+        }
     }
 
     private fun onResultFromPaymentSuccess() {
@@ -758,7 +791,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
                 override fun onGoToHome() {
-                    // TODO: Go To Homepage
+                    navigateToNewFragment(TokoFoodHomeFragment.createInstance())
                 }
 
                 override fun onRetry() {
@@ -774,7 +807,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
                 }
             }
-        )
+        ).apply {
+            setOnDismissListener {
+                viewModel.setPaymentButtonLoading(false)
+            }
+        }
         bottomSheet.show(parentFragmentManager)
     }
 
@@ -833,8 +870,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun getOkayMessage(): String = context?.getString(R.string.text_purchase_okay).orEmpty()
 
-    private fun showDefaultCheckoutGeneralError() {
-        val errorMessage = context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
+    private fun showDefaultCheckoutGeneralError(message: String? = null) {
+        val errorMessage =
+            message ?: context?.getString(R.string.text_purchase_failed_to_payment).orEmpty()
         val actionMessage = context?.getString(R.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
             viewModel.setPaymentButtonLoading(true)
@@ -893,15 +931,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextChangeShippingAddressClicked() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
+            putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+        }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
     override fun onTextSetPinpointClicked() {}
 
     override fun onTextAddItemClicked() {
-        // Todo : navigate to merchant page
-
+        navigateToMerchantPage(shopId)
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
@@ -932,14 +971,17 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                 }
         )
-        addOnBottomSheet.show(parentFragmentManager, "")
+        addOnBottomSheet.show(parentFragmentManager)
     }
 
-    override fun onTextChangeNoteAndVariantClicked() {
-        // Todo : navigate to edit variant page
-        view?.let {
-            Toaster.build(it, "onTextChangeNoteAndVariantClicked", Toaster.LENGTH_SHORT).show()
-        }
+    override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
+        val productUiModel = TokoFoodPurchaseUiModelMapper.mapUiModelToCustomizationUiModel(element)
+        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
+            productUiModel = productUiModel,
+            cartId = element.cartId,
+            merchantId = shopId
+        )
+        navigateToNewFragment(orderCustomizationFragment)
     }
 
     override fun onToggleShowHideUnavailableItemsClicked() {

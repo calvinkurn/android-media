@@ -141,7 +141,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             if (element.hasAddOnsOption) {
                 addNotesButton.text = getString(R.string.text_purchase_change_notes_and_variant)
                 addNotesButton.setOnClickListener {
-                    listener.onTextChangeNoteAndVariantClicked()
+                    listener.onTextChangeNoteAndVariantClicked(element)
                 }
             } else {
                 if (element.notes.isNotBlank()) {

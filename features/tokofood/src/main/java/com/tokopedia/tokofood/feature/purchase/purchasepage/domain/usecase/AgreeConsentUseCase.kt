@@ -4,11 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.requestAsFlow
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
-import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.AgreeConsentResponse
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class AgreeConsentUseCase @Inject constructor(
@@ -16,39 +13,17 @@ class AgreeConsentUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<Unit, AgreeConsentResponse>(dispatchers.io) {
 
-    private val isDebug = false
-
     override fun graphqlQuery(): String = """
-        query AgreeConsent {
-          agree_consent() {
+        mutation AgreeConsent {
+          tokofoodSubmitUserConsent() {
             message
-            status
-            data {
-              success
-            	message
-            }
+            success
           }
         }
     """.trimIndent()
 
     override suspend fun execute(params: Unit): Flow<AgreeConsentResponse> {
-        if (isDebug) {
-            return flow {
-                kotlinx.coroutines.delay(1000)
-                emit(getDummyResponse())
-            }
-        } else {
-            return repository.requestAsFlow(graphqlQuery(), params)
-        }
-    }
-
-    private fun getDummyResponse(): AgreeConsentResponse {
-        return AgreeConsentResponse(
-            data = AgreeConsentData(
-                success = TokoFoodCartUtil.SUCCESS_STATUS,
-                message = ""
-            )
-        )
+        return repository.requestAsFlow(graphqlQuery(), params)
     }
 
 }

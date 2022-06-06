@@ -5,17 +5,23 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 class PromoListTokoFoodResponse(
+    @SerializedName("promo_list_tokofood")
+    @Expose
+    val promoListTokoFood: PromoListTokoFood = PromoListTokoFood()
+)
+
+class PromoListTokoFood(
     @SerializedName("message")
     @Expose
     val message: String = "",
     @SerializedName("status")
     @Expose
-    val status: Int = 0,
+    val status: String = "",
     @SerializedName("data")
     @Expose
     val data: PromoListTokoFoodData = PromoListTokoFoodData()
 ) {
-    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS_INT
+    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
 }
 
 class PromoListTokoFoodData(
@@ -73,7 +79,12 @@ data class PromoListTokoFoodButton(
     @SerializedName("link")
     @Expose
     val link: String = ""
-)
+) {
+    companion object {
+        const val REFRESH_ACTION = "1"
+        const val REDIRECT_ACTION = "2"
+    }
+}
 
 data class PromoListTokoFoodEmptyState(
     @SerializedName("title")
@@ -88,24 +99,6 @@ data class PromoListTokoFoodEmptyState(
 )
 
 data class PromoListTokoFoodSection(
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
-    @SerializedName("sub_title")
-    @Expose
-    val subtitle: String = "",
-    @SerializedName("icon_url")
-    @Expose
-    val iconUrl: String = "",
-    @SerializedName("is_enabled")
-    @Expose
-    val isEnabled: Boolean = false,
-    @SerializedName("sub_sections")
-    @Expose
-    val subSection: PromoListTokoFoodSubSection = PromoListTokoFoodSubSection()
-)
-
-data class PromoListTokoFoodSubSection(
     @SerializedName("title")
     @Expose
     val title: String = "",

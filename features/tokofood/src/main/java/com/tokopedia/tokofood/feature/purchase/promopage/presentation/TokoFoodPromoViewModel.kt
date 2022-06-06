@@ -40,17 +40,33 @@ class TokoFoodPromoViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            promoListTokoFoodUseCase(Unit).collect { it ->
+            promoListTokoFoodUseCase(SOURCE).collect {
                 if (it.isSuccess()) {
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
-                    _fragmentUiModel.value =
-                        TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)
-                    _visitables.value =
-                        TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
-                    it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
-                        ?.let { message ->
-                            _changeRestrictionMessage.value = message
+                    when {
+                        it.data.errorPage.isShowErrorPage -> {
+                            _uiEvent.value = UiEvent(
+                                state = UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE,
+                                data = it.data.errorPage
+                            )
                         }
+                        it.data.availableSection.coupons.isNotEmpty() || it.data.unavailableSection.coupons.isNotEmpty() -> {
+                            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
+                            _fragmentUiModel.value =
+                                TokoFoodPromoUiModelMapper.mapResponseDataToFragmentUiModel(it.data)
+                            _visitables.value =
+                                TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
+                            it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
+                                ?.let { message ->
+                                    _changeRestrictionMessage.value = message
+                                }
+                        }
+                        else -> {
+                            _uiEvent.value = UiEvent(
+                                state = UiEvent.EVENT_NO_COUPON,
+                                data = it.data.emptyState
+                            )
+                        }
+                    }
                 } else {
                     _uiEvent.value = UiEvent(
                         state = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE,
@@ -71,6 +87,10 @@ class TokoFoodPromoViewModel @Inject constructor(
             state = UiEvent.EVENT_SHOW_TOASTER,
             data = _changeRestrictionMessage.value
         )
+    }
+
+    companion object {
+        private const val SOURCE = "checkout_page"
     }
 
 }
