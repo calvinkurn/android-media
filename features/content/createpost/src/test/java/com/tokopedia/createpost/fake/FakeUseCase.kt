@@ -11,26 +11,18 @@ import rx.Subscriber
  */
 class FakeUseCase<T> : UseCase<T>() {
 
-    private var isError = false
-    private var isSuccess = false
     private var mResponse: T? = null
     private var mError: Throwable? = null
 
     fun setSuccessResponse(response: T): FakeUseCase<T> {
-        isSuccess = true
         mResponse = response
-
-        isError = false
         mError = null
 
         return this
     }
 
     fun setErrorResponse(e: Throwable): FakeUseCase<T> {
-        isSuccess = false
         mResponse = null
-
-        isError = true
         mError = e
 
         return this
@@ -41,11 +33,11 @@ class FakeUseCase<T> : UseCase<T>() {
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<T>?) {
-        if(isSuccess) {
+        if(mResponse != null) {
             Observable.just(mResponse).subscribe(subscriber)
         }
-//        else {
-//            Observable.error<Throwable>(mError).subscribe(subscriber)
-//        }
+        else {
+            Observable.error<T>(mError).subscribe(subscriber)
+        }
     }
 }
