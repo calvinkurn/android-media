@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.stub.di.user
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.di.*
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -9,7 +10,7 @@ import dagger.Component
 /**
  * @author by nisie on 10/15/18.
  */
-@HomeAccountUserScope
+@ActivityScope
 @SessionCommonScope
 @Component(
     modules = [FakeHomeAccountUserModules::class,

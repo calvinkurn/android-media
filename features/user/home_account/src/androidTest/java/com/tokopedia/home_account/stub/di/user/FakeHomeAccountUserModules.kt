@@ -10,7 +10,6 @@ import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.di.HomeAccountUserContext
-import com.tokopedia.home_account.di.HomeAccountUserScope
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
@@ -67,7 +66,6 @@ class FakeHomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    @HomeAccountUserScope
     fun provideHomeAccountPref(@HomeAccountUserContext context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context).apply {
             val editor = edit()
@@ -89,11 +87,9 @@ class FakeHomeAccountUserModules(val context: Context) {
         return StaticMenuGenerator(context)
     }
 
-    @HomeAccountUserScope
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @Provides
-    @HomeAccountUserScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

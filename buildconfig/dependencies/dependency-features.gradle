@@ -4,6 +4,7 @@ ext {
     features = [
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
+            appCommon                       : ":features:common:app_common",
             resourcesCommon                 : ":features:common:resources_common",
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",

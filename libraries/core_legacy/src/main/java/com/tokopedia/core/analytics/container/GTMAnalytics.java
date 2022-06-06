@@ -1019,11 +1019,9 @@ public class GTMAnalytics extends ContextAnalytics {
         Map<String, Object> map = DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
                         Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_FULLNAME, userSession.getName(),
                         Authenticated.KEY_USER_ID, userSession.getGTMLoginID(),
                         Authenticated.KEY_SHOP_ID, userSession.getShopId(),
-                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
-                        Authenticated.KEY_USER_EMAIL, userSession.getEmail()
+                        Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none")
                 ),
                 Authenticated.ANDROID_ID, userSession.getAndroidId(),
                 Authenticated.ADS_ID, userSession.getAdsId(),

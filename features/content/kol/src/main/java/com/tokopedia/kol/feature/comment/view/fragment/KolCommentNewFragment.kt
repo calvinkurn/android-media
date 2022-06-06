@@ -52,12 +52,12 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 private const val REQUEST_LOGIN = 345
+private const val TOASTER_DURATION_DELETE_COMMENT = 3000
 
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
     MentionAdapterListener {
@@ -175,7 +175,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     Toaster.build(
                             it,
                             getString(R.string.kol_delete_1_comment),
-                            3000,
+                            TOASTER_DURATION_DELETE_COMMENT,
                             Toaster.TYPE_NORMAL,
                             getString(R.string.kol_delete_comment_ok)
                     ) {
@@ -223,6 +223,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             isDeletable = canDeleteComment
         )
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.setIsCommentPage(true)
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(

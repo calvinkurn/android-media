@@ -1,9 +1,9 @@
 package com.tokopedia.product.addedit.shipment.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.DEFAULT_WEIGHT_UNIT
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.DEFAULT_WEIGHT_VALUE
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by faisalramd on 2020-03-22.
@@ -11,10 +11,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ShipmentInputModel(
-    var weight: Int = DEFAULT_WEIGHT_VALUE,
+    var weight: Int = Int.ZERO,
     var weightUnit: Int = DEFAULT_WEIGHT_UNIT,
     var isMustInsurance: Boolean = true,
-    var cplModel: CPLModel = CPLModel()
+    var cplModel: CPLModel = CPLModel(),
+    var isUsingParentWeight: Boolean = false
 ) : Parcelable
 
 @Parcelize
