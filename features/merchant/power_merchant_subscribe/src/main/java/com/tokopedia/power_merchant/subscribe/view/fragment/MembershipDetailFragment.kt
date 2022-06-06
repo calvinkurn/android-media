@@ -242,21 +242,21 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             } catch (e: Exception) {
                 Timber.e(e)
             }
-            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    setOnTabSelected()
-                    sendTrackerOnTabClicked()
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
 
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             post {
                 if (activeTabIndex != RecyclerView.NO_POSITION) {
                     tabLayout.getTabAt(activeTabIndex)?.select()
                 }
+                tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        setOnTabSelected()
+                        sendTrackerOnTabClicked()
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                    override fun onTabReselected(tab: TabLayout.Tab?) {}
+                })
             }
         }
     }
