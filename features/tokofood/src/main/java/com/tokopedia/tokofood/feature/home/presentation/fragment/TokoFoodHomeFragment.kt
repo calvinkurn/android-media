@@ -55,6 +55,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
@@ -110,6 +111,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: TokoFoodHomeAnalytics
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
     private val viewModel by lazy {
@@ -249,7 +253,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickChooseAddressWidgetTracker() {
-        //TODO Widget address tracker
+        analytics.clickLCAWidget(userSession.userId, localCacheModel?.district_id)
     }
 
     override fun onClickSetPinPoin() {

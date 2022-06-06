@@ -6,6 +6,7 @@ object TokoFoodAnalyticsConstants {
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
+    const val DESTINATION_ID = "destinationId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
 
