@@ -85,8 +85,8 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         when (product.productType) {
             ProductType.SINGLE -> {
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
-                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
-                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
+                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice.replace(" ","")
+                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice.replace(" ","")
                 displayDiscountPeriodRange(product)
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
