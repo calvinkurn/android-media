@@ -67,6 +67,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private lateinit var remoteConfig: RemoteConfig
     private var lastQuery: String? = null
     private var hint: String? = null
+    private var placeholder: String? = null
     private var isTyping = false
     private var binding: AutocompleteSearchBarViewBinding? = null
 
@@ -355,7 +356,10 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         val param = this.searchParameter
         this.searchParameter = searchParameter
 
-        setHintIfExists(searchParameter.get(SearchApiConst.HINT))
+        val hint = searchParameter.get(SearchApiConst.HINT)
+        val placeholder = searchParameter.get(SearchApiConst.PLACEHOLDER)
+
+        setHintIfExists(hint, placeholder)
         lastQuery = searchParameter.getSearchQuery()
         showSearch()
         return param
@@ -367,9 +371,11 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         binding?.searchTopBar?.visibility = View.VISIBLE
     }
 
-    private fun setHintIfExists(hint: String?) {
+    private fun setHintIfExists(hint: String?, placeholder: String?) {
         if (!TextUtils.isEmpty(hint)) {
             setHint(searchParameter.get(SearchApiConst.HINT))
+        } else if (!TextUtils.isEmpty(placeholder)) {
+            setPlaceholder(searchParameter.get(SearchApiConst.PLACEHOLDER))
         }
     }
 
@@ -377,6 +383,12 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         this.hint = hint.toString()
 
         setTextViewHint(hint)
+    }
+
+    private fun setPlaceholder(placeholder: CharSequence) {
+        this.placeholder = placeholder.toString()
+
+        setTextViewHint(placeholder)
     }
 
     private fun textViewRequestFocus() {
@@ -427,6 +439,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         mSavedState = SavedState(superState)
         mSavedState?.query = if (mUserQuery != null) mUserQuery?.toString() else null
         mSavedState?.hint = this.hint
+        mSavedState?.placeholder = this.placeholder
 
         return mSavedState
     }
@@ -441,7 +454,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
         showSearch()
         setQuery(mSavedState?.query, false)
-        setHintIfExists(mSavedState?.hint)
+        setHintIfExists(mSavedState?.hint, mSavedState?.placeholder)
 
         super.onRestoreInstanceState(mSavedState?.superState)
     }
@@ -450,6 +463,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         var query: String? = null
         private var isSearchOpen: Boolean = false
         var hint: String? = null
+        var placeholder: String? = null
 
         constructor(superState: Parcelable?) : super(superState)
 
@@ -457,6 +471,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             query = parcel.readString()
             isSearchOpen = parcel.readInt() == 1
             hint = parcel.readString()
+            placeholder = parcel.readString()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -464,6 +479,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             out.writeString(query)
             out.writeInt(if (isSearchOpen) 1 else 0)
             out.writeString(hint)
+            out.writeString(placeholder)
         }
 
         override fun describeContents(): Int {

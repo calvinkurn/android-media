@@ -4,7 +4,7 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
@@ -18,11 +18,11 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 object NewShopPageHeaderMapper {
 
     fun mapToShopPageP1HeaderData(
-            shopInfoOsData: GetIsShopOfficialStore,
-            shopInfoGoldData: GetIsShopPowerMerchant,
-            shopPageHomeTypeData: ShopPageGetHomeType,
-            feedWhitelistData: Whitelist,
-            shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
+        shopInfoOsData: GetIsShopOfficialStore,
+        shopInfoGoldData: GetIsShopPowerMerchant,
+        shopPageHomeTypeData: ShopPageGetHomeType,
+        feedWhitelistData: Whitelist,
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
     ) : NewShopPageP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopHeaderBadgeTextValueComponentUiModel>(
