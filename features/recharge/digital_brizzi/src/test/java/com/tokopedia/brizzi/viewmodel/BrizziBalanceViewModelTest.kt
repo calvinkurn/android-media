@@ -188,6 +188,34 @@ class BrizziBalanceViewModelTest {
     }
 
     @Test
+    fun processTagIntent_emptyOrNullInquiryId_GetDefaultZeroInquiryId() {
+        //given
+        val balanceInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 10000, pendingBalance = 0))
+        val inquiryId = ""
+
+        val result = HashMap<Type, Any>()
+        result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
+        val gqlResponseRefreshTokenSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        val result1 = HashMap<Type, Any>()
+        result1[BrizziInquiryLogResponse::class.java] = BrizziInquiryLogResponse(brizziInquiryLog = BrizziInquiryLog(inquiryId = inquiryId))
+        val gqlResponseLog1Success = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { brizzi.Init(any(),any()) } returns mockk()
+        every { brizzi.setUserName(any()) } returns mockk()
+        every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnSuccess(BrizziCardObject()) }
+        every { brizziCardObjectMapper.mapperBrizzi(any(), any()) } returns balanceInquiry
+
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success)
+
+        //when
+        brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
+
+        assertNotNull(brizziBalanceViewModel.inquiryIdBrizzi)
+        assertEquals("0", brizziBalanceViewModel.inquiryIdBrizzi.toString())
+    }
+
+    @Test
     fun processTagIntent_GetBalanceNoPendingBalanceLogFailed_SuccessGetBalance() {
         //given
         val balanceInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 10000, pendingBalance = 0))
