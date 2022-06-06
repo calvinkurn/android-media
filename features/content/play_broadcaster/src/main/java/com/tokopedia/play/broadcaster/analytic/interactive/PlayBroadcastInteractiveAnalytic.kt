@@ -17,4 +17,6 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onClickWinnerIcon(channelId: String, interactiveId: String, interactiveTitle: String)
 
     fun onClickChatWinnerIcon(channelId: String, interactiveId: String, interactiveTitle: String)
+
+    fun onClickGameIconButton(channelId: String, channelTitle: String)
 }

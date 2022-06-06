@@ -158,6 +158,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onIconClicked() {
                 interactiveGameResultViewComponent?.hideCoachMark()
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
+                analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
                 openSelectInteractiveSheet()
             }
         })
