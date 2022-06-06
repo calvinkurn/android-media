@@ -59,7 +59,7 @@ class PlayWidgetJumboGlobalAnalytic @AssistedInject constructor(
         verticalWidgetPosition: Int,
         businessWidgetPosition: Int
     ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = model.category,
             eventAction = "impression on play sgc channel",
