@@ -107,7 +107,7 @@ object SellerMenuList {
                 },
                 SellerMenuItemUiModel(
                         context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care),
-                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
+                        clickApplink = ApplinkConst.TOKOPEDIA_CARE_HELP,
                         type = MenuItemType.TOKOPEDIA_CARE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
                         iconUnify = IconUnify.CALL_CENTER),

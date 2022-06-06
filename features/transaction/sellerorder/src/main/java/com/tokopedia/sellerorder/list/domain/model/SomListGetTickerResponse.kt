@@ -25,7 +25,7 @@ data class SomListGetTickerResponse(
                     val body: String = "",
                     @SerializedName("id")
                     @Expose
-                    val id: Int = 0,
+                    val id: Long = 0,
                     @SerializedName("is_active")
                     @Expose
                     val isActive: Boolean = false,

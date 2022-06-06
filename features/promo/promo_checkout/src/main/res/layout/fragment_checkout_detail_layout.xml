@@ -78,7 +78,7 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
-                <WebView
+                <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/webviewTnc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

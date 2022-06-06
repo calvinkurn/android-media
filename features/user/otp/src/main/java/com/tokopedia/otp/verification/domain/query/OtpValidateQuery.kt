@@ -17,6 +17,11 @@ object OtpValidateQuery {
     private const val timeUnix = "\$timeUnix"
     private const val userId = "\$userId"
 
+    /* For hashed PIN only */
+    const val PIN = "\$PIN"
+    const val usePinHash = "\$UsePINHash"
+    const val pinHash = "\$PINHash"
+
     val query: String = """
         query otp_validate(
             $code: String,
@@ -29,6 +34,9 @@ object OtpValidateQuery {
             $signature: String,
             $timeUnix: String,
             $userId: Int,
+            $PIN: String,
+            $usePinHash: Boolean,
+            $pinHash: String
         ){
             OTPValidate(
                 code: $code, 
@@ -40,7 +48,10 @@ object OtpValidateQuery {
                 mode: $mode, 
                 signature: $signature, 
                 time_unix: $timeUnix, 
-                UserID: $userId
+                UserID: $userId,
+                PIN: $PIN, 
+                UsePINHash: $usePinHash, 
+                PINHash: $pinHash
             ) {
                 success
                 message

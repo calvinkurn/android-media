@@ -31,7 +31,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
 import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
-import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_deal_details
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_total_amount
 import kotlinx.android.synthetic.main.fragment_deal_quantity.*

@@ -61,7 +61,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.exoPlayerCore
@@ -73,9 +72,6 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
-    }
-    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
-        exclude group: 'com.android.support'
     }
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
 

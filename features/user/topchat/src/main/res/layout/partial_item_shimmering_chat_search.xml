@@ -23,13 +23,14 @@
             android:layout_height="@dimen/dp_topchat_10"
             android:layout_marginStart="@dimen/dp_topchat_12"
             android:layout_marginLeft="@dimen/dp_topchat_12"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:layout_constraintBottom_toTopOf="@+id/message"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/thumbnail"
             app:layout_constraintTop_toTopOf="@+id/thumbnail"
             app:layout_constraintVertical_chainStyle="packed"
-            app:loader_type="rect" />
+            app:loader_type="rect"
+            />
 
     <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/message"
@@ -38,7 +39,7 @@
             android:layout_marginStart="@dimen/dp_topchat_12"
             android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"

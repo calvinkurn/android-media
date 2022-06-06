@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.model
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ class VoucherMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(voucherList: List<MerchantVoucherModel>): List<VoucherUiModel> {
         return voucherList.map {
             VoucherUiModel(
-                    id = it.voucherId,
+                    id = it.voucherId.toIntOrZero(),
                     name = it.voucherName,
                     type = it.voucherType,
                     typeFormatted = it.voucherTypeFormatted,
@@ -44,7 +45,7 @@ class VoucherMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(merchantVoucherModel: MerchantVoucherModel): VoucherUiModel =
         merchantVoucherModel.let {
             VoucherUiModel(
-                    id = it.voucherId,
+                    id = it.voucherId.toIntOrZero(),
                     name = it.voucherName,
                     type = it.voucherType,
                     typeFormatted = it.voucherTypeFormatted,

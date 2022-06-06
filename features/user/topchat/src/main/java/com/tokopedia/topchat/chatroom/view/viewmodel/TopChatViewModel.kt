@@ -15,7 +15,7 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero

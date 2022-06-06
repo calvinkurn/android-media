@@ -10,10 +10,8 @@ import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DiscoveryResponse
-import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -390,8 +388,14 @@ class DiscoveryPageDataMapper(
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-
-            listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+            when(component.errorState){
+                NetworkErrorState ->{
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListNetworkErrorLoad.componentName, queryParameterMap))
+                }
+                else -> {
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+                }
+            }
         } else {
             if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0 && !component.verticalProductFailState) {
                 listComponents.add(component.copy().apply {

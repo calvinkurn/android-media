@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/successInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

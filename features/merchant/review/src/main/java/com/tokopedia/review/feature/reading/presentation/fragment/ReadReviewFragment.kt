@@ -39,6 +39,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
@@ -66,6 +67,8 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
@@ -879,7 +882,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun onFailGetRatingAndTopic(throwable: Throwable) {
         logToCrashlytics(throwable)
-        showError()
+        showError(throwable)
     }
 
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
@@ -929,9 +932,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == 0) {
-            showError()
+            showError(throwable)
         } else {
-            showToasterError(getString(R.string.review_reading_connection_error)) {
+            showToasterError(throwable.getErrorMessage(context)) {
                 loadData(
                     currentPage
                 )
@@ -939,8 +942,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun showError() {
+    private fun showError(throwable: Throwable) {
         globalError?.apply {
+            if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
+                setType(GlobalError.NO_CONNECTION)
+            } else {
+                setType(GlobalError.SERVER_ERROR)
+            }
+            errorDescription.text = throwable.getErrorMessage(context)
             setActionClickListener {
                 loadInitialData()
             }

@@ -84,7 +84,15 @@ const val PATTERN = "dd MMM yyyy"
 
 const val HOUR_PATTERN = "HH:00"
 
+const val SECOND_TAB = 1
+
 const val TWO = 2
+
+const val THIRD_TAB = 2
+
+const val FOURTH_TAB = 3
+
+const val FIRST_TAB = 0
 
 const val THIRTY_THREE = 33
 
@@ -122,10 +130,34 @@ const val TYPE_DIVIDER = "divider"
 
 const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
-const val dd_MMM_yyyy_HH_mm = "dd MMM yyyy, HH:mm"
+const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 
 const val UTC = "UTC"
 
 const val CLICK_TYPE = "totalClick"
 
 const val COMMISSION_TYPE = "totalCommission"
+
+const val SYSTEM_DOWN = "systemDown"
+
+const val ON_REVIEWED = "onReviewed"
+
+const val ON_REGISTERED = "onRegistered"
+
+const val TIME_SIX = 6
+
+const val TIME_TEN = 10
+
+const val TIME_ELEVEN = 11
+
+const val TIME_FIFTEEN = 15
+
+const val TIME_SIXTEEN = 16
+
+const val TIME_EIGHTEEN = 18
+
+const val PAGE_LIMIT = 20
+
+const val NO_UI_METRICS = 0
+
+const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
