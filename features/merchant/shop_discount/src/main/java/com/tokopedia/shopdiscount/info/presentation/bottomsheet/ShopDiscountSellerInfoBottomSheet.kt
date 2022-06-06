@@ -103,20 +103,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun redirectLink(linkUrl: CharSequence) {
-//        if (RouteManager.isSupportApplink(context, linkUrl.toString())) {
-            RouteManager.route(context, linkUrl.toString())
-//        } else {
-//            redirectToWebView(linkUrl)
-//        }
-    }
-
-    private fun redirectToWebView(linkUrl: CharSequence) {
-        RouteManager.route(
-            context, String.format(
-                "%s?url=%s",
-                ApplinkConst.WEBVIEW, linkUrl
-            )
-        )
+        RouteManager.route(context, linkUrl.toString())
     }
 
     private fun observeSellerInfoBenefitLiveData() {

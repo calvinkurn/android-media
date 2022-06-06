@@ -88,7 +88,7 @@ class SetPeriodBottomSheetViewModelTest {
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
         val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 365)
+        assert(daysDiff >= 364)
     }
 
     @Test
@@ -99,7 +99,7 @@ class SetPeriodBottomSheetViewModelTest {
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
         val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 180)
+        assert(daysDiff >= 179)
     }
 
     @Test
@@ -110,7 +110,7 @@ class SetPeriodBottomSheetViewModelTest {
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
         val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 30)
+        assert(daysDiff >= 29)
     }
 
     @Test
@@ -156,7 +156,7 @@ class SetPeriodBottomSheetViewModelTest {
     fun `When defaultMembershipEndDate called, then should return end date 1 year from now`() {
         val defaultMembershipEndDate = viewModel.defaultMembershipEndDate
         val daysDiff = TimeUnit.MILLISECONDS.toDays(defaultMembershipEndDate.time - Date().time)
-        assert(daysDiff >= 365)
+        assert(daysDiff >= 364)
     }
 
 }
