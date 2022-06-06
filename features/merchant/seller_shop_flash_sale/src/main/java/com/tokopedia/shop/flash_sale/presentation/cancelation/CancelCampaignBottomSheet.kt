@@ -23,11 +23,11 @@ class CancelCampaignBottomSheet(
         if (status == CampaignStatus.ONGOING) {
             setTitle(getString(R.string.cancelcampaign_stop_title))
             typographyDraftDeleteDesc?.text = getString(R.string.cancelcampaign_stop_desc, campaignName)
-            typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_stop_question, campaignName)
+            typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_stop_question)
         } else {
             setTitle(getString(R.string.cancelcampaign_title))
             typographyDraftDeleteDesc?.text = getString(R.string.cancelcampaign_desc, campaignName)
-            typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_question, campaignName)
+            typographyQuestionTitle?.text = getString(R.string.cancelcampaign_title_question)
         }
     }
 
