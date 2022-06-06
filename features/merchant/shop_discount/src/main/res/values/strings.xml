@@ -68,7 +68,7 @@
     <string name="sd_please_wait">Mohon tunggu</string>
     <string name="sd_wait">Tunggu Sebentar</string>
     <string name="sd_no_remaining_quota">Kuota diskonmu sudah habis.</string>
-    <string name="sd_product_already_on_discount">Produk sudah di diskon.</string>
+    <string name="sd_product_already_on_discount">Produk sudah didiskon.</string>
     <string name="sd_discount_created_successfully">Diskon berhasil dibuat.</string>
     <string name="sd_discount_seller_not_eligible_title">Yah, kamu belum bisa akses ke Diskon Toko</string>
     <string name="sd_discount_seller_not_eligible_desc">Pelajari dulu agar tokomu bisa pakai Diskon Toko, yuk!</string>
