@@ -221,7 +221,7 @@
 
         <ImageView
             android:id="@+id/imageThreeDots"
-            android:layout_width="@dimen/dp_32"
+            android:layout_width="@dimen/unify_space_32"
             android:layout_height="16dp"
             android:paddingLeft="8dp"
             android:paddingStart="8dp"

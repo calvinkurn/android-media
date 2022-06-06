@@ -74,6 +74,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -156,6 +157,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        Typography.Companion.setFontTypeOpenSauceOne(true);
     }
 
     private void checkAppPackageNameAsync() {
