@@ -58,8 +58,8 @@ class TokoNowOnBoard20mBottomSheet: BottomSheetUnify() {
         }
 
         binding?.tpBackTo2h?.setOnClickListener {
-            dismiss()
             listener?.onBackTo2hClicked()
+            dismiss()
         }
 
         clearContentPadding = true

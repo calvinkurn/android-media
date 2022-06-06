@@ -482,11 +482,6 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
         launchCatchError(block = {
-            trackSwitchService(
-                localCacheModel = localCacheModel,
-                serviceType = serviceType
-            )
-
             val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
             _setUserPreference.postValue(Success(userPreference))
         }) {
@@ -834,21 +829,6 @@ class TokoNowHomeViewModel @Inject constructor(
             } else {
                 ServiceType.NOW_15M
             }
-
-            _homeSwitchServiceTracker.postValue(HomeSwitchServiceTracker(
-                userId = userSession.userId,
-                whIdOrigin = whIdOrigin,
-                whIdDestination = whIdDestination,
-                isNow15 = serviceType == ServiceType.NOW_15M,
-                isImpressionTracker = isImpressionTracker
-            ))
-        }) { /* nothing to do */ }
-    }
-
-    private fun trackSwitchService(localCacheModel: LocalCacheModel, serviceType: String, isImpressionTracker: Boolean = false) {
-        launchCatchError(block = {
-            val whIdOrigin = localCacheModel.warehouses.findLast { it.service_type != serviceType }?.warehouse_id.orZero().toString()
-            val whIdDestination = localCacheModel.warehouses.findLast { it.service_type == serviceType }?.warehouse_id.orZero().toString()
 
             _homeSwitchServiceTracker.postValue(HomeSwitchServiceTracker(
                 userId = userSession.userId,

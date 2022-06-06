@@ -1067,50 +1067,25 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().setUserPreference(NOW_2H)
     }
 
-    protected open fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
         showContent()
         when(result) {
             is Success -> {
                 context?.apply {
                     //Set user preference data to local cache
-                    ChooseAddressUtils.updateTokoNowData(
-                        context = this,
-                        warehouseId = result.data.warehouseId,
-                        shopId = result.data.shopId,
-                        serviceType = result.data.serviceType,
-                        warehouses = result.data.warehouses.map {
-                            LocalWarehouseModel(
-                                it.warehouseId.toLongOrZero(),
-                                it.serviceType
-                            )
-                        }
+                    updateLocalCacheModel(
+                        data = result.data,
+                        context = this
                     )
 
                     //Refresh the page
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
 
-                    /*
-                     * SWITCHER TOASTER
-                     * - toaster will show when switching service type to 2 hours
-                     * - when switching to 20 minutes, toaster will show if only OnBoard20mBottomSheet has been shown
-                     */
-
-                    val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
-                    if (needToShowOnBoardBottomSheet) {
-                        TokoNowOnBoard20mBottomSheet
-                            .newInstance()
-                            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
-                                onBackTo2hClicked = {
-                                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
-                                },
-                                onDismiss = {
-                                    sharedPref.set20mBottomSheetOnBoardShown(true)
-                                }
-                            ))
-                    } else if (!result.data.warehouseId.toLongOrZero().isZero()) {
-                        showSwitcherToaster(result.data.serviceType)
-                    } else { /* do nothing */ }
+                    //Show bottomsheet or toaster
+                    showBottomSheetOrToaster(
+                        data = result.data
+                    )
 
                     //Refresh mini cart
                     getViewModel().refreshMiniCart()
@@ -1120,13 +1095,56 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
+    private fun updateLocalCacheModel(data: SetUserPreference.SetUserPreferenceData, context: Context) {
+        ChooseAddressUtils.updateTokoNowData(
+            context = context,
+            warehouseId = data.warehouseId,
+            shopId = data.shopId,
+            serviceType = data.serviceType,
+            warehouses = data.warehouses.map {
+                LocalWarehouseModel(
+                    it.warehouseId.toLongOrZero(),
+                    it.serviceType
+                )
+            }
+        )
+    }
+
+    private fun showBottomSheetOrToaster(data: SetUserPreference.SetUserPreferenceData) {
+        /*
+           Note :
+           - Toaster will be shown when switching service type to 2 hours
+           - When switching to 20 minutes, toaster will be shown if only OnBoard20mBottomSheet has been shown before
+         */
+
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (needToShowOnBoardBottomSheet) {
+            show20mOnBoardBottomSheet()
+        } else if (!data.warehouseId.toLongOrZero().isZero()) {
+            showSwitcherToaster(data.serviceType)
+        } else { /* do nothing */ }
+    }
+
+    private fun show20mOnBoardBottomSheet() {
+        TokoNowOnBoard20mBottomSheet
+            .newInstance()
+            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                onBackTo2hClicked = {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
+                },
+                onDismiss = {
+                    sharedPref.set20mBottomSheetOnBoardShown(true)
+                }
+            ))
+    }
+
     private fun showSwitcherToaster(serviceType: String) {
         TokoNowServiceTypeUtil.getServiceTypeRes(
             key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
             serviceType = serviceType
-        )?.apply {
+        )?.let {
             showToaster(
-                message = getString(this),
+                message = getString(it),
                 toasterType = Toaster.TYPE_NORMAL
             )
         }
