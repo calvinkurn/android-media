@@ -140,7 +140,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when wishlist recommendation - topads product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifySequence {
-            productListView.trackWishlistRecommendationProductLoginUser(productCardOptionsModel.isWishlisted)
+            productListView.trackWishlistRecommendationProductLoginUser(true)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
             productListView.hitWishlistClickUrl(productCardOptionsModel)
