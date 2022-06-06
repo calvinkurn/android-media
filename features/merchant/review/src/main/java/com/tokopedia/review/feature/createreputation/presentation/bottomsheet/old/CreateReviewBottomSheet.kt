@@ -351,7 +351,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         } else {
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
                 binding?.reviewFormTextArea?.apply {
-                    setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    setPlaceHolder(context?.resources?.getString(R.string.review_form_bad_helper).orEmpty())
                     clearFocus()
                 }
             }
@@ -715,32 +715,32 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun updateTitleBasedOnSelectedRating(position: Int) {
         when (position) {
             CreateReviewFragment.RATING_1 -> {
-                binding?.reviewFormTextAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
+                binding?.reviewFormTextAreaTitle?.text = context?.resources?.getString(R.string.review_create_worst_title).orEmpty()
                 binding?.reviewFormTextArea?.apply {
                     if (createReviewViewModel.isOtherCategoryOnly()) {
                         setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
                     } else {
-                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                        setPlaceHolder(context?.resources?.getString(R.string.review_form_bad_helper).orEmpty())
                     }
                 }
             }
             CreateReviewFragment.RATING_2 -> {
-                binding?.reviewFormTextAreaTitle?.text = resources.getString(R.string.review_form_bad_title)
+                binding?.reviewFormTextAreaTitle?.text = context?.resources?.getString(R.string.review_form_bad_title).orEmpty()
                 binding?.reviewFormTextArea?.apply {
                     if (createReviewViewModel.isOtherCategoryOnly()) {
                         setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
                     } else {
-                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                        setPlaceHolder(context?.resources?.getString(R.string.review_form_bad_helper).orEmpty())
                     }
                 }
             }
             CreateReviewFragment.RATING_3 -> {
-                binding?.reviewFormTextAreaTitle?.text = resources.getString(R.string.review_form_neutral_title)
-                binding?.reviewFormTextArea?.setPlaceHolder(resources.getString(R.string.review_form_neutral_helper))
+                binding?.reviewFormTextAreaTitle?.text = context?.resources?.getString(R.string.review_form_neutral_title).orEmpty()
+                binding?.reviewFormTextArea?.setPlaceHolder(context?.resources?.getString(R.string.review_form_neutral_helper).orEmpty())
             }
             else -> {
-                binding?.reviewFormTextAreaTitle?.text = resources.getString(R.string.review_create_best_title)
-                binding?.reviewFormTextArea?.setPlaceHolder(resources.getString(R.string.review_form_good_helper))
+                binding?.reviewFormTextAreaTitle?.text = context?.resources?.getString(R.string.review_create_best_title).orEmpty()
+                binding?.reviewFormTextArea?.setPlaceHolder(context?.resources?.getString(R.string.review_form_good_helper).orEmpty())
             }
         }
     }
