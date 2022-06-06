@@ -163,17 +163,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = false;
-            else
-                isMinimized = true;
+            isMinimized = !isRight;
         } else {
             shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = true;
-            else
-                isMinimized = false;
+            isMinimized = isRight;
         }
         // hide tracker
         trackingEggHide(tokenId, tokenName, isMinimized);
