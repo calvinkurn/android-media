@@ -12,7 +12,8 @@ object PMConstant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
 
     object Images {
-        const val PM_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
+        const val PM_BADGE =
+            "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
         const val PM_BADGE_INACTIVE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20inactive.png"
         const val PM_SHOP_ICON = "https://images.tokopedia.net/img/android/gold_merchant_common/power_merchant_shop@3x.png"
         const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
@@ -29,7 +30,8 @@ object PMConstant {
     }
 
     object AppLink {
-        private const val APPLINK_PARAMS_KYC_PM = "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.MERCHANT_KYC_PROJECT_ID}"
+        private const val APPLINK_PARAMS_KYC_PM =
+            "${KYCConstant.PARAM_PROJECT_ID}=${KYCConstant.MERCHANT_KYC_PROJECT_ID}"
         const val KYC_POWER_MERCHANT = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC_PM"
     }
 
@@ -60,5 +62,11 @@ object PMConstant {
         const val PRO_ADVANCE = "advanced"
         const val PRO_EXPERT = "expert"
         const val PRO_ULTIMATE = "ultimate"
+    }
+
+    object EligibleShopGrade {
+        const val PRO_ADVANCE = "PM PRO Advanced"
+        const val PRO_EXPERT = "PM PRO Expert"
+        const val PRO_ULTIMATE = "PM PRO Ultimate"
     }
 }
