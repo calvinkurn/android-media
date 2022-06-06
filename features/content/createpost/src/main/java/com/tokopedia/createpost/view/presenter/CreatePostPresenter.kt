@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
-import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.createpost.domain.usecase.GetProductSuggestionUseCase
 import com.tokopedia.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
@@ -16,6 +15,7 @@ import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -35,13 +35,13 @@ import kotlin.coroutines.CoroutineContext
  * @author by milhamj on 9/26/18.
  */
 class CreatePostPresenter @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val getContentFormUseCase: UseCase<GetContentFormDomain>,
-        private val getFeedUseCase: GetFeedForEditUseCase,
-        private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
-        private val twitterManager: TwitterManager,
-        private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
-        private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
+    private val userSession: UserSessionInterface,
+    private val getContentFormUseCase: UseCase<GetContentFormDomain>,
+    private val getFeedUseCase: UseCase<FeedDetail?>,
+    private val getProfileHeaderUseCase: GraphqlUseCase,
+    private val twitterManager: TwitterManager,
+    private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
+    private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
 
     private var followersCount: Int? = null
