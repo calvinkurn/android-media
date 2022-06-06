@@ -764,7 +764,7 @@ class HomeAccountUserViewModelTest {
     fun `Failed get balance and point and hide title false`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointObserver)
 
-        viewModel.getBalanceAndPoint("", false)
+        viewModel.getBalanceAndPoint("", true)
 
         verify { balanceAndPointObserver.onChanged(any()) }
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
