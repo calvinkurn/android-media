@@ -8,6 +8,12 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOpti
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.common.domain.model.CampaignDetail
+import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.Options
+import com.tokopedia.pdpsimulation.common.domain.model.Products
+import com.tokopedia.pdpsimulation.common.domain.model.Selections
+import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +56,13 @@ class OccViewModelTest {
 
     @Test
     fun productDetailSuccessTest() {
-        val baseProductDetail = mockk<BaseProductDetailClass>(relaxed = true)
+        val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a",null,30.0,null,
+            Variant(
+                listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
+            listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,30.0)
+        ))
+
+
         coEvery {
             productDetailUseCase.getProductDetail(any(), any(), "")
         } coAnswers {
