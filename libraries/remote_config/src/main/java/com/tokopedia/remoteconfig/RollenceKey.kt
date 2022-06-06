@@ -72,4 +72,8 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Global Menu (Me Page)
+    const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
 }
