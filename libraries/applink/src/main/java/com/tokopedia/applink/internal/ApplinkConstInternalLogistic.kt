@@ -21,6 +21,8 @@ object ApplinkConstInternalLogistic {
 
     const val SHOP_EDIT_ADDRESS = "$INTERNAL_LOGISTIC/editaddress/"
 
+    const val EDIT_ADDRESS_REVAMP = "$INTERNAL_LOGISTIC/editaddressrevamp/"
+
     const val CUSTOM_PRODUCT_LOGISTIC = "$INTERNAL_LOGISTIC/customproductlogistic"
 
     @JvmField

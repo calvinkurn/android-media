@@ -149,4 +149,9 @@
     <string name="tokopedianow_home_referral_share_desc">Jangan simpan sendiri, cashback kamu akan bertambah kalau kamu ajak temanmu bergabung</string>
     <string name="tokopedianow_home_referral_share_main_text">ngajak kamu pakai Tokopedia NOW!. Belanja kebutuhan harian, 2 jam tiba &amp; gratis ongkir. Cuma pakai link ini, dapat kupon cashback Rp20 rb setelah transaksi! </string>
     <string name="tokopedianow_home_referral_share_your_friend">Temanmu</string>
+
+    <!-- Mix Left Carousel Widget -->
+    <string name="tokopedianow_mix_left_carousel_widget_see_all">Lihat Semua</string>
+    <string name="tokopedianow_mix_left_carousel_widget_subtitle">Berakhir dalam</string>
+    <string name="tokopedianow_mix_left_carousel_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
 </resources>

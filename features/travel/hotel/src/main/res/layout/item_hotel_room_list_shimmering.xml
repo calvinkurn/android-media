@@ -15,36 +15,51 @@
     android:layout_marginBottom="@dimen/layout_lvl1"
     app:cardBackgroundColor="@color/Unify_N0">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify1"
+            android:layout_width="0dp"
             android:layout_height="@dimen/hotel_120dp"
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify2"
+            android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="4"
-            app:width_weight="0.5"
+            app:loader_corner_radius="2dp"
+            app:loader_type="rect"
+            app:layout_constraintWidth_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loaderUnify1"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/hotel_12dp"
             android:layout_marginLeft="@dimen/hotel_12dp"
             />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify3"
+            android:layout_width="0dp"
             android:layout_height="@dimen/layout_lvl1"
-            app:corners="4"
-            app:width_weight="0.4"
+            app:loader_corner_radius="2dp"
+            app:loader_type="rect"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loaderUnify2"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/hotel_12dp"
             android:layout_marginLeft="@dimen/hotel_12dp"
             android:layout_marginBottom="@dimen/layout_lvl2"
             />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

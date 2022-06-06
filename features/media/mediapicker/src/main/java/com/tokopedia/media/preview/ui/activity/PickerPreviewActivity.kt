@@ -22,7 +22,11 @@ import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
 import com.tokopedia.media.preview.analytics.PreviewAnalytics
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
+import com.tokopedia.picker.common.RESULT_INTENT_PREVIEW
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.EXTRA_EDITOR_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -94,6 +98,7 @@ open class PickerPreviewActivity : BaseActivity()
     override fun onPause() {
         super.onPause()
         binding?.drawerSelector?.removeListener()
+        pickerPager.pauseVideoPlayer()
     }
 
     override fun onCloseClicked() {
@@ -192,7 +197,8 @@ open class PickerPreviewActivity : BaseActivity()
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
         intent?.let {
-            val items = it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW)?: listOf()
+            val items =
+                it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
 
             if (items.isNotEmpty()) {
                 setUiModelData(items)

@@ -58,7 +58,7 @@ class StockInformationBottomSheet(
         val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
         setTitle(title)
 
-        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_info_description)
+        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock)
             .orEmpty()
         val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
 

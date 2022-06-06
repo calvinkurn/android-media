@@ -1,9 +1,7 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
@@ -14,7 +12,6 @@ import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.model.RecomTitle
 import com.tokopedia.navigation.domain.model.Recommendation
-import com.tokopedia.navigation.domain.model.TopadsHeadlineUiModel
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
 import com.tokopedia.navigation.presentation.view.InboxView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
