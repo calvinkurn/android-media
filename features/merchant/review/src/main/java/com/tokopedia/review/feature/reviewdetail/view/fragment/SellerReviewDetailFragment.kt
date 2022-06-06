@@ -201,7 +201,7 @@ class SellerReviewDetailFragment :
 
     private fun initFilterData() {
         val filterDetailList: Array<String> =
-            resources.getStringArray(R.array.filter_review_detail_array)
+            context?.resources?.getStringArray(R.array.filter_review_detail_array) ?: emptyArray()
         viewModelProductReviewDetail?.filterPeriod =
             ReviewConstants.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
         positionFilterPeriod =
@@ -524,7 +524,7 @@ class SellerReviewDetailFragment :
 
     override fun onFilterPeriodClicked(view: View, title: String) {
         val filterDetailList: Array<String> =
-            resources.getStringArray(R.array.filter_review_detail_array)
+            context?.resources?.getStringArray(R.array.filter_review_detail_array) ?: emptyArray()
         val filterDetailItemUnify =
             SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
         filterPeriodDetailUnify?.setData(filterDetailItemUnify)

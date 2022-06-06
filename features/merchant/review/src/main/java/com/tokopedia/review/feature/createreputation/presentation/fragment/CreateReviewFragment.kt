@@ -867,10 +867,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 position < RATING_3 -> {
                     if (position == RATING_1) {
                         createReviewTextAreaTitle.text =
-                            resources.getString(R.string.review_create_worst_title)
+                            context?.resources?.getString(R.string.review_create_worst_title).orEmpty()
                     } else {
                         createReviewTextAreaTitle.text =
-                            resources.getString(R.string.review_create_negative_title)
+                            context?.resources?.getString(R.string.review_create_negative_title).orEmpty()
                     }
                     txtReviewDesc.text = MethodChecker.fromHtml(
                         getString(
@@ -889,15 +889,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
                     createReviewContainer.setContainerColor(ContainerUnify.YELLOW)
                     createReviewTextAreaTitle.text =
-                        resources.getString(R.string.review_create_neutral_title)
+                        context?.resources?.getString(R.string.review_create_neutral_title).orEmpty()
                 }
                 else -> {
                     if (position == RATING_4) {
                         createReviewTextAreaTitle.text =
-                            resources.getString(R.string.review_create_positive_title)
+                            context?.resources?.getString(R.string.review_create_positive_title).orEmpty()
                     } else {
                         createReviewTextAreaTitle.text =
-                            resources.getString(R.string.review_create_best_title)
+                            context?.resources?.getString(R.string.review_create_best_title).orEmpty()
                     }
                     txtReviewDesc.text = MethodChecker.fromHtml(
                         getString(
@@ -1150,7 +1150,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             text = productName
             if (productVariant.isNotEmpty()) {
                 binding?.createReviewProductVariant?.apply {
-                    text = resources.getString(R.string.review_pending_variant, productVariant)
+                    text = context?.resources?.getString(R.string.review_pending_variant, productVariant).orEmpty()
                     show()
                 }
             }
