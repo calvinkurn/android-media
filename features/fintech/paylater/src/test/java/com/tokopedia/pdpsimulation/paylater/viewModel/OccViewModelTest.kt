@@ -59,7 +59,7 @@ class OccViewModelTest {
         val baseProductDetail = BaseProductDetailClass(GetProductV3("A","a",null,30.0,null,
             Variant(
                 listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
-            listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,30.0)
+            listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,0.0)
         ))
 
 
