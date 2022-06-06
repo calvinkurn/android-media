@@ -159,8 +159,9 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 ANDROID_GENERAL_CHANNEL)
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
-                .setSmallIcon(R.drawable.ic_stat_notify_white)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_big_notif_customerapp))
+                .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                    com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
@@ -240,7 +241,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(notificationId, notificationBuilder.build())
         Toaster.make(findViewById<View>(android.R.id.content), getString(R.string.download_failed),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.title_ok))
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(
+                com.tokopedia.abstraction.R.string.title_ok))
     }
 
     override fun getNewFragment(): Fragment? {
