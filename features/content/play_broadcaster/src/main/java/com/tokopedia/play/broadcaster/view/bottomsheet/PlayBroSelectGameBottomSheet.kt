@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSelectGameBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.SelectGameItemDecoration
@@ -27,6 +28,7 @@ import javax.inject.Inject
  */
 class PlayBroSelectGameBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetUnify(), SelectGameViewHolder.Listener {
 
     private var _binding: BottomSheetPlayBroSelectGameBinding? = null
@@ -96,6 +98,9 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
 
     override fun onGameOptionClick(gameType: GameType) {
         viewModel.submitAction(PlayBroadcastAction.ClickGameOption(gameType))
+        when (gameType) {
+            is GameType.Quiz -> analytic.onClickGameOption( viewModel.channelId, viewModel.channelTitle, "quiz")
+        }
         dismiss()
     }
 

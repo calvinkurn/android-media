@@ -145,4 +145,27 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
         )
     }
+
+    /**
+     * {"event":"clickPG",
+     * "eventAction":"click - engagement widget",
+     * "eventCategory":"seller broadcast",
+     * "eventLabel":"{shop_id} - {channel_id} - {channel title} - {engagement widget name}",
+     * "businessUnit":"play","currentSite":"tokopediamarketplace",
+     * "sessionIris":"{session_iris}",
+     * "userId":"{user_id}"}
+     */
+    override fun onClickGameOption(channelId: String, channelTitle: String, gameType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
+                KEY_EVENT_ACTION to "click - engagement widget",
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
+                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle - $gameType",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to currentSite,
+                KEY_USER_ID to userSession.userId
+            )
+        )
+    }
 }
