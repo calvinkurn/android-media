@@ -100,29 +100,29 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         setString(LOGIN_SESSION, GTM_LOGIN_ID, userId);
     }
 
-    public String getAdsId(){
+    public String getAdsId() {
         String adsId = getAndTrimOldString(ADVERTISINGID, KEY_ADVERTISINGID, "");
-        if(adsId == null || adsId.isEmpty()) {
+        if (adsId == null || adsId.isEmpty()) {
             DeviceInfo.logIdentifier(context, "UserSession");
         }
         if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
             return adsId;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public String getAndroidId(){
+    public String getAndroidId() {
         String androidId = getAndTrimOldString(ANDROID_ID, KEY_ANDROID_ID, "");
         if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
             return androidId;
         } else {
             String android_id = md5(
                     Settings.Secure.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID)
+                            Settings.Secure.ANDROID_ID)
             );
             if (!TextUtils.isEmpty(android_id)) {
-                setString(ANDROID_ID, KEY_ANDROID_ID,android_id);
+                setString(ANDROID_ID, KEY_ANDROID_ID, android_id);
             }
             return android_id;
         }
@@ -144,7 +144,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         }
     }
 
-    public String getGTMLoginID(){
+    public String getGTMLoginID() {
         return getAndTrimOldString(LOGIN_SESSION, GTM_LOGIN_ID, "");
     }
 

@@ -233,7 +233,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-brand/"
+        val appLink = "${ApplinkConstInternalDeals.INTERNAL_DEALS}/brand-detail-new/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
     }
 

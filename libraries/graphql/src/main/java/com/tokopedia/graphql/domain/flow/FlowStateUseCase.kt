@@ -18,11 +18,11 @@ abstract class FlowStateUseCase<Input, Output : Any> constructor(
 ) : GqlUseCase<Input, Flow<Result<Output>>>() {
 
     /**
-    * Executes the use case based on dispatcher's flow with state
-    *
-    * @param params the input parameters to run the use case with
-    * @return a generic class with state and flowable comes from R
-    * */
+     * Executes the use case based on dispatcher's flow with state
+     *
+     * @param params the input parameters to run the use case with
+     * @return a generic class with state and flowable comes from R
+     * */
     suspend operator fun invoke(params: Input): Flow<Result<Output>> {
         return execute(params)
             .catch { e -> emit(Fail(e)) }
