@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.common.widget.general.viewmodel.utils
 
 import com.google.gson.Gson
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -13,7 +12,6 @@ object DataProvider {
     private val gson = Gson()
     private val fileUtil = UnitTestFileUtils
     private val miniCartSimplifiedMapper = MiniCartSimplifiedMapper()
-    private val miniCartListUiModelMapper = MiniCartListUiModelMapper()
 
     fun provideGetMiniCartSimplifiedSuccessAllAvailable(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_general_simplified_success_all_available"), MiniCartGqlResponse::class.java)

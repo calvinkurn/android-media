@@ -10,7 +10,10 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralViewModel
 import com.tokopedia.minicart.common.widget.general.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
