@@ -5,6 +5,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
@@ -22,10 +23,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.clickOnContentHighlightCardsInVideoTab(
             item.channelId, item.partner.id,
             listOf(item.video.coverUrl),
@@ -36,10 +36,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.impressOnContentHighlightWidgetInVideoTab(
             item.channelId, item.partner.id, item.channelType.toString().lowercase()
         )
@@ -53,11 +52,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
-
         tracker.clickOnContentCardsInVideoTabBelowTheChips(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
@@ -67,10 +64,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
         tracker.impressOnContentCardsInVideoTabBelowTheChips(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
             item.channelType.toString().lowercase(), filterCategory, channelPositionInList
@@ -80,10 +76,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onClickChannelCard(view, item, channelPositionInList, isAutoPlay)
         if (item.channelType == PlayWidgetChannelType.Live) {
         tracker.clickOnLagiLiveCarouselContentCards(
             item.channelId, item.partner.id, listOf(item.video.coverUrl),
@@ -100,10 +95,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
-        super.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay)
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (channelPositionInList == 0)
                 tracker.impressOnUpcomingContentCarouselWidget(filterCategory)

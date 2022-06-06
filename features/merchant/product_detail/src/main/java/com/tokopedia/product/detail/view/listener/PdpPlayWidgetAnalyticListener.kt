@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 
 class PdpPlayWidgetAnalyticListener(
@@ -15,8 +16,8 @@ class PdpPlayWidgetAnalyticListener(
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
         componentTrackDataModel?.let { listener.onImpressChannelCard(it, item) }
     }
@@ -24,8 +25,8 @@ class PdpPlayWidgetAnalyticListener(
     override fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
     ) {
         componentTrackDataModel?.let { listener.onClickChannelCard(it, item) }
     }
