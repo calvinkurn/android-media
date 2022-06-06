@@ -156,6 +156,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.tokopedia.topads.sdk.widget.ShopAdsWithThreeProducts
+        android:id="@+id/shopAdsWithThreeProducts"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingBottom="@dimen/unify_space_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
