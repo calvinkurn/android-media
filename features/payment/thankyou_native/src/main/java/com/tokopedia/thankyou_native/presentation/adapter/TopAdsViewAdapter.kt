@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
@@ -27,7 +24,7 @@ class TopAdsViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.thanks_item_top_ads_view, parent, false)
-        val widthFraction = if (topAdsUIModelList.size > 1) WIDTH_FRACTION_MULTIPLE else WIDTH_FRACTION_SINGLE
+        val widthFraction = if (topAdsUIModelList.size > Int.ONE) WIDTH_FRACTION_MULTIPLE else WIDTH_FRACTION_SINGLE
         val params = view.layoutParams
         params.width = (widthFraction * getScreenWidth()).toInt()
         view.layoutParams = params
