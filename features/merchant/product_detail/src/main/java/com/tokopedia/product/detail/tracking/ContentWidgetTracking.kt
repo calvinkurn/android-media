@@ -24,7 +24,7 @@ object ContentWidgetTracking {
             "event" to ProductTrackingConstant.Tracking.PROMO_VIEW,
             "eventAction" to ACTION_IMPRESSION_CHANNEL_CARD,
             "eventCategory" to ProductTrackingConstant.Category.PDP,
-            "eventLabel" to "shop_id:${data.channelShopId};",
+            "eventLabel" to "",
             "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
             "component" to "'comp:$componentName;temp:$componentType;elem:$ACTION_IMPRESSION_CHANNEL_CARD;cpos:$componentPosition;",
             "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
@@ -36,7 +36,7 @@ object ContentWidgetTracking {
                         hashMapOf(
                             "creative_name" to componentName,
                             "creative_slot" to componentPosition,
-                            "item_id" to data.channelId,
+                            "item_id" to "${data.channelId} - ${data.channelShopId}",
                             "item_name" to data.channelTitle
                         )
                     )
@@ -70,7 +70,7 @@ object ContentWidgetTracking {
                         mapOf(
                             "creative_name" to componentName,
                             "creative_slot" to componentPosition,
-                            "item_id" to data.channelId,
+                            "item_id" to "${data.channelId} - ${data.channelShopId}",
                             "item_name" to data.channelTitle
                         )
                     )
