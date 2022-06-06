@@ -489,7 +489,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     MediaPicker.intentWithGalleryFirst(context) {
                         pageSource(PageSource.ChatBot)
                         modeType(ModeType.IMAGE_ONLY)
-                        singleSelectionMode()
+                        multipleSelectionMode()
+                        maxMediaItem(6)
                     }
                 }
                 startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
@@ -879,18 +880,36 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun uploadUsingSecureUpload(data: Intent) {
-        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
-        processImagePathToUpload(data)?.let {
-            getViewState()?.onImageUpload(it)
-            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
+//        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
+//        processImagePathToUpload(data)?.let {
+//            getViewState()?.onImageUpload(it)
+//            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
+//        }
+        val paths = MediaPicker.result(data)
+        paths.originalPaths.forEach { path ->
+            processImagePathToUpload(path)?.let { imageUploadUiModel ->
+                getViewState()?.onImageUpload(imageUploadUiModel)
+                presenter.uploadImageSecureUpload(imageUploadUiModel, messageId, opponentId, onErrorImageUpload(), path, context)
+            }
+
         }
     }
 
     override fun uploadUsingOldMechanism(data: Intent) {
-        processImagePathToUpload(data)?.let {
-            getViewState()?.onImageUpload(it)
-            presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
+//        processImagePathToUpload(data)?.let {
+//            getViewState()?.onImageUpload(it)
+//            presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
+//        }
+
+        val paths = MediaPicker.result(data)
+        paths.originalPaths.forEach { path ->
+            processImagePathToUpload(path)?.let { imageUploadUiModel ->
+                getViewState()?.onImageUpload(imageUploadUiModel)
+                presenter.uploadImages(imageUploadUiModel, messageId, opponentId, onErrorImageUpload())
+            }
+
         }
+
     }
     override fun sendInvoiceForArticle() {
         if (isArticleEntry) {
@@ -1050,17 +1069,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
+    private fun processImagePathToUpload(path: String): ImageUploadUiModel? {
 
-        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-        ImagePickerResultExtractor.extract(data)
-        if (imagePathList.size <= 0) {
-            return null
-        }
-        val imagePath = imagePathList[0]
+//        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+//        ImagePickerResultExtractor.extract(data)
+//        if (imagePathList.size <= 0) {
+//            return null
+//        }
+//        val imagePath = imagePathList[0]
 
-        if (!TextUtils.isEmpty(imagePath)) {
-            val temp = generateChatViewModelWithImage(imagePath)
+        if (!TextUtils.isEmpty(path)) {
+            val temp = generateChatViewModelWithImage(path)
             return temp
         }
         return null
