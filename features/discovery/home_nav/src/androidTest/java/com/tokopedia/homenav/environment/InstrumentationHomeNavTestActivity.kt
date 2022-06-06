@@ -15,6 +15,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.homenav.mock.MainNavMockResponseConfig
+import com.tokopedia.homenav.util.MainNavRecyclerViewIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -51,20 +53,17 @@ class InstrumentationHomeNavTestActivity : AppCompatActivity(), HomeNavPerforman
     var activityRule = object: IntentsTestRule<InstrumentationHomeNavTestActivity>(InstrumentationHomeNavTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HomeNavMockResponseConfig())
+            setupGraphqlMockResponse(MainNavMockResponseConfig())
         }
     }
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
-    private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+    private var mainNavRecyclerViewIdlingResource: MainNavRecyclerViewIdlingResource? = null
 
     @Before
     fun resetAll() {
-        disableCoachMark(context)
         Intents.intending(IntentMatchers.isInternal()).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
@@ -72,18 +71,15 @@ class InstrumentationHomeNavTestActivity : AppCompatActivity(), HomeNavPerforman
             )
         )
         val recyclerView: RecyclerView =
-                activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
-        homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
-                recyclerView = recyclerView
+                activityRule.activity.findViewById(com.tokopedia.homenav.R.id.recycler_view)
+        mainNavRecyclerViewIdlingResource = MainNavRecyclerViewIdlingResource(
+            recyclerView = recyclerView
         )
-        IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
+        IdlingRegistry.getInstance().register(mainNavRecyclerViewIdlingResource)
     }
 
     @After
     fun tearDown() {
-        visibilityIdlingResource?.let {
-            IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
-        }
-        IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
+        IdlingRegistry.getInstance().unregister(mainNavRecyclerViewIdlingResource)
     }
 }
