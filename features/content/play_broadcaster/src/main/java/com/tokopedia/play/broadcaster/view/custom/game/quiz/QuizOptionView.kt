@@ -60,6 +60,12 @@ class QuizOptionView : ConstraintLayout {
                 }
                 else flagTriggerTextChange = true
             }
+
+            setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus && text.isBlank()) {
+                    text.clear()
+                }
+            }
         }
     }
 

@@ -111,7 +111,7 @@ class QuizGiftView : ConstraintLayout {
 
     fun hideGiftTextFieldIfEmpty() {
         bindingGiftInput.etBroQuizGift.apply {
-            if(text.toString().isEmpty()) {
+            if(text.toString().isBlank()) {
                 bindingGift.root.show()
                 bindingGiftInput.root.hide()
             }

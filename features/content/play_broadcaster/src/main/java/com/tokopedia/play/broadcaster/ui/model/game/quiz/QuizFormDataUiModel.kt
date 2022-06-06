@@ -26,7 +26,7 @@ data class QuizFormDataUiModel(
     }
 
     fun isFormValid(): Boolean {
-        return title.isNotEmpty() && isOptionsValid()
+        return title.isNotBlank() && isOptionsValid()
     }
 
     private fun isOptionsValid(): Boolean {
