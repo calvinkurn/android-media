@@ -23,12 +23,9 @@ class CMHomeWidgetViewHolder(
     override fun bind(dataModel: CMHomeWidgetDataModel) {
         binding?.run {
             dataModel.cmHomeWidgetData?.let { cmHomeWidgetData ->
-                if(cmHomeWidgetData.cmHomeWidgetProductCardData.isNullOrEmpty()) {
-                    cmHomeWidgetData.cMHomeWidgetPaymentData?.let {
-                        activateCMHomeWidget(dataModel)
-                    } ?: run {
+                if(cmHomeWidgetData.cmHomeWidgetProductCardData.isNullOrEmpty() &&
+                    cmHomeWidgetData.cMHomeWidgetPaymentData.isNullOrEmpty()) {
                         cmHomeWidget.visibility = View.GONE
-                    }
                 } else {
                     activateCMHomeWidget(dataModel)
                 }
