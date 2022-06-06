@@ -42,6 +42,7 @@ data class DealsMetaDataCheckout(
 )
 
 data class ItemMapCheckout(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("base_price")
         @Expose
         val basePrice:Int = 0,

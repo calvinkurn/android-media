@@ -531,7 +531,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         requestParams.putString(DealDetailsPresenter.TAG, url);
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getIdInInt());
         }
         return requestParams;
     }

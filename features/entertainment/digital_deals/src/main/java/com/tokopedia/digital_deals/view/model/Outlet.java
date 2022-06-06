@@ -15,10 +15,9 @@ public class Outlet implements Parcelable {
     @SerializedName("product_id")
     @Expose
     private String productId;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("location_id")
     @Expose
-    private int locationId;
+    private String locationId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -77,7 +76,7 @@ public class Outlet implements Parcelable {
     protected Outlet(Parcel in) {
         this.id = in.readString();
         this.productId = in.readString();
-        this.locationId = in.readInt();
+        this.locationId = in.readString();
         this.isSearchable = in.readInt();
         this.locationStatus = in.readInt();
         this.name = in.readString();
@@ -112,11 +111,11 @@ public class Outlet implements Parcelable {
         this.productId = productId;
     }
 
-    public int getLocationId() {
+    public String getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(int locationId) {
+    public void setLocationId(String locationId) {
         this.locationId = locationId;
     }
 
@@ -227,7 +226,7 @@ public class Outlet implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(productId);
-        dest.writeInt(locationId);
+        dest.writeString(locationId);
         dest.writeInt(isSearchable);
         dest.writeInt(locationStatus);
         dest.writeString(name);

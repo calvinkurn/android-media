@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.model;
 
-import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,10 +9,9 @@ import com.tokopedia.library.baseadapter.BaseItem;
 
 public class Location extends BaseItem implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("category_id")
     @Expose
     private String categoryId;
@@ -81,7 +79,7 @@ public class Location extends BaseItem implements Parcelable {
     };
 
     protected Location(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readString();
         this.categoryId = in.readString();
         this.name = in.readString();
         this.searchName = in.readString();
@@ -103,11 +101,19 @@ public class Location extends BaseItem implements Parcelable {
     public Location() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public int getIdInInt() {
+        if (id.isEmpty()) {
+            return 0;
+        } else {
+            return Integer.parseInt(id);
+        }
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -242,7 +248,7 @@ public class Location extends BaseItem implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(categoryId);
         dest.writeString(name);
         dest.writeString(searchName);

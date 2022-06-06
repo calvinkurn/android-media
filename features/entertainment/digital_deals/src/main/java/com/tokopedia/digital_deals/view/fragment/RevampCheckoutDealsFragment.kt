@@ -185,7 +185,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
                 if (data.checkout.data.success == 0) {
                     view?.let {
                         Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                                it.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
                     }
                 } else {
                     RouteManager.route(context, data.checkout.data.data.redirectUrl)
