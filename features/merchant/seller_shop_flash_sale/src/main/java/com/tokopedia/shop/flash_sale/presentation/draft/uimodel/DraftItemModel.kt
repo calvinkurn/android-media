@@ -4,8 +4,8 @@ import java.util.Date
 
 data class DraftItemModel(
     val id: Long,
-    val title: String,
-    val description: String,
-    val startDate: Date,
-    val endDate: Date
+    val title: String = "",
+    val description: String = "",
+    val startDate: Date = Date(),
+    val endDate: Date = Date()
 )
