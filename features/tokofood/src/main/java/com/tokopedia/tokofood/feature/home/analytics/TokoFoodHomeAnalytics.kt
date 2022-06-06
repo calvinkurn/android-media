@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.home.analytics
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
@@ -34,30 +35,31 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_ICONS)
             putString(TrackAppUtils.EVENT, "")
         }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, verticalPosition))
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, verticalPosition = verticalPosition))
         eventDataLayer.viewItem(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickIconWidget(userId: String?, destinationId: String?, data: List<DynamicIcon>, verticalPosition: Int) {
+    fun clickIconWidget(userId: String?, destinationId: String?, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_ICONS)
             putString(TrackAppUtils.EVENT, "")
         }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, verticalPosition))
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, horizontalPosition, verticalPosition))
         eventDataLayer.selectContent(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    private fun getPromotionItem(data: List<DynamicIcon>, verticalPosition: Int): ArrayList<Bundle> {
+    private fun getPromotionItem(data: List<DynamicIcon>, horizontalPosition: Int = -1, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             data.mapIndexed { index, it ->
+                val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applinks}")
-                    putString(Promotion.CREATIVE_SLOT, "${index+1}")
+                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
                     putString(Promotion.ITEM_ID, it.name)
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition + 1} - $EMPTY_DATA")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition} - $EMPTY_DATA")
                 }
             }
         )

@@ -53,7 +53,7 @@ class TokoFoodHomeIconsViewHolder(
     private fun setItemViewImpression(element: TokoFoodHomeIconsUiModel) {
         itemView.addOnImpressionListener(element) {
             element.listIcons?.let {
-                homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), adapterPosition)
+                homeIconsListener?.onImpressHomeIcon(it.take(MAX_ICON_ITEM), verticalPosition = 0)
             }
         }
     }
@@ -101,13 +101,13 @@ class TokoFoodHomeIconsViewHolder(
             tgIcon?.text = item.name
 
             bindingIcon.root.setOnClickListener {
-                homeIconsListener?.onClickHomeIcon(item.applinks, listOf(item), adapterPosition)
+                homeIconsListener?.onClickHomeIcon(item.applinks, listOf(item), adapterPosition, verticalPosition = 0)
             }
         }
     }
 
     interface TokoFoodHomeIconsListener {
-        fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, verticalPosition: Int)
+        fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int)
         fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int)
     }
 }

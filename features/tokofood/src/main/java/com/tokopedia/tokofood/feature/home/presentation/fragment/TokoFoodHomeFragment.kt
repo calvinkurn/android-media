@@ -287,8 +287,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onLocalizingAddressServerDown() {}
 
-    override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, verticalPosition: Int) {
-        analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
+    override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
+        analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, horizontalPosition, verticalPosition)
         RouteManager.route(context, applink)
     }
 
