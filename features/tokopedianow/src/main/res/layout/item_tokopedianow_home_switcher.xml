@@ -32,7 +32,7 @@
             app:layout_constraintStart_toEndOf="@id/ivIcon"
             app:layout_constraintTop_toTopOf="@id/ivIcon"
             app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Butuh produk tiba lebih cepat?" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +45,7 @@
             app:layout_constraintLeft_toRightOf="@id/chevronRight"
             app:layout_constraintTop_toBottomOf="@id/textTitle"
             app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Ke Tokopedia NOW! 20 menit tiba" />
 
