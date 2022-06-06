@@ -9,14 +9,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Outlet implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
-    private int id;
-    @SuppressLint("Invalid Data Type")
+    private String id;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
     @SuppressLint("Invalid Data Type")
     @SerializedName("location_id")
     @Expose
@@ -77,8 +75,8 @@ public class Outlet implements Parcelable {
     };
 
     protected Outlet(Parcel in) {
-        this.id = in.readInt();
-        this.productId = in.readInt();
+        this.id = in.readString();
+        this.productId = in.readString();
         this.locationId = in.readInt();
         this.isSearchable = in.readInt();
         this.locationStatus = in.readInt();
@@ -98,19 +96,19 @@ public class Outlet implements Parcelable {
     public Outlet() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -227,8 +225,8 @@ public class Outlet implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeInt(productId);
+        dest.writeString(id);
+        dest.writeString(productId);
         dest.writeInt(locationId);
         dest.writeInt(isSearchable);
         dest.writeInt(locationStatus);

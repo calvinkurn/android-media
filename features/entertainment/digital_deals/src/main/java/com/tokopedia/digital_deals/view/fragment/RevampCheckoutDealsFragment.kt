@@ -149,7 +149,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
                     view?.let {
                         Toaster.build(
                             it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                            context.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
+                            it.resources.getString(com.tokopedia.digital_deals.R.string.digital_deals_error_toaster)).show()
                     }
                 } else {
                     val paymentData = data.checkout.data.data.queryString
