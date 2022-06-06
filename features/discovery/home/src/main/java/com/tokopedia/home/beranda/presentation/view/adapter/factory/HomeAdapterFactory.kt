@@ -72,7 +72,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
-                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener,
+                         private val vpsWidgetListener: VpsWidgetListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -306,6 +307,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CueWidgetCategoryViewHolder.LAYOUT
     }
 
+    override fun type(vpsDataModel: VpsDataModel): Int {
+        return VpsWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -490,6 +495,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
+            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
