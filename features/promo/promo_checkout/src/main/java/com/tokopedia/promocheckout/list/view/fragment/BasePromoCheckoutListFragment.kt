@@ -165,16 +165,18 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputCoupon.setError(true)
-            e.message?.let { textInputCoupon.setMessage(it) }
+            e.message?.let {
+                textInputCoupon.setMessage(it)
+                textInputCoupon.setError(true)
+            }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputCoupon.setError(true)
         textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
+        textInputCoupon.setError(true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
