@@ -129,8 +129,9 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
     }
 
     private fun `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
-        verifySequence {
-            productListView.trackWishlistRecommendationProductLoginUser(true)
+        val isAddWishlist = !productCardOptionsModel.isWishlisted
+        verifyOrder {
+            productListView.trackWishlistRecommendationProductLoginUser(isAddWishlist)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
             productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
