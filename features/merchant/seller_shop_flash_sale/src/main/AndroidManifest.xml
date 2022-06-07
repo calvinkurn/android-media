@@ -7,16 +7,16 @@
             android:name="com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailActivity"
             android:exported="false" />
         <activity
-            android:name="com.tokopedia.shop.flashsale.presentation.creation.manage_product.ManageProductActivity"
+            android:name="com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity"
             android:exported="false" />
         <activity
-            android:name="com.tokopedia.shop.flashsale.presentation.creation.manage_highlighted_product.ManageHighlightedProductActivity"
+            android:name="com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity"
             android:exported="false" />
         <activity
-            android:name="com.tokopedia.shop.flashsale.presentation.creation.campaign_rule.CampaignRuleActivity"
+            android:name="com.tokopedia.shop.flashsale.presentation.creation.rule.CampaignRuleActivity"
             android:exported="false" />
         <activity
-            android:name="com.tokopedia.shop.flashsale.presentation.campaign_list.container.CampaignListActivity"
+            android:name="com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:label="Flash Sale Toko"
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.shop.flashsale.presentation.creation.campaign_information.CampaignInformationActivity"
+            android:name="com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:label="Flash Sale Toko"

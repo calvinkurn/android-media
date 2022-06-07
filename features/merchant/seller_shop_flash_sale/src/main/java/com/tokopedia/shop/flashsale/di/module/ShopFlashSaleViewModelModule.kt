@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCViewModel
 import com.tokopedia.shop.flashsale.di.scope.ShopFlashSaleScope
-import com.tokopedia.shop.flashsale.presentation.campaign_list.container.CampaignListContainerViewModel
-import com.tokopedia.shop.flashsale.presentation.campaign_list.list.CampaignListViewModel
-import com.tokopedia.shop.flashsale.presentation.creation.campaign_information.bottomsheet.CampaignDataPickerViewModel
+import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerViewModel
+import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListViewModel
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDataPickerViewModel
 import com.tokopedia.shop.flashsale.presentation.draft.viewmodel.DraftDeleteViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
@@ -23,6 +24,11 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignListContainerViewModel::class)
     internal abstract fun provideCampaignListContainerViewModel(viewModel: CampaignListContainerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MerchantCampaignTNCViewModel::class)
+    internal abstract fun provideMerchantCampaignTNCViewModel(viewModel: MerchantCampaignTNCViewModel): ViewModel
 
     @Binds
     @IntoMap
