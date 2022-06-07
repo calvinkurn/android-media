@@ -7,18 +7,25 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteAllProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductDraftFlowUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductDraftUseCase
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AddEditProductDraftViewModel @Inject constructor(
         private val coroutineDispatcher: CoroutineDispatchers,
         private val deleteProductDraftUseCase: DeleteProductDraftUseCase,
         private val deleteAllProductDraftUseCase: DeleteAllProductDraftUseCase,
-        private val getAllProductDraftUseCase: GetAllProductDraftUseCase
+        private val getAllProductDraftUseCase: GetAllProductDraftUseCase,
+        private val getAllProductDraftFlowUseCase: GetAllProductDraftFlowUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     private val _drafts = MutableLiveData<Result<List<ProductDraft>>>()
@@ -31,6 +38,22 @@ class AddEditProductDraftViewModel @Inject constructor(
         get() = _deleteDraft
     val deleteAllDraft: LiveData<Result<Boolean>>
         get() = _deleteAllDraft
+
+    init {
+        initGetProductDraft()
+    }
+
+    private fun initGetProductDraft() = launch {
+        getAllProductDraftFlowUseCase.executeOnBackground()
+            .flowOn(coroutineDispatcher.io)
+            .distinctUntilChanged()
+            .catch {
+                _drafts.postValue(Fail(it))
+            }
+            .collect {
+                _drafts.postValue(Success(it))
+            }
+    }
 
     fun getAllProductDraft() {
         launchCatchError(coroutineDispatcher.io, {

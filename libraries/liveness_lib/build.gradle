@@ -34,7 +34,8 @@ android {
 }
 
 dependencies {
-    api(name: 'guardian_core_v1.6', ext: 'aar')
+    api(name: 'guardian_core_v2.8', ext: 'aar')
+    api(name: 'liveness_lib_v1.3.4', ext: 'aar')
 }
 
 project.ext {

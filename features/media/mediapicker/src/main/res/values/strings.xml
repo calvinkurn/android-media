@@ -21,7 +21,7 @@
     <string name="picker_button_cancel">Batal</string>
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>
-    <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
+    <string name="picker_button_retake_image">Ambil Foto Ulang</string>
     <string name="picker_button_activation">Aktifkan</string>
 
     <string name="picker_button_delete_confirm">Ya, Hapus</string>
@@ -52,7 +52,7 @@
     <string name="picker_capture_limit_photo">Kamu hanya bisa mengambil maksimal %1$d foto.</string>
     <string name="picker_capture_limit_video">Kamu hanya bisa merekam maksimal %1$d video.</string>
 
-    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s pas.</string>
+    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s, ya.</string>
     <string name="picker_video_duration_min_limit">Durasi video minimal harus %1$d detik.</string>
     <string name="picker_video_max_size">Ukuran video maksimal %1$d MB.</string>
 
@@ -64,9 +64,15 @@
     <string name="picker_album_subtitle">%1$d Media</string>
     <string name="picker_separator_recording_duration">/</string>
 
+    <string name="picker_video_duration_max_limit_sec">detik</string>
+    <string name="picker_video_duration_max_limit_min">menit</string>
+    <string name="picker_video_duration_separator_char">/</string>
+
 <!--    content description-->
     <string name="picker_cd_flash">flash button</string>
     <string name="picker_cd_flip">flip button</string>
     <string name="picker_cd_retake">retake button</string>
     <string name="picker_cd_thumbnail">gallery image</string>
+    <string name="picker_cd_preview_center_play">center play button</string>
+    <string name="picker_cd_preview_center_pause">center pause button</string>
 </resources>
