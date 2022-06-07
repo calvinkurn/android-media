@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -78,8 +79,7 @@ class AnchorTabsViewModel(
                 }
             }
         }, onError = {
-//          Todo::  Log to Some Firebase Exception or new relic exception
-            it
+            Utils.logException(it)
         }
         )
     }
