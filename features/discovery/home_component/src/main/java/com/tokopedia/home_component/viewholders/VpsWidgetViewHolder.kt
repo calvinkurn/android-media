@@ -14,7 +14,6 @@ import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.VpsWidgetTabletConfiguration
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.VpsWidgetAdapter
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
