@@ -37,4 +37,8 @@ class MyCouponItemViewModel(val application: Application, val components: Compon
         return components.myCouponList?.firstOrNull()
     }
 
+    fun getCouponListSize(): Int? {
+        return components.parentListSize
+    }
+
 }
