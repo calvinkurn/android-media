@@ -41,13 +41,13 @@ class TmEligibilityViewModel @Inject constructor(
         }, shopID, isRegister)
     }
 
-    fun checkUserEligibility(){
+    fun checkUserEligibility(shopId: Int) {
         tmUserEligibilityUsecase.cancelJobs()
         tmUserEligibilityUsecase.checkUserEligibility({
             _userEligibilityCheckResultLiveData.postValue(Success(it))
         }, {
             _userEligibilityCheckResultLiveData.postValue(Fail(it))
-        })
+        }, shopId)
 
     }
 

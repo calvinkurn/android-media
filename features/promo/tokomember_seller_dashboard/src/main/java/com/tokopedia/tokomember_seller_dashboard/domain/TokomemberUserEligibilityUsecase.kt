@@ -13,10 +13,11 @@ class TokomemberUserEligibilityUsecase @Inject constructor(graphqlRepository: Gr
     fun checkUserEligibility(
         success: (TmUserElligibilityResponseData) -> Unit,
         onFail: (Throwable) -> Unit,
+        shopId: Int,
     ) {
         this.setTypeClass(TmUserElligibilityResponseData::class.java)
         this.setGraphqlQuery(IS_USER_ELIGIBLE)
-//        this.setRequestParams(getRequestParams())
+        this.setRequestParams(getRequestParams(shopId))
         this.execute({
             success(it)
         }, {
@@ -24,8 +25,8 @@ class TokomemberUserEligibilityUsecase @Inject constructor(graphqlRepository: Gr
         })
     }
 
-    private fun getRequestParams(): Map<String, Any> {
-        return mapOf(ACCESS_ID to 1, RESOURCE_ID to 1, RESOURCE_TYPE to "shop")
+    private fun getRequestParams(shopId: Int): Map<String, Any> {
+        return mapOf(ACCESS_ID to 1, RESOURCE_ID to shopId, RESOURCE_TYPE to "shop")
     }
 
     companion object {
@@ -37,10 +38,10 @@ class TokomemberUserEligibilityUsecase @Inject constructor(graphqlRepository: Gr
 }
 
 const val IS_USER_ELIGIBLE = """
-    {
-  rbacAuthorizeAccess(accessID: 1, resourceID: 1, resourceType: "shop") {
-    error
-    is_authorized
-  }
-}
+    query rbacAuthorizeAccess(${'$'}accessID: Int, ${'$'}resourceID: Int, ${'$'}resourceType: String) {
+        rbacAuthorizeAccess(accessID: ${'$'}accessID, resourceID: ${'$'}resourceID, resourceType: ${'$'}resourceType) {
+            error
+            is_authorized
+        }
+    }
 """

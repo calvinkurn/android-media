@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,7 +54,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
                     shopId = it.data.userShopInfo?.info?.shopId.toIntOrZero()
                     shopAvatar = it.data.userShopInfo?.info?.shopAvatar?:""
                     shopName = it.data.userShopInfo?.info?.shopName?:""
-                    tmEligibilityViewModel.checkUserEligibility()
+                    tmEligibilityViewModel.checkUserEligibility(shopId)
                 }
                 is Fail -> {
                 }
@@ -93,8 +94,8 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
-         //       TokomemberDashHomeActivity.openActivity(shopId, context)
-                TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
+                TokomemberDashHomeActivity.openActivity(shopId, context)
+//                TokomemberDashIntroActivity.openActivity(shopId,shopAvatar,shopName, context = context)
                 activity?.finish()
                 // redirect to dashboard
             }
