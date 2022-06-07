@@ -8,11 +8,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
@@ -27,7 +29,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_CHAR_VARIANT_TYPE_NAME
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
@@ -367,11 +368,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
-    fun clearProductVariant() {
-        productInputModel.value?.variantInputModel?.products = emptyList()
-        productInputModel.value?.variantInputModel?.selections = emptyList()
-    }
-
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
         val selectedVariantUnit = selectedVariantUnitMap.getOrElse(layoutPosition) { Unit() }
         return if (selectedVariantUnit.unitName.isNotBlank()) {
@@ -421,8 +417,6 @@ class AddEditProductVariantViewModel @Inject constructor(
             it.variantId != CUSTOM_VARIANT_TYPE_ID.toString()
         }
 
-        productInputModel.value?.variantInputModel = VariantInputModel(
-                isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = mutableListOf()
         mSelectedVariantUnitValuesLevel2.value = mutableListOf()
@@ -431,9 +425,22 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        productInputModel.getValueOrDefault().detailInputModel.categoryId.let {
-            val categoryId = it.toIntOrNull()
-            categoryId?.run { getVariantCategoryCombination(this, selections) }
+        with(productInputModel.getValueOrDefault()) {
+            resetVariantData()
+            variantInputModel = VariantInputModel(isRemoteDataHasVariant = isRemoteDataHasVariant)
+            detailInputModel.let {
+                val categoryId = it.categoryId.toIntOrNull()
+                categoryId?.run { getVariantCategoryCombination(this, selections) }
+                it.price = lastVariantData.price
+                it.sku = ""
+            }
+
+            if (isEditMode.value == true) {
+                shipmentInputModel.weight = Int.ZERO
+                detailInputModel.stock = lastVariantData.stock.orZero()
+            } else {
+                shipmentInputModel.weight = lastVariantData.weight.orZero()
+            }
         }
     }
 
@@ -552,8 +559,8 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (productVariant == null) {
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
-                    price = productInputModel.getValueOrDefault().detailInputModel.price,
-                    stock = MIN_PRODUCT_STOCK_LIMIT,
+                    price = productInputModel.getValueOrDefault().getVariantDefaultVariantPrice(
+                        isEditMode.getValueOrDefault(false)),
                     pictures = variantPicture,
                     combination = combination,
                     status = STATUS_ACTIVE_STRING
@@ -631,8 +638,12 @@ class AddEditProductVariantViewModel @Inject constructor(
             it.variantID == variantDetail.variantID && it.name == variantDetail.name
         }
 
-        // update isRemovingVariant value based on selectedVariantDetails elements
-        mIsRemovingVariant.value = this.selectedVariantDetails.isEmpty()
+        // reset to non variant product state if there is nothing selected
+        if (selectedVariantDetails.isEmpty()) {
+            removeVariant()
+        } else {
+            productInputModel.getValueOrDefault().resetVariantData()
+        }
     }
 
     fun disableRemovingVariant(){
@@ -651,11 +662,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         // compile variant photos
         colorVariant?.options?.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
-            // get variant image url
-            val picture = productInputModel.variantInputModel.products.find {
-                it.combination.getOrNull(colorVariantLevel) == index
-            }?.pictures?.firstOrNull()
-
+            val picture = productInputModel.variantInputModel.getImageUrl(colorVariantLevel, index)
             val photoUrl = picture?.urlOriginal.orEmpty()
             val photoPicID = picture?.picID.orEmpty()
             val photoDescription = picture?.description.orEmpty()

@@ -10,19 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/inbox_reputation_shimmer_image"
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            app:corners="8"
-            app:custom_color="@color/Unify_N50"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/inbox_reputation_shimmer_title"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/dp_12"
@@ -31,13 +31,13 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            app:corners="8"
-            app:custom_color="@color/Unify_N50"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/inbox_reputation_shimmer_subtitle"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/dp_12"
@@ -46,8 +46,8 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/layout_lvl7"
-            app:corners="8"
-            app:custom_color="@color/Unify_N50"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect"
             app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
             app:layout_constraintTop_toBottomOf="@id/inbox_reputation_shimmer_title"
             app:layout_constraintEnd_toEndOf="parent" />

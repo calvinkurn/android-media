@@ -2,17 +2,13 @@ package com.tokopedia.topads.dashboard.viewmodel
 
 import android.content.res.Resources
 import android.os.Bundle
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AUTO_BID_STATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
-import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.*
@@ -30,17 +26,10 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
-import com.tokopedia.topads.dashboard.data.model.StatsData
-import com.tokopedia.topads.dashboard.data.raw.STATS_URL
 import com.tokopedia.topads.dashboard.domain.interactor.*
-import com.tokopedia.topads.dashboard.view.presenter.StatsList
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
-import timber.log.Timber
-import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 /**
  * Created by Pika on 7/6/20.
@@ -63,27 +52,23 @@ class GroupDetailViewModel @Inject constructor(
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
-    fun getGroupProductData(page: Int, groupId: Int, search: String, sort: String, status: Int?, startDate: String,
-                            endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+    fun getGroupProductData(
+        page: Int, groupId: Int, search: String,
+        sort: String, status: Int?, startDate: String, endDate: String, goalId: Int,
+        onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
+    ) {
+        launchCatchError(block = {
+            val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page,
+                    search, sort, status, startDate, endDate, goalId = goalId)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
+            val nonGroupResponse = topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
+            if (nonGroupResponse.data.isEmpty()) {
+                onEmpty()
+            } else {
+                onSuccess(nonGroupResponse)
             }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if (nonGroupResponse.data.isEmpty()) {
-                    onEmpty()
-                } else {
-                    onSuccess(nonGroupResponse)
-                }
-            }
+        }, onError = {
+            onEmpty.invoke()
         })
     }
 
@@ -168,31 +153,27 @@ class GroupDetailViewModel @Inject constructor(
         topAdsCreated(dataGrp, dataKey, onSuccess, {})
     }
 
-    fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
-        val productBundle = Bundle()
-        val param = topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataKey, dataGrp)
-        topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<FinalAdResponse>
-                val dataGroup = response.data?.topadsManageGroupAds?.groupResponse
-                if (dataGroup?.errors.isNullOrEmpty())
-                    onSuccess()
-                else {
-                    var error = ""
-                    if (!dataGroup?.errors.isNullOrEmpty())
-                        error = dataGroup?.errors?.firstOrNull()?.detail ?: ""
-                    onError(error)
-                }
+    fun topAdsCreated(
+        dataGrp: HashMap<String, Any?>, dataKey: HashMap<String, Any?>,
+        onSuccess: (() -> Unit), onError: ((error: String?) -> Unit),
+    ) {
+        launchCatchError(block = {
+            val productBundle = Bundle()
+            val param =
+                topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataKey, dataGrp)
+            val response = topAdsCreateUseCase.execute(param)
+            val dataGroup = response.topadsManageGroupAds.groupResponse
+            if (dataGroup.errors.isNullOrEmpty())
+                onSuccess()
+            else {
+                var error = ""
+                if (!dataGroup.errors.isNullOrEmpty())
+                    error = dataGroup.errors?.firstOrNull()?.detail ?: ""
+                onError(error)
             }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                onError(e?.message)
-                e?.printStackTrace()
-            }
+        }, onError = {
+            onError(it.message)
+            it.printStackTrace()
         })
     }
 
@@ -225,45 +206,34 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    @GqlQuery("StatsList", STATS_URL)
-    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String, goalId: Int) {
-        val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, groupId, goalId)
-        topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
-        topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
 
-            override fun onError(e: Throwable?) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e?.localizedMessage)
-            }
+    fun getTopAdsStatistic(
+        startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int,
+        onSuccessGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit,
+        groupId: String, goalId: Int,
+    ) {
+        launchCatchError(block = {
+            val params = topAdsGetStatisticsUseCase.createRequestParams(
+                startDate, endDate, selectedStatisticType, userSession.shopId, groupId, goalId)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<StatsData>
-                val dataStatistic = response.data.topadsDashboardStatistics.data
-                onSuccesGetStatisticsInfo(dataStatistic)
-            }
+            val response = topAdsGetStatisticsUseCase.execute(params)
+
+            onSuccessGetStatisticsInfo(response.topadsDashboardStatistics.data)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
-        val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
-        topAdsGetGroupListUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+        launchCatchError(block = {
+            val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<DashGroupListResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<DashGroupListResponse>
-                val nonGroupResponse = response.data.getTopadsDashboardGroups
-                onSuccess(nonGroupResponse.data)
-            }
+            val response = topAdsGetGroupListUseCase.execute(params)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            onSuccess(response.getTopadsDashboardGroups.data)
+
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -279,32 +249,23 @@ class GroupDetailViewModel @Inject constructor(
     fun setProductAction(
         onSuccess: () -> Unit, action: String, adIds: List<String>, selectedFilter: String?
     ) {
-        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                onSuccess()
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
-        topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_group_action))
-        val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+        launchCatchError(block = {
+            val query = GraphqlHelper.loadRawString(resources, R.raw.gql_query_group_action)
+            val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
 
-            override fun onNext(t: Map<Type, RestResponse>?) {}
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            topAdsGroupActionUseCase.execute(query, requestParams)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -340,15 +301,12 @@ class GroupDetailViewModel @Inject constructor(
     public override fun onCleared() {
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsKeywordsActionUseCase.cancelJobs()
-        topAdsProductActionUseCase.unsubscribe()
-        topAdsGetGroupListUseCase.unsubscribe()
-        topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
+        groupInfoUseCase.cancelJobs()
     }
 }
 

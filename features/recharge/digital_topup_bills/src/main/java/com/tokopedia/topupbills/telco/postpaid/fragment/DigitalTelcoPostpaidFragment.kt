@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -62,7 +62,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var loadingShimmering: LinearLayout
+    private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View

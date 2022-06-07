@@ -477,7 +477,9 @@ class ProductTabFragment : BaseDaggerFragment() {
                         if (!deleteCancel) {
                             totalProductCount -= getAdIds().size
                             viewModel.setProductAction(::onSuccessAction,
-                                actionActivate, getAdIds(), selectedFilter)
+                                actionActivate,
+                                getAdIds(),
+                                selectedFilter)
                             if (totalProductCount == 0) {
                                 activity?.finish()
                             }
@@ -489,17 +491,19 @@ class ProductTabFragment : BaseDaggerFragment() {
             }
             ACTION_MOVE -> {
                 totalProductCount -= getAdIds().size
-                viewModel.setProductActionMoveGroup(
-                    selectedFilter ?: "",
-                    adapter.getSelectedItemsProductId(), ::onSuccessAction
-                )
+                viewModel.setProductAction(::onSuccessAction,
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
                 if (totalProductCount == 0) {
                     activity?.finish()
                 }
             }
             else -> {
                 viewModel.setProductAction(::onSuccessAction,
-                    actionActivate, getAdIds(), selectedFilter)
+                    actionActivate,
+                    getAdIds(),
+                    selectedFilter)
             }
         }
     }

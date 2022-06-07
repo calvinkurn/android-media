@@ -17,7 +17,7 @@ class PlaySlotTabViewAdapterDelegate private constructor() {
 
     internal class SlotTab(private val listener: PlaySlotTabCallback,private val activity: Activity) :
         TypedAdapterDelegate<PlaySlotTabMenuUiModel, PlayFeedUiModel, PlayFeedSlotTabViewHolder.SlotTab>(
-            R.layout.item_play_slot_tab
+            R.layout.item_feed_play_slot_tab
         ) {
         override fun onBindViewHolder(
             item: PlaySlotTabMenuUiModel,

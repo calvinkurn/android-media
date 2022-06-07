@@ -203,10 +203,11 @@
                 app:cardElevation="@dimen/unify_space_2"
                 tools:visibility="visible">
 
-                <com.elyeproj.loaderviewlibrary.LoaderImageView
+                <com.tokopedia.unifycomponents.LoaderUnify
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/voucher_game_dp_110"
-                    app:use_gradient="true" />
+                    app:loader_corner_radius="0dp"
+                    app:loader_type="rect" />
 
             </androidx.cardview.widget.CardView>
 

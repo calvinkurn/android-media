@@ -81,6 +81,7 @@ private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
 private const val DEFAULT_FRAGMENT_LOAD_COUNT = 2
 
+
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
 
     private var searchBar: SearchBarUnify? = null
@@ -445,8 +446,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoadsLayout?.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = VectorDrawableCompat.create(resources,
-                    com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
+                imgBg.background = VectorDrawableCompat.create(resources, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
@@ -548,6 +548,11 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun onEmptyResult() {
         autoAdsAdapter.items.add(AutoAdsItemsEmptyModel())
         autoAdsAdapter.notifyDataSetChanged()
+    }
+
+    override fun onDateRangeChanged() {
+        super.onDateRangeChanged()
+        loadData()
     }
 
     private fun loadData() {

@@ -1115,7 +1115,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         }
                     }
                 }
-               resetCaraouselActiveListener(feedXCard)
+               resetCarouselActiveListener(feedXCard)
             }
 
         } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
@@ -1268,10 +1268,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<Typography>(R.id.video_lihat_product)
             if (tagProducts.isEmpty()) {
-                layoutLihatProdukParent.gone()
+                layoutLihatProdukParent?.gone()
             } else {
-                layoutLihatProdukParent.visible()
-                 hideViewWithAnimation(layoutLihatProdukParent, context)
+                layoutLihatProdukParent?.let {
+                    it.visible()
+                    hideViewWithAnimation(it, context)
+                }
             }
 
 
@@ -1280,7 +1282,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerAnim?.postDelayed({
                 if (tagProducts.isNotEmpty()) {
-                    showViewWithAnimation(layoutLihatProdukParent, context)
+                    layoutLihatProdukParent?.let {
+                        showViewWithAnimation(layoutLihatProdukParent, context)
+                    }
                 }
             }, TIME_SECOND)
             productVideoJob?.cancel()
@@ -1945,7 +1949,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             feedXCard.media = mediaList
             feedXCard.tags = feedXCard.products
-            resetCaraouselActiveListener(feedXCard)
+            resetCarouselActiveListener(feedXCard)
         }
     }
 
@@ -2122,9 +2126,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
              model: Visitable<*>? = null
     ) {
         if (model is DynamicPostUiModel) {
-            resetCaraouselActiveListener(model?.feedXCard)
+            resetCarouselActiveListener(model?.feedXCard)
         }else if (model is TopadsHeadLineV2Model){
-            resetCaraouselActiveListener(model?.feedXCard)
+            resetCarouselActiveListener(model?.feedXCard)
         }
     }
 
@@ -2304,7 +2308,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         else
             videoPlayer?.pause()
     }
-    private fun resetCaraouselActiveListener(feedXCard: FeedXCard?){
+    private fun resetCarouselActiveListener(feedXCard: FeedXCard?){
         carouselView.apply {
             if (onActiveIndexChangedListener == null) {
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -2312,23 +2316,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         pageControl.setCurrentIndicator(current)
                         feedXCard?.lastCarouselIndex = current
                         if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
-                            val list = mutableListOf<FeedXProduct>()
-                            list.add(feedXCard.products[current])
-                            if (list.isNotEmpty())
-                            imagePostListener.userProductImpression(
+                            if (!feedXCard.products.isNullOrEmpty()
+                                && feedXCard.products.size > current) {
+                                imagePostListener.userProductImpression(
                                     positionInFeed,
                                     feedXCard.id,
                                     feedXCard.typename,
                                     feedXCard.author.id,
-                                    list
-                            )
-
+                                    listOf(feedXCard.products[current])
+                                )
+                            }
                             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
 
                             if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current)
-                            bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
+                                bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
                         } else if (feedXCard != null) {
-                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current) {
+                            if (feedXCard.media.isEmpty()) return
+                            if (feedXCard.media.size > current) {
                                 imagePostListener.userCarouselImpression(
                                         feedXCard.id,
                                         feedXCard.media[current],
@@ -2491,6 +2495,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             return LANDSCAPE
         return PORTRAIT
     }
+
     private fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
         val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * ROUND_OFF_TO_ONE_DECIMAL_VALUE) / ROUND_OFF_TO_ONE_DECIMAL_VALUE
         return if (ratio <= MEDIA_RATIO_PORTRAIT_THRESHOLD_FLOAT)

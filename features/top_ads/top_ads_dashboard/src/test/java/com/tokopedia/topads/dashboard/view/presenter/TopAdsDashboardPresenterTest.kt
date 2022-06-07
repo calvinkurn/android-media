@@ -1,51 +1,75 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.data.model.*
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.headline.data.Ad
 import com.tokopedia.topads.headline.data.Data
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.topads.headline.data.TopadsGetShopInfoV2
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import timber.log.Timber
 import java.util.*
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class TopAdsDashboardPresenterTest {
 
+    @get:Rule
+    val rule = CoroutineTestRule()
+
+    @get:Rule
+    val rule2 = InstantTaskExecutorRule()
+
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
     private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo> = mockk(relaxed = true)
     private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase = mockk(relaxed = true)
     private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase = mockk(relaxed = true)
-    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase = mockk(relaxed = true)
-    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase = mockk(relaxed = true)
+    private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase =
+        mockk(relaxed = true)
+    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase =
+        mockk(relaxed = true)
+    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase =
+        mockk(relaxed = true)
     private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase = mockk(relaxed = true)
     private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase = mockk(relaxed = true)
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase = mockk(relaxed = true)
+    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase =
+        mockk(relaxed = true)
     private val topAdsInsightUseCase: TopAdsInsightUseCase = mockk(relaxed = true)
-    private val getStatisticUseCase: GetStatisticUseCase = mockk(relaxed = true)
-    private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel> = mockk(relaxed = true)
-    private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel> = mockk(relaxed = true)
+    private val getStatisticUseCase: TopAdsGetStatisticsUseCase = mockk(relaxed = true)
+    private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel> =
+        mockk(relaxed = true)
+    private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel> =
+        mockk(relaxed = true)
     private val topAdsEditUseCase: TopAdsEditUseCase = mockk(relaxed = true)
     private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
@@ -55,11 +79,13 @@ class TopAdsDashboardPresenterTest {
     private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse> = mockk(relaxed = true)
     private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse> = mockk(relaxed = true)
     private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
-    private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> = mockk(relaxed = true)
+    private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> =
+        mockk(relaxed = true)
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
     private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase = mockk(relaxed = true)
     private var userSession: UserSessionInterface = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
+    private lateinit var throwable: Throwable
 
     var view: TopAdsDashboardView = mockk(relaxed = true)
     private val presenter by lazy {
@@ -85,351 +111,612 @@ class TopAdsDashboardPresenterTest {
     fun setUp() {
         MockKAnnotations.init(this)
         presenter.attachView(view)
+        throwable = spyk(Throwable())
     }
 
     @Test
-    fun `get shop deposit success`() {
-        val expected = 10
-        var actual = 0
-        val dataDeposit = DepositAmount(amount = 10)
-        val onSuccess: (dataDeposit: DepositAmount) -> Unit = {
-            actual = it.amount
-        }
-        every { topAdsGetShopDepositUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess.invoke(dataDeposit)
-        }
-        presenter.getShopDeposit(onSuccess)
-        Assert.assertEquals(expected, actual)
+    fun `getGroupData success check`() {
+        val expected = GroupItemResponse()
+        var actual: GroupItemResponse.GetTopadsDashboardGroups? = null
+
+        coEvery { topAdsGetGroupDataUseCase.execute(any()) } returns expected
+
+        presenter.getGroupData(0, "", "", 1, "", "", 1) { actual = it }
+
+        Assert.assertEquals(expected.getTopadsDashboardGroups, actual)
     }
 
     @Test
-    fun `get group data success`() {
+    fun `getGroupData error check`() {
+        coEvery { topAdsGetGroupDataUseCase.execute(any()) } throws throwable
+
         presenter.getGroupData(0, "", "", 1, "", "", 1) {}
 
-        verify {
-            topAdsGetGroupDataUseCase.execute(any(), any())
-        }
+        verify { throwable.printStackTrace() }
     }
 
     @Test
-    fun `get overall stats success`() {
+    fun `getStatistic success`() {
+        val expected = StatsData()
+        var actual: DataStatistic? = null
 
-        presenter.getStatistic(Date(), Date(), 1, "", ) {}
+        coEvery { getStatisticUseCase.execute(any()) } returns expected
 
-        verify {
-            getStatisticUseCase.execute(any(), any())
-        }
+        presenter.getStatistic(Date(), Date(), 1, "") { actual = it }
+
+        Assert.assertEquals(expected.topadsDashboardStatistics.data, actual)
     }
 
     @Test
-    fun `get group stats success`() {
+    fun `getStatistic error check`() {
+        coEvery { getStatisticUseCase.execute(any()) } throws throwable
+
+        presenter.getStatistic(Date(), Date(), 1, "") {}
+
+        verify { view.onErrorGetStatisticsInfo(throwable) }
+    }
+
+    @Test
+    fun `getGroupStatisticsData success`() {
+        val expected = GroupStatisticsResponse()
+        var actual: GetTopadsDashboardGroupStatistics? = null
+
+        coEvery { topAdsGetGroupStatisticsUseCase.execute(any()) } returns expected
+
+        presenter.getGroupStatisticsData(1, "", "", 1, "", "", listOf()) { actual = it }
+
+        Assert.assertEquals(expected.getTopadsDashboardGroupStatistics, actual)
+    }
+
+    @Test
+    fun `getGroupStatisticsData error check`() {
+        coEvery { topAdsGetGroupStatisticsUseCase.execute(any()) } throws throwable
 
         presenter.getGroupStatisticsData(1, "", "", 1, "", "", listOf()) {}
 
-        verify {
-            topAdsGetGroupStatisticsUseCase.execute(any(), any())
-        }
+        verify { throwable.printStackTrace() }
     }
 
     @Test
-    fun `on product stats success`() {
-        val expected = "10"
-        var actual = "0"
-        val res: Resources = mockk(relaxed = true)
-        val data = GetDashboardProductStatistics(data = listOf(WithoutGroupDataItem(adId = expected)))
-        val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {
-            actual = it.data[0].adId
+    fun `getProductStats success`() {
+        val expected = ProductStatisticsResponse()
+        var actual: GetDashboardProductStatistics? = null
+
+        every {
+            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            firstArg<(ProductStatisticsResponse) -> Unit>().invoke(expected)
         }
-        every { topAdsGetProductStatisticsUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+
+        presenter.getProductStats(res, ",", "", listOf(), "", 0) { actual = it }
+
+        Assert.assertEquals(expected.getDashboardProductStatistics, actual)
+    }
+
+    @Test
+    fun `getProductStats error check`() {
+        coEvery {
+            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        presenter.getProductStats(res, ",", "", listOf(), "", 0, onSuccess)
-        Assert.assertEquals(expected, actual)
+
+        presenter.getProductStats(res, ",", "", listOf(), "", 0) {}
+
+        verify { throwable.printStackTrace() }
     }
 
     @Test
     fun `on product keyword count success`() {
         val expected = 10
         var actual = 0
-        val data = CountDataItem(totalAds = expected)
+
         val onSuccess: (data: List<CountDataItem>) -> Unit = {
             actual = it[0].totalAds
         }
-        every { topAdsGetProductKeyCountUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(listOf(data))
+        every {
+            topAdsGetProductKeyCountUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            firstArg<(TotalProductKeyResponse) -> Unit>().invoke(TotalProductKeyResponse(
+                TopAdsGetTotalAdsAndKeywords(listOf(CountDataItem(totalAds = expected)))))
         }
+
         presenter.getCountProductKeyword(res, listOf(), onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `get group list`() {
-        val expected = 10
-        var actual = 0
-        val data = GroupListDataItem(totalItem = expected)
+    fun `getCountProductKeyword error check`() {
+        coEvery {
+            topAdsGetProductKeyCountUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        presenter.getCountProductKeyword(res, listOf(), {})
+
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getGroupList list`() {
+        val expected = DashGroupListResponse()
+        var actual: List<GroupListDataItem>? = null
+
         val onSuccess: (data: List<GroupListDataItem>) -> Unit = {
-            actual = it[0].totalItem
+            actual = it
         }
-        every { topAdsGetGroupListUseCase.execute(any(), any()) } answers {
-            onSuccess.invoke(listOf(data))
-        }
+        coEvery { topAdsGetGroupListUseCase.execute(any()) } returns expected
+
         presenter.getGroupList("", onSuccess)
-        Assert.assertEquals(expected, actual)
+        Assert.assertEquals(expected.getTopadsDashboardGroups.data, actual)
     }
 
     @Test
-    fun `set group action `() {
+    fun `setGroupAction success`() {
+        val expected = "hiii"
+        var actual: String? = null
+
+        coEvery { topAdsGroupActionUseCase.execute(any(), any()) } returns
+                GroupActionResponse(GroupActionResponse.TopAdsEditGroupBulk(GroupActionResponse.TopAdsEditGroupBulk.Data(
+                    expected), emptyList()))
+
+        presenter.setGroupAction({
+            actual = it
+        }, "", listOf(), res)
+
+        Assert.assertEquals(actual, expected)
+    }
+
+    @Test
+    fun `setGroupAction empty data check`() {
+        val expected = "hiii"
+
+        coEvery { topAdsGroupActionUseCase.execute(any(), any()) } returns
+                GroupActionResponse(GroupActionResponse.TopAdsEditGroupBulk(errors = listOf(
+                    ErrorsItem(detail = expected))))
+
         presenter.setGroupAction({}, "", listOf(), res)
-        verify {
-            topAdsGroupActionUseCase.execute(any(), any())
-        }
+
+        verify { view.onError(expected) }
     }
 
     @Test
-    fun `set product action success`() {
-        val expected = "add"
-        var actual = ""
-        val onSuccess: () -> Unit = {
-            actual = expected
+    fun `setGroupAction error check`() {
+        coEvery {
+            topAdsGroupActionUseCase.execute(any(), any())
+        } throws throwable
+
+        presenter.setGroupAction({}, "", listOf(), res)
+
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `setProductAction success`() {
+        var successCalled = false
+        coEvery { topAdsProductActionUseCase.execute(any()) } returns mockk()
+        presenter.setProductAction({
+            successCalled = true
+        }, "", listOf(), "")
+
+        Assert.assertTrue(successCalled)
+    }
+
+    @Test
+    fun `setProductAction error check`() {
+        coEvery { topAdsProductActionUseCase.execute(any()) } throws throwable
+
+        presenter.setProductAction({}, "", listOf(), "")
+
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getGroupProductData empty check`() {
+        var emptyCalled = false
+
+        coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns NonGroupResponse()
+
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) { emptyCalled = true }
+
+        Assert.assertTrue(emptyCalled)
+    }
+
+    @Test
+    fun `getGroupProductData success check`() {
+        val expected = NonGroupResponse(NonGroupResponse.TopadsDashboardGroupProducts(data = listOf(
+            WithoutGroupDataItem())))
+        var actual: NonGroupResponse.TopadsDashboardGroupProducts? = null
+
+        coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns expected
+
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, { actual = it }) { }
+
+        Assert.assertEquals(expected.topadsDashboardGroupProducts, actual)
+    }
+
+    @Test
+    fun `getGroupProductData error check`() {
+        var emptyCalled = false
+
+        coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } throws throwable
+
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) { emptyCalled = true }
+
+        Assert.assertTrue(emptyCalled)
+    }
+
+    @Test
+    fun `getInsight success`() {
+        val expected = InsightKeyData()
+        var actual: InsightKeyData? = null
+
+        coEvery { topAdsInsightUseCase.execute(any(), any()) } returns expected
+        presenter.getInsight(res) {
+            actual = it
         }
-        every { topAdsProductActionUseCase.execute(any(), any()) } answers {
-            onSuccess.invoke()
-        }
-        presenter.setProductAction(onSuccess, "", listOf(), "")
+
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `get product data `() {
-        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
-        verify {
-            topAdsGetGroupProductDataUseCase.execute(any(), any())
-        }
-    }
+    fun `getInsight failure`() {
 
-    @Test
-    fun `get insight data `() {
+        coEvery { topAdsInsightUseCase.execute(any(), any()) } throws throwable
         presenter.getInsight(res) {}
-        verify {
-            topAdsInsightUseCase.execute(any(), any())
-        }
+
+        verify { throwable.printStackTrace() }
     }
 
     @Test
-    fun `get shop info success`() {
-        val expected = true
-        var actual = false
-        val data = ShopAdInfo(topadsGetShopInfoV2 = TopadsGetShopInfoV2(data = Data(listOf(Ad(isUsed = expected)))))
+    fun `getShopAdsInfo success`() {
+        val expected = ShopAdInfo()
+        var actual: ShopAdInfo? = null
+
         val onSuccess: (data: ShopAdInfo) -> Unit = {
-            actual = it.topadsGetShopInfoV2.data.ads[0].isUsed
+            actual = it
         }
         every { shopAdInfoUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(ShopAdInfo) -> Unit>().invoke(expected)
         }
+
         presenter.getShopAdsInfo(onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
     @Test
+    fun `getShopAdsInfo error`() {
+
+        every { shopAdInfoUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        var successCalled = false
+        presenter.getShopAdsInfo { successCalled = true }
+
+        Assert.assertTrue(!successCalled)
+    }
+
+    @Test
     fun `get expiray date success`() {
+        val expected = "iot"
+
+        every {
+            getExpiryDateUseCase.execute(captureLambda(), any())
+        } answers {
+            firstArg<(ExpiryDateResponse) -> Unit>().invoke(ExpiryDateResponse(ExpiryDateResponse.TopAdsGetFreeDeposit(
+                expected)))
+        }
 
         presenter.getExpiryDate(res)
-        verify {
-            getExpiryDateUseCase.execute(any(), any())
-        }
+        Assert.assertEquals(presenter.expiryDateHiddenTrial.value, expected)
     }
 
     @Test
-    fun `get hidden trial list date success`() {
+    fun `get expiry date error`() {
+        every {
+            getExpiryDateUseCase.execute(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        presenter.getExpiryDate(res)
+
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getShopListHiddenTrial should invoke true if hiddenTrial feature id present`() {
+
+        every {
+            getHiddenTrialUseCase.execute(captureLambda(), any())
+        } answers {
+            firstArg<(FreeTrialShopListResponse) -> Unit>().invoke(
+                FreeTrialShopListResponse(FreeTrialShopListResponse.TopAdsGetShopWhitelistedFeature(
+                    listOf(FreeTrialShopListResponse.TopAdsGetShopWhitelistedFeature.DataItem(
+                        featureID = TopAdsDashboardPresenter.HIDDEN_TRIAL_FEATURE))
+                ))
+            )
+        }
+
         presenter.getShopListHiddenTrial(res)
-        verify {
-            getHiddenTrialUseCase.execute(any(), any())
-        }
+
+        Assert.assertTrue(presenter.isShopWhiteListed.value == true)
     }
 
     @Test
-    fun `get ad status success`() {
-        presenter.getAdsStatus(res)
-        verify {
-            adsStatusUseCase.execute(any(), any())
+    fun `getShopListHiddenTrial should invoke false if not hiddenTrial feature id present`() {
+
+        every {
+            getHiddenTrialUseCase.execute(captureLambda(), any())
+        } answers {
+            firstArg<(FreeTrialShopListResponse) -> Unit>().invoke(
+                FreeTrialShopListResponse(FreeTrialShopListResponse.TopAdsGetShopWhitelistedFeature(
+                    listOf(FreeTrialShopListResponse.TopAdsGetShopWhitelistedFeature.DataItem(
+                        featureID = -1))
+                ))
+            )
         }
+
+        presenter.getShopListHiddenTrial(res)
+
+        Assert.assertTrue(presenter.isShopWhiteListed.value == false)
+    }
+
+    @Test
+    fun `getShopListHiddenTrial error`() {
+
+        every {
+            getHiddenTrialUseCase.execute(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        presenter.getShopListHiddenTrial(res)
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getAdsStatus success`() {
+        val expected = AdStatusResponse()
+
+        every {
+            adsStatusUseCase.execute(captureLambda(), any())
+        } answers {
+            firstArg<(AdStatusResponse) -> Unit>().invoke(expected)
+        }
+
+        presenter.getAdsStatus(res)
+        verify { view.onSuccessAdStatus(expected.topAdsGetShopInfo.data) }
+    }
+
+    @Test
+    fun `getAdsStatus error`() {
+        every {
+            adsStatusUseCase.execute(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        presenter.getAdsStatus(res)
+
+        verify(exactly = 0) { view.onSuccessAdStatus(any()) }
     }
 
     @Test
     fun `get auto ad status success`() {
-        presenter.getAdsStatus(res)
-        verify {
-            adsStatusUseCase.execute(any(), any())
+        val expected = AutoAdsResponse()
+        var actual: AutoAdsResponse.TopAdsGetAutoAds.Data? = null
+
+        every {
+            autoAdsStatusUseCase.execute(captureLambda(), any())
+        } answers {
+            firstArg<(AutoAdsResponse) -> Unit>().invoke(expected)
         }
+
+        presenter.getAutoAdsStatus(res) { actual = it }
+        Assert.assertEquals(expected.topAdsGetAutoAds.data, actual)
     }
 
     @Test
-    fun `get auto topup value success`() {
-        presenter.getAutoTopUpStatus(res, {})
-        verify {
-            autoTopUpUSeCase.execute(any(), any())
+    fun `getAutoAdsStatus error`() {
+        every {
+            adsStatusUseCase.execute(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
+
+        var successCalled = false
+        presenter.getAutoAdsStatus(res) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
-    fun `get product recommendation success`() {
-        val expected = "47"
-        var actual = ""
-        val data = ProductRecommendationModel(topadsGetProductRecommendation = TopadsGetProductRecommendation
-        (data = ProductRecommendationData(nominalId = expected)))
-        val onSuccess: (data: ProductRecommendationModel) -> Unit = {
-            actual = it.topadsGetProductRecommendation.data.nominalId
-        }
+    fun `getProductRecommendation success`() {
+        val expected = ProductRecommendationModel()
+        var actual: ProductRecommendationModel? = null
+
         every { productRecomUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(ProductRecommendationModel) -> Unit>().invoke(expected)
         }
-        presenter.getProductRecommendation(onSuccess)
+
+        presenter.getProductRecommendation { actual = it }
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `get daily budget recommendation success`() {
-        val expected = "47"
-        var actual = ""
-        val data = DailyBudgetRecommendationModel(topadsGetDailyBudgetRecommendation =
-        TopadsGetDailyBudgetRecommendation(data = listOf(DataBudget(groupId = expected))))
-        val onSuccess: (data: DailyBudgetRecommendationModel) -> Unit = {
-            actual = it.topadsGetDailyBudgetRecommendation.data[0].groupId
+    fun `getProductRecommendation error`() {
+        every { productRecomUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
+        var successCalled = false
+        presenter.getProductRecommendation {successCalled = true}
+        Assert.assertTrue(!successCalled)
+    }
+
+    @Test
+    fun `getDailyBudgetRecommendation success`() {
+        val expected = DailyBudgetRecommendationModel()
+        var actual: DailyBudgetRecommendationModel? = null
+
         every { budgetRecomUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(DailyBudgetRecommendationModel) -> Unit>().invoke(expected)
         }
-        presenter.getDailyBudgetRecommendation(onSuccess)
+        presenter.getDailyBudgetRecommendation { actual = it }
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `edit budget insight`() {
-        val expected = "haha"
-        val data = FinalAdResponse.TopadsManageGroupAds(keywordResponse =
-        FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors =
-        listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem(title = expected))))
-        var actual = ""
-        val onSuccess: (data: FinalAdResponse.TopadsManageGroupAds) -> Unit = {
-            actual = it.keywordResponse.errors?.get(0)?.title ?: "haha"
+    fun `getDailyBudgetRecommendation error`() {
+        every { budgetRecomUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        every { topAdsEditUseCase.execute(any(), any()) } answers {
-            onSuccess.invoke(data)
-        }
-        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), onSuccess, {})
-        Assert.assertEquals(expected, actual)
+        var successCalled = false
+        presenter.getDailyBudgetRecommendation {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
-    fun `on group valid success`() {
-        val expected = 10
-        var actual = 0
-        val data = ResponseGroupValidateName.TopAdsGroupValidateName(data = ResponseGroupValidateName.TopAdsGroupValidateName.Data(shopID = expected))
-        val onSuccess: (dataDeposit: ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit = {
-            actual = it.data.shopID
-        }
+    fun `editBudgetThroughInsight success`() {
+        val expected = FinalAdResponse()
+        var actual: FinalAdResponse.TopadsManageGroupAds? = null
+
+        coEvery { topAdsEditUseCase.execute(any()) } returns expected
+
+        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), { actual = it }, {})
+
+        Assert.assertEquals(expected.topadsManageGroupAds, actual)
+    }
+
+    @Test
+    fun `editBudgetThroughInsight error check`() {
+        coEvery { topAdsEditUseCase.execute(any()) } throws throwable
+
+        presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), {}, {})
+
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `validateGroup success`() {
+        val expected = ResponseGroupValidateName()
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateName? = null
+
         every { validGroupUseCase.execute(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(ResponseGroupValidateName) -> Unit>().invoke(expected)
         }
-        presenter.validateGroup("", onSuccess)
+        presenter.validateGroup("") { actual = it }
+        Assert.assertEquals(expected.topAdsGroupValidateName, actual)
+    }
+
+    @Test
+    fun `validateGroup error`() {
+
+        every { validGroupUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        presenter.validateGroup("") {}
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `create group success`() {
+        val expected = ResponseCreateGroup.TopadsCreateGroupAds()
+        var actual: ResponseCreateGroup.TopadsCreateGroupAds? = null
+
+        every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(ResponseCreateGroup.TopadsCreateGroupAds) -> Unit>().invoke(expected)
+        }
+        presenter.createGroup(hashMapOf()) { actual = it }
         Assert.assertEquals(expected, actual)
     }
 
     @Test
-    fun `create group success check, error should be null`() {
-        val fakeRequest = mockk<RequestParams>()
-        val expectedObj = FinalAdResponse(FinalAdResponse.TopadsManageGroupAds(
-            FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = null),
-            FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = null)
-        ))
-
-        every {
-            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
-        } answers {
-            secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
+    fun `create group error`() {
+        every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        every {
-            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
-        } returns fakeRequest
-
-        presenter.createGroup(mockk(), "", 0.0, 0.0) {
-            assert(it.isNullOrEmpty())
-        }
-    }
-
-    @Test
-    fun `create group on error ,error should not be null`() {
-        val fakeRequest = mockk<RequestParams>()
-        val expectedObj = FinalAdResponse(FinalAdResponse.TopadsManageGroupAds(
-            FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
-            FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = null)
-        ))
-
-        every {
-            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
-        } answers {
-            secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
-        }
-        every {
-            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
-        } returns fakeRequest
-
-        presenter.createGroup(mockk(), "", 0.0, 0.0) {
-            assert(it != null)
-        }
-    }
-
-    @Test
-    fun `createGroup on null response, error method should not be called`() {
-        mockkConstructor(FinalAdResponse::class)
-        val fakeRequest = mockk<RequestParams>()
-
-        every {
-            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
-        } answers {
-            secondArg<(FinalAdResponse?) -> Unit>().invoke(null)
-        }
-        every {
-            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
-        } returns fakeRequest
-
-        var success = true
-        presenter.createGroup(mockk(), "", 0.0, 0.0) {
-            success = false
-        }
-        assert(success)
+        var successCalled = false
+        presenter.createGroup(hashMapOf()) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
     fun `get bid info success`() {
-        val expected = "10"
-        var actual = "0"
-        val data = listOf(TopadsBidInfo.DataItem(maxBid = expected))
-        val onSuccess: (data: List<TopadsBidInfo.DataItem>) -> Unit = {
-            actual = it[0].maxBid
-        }
+        val expected = ResponseBidInfo.Result()
+        var actual: List<TopadsBidInfo.DataItem>? = null
         every { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(ResponseBidInfo.Result) -> Unit>().invoke(expected)
         }
-        presenter.getBidInfo(listOf(), onSuccess)
-        Assert.assertEquals(expected, actual)
+        presenter.getBidInfo(listOf()) { actual = it }
+        Assert.assertEquals(expected.topadsBidInfo.data, actual)
     }
 
     @Test
-    fun `get group info success`() {
-        val expected = 10.0F
-        var actual = 0.0F
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
-        val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.daiyBudget
+    fun `get bid info error`() {
+        every { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
-        }
-        presenter.getGroupInfo(res, "", "", onSuccess)
-        Assert.assertEquals(expected, actual)
+        var successCalled = false
+        presenter.getBidInfo(listOf()) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
+    @Test
+    fun `getGroupInfo success`() {
+        val expected = GroupInfoResponse()
+        var actual: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
+
+        every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(GroupInfoResponse) -> Unit>().invoke(expected)
+        }
+        presenter.getGroupInfo(res, "", "") { actual = it }
+        Assert.assertEquals(expected.topAdsGetPromoGroup!!.data, actual)
+    }
+
+    @Test
+    fun `getGroupInfo error`() {
+        every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        presenter.getGroupInfo(res, "", "") {}
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getWhiteListedUser success`() {
+        val expected = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature()
+        var actual: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature? = null
+
+        val isFinished : () -> Unit = spyk()
+        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
+                expected)
+        }
+
+        presenter.getWhiteListedUser({ actual = it }, isFinished)
+        Assert.assertEquals(expected, actual)
+        verify { isFinished() }
+    }
+
+    @Test
+    fun `getWhiteListedUser error`() {
+        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        presenter.getWhiteListedUser({}, {})
+        verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `getDeletedAds test`() {
+        val onSuccess: (TopAdsDeletedAdsResponse) -> Unit = {}
+        val onEmptyResult: () -> Unit = {}
+        presenter.getDeletedAds(0, "", "", "", onSuccess, onEmptyResult)
+        verify { topAdsGetDeletedAdsUseCase.execute(onSuccess, onEmptyResult) }
+    }
 
     @Test
     fun `check detach view`() {
@@ -438,4 +725,5 @@ class TopAdsDashboardPresenterTest {
             topAdsGetShopDepositUseCase.cancelJobs()
         }
     }
+
 }

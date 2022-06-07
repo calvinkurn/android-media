@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -48,15 +49,39 @@ class ErrorLoadViewModelTest {
     /**************************** reloadComponentData() *******************************************/
 
     @Test
-    fun `reloadComponentData when loadFirstPageComponents returns true for MerchantVoucherList and noOfPagesLoaded is 0`() {
-            coEvery { componentsItem.noOfPagesLoaded } returns 0
-            coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-            coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+    fun `reloadComponentData when loadFirstPageComponents returns true for MerchantVoucherList and noOfPagesLoaded is 0 and we get data`() {
+        coEvery { componentsItem.noOfPagesLoaded } returns 0
+        coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
+        coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        mockkStatic(::getComponent)
+        val merchantVoucherComponent: ComponentsItem = spyk()
+        coEvery { getComponent( componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
+        every { merchantVoucherComponent.getComponentsItem()} returns listOf(mockk())
+        viewModel.reloadComponentData()
+        Assert.assertEquals(viewModel.syncData.value, true)
+    }
 
-            viewModel.reloadComponentData()
+    @Test
+    fun `reloadComponentData when loadFirstPageComponents returns true for MerchantVoucherList and noOfPagesLoaded is 0 and we don't get data`() {
+        coEvery { componentsItem.noOfPagesLoaded } returns 0
+        coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
+        coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        mockkStatic(::getComponent)
+        val merchantVoucherComponent: ComponentsItem = spyk()
+        coEvery { getComponent( componentsItem.parentComponentId, componentsItem.pageEndPoint) } returns merchantVoucherComponent
 
-            Assert.assertEquals(viewModel.syncData.value, true)
-        }
+        every { merchantVoucherComponent.getComponentsItem()} returns null
+        viewModel.reloadComponentData()
+        Assert.assertEquals(viewModel.syncData.value, false)
+
+        every { merchantVoucherComponent.getComponentsItem()} returns listOf()
+        viewModel.reloadComponentData()
+        Assert.assertEquals(viewModel.syncData.value, false)
+    }
 
     @Test
     fun `reloadComponentData when loadFirstPageComponents returns true for ProductCardCarousel and noOfPagesLoaded is 0`() {
@@ -69,17 +94,7 @@ class ErrorLoadViewModelTest {
         Assert.assertEquals(viewModel.syncData.value, true)
     }
 
-    @Test
-    fun `reloadComponentData when getVoucherUseCase returns true for MerchantVoucherList and noOfPagesLoaded is 1`() {
-        coEvery { componentsItem.noOfPagesLoaded } returns 1
-        coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-        coEvery { viewModel.merchantVoucherUseCase.getVoucherUseCase(any(), any()) } returns true
 
-        viewModel.reloadComponentData()
-
-        Assert.assertEquals(viewModel.syncData.value, true)
-
-    }
 
     @Test
     fun `reloadComponentData when getProductCardsUseCase returns true for ProductCardCarousel and noOfPagesLoaded is 1`() {

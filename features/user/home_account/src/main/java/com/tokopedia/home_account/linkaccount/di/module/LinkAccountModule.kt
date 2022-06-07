@@ -2,10 +2,7 @@ package com.tokopedia.home_account.linkaccount.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.di.HomeAccountUserScope
 import com.tokopedia.home_account.linkaccount.di.LinkAccountContext
 import com.tokopedia.home_account.linkaccount.tracker.LinkAccountTracker
 import com.tokopedia.user.session.UserSession
