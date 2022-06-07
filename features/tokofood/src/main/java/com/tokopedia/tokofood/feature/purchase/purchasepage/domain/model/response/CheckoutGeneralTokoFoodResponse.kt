@@ -29,7 +29,7 @@ data class CheckoutGeneralTokoFoodData(
     @SerializedName("error")
     @Expose
     val error: String = "",
-    @SerializedName("serror_state")
+    @SerializedName("error_state")
     @Expose
     val errorState: Int = 0,
     @SerializedName("error_metadata")
