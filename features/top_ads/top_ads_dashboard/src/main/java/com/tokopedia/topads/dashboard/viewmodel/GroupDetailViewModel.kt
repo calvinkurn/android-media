@@ -240,10 +240,15 @@ class GroupDetailViewModel @Inject constructor(
     fun setProductActionMoveGroup(
         groupId: String, productIds: List<String>, onSuccess: (() -> Unit),
     ) {
-        val param = topAdsCreateUseCase.createRequestParamMoveGroup(
-            groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
-        )
-        topAdsCreateUseCase.executeQuery(param, onSuccess)
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+                groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     fun setProductAction(
@@ -279,10 +284,15 @@ class GroupDetailViewModel @Inject constructor(
             return
         }
 
-        val param = topAdsCreateUseCase.createRequestParamActionDelete(
-            TopAdsDashboardConstant.SOURCE_DASH, groupId, keywordIds
-        )
-        topAdsCreateUseCase.executeQuery(param, onSuccess)
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamActionDelete(
+                TopAdsDashboardConstant.SOURCE_DASH, groupId, keywordIds
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     fun setKeywordAction(action: String, keywordIds: List<String>, resources: Resources, onSuccess: (() -> Unit)) {
