@@ -141,7 +141,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId
+                        data = it.data.shop.shopId.takeIf { responseShopId ->
+                            responseShopId.isNotBlank()
+                        } ?: shopId.value
                     )
                     return@collect
                 }
@@ -205,7 +207,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId
+                        data = it.data.shop.shopId.takeIf { responseShopId ->
+                            responseShopId.isNotBlank()
+                        } ?: shopId.value
                     )
                     return@collect
                 }
@@ -314,7 +318,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         } else {
             _uiEvent.value = PurchaseUiEvent(
                 state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                data = shopId
+                data = shopId.value
             )
         }
     }
