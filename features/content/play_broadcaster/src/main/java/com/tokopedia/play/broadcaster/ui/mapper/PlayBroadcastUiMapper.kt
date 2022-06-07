@@ -489,17 +489,17 @@ class PlayBroadcastUiMapper(
                 ),
                 cursor = cursor,
                 winners = winners.map {
-                                      GameParticipantUiModel(
-                                          id = it.id,
-                                          name =  it.firstName,
-                                          imageUrl = it.imageURL,
-                                          isWinner = true
-                                      )
+                    GameParticipantUiModel(
+                        id = it.id,
+                        name = it.firstName,
+                        imageUrl = it.imageURL,
+                        isWinner = true
+                    )
                 },
                 participants = participants.map {
                     GameParticipantUiModel(
                         id = it.id,
-                        name =  it.firstName,
+                        name = it.firstName,
                         imageUrl = it.imageURL,
                         isWinner = false
                     )
@@ -508,38 +508,50 @@ class PlayBroadcastUiMapper(
         }
     }
 
-    override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
+    override fun mapLeaderBoardWithSlot(
+        response: GetSellerLeaderboardSlotResponse,
+        allowChat: Boolean
+    ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else textTransformer.transform(slot.question),
+                title =
+                if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
+                    slot.title
+                else textTransformer.transform(
+                    slot.question
+                ),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
-                        rank = index+1,
+                        rank = index + 1,
                         id = winner.userID,
                         name = winner.userName,
                         imageUrl = winner.imageUrl,
-                        allowChat = { false },
-                        topChatMessage = ""
+                        allowChat = { allowChat },
+                        topChatMessage =
+                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
+                            response.data.config.topchatMessage
+                        else
+                            response.data.config.topchatMessageQuiz,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
-                QuizChoicesUiModel(
-                    index = index,
-                    id = choice.id,
-                    text = textTransformer.transform(choice.text),
-                    type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabetChoices(index),
-                        isCorrect = choice.isCorrectAnswer,
-                        count = choice.participantCount.toString(),
-                        showArrow = true
+                    QuizChoicesUiModel(
+                        index = index,
+                        id = choice.id,
+                        text = textTransformer.transform(choice.text),
+                        type = PlayQuizOptionState.Participant(
+                            alphabet = generateAlphabetChoices(index),
+                            isCorrect = choice.isCorrectAnswer,
+                            count = choice.participantCount.toString(),
+                            showArrow = true
+                        )
                     )
-                )
-            },
+                },
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = textTransformer.transform(slot.reward),
                 leaderBoardType = getLeaderboardType(slot.type)
-                )
+            )
         }
     }
 
@@ -550,7 +562,7 @@ class PlayBroadcastUiMapper(
      * Change to typename to make sure
      */
     private fun getLeaderboardType(leaderboardsResponse: String): LeadeboardType {
-        return when(leaderboardsResponse){
+        return when (leaderboardsResponse) {
             "PlayInteractiveSellerLeaderboardGiveaway" -> LeadeboardType.Giveaway
             "PlayInteractiveSellerLeaderboardQuiz" -> LeadeboardType.Quiz
             else -> LeadeboardType.Unknown

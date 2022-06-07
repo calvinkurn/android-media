@@ -985,10 +985,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getLeaderboardWithSlots() {
+    fun getLeaderboardWithSlots(allowChat : Boolean = false) {
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat)
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value = QuizDetailStateUiModel.Error
@@ -997,7 +997,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, false)
             if (leaderboardSlots.isNotEmpty()) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowInteractiveGameResultWidget(sharedPref.isFirstGameResult()))
                 sharedPref.setNotFirstGameResult()
