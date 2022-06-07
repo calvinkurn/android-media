@@ -291,12 +291,8 @@ class InteractiveDialogFragment @Inject constructor(
 
     private fun getWidget() : View {
         val parent = view as ViewGroup
-        if(parent.childCount < 0) return View(context)
-        return when(parent.getChildAt(0)) {
-            is QuizWidgetView -> QuizWidgetView(context)
-            is GiveawayWidgetView -> GiveawayWidgetView(context)
-            else -> View(context)
-        }
+        return if(parent.childCount < 0) View(context)
+        else parent.getChildAt(0)
     }
 
     companion object {

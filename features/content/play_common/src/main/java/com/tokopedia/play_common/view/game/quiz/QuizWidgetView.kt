@@ -3,12 +3,15 @@ package com.tokopedia.play_common.view.game.quiz
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -119,15 +122,26 @@ class QuizWidgetView : ConstraintLayout {
 
     private fun animateCorrectAnswer(){
         answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.duration = 100L
+        answerTrueAnimator.childAnimations.forEach {
+            if (it !is ValueAnimator) return@forEach
+            it.duration = 70L
+            it.repeatCount = 1
+            it.repeatMode = ValueAnimator.RESTART
+        }
         answerTrueAnimator.start()
     }
 
     private fun animateWrongAnswer(){
         answerFalseAnimator.addListener(animationListener)
-        answerFalseAnimator.duration = 100L
+        answerFalseAnimator.childAnimations.forEach {
+            if (it !is ValueAnimator) return@forEach
+            it.duration = 70L
+            it.repeatCount = 1
+            it.repeatMode = ValueAnimator.RESTART
+        }
         answerFalseAnimator.start()
     }
+
 
     interface Listener {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
@@ -173,5 +187,14 @@ class QuizWidgetView : ConstraintLayout {
         override fun onAnimationCancel(animation: Animator?) {}
 
         override fun onAnimationRepeat(animation: Animator?) {}
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        answerFalseAnimator.cancel()
+        answerFalseAnimator.removeAllListeners()
+
+        answerTrueAnimator.cancel()
+        answerTrueAnimator.removeAllListeners()
     }
 }
