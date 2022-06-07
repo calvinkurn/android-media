@@ -203,7 +203,7 @@ class ProductTagParentFragment @Inject constructor(
 
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
                 binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
-                if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+                if(firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
                     binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
                     binding.imgCcProductTagShopBadge1.show()
                     binding.icCcProductTagShopBadge1.hide()
