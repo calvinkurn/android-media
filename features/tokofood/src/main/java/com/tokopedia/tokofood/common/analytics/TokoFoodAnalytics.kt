@@ -29,6 +29,7 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_VIEW_CATEGORY_WIDGET = "view category widget"
     const val EVENT_ACTION_CLICK_MERCHANT_LIST = "click on merchant list card"
     const val EVENT_ACTION_VIEW_MERCHANT_LIST = "view on merchant list card"
+    const val EVENT_ACTION_CLICK_OUT_COVERAGE = "click ubah alamat on error state out of coverage"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"

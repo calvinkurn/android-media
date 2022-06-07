@@ -82,14 +82,17 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
     }
 
     private fun bindOutOfCoverage() {
+        val title = itemView.resources.getString(R.string.home_out_of_coverage_title)
+        val desc = itemView.resources.getString(R.string.home_out_of_coverage_desc)
+
         tgToHomeEmptyStateLocation?.show()
         tokoFoodEmptyStateListener?.viewOutOfCoverage()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_OUT_OF_COVERAGE)
-        tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_title)
-        tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_desc)
+        tgTitleEmptyStateLocation?.text = title
+        tgDescEmptyStateLocation?.text = desc
         btnEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverafe_button)
         btnEmptyStateLocation?.setOnClickListener {
-            tokoFoodEmptyStateListener?.onClickSetAddressInCoverage()
+            tokoFoodEmptyStateListener?.onClickSetAddressInCoverage("TODO_ERROR_STATE", title, desc)
         }
         tgToHomeEmptyStateLocation?.setOnClickListener {
             tokoFoodEmptyStateListener?.onClickBackToHome()
@@ -99,7 +102,7 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
     interface TokoFoodHomeEmptyStateLocationListener {
         fun onClickSetPinPoin()
         fun onClickSetAddress()
-        fun onClickSetAddressInCoverage()
+        fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String)
         fun onClickBackToHome()
         fun viewOutOfCoverage()
         fun viewNoPinPoin()

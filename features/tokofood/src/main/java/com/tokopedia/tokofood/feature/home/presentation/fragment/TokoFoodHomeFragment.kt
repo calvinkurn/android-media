@@ -271,7 +271,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         checkUserEligibilityForAnaRevamp()
     }
 
-    override fun onClickSetAddressInCoverage() {
+    override fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String) {
+        analytics.clickOutOfCoverage(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
         showChooseAddressBottomSheet()
     }
 
