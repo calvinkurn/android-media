@@ -18,7 +18,9 @@ import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.VpsDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -31,7 +33,7 @@ class VpsWidgetAdapter(
 ) : RecyclerView.Adapter<VpsWidgetAdapter.Holder>() {
     companion object {
         private const val VPS_WIDGET_SIZE = 4
-        private const val CARD_CORNER_RADIUS = 8f
+        private const val IMAGE_CORNER = 0
     }
 
     private lateinit var dataModel: VpsDataModel
@@ -68,10 +70,12 @@ class VpsWidgetAdapter(
             binding?.cardVps?.apply {
                 cardType = CardUnify2.TYPE_BORDER
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
-                radius = CARD_CORNER_RADIUS
             }
             binding?.textName?.text = item.name
-            binding?.image?.loadImageNormal(item.imageUrl)
+            binding?.image?.apply {
+                loadImageNormal(item.imageUrl)
+                cornerRadius = IMAGE_CORNER
+            }
             binding?.textDesc?.text = constructBoldFont(item.benefit.type, item.benefit.value)
             if (item.textColor.isNotEmpty()) {
                 binding?.textName?.setTextColor(Color.parseColor(item.textColor))
