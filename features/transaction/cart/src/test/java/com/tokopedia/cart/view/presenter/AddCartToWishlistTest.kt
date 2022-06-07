@@ -247,4 +247,34 @@ class AddCartToWishlistTest : BaseCartTest() {
             view.stopAllCartPerformanceTrace()
         }
     }
+
+    @Test
+    fun `verify get wishlistV2 returns fail when view is null`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        cartListPresenter.processGetWishlistV2Data()
+        cartListPresenter.detachView()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns success when view is null`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 10)
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
+
+        cartListPresenter.processGetWishlistV2Data()
+        cartListPresenter.detachView()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
 }
