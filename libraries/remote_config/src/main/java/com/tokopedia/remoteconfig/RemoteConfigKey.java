@@ -287,5 +287,7 @@ public class RemoteConfigKey {
 
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
 
+    public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
+
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 }
