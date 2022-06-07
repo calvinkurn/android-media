@@ -1,6 +1,7 @@
 <resources>
     <!--Common-->
     <string name="action_back">Kembali</string>
+    <string name="action_oke">Oke</string>
     <string name="sfs_please_wait">Tunggu sebentar</string>
     <string name="sfs_placeholder_step_counter">Langkah %s dari 4</string>
     <string name="sfs_save_draft">Simpan Draft</string>
@@ -150,5 +151,15 @@
     <string name="draftdelete_question_other_placeholder">Tuliskan alasanmu di sini</string>
     <string name="draftdelete_question_other_placeholder_short">Alasan</string>
     <string name="draftdelete_question_other_text">Alasan Lain:</string>
+    <string name="draftdelete_error_minchar">Kurang dari %d karakter</string>
+
+    <!--Cancelation-->
+    <string name="cancelcampaign_title">Yakin batalkan campaign?</string>
+    <string name="cancelcampaign_desc">Jika dibatalkan, campaign “%s” tidak dapat berlangsung kembali.</string>
+    <string name="cancelcampaign_stop_title">Yakin hentikan campaign?</string>
+    <string name="cancelcampaign_stop_desc">Jika dihentikan, campaign “%s” tidak dapat berlangsung kembali.</string>
+    <string name="cancelcampaign_title_question">Kenapa kamu ingin membatalkan campaign ini?</string>
+    <string name="cancelcampaign_title_stop_question">Kenapa kamu ingin menghentikan campaign ini?</string>
+    <string name="cancelcampaign_message_success">%s berhasil dihentikan.</string>
 
 </resources>
