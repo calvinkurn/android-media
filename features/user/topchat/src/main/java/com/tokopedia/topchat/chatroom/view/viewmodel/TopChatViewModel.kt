@@ -780,8 +780,9 @@ open class TopChatViewModel @Inject constructor(
             val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishlistActionListener.onSuccessAddWishlist(result.data, productId)
-            } else if (result is Fail) {
-                wishlistActionListener.onErrorAddWishList(result.throwable, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishlistActionListener.onErrorAddWishList(error, productId)
             }
         }
     }
@@ -800,8 +801,9 @@ open class TopChatViewModel @Inject constructor(
             val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
-            } else if (result is Fail) {
-                wishListActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
             }
         }
     }
