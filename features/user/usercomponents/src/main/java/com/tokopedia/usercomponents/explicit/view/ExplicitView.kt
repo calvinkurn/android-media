@@ -88,7 +88,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
                 recycle()
             }
 
-            if (GlobalConfig.DEBUG && (templateName.isEmpty() || pageName.isEmpty() || pagePath.isEmpty() || pageType.isEmpty()))
+            val isEmptyRequireAttribute = templateName.isEmpty() || pageName.isEmpty() || pagePath.isEmpty() || pageType.isEmpty()
+            if (GlobalConfig.DEBUG && isEmptyRequireAttribute)
                 throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
         }
     }

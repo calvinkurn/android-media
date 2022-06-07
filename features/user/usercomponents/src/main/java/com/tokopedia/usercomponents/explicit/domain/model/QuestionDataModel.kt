@@ -51,7 +51,7 @@ data class SectionsItem(
     @SerializedName("questions")
     val questions: List<QuestionsItem> = mutableListOf(QuestionsItem()),
 
-    @SerializedName("sectionID")
+    @SuppressLint("Invalid Data Type") @SerializedName("sectionID")
     val sectionID: Int = 0
 )
 

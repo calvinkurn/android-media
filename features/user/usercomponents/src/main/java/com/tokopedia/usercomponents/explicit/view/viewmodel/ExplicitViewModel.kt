@@ -11,7 +11,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
-import com.tokopedia.usercomponents.explicit.domain.model.*
+import com.tokopedia.usercomponents.explicit.domain.model.InputParam
+import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
+import com.tokopedia.usercomponents.explicit.domain.model.Property
+import com.tokopedia.usercomponents.explicit.domain.model.UpdateStateParam
+import com.tokopedia.usercomponents.explicit.domain.model.Template
 import javax.inject.Inject
 
 class ExplicitViewModel @Inject constructor(
