@@ -107,6 +107,9 @@ class UserConsentWidget : FrameLayout {
                         purposeDataModel: UserConsentCollectionDataModel.CollectionPointDataModel.PurposeDataModel
                     ) {
                         userConsentActionClickListener?.onCheckedChange(isChecked)
+                        collection?.purposes?.let {
+                            userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                        }
 
                         val isMandatoryPurpose = collection?.purposes?.find {
                             it.id == purposeDataModel.id
