@@ -124,9 +124,9 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private fun animateWrongAnswer(){
-        clickAnimator.addListener(animationListener)
-        clickAnimator.duration = 100L
-        clickAnimator.start()
+        answerFalseAnimator.addListener(animationListener)
+        answerFalseAnimator.duration = 100L
+        answerFalseAnimator.start()
     }
 
     interface Listener {
@@ -150,7 +150,7 @@ class QuizWidgetView : ConstraintLayout {
         binding.root, View.SCALE_Y, 1f, 0.8f
     )
 
-    private val clickAnimator = AnimatorSet().apply {
+    private val answerFalseAnimator = AnimatorSet().apply {
         interpolator = AnticipateInterpolator()
         playSequentially(clickRotateMinAnimation, clickRotateMaxAnimation)
         playTogether(clickScaleXAnimation, clickScaleYAnimation)
@@ -162,9 +162,7 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private val animationListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
-
-        }
+        override fun onAnimationStart(animation: Animator?) {}
 
         override fun onAnimationEnd(animation: Animator?) {
             binding.root.rotation = 0f
@@ -172,11 +170,8 @@ class QuizWidgetView : ConstraintLayout {
             binding.root.scaleY = 1f
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
-        }
+        override fun onAnimationCancel(animation: Animator?) {}
 
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
-
+        override fun onAnimationRepeat(animation: Animator?) {}
     }
 }
