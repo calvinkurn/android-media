@@ -16,8 +16,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -97,7 +101,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
     private var listener: TabChangeListener? = null
-
+    private var remoteConfig: RemoteConfig? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
@@ -119,6 +123,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         handleArguments()
         setupViews()
         observeProductsMeta()
@@ -277,7 +282,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
         (viewModel.sellerEligibility.value as? Success)?.data?.let {
-            if(it.isAuthorize && it.hasBenefitPackage)
+            if(it.hasBenefitPackage)
                 getTabsMetadata()
         }
     }
@@ -391,10 +396,31 @@ class ProductManageFragment : BaseDaggerFragment() {
 
 
     private fun checkSellerEligibility() {
-        binding?.shimmer?.content?.visible()
-        binding?.groupContent?.gone()
-        binding?.globalError?.gone()
-        viewModel.checkSellerEligibility()
+        if(isEnableShopDiscount()) {
+            binding?.shimmer?.content?.visible()
+            binding?.groupContent?.gone()
+            binding?.globalError?.gone()
+            hideErrorNoAccess()
+            viewModel.checkSellerEligibility()
+        } else {
+            binding?.shimmer?.content?.gone()
+            showErrorNoAccess()
+        }
+    }
+
+    private fun isEnableShopDiscount(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_SHOP_DISCOUNT, true).orFalse()
+    }
+
+    private fun showErrorNoAccess(){
+        binding?.layoutErrorNoAccess?.apply {
+            imageErrorNoAccess.loadImage(UrlConstant.URL_IMAGE_NO_ACCESS_SLASH_PRICE)
+            containerLayoutErrorNoAccess.show()
+        }
+    }
+
+    private fun hideErrorNoAccess(){
+        binding?.layoutErrorNoAccess?.containerLayoutErrorNoAccess?.hide()
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit =
