@@ -496,7 +496,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         isBulkDeleteShow = false
         listBulkDelete.clear()
         listExcludedBulkDelete.clear()
-        println("++ setRefreshing listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         wishlistV2Adapter.hideCheckbox()
         countRemovableAutomaticDelete = 0
         doRefresh()
@@ -599,7 +598,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         paramWishlistV2.query = searchQuery
         listBulkDelete.clear()
         listExcludedBulkDelete.clear()
-        println("++ triggerSearch listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         if (isBulkDeleteShow) setDefaultLabelDeleteButton()
         doRefresh()
         rvScrollListener.resetState()
@@ -768,13 +766,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun updateDeletionWidget(progressData: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
-        println("++ successfullyRemovedItems = ${progressData.successfullyRemovedItems}, totalItems = ${progressData.totalItems}")
         var message = getString(Rv2.string.wishlist_v2_default_message_deletion_progress)
         if (progressData.message.isNotEmpty()) message = progressData.message
 
         val percentage = progressData.successfullyRemovedItems.toDouble()/progressData.totalItems
         val indicatorProgressBar = percentage*100
-        println("++ updateDeletionWidget to ${indicatorProgressBar.roundToInt()} with message = $message, original percentage = $percentage")
 
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
@@ -845,7 +841,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun hideStickyDeletionProgress() {
-        println("++ make widget deletion gone")
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.gone()
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = ""
@@ -1375,14 +1370,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         } else {
             listExcludedBulkDelete.remove(productId.toLong())
         }
-        println("++ onUncheckAutomatedBulkDelete listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
         wishlistV2Adapter.setCheckbox(position, isChecked)
         binding?.run {
             containerDelete.visible()
             deleteButton.isEnabled = true
 
             val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
-            println("++ set button - countRemovableAutomaticDelete = $countRemovableAutomaticDelete, listExcludedBulkDelete = ${listExcludedBulkDelete.size} ==> countExistingRemovable = $countExistingRemovable")
             deleteButton.text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
             deleteButton.setOnClickListener {
                 bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(listExcludedBulkDelete, countRemovableAutomaticDelete.toLong())
@@ -1462,7 +1455,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             disableSwipeRefreshLayout()
             listBulkDelete.clear()
             listExcludedBulkDelete.clear()
-            println("++ onManageClicked listExcludedBulkDelete = ${listExcludedBulkDelete.size}")
             wishlistV2Adapter.showCheckbox(isAutoDeletion)
             binding?.run {
                 clWishlistHeader.gone()

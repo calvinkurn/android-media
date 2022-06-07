@@ -54,6 +54,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN = 12
         const val LAYOUT_TICKER = 13
         const val LAYOUT_DELETION_PROGRESS_WIDGET = 14
+        const val START_LOADER = 0
+        const val TOTAL_LOADER = 5
     }
 
     interface ActionListener {
@@ -315,11 +317,11 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         listTypeData.clear()
 
         if (typeLayout == TYPE_LIST) {
-            for (x in 0 until 5) {
+            for (x in START_LOADER until TOTAL_LOADER) {
                 listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_LIST))
             }
         } else {
-            for (x in 0 until 5) {
+            for (x in START_LOADER until TOTAL_LOADER) {
                 listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_GRID))
             }
         }
@@ -340,22 +342,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         clearCheckbox()
         notifyDataSetChanged()
     }
-
-    /*fun addDeletionProgressWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
-        listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
-        hasDeletionProgressWidgetShow = true
-        notifyDataSetChanged()
-    }
-
-    fun updateDeletionWidget(countDeletionWishlistV2: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
-        listTypeData[0] = WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET)
-        notifyItemChanged(0)
-    }
-
-    fun hideDeletionProgressWidget() {
-        listTypeData.removeAt(0)
-        notifyItemRemoved(0)
-    }*/
 
     fun getCountData(): Int {
         return listTypeData.size
