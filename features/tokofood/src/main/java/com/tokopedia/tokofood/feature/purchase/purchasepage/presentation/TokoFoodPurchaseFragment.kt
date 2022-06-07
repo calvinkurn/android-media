@@ -343,6 +343,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             )
                         )
                     }
+                    if (shopId.isBlank()) {
+                        navigateToHomePage()
+                    } else {
+                        navigateToMerchantPage(shopId)
+                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
@@ -359,6 +364,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
                             )
                         )
+                    }
+                    if (shopId.isBlank()) {
+                        navigateToHomePage()
+                    } else {
+                        navigateToMerchantPage(shopId)
                     }
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
@@ -677,12 +687,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun navigateToHomePage() {
+        parentFragmentManager.popBackStack()
         TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
             navigateToNewFragment(homeFragment)
         }
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
+        parentFragmentManager.popBackStack()
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
@@ -754,8 +766,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun onResultFromPaymentSuccess() {
-        // TODO: Go to home, but elegantly
-        navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+        navigateToHomePage()
     }
 
     private fun showLoadingDialog() {

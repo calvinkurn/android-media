@@ -61,6 +61,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
@@ -540,6 +541,9 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
+            binding?.miniCartWidget?.setOnATCClickListener {
+                navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+            }
         }
     }
 
