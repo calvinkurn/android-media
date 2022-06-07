@@ -1473,7 +1473,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
             mapEvent[ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID] = lcaWarehouseId
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel?.componentName ?: ""};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel?.componentName ?: ""};temp:${componentTrackDataModel?.componentType ?: ""};elem:${"impression - modular component"};cpos:${componentTrackDataModel?.adapterPosition ?: ""};"
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
@@ -1520,7 +1520,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
             mapEvent[ProductTrackingConstant.Tracking.KEY_WAREHOUSE_ID] = lcaWarehouseId
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel?.componentName ?: ""};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel?.componentName ?: ""};temp:${componentTrackDataModel?.componentType ?: ""};elem:${"impression - modular component"};cpos:${componentTrackDataModel?.adapterPosition ?: ""};"
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }

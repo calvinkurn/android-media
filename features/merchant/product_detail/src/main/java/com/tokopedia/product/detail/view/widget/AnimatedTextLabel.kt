@@ -45,6 +45,10 @@ class AnimatedTextLabel : FrameLayout {
         }
     }
 
+    fun getCurrentText(): String {
+        return(txtLabel?.text ?: "").toString()
+    }
+
     fun showView(desc: String) {
         val processText = ellipsisText(desc)
         if (processText.isNotEmpty()) {

@@ -78,6 +78,7 @@ class VideoPictureView @JvmOverloads constructor(
         }
         setPageControl(media, initialScrollPosition)
         updateImages(media)
+        updateMediaLabel(lastPosition)
         scrollToPosition(initialScrollPosition)
         renderVideoOnceAtPosition(initialScrollPosition)
     }
@@ -216,6 +217,9 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun updateMediaLabel(position: Int) {
         val desc = videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
+        val ignoreUpdateLabel = position == RecyclerView.NO_POSITION
+                || binding.txtAnimLabel.getCurrentText() == desc
+        if (ignoreUpdateLabel) return
         binding.txtAnimLabel.showView(desc)
     }
 
