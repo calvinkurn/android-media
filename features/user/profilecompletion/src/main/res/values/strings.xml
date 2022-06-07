@@ -190,4 +190,14 @@
     <string name="no_verified">Belum Diverifikasi</string>
     <string name="success_verify_phone">Yay! Nomor HP kamu berhasil diverifikasi.</string>
 
+    <!--CLOSE ACCOUNT-->
+    <string name="close_account">Tutup Akun</string>
+    <string name="close_account_title">Kamu belum memenuhi syarat untuk tutup akun 🙏🏼</string>
+    <string name="close_account_sub_title">Syarat tutup akun:</string>
+    <string name="close_account_requirement_description_1">Tidak ada Saldo Tokopedia, Tokopedia Emas, dan Tokopedia Reksa Dana.</string>
+    <string name="close_account_requirement_description_2">Tidak ada cicilan dan pinjaman yang belum lunas atau sedang diajukan.</string>
+    <string name="close_account_requirement_description_3">Tidak ada transaksi yang sedang berjalan.</string>
+    <string name="close_account_requirement_check">Belum Terpenuhi</string>
+    <string name="close_account_oke">Oke</string>
+    <string name="close_account_connection_error">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
 </resources>
