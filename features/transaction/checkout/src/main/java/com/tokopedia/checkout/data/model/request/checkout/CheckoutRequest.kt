@@ -1,9 +1,19 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
+import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.*
+import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
@@ -63,7 +73,9 @@ data class ShopOrder(
         @SerializedName("warehouse_id")
         var warehouseId: Long = 0,
         @SerializedName("items")
-        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
+        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
+        @SerializedName("order_metadata")
+        var orderMetadata: String = "",
 )
 
 data class Bundle(
@@ -242,6 +254,11 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
+                orderMetadata = JsonObject().apply {
+                    if (it.freeShippingMetadata.isNotBlank()) {
+                        addProperty("free_shipping_metadata", it.freeShippingMetadata)
+                    }
+                }.toString()
             })
         }
 
