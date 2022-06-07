@@ -197,8 +197,8 @@
 
         <ImageView
             android:id="@+id/ivArrowLeft"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/cm_dp_28"
+            android:layout_height="@dimen/cm_dp_28"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:clickable="true"
@@ -213,8 +213,8 @@
         <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
             android:id="@+id/ivArrowRight"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/cm_dp_28"
+            android:layout_height="@dimen/cm_dp_28"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:clickable="true"
