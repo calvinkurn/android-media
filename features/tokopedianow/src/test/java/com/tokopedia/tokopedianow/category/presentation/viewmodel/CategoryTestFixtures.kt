@@ -88,7 +88,7 @@ open class CategoryTestFixtures {
                 CoroutineTestDispatchersProvider,
                 categoryL1,
                 categoryL2,
-                defaultExternalServiceType,
+                externalServiceType,
                 queryParamMap,
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,

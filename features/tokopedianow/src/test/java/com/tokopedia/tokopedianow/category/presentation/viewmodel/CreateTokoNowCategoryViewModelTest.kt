@@ -31,7 +31,7 @@ class CreateTokoNowCategoryViewModelTest:
         `Given category view model`()
 
         `Then assert query param has default sort`()
-        `Then assert category ids`()
+        `Then assert category ids and external service type`()
         `Then assert content is loading`()
         `Then assert category id for tracking`(defaultCategoryL1)
     }
@@ -42,7 +42,7 @@ class CreateTokoNowCategoryViewModelTest:
         `Given category view model`(categoryL1 = "", categoryL2 = "")
 
         `Then assert query param has default sort`()
-        `Then assert category ids`(categoryL1 = "", categoryL2 = "")
+        `Then assert category ids and external service type`(categoryL1 = "", categoryL2 = "")
         `Then assert content is loading`()
         `Then assert category id for tracking`(defaultCategoryL1 = "")
     }
@@ -54,9 +54,10 @@ class CreateTokoNowCategoryViewModelTest:
         )
     }
 
-    private fun `Then assert category ids`(
+    private fun `Then assert category ids and external service type`(
         categoryL1: String = defaultCategoryL1,
-        categoryL2: String = defaultCategoryL2
+        categoryL2: String = defaultCategoryL2,
+        externalServiceType: String = defaultExternalServiceType
     ) {
         assertThat(
                 tokoNowCategoryViewModel.categoryL1,
@@ -65,6 +66,10 @@ class CreateTokoNowCategoryViewModelTest:
         assertThat(
                 tokoNowCategoryViewModel.categoryL2,
                 shouldBe(categoryL2)
+        )
+        assertThat(
+                tokoNowCategoryViewModel.externalServiceType,
+                shouldBe(externalServiceType)
         )
     }
 
