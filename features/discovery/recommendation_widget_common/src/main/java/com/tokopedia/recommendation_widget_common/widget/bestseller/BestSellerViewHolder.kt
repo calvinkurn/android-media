@@ -28,16 +28,20 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 05/11/20.
  */
-class BestSellerViewHolder (private val view: View, private val listener: RecommendationWidgetListener): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
+class BestSellerViewHolder (private val view: View,
+                            private val listener: RecommendationWidgetListener,
+                            cardInteraction: Boolean = false
+): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
 
     private val minChipsToShow = 1
 
-    private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this)
+    private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this, cardInteraction)
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter = AnnotationChipFilterAdapter(this)
     private var recommendationAdapter: RecommendationCarouselAdapter = RecommendationCarouselAdapter(recommendationTypeFactory)
