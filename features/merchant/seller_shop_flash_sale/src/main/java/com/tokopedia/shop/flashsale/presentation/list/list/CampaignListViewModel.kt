@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.flashsale.common.extension.combineResultWith
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.ShopInfoByIdQueryUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +24,8 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
-    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
+    private val shopInfoByIdQueryUseCase: ShopInfoByIdQueryUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -35,6 +39,15 @@ class CampaignListViewModel @Inject constructor(
     private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
+
+    private val _shopInfo = MutableLiveData<Result<ShopInfo>>()
+    val shopInfo: LiveData<Result<ShopInfo>>
+        get() = _shopInfo
+
+    val campaignEligibility = _campaignPrerequisiteData.combineResultWith(_shopInfo) {
+            campaignPrerequisiteData, shareComponentMetadata ->
+        Pair(campaignPrerequisiteData, shareComponentMetadata)
+    }
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -85,6 +98,20 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _shareComponentMetadata.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    fun getShopInfo() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val shopInfo = shopInfoByIdQueryUseCase.execute()
+                _shopInfo.postValue(Success(shopInfo))
+            },
+            onError = { error ->
+                _shopInfo.postValue(Fail(error))
             }
         )
 
