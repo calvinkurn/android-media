@@ -558,7 +558,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if(element.isLastProductItem) {
+            if(!element.isBundlingItem || element.isLastProductItem) {
                 textProductUnavailableAction.text = action.message
                 textProductUnavailableAction.setOnClickListener {
                     if (element.selectedUnavailableActionLink.isNotBlank()) {
