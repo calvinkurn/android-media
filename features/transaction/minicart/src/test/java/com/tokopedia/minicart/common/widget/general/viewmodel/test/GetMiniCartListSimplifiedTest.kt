@@ -103,8 +103,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val miniCartItemCount = viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0
-        assert(miniCartItemCount > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0 > 0)
     }
 
     @Test
@@ -121,8 +120,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val miniCartItemCount = viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0
-        assert(miniCartItemCount > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0 > 0)
     }
 
     @Test
@@ -139,8 +137,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val miniCartItemCount = viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0
-        assert(miniCartItemCount == 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.size ?: 0 == 0)
     }
 
     @Test
@@ -157,8 +154,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val totalProductCount = viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0
-        assert(totalProductCount > 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 > 0)
     }
 
     @Test
@@ -175,8 +171,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val totalProductCount = viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0
-        assert(totalProductCount == 0)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 == 0)
     }
 
     @Test
@@ -193,59 +188,7 @@ class GetMiniCartListSimplifiedTest {
         viewModel.getLatestWidgetState(shopId)
 
         //then
-        val totalProductCount = viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0
-        assert(totalProductCount == 0)
-    }
-
-    @Test
-    fun `WHEN fetch last widget state error THEN isShowMiniCartWidget should be false`() {
-        //given
-        val errorMessage = "Error Message"
-        val exception = ResponseErrorException(errorMessage)
-        val shopId = listOf("123")
-        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
-        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(exception)
-        }
-
-        //when
-        viewModel.getLatestWidgetState(shopId)
-
-        //then
-        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
-    }
-
-    @Test
-    fun `WHEN fetch last widget state twice success THEN should set latest live data value`() {
-        //given
-        val shopId = listOf("123")
-
-        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
-        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
-        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
-            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
-        }
-
-        //when
-        viewModel.getLatestWidgetState(shopId)
-
-        //then
-        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
-
-        //given
-        val errorMessage = "Error Message"
-        val exception = ResponseErrorException(errorMessage)
-
-        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
-        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(exception)
-        }
-
-        //when
-        viewModel.getLatestWidgetState(shopId)
-
-        //then
-        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
+        assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.totalProductCount ?: 0 == 0)
     }
 
     @Test
@@ -350,4 +293,54 @@ class GetMiniCartListSimplifiedTest {
         assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount == 0)
     }
 
+    @Test
+    fun `WHEN fetch last widget state error THEN isShowMiniCartWidget should be false`() {
+        //given
+        val errorMessage = "Error Message"
+        val exception = ResponseErrorException(errorMessage)
+        val shopId = listOf("123")
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(exception)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
+    }
+
+    @Test
+    fun `WHEN fetch last widget state twice success THEN should set latest live data value`() {
+        //given
+        val shopId = listOf("123")
+
+        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
+
+        //given
+        val errorMessage = "Error Message"
+        val exception = ResponseErrorException(errorMessage)
+
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any(), any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(exception)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
+    }
 }

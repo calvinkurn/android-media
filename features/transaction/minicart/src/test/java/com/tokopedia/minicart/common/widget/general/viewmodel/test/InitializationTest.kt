@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -52,6 +53,30 @@ class InitializationTest {
 
         //then
         assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
+    fun `WHEN initialize currentSource THEN currentSource should be updated accordingly`() {
+        //given
+        val source = MiniCartSource.MiniCartBottomSheet
+
+        //when
+        viewModel.currentSource = source
+
+        //then
+        assert(viewModel.currentSource == source)
+    }
+
+    @Test
+    fun `WHEN initialize isShopDirectPurchase THEN isShopDirectPurchase should be updated accordingly`() {
+        //given
+        val isShopDirectPurchase = true
+
+        //when
+        viewModel.isShopDirectPurchase = isShopDirectPurchase
+
+        //then
+        assert(viewModel.isShopDirectPurchase == isShopDirectPurchase)
     }
 
     @Test
