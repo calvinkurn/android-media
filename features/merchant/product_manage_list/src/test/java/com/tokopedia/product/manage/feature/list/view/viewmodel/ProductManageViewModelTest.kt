@@ -15,6 +15,11 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.entity.UploadStatusEntity
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.util.UploadStatusMapper.convertToModel
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.createDefaultAccess
@@ -32,6 +37,8 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepository
+import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepositoryException
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
@@ -84,6 +91,7 @@ import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocatio
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -97,7 +105,9 @@ import io.mockk.mockk
 import io.mockk.verifyAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.TimeUnit
@@ -2150,6 +2160,131 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         viewModel.getTickerData()
 
         verifyTickerDataEquals(tickerData)
+    }
+
+    @Test
+    fun `when getUploadStatusUseCase is called should return model data`() {
+        val entity = UploadStatusEntity(
+            id = 12,
+            status = UploadStatusType.STATUS_DONE.name,
+            productId = "12333"
+        )
+
+        val mockedRepository = MockedUploadStatusRepository(
+            uploadStatusEntity = entity
+        )
+
+        getUploadStatusUseCase = GetUploadStatusUseCase(mockedRepository)
+
+        // the getUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        val model = entity.convertToModel()
+
+        viewModel.uploadStatus
+            .verifyValueEquals(model)
+    }
+
+
+    @Test
+    fun `when clearUploadStatusUseCase is called should return null data`() {
+        val entity = UploadStatusEntity(
+            id = 12,
+            status = UploadStatusType.STATUS_DONE.name,
+            productId = "12333"
+        )
+
+        val mockedRepository = MockedUploadStatusRepository(
+            uploadStatusEntity = entity
+        )
+
+        clearUploadStatusUseCase = ClearUploadStatusUseCase(mockedRepository)
+
+        // the clearUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        viewModel.clearUploadStatus()
+
+        runBlocking {
+            mockedRepository.flowEntity.collect {
+                Assert.assertTrue(it == null)
+            }
+        }
+    }
+
+    @Test
+    fun `when clearUploadStatusUseCase is called but get an error should do nothing`() {
+        val mockedRepository = MockedUploadStatusRepositoryException()
+
+        clearUploadStatusUseCase = ClearUploadStatusUseCase(mockedRepository)
+
+        // the clearUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        viewModel.clearUploadStatus()
     }
 
     private fun testGetProductManageAccess(

@@ -208,6 +208,11 @@
     <string name="alpha_notification_category">Tokopedia Alpha notifications</string>
     <string name="tokopedia_alpha">Tokopedia Alpha</string>
 
+    <!-- Profile completion resources -->
+    <string name="title_change_name">Ubah Nama Lengkap</string>
+    <string name="profile_completion_title">Data Diri</string>
+    <string name="title_add_name_empty"> </string>
+    <string name="title_add_email">Tambah Email</string>
 
     <!-- Travel slice custom query -->
     <string-array name="HotelSliceCustomQuery">

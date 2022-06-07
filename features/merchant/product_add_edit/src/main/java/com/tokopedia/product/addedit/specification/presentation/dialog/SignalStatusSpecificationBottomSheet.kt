@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_SIGNAL_STATUS_SPECIFICATION
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class SignalStatusSpecificationBottomSheet: BottomSheetUnify() {
@@ -19,7 +20,7 @@ class SignalStatusSpecificationBottomSheet: BottomSheetUnify() {
         const val TAG = "Signal Status Specification Bottom Sheet"
     }
 
-    private var ivSignalStatus: AppCompatImageView? = null
+    private var ivSignalStatus: ImageUnify? = null
     private var tvTipsText1: Typography? = null
     private var tvTipsText2: Typography? = null
 
@@ -41,6 +42,7 @@ class SignalStatusSpecificationBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupImageView() {
+        ivSignalStatus?.scaleType = ImageView.ScaleType.FIT_CENTER
         ivSignalStatus?.loadImage(PHOTO_SIGNAL_STATUS_SPECIFICATION)
     }
 
