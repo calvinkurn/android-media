@@ -146,7 +146,7 @@ class AttachProductFragment :
                             mainHandler.post(myRunnable)
                         }
                     }
-                }, 300)
+                }, DELAY)
             }
         })
         binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
@@ -242,7 +242,7 @@ class AttachProductFragment :
             if (binding?.searchInputView?.searchBarTextField?.text.isNullOrEmpty()
                 && viewModel.cacheList.isNotEmpty()
             ) {
-                val page = (viewModel.cacheList.size / 10) + 1
+                val page = (viewModel.cacheList.size / CACHE_DIVIDER) + ADD_INDEX
                 viewModel.loadProductData(
                     "",
                     shopId,
@@ -415,6 +415,10 @@ class AttachProductFragment :
         private const val MAX_CHECKED = "max_checked"
         private const val HIDDEN_PRODUCTS = "hidden_products"
         private const val SHOP_ID = "shop_id"
+
+        private const val DELAY = 300L
+        private const val CACHE_DIVIDER = 10
+        private const val ADD_INDEX = 1
 
         @JvmStatic
         fun newInstance(
