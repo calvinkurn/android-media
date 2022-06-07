@@ -294,7 +294,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductValueError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.getListEnabledProductWarehouse().filter { !it.abusiveRule }.any {
+        return setupProductUiModel.getListEnabledProductWarehouse().any {
             it.discountedPercentage < 1 || it.discountedPercentage > 99
         }
     }
@@ -350,11 +350,11 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun getTotalDiscountedVariant(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Int {
-        return setupProductDataUiModel.listProductVariant.count {
+        return setupProductDataUiModel.listProductVariant.filter {
             it.listProductWarehouse.any { productWarehouse ->
                 !productWarehouse.discountedPercentage.isZero()
             }
-        }
+        }.size
     }
 
     private fun getTotalVariant(
@@ -474,27 +474,25 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         mode: String,
         selectedSlashPriceStatus: Int
     ) {
-        launchCatchError(dispatcherProvider.io, {
-            listProductData.forEach { productParentData ->
-                val minOriginalPrice = productParentData.mappedResultData.minOriginalPrice
-                val isVariant = productParentData.productStatus.isVariant
-                val listProductToBeUpdated: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
-                    mutableListOf()
-                if (isVariant) {
-                    listProductToBeUpdated.addAll(productParentData.listProductVariant)
-                } else {
-                    listProductToBeUpdated.add(productParentData)
-                }
-                updateProductData(
-                    listProductToBeUpdated,
-                    bulkApplyDiscountResult,
-                    minOriginalPrice,
-                    isVariant
-                )
-                updateProductStatusAndMappedData(productParentData, mode, selectedSlashPriceStatus)
+        listProductData.forEach { productParentData ->
+            val minOriginalPrice = productParentData.mappedResultData.minOriginalPrice
+            val isVariant = productParentData.productStatus.isVariant
+            val listProductToBeUpdated: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
+                mutableListOf()
+            if (isVariant) {
+                listProductToBeUpdated.addAll(productParentData.listProductVariant)
+            } else {
+                listProductToBeUpdated.add(productParentData)
             }
-            _updatedProductListData.postValue(listProductData)
-        }) {}
+            updateProductData(
+                listProductToBeUpdated,
+                bulkApplyDiscountResult,
+                minOriginalPrice,
+                isVariant
+            )
+            updateProductStatusAndMappedData(productParentData, mode, selectedSlashPriceStatus)
+        }
+        _updatedProductListData.postValue(listProductData)
     }
 
     private fun updateProductData(
