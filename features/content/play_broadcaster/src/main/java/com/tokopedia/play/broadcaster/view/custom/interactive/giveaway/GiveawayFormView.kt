@@ -18,12 +18,14 @@ import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
 import com.tokopedia.play_common.view.updatePadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by kenny.hadisaputra on 20/04/22
@@ -92,6 +94,13 @@ class GiveawayFormView : ConstraintLayout {
     fun setEligibleDurations(durationsInMs: List<Long>) {
         mEligibleDurations = durationsInMs
         timePickerBinding.puTimer.stringData = durationsInMs.map { formatTime(it) }.toMutableList()
+
+        if (durationsInMs.isEmpty()) return
+        val defaultIndex = durationsInMs.indexOf(
+            TimeUnit.MINUTES.toMillis(DEFAULT_ACTIVE_MINUTE)
+        ).coerceAtLeast(0)
+
+        timePickerBinding.puTimer.goToPosition(defaultIndex)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -166,6 +175,7 @@ class GiveawayFormView : ConstraintLayout {
         binding.viewGiveaway.getHeader().setOnTextChangedListener {
             setEnabledContinue(shouldEnable = it.isNotBlank())
         }
+        binding.viewGiveaway.getHeader().maxLength = MAX_TITLE_LENGTH
 
         binding.icCloseGiveawayForm.setOnClickListener { back() }
         timePickerBinding.ivSheetClose.setOnClickListener { back() }
@@ -239,6 +249,9 @@ class GiveawayFormView : ConstraintLayout {
 
         private const val CONTINUE_DISABLED_ALPHA = 0.5f
         private const val CONTINUE_ENABLED_ALPHA = 1f
+
+        private const val MAX_TITLE_LENGTH = 40
+        private const val DEFAULT_ACTIVE_MINUTE = 5L
     }
 
     interface Listener {
