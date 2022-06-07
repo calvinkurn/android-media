@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.bottomsheet
+package com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.seller_shop_flash_sale.R
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomSheetInformationCampaignTeaserBinding
-import com.tokopedia.shop.flash_sale.common.extension.toBulletSpan
+import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 

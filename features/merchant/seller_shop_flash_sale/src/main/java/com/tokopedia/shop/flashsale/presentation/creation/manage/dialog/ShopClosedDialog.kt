@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsDialogShopClosedBinding
-import com.tokopedia.shop.flash_sale.common.customcomponent.ModalBottomSheet
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.shop.flashsale.common.customcomponent.ModalBottomSheet
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ShopClosedDialog(
