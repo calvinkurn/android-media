@@ -546,7 +546,7 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         const val USER_PREFERENCES_NAME = "user_session"
         const val SORT_ORDER_KEY = "sort_order"
 
-        const val USER_SESSION_AB_TEST_KEY = "android_data_store"
+        const val USER_SESSION_AB_TEST_KEY = "android_data_store_v2"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
     }
 }
