@@ -52,6 +52,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import java.io.File
 import javax.inject.Inject
 
+const val SOURCE_ID_VIP = "mxzxFi"
+const val SOURCE_ID_PREMIUM = "togDTI"
+
 class TmDashCreateViewModel @Inject constructor(
     private val tokomemberDashCardUsecase: TokomemberDashCardUsecase,
     private val tokomemberCardColorMapperUsecase: TokomemberCardColorMapperUsecase,
@@ -255,7 +258,7 @@ class TmDashCreateViewModel @Inject constructor(
     }
 
     fun uploadImageVip(image: File) {
-        val param = uploaderUseCase.createParams("", image)
+        val param = uploaderUseCase.createParams(SOURCE_ID_VIP, image)
         launchCatchError(dispatcher, block = {
             val result = uploaderUseCase(param)
             _tmCouponUploadLiveData.postValue(TokoLiveDataResult.success(result))
@@ -265,7 +268,7 @@ class TmDashCreateViewModel @Inject constructor(
     }
 
      fun uploadImagePremium(image: File) {
-        val param = uploaderUseCase.createParams("", image)
+        val param = uploaderUseCase.createParams(SOURCE_ID_PREMIUM, image)
         launchCatchError(dispatcher, block = {
             val result = uploaderUseCase(param)
             _tmCouponUploadMultipleLiveData.postValue(TokoLiveDataResult.success(result))

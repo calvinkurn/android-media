@@ -9,8 +9,8 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.Tokomember
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroBenefitImageVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmIntroTextVh
 
-class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
-                  typeFactory: TokomemberIntroFactory) :
+class TmIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
+                     typeFactory: TokomemberIntroFactory) :
     BaseAdapter<TokomemberIntroFactory>(typeFactory, visitableList) {
     private var onAttach = true
     private var isAlterNateTextView = false

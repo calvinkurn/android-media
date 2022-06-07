@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -90,6 +91,10 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_dash_kupon_create_container.*
 import kotlinx.android.synthetic.main.tm_dash_single_coupon.*
 import kotlinx.android.synthetic.main.tm_kupon_create_single.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -647,12 +652,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun uploadImagePremium(){
-        context?.let { ctx->
-            val file =  customViewSingleCoupon?.getCouponView()?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
-            if (file != null) {
-                tokomemberDashCreateViewModel.uploadImagePremium(file)
-            }
+    private fun uploadImagePremium() {
+        context?.let { ctx ->
+            CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+                withContext(Dispatchers.IO) {
+                    val file = customViewSingleCoupon?.getCouponView()
+                        ?.let { it1 -> TmFileUtil.saveBitMap(ctx, it1) }
+                    if (file != null) {
+                        tokomemberDashCreateViewModel.uploadImagePremium(file)
+                    }
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
         }
     }
 

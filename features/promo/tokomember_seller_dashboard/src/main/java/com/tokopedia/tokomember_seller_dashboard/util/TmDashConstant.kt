@@ -76,7 +76,7 @@ const val CASHBACK_PERCENTAGE = "percent"
 
 const val PROGRAM_AUTO_DATE = ""
 
-const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui " + "<br>" +
+const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui \n"+
         "syarat & ketentuan TokoMember."
 const val TERMS = "syarat"
 const val TERNS_AND_CONDITION = "syarat & ketentuan"

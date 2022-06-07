@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.tm_dash_color_item.view.*
 var selectedItemPosColor = -1
 var lastItemSelectedPosColor = -1
 
-class TokomemberDashCardColorVh(val view: View, val listener: TokomemberCardColorAdapterListener) :
+class TmDashCardColorVh(val view: View, private val listener: TokomemberCardColorAdapterListener) :
     AbstractViewHolder<TokomemberCardColor>(view) {
 
     private val tmCardColorFrame = itemView.colorFrame

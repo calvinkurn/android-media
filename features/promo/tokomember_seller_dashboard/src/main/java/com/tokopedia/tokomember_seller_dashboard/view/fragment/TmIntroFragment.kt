@@ -28,7 +28,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -55,8 +55,8 @@ class TmIntroFragment : BaseDaggerFragment(),
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TmDashIntroViewModel::class.java)
     }
-    val adapter: TokomemberIntroAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        TokomemberIntroAdapter(arrayListOf(), TokomemberIntroFactory(this))
+    val adapter: TmIntroAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TmIntroAdapter(arrayListOf(), TokomemberIntroFactory(this))
     }
 
     override fun onAttach(context: Context) {

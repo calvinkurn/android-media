@@ -51,53 +51,141 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                 app:typographyType="display_1"
                 app:typographyWeight="bold" />
 
+            <View
+                android:id="@+id/viewDividerPremiumCouponOne"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleKuponMembership" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icPremiumCoupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
+                app:layout_constraintTop_toBottomOf="@+id/viewDividerPremiumCouponOne"
+                app:srcCompat="@drawable/ic_tokomember_premium"/>
+
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvLevelMember"
+                android:id="@+id/tvPremiumTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Level Member"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleKuponMembership"
-                app:typographyType="display_3"
-                app:typographyWeight="reguler" />
+                android:text="Untuk member Premium"
+                app:typographyType="display_1"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintStart_toEndOf="@id/icPremiumCoupon"
+                app:layout_constraintTop_toTopOf="@+id/icPremiumCoupon"
+                app:layout_constraintBottom_toTopOf="@id/tvPremiumSubtitle"/>
 
-            <com.tokopedia.tokomember_common_widget.TokomemberChipGroup
-                android:id="@+id/chipGroupLevel"
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPremiumSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:typographyType="paragraph_2"
+                android:text="Cashback Rp10.000"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintStart_toEndOf="@id/icPremiumCoupon"
+                app:layout_constraintTop_toBottomOf="@+id/tvPremiumTitle"
+                app:layout_constraintBottom_toBottomOf="@id/icPremiumCoupon"/>
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icArrowPremium"
+                app:icon_name="CHEVRON_DOWN"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintTop_toTopOf="@id/icPremiumCoupon"/>
+
+            <com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
+                android:id="@+id/tmPremiumCoupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 android:visibility="gone"
-                android:layout_marginTop="@dimen/unify_space_8"
+                app:layout_goneMarginTop="20dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@id/tvLevelMember" />
+                app:layout_constraintTop_toBottomOf="@id/icPremiumCoupon"/>
 
-            <com.tokopedia.accordion.AccordionUnify
-                android:id="@+id/accordionUnifyPremium"
+            <View
+                android:id="@+id/viewDividerPremiumCoupon"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@id/chipGroupLevel"
-                app:layout_constraintBottom_toTopOf="@id/accordionUnifyVIP"
-                android:layout_height="match_parent"
-                tools:ignore="MissingConstraints" />
+                android:layout_height="2dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tmPremiumCoupon" />
 
-            <com.tokopedia.accordion.AccordionUnify
-                android:id="@+id/accordionUnifyVIP"
-                android:layout_width="match_parent"
-                app:layout_constraintBottom_toTopOf="@+id/viewDividerTwo"
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icVipCoupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"
-                app:layout_constraintTop_toBottomOf="@id/accordionUnifyPremium"
-                android:layout_height="match_parent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toBottomOf="@+id/viewDividerPremiumCoupon"
+                app:srcCompat="@drawable/ic_tokomember_vip"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvVipCouponTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Untuk member VIP"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:typographyType="display_1"
+                app:layout_constraintStart_toEndOf="@+id/icVipCoupon"
+                app:layout_constraintBottom_toTopOf="@+id/tvVipCouponSubTitle"
+                app:layout_constraintTop_toTopOf="@+id/icVipCoupon"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvVipCouponSubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:text="Cashback Rp10.000"
+                app:typographyType="paragraph_2"
+                app:layout_constraintStart_toEndOf="@+id/icVipCoupon"
+                app:layout_constraintTop_toBottomOf="@+id/tvVipCouponTitle"
+                app:layout_constraintBottom_toBottomOf="@+id/icVipCoupon"
+                />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/icArrowVip"
+                app:icon_name="CHEVRON_DOWN"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintTop_toTopOf="@+id/icVipCoupon"/>
+
+            <com.tokopedia.tokomember_seller_dashboard.view.customview.TmSingleCouponView
+                android:id="@+id/tmVipCoupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="gone"
+                app:layout_goneMarginTop="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/icVipCoupon"
+                app:layout_constraintStart_toStartOf="@id/tvTitleKuponMembership"/>
 
             <View
                 android:id="@+id/viewDividerTwo"
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/Unify_NN50"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/accordionUnifyVIP" />
+                app:layout_constraintTop_toBottomOf="@+id/tmVipCoupon" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitleProgram"
@@ -257,6 +345,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                         app:layout_constraintTop_toBottomOf="@id/tvMaximumValueLabel" />
 
                     <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvTotalTransaction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp2.000.000"
@@ -289,9 +378,7 @@ Biar mudah  cepat, pakai rekomendasi kupon dan minimum pembelian untuk member ka
                     app:typographyWeight="reguler"
                     android:textColor="@color/Unify_NN950"
                     android:layout_marginBottom="@dimen/unify_space_16"
-                    android:textColorLink="@color/Unify_G500"
-                    android:text="Dengan klik Buat Kupon, kamu menyetujui
-syarat  ketentuan TokoMember." />
+                    android:textColorLink="@color/Unify_G500" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

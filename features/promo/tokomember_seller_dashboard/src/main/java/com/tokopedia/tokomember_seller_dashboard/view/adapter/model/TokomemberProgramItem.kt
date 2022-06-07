@@ -3,8 +3,8 @@ package com.tokopedia.tokomember_seller_dashboard.view.adapter.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardBgFactory
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardColorFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardBgFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TmCardColorFactory
 
 data class TokomemberCardItem(
     var tokoVisitable: ArrayList<Visitable<*>>
@@ -35,9 +35,9 @@ data class TokomemberCardColor(
     val id: String? = null,
     var isSelected:Boolean = false,
     var tokoCardPatternList: ArrayList<String>
-) : Visitable<TokomemberCardColorFactory>, TokomemberProgramModel() {
+) : Visitable<TmCardColorFactory>, TokomemberProgramModel() {
 
-    override fun type(typeFactory: TokomemberCardColorFactory): Int {
+    override fun type(typeFactory: TmCardColorFactory): Int {
         return typeFactory.type(this)
     }
 }
@@ -46,9 +46,9 @@ data class TokomemberCardBg(
     @Expose
     @SerializedName("imageUrl")
     val imageUrl: String? = null
-) : Visitable<TokomemberCardBgFactory>, TokomemberProgramModel() {
+) : Visitable<TmCardBgFactory>, TokomemberProgramModel() {
 
-    override fun type(typeFactory: TokomemberCardBgFactory): Int {
+    override fun type(typeFactory: TmCardBgFactory): Int {
         return typeFactory.type(this)
     }
 }

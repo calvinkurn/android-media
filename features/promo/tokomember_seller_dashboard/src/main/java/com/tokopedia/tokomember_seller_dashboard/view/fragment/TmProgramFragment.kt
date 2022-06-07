@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -283,6 +284,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     }
 
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+        textFieldDuration.editText.inputType = InputType.TYPE_NULL
         containerViewFlipper.displayedChild = DATA
         addPremiumTransactionTextListener(membershipGetProgramForm?.programThreshold)
         addVipTransactionTextListener(membershipGetProgramForm?.programThreshold)
