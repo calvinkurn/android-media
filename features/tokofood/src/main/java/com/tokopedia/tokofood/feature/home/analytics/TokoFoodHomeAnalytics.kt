@@ -1,9 +1,14 @@
 package com.tokopedia.tokofood.feature.home.analytics
 
 import android.os.Bundle
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CAROUSEL_BANNER
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
@@ -24,7 +29,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
     fun clickLCAWidget(userId: String?, destinationId: String?) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_LCA)
-            putString(TrackAppUtils.EVENT, "")
+            putString(TrackAppUtils.EVENT_LABEL, "")
         }
         eventDataLayer.clickPG(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.CLICK_PG, eventDataLayer)
@@ -32,10 +37,10 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
 
     fun impressionIconWidget(userId: String?, destinationId: String?, data: List<DynamicIcon>, verticalPosition: Int) {
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_ICONS)
-            putString(TrackAppUtils.EVENT, "")
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CATEGORY_ICONS)
+            putString(TrackAppUtils.EVENT_LABEL, "")
         }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, verticalPosition = verticalPosition))
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItemIcon(data, verticalPosition = verticalPosition))
         eventDataLayer.viewItem(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
@@ -43,14 +48,34 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
     fun clickIconWidget(userId: String?, destinationId: String?, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_ICONS)
-            putString(TrackAppUtils.EVENT, "")
+            putString(TrackAppUtils.EVENT_LABEL, "")
         }
-        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItem(data, horizontalPosition, verticalPosition))
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItemIcon(data, horizontalPosition, verticalPosition))
         eventDataLayer.selectContent(userId, destinationId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
-    private fun getPromotionItem(data: List<DynamicIcon>, horizontalPosition: Int = -1, verticalPosition: Int): ArrayList<Bundle> {
+    fun clickBannerWidget(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CAROUSEL_BANNER)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItemBanner(channelModel, listOf(channelGrid), horizontalPosition))
+        eventDataLayer.selectContent(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun impressBannerWidget(userId: String?, destinationId: String?, channelModel: ChannelModel) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CAROUSEL_BANNER)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionItemBanner(channelModel, channelModel.channelGrids))
+        eventDataLayer.viewItem(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
+    private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -1, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             data.mapIndexed { index, it ->
@@ -60,6 +85,22 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                     putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
                     putString(Promotion.ITEM_ID, it.name)
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition + 1} - $EMPTY_DATA")
+                }
+            }
+        )
+        return promotionBundle
+    }
+
+    private fun getPromotionItemBanner(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -1): ArrayList<Bundle> {
+        val promotionBundle = arrayListOf<Bundle>()
+        promotionBundle.addAll(
+            channelGrids.mapIndexed { index, it ->
+                val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
+                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.ITEM_ID, it.imageUrl)
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.BANNER_CAROUSEL} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
                 }
             }
         )
