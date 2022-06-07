@@ -203,7 +203,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                             findViewById<View>(android.R.id.content),
                             getString(R.string.download_success),
                             Snackbar.LENGTH_SHORT)
-                    snackbar.setAction(getString(R.string.label_open)) {
+                    snackbar.setAction(getString(R.string.image_preview_label_open)) {
                         openImageDownloaded(resultUri)
                     }
                     snackbar.addCallback(object : Snackbar.Callback() {

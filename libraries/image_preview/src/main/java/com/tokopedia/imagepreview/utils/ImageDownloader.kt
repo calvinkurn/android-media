@@ -127,7 +127,7 @@ class ImageDownloader(
         showSnackBar(
             resultUri = resultUri,
             contentText = downloadSuccessText,
-            actionText = context.getString(R.string.label_open),
+            actionText = context.getString(R.string.image_preview_label_open),
             onActionClick = onActionClick,
             onDismissed = onDismissed
         )
