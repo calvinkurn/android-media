@@ -7,21 +7,27 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flash_sale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flash_sale.domain.entity.enums.PageMode
 
 class CampaignInformationActivity: BaseSimpleActivity() {
 
     companion object {
+        private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
 
         @JvmStatic
-        fun start(context: Context) {
+        fun start(context: Context, mode : PageMode) {
             val starter = Intent(context, CampaignInformationActivity::class.java)
+            val bundle = Bundle()
+            bundle.putParcelable(BUNDLE_KEY_PAGE_MODE, mode)
             context.startActivity(starter)
         }
     }
 
-
+    private val pageMode by lazy {
+        intent?.extras?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode ?: PageMode.CREATE
+    }
     override fun getLayoutRes() = R.layout.ssfs_activity_campaign_information
-    override fun getNewFragment() = CampaignInformationFragment.newInstance()
+    override fun getNewFragment() = CampaignInformationFragment.newInstance(pageMode)
     override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list.list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.list.listener
 
 import androidx.recyclerview.widget.RecyclerView
 

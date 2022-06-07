@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list.container
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.container.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
