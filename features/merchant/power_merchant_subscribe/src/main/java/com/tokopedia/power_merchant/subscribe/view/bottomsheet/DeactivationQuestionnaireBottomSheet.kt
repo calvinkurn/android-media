@@ -267,20 +267,13 @@ class DeactivationQuestionnaireBottomSheet :
     }
 
     private fun setOnQuestionnaireSelected() {
-        var isNoAnswer = false
-        questionnaireAdapter.data.forEach {
-            if (!isNoAnswer) {
-                isNoAnswer = it.isNoAnswer()
-            }
-        }
-
-        binding?.btnPmDeactivationSubmit?.isEnabled = !isNoAnswer
-        isNoAnswer = false
+        binding?.btnPmDeactivationSubmit?.isEnabled = questionnaireAdapter.data
+            .all { !it.isNoAnswer() }
     }
 
     private fun submitDeactivationPm() {
         val answers = mutableListOf<PMCancellationQuestionnaireAnswerModel>()
-        var isNoAnswer = false
+
         questionnaireAdapter.data.forEach {
             when (it) {
                 is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
@@ -298,19 +291,15 @@ class DeactivationQuestionnaireBottomSheet :
                     answers.add(answer)
                 }
             }
-
-            if (!isNoAnswer) {
-                isNoAnswer = it.isNoAnswer()
-            }
         }
 
-        if (isNoAnswer) {
+        val hasAnswerGiven = questionnaireAdapter.data.all { !it.isNoAnswer() }
+        if (!hasAnswerGiven) {
             val errorMessage = getString(R.string.pm_all_questionnaire_must_be_answered)
             val ctaText = getString(R.string.power_merchant_ok_label)
             showToaster(errorMessage, ctaText, Snackbar.LENGTH_LONG) {
                 getDeactivationQuestionnaire(false)
             }
-            isNoAnswer = false
             return
         }
 

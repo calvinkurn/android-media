@@ -50,6 +50,9 @@ data class MembershipDetailResponse(
         @SerializedName("next_monthly_refresh_date")
         val nextMonthlyRefreshDate: String? = "",
         @Expose
+        @SerializedName("next_quarterly_calibration_refresh_date")
+        val nextQuarterlyCalibrationRefreshDate: String? = "",
+        @Expose
         @SerializedName("current_pm_grade")
         val currentPMGrade: CurrentPmGradeModel? = null
     )

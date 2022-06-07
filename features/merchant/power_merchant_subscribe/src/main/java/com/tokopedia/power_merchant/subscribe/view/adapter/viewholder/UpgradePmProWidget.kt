@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -122,6 +123,7 @@ class UpgradePmProWidget(
             adapter = benefitAdapter
         }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showTermsList(terms: List<PmActiveTermUiModel>) {
         binding?.rvPmUpgradeTerms?.run {
             layoutManager = object : LinearLayoutManager(context) {
@@ -136,7 +138,5 @@ class UpgradePmProWidget(
     private fun setupView() = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
-        icTargetHeader.loadImage(PMConstant.Images.PM_BADGE)
     }
-
 }

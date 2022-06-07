@@ -39,8 +39,8 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.FragmentMembershipDetailBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.MembershipViewPagerAdapter
-import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.MembershipDetailViewModel
 import com.tokopedia.unifycomponents.setIconUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -319,9 +319,15 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             tvPmMembershipPerformancePeriod.text = getString(
                 R.string.pm_date_based_on_your_sell, data.periodDate, data.gradeName.asCamelCase()
             ).parseAsHtml()
-            tvPmMembershipNextUpdate.text = getString(
-                R.string.pm_next_update_benefit_package, data.nextUpdate
-            ).parseAsHtml()
+            tvPmMembershipNextUpdate.text = if (data.isCalibrationDate) {
+                getString(
+                    R.string.pm_calibration_date_benefit_package, data.nextUpdate
+                ).parseAsHtml()
+            } else {
+                getString(
+                    R.string.pm_next_update_benefit_package, data.nextUpdate
+                ).parseAsHtml()
+            }
 
             try {
                 tvPmMembershipPerformancePeriod.setBackgroundResource(R.drawable.bg_pm_membership_detail_header)
@@ -340,6 +346,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         pagerAdapter.addItem(
             getMembershipData(
                 gradeBenefit = getPowerMerchantPager(),
+                netIncome = data?.netIncomeLast30Days.orZero(),
+                totalOrder = data?.totalOrderLast30Days.orZero(),
                 orderThreshold = Constant.MembershipConst.PM_ORDER_THRESHOLD,
                 netIncomeThreshold = Constant.MembershipConst.PM_INCOME_THRESHOLD,
                 netIncomeThresholdFmt = Constant.MembershipConst.PM_INCOME_THRESHOLD_FMT
@@ -348,6 +356,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         pagerAdapter.addItem(
             getMembershipData(
                 gradeBenefit = getPmProAdvancePager(),
+                netIncome = data?.netIncomeLast90Days.orZero(),
+                totalOrder = data?.totalOrderLast90Days.orZero(),
                 orderThreshold = Constant.MembershipConst.PM_PRO_ADVANCE_ORDER_THRESHOLD,
                 netIncomeThreshold = Constant.MembershipConst.PM_PRO_ADVANCE_INCOME_THRESHOLD,
                 netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_ADVANCE_INCOME_THRESHOLD_FMT
@@ -356,6 +366,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         pagerAdapter.addItem(
             getMembershipData(
                 gradeBenefit = getPmProExpertPager(),
+                netIncome = data?.netIncomeLast90Days.orZero(),
+                totalOrder = data?.totalOrderLast90Days.orZero(),
                 orderThreshold = Constant.MembershipConst.PM_PRO_EXPERT_ORDER_THRESHOLD,
                 netIncomeThreshold = Constant.MembershipConst.PM_PRO_EXPERT_INCOME_THRESHOLD,
                 netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_EXPERT_INCOME_THRESHOLD_FMT
@@ -364,6 +376,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         pagerAdapter.addItem(
             getMembershipData(
                 gradeBenefit = getPmProUltimatePager(),
+                netIncome = data?.netIncomeLast90Days.orZero(),
+                totalOrder = data?.totalOrderLast90Days.orZero(),
                 orderThreshold = Constant.MembershipConst.PM_PRO_ULTIMATE_ORDER_THRESHOLD,
                 netIncomeThreshold = Constant.MembershipConst.PM_PRO_ULTIMATE_INCOME_THRESHOLD,
                 netIncomeThresholdFmt = Constant.MembershipConst.PM_PRO_ULTIMATE_INCOME_THRESHOLD_FMT
@@ -375,14 +389,16 @@ class MembershipDetailFragment : BaseDaggerFragment() {
 
     private fun getMembershipData(
         gradeBenefit: PMGradeWithBenefitsUiModel,
+        netIncome: Long,
+        totalOrder: Long,
         orderThreshold: Long,
         netIncomeThreshold: Long,
         netIncomeThresholdFmt: String
     ): MembershipDataUiModel {
         return MembershipDataUiModel(
             shopScore = data?.shopScore.orZero(),
-            totalOrder = data?.totalOrderLast90Days.orZero(),
-            netIncome = data?.netIncomeLast90Days.orZero(),
+            totalOrder = totalOrder,
+            netIncome = netIncome,
             orderThreshold = orderThreshold,
             netIncomeThreshold = netIncomeThreshold,
             netIncomeThresholdFmt = netIncomeThresholdFmt,

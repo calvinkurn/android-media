@@ -95,11 +95,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icTargetHeader"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="12dp"
+                app:icon_name="BADGE_PMPRO_FILLED"
                 app:layout_constraintBottom_toBottomOf="@id/tvPmHeaderTermsStatus"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvPmHeaderTermsStatus"

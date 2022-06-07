@@ -7,6 +7,7 @@ data class MembershipDetailUiModel(
     val periodDate: String = String.EMPTY,
     val gradeName: String = String.EMPTY,
     val nextUpdate: String = String.EMPTY,
+    val isCalibrationDate: Boolean = false,
     val totalOrderLast90Days: Long = Int.ZERO.toLong(),
     val netIncomeLast90Days: Long = Int.ZERO.toLong(),
     val totalOrderLast30Days: Long = Int.ZERO.toLong(),

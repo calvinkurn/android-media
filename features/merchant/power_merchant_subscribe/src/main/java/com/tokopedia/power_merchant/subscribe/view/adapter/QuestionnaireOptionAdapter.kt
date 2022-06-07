@@ -44,6 +44,7 @@ class QuestionnaireOptionAdapter(
 
                 cbPmQuestionnaireOption.setOnCheckedChangeListener { _, isChecked ->
                     item.isChecked = isChecked
+                    onAnswerSelected()
                 }
 
                 root.setOnClickListener {

@@ -1,15 +1,15 @@
 <resources>
     <string name="error_cancellation_tryagain">Coba Lagi</string>
     <string name="label_back">Kembali</string>
-    <string name="label_send_answer">Kirim Jawaban</string>
+    <string name="label_send_answer">Berhenti Jadi Power Merchant</string>
 
-    <string name="pm_bottom_sheet_expired_label">Status PM otomatis berhenti pada %1$s WIB.</string>
+    <string name="pm_bottom_sheet_expired_label"><![CDATA[Setelah menyelesaikan pengajuan, status Power Merchant kamu akan berhenti pada <b>%1$s WIB</b>]]></string>
     <string name="pm_title_activity">Power Merchant</string>
     <string name="pm_membership_detail_title_activity">Detail Keanggotaan</string>
     <string name="pm_label_bottom_sheet_cancel_header">Yakin mau berhenti jadi Power Merchant?</string>
     <string name="pm_label_bottom_sheet_cancel_button">Ajukan Penghentian</string>
     <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant, yaitu:</string>
-    <string name="pm_label_cancellation_questionnaire_intro_title">Bantu kami meningkatkan layanan Power Merchant</string>
+    <string name="pm_label_cancellation_questionnaire_intro_title">Sebelum berhenti, bantu tingkatkan layanan Power Merchant, yuk!</string>
 
     <string name="power_merchant_register_now">Gabung Sekarang</string>
     <string name="power_merchant_learn_more">Pelajari Selengkapnya</string>
@@ -40,7 +40,7 @@
     <string name="pm_service_fee_by_category"><![CDATA[Biaya layanan kini berdasarkan kategori. <font color="#00AA5B"><b>Lihat Kategori</b></font>]]></string>
 
     <string name="pm_label_rating_power_merchant_experience">Bagaimana Anda menilai pengalaman menggunakan Power Merchant</string>
-    <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada <b>%s WIB</b>]]></string>
+    <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Pengajuan untuk berhenti jadi PM akan terkirim setelah kamu memberi masukan, ya. Fitur PM di tokomu akan dinonaktifkan pada <b>%s WIB</b>]]></string>
 
     <string name="pm_potential_benefit_01"><![CDATA[Dikunjungi <br>pembeli hingga <br><b>2,5 kali lipat</b>]]></string>
     <string name="pm_potential_benefit_02"><![CDATA[Menerima <br>pesanan hingga <br><b>2,3 kali lipat</b>]]></string>
@@ -122,12 +122,12 @@
     <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
     <string name="pm_get_excellent_feature">Fitur-fitur unggulan lainnya</string>
 
-    <string name="pm_deactivation_bottom_sheet_message">Mulai 6 Juni 2022, Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan <b>0,5% - 2,5%</b> berdasarkan kategori produk.</string>
-    <string name="pm_pm_deactivation_be_rm_tnc">Dengan kembali menjadi RM, saya setuju dengan S&amp;K yang berlaku</string>
+    <string name="pm_deactivation_bottom_sheet_message">Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan <b>0,5% - 2,5%</b> berdasarkan kategori produk.</string>
+    <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuanmu terkirim, lanjut beri masukan dulu, ya.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
-    <string name="pm_pro_upgrade_description">Keuntungan eksklusif Power Merchant PRO:</string>
+    <string name="pm_pro_upgrade_description">Sebagai Power Merchant PRO, kamu bisa dapat:</string>
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Proses bergabung tidak bisa \ndilanjutkan</string>
@@ -143,6 +143,7 @@
 
     <string name="pm_date_based_on_your_sell"><![CDATA[Berdasarkan penjualanmu di [%s], kamu dapat paket keuntungan <b>%s</b>]]></string>
     <string name="pm_next_update_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Tidak ada penurunan paket keuntungan pada update berikutnya.]]></string>
+    <string name="pm_calibration_date_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Akan ada penyesuaian paket berdasarkan level toko.]]></string>
 
     <string name="desc_pm_pro_new_seller_header">Untuk jadi Seller terbaik, kamu bisa gabung Power Merchant dulu dan tetap perhatikan parameter di bawah ini, ya.</string>
     <string name="title_requirement_pm_pro_new_seller_1">Verifikasi data diri agar tokomu terbukti terpercaya</string>

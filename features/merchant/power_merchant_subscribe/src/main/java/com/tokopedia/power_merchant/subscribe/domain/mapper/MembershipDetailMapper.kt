@@ -18,11 +18,23 @@ class MembershipDetailMapper @Inject constructor() {
                 DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY,
                 response.data?.nextMonthlyRefreshDate.orEmpty()
             ),
+            isCalibrationDate = getIsQuarterlyCalibrationDate(
+                response.data?.nextMonthlyRefreshDate, response.data?.nextQuarterlyCalibrationRefreshDate),
             totalOrderLast90Days = response.shopLevel.result.itemSold?.toLong().orZero(),
             netIncomeLast90Days = response.shopLevel.result.netIncomeValue?.toLong().orZero(),
             shopScore = response.shopScoreInfo?.result?.shopScore?.toInt().orZero(),
             totalOrderLast30Days = response.pmShopInfo?.itemSold.orZero(),
             netIncomeLast30Days = response.pmShopInfo?.netIncome.orZero()
         )
+    }
+
+    private fun getIsQuarterlyCalibrationDate(
+        nextMonthlyRefreshDate: String?,
+        nextQuarterlyCalibrationRefreshDate: String?
+    ): Boolean {
+        if (nextMonthlyRefreshDate.isNullOrBlank() || nextQuarterlyCalibrationRefreshDate.isNullOrBlank()) {
+            return false
+        }
+        return nextMonthlyRefreshDate == nextQuarterlyCalibrationRefreshDate
     }
 }

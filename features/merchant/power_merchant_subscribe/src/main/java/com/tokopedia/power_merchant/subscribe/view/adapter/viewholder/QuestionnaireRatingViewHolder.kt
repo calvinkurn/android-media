@@ -1,8 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
-import android.content.Context
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmQuestionnaireRatingBinding
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -23,17 +21,6 @@ class QuestionnaireRatingViewHolder(
     }
 
     private val binding: ItemPmQuestionnaireRatingBinding? by viewBinding()
-    private val ratingStatusList by itemView.context.getRatingStatusList()
-
-    private fun Context.getRatingStatusList(): Lazy<Array<String>> {
-        return lazy {
-            arrayOf(
-                getString(R.string.pm_rate_1_star), getString(R.string.pm_rate_2_star),
-                getString(R.string.pm_rate_3_star), getString(R.string.pm_rate_4_star),
-                getString(R.string.pm_rate_5_star)
-            )
-        }
-    }
 
     override fun bind(element: QuestionnaireUiModel.QuestionnaireRatingUiModel) {
         showItem(element)
@@ -45,13 +32,8 @@ class QuestionnaireRatingViewHolder(
             AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onRatingSelected(rating: Int) {
                 element.givenRating = rating
-                setRatingStatusText(rating)
                 onAnswerSelected()
             }
         })
-    }
-
-    private fun ItemPmQuestionnaireRatingBinding.setRatingStatusText(rating: Int) {
-        tvPmRatingStatus.text = ratingStatusList.getOrNull(rating.minus(Int.ONE)).orEmpty()
     }
 }
