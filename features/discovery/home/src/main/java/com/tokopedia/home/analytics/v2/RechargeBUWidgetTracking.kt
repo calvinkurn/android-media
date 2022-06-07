@@ -113,14 +113,6 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 convertRupiahToInt(item.label2)
             )
 
-            val itemList = String.format("/ - p%s - $RECHARGE_BU_WIDGET_NAME - product - %s - %s - %s - %s",
-                data.channel.verticalPosition,
-                data.data.trackingData.userType,
-                item.trackingData.itemType,
-                RECHARGE_BU_WIDGET_NEW_NAME,
-                getHeaderName(data.channel)
-            )
-
             val tracker = DataLayer.mapOf(
                 Event.KEY,Event.PRODUCT_VIEW,
                 Action.KEY,Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
@@ -130,7 +122,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE,
                 Ecommerce.KEY, getProductView(data, position),
                 UserId.KEY, userId,
-                KEY_ITEM_LIST, itemList
+                KEY_ITEM_LIST, item.trackingData.itemType
             )
             trackingQueue.putEETracking(tracker as? HashMap<String, Any>)
         }
