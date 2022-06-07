@@ -105,7 +105,7 @@ class MiniCartGeneralViewModel @Inject constructor(
 
     override fun getCartList(isFirstLoad: Boolean) {
         val shopIds = getCurrentShopIds()
-        getMiniCartListUseCase.setParams(shopIds)
+        getMiniCartListUseCase.setParams(shopIds, isShopDirectPurchase)
         getMiniCartListUseCase.execute(
             onSuccess = {
                 onSuccessGetCartList(isFirstLoad, it)
