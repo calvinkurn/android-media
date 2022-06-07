@@ -153,7 +153,7 @@ class PlayViewModel @AssistedInject constructor(
         get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE, true)
 
     private val isInteractiveAllowed: Boolean
-        get() = true
+        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
