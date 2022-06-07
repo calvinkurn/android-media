@@ -129,15 +129,16 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
         fun openActivity(
             activity: Activity?,
             screenType: Int,
-            voucherId: Int,
-            tmCouponListRefreshCallback: TmCouponListRefreshCallback
+            voucherId: Int?,
+            tmCouponListRefreshCallback: TmCouponListRefreshCallback,
+            edit: Boolean = true
         ){
             this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
                 intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_VOUCHER_ID, voucherId)
-                intent.putExtra(ACTION_EDIT, true)
+                intent.putExtra(ACTION_EDIT, edit)
                 it.startActivity(intent)
             }
         }

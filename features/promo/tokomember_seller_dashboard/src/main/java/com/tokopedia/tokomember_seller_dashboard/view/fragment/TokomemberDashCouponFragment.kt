@@ -227,6 +227,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             adapter = tmCouponAdapter
         }
 
+        btn_create_coupon.setOnClickListener {
+            TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, null, this, edit = false)
+        }
+
         observeViewModel()
         if(selectedType.toInt() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null)
