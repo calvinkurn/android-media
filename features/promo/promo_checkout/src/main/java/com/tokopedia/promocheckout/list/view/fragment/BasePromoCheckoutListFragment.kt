@@ -165,20 +165,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-
-            textInputCoupon.setError(false) //need to reset textInput state
-            e.message?.let {
-                textInputCoupon.setMessage(it)
-                textInputCoupon.setError(true)
-            }
+            e.message?.let { showErrorTextField(it) }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
-        textInputCoupon.setError(true)
+        showErrorTextField(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -199,6 +193,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             promoLastSeenAdapter.isDeals = isDeals
             promoLastSeenAdapter.notifyDataSetChanged()
             populateLastSeen()
+        }
+    }
+
+    private fun showErrorTextField(msg: String){
+        with(textInputCoupon){
+            setError(false) // need to reset textInput state
+            setMessage(msg)
+            setError(true) // set message show as error
         }
     }
 
