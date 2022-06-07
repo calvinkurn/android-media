@@ -142,7 +142,8 @@
         app:srcCompat="@drawable/ic_fullscreen_vod"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/feed_post_content_desc_full_screen" />
 
     <ImageView
         android:id="@+id/ic_vod_play"
