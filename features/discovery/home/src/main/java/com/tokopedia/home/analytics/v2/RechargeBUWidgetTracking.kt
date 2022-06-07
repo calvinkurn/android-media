@@ -29,6 +29,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val KEY_EVENT_IMPRESSIONS = "impressions"
     private const val KEY_PRODUCT_LIST = "list"
     private const val KEY_CURRENCY_CODE = "currencyCode"
+    private const val KEY_ITEM_LIST = "item_list"
     private const val IDR_CURRENCY = "IDR"
     private const val DEFAULT_TRACKING_LABEL_VALUES = "-"
 
@@ -112,6 +113,14 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 convertRupiahToInt(item.label2)
             )
 
+            val itemList = String.format("/ - p%s - $RECHARGE_BU_WIDGET_NAME - product - %s - %s - %s - %s",
+                data.channel.verticalPosition,
+                data.data.trackingData.userType,
+                item.trackingData.itemType,
+                RECHARGE_BU_WIDGET_NEW_NAME,
+                getHeaderName(data.channel)
+            )
+
             val tracker = DataLayer.mapOf(
                 Event.KEY,Event.PRODUCT_VIEW,
                 Action.KEY,Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
@@ -120,7 +129,8 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 BusinessUnit.KEY,RECHARGE_BU_WIDGET_BUSINESS_UNIT,
                 CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE,
                 Ecommerce.KEY, getProductView(data, position),
-                UserId.KEY, userId
+                UserId.KEY, userId,
+                KEY_ITEM_LIST, itemList
             )
             trackingQueue.putEETracking(tracker as? HashMap<String, Any>)
         }
