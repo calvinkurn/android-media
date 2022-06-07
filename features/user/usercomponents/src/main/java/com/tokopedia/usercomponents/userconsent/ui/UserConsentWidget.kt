@@ -202,8 +202,23 @@ class UserConsentWidget : FrameLayout {
         when {
             collection?.attributes?.collectionPointPurposeRequirement == MANDATORY -> {
                 purposeText = ""
-                collection?.purposes?.forEach {
-                    purposeText += "${it.description} ${if (collection?.purposes?.size.orZero() > 1) ", " else ""}"
+                if (collection?.purposes?.size.orZero() == 1) {
+                    purposeText = collection?.purposes?.get(0)?.description.orEmpty()
+                } else {
+                    collection?.purposes?.forEachIndexed { index, purposeDataModel ->
+                        purposeText += when(index) {
+                            (collection?.purposes?.size.orZero() - 1) -> {
+                                " & ${purposeDataModel.description}"
+                            }
+
+                            (collection?.purposes?.size.orZero() - 2) -> {
+                                purposeDataModel.description
+                            }
+                            else -> {
+                                "${purposeDataModel.description}, "
+                            }
+                        }
+                    }
                 }
 
                 viewBinding?.buttonAction?.isEnabled = true
@@ -274,6 +289,8 @@ class UserConsentWidget : FrameLayout {
         viewBinding?.singleConsent?.apply {
             checkboxPurposes.isChecked = false
         }
+
+        viewBinding?.buttonAction?.isEnabled = false
 
         userConsentPurposeAdapter?.clearAllItems()
     }
