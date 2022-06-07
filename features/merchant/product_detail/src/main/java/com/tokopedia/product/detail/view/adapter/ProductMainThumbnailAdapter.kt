@@ -8,16 +8,21 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.ItemImgThumbnailViewHolderBinding
 import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailAdapter.Companion.PAYLOAD_ACTIVATED
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 
-class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?)
+class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?,
+                                  val pdpListener: DynamicProductDetailListener?,
+                                  val componentTrackDataModel: ComponentTrackDataModel?)
     : RecyclerView.Adapter<AbstractViewHolder<ThumbnailDataModel>>() {
 
     companion object {
@@ -42,7 +47,7 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<ThumbnailDataModel>, position: Int) {
-        holder.bind(currentList[position])
+        (holder as? ProductMainThumbnailViewHolder)?.bind(currentList[position], position)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<ThumbnailDataModel>,
@@ -63,7 +68,14 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?)
 
         private val binding = ItemImgThumbnailViewHolderBinding.bind(view)
 
-        override fun bind(element: ThumbnailDataModel) {
+        fun bind(element: ThumbnailDataModel, position: Int) {
+
+            view.addOnImpressionListener(element.impressHolder) {
+                pdpListener?.onThumbnailImpress(position,
+                        element.media,
+                        componentTrackDataModel)
+            }
+
             if (element.media.isVideoType()) {
                 binding.pdpVideoThumbnail.show()
             } else {
@@ -74,7 +86,13 @@ class ProductMainThumbnailAdapter(val listener: ProductMainThumbnailListener?)
             setupBackground(element)
             view.setOnClickListener {
                 listener?.onThumbnailClicked(element)
+                pdpListener?.trackThumbnailClicked(position,
+                        element.media,
+                        componentTrackDataModel)
             }
+        }
+
+        override fun bind(element: ThumbnailDataModel) {
         }
 
         fun bind(element: ThumbnailDataModel, payloads: MutableList<Any>) {

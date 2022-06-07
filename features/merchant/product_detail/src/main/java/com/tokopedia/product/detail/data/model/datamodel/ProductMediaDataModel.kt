@@ -87,5 +87,6 @@ data class MediaDataModel(
 
 data class ThumbnailDataModel(
         val media: MediaDataModel = MediaDataModel(),
-        val isSelected: Boolean = false
+        val isSelected: Boolean = false,
+        val impressHolder: ImpressHolder = ImpressHolder()
 )

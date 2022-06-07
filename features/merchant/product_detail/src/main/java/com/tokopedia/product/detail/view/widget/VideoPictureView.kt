@@ -128,7 +128,12 @@ class VideoPictureView @JvmOverloads constructor(
     private fun setupThumbnailRv() {
         binding.pdpMainThumbnailRv.layoutParams.height = 0
 
-        thumbnailAdapter = ProductMainThumbnailAdapter(this)
+        thumbnailAdapter = ProductMainThumbnailAdapter(
+                this,
+                mListener,
+                componentTrackDataModel
+        )
+
         binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL,
                 false)
