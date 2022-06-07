@@ -107,7 +107,9 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         mModel = data
 
         if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
-            mAnalyticListener?.onImpressViewAll(this)
+            tvSeeAll.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
         }
 
         tvTitle.text = data.title

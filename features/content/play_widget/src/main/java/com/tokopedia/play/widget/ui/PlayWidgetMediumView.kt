@@ -242,7 +242,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         mModel = data
 
         if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
-            mAnalyticListener?.onImpressViewAll(this)
+            actionTitle.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
         }
 
         topContainer.shouldShowWithAction(data.title.isNotEmpty() || data.hasAction) {
