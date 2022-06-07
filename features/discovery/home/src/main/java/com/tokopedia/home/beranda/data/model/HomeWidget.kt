@@ -74,6 +74,39 @@ class HomeWidget(
             val keywords: List<PopularKeyword> = listOf()
     )
 
+    data class HomeMissionWidget(
+        @Expose
+        @SerializedName("getHomeMissionWidget")
+        val missionWidget : MissionWidget = MissionWidget()
+    )
+
+    data class MissionWidget(
+        @Expose
+        @SerializedName("missions")
+        val missions: List<Mission> = listOf()
+    )
+
+    data class Mission(
+        @Expose
+        @SerializedName("id")
+        val id: Long = 0L,
+        @Expose
+        @SerializedName("title")
+        val title: String = "",
+        @Expose
+        @SerializedName("subTitle")
+        val subTitle: String = "",
+        @Expose
+        @SerializedName("applink")
+        val appLink: String = "",
+        @Expose
+        @SerializedName("URL")
+        val url: String = "",
+        @Expose
+        @SerializedName("imageURL")
+        val imageURL: String = ""
+    )
+
     data class TabItem(
             @SuppressLint("Invalid Data Type")
             @SerializedName("id")
