@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.home.analytics
 import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
@@ -181,64 +182,64 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.CLICK_PG, eventDataLayer)
     }
 
-    private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -1, verticalPosition: Int): ArrayList<Bundle> {
+    private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -Int.ONE, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             data.mapIndexed { index, it ->
                 val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applinks}")
-                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
                     putString(Promotion.ITEM_ID, it.name)
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition + 1} - $EMPTY_DATA")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition + Int.ONE} - $EMPTY_DATA")
                 }
             }
         )
         return promotionBundle
     }
 
-    private fun getPromotionItemBanner(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -1): ArrayList<Bundle> {
+    private fun getPromotionItemBanner(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -Int.ONE): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             channelGrids.mapIndexed { index, it ->
                 val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
-                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
                     putString(Promotion.ITEM_ID, it.id)
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.BANNER_CAROUSEL} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.BANNER_CAROUSEL} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
             }
         )
         return promotionBundle
     }
 
-    private fun getPromotionLego(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -1): ArrayList<Bundle> {
+    private fun getPromotionLego(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -Int.ONE): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             channelGrids.mapIndexed { index, it ->
                 val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
-                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
                     putString(Promotion.ITEM_ID, "${it.id} - ${it.imageUrl}")
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.LEGO_6_IMAGE} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.LEGO_6_IMAGE} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
             }
         )
         return promotionBundle
     }
 
-    private fun getPromotionCategory(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -1): ArrayList<Bundle> {
+    private fun getPromotionCategory(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -Int.ONE): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
             channelGrids.mapIndexed { index, it ->
                 val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
-                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.CREATIVE_SLOT, (position + Int.ONE).toString())
                     putString(Promotion.ITEM_ID, "${it.id} - ${it.categoryId}")
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + Int.ONE} - ${channelModel.channelHeader.name}")
                 }
             }
         )
@@ -250,7 +251,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         promotionBundle.add(
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "")
-                    putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
+                    putString(Promotion.CREATIVE_SLOT, (horizontalPosition + Int.ONE).toString())
                     putString(Promotion.ITEM_ID, "${merchant.id} - ${merchant.name}")
                     putString(Promotion.ITEM_NAME, "//TODO_MERCHANT_LOCATION - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}")
             }
