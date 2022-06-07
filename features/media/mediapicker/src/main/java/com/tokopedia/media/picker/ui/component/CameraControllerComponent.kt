@@ -11,11 +11,9 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.cameraview.controls.Flash
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.R
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
 import com.tokopedia.media.picker.ui.adapter.managers.SliderLayoutManager
@@ -26,8 +24,6 @@ import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.util.toReadableFormat
-import com.tokopedia.picker.common.util.visibleWithCondition
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -202,13 +198,13 @@ class CameraControllerComponent(
         val maxDuration = param.maxVideoDuration()
 
         videoDurationTimer = object : CountDownTimer(
-            param.maxVideoDuration(),
+            param.maxVideoDuration().toLong(),
             COUNTDOWN_INTERVAL
         ) {
             override fun onTick(milis: Long) {
                 Handler(Looper.getMainLooper()).post {
-                    val duration = maxDuration - milis
-                    txtCountDown.text = duration.toReadableFormat()
+                    val duration = (maxDuration - milis).toInt()
+                    txtCountDown.text = duration.humanize()
                 }
             }
 
@@ -258,7 +254,7 @@ class CameraControllerComponent(
     }
 
     private fun setMaxDuration() {
-        txtMaxDuration.text = param.maxVideoDuration().toReadableFormat()
+        txtMaxDuration.text = param.maxVideoDuration().humanize()
     }
 
     private fun setPositionToCenterOfCameraMode() {

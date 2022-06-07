@@ -2,9 +2,9 @@ package com.tokopedia.media.picker.ui.component
 
 import android.graphics.Color
 import android.view.ViewGroup
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.unifycomponents.TabsUnify
 
@@ -31,9 +31,16 @@ class BottomNavComponent(
             addTab(R.string.picker_title_camera)
             addTab(R.string.picker_title_gallery)
 
-            tabUnify.tabLayout.addOnTabSelected(
-                ::onTabSelectionChanged
-            )
+            tabUnify.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.position?.let {
+                        onTabSelectionChanged(it)
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {} //no-op
+                override fun onTabReselected(tab: TabLayout.Tab?) {} //no-op
+            })
         }
     }
 

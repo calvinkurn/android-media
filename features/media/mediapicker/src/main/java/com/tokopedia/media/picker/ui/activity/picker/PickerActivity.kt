@@ -24,7 +24,6 @@ import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
-import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -36,8 +35,7 @@ import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.util.toMb
-import com.tokopedia.picker.common.util.toSec
+import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
@@ -347,12 +345,12 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMinVideoDuration(model: MediaUiModel): Boolean {
-        val duration = model.file?.videoDuration(applicationContext)?: 0L
+        val duration = model.file?.videoDuration(applicationContext)?: 0
         return duration <= param.get().minVideoDuration()
     }
 
     override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
-        val duration = model.file?.videoDuration(applicationContext)?: 0L
+        val duration = model.file?.videoDuration(applicationContext)?: 0
         return duration > param.get().maxVideoDuration()
     }
 
@@ -411,36 +409,44 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onShowVideoMinDurationToast() {
+        val durationInSec = param.get().minVideoDuration() / MILLIS_TO_SEC
+
         onShowValidationToaster(
             R.string.picker_video_duration_min_limit,
-            param.get().minVideoDuration().toSec()
+            durationInSec
         )
 
         pickerAnalytics.minVideoDuration()
     }
 
     override fun onShowVideoMaxDurationToast() {
+        val durationInSec = param.get().maxVideoDuration() / MILLIS_TO_SEC
+
         onShowValidationToaster(
             R.string.picker_video_duration_max_limit,
-            param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
+            durationInSec.humanize(this)
         )
 
         pickerAnalytics.maxVideoDuration()
     }
 
     override fun onShowVideoMaxFileSizeToast() {
+        val sizeInMb = param.get().maxVideoFileSize() / BYTES_TO_MB
+
         onShowValidationToaster(
             R.string.picker_video_max_size,
-            param.get().maxVideoFileSize().toMb()
+            sizeInMb
         )
 
         pickerAnalytics.maxVideoSize()
     }
 
     override fun onShowImageMaxFileSizeToast() {
+        val sizeInMb = param.get().maxImageFileSize() / BYTES_TO_MB
+
         onShowValidationToaster(
             R.string.picker_image_max_size,
-            param.get().maxImageFileSize().toMb()
+            sizeInMb
         )
 
         pickerAnalytics.maxImageSize()
@@ -497,6 +503,9 @@ open class PickerActivity : BaseActivity()
         const val REQUEST_PREVIEW_PAGE = 123
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
+
+        private const val BYTES_TO_MB = 1000000
+        private const val MILLIS_TO_SEC = 1000
     }
 
 }

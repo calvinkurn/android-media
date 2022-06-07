@@ -41,7 +41,6 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.util.FileCamera
-import com.tokopedia.picker.common.util.safeFileDelete
 import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject

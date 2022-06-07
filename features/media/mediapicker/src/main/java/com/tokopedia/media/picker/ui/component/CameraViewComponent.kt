@@ -95,7 +95,7 @@ class CameraViewComponent(
 
         cameraView.takeVideoSnapshot(
             FileCamera.createVideo(),
-            param.maxVideoDuration().toInt()
+            param.maxVideoDuration()
         )
     }
 

@@ -3,14 +3,13 @@ package com.tokopedia.picker.common.util.wrapper
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.net.Uri
-import android.text.TextUtils
-import android.webkit.MimeTypeMap
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import java.io.File
-import java.net.URLConnection
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
-import com.tokopedia.picker.common.util.DEFAULT_DURATION_LABEL
+import android.net.Uri
+import android.webkit.MimeTypeMap
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.picker.common.mapper.humanize
+import com.tokopedia.picker.common.util.getFileFormatByMimeType
+import java.io.File
 
 class PickerFile constructor(
     filePath: String
@@ -20,17 +19,22 @@ class PickerFile constructor(
         if (exists()) delete()
     }
 
-    fun isGif(): Boolean {
-        return extension().equals("gif", ignoreCase = true)
-    }
+    fun isGif() = extension().equals(
+        GIF_EXT,
+        ignoreCase = true
+    )
 
-    fun isImage(): Boolean {
-        return getFileFormatByMime("image")
-    }
+    fun isImage() = getFileFormatByMimeType(
+        type = MIME_TYPE_IMAGE,
+        path = path,
+        extension = extension()
+    )
 
-    fun isVideo(): Boolean {
-        return getFileFormatByMime("video")
-    }
+    fun isVideo() = getFileFormatByMimeType(
+        type = MIME_TYPE_VIDEO,
+        path = path,
+        extension = extension()
+    )
 
     fun isSizeMoreThan(sizeInBytes: Long): Boolean {
         if (!exists()) return false
@@ -57,10 +61,10 @@ class PickerFile constructor(
     }
 
     fun readableVideoDuration(context: Context?): String {
-        return videoDuration(context).videoDurationFormat()
+        return videoDuration(context).humanize()
     }
 
-    fun videoDuration(context: Context?): Long {
+    fun videoDuration(context: Context?): Int {
         val uri = Uri.fromFile(this)
 
         return try {
@@ -69,40 +73,11 @@ class PickerFile constructor(
                 val durationData = extractMetadata(METADATA_KEY_DURATION)
                 release()
 
-                durationData.toLongOrZero()
+                durationData.toIntOrZero()
             }
         } catch (e: Throwable) {
-            0L
+            0
         }
-    }
-
-    private fun Long.videoDurationFormat(): String {
-        val duration = this?: 0L
-
-        if (duration == 0L) return DEFAULT_DURATION_LABEL
-
-        val second = duration / 1000 % 60
-        val minute = duration / (1000 * 60) % 60
-        val hour = duration / (1000 * 60 * 60) % 24
-
-        return if (hour > 0) {
-            String.format("%02d:%02d:%02d", hour, minute, second)
-        } else {
-            String.format("%02d:%02d", minute, second)
-        }
-    }
-
-    private fun getFileFormatByMime(prefix: String): Boolean {
-        val mimeType =
-            if (TextUtils.isEmpty(extension())) {
-                URLConnection.guessContentTypeFromName(path)
-            } else {
-                MimeTypeMap
-                    .getSingleton()
-                    .getMimeTypeFromExtension(extension())
-            }
-
-        return mimeType != null && mimeType.startsWith(prefix)
     }
 
     /*
@@ -136,8 +111,17 @@ class PickerFile constructor(
     }
 
     companion object {
+        private const val MIME_TYPE_IMAGE = "image"
+        private const val MIME_TYPE_VIDEO = "video"
+
+        private const val GIF_EXT = "gif"
+
         fun File.asPickerFile(): PickerFile {
             return PickerFile(path)
+        }
+
+        fun String.asPickerFile(): PickerFile {
+            return PickerFile(this)
         }
     }
 

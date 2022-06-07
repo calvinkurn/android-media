@@ -1,4 +1,4 @@
-package com.tokopedia.picker.common.util
+package com.tokopedia.picker.common.mapper
 
 val Unify_N0 = com.tokopedia.unifyprinciples.R.color.Unify_N0
 val Unify_G500 = com.tokopedia.unifyprinciples.R.color.Unify_G500

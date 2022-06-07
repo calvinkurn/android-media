@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemSelectionThumbnailBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.util.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -4,14 +4,14 @@ import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.util.wrapper.PickerFile
+import com.tokopedia.picker.common.util.wrapper.PickerFile.Companion.asPickerFile
 
 fun mediaToUiModel(mediaList: List<Media>): List<MediaUiModel> {
     return mediaList.map {
         MediaUiModel(
             id = it.id,
             uri = it.uri,
-            file = PickerFile(it.path),
+            file = it.path.asPickerFile(),
         )
     }
 }

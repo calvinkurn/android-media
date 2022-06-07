@@ -5,10 +5,13 @@ import com.tokopedia.media.preview.managers.ImageCompressionManager
 import com.tokopedia.media.preview.managers.SaveToGalleryManager
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.util.getFileFormatByMimeType
 import com.tokopedia.picker.common.util.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,6 +42,8 @@ class PreviewViewModelTest {
 
     @Before
     fun setup() {
+        mockkStatic(::getFileFormatByMimeType)
+
         viewModel = PreviewViewModel(
             imageCompressorMock,
             saveToGalleryManagerMock
@@ -53,6 +58,8 @@ class PreviewViewModelTest {
 
         // Then
         assert(viewModel.isLoading.value != null)
+
+        clearAllMocks()
     }
 
     @Test
@@ -61,6 +68,7 @@ class PreviewViewModelTest {
         lateinit var pickerResult: PickerResult
 
         // When
+        every { getFileFormatByMimeType(any(), any(), any()) } returns false
         every { saveToGalleryManagerMock.dispatch(any()) } returns null
         every { imageCompressorMock.compress(any()) } returns flow {
             emit(
@@ -80,6 +88,8 @@ class PreviewViewModelTest {
 
         viewModel.files(mockMediaUiModel)
         assertEquals(mockMediaUiModel.size, pickerResult.originalPaths.size)
+
+        clearAllMocks()
     }
 
     @Test
@@ -88,6 +98,7 @@ class PreviewViewModelTest {
         lateinit var pickerResult: PickerResult
 
         // When
+        every { getFileFormatByMimeType(any(), any(), any()) } returns false
         every { saveToGalleryManagerMock.dispatch(any()) } returns null
         every { imageCompressorMock.compress(any()) } answers {
             flow {
@@ -107,6 +118,8 @@ class PreviewViewModelTest {
 
         viewModel.files(mockMediaUiModel)
         assertEquals(expectedCompressedImageSize, pickerResult.compressedImages.size)
+
+        clearAllMocks()
     }
 
     companion object {
@@ -118,6 +131,7 @@ class PreviewViewModelTest {
             MediaUiModel(5, PickerFile("/path/vid2.mp4")),
             MediaUiModel(6, PickerFile("/path/vid3.mp4")),
         )
+
         private val expectedCompressedImageSize =
             mockMediaUiModel.filter { it.isFromPickerCamera }.size
     }
