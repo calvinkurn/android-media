@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.common.data.interceptor;
+package com.tokopedia.shop.common.data.interceptor;
 
 import android.content.Context;
 import android.text.TextUtils;
