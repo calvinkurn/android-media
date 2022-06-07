@@ -342,7 +342,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
-        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this)
+        return TokoFoodHomeCategoryWidgetV2ComponentCallback(this, userSession, analytics)
     }
 
     private fun showLayout() {
@@ -543,6 +543,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onShowHomeLayout(data: TokoFoodListUiModel) {
+        successOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
         initializeMiniCartHome()
@@ -835,6 +836,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             userSession.deviceId.orEmpty(),
             description
         )
+    }
+
+    private fun successOpenHomepage(){
+        localCacheModel?.let {
+            analytics.openScreenHomePage(userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn)
+        }
     }
 
 }

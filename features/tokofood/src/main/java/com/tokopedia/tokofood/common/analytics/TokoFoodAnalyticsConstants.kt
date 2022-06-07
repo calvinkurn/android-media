@@ -20,6 +20,7 @@ object TokoFoodAnalyticsConstants {
 
     //home
     const val EMPTY_DATA = "null"
+    const val HOME_PAGE = "Tokofood Homepage"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"
