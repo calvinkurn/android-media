@@ -61,6 +61,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapper
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
@@ -497,7 +498,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? String)?.let { cartId ->
@@ -564,6 +564,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                                     }
                                 }
                         }
+                    }
+                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
             }

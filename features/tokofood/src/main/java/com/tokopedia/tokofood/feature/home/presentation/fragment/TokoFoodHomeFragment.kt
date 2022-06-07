@@ -48,6 +48,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
@@ -501,6 +502,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                            // TODO: Hit Tracker
+                        }
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
@@ -759,9 +763,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun showMiniCartHome() {
         miniCartHome?.show()
-        miniCartHome?.setOnATCClickListener {
-            goToPurchasePage()
-        }
     }
 
     private fun hideMiniCartHome() {

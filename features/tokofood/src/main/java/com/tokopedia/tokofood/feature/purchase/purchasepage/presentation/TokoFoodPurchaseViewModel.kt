@@ -141,7 +141,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId
+                        data = it.data.shop.shopId.takeIf { responseShopId ->
+                            responseShopId.isNotBlank()
+                        } ?: shopId.value
                     )
                     return@collect
                 }
@@ -182,20 +184,23 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                     } else {
                         _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-
                     }
                 }
             }
         }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                throwable = it
-            )
-            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                isLastLoadStateSuccess = false,
-                shopName = "",
-                shopLocation = ""
-            )
+            if (_isAddressHasPinpoint.value.second) {
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                    throwable = it
+                )
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                    isLastLoadStateSuccess = false,
+                    shopName = "",
+                    shopLocation = ""
+                )
+            } else {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+            }
         })
     }
 
@@ -205,7 +210,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 if (it.isEmptyProduct()) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                        data = it.data.shop.shopId
+                        data = it.data.shop.shopId.takeIf { responseShopId ->
+                            responseShopId.isNotBlank()
+                        } ?: shopId.value
                     )
                     return@collect
                 }
@@ -286,22 +293,26 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
-                TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
-                    lastResponse,
-                    lastResponse.isEnabled(),
-                    !_isAddressHasPinpoint.value.second
-                ).toMutableList()
+            if (_isAddressHasPinpoint.value.second) {
+                _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
+                        lastResponse,
+                        lastResponse.isEnabled(),
+                        !_isAddressHasPinpoint.value.second
+                    ).toMutableList()
+                }
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
+                    throwable = it
+                )
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                    isLastLoadStateSuccess = false,
+                    shopName = "",
+                    shopLocation = ""
+                )
+            } else {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
             }
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
-                throwable = it
-            )
-            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                isLastLoadStateSuccess = false,
-                shopName = "",
-                shopLocation = ""
-            )
         })
     }
 
@@ -314,7 +325,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         } else {
             _uiEvent.value = PurchaseUiEvent(
                 state = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS,
-                data = shopId
+                data = shopId.value
             )
         }
     }
