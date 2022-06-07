@@ -15,6 +15,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -182,7 +183,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickBanner(categoryName: String, bannerPosition: Int,
-                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -213,12 +214,20 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
-                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
+                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
+        val trackerBuilder = BaseTrackerBuilder().apply {
+            constructBasicPromotionView(
+                event = PROMO_VIEW,
+                eventCategory = OS_MICROSITE,
+                eventAction = 
+            )
+        }
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "banner - $IMPRESSION",
-                EVENT_LABEL, "$IMPRESSION of banner",
+                EVENT_ACTION, "$IMPRESSION banner - slider banner",
+                EVENT_LABEL, "slider banner - $categoryName",
+                USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
@@ -227,12 +236,11 @@ class OfficialStoreTracking(context: Context) {
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
                         "creative", bannerItem.title,
-                        "creative_url", bannerItem.applink,
-                        "promo_id", null,
-                        "promo_code", null
                         )
                     )
-                )
+                ),
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
             )
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
