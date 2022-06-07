@@ -558,16 +558,20 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textProductUnavailableAction.text = action.message
-            textProductUnavailableAction.setOnClickListener {
-                if (element.selectedUnavailableActionLink.isNotBlank()) {
-                    listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
+            if(element.isLastProductItem) {
+                textProductUnavailableAction.text = action.message
+                textProductUnavailableAction.setOnClickListener {
+                    if (element.selectedUnavailableActionLink.isNotBlank()) {
+                        listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
+                    }
                 }
+                textProductUnavailableAction.context?.let {
+                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                }
+                textProductUnavailableAction.show()
+            } else {
+                textProductUnavailableAction.hide()
             }
-            textProductUnavailableAction.context?.let {
-                textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-            textProductUnavailableAction.show()
         }
     }
 
