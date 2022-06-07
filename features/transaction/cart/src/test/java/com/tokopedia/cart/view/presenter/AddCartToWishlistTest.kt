@@ -204,4 +204,47 @@ class AddCartToWishlistTest : BaseCartTest() {
         verify { getWishlistV2UseCase.setParams(wishlistParam) }
         coVerify { getWishlistV2UseCase.executeOnBackground() }
     }
+
+    @Test
+    fun `verify get wishlistV2 returns not empty items`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val listItem = arrayListOf<GetWishlistV2Response.Data.WishlistV2.Item>()
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "1"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "2"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "3"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "4"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "5"))
+        val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 5, items = listItem)
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+        verifyOrder {
+            view.renderWishlistV2(listItem, true)
+            view.setHasTriedToLoadWishList()
+            view.stopAllCartPerformanceTrace()
+        }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns fail and verify view`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+        verifyOrder {
+            view.setHasTriedToLoadWishList()
+            view.stopAllCartPerformanceTrace()
+        }
+    }
 }
