@@ -384,6 +384,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             viewBinding.layoutStickyContainer.hide()
             stickyLoginAction?.onViewChange(false)
         }
+
+        // delete soon
+        show()
     }
 
     /**
