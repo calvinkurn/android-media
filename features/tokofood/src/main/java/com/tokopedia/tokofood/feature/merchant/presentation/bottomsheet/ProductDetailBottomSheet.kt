@@ -42,6 +42,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
     }
 
+    private var sentMerchantTracker: (() -> Unit)? = null
+
     private var cardPositions: Pair<Int, Int>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +67,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     private fun setupView(productUiModel: ProductUiModel, binding: BottomsheetProductDetailLayoutBinding?) {
         binding?.atcButton?.setOnClickListener {
+            sentMerchantTracker?.invoke()
+
             this.cardPositions?.run {
                 if (productUiModel.isCustomizable) {
                     clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
@@ -115,6 +119,10 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun sendTrackerInMerchantPage(sentMerchantTracker: () -> Unit) {
+        this.sentMerchantTracker = sentMerchantTracker
     }
 
     interface Listener {

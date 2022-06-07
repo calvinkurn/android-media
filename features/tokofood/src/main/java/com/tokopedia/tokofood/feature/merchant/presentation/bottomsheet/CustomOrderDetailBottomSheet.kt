@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.databinding.BottomsheetOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.OrderDetailAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -19,19 +20,23 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     interface OnCustomOrderDetailClickListener {
         fun onDeleteCustomOrderButtonClicked(cartId: String, productId: String)
         fun onUpdateCustomOrderQtyButtonClicked(productId: String, quantity: Int, customOrderDetail: CustomOrderDetail)
-        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel)
+        fun onNavigateToOrderCustomizationPage(cartId: String, productUiModel: ProductUiModel, productPosition: Int)
     }
 
     companion object {
 
         const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
+        const val BUNDLE_KEY_PRODUCT_POSITION = "PRODUCT_POSITION"
 
         @JvmStatic
         fun createInstance(productUiModel: ProductUiModel,
-                           clickListener: OnCustomOrderDetailClickListener): CustomOrderDetailBottomSheet {
+                           clickListener: OnCustomOrderDetailClickListener,
+                           productPosition: Int
+        ): CustomOrderDetailBottomSheet {
             return CustomOrderDetailBottomSheet(clickListener).apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
+                    putInt(BUNDLE_KEY_PRODUCT_POSITION, productPosition)
                 }
             }
         }
@@ -40,6 +45,10 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     private var binding: BottomsheetOrderInfoLayoutBinding? = null
 
     private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
+
+    private val productPosition by lazy {
+        arguments?.getInt(BUNDLE_KEY_PRODUCT_POSITION).orZero()
+    }
 
     private val productUiModel: ProductUiModel by lazy {
         arguments?.getParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL) ?: ProductUiModel()
@@ -67,7 +76,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
 
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
-            clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel)
+            clickListener.onNavigateToOrderCustomizationPage(cartId = "", productUiModel = productUiModel, productPosition)
         }
         binding?.rvOrderInfo?.let {
             it.adapter = adapter
@@ -84,7 +93,7 @@ class CustomOrderDetailBottomSheet(private val clickListener: OnCustomOrderDetai
     }
 
     override fun onEditButtonClicked(cartId: String) {
-        clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = productUiModel)
+        clickListener.onNavigateToOrderCustomizationPage(cartId = cartId, productUiModel = productUiModel, productPosition)
     }
 
     override fun onDeleteButtonClicked(cartId: String) {

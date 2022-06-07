@@ -12,15 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
+import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.CustomListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,19 +38,24 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
     companion object {
 
+        const val BUNDLE_KEY_VARIANT_TRACKER = "variant_tracker"
         private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "productUiModel"
         private const val BUNDLE_KEY_CART_ID = "cartId"
         private const val BUNDLE_KEY_MERCHANT_ID = "merchantId"
+        private const val BUNDLE_KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val SOURCE = "merchant_page"
 
         @JvmStatic
         fun createInstance(productUiModel: ProductUiModel,
                            cartId: String = "",
-                           merchantId: String = "") = OrderCustomizationFragment().apply {
+                           merchantId: String = "",
+                           cacheManagerId: String
+        ) = OrderCustomizationFragment().apply {
             this.arguments = Bundle().apply {
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
                 putString(BUNDLE_KEY_MERCHANT_ID, merchantId)
+                putString(BUNDLE_KEY_CACHE_MANAGER_ID, cacheManagerId)
             }
         }
     }
@@ -56,6 +65,9 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var merchantPageAnalytics: MerchantPageAnalytics
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -73,6 +85,8 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
     private var binding: FragmentOrderCustomizationLayoutBinding? = null
 
     private var customListAdapter: CustomListAdapter? = null
+
+    private var variantWrapperUiModel: VariantWrapperUiModel? = null
 
     override fun getFragmentToolbar(): Toolbar? {
         return binding?.toolbar
@@ -115,6 +129,7 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setVariantWrapperFromCacheManager()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
         val productUiModel = arguments?.getParcelable<ProductUiModel>(BUNDLE_KEY_PRODUCT_UI_MODEL)
@@ -136,6 +151,14 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
                 customListAdapter?.getCustomListItems()?.run {
+
+                    merchantPageAnalytics.clickOnOrderVariantPage(
+                        variantWrapperUiModel?.productListItem,
+                        variantWrapperUiModel?.merchantId.orEmpty(),
+                        variantWrapperUiModel?.tokoFoodMerchantProfile,
+                        variantWrapperUiModel?.position.orZero()
+                    )
+
                     val validationResult = viewModel.validateCustomOrderInput(this)
                     val isError = validationResult.first
                     if (isError) {
@@ -174,6 +197,20 @@ class OrderCustomizationFragment : BaseMultiFragment(), ProductAddOnViewHolder.O
             )
         }
         customListAdapter?.setCustomListItems(customListItems = customListItems)
+    }
+
+    private fun setVariantWrapperFromCacheManager() {
+        val cacheManager = context?.let {
+            SaveInstanceCacheManager(
+                it,
+                arguments?.getString(BUNDLE_KEY_CACHE_MANAGER_ID)
+            )
+        }
+        val variantWrapperUiModel = cacheManager?.get(
+            BUNDLE_KEY_VARIANT_TRACKER,
+            VariantWrapperUiModel::class.java) ?: VariantWrapperUiModel()
+
+        this.variantWrapperUiModel = variantWrapperUiModel
     }
 
     override fun onAddOnSelected(isSelected: Boolean, addOnPrice: Double, addOnPositions: Pair<Int, Int>) {

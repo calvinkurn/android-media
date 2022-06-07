@@ -10,7 +10,9 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
-import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.PRODUCT_CARD
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.values
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
@@ -56,7 +58,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
             PRODUCT_CARD.type -> {
                 val viewHolder = holder as ProductCardViewHolder
                 val productUiModel = productListItems[position].productUiModel
-                viewHolder.bindData(productUiModel, position)
+                val productListItem = productListItems[position]
+                viewHolder.bindData(productListItem, productUiModel, position)
             }
         }
     }

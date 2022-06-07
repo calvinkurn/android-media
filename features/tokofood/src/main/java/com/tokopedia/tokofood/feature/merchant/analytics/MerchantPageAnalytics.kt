@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.merchant.analytics
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
@@ -34,6 +35,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
     }
 
     fun impressionOnProductCard(
+        productListItems: List<ProductListItem>,
         productListItem: ProductListItem,
         position: Int,
         merchantId: String
@@ -44,6 +46,9 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         } else {
             TokoFoodAnalyticsConstants.NOT
         }
+
+        val productListItemsFmt =
+            productListItems.joinToString(prefix = ",") { it.productUiModel.name }
 
         val itemBundle = getItemsBundle(productListItem, position)
 
@@ -69,8 +74,8 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
                 TokoFoodAnalyticsConstants.CURRENT_SITE,
                 TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
             )
-            putParcelableArrayList(
-                TokoFoodAnalyticsConstants.ITEM_LIST, arrayListOf()
+            putString(
+                TokoFoodAnalyticsConstants.ITEM_LIST, productListItemsFmt
             )
             putParcelableArrayList(
                 AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
@@ -83,6 +88,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
     }
 
     fun clickProductCard(
+        productListItems: List<ProductListItem>,
         productListItem: ProductListItem,
         position: Int,
         merchantId: String
@@ -92,6 +98,9 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             TokoFoodAnalyticsConstants.OOS else TokoFoodAnalyticsConstants.NOT
 
         val itemBundle = getItemsBundle(productListItem, position)
+
+        val productListItemsFmt =
+            productListItems.joinToString(prefix = ",") { it.productUiModel.name }
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.SELECT_CONTENT)
@@ -115,8 +124,8 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
                 TokoFoodAnalyticsConstants.CURRENT_SITE,
                 TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
             )
-            putParcelableArrayList(
-                TokoFoodAnalyticsConstants.ITEM_LIST, arrayListOf()
+            putString(
+                TokoFoodAnalyticsConstants.ITEM_LIST, productListItemsFmt
             )
             putParcelableArrayList(
                 AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
@@ -130,20 +139,24 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
 
     fun clickOnAtcButton(
         productListItem: ProductListItem,
-        position: Int,
-        merchantId: String
+        merchantId: String,
+        tokoFoodMerchantProfile: TokoFoodMerchantProfile,
+        position: Int
     ) {
         val foodItem = productListItem.productUiModel
         val oosText = if (foodItem.isOutOfStock)
             TokoFoodAnalyticsConstants.OOS else TokoFoodAnalyticsConstants.NOT
 
-        val itemBundle = getItemsBundle(productListItem, position)
+        val itemBundle = getCartItemsBundle(
+            productListItem, merchantId, tokoFoodMerchantProfile,
+            foodItem.orderQty.toString()
+        )
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.ADD_TO_CART)
             putString(
                 TrackAppUtils.EVENT_ACTION,
-                TokoFoodAnalyticsConstants.CLICK_ON_PRODUCT_CARD
+                TokoFoodAnalyticsConstants.CLICK_ON_PESAN_PRODUCT_CARD
             )
             putString(
                 TrackAppUtils.EVENT_CATEGORY,
@@ -178,15 +191,15 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         productListItem: ProductListItem,
         merchantId: String,
         tokoFoodMerchantProfile: TokoFoodMerchantProfile,
-        quantity: String,
         position: Int
     ) {
         val foodItem = productListItem.productUiModel
 
-        val itemBundle = getCartItemsBundle(productListItem,
+        val itemBundle = getCartItemsBundle(
+            productListItem,
             merchantId,
             tokoFoodMerchantProfile,
-            quantity
+            foodItem.orderQty.toString()
         )
 
         val eventDataLayer = Bundle().apply {
@@ -229,15 +242,15 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         productListItem: ProductListItem,
         merchantId: String,
         tokoFoodMerchantProfile: TokoFoodMerchantProfile,
-        quantity: String,
         position: Int
     ) {
         val foodItem = productListItem.productUiModel
 
-        val itemBundle = getCartItemsBundle(productListItem,
+        val itemBundle = getCartItemsBundle(
+            productListItem,
             merchantId,
             tokoFoodMerchantProfile,
-            quantity
+            foodItem.orderQty.toString()
         )
 
         val eventDataLayer = Bundle().apply {
@@ -277,19 +290,23 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
     }
 
     fun clickOnOrderVariantPage(
-        productListItem: ProductListItem,
+        productListItem: ProductListItem?,
         merchantId: String,
-        tokoFoodMerchantProfile: TokoFoodMerchantProfile,
-        quantity: String,
+        tokoFoodMerchantProfile: TokoFoodMerchantProfile?,
         position: Int
     ) {
-        val foodItem = productListItem.productUiModel
+        val foodItem = productListItem?.productUiModel
 
-        val itemBundle = getCartItemsBundle(productListItem,
-            merchantId,
-            tokoFoodMerchantProfile,
-            quantity
-        )
+        val itemBundle = productListItem?.let {
+            tokoFoodMerchantProfile?.let { merchantProfile ->
+                getCartItemsBundle(
+                    it,
+                    merchantId,
+                    merchantProfile,
+                    foodItem?.orderQty.toString()
+                )
+            }
+        }
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, TokoFoodAnalyticsConstants.ADD_TO_CART)
@@ -303,7 +320,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             )
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "$merchantId - ${foodItem.name} - ${foodItem.price.toInt()} - $position"
+                "$merchantId - ${foodItem.name} - ${foodItem?.price?.toInt().orZero()} - $position"
             )
             putString(
                 TokoFoodAnalyticsConstants.BUSSINESS_UNIT,
@@ -319,7 +336,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             putParcelableArrayList(
                 AddToCartExternalAnalytics.EE_VALUE_ITEMS, arrayListOf(itemBundle)
             )
-            putString(TokoFoodAnalyticsConstants.PRODUCT_ID, foodItem.id)
+            putString(TokoFoodAnalyticsConstants.PRODUCT_ID, foodItem?.id.orEmpty())
             putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantId)
             putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
         }
@@ -336,7 +353,7 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
             TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
             TokoFoodAnalyticsConstants.SHOP_ID to merchantId,
-            TokoFoodAnalyticsConstants.USER_ID to  userSession.userId
+            TokoFoodAnalyticsConstants.USER_ID to userSession.userId
         )
         tracker.sendGeneralEvent(mapData)
     }

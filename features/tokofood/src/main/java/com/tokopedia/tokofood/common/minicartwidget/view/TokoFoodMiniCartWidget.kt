@@ -27,6 +27,8 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
 
     private var source: String = ""
 
+    private var totalPriceFmt = ""
+
     // Function to initialize the widget
     fun initialize(sharedViewModel: MultipleFragmentsViewModel,
                    lifecycleScope: LifecycleCoroutineScope,
@@ -54,7 +56,10 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
         onButtonClickAction = action
     }
 
+    fun getTotalAmount() = totalPriceFmt
+
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
+        totalPriceFmt = miniCartUiModel.totalPriceFmt
         viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
             if (isTotalAmountLoading) {
