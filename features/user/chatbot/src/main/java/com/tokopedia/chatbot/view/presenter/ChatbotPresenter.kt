@@ -55,8 +55,6 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.data.uploadPolicy.ChatbotVODUploadPolicyResponse
-import com.tokopedia.chatbot.data.uploadeligibility.UploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
@@ -576,54 +574,6 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
-    override fun uploadVideo(
-        videoUploadUiModel: VideoUploadUiModel,
-        sourceId: String,
-        withTranscode: Boolean,
-        startTime: String,
-        messageId: String,
-        onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
-    ) {
-        val originalFile = File(videoUploadUiModel.videoUrl)
-
-        launchCatchError(
-            block = {
-                val param = uploaderUseCase.createParams(
-                    filePath = originalFile, // required
-                    sourceId = sourceId, // required
-                    withTranscode = withTranscode // optional, default: true
-                )
-
-                when (val result = uploaderUseCase.invoke(param)) {
-                    is UploadResult.Success -> {
-                        sendVideoAttachment(result.videoUrl,startTime, messageId)
-                    }
-                    is UploadResult.Error -> {
-                        result.message
-                        onErrorVideoUpload(result.message,videoUploadUiModel)
-                    }
-                }
-            },
-            onError = {
-
-            }
-        )
-    }
-
-
-    override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
-        RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
-                filePath, startTime, messageId
-            ), listInterceptor
-        )
-    }
-
-    override fun cancelVideoUpload(file: String, sourceId: String) {
-        //TODO cancel video upload
-    }
-
-
     override fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel {
         return AttachInvoiceSingleViewModel(
             typeString = "",
@@ -836,5 +786,49 @@ class ChatbotPresenter @Inject constructor(
                 view.enableTyping()
             }
         )
+    }
+
+    override fun uploadVideo(
+        videoUploadUiModel: VideoUploadUiModel,
+        sourceId: String,
+        startTime: String,
+        messageId: String,
+        onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
+    ) {
+        val originalFile = File(videoUploadUiModel.videoUrl)
+
+        launchCatchError(
+            block = {
+                val param = uploaderUseCase.createParams(
+                    filePath = originalFile,
+                    sourceId = sourceId
+                )
+
+                when (val result = uploaderUseCase.invoke(param)) {
+                    is UploadResult.Success -> {
+                        sendVideoAttachment(result.videoUrl,startTime, messageId)
+                    }
+                    is UploadResult.Error -> {
+                        result.message
+                        onErrorVideoUpload(result.message,videoUploadUiModel)
+                    }
+                }
+            },
+            onError = {
+                onErrorVideoUpload(it.message ?: "",videoUploadUiModel)
+            }
+        )
+    }
+
+    override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                filePath, startTime, messageId
+            ), listInterceptor
+        )
+    }
+
+    override fun cancelVideoUpload(file: String, sourceId: String) {
+        //TODO cancel video upload
     }
 }

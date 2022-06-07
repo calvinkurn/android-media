@@ -205,7 +205,7 @@ object SendChatbotWebsocketParam {
                 ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
             )
         )
-        data.addProperty("file_path", "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=41e55036b08144c38d9ae1144788e5cb")
+        data.addProperty("file_path", filePath)
         data.addProperty("start_time", startTime)
 
         json.add("data", data)

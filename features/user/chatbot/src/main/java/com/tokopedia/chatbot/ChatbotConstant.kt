@@ -9,6 +9,7 @@ object ChatbotConstant {
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
     const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
+    const val MAX_MEDIA_COUNT = 6
 
     object CsatRating {
         const val RATING_ONE = 1

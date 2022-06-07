@@ -17,8 +17,6 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.data.uploadPolicy.ChatbotVODUploadPolicyResponse
-import com.tokopedia.chatbot.data.uploadeligibility.UploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
@@ -154,7 +152,6 @@ interface ChatbotContract {
         fun uploadVideo(
             videoModel: VideoUploadUiModel,
             sourceId: String,
-            withTranscode: Boolean,
             startTime: String,
             messageId: String,
             onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit

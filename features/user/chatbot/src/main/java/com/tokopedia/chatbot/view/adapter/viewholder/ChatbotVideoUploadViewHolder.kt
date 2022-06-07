@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -48,7 +49,7 @@ class ChatbotVideoUploadViewHolder(
     private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
     protected val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val videoTotalLength: Typography? = itemView?.findViewById(getVideoTotalLengthId())
-
+    private val videoUploadProgressBar : LoaderUnify? = itemView?.findViewById(R.id.progress_bar_loding)
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(

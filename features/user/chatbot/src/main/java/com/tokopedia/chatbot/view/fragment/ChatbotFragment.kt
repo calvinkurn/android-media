@@ -63,6 +63,7 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
+import com.tokopedia.chatbot.ChatbotConstant.MAX_MEDIA_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
@@ -423,67 +424,36 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
-                adapter,
-                onChatMenuButtonClicked
+                adapter
         )
-    }
-
-    val onChatMenuButtonClicked: () -> Unit = {
-
-//        val mediaPickerBottomSheet = MediaPickerBottomSheet()
-//        mediaPickerBottomSheet.show(childFragmentManager)
-  //      mediaPickerContainer.visibility = View.VISIBLE
-
-      //  imagePicker.setOnClickListener { pickImageFromDevice() }
-
-//        activity?.let {
-//            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-//            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-//            intent.putImagePickerBuilder(builder)
-//            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
-//            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
-//        }
-
-//        videoPicker.setOnClickListener {
-//            pickVideoFromDevice()
-//        }
     }
 
     private fun pickVideoFromDevice(){
 
-//        val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-//            .withSimpleMultipleSelection(maxPick = 1).apply {
-//                maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
-//            }
-
         activity?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it).withSimpleEditor().apply {
-                maxFileSizeInKB = maxFileSize
+            val intent = context?.let { context ->
+                MediaPicker.intentWithGalleryFirst(context) {
+                    pageSource(PageSource.ChatBot)
+                    modeType(ModeType.VIDEO_ONLY)
+                    multipleSelectionMode()
+                    maxMediaItem(MAX_MEDIA_COUNT)
+                }
             }
-            //NEED to change these
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.VIDEO_PICKER)
-            intent.putImagePickerBuilder(builder)
-            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
             startActivityForResult(intent, REQUEST_CODE_CHAT_VIDEO)
         }
     }
 
-    private fun pickImageFromDevice(){
-            activity?.let {
-//            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
-//            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-//            intent.putImagePickerBuilder(builder)
-//            intent.putParamPageSource(ImagePickerPageSource.CHAT_BOT_PAGE)
-//            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
-                val intent = context?.let { context ->
-                    MediaPicker.intentWithGalleryFirst(context) {
-                        pageSource(PageSource.ChatBot)
-                        modeType(ModeType.IMAGE_ONLY)
-                        multipleSelectionMode()
-                        maxMediaItem(6)
-                    }
+    private fun pickImageFromDevice() {
+        activity?.let {
+            val intent = context?.let { context ->
+                MediaPicker.intentWithGalleryFirst(context) {
+                    pageSource(PageSource.ChatBot)
+                    modeType(ModeType.IMAGE_ONLY)
+                    multipleSelectionMode()
+                    maxMediaItem(MAX_MEDIA_COUNT)
                 }
-                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+            }
+            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
 
@@ -807,7 +777,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
         presenter.checkUploadSecure(messageId, data)
-
     }
 
     private fun onPickedAttachVideo(resultCode: Int, data: Intent?){
@@ -818,43 +787,42 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         uploadVideo(data)
     }
 
-    private fun uploadVideo(data: Intent){
-        processVideoPathToUpload(data)?.let {
-            getViewState()?.onVideoUpload(it)
-            presenter.uploadVideo(it, SOURCE_ID_FOR_VIDEO_UPLOAD, true,SendableUiModel.generateStartTime(), messageId,onErrorVideoUpload())
+    private fun uploadVideo(data: Intent) {
+        val paths = MediaPicker.result(data)
+        paths.originalPaths.forEach { path ->
+            processVideoPathToUpload(path)?.let { videoUploadUiModel ->
+                getViewState()?.onVideoUpload(videoUploadUiModel)
+                presenter.uploadVideo(
+                    videoUploadUiModel,
+                    SOURCE_ID_FOR_VIDEO_UPLOAD,
+                    SendableUiModel.generateStartTime(),
+                    messageId,
+                    onErrorVideoUpload()
+                )
+
+            }
         }
     }
 
-    //Change return type
-    private fun processVideoPathToUpload(data: Intent): VideoUploadUiModel? {
-        var videoPathList: ArrayList<String>? = data.getStringArrayListExtra("video_result")
-        if (videoPathList == null)
-            return null
-        if (videoPathList.size <= 0)
-            return null
-        val videoPath = videoPathList[0]
-
-        //GET VIDEO LENGTH
-        var uri = Uri.parse(videoPath)
-        var totalLength:Long = 0
+    private fun processVideoPathToUpload(path: String): VideoUploadUiModel? {
+        var uri = Uri.parse(path)
+        var totalLength: Long = 0
         MediaPlayer.create(context, uri).also {
             totalLength = it.duration.toLong()
-
             it.reset()
             it.release()
         }
 
-        if (!TextUtils.isEmpty(videoPath)) {
-            //Change the UI model here
-             var temp = generateChatViewModelWithVideo(videoPath,totalLength)
-            return temp
+        if (!TextUtils.isEmpty(path)) {
+            var videoUploadUiModel = generateChatViewModelWithVideo(path, totalLength)
+            return videoUploadUiModel
         }
 
         return null
 
     }
 
-    fun generateChatViewModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
+    private fun generateChatViewModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId(messageId)
             .withFromUid(opponentId)
             .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())
@@ -870,11 +838,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun uploadUsingSecureUpload(data: Intent) {
-//        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
-//        processImagePathToUpload(data)?.let {
-//            getViewState()?.onImageUpload(it)
-//            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
-//        }
         val paths = MediaPicker.result(data)
         paths.originalPaths.forEach { path ->
             processImagePathToUpload(path)?.let { imageUploadUiModel ->
@@ -886,21 +849,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun uploadUsingOldMechanism(data: Intent) {
-//        processImagePathToUpload(data)?.let {
-//            getViewState()?.onImageUpload(it)
-//            presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
-//        }
-
         val paths = MediaPicker.result(data)
         paths.originalPaths.forEach { path ->
             processImagePathToUpload(path)?.let { imageUploadUiModel ->
                 getViewState()?.onImageUpload(imageUploadUiModel)
-                presenter.uploadImages(imageUploadUiModel, messageId, opponentId, onErrorImageUpload())
+                presenter.uploadImages(
+                    imageUploadUiModel,
+                    messageId,
+                    opponentId,
+                    onErrorImageUpload()
+                )
             }
 
         }
 
     }
+
     override fun sendInvoiceForArticle() {
         if (isArticleEntry) {
             if (!isAttached) {
@@ -1060,22 +1024,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun processImagePathToUpload(path: String): ImageUploadUiModel? {
-
-//        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-//        ImagePickerResultExtractor.extract(data)
-//        if (imagePathList.size <= 0) {
-//            return null
-//        }
-//        val imagePath = imagePathList[0]
-
         if (!TextUtils.isEmpty(path)) {
-            val temp = generateChatViewModelWithImage(path)
-            return temp
+            val imageUiModel = generateChatViewModelWithImage(path)
+            return imageUiModel
         }
         return null
     }
 
-    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
         return ImageUploadUiModel.Builder()
             .withMsgId(messageId)
             .withFromUid(opponentId)
@@ -1353,7 +1309,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         RESEND -> {
                             removeDummy(element)
                             getViewState()?.onVideoUpload(element)
-                            presenter.uploadVideo(element,SOURCE_ID_FOR_VIDEO_UPLOAD,true,SendableUiModel.generateStartTime(),messageId,onErrorVideoUpload())
+                            presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
                             bottomSheetPage.dismiss()
                         }
                         DELETE -> {
