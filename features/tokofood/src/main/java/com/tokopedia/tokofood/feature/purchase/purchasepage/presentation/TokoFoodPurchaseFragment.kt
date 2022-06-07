@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -326,7 +327,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     hideLoading()
                     renderNoPinpoint()
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -343,7 +344,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
                     it.throwable?.let { throwable ->
@@ -360,15 +361,23 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         )
                     }
                 }
-                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage(shopId)
+                PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
+                    val emptyProductShopId = (it.data as? String).orEmpty()
+                    if (emptyProductShopId.isBlank()) {
+                        navigateToHomePage()
+                    } else {
+                        navigateToMerchantPage(emptyProductShopId)
+                    }
+                }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData()
+                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
+                    loadData()
+                }
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
-                    // TODO: Show error
-                    viewModel.loadData()
+
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
                     (it.data as? CheckoutTokoFoodConsentBottomSheet)?.let { data ->
@@ -667,6 +676,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
+    private fun navigateToHomePage() {
+        TokofoodRouteManager.mapUriToFragment(ApplinkConstInternalTokoFood.HOME.toUri())?.let { homeFragment ->
+            navigateToNewFragment(homeFragment)
+        }
+    }
+
     private fun navigateToMerchantPage(merchantId: String) {
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
@@ -755,18 +770,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun hideLoadingDialog() {
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
-    }
-
-    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
-        val cartList = productList.map {
-            CartItemTokoFoodParam(
-                productId = it.id,
-                quantity = it.quantity
-            )
-        }
-        return CartTokoFoodParam(
-            carts = cartList
-        )
     }
 
     private fun showConsentBottomSheet(data: CheckoutTokoFoodConsentBottomSheet) {
@@ -937,7 +940,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
-    override fun onTextSetPinpointClicked() {}
+    override fun onTextSetPinpointClicked() {
+        val locationPass =
+            LocationPass().apply {
+                latitude = TokoFoodPurchaseViewModel.TOTO_LATITUDE
+                longitude = TokoFoodPurchaseViewModel.TOTO_LONGITUDE
+            }
+        navigateToSetPinpoint(locationPass)
+    }
 
     override fun onTextAddItemClicked() {
         navigateToMerchantPage(shopId)

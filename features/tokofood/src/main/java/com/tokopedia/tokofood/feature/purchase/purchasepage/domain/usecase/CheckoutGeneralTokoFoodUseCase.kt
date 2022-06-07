@@ -34,6 +34,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
               success
               error
               error_state
+              error_metadata
               message
               data{
                 callback_url
