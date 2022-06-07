@@ -359,7 +359,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
@@ -758,7 +758,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setupSpannableText() {
         activity?.let {
-            val sourceString = resources.getString(R.string.span_not_have_tokopedia_account)
+            val sourceString = requireContext().resources.getString(R.string.span_not_have_tokopedia_account)
 
             val spannable = SpannableString(sourceString)
 
