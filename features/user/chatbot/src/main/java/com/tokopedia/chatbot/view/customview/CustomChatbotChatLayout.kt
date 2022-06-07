@@ -27,7 +27,6 @@ class CustomChatbotChatLayout : ViewGroup {
 
     var checkMark: ImageView? = null
         private set
-    //TODO private
     var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
@@ -184,37 +183,6 @@ class CustomChatbotChatLayout : ViewGroup {
         var topOffset = paddingTop
 
         /**
-         * Layout Header
-         */
-//        if (header!!.isVisible) {
-//            val leftHeader = paddingStart
-//            val topHeader = topOffset
-//            val rightHeader = paddingStart + header!!.measuredWidth
-//            val bottomHeader = topHeader + header!!.measuredHeight
-//            header?.layout(
-//                leftHeader,
-//                topHeader,
-//                rightHeader,
-//                bottomHeader
-//            )
-//            topOffset = bottomHeader
-//        }
-
-//        /**
-//         * Layout icon
-//         */
-//        val leftIcon = paddingStart
-//        val topIcon = topOffset
-//        val rightIcon = leftIcon + getVisibleMeasuredWidth(icon)
-//        val bottomIcon = topIcon + getVisibleMeasuredHeight(icon)
-//        icon?.layout(
-//            leftIcon,
-//            topIcon,
-//            rightIcon,
-//            bottomIcon
-//        )
-
-        /**
          * Layout msg
          */
         val leftMsg = paddingStart
@@ -262,38 +230,14 @@ class CustomChatbotChatLayout : ViewGroup {
 
     }
 
-    private fun getTotalVisibleWidth(view: View?): Int {
-        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
-        if (!view.isVisible) return 0
-        return view.measuredWidth + viewLp.leftMargin + viewLp.rightMargin
-    }
-
     private fun getVisibleMeasuredWidth(view: View?): Int {
         if (view?.isVisible == false) return 0
         return view?.measuredWidth ?: 0
     }
 
-    private fun getTotalVisibleHeight(view: View?): Int {
-        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
-        if (!view.isVisible) return 0
-        return view.measuredHeight + viewLp.topMargin + viewLp.bottomMargin
-    }
-
     private fun getVisibleMeasuredHeight(view: View?): Int {
         if (view?.isVisible == false) return 0
         return view?.measuredHeight ?: 0
-    }
-
-    private fun getVisibleEndMargin(view: View?): Int {
-        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
-        if (!view.isVisible) return 0
-        return viewLp.rightMargin
-    }
-
-    private fun getVisibleStartMargin(view: View?): Int {
-        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
-        if (!view.isVisible) return 0
-        return viewLp.leftMargin
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {

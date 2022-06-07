@@ -95,7 +95,6 @@ object ChatbotSendWebsocketParam {
         if (referredMsg == null)
             return null
 
-        //TODO fix the main_text
         val request = JsonObject()
         request.addProperty("sender_id",referredMsg.senderId.toLongOrZero())
         request.addProperty("reply_time",referredMsg.replyTime.toLongOrZero())

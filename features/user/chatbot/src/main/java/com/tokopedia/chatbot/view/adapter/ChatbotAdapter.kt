@@ -52,7 +52,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     }
 
     fun showBottomLoading(){
-        if (visitables[0] !is LoadingMoreModel){
+        if (visitables.getOrNull(0) !is LoadingMoreModel){
             visitables.add(0,loadingMoreModel)
             notifyItemInserted(0)
         }
@@ -69,14 +69,14 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     }
 
     fun hideBottomLoading() {
-        if (visitables[0] is LoadingMoreModel) {
+        if (visitables.getOrNull(0) is LoadingMoreModel) {
             visitables.removeAt(0)
             notifyItemRemoved(0)
         }
     }
 
     fun hideTopLoading() {
-        if (visitables[visitables.size-1] is LoadingMoreModel) {
+        if (visitables.getOrNull(visitables.size-1) is LoadingMoreModel) {
             visitables.removeAt(visitables.size-1)
             notifyItemRemoved(visitables.size-1)
         }
@@ -98,6 +98,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         val newList = this.visitables.apply {
             addAll(0, listChat)
         }
+
         val diffUtil = ChatDiffUtil(oldList, newList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)

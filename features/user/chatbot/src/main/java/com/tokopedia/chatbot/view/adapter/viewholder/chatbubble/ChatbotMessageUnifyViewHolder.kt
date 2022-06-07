@@ -39,7 +39,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
         bindReplyBubbleListener()
-        customChatLayout?.fxChat?.message?.setOnLongClickListener {
+        customChatLayout?.fxChat?.setOnLongClickListener {
             replyBubbleListener.showReplyOption(message)
             return@setOnLongClickListener true
         }

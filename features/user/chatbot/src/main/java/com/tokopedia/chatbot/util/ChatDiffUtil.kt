@@ -21,7 +21,6 @@ class ChatDiffUtil(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        //TODO check if it is correct
         return oldItem === newItem
     }
 }

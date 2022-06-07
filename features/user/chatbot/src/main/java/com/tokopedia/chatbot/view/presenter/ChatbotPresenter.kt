@@ -252,9 +252,7 @@ class ChatbotPresenter @Inject constructor(
                         handleReplyBubble(agentMode)
                     }
 
-                } catch (e: JsonSyntaxException) {
-                    e.printStackTrace()
-                }
+                } catch (e: JsonSyntaxException) { }
             }
 
             override fun onMessage(byteString: ByteString) {
