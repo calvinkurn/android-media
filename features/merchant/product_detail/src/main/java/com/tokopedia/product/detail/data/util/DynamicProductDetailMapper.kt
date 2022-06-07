@@ -411,7 +411,15 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {
+    private fun zeroIfEmpty(data: String?) : String{
+        return if(data == null || data.isEmpty()){
+            "0"
+        } else{
+            data
+        }
+    }
+
+    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String, bundleId: String): ProductData {
         return ProductData(
                 userId,
                 productInfo.finalPrice.getCurrencyFormatted(),
@@ -422,7 +430,9 @@ object DynamicProductDetailMapper {
                 shopUrl,
                 productInfo.basic.shopName,
                 productInfo.basic.productID,
-                productInfo.data.getProductImageUrl() ?: ""
+                productInfo.data.getProductImageUrl() ?: "",
+                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+                bundleId = zeroIfEmpty(bundleId)
         )
     }
 

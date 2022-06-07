@@ -2645,10 +2645,20 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun zeroIfEmpty(data: String?) : String{
+        return if(data == null || data.isEmpty()){
+            "0"
+        } else{
+            data
+        }
+    }
+
     private fun onClickShareProduct() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             DynamicProductDetailTracking.Click.eventClickPdpShare(
-                    productInfo.basic.productID, viewModel.userId
+                    productInfo.basic.productID, viewModel.userId,
+                    zeroIfEmpty(productInfo.data.campaign.campaignID),
+                    zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
             )
             shareProduct(productInfo)
         }
@@ -2658,7 +2668,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
 
-            val productData = generateProductShareData(productInfo, viewModel.userId, viewModel.getShopInfo().shopCore.url)
+            val productData = generateProductShareData(productInfo, viewModel.userId,
+                viewModel.getShopInfo().shopCore.url, pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId ?: "0")
+
             val shopInfo = if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData = generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
             checkAndExecuteReferralAction(productData, affiliateData)
