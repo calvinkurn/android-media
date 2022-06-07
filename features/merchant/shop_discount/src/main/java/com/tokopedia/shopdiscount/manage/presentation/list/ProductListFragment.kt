@@ -139,6 +139,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         setupView()
         observeProducts()
         observeDeleteDiscount()

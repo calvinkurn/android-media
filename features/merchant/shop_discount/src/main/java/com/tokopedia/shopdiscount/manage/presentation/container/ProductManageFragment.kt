@@ -24,6 +24,7 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
@@ -118,6 +119,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleArguments()
+        setFragmentToUnifyBgColor()
         setupViews()
         observeProductsMeta()
     }
