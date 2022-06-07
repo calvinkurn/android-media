@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
@@ -76,6 +77,7 @@ import com.tokopedia.tokofood.feature.home.presentation.bottomsheet.TokoFoodUSPB
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodHomeShare
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokofood.feature.home.presentation.share.TokoFoodUniversalShareUtil.shareRequest
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -847,9 +849,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onOpenHomepage(){
-        localCacheModel?.let {
-            analytics.openScreenHomePage(userSession.userId, localCacheModel?.district_id,
-                userSession.isLoggedIn)
+        if (!viewModel.isShownEmptyState()) {
+            localCacheModel?.let {
+                analytics.openScreenHomePage(
+                    userSession.userId, localCacheModel?.district_id,
+                    userSession.isLoggedIn
+                )
+            }
         }
     }
 
@@ -866,5 +872,4 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 userSession.isLoggedIn)
         }
     }
-
 }
