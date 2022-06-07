@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.shop.flash_sale.presentation.creation.campaign_information.CampaignInformationActivity">
+    tools:context="com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity">
 
     <FrameLayout
         android:id="@+id/container"
