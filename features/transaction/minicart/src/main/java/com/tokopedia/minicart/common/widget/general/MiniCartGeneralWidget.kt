@@ -6,12 +6,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -138,11 +136,11 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                         outOfService,
                         object : GlobalErrorBottomSheetActionListener {
                             override fun onGoToHome() {
-                                RouteManager.route(context, ApplinkConst.HOME)
+                                // No-op
                             }
 
                             override fun onRefreshErrorPage() {
-                                showSimplifiedSummaryBottomSheet(fragment)
+                                showMiniCartChatListBottomSheet(fragment)
                             }
                         })
                 }
@@ -167,7 +165,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
                     }
 
                     override fun onRefreshErrorPage() {
-                        showSimplifiedSummaryBottomSheet(fragment)
+                        showMiniCartChatListBottomSheet(fragment)
                     }
                 })
         }
