@@ -7,7 +7,7 @@ import com.tokopedia.config.GlobalConfig
 data class RequestHeader(
     @SerializedName("source")
     @Expose
-    var source: String = "",
+    var source: String = "android",
     @SerializedName("ip")
     @Expose
     var ip: String = "",

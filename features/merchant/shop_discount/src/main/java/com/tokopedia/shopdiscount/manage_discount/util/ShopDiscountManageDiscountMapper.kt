@@ -43,7 +43,6 @@ object ShopDiscountManageDiscountMapper {
 
     private fun getRequestHeader(): RequestHeader {
         return RequestHeader(
-            source = "",
             ip = "",
             usecase = ""
         )
