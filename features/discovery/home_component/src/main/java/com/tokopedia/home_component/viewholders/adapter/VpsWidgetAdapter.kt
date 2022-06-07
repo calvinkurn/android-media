@@ -81,9 +81,6 @@ class VpsWidgetAdapter(
                 binding?.textName?.setTextColor(Color.parseColor(item.textColor))
                 binding?.textDesc?.setTextColor(Color.parseColor(item.textColor))
             }
-            if (item.backColor.isNotEmpty()) {
-                binding?.overlayColor?.setGradientBackground(arrayListOf(item.backColor))
-            }
             itemView.addOnImpressionListener(item){
                 if (!isCacheData) {
                     listener?.onItemImpressed(channelModel, item, adapterPosition, parentPosition)

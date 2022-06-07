@@ -38,7 +38,8 @@
             app:layout_constraintEnd_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="@id/image"
             app:layout_constraintBottom_toBottomOf="@id/image"
-            android:alpha="0.06" />
+            android:alpha="0.06"
+            android:background="@color/Unify_N700"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_name"
