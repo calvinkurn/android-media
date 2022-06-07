@@ -3,7 +3,6 @@ package com.tokopedia.play_common.view.game.quiz
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -122,23 +121,13 @@ class QuizWidgetView : ConstraintLayout {
 
     private fun animateCorrectAnswer(){
         answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.childAnimations.forEach {
-            if (it !is ValueAnimator) return@forEach
-            it.duration = 70L
-            it.repeatCount = 1
-            it.repeatMode = ValueAnimator.RESTART
-        }
+        answerTrueAnimator.duration = 120L
         answerTrueAnimator.start()
     }
 
     private fun animateWrongAnswer(){
         answerFalseAnimator.addListener(animationListener)
-        answerFalseAnimator.childAnimations.forEach {
-            if (it !is ValueAnimator) return@forEach
-            it.duration = 70L
-            it.repeatCount = 1
-            it.repeatMode = ValueAnimator.RESTART
-        }
+        answerFalseAnimator.duration = 120L
         answerFalseAnimator.start()
     }
 
