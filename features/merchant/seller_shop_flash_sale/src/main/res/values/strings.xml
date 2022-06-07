@@ -137,11 +137,11 @@
     <string name="shop_close_primary_cta">Buka Toko Sekarang</string>
     <string name="shop_close_secondary_cta">Batal</string>
     <string name="shop_close_foot_note">Kamu dapat mengatur kembali jam buka dan tutup toko di Pengaturan Toko</string>
-    <string name="ticker_tnc_description">Pastikan kamu sudah memeriksa Syarat dan Ketentuan campaign yang akan dilihat oleh calon pembeli di halaman campaign tokomu, ya.</string>
 
     <!--TNC Bottom Sheet-->
-    <string name="title_tnc_bottom_sheet">Syarat dan Ketentuan Pembeli</string>
-    <string name="label_button_agree">Saya Setuju</string>
+    <string name="tnc_title_bottom_sheet">Syarat dan Ketentuan Pembeli</string>
+    <string name="tnc_label_button_agree">Saya Setuju</string>
+    <string name="tnc_ticker_description">Pastikan kamu sudah memeriksa Syarat dan Ketentuan campaign yang akan dilihat oleh calon pembeli di halaman campaign tokomu, ya.</string>
 
     <!--Draft-->
     <string name="draftlist_title_full">Draft campaign penuh</string>
