@@ -221,7 +221,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                 Bundle().apply {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
                     putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
-                    putString(Promotion.ITEM_ID, "${it.id} - ${it.shopId}")
+                    putString(Promotion.ITEM_ID, "${it.id} - ${it.imageUrl}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.LEGO_6_IMAGE} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
                 }
             }
