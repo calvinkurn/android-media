@@ -57,7 +57,7 @@ class ItemStatusPMProPotentiallyDowngradedViewHolder(
     }
 
     private fun seeAllSteps() {
-        shopPerformanceListener.onItemClickedSeeAllBenefits()
+        shopPerformanceListener.onBtnLearnNowToSellerEduClicked(ShopScoreConstant.POWER_MERCHANT_IDLE)
     }
 
     private fun setupOnPmIdle(isPmIdle: Boolean) {

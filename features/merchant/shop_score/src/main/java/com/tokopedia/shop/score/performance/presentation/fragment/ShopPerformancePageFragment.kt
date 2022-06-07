@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
 import android.content.res.Resources
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -46,7 +45,6 @@ import com.tokopedia.shop.score.performance.presentation.adapter.*
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.*
 import com.tokopedia.shop.score.performance.presentation.model.*
-import com.tokopedia.shop.score.performance.presentation.model.tablet.BaseParameterDetail
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
@@ -247,7 +245,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPowerMerchantBenefitEdu() {
-        RouteManager.route(context, ShopScoreConstant.POWER_MERCHANT_FEATURES)
+        RouteManager.route(context, ShopScoreConstant.POWER_MERCHANT_PRO_BENEFITS)
     }
 
     /**

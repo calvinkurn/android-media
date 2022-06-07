@@ -36,7 +36,9 @@ object ShopScoreConstant {
     const val SPEED_SENDING_ORDERS_KEY = "median_verified_to_shipping_minute"
     const val PRODUCT_REVIEW_WITH_FOUR_STARS_KEY = "percent_good_rating"
 
-    const val POWER_MERCHANT_FEATURES =
+    const val POWER_MERCHANT_IDLE =
+        "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif/"
+    const val POWER_MERCHANT_PRO_BENEFITS =
         "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
     const val READ_TIPS_MORE_INFO_URL =
         "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
