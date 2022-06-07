@@ -9,7 +9,8 @@ data class TokoFoodHomeIconsUiModel(
     val id: String,
     val widgetParam: String = "",
     val listIcons: List<DynamicIcon>?,
-    @TokoFoodLayoutState val state: Int
+    @TokoFoodLayoutState val state: Int,
+    val verticalPosition: Int,
 ): TokoFoodHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoFoodHomeTypeFactory): Int {
         return typeFactory.type(this)

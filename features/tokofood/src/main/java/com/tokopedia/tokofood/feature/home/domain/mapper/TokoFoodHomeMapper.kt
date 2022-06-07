@@ -100,8 +100,8 @@ object TokoFoodHomeMapper {
                addTickerWidget()
             }
             responses.filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }
-                .forEach { homeLayoutResponse ->
-                    mapToHomeUiModel(homeLayoutResponse)?.let { item ->
+                .forEachIndexed { verticalPosition, homeLayoutResponse ->
+                    mapToHomeUiModel(homeLayoutResponse, verticalPosition)?.let { item ->
                         add(item)
                     }
                 }
@@ -153,7 +153,8 @@ object TokoFoodHomeMapper {
             val usp = TokoFoodHomeUSPUiModel(
                 item.visitableId,
                 uspResponse,
-                TokoFoodLayoutState.SHOW
+                TokoFoodLayoutState.SHOW,
+                verticalPosition = item.verticalPosition
             )
             TokoFoodItemUiModel(usp, TokoFoodLayoutItemState.LOADED)
         }
@@ -168,7 +169,8 @@ object TokoFoodHomeMapper {
                 id = item.visitableId,
                 widgetParam = item.widgetParam,
                 listIcons = result.dynamicIcon.listDynamicIcon,
-                state = TokoFoodLayoutState.SHOW
+                state = TokoFoodLayoutState.SHOW,
+                verticalPosition = item.verticalPosition
             )
             TokoFoodItemUiModel(usp, TokoFoodLayoutItemState.LOADED)
         }
@@ -197,13 +199,14 @@ object TokoFoodHomeMapper {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
-    fun mapToChannelModel(response: HomeLayoutResponse): ChannelModel {
+    fun mapToChannelModel(response: HomeLayoutResponse, verticalPosition: Int): ChannelModel {
         return ChannelModel(
             id = response.id,
             groupId = response.groupId,
             type = response.type,
             layout = response.layout,
             pageName = response.pageName,
+            verticalPosition = verticalPosition,
             channelHeader = ChannelHeader(
                 response.header.id,
                 response.header.name,
@@ -324,60 +327,63 @@ object TokoFoodHomeMapper {
     }
 
     private fun mapToHomeUiModel(
-        response: HomeLayoutResponse
+        response: HomeLayoutResponse,
+        verticalPosition: Int
     ): TokoFoodItemUiModel? {
         val loadedState = TokoFoodLayoutItemState.LOADED
         val notLoadedState = TokoFoodLayoutItemState.NOT_LOADED
 
         return when (response.layout) {
             // region data got from dynamic channel direcly
-            LEGO_6_IMAGE -> mapLego6DataModel(response, loadedState)
-            BANNER_CAROUSEL -> mapBannerCarouselModel(response, loadedState)
-            CATEGORY_WIDGET -> mapCategoryWidgetModel(response, loadedState)
+            LEGO_6_IMAGE -> mapLego6DataModel(response, loadedState, verticalPosition)
+            BANNER_CAROUSEL -> mapBannerCarouselModel(response, loadedState, verticalPosition)
+            CATEGORY_WIDGET -> mapCategoryWidgetModel(response, loadedState, verticalPosition)
             // endregion
 
             // region data got from other gql
-            USP_TOKOFOOD -> mapUSPWidgetModel(response, notLoadedState)
-            ICON_TOKOFOOD -> mapDynamicIconModel(response, notLoadedState)
+            USP_TOKOFOOD -> mapUSPWidgetModel(response, notLoadedState, verticalPosition)
+            ICON_TOKOFOOD -> mapDynamicIconModel(response, notLoadedState, verticalPosition)
             // endregion
 
             else -> null
         }
     }
 
-    private fun mapLego6DataModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodItemUiModel {
-        val channelModel = mapToChannelModel(response)
+    private fun mapLego6DataModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState, verticalPosition: Int): TokoFoodItemUiModel {
+        val channelModel = mapToChannelModel(response, verticalPosition)
         val dynamicLego6Data = DynamicLegoBannerDataModel(channelModel)
         return TokoFoodItemUiModel(dynamicLego6Data, state)
     }
 
-    private fun mapBannerCarouselModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodItemUiModel {
-        val channelModel = mapToChannelModel(response)
+    private fun mapBannerCarouselModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState, verticalPosition: Int): TokoFoodItemUiModel {
+        val channelModel = mapToChannelModel(response, verticalPosition)
         val bannerDataModel = BannerDataModel(channelModel)
         return TokoFoodItemUiModel(bannerDataModel, state)
     }
 
-    private fun mapCategoryWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodItemUiModel {
-        val channelModel = mapToChannelModel(response)
+    private fun mapCategoryWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState, verticalPosition: Int): TokoFoodItemUiModel {
+        val channelModel = mapToChannelModel(response, verticalPosition)
         val categoryWidgetV2DataModel = CategoryWidgetV2DataModel(channelModel)
         return TokoFoodItemUiModel(categoryWidgetV2DataModel, state)
     }
 
-    private fun mapUSPWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodItemUiModel {
+    private fun mapUSPWidgetModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState, verticalPosition: Int): TokoFoodItemUiModel {
         val uspWidgetDataModel = TokoFoodHomeUSPUiModel(
             id = response.id,
             uspModel = null,
-            TokoFoodLayoutState.LOADING
+            TokoFoodLayoutState.LOADING,
+            verticalPosition
         )
         return TokoFoodItemUiModel(uspWidgetDataModel, state)
     }
 
-    private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState): TokoFoodItemUiModel {
+    private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodLayoutItemState, verticalPosition: Int): TokoFoodItemUiModel {
         val dynamicIconModel = TokoFoodHomeIconsUiModel(
             id = response.id,
             widgetParam = response.widgetParam,
             listIcons = null,
-            state = TokoFoodLayoutState.LOADING
+            state = TokoFoodLayoutState.LOADING,
+            verticalPosition
         )
         return TokoFoodItemUiModel(dynamicIconModel, state)
     }

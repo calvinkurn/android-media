@@ -59,7 +59,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                     putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applinks}")
                     putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
                     putString(Promotion.ITEM_ID, it.name)
-                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition} - $EMPTY_DATA")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.ICON_TOKOFOOD} - ${verticalPosition + 1} - $EMPTY_DATA")
                 }
             }
         )
