@@ -122,6 +122,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:padding="@dimen/spacing_lvl2"
         android:background="@drawable/bg_leaderboard_reward"
         android:visibility="gone"
