@@ -24,6 +24,14 @@ class TmTracker {
         trackerImpl.clickButtonBsNonOs(shopId)
     }
 
+    fun viewBSNoAccess(shopId: String) {
+        trackerImpl.viewBSNoAccess(shopId)
+    }
+
+    fun clickBackHomeBSNoAccess(shopId: String) {
+        trackerImpl.clickBackHomeBSNoAccess(shopId)
+    }
+
     fun clickBsNonOsBack(shopId: String) {
         trackerImpl.viewIntroPage(shopId)
     }
@@ -40,12 +48,20 @@ class TmTracker {
         trackerImpl.clickCardCancelSecondary(shopId)
     }
 
+    fun clickPopupCancelPrimary(shopId: String) {
+        trackerImpl.clickPopupCancelPrimary(shopId)
+    }
+
+    fun clickPopupCancelSecondary(shopId: String) {
+        trackerImpl.clickPopupCancelSecondary(shopId)
+    }
+
     fun clickProgramCreationBack(shopId: String) {
         trackerImpl.clickProgramCreationBack(shopId)
     }
 
-    fun clickProgramCreationButton(shopId: String) {
-        trackerImpl.clickProgramCreationButton(shopId)
+    fun clickProgramCreationButton(shopId: String, programId: String) {
+        trackerImpl.clickProgramCreationButton(shopId, programId)
     }
 
     fun clickProgramExtensionBack(shopId: String, programId: String) {
@@ -76,8 +92,8 @@ class TmTracker {
         trackerImpl.clickSummaryBack(shopId)
     }
 
-    fun clickSummaryButton(shopId: String) {
-        trackerImpl.clickSummaryButton(shopId)
+    fun clickSummaryButton(shopId: String, programId: String) {
+        trackerImpl.clickSummaryButton(shopId, programId)
     }
 
     fun viewBottomSheetHome(shopId: String) {
@@ -97,7 +113,39 @@ class TmTracker {
     }
 
     fun viewProgramListButton(shopId: String) {
-        trackerImpl.viewProgramListButton(shopId)
+        trackerImpl.clickProgramListButton(shopId)
+    }
+
+    fun clickProgramCreationButtonFromProgramList(shopId: String, programId: String) {
+        trackerImpl.clickProgramCreationButtonFromProgramList(shopId, programId)
+    }
+
+    fun clickProgramCreationBackFromProgramList(shopId: String) {
+        trackerImpl.clickProgramCreationBackFromProgramList(shopId)
+    }
+
+    fun clickProgramCreationCancelPopupPrimary(shopId: String) {
+        trackerImpl.clickProgramCreationCancelPopupPrimary(shopId)
+    }
+
+    fun clickProgramCreationCancelPopupSecondary(shopId: String) {
+        trackerImpl.clickProgramCreationCancelPopupSecondary(shopId)
+    }
+
+    fun clickCouponCreationFromProgramList(shopId: String) {
+        trackerImpl.clickCouponCreationFromProgramList(shopId)
+    }
+
+    fun clickBackCouponCreationFromProgramList(shopId: String) {
+        trackerImpl.clickBackCouponCreationFromProgramList(shopId)
+    }
+
+    fun clickSummaryButtonFromProgramList(shopId: String, programId: String) {
+        trackerImpl.clickSummaryButtonFromProgramList(shopId, programId)
+    }
+
+    fun clickSummaryBackFromProgramList(shopId: String) {
+        trackerImpl.clickSummaryBackFromProgramList(shopId)
     }
 
     fun clickProgramThreeDot(shopId: String) {

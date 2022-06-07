@@ -30,6 +30,7 @@ object Tracker {
     object Category {
         const val TM_DASHBOARD_HOME = "tokomember dashboard - homepage"
         const val TM_DASHBOARD_DETAIL_PROGRAM = "tokomember dashboard - detail program"
+        const val TM_DASHBOARD_CREATE_PROGRAM = "tokomember dashboard - buat program"
         const val TM_DASHBOARD_CHANGE_PROGRAM = "tokomember dashboard - ubah program"
         const val TM_DASHBOARD_EXTEND_PROGRAM = "tokomember dashboard - perpanjang program"
         const val TM_DASHBOARD_CREATE_COUPON = "tokomember dashboard - buat kupon"
@@ -44,8 +45,8 @@ object Tracker {
         const val CLICK_INTRO_DAFTAR = "intro - click daftar"
         const val CLICK_INTRO_LANJUT = "intro - click pelajari lebih lanjut"
         const val CLICK_DISMISS_BS_NON_OS = "bottomsheet_non_os - click close"
-        const val CLICK_BUTTON_BS_NON_OS = "bottomsheet_non_os - click pelajari os"
-        const val VIEW_BS_NON_OS = "bottomsheet_no_access - view bottomsheet"
+        const val CLICK_BUTTON_BS_NON_OS = "bottomsheet_non_os - click pelajari"
+        const val VIEW_BS_NON_ACCESS = "bottomsheet_no_access - view bottomsheet"
         const val CLICK_BS_NON_OS_BACK = "bottomsheet_no_access - click back home"
 
 
@@ -54,12 +55,16 @@ object Tracker {
         const val CLICK_CARD_CREATION_BUTTON = "card_creation - click buat kartu"
         const val CLICK_CARD_CANCEL_PRIMARY = "popup_cancel_card - click lanjut pengaturan"
         const val CLICK_CARD_CANCEL_SECONDARY = "popup_cancel_card_ - click batalkan kartu"
+        const val CLICK_POPUP_CANCEL_PRIMARY = "popup_cancel_registration - click lanjut"
+        const val CLICK_POPUP_CANCEL_SECONDARY = "popup_cancel_registration - click batalkan pengaturan"
 
         //Confusing tracker 12,13
 
         //Program
         const val CLICK_PROGRAM_CREATION_BACK = "program_creation - click back"
         const val CLICK_PROGRAM_CREATION_BUTTON = "program_creation - click buat program"
+        const val CLICK_PROGRAM_CREATION_CANCEL_POPUP_PRIMARY = "popup_cancel_program_creation - click lanjut"
+        const val CLICK_PROGRAM_CREATION_CANCEL_POPUP_SECONDARY = "popup_cancel_program_creation - click batal"
 
         //PROGRAM + EXtension
         const val CLICK_PROGRAM_CREATION_EXTENSION_BUTTON = "program_extension - click buat program"
@@ -78,8 +83,8 @@ object Tracker {
         const val CLICK_SUMMARY_BUTTON = "summary - click selesai"
 
         //HOME
-        const val VIEW_BOTTOM_SHEET = "homepage_bottomsheet - view bottomsheet"
-        const val CLICK_DISMISS_BOTTOM_SHEET = "homepage_bottomsheet - click balik or close"
+        const val VIEW_HOME_BOTTOM_SHEET = "homepage_bottomsheet - view bottomsheet"
+        const val CLICK_DISMISS_HOME_BOTTOM_SHEET = "homepage_bottomsheet - click balik or close"
         const val VIEW_HOME_TAB_SECTION = "home_tab - view section"
 
         //Program List
