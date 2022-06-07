@@ -12,7 +12,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import java.util.*
+import java.util.Locale
 
 /**
  * @author by nisie on 5/16/18.

@@ -56,7 +56,7 @@ data class AddToCartParam (
                 shopId = uiModel.shopId,
                 category = uiModel.category,
                 minOrder = uiModel.minOrder,
-                price = uiModel.priceInt,
+                price = uiModel.priceNumber,
                 productImage = uiModel.productImage,
                 freeShipping = uiModel.hasFreeShipping(),
                 productUrl = uiModel.productUrl,

@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import java.util.*
+import java.util.Locale
 
 
 /**

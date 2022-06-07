@@ -35,7 +35,7 @@ open class ProductAttachmentUiModel protected constructor(
         private set
     var canShowFooter: Boolean = builder.canShowFooter
         private set
-    var priceInt: Double = builder.priceInt
+    var priceNumber: Double = builder.priceNumber
         private set
     var category: String = builder.category
         private set
@@ -106,7 +106,7 @@ open class ProductAttachmentUiModel protected constructor(
             productPrice = attribute.productProfile.price
             productUrl = attribute.productProfile.url
             productImage = attribute.productProfile.imageUrl
-            priceInt = attribute.productProfile.priceInt
+            priceNumber = attribute.productProfile.priceInt
             category = attribute.productProfile.category
             variants = attribute.productProfile.variant
             dropPercentage = attribute.productProfile.dropPercentage
@@ -310,7 +310,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var productUrl: String = ""
         internal var productImage: String = ""
         internal var canShowFooter: Boolean = false
-        internal var priceInt: Double = 0.0
+        internal var priceNumber: Double = 0.0
         internal var category: String = ""
         internal var dropPercentage: String = ""
         internal var priceBefore: String = ""
@@ -404,7 +404,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
 
         fun withPriceInt(priceInt: Double): Builder {
-            this.priceInt = priceInt
+            this.priceNumber = priceInt
             return self()
         }
 

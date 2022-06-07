@@ -331,7 +331,7 @@ public class TopChatAnalytics {
                 product.getCategory(),
                 product.getVariants().toString(),
                 null,
-                product.getPriceInt(),
+                product.getPriceNumber(),
                 null,
                 getFrom(product),
                 PRODUCT_INDEX,
@@ -364,7 +364,7 @@ public class TopChatAnalytics {
         String eventLabel = product.getEventLabelImpression(amISeller);
         Bundle itemBundle = new Bundle();
         itemBundle.putString(EE_PARAM_ITEM_ID, product.getIdString());
-        itemBundle.putDouble(EE_PARAM_PRICE, product.getPriceInt() + 0.0);
+        itemBundle.putDouble(EE_PARAM_PRICE, product.getPriceNumber() + 0.0);
         itemBundle.putString(EE_PARAM_ITEM_NAME, product.getProductName());
         itemBundle.putString(EE_PARAM_ITEM_BRAND, "none");
         itemBundle.putString(EE_PARAM_ITEM_VARIANT, "[]");

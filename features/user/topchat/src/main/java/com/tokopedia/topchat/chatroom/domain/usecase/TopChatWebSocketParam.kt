@@ -125,7 +125,7 @@ object TopChatWebSocketParam {
         productProfile.add("variant", product.generateVariantRequest())
         productProfile.addProperty("campaign_id", product.campaignId.toLongOrZero())
         productProfile.addProperty("is_preorder", product.isPreOrder)
-        productProfile.addProperty("price_int", product.priceInt.toLong())
+        productProfile.addProperty("price_int", product.priceNumber.toLong())
         productProfile.addProperty("category_id", product.categoryId.toLongOrZero())
         productProfile.addProperty("is_upcoming_campaign_product", product.isUpcomingCampaign)
         productProfile.addProperty("shop_id", product.shopId.toLongOrZero())
