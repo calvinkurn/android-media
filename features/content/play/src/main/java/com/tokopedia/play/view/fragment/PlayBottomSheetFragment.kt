@@ -601,6 +601,13 @@ class PlayBottomSheetFragment @Inject constructor(
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 
+    override fun onInformationClicked(
+        view: ProductSheetViewComponent,
+        productSectionUiModel: ProductSectionUiModel.Section
+    ) {
+        //TODO("Not yet implemented")
+    }
+
     /**
      * Render View
      */

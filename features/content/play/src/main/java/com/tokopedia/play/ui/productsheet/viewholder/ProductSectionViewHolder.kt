@@ -40,6 +40,7 @@ class ProductSectionViewHolder(
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val btnReminder: IconUnify = itemView.findViewById(R.id.btn_section_reminder)
+    private val btnInfo: IconUnify = itemView.findViewById(R.id.btn_information)
 
     private var timerTime = ""
 
@@ -129,6 +130,10 @@ class ProductSectionViewHolder(
         btnReminder.addOnImpressionListener(item.impressHolder){
             listener.onReminderImpressed(item)
         }
+
+        btnInfo.setOnClickListener {
+            listener.onInformationClicked(item)
+        }
     }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
@@ -200,6 +205,7 @@ class ProductSectionViewHolder(
         fun onProductChanged()
         fun onReminderClicked(section: ProductSectionUiModel.Section)
         fun onReminderImpressed(section: ProductSectionUiModel.Section)
+        fun onInformationClicked(section: ProductSectionUiModel.Section)
     }
 }
 
