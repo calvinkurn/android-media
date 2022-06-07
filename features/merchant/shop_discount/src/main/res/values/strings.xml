@@ -73,6 +73,8 @@
     <string name="sd_discount_seller_not_eligible_title">Yah, kamu belum bisa akses ke Diskon Toko</string>
     <string name="sd_discount_seller_not_eligible_desc">Pelajari dulu agar tokomu bisa pakai Diskon Toko, yuk!</string>
     <string name="sd_discount_seller_not_eligible_button_text">Pelajari Diskon Toko</string>
+    <string name="sd_discount_seller_no_access_title">Diskon Toko belum bisa diakses</string>
+    <string name="sd_discount_seller_no_access_desc">Untuk sementara, kamu bisa akses Diskon Toko lewat versi desktop, ya.</string>
 
 
     <!-- Product Detail   -->
