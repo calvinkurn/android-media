@@ -48,14 +48,26 @@ class ExpandableWidget(
     }
 
     private fun setupInfoIncreaseBenefit(grade: String, isPmActive: Boolean) = binding?.run {
-        val textColor = PMCommonUtils.getHexColor(
-            itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
-        )
-        textDescription.text = getString(
-            R.string.pm_info_benefit_increase_desc, textColor
-        ).parseAsHtml()
         if (grade != PMConstant.ShopGrade.PM && isPmActive) {
+            if (grade == PMConstant.ShopGrade.PRO_ULTIMATE) {
+                val textColor = PMCommonUtils.getHexColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+                textTitle.text = getString(R.string.pm_info_max_benefit_title)
+                textDescription.text = getString(
+                    R.string.pm_info_max_benefit_desc, textColor
+                ).parseAsHtml()
+            } else {
+                val textColor = PMCommonUtils.getHexColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+                textTitle.text = getString(R.string.pm_info_benefit_increase_title)
+                textDescription.text = getString(
+                    R.string.pm_info_benefit_increase_desc, textColor
+                ).parseAsHtml()
+            }
             cardInfoBenefit.show()
         } else {
             cardInfoBenefit.hide()

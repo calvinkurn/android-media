@@ -189,6 +189,8 @@
     <string name="pm_ticker_eligble_upgrade"><![CDATA[Kamu berpotensi langsung menjadi <b>%1$s</b> pada tanggal %2$s. Pertahankan performa tokomu, ya!]]></string>
     <string name="pm_info_benefit_increase_desc"><![CDATA[Klik ikon <font color=\"%1$s\"> <b> > </b> </font>  di bagian atas halaman ini untuk lihat caranya. Yuk, cek targetmu selanjutnya!]]></string>
     <string name="pm_info_benefit_increase_title">Level Toko naik, keuntungan bertambah!</string>
+    <string name="pm_info_max_benefit_desc"><![CDATA[Pelajari cara mempertahankan performa dengan mengklik ikon <font color=\"%1$s\"> <b> > </b> </font> di kanan atas]]></string>
+    <string name="pm_info_max_benefit_title">Paket keuntungan sudah paling tinggi!</string>
     <string name="pm_submit_activation_success">Hore! Kamu berhasil gabung di program Power Merchant.</string>
     <string name="pm_membership_detail_info_1">PM PRO Advanced, Expert, dan Ultimate dievaluasi berdasarkan Level Toko.</string>
     <string name="pm_membership_detail_info_2"><![CDATA[Level toko akan diperbarui setiap bulan di hari Senin pertama. <br><font color="#03AC0E">Pelajari Performa Toko</font>]]></string>
