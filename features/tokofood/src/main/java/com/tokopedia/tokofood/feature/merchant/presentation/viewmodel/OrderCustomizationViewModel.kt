@@ -2,34 +2,39 @@ package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.util.CurrencyFormatter
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class OrderCustomizationViewModel @Inject constructor(
 ) : ViewModel() {
 
-    var subTotalPrice: Double = 0.0
+    var baseProductPrice: Double = 0.0
 
-    fun addSubTotalPrice(addOnPrice: Double) {
-        subTotalPrice += addOnPrice
+    fun calculateSubtotalPrice(baseProductPrice: Double, quantity: Int, addOnUiModels: List<AddOnUiModel?>): Double {
+        var subTotalPrice = baseProductPrice
+        addOnUiModels.forEach { addOnUiModel ->
+            addOnUiModel?.run {
+                val selectedOptions = this.options.filter { optionUiModel ->  optionUiModel.isSelected }
+                val subTotalOptionPrice = selectedOptions.sumOf { it.price }
+                subTotalPrice += subTotalOptionPrice
+            }
+        }
+        return subTotalPrice * quantity
     }
 
-    fun subtractSubTotalPrice(addOnPrice: Double) {
-        subTotalPrice -= addOnPrice
-    }
-
-    fun getCustomOrderDetails(cartId: String, productUiModel: ProductUiModel): CustomOrderDetail? {
-        return productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }
+    fun formatSubtotalPrice(subTotalPrice: Double): String {
+        return CurrencyFormatter.formatToRupiahFormat(subTotalPrice)
     }
 
     fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {
         return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) productUiModel.customListItems
-        else productUiModel.customOrderDetails.firstOrNull() { it.cartId == cartId }?.customListItems
-                ?: listOf()
+        else productUiModel.customOrderDetails.firstOrNull() { it.cartId == cartId }?.customListItems ?: listOf()
     }
 
     fun isEditingCustomOrder(cartId: String): Boolean = cartId.isNotBlank()

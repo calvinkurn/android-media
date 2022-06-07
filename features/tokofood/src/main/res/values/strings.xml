@@ -80,8 +80,11 @@
     <string name="text_add_on_name">%s:&#160;</string>
     <string name="text_note_saved_message">Sip, catatanmu tersimpan.</string>
     <string name="text_orders">%s Pesanan</string>
+    <string name="text_order_note">Catatan</string>
     <string name="action_merchant_ok">Oke</string>
     <string name="action_order">Pesan</string>
+    <string name="action_edit">Ubah</string>
+    <string name="action_update">Perbarui</string>
     <string name="category_filter_bottom_sheet_title">Mau menu dari kategori apa?</string>
     <string name="desc_merchant_page_share">Hai, kamu! Jajan dari %1s jadi makin mudah di Tokopedia! Cek makanan-minuman yang kamu suka, yuk.</string>
     <string name="desc_merchant_food_share">Coba cek ini, deh: %1s %2s %3s di Tokopedia. Bisa langsung sampai, lho.</string>

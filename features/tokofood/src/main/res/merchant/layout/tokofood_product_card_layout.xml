@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/productCell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -47,35 +48,37 @@
             android:id="@+id/productName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_4"
-            android:text="Caramel Latte"
-            android:textColor="@color/Unify_NN950"
             android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintLeft_toRightOf="@id/productImage"
             app:layout_constraintTop_toBottomOf="@id/customIndicatorLabel"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:Text="Caramel Latte" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/productSummary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
-            android:text="Espresso, Susu Segar Dan Caramel"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="@id/productName"
             app:layout_constraintTop_toBottomOf="@id/productName"
-            app:typographyType="small" />
+            app:typographyType="small"
+            tools:Text="Espresso, Susu Segar Dan Caramel" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/productPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
-            android:text="Rp20.000"
             app:layout_constraintStart_toStartOf="@id/productSummary"
             app:layout_constraintTop_toBottomOf="@id/productSummary"
             app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:Text="Rp20.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/slashPriceInfo"
@@ -95,11 +98,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:text="Rp28.000"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintLeft_toRightOf="@id/slashPriceInfo"
             app:layout_constraintTop_toTopOf="@id/slashPriceInfo"
-            app:typographyWeight="reguler" />
+            app:typographyWeight="reguler"
+            tools:Text="Rp28.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/atcButton"
@@ -139,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="28dp"
-                    android:text="Catatan"
+                    android:text="@string/text_order_note"
                     android:textColor="@color/Unify_GN500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"

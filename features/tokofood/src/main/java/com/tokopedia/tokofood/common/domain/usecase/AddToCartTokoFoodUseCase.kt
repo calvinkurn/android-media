@@ -55,6 +55,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
                 shop_id
                 product_id
                 quantity
+                metadata
               }
             }
           }

@@ -69,6 +69,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                       }
                     }
                     options {
+                      is_selected
                       option_id
                       name
                       price
