@@ -1007,7 +1007,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun isNeededToShowSortFilter(): Boolean {
         return selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN &&
-                selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN
+                selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN &&
+                selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_FLASH_SALE
     }
 
     private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {

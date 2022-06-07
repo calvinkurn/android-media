@@ -115,7 +115,9 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
+open class RegisterInitialFragment : BaseDaggerFragment(),
+    PartialRegisterInputView.PartialRegisterInputViewListener,
+    RegisterInitialRouter{
 
     private lateinit var optionTitle: Typography
     private lateinit var separator: View

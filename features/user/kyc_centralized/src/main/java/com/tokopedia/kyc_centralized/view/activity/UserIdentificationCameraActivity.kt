@@ -51,7 +51,7 @@ class UserIdentificationCameraActivity : BaseSimpleActivity() {
     companion object {
         private const val EXTRA_VIEW_MODE = "view_mode"
         private const val PARAM_VIEW_MODE_KTP = 1
-        private const val CROP_AND_COMPRESSION_ROLLOUT = "rollout_kycimagecrop"
+        private const val CROP_AND_COMPRESSION_ROLLOUT = "new_rollout_kyccrop"
 
         @JvmStatic
         fun createIntent(

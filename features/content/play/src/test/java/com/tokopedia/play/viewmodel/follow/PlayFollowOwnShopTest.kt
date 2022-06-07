@@ -10,7 +10,6 @@ import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 
 import com.tokopedia.play.util.assertEqualTo
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus

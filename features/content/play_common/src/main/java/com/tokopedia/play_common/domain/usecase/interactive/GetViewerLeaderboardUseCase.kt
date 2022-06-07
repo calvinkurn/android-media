@@ -58,6 +58,7 @@ class GetViewerLeaderboardUseCase @Inject constructor(
                       userName: username
                       imageURL
                     }
+                    interactiveID
                     otherParticipantCountText
                     otherParticipantCount
                     emptyLeaderboardCopyText

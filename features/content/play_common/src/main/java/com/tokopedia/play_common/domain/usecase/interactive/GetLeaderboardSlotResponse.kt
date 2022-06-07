@@ -52,5 +52,8 @@ data class GetLeaderboardSlotResponse (
 
         @SerializedName("__typename")
         val type: String = "",
+
+        @SerializedName("interactiveID")
+        val interactiveId: String = "",
     )
 }

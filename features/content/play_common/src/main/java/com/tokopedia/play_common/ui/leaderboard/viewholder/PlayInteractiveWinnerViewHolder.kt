@@ -18,7 +18,6 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
 
     private val tvNumber = itemView.findViewById<Typography>(R.id.tv_winner_number)
     private val tvName = itemView.findViewById<Typography>(R.id.tv_winner_name)
-    private val lblWinner = itemView.findViewById<Label>(R.id.lbl_winner)
     private val tvWinnerChat = itemView.findViewById<Typography>(R.id.tv_winner_chat)
     private val ivCrown = itemView.findViewById<ImageUnify>(R.id.img_crown)
     private val ivWinner = itemView.findViewById<ImageUnify>(R.id.img_winner)
@@ -44,11 +43,9 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
         if (winner.rank == FIRST_WINNER) {
             ivCrown.show()
             borderIvWinner.show()
-            lblWinner.show()
         } else {
             ivCrown.hide()
             borderIvWinner.hide()
-            lblWinner.hide()
         }
     }
 

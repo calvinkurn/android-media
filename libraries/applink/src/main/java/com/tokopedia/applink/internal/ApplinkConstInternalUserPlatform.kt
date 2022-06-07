@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME
 
 object ApplinkConstInternalUserPlatform {
 
@@ -50,6 +49,9 @@ object ApplinkConstInternalUserPlatform {
 
     // InactivePhoneActivity
     const val CHANGE_INACTIVE_PHONE = "${NEW_INTERNAL_USER}/change-inactive-phone"
+
+    //InputOldPhoneNumberActivity
+    const val INPUT_OLD_PHONE_NUMBER = "${NEW_INTERNAL_USER}/input-old-phone-number"
 
     // HomeAccountUserActivity
     const val NEW_HOME_ACCOUNT = "${NEW_INTERNAL_USER}/new-home-account"

@@ -38,7 +38,7 @@
         app:text_field_message="@string/label_add_product_price_tips"
         app:text_field_prepend_text="Rp" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_edit_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
