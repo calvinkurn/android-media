@@ -172,7 +172,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
     }
 
-    fun clickOutOfCoverage(userId: String?, destinationId: String?, errorState: String, title: String, desc: String) {
+    fun clickEmptyState(userId: String?, destinationId: String?, errorState: String, title: String, desc: String) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_OUT_COVERAGE)
             putString(TrackAppUtils.EVENT_LABEL, "error_state:$errorState;\ntitle:$title;\ndescription:$desc;")

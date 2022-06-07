@@ -259,7 +259,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         analytics.clickLCAWidget(userSession.userId, localCacheModel?.district_id)
     }
 
-    override fun onClickSetPinPoin() {
+    override fun onClickSetPinPoin(errorState: String, title: String, desc: String) {
+        onShowEmptyState(errorState, title, desc)
         navigateToSetPinpoint()
     }
 
@@ -267,12 +268,13 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConst.HOME)
     }
 
-    override fun onClickSetAddress() {
+    override fun onClickSetAddress(errorState: String, title: String, desc: String) {
+        onShowEmptyState(errorState, title, desc)
         checkUserEligibilityForAnaRevamp()
     }
 
     override fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String) {
-        analytics.clickOutOfCoverage(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
+        onShowEmptyState(errorState, title, desc)
         showChooseAddressBottomSheet()
     }
 
@@ -877,5 +879,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             analytics.openScreenNoPinPoin(userSession.userId, localCacheModel?.district_id,
                 userSession.isLoggedIn)
         }
+    }
+
+    private fun onShowEmptyState(errorState: String, title: String, desc: String){
+        analytics.clickEmptyState(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
     }
 }
