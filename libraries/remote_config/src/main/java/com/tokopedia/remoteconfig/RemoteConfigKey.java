@@ -210,10 +210,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
     public static final String ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK = "app_enable_branch_utm_only_branch_link";
 
-    public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
-    public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
-    public static final String ENABLE_REVAMP_DEALS_EVENT = "android_main_app_enable_deals_revamp_phase_2";
-
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 

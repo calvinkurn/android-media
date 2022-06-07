@@ -13,6 +13,7 @@ data class Variant(
         val sizecharts: List<Picture> = listOf()
 )
 
+@SuppressLint("Invalid Data Type")
 data class ProductVariant(
         @SerializedName("status")
         val status: String,
@@ -30,7 +31,11 @@ data class ProductVariant(
         @SerializedName("stock")
         val stock: Int,
         @SerializedName("pictures")
-        val pictures: List<Picture>
+        val pictures: List<Picture>,
+        @SerializedName("weight")
+        val weight: Int,
+        @SerializedName("weightUnit")
+        val weightUnit: String
 )
 
 data class Selection(

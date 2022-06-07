@@ -8,6 +8,12 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()

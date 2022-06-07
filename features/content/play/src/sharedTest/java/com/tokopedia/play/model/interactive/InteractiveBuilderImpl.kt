@@ -66,6 +66,7 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         emptyLeaderBoardCopyText = emptyLeaderBoardCopyText,
         reward = reward,
         leaderBoardType = leaderBoardType,
+        id = "1"
     )
 
     override fun buildWinner(

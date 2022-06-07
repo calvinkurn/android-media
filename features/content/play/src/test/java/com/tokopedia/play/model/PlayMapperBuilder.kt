@@ -48,7 +48,7 @@ class PlayMapperBuilder {
 
     fun buildChannelInteractiveMapper() = PlayChannelInteractiveMapper()
 
-    fun buildInteractiveMapper() = PlayInteractiveMapper()
+    fun buildInteractiveMapper() = PlayInteractiveMapper(TestHtmlTextTransformer())
 
     fun buildRealTimeNotificationMapper(
             userSession: UserSessionInterface = mockk(relaxed = true),

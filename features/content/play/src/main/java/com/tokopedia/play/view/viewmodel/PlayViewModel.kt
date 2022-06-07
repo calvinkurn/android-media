@@ -1776,16 +1776,16 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             val winnerStatus = _winnerStatus.value
-            val interactiveType = interactive.interactive
+            val interactiveType = _interactive.value.interactive
             val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
             val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
 
             if (!isRewardAvailable) {
-                showLeaderBoard()
+                showLeaderBoard(interactiveId = interactiveType.id)
             } else {
                 delay(interactive.interactive.waitingDuration)
                 if(isFinished) {
-                    if(winnerStatus == null) showLeaderBoard() else processWinnerStatus(winnerStatus, interactiveType)
+                    if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
                 }
             }
             /**
@@ -1800,8 +1800,7 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun showLeaderBoard(){
-        val interactiveId = _interactive.value.interactive.id
+    private fun showLeaderBoard(interactiveId: String){
         if (repo.hasProcessedWinner(interactiveId)) return
 
         _leaderboardUserBadgeState.setValue {

@@ -140,12 +140,9 @@ object DeeplinkMapper {
      * Expected query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
      */
     private fun getQuery(uriString: String, uri: Uri): String? {
-        val uriStringAfterQMark = uriString.substringAfter("?")
-        if (uriStringAfterQMark.contains("#")) {
-            return uriStringAfterQMark
-        } else {
-            return uri.query
-        }
+        return if (uriString.contains("?")) {
+            uriString.substringAfter("?")
+        } else uri.query
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {

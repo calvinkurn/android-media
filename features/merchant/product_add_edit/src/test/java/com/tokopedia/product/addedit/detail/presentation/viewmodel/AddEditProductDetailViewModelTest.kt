@@ -1507,17 +1507,13 @@ class AddEditProductDetailViewModelTest {
         isValid = viewModel.callPrivateFunc("isInputValid") as Boolean
         Assert.assertTrue(isValid)
 
-        viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
-        assert(viewModel.shouldUpdateVariant)
         assert(viewModel.isDrafting)
         assert(viewModel.isReloadingShowCase)
 
-        viewModel.shouldUpdateVariant = false
         viewModel.isDrafting = false
         viewModel.isReloadingShowCase = false
-        assertFalse(viewModel.shouldUpdateVariant)
         assertFalse(viewModel.isDrafting)
         assertFalse(viewModel.isReloadingShowCase)
 

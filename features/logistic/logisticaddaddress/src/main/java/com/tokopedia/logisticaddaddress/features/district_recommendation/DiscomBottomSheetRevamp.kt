@@ -547,9 +547,13 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
-                    createLocationCallback(), null)
+                    locationCallback, null)
             }
         }
+    }
+
+    private fun stopLocationUpdate() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -624,13 +628,18 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         return isGpsOn
     }
 
-    fun createLocationCallback(): LocationCallback {
-        return object : LocationCallback() {
+    override fun onDestroy() {
+        super.onDestroy()
+        stopLocationUpdate()
+    }
+
+    private val locationCallback: LocationCallback =
+        object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
+                stopLocationUpdate()
                 presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
-    }
 
     private fun getPermissions(): Array<String> {
         return arrayOf(

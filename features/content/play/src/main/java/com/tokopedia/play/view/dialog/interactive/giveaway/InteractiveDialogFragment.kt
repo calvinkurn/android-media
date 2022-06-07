@@ -15,7 +15,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
@@ -280,7 +279,7 @@ class InteractiveDialogFragment @Inject constructor(
             parent.removeAllViews()
             val view = viewCreator(parent.context)
             val lParams = FrameLayout.LayoutParams(
-                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
             )
             lParams.gravity = Gravity.CENTER

@@ -5,21 +5,16 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.app.ProgressDialog
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -28,7 +23,6 @@ import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -43,7 +37,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -96,7 +89,6 @@ import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
-import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -112,13 +104,11 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_PICK_ETALASE
@@ -222,6 +212,8 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import android.text.TextPaint
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 
 open class ProductManageFragment :
     BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
@@ -454,6 +446,7 @@ open class ProductManageFragment :
         observeFilterTabs()
         observeMultiSelect()
         observeProductVariantBroadcast()
+        observeUploadStatus()
 
         observeEditPrice()
         observeEditStock()
@@ -729,6 +722,17 @@ open class ProductManageFragment :
                         resources.getString(R.string.broadcast_chat_error_state_action_retry)
                     errorStateBroadcastChat(message, action, isRetry = true)
                 }
+            }
+        }
+    }
+
+    private fun observeUploadStatus() {
+        observe(viewModel.uploadStatus) {
+            if (it.status == UploadStatusType.STATUS_DONE.name) {
+                viewModel.getPopupsInfo(it.productId)
+                getFiltersTab(withDelay = true)
+                getProductList(withDelay = true, isRefresh = true)
+                viewModel.clearUploadStatus()
             }
         }
     }
@@ -1209,29 +1213,6 @@ open class ProductManageFragment :
         }
     }
 
-    private val addProductReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == BROADCAST_ADD_PRODUCT &&
-                intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
-                intent.getIntExtra(
-                    TkpdState.ProductService.STATUS_FLAG,
-                    0
-                ) == TkpdState.ProductService.STATUS_DONE
-            ) {
-                activity?.run {
-                    runOnUiThread {
-                        val productId =
-                            intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
-                                ?: ""
-                        viewModel.getPopupsInfo(productId)
-                        getFiltersTab(withDelay = true)
-                        getProductList(withDelay = true, isRefresh = true)
-                    }
-                }
-            }
-        }
-    }
-
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
         return if (getIsAdapterEnableDiffutil()) {
             ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
@@ -1608,60 +1589,41 @@ open class ProductManageFragment :
         }
     }
 
-    private fun initPopUpDialog(productId: String): Dialog {
+    private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
-            activity?.let { activity ->
-                val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setCancelable(false)
-                val dialogBinding = DialogProductAddBinding.inflate(
-                    LayoutInflater.from(context),
-                    null,
-                    false
-                )
-                dialog.setContentView(dialogBinding.root)
-
-                dialogBinding.filterSubmitButton.setOnClickListener {
-                    RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-                    activity.finish()
-                }
-
-                dialogBinding.btnProductList.setOnClickListener {
-                    goToPDP(productId)
-                    dialog.dismiss()
-                }
-                val backgroundColor = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
-                )
-
+            return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
-                spanText.setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                spanText.setSpan(
-                    ForegroundColorSpan(backgroundColor),
-                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                val cs = object : ClickableSpan() {
+                val textLinkLength = TEXT_LINK_LENGTH_END
+                val textLinkStart = TEXT_LINK_LENGTH_START
+                spanText.setSpan(object : ClickableSpan() {
                     override fun onClick(v: View) {
-                        RouteManager.route(
-                            context,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK)
-                        )
-                        activity.finish()
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
+                        activity?.finish()
                     }
-                }
-                spanText.setSpan(
-                    cs,
-                    START_SPAN_INDEX,
-                    spanText.length - 1,
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = backgroundColor
+                        ds.isUnderlineText = false
+                    }
+                },
+                    spanText.length - textLinkLength,
+                    spanText.length - textLinkStart,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                dialogBinding.txtTipsTrick.movementMethod = LinkMovementMethod.getInstance()
-                dialogBinding.txtTipsTrick.text = spanText
-                return dialog
+                spanText.setSpan(StyleSpan(Typeface.BOLD), spanText.length - textLinkLength, spanText.length - textLinkStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                setTitle(getString(R.string.popup_label_static))
+                setDescription(spanText)
+                setPrimaryCTAText(getString(R.string.courier_option))
+                setPrimaryCTAClickListener {
+                    RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+                    activity?.finish()
+                }
+                setSecondaryCTAText(getString(R.string.product_option))
+                setSecondaryCTAClickListener {
+                    goToPDP(productId)
+                    dismiss()
+                }
             }
         }
         return DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
@@ -2290,9 +2252,6 @@ open class ProductManageFragment :
 
     override fun onPause() {
         super.onPause()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
-        }
         if (productManageAddEditMenuBottomSheet.isVisible) {
             productManageAddEditMenuBottomSheet.dismiss()
         }
@@ -2304,21 +2263,11 @@ open class ProductManageFragment :
     override fun onResume() {
         super.onResume()
         hasTickerClosed = false
-        context?.let {
-            val intentFilter = IntentFilter()
-            intentFilter.addAction(BROADCAST_ADD_PRODUCT)
-            LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
-        context?.let {
-            if (addProductReceiver.isOrderedBroadcast) {
-                LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
-            }
-        }
         removeObservers()
     }
 
@@ -2452,14 +2401,6 @@ open class ProductManageFragment :
                             }
                         }
                         else -> {
-                        }
-                    }
-                }
-                REQUEST_CODE_DRAFT_PRODUCT -> {
-                    if (resultCode == Activity.RESULT_OK) {
-                        activity?.runOnUiThread {
-                            getFiltersTab(withDelay = true)
-                            getProductList(withDelay = true, isRefresh = true)
                         }
                     }
                 }
@@ -3155,10 +3096,10 @@ open class ProductManageFragment :
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
 
         private const val START_SPAN_INDEX = 5
-
         private const val RV_TOP_POSITION = 0
-
         private const val TICKER_MARGIN_TOP = 8
+        private const val TEXT_LINK_LENGTH_START = 0
+        private const val TEXT_LINK_LENGTH_END = 5
     }
 
 
