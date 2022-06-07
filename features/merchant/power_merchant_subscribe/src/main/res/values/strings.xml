@@ -143,7 +143,7 @@
 
     <string name="pm_date_based_on_your_sell"><![CDATA[Berdasarkan penjualanmu di [%s], kamu dapat paket keuntungan <b>%s</b>]]></string>
     <string name="pm_next_update_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Tidak ada penurunan paket keuntungan pada update berikutnya.]]></string>
-    <string name="pm_calibration_date_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Akan ada penyesuaian paket berdasarkan level toko.]]></string>
+    <string name="pm_calibration_date_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Akan ada penyesuaian paket keuntungan berdasarkan level toko.]]></string>
 
     <string name="desc_pm_pro_new_seller_header">Untuk jadi Seller terbaik, kamu bisa gabung Power Merchant dulu dan tetap perhatikan parameter di bawah ini, ya.</string>
     <string name="title_requirement_pm_pro_new_seller_1">Verifikasi data diri agar tokomu terbukti terpercaya</string>
