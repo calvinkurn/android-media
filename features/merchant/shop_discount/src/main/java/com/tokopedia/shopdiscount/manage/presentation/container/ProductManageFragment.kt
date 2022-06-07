@@ -213,7 +213,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.sellerEligibility.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if(it.data.hasBenefitPackage && it.data.isAuthorize) {
+                    if(it.data.hasBenefitPackage) {
                         hideErrorEligibleView()
                         addShopInfoIcon()
                         getTabsMetadata()
@@ -224,10 +224,12 @@ class ProductManageFragment : BaseDaggerFragment() {
                         binding?.groupContent?.gone()
                         binding?.globalError?.gone()
                         binding?.globalError?.gone()
-                        if(!it.data.hasBenefitPackage)
-                            showErrorEligibleView()
-                        if(!it.data.isAuthorize)
+                        if(!it.data.hasBenefitPackage && !it.data.isAuthorize) {
                             showRbacBottomSheet()
+                            showErrorEligibleView()
+                        } else if(!it.data.hasBenefitPackage){
+                            showErrorEligibleView()
+                        }
                     }
                 }
                 is Fail -> {
