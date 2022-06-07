@@ -33,4 +33,5 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val tickerAvailableFreeShippingCourierTitle: String = "",
                                 val isBebasOngkirExtra: Boolean,
                                 val bottomSheetDescription: String = "",
+                                // change to data model if need json object form
                                 val freeShippingMetadata: String) : RatesViewModelType, Parcelable

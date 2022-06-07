@@ -820,4 +820,49 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, isOnSuccessCalled)
         verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), "no") }
     }
+
+    @Test
+    fun `Checkout Success Without BO Free Shipping Metadata`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            // no op
+        }, false)
+
+        // Then
+        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata == "{}" }) }
+    }
+
+    @Test
+    fun `Checkout Success With BO Free Shipping Metadata`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        ), globalSuccess = true), status = "OK")
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+        orderSummaryPageViewModel.finalUpdate({
+            // no op
+        }, false)
+
+        // Then
+        coVerify(exactly = 1) { checkoutOccUseCase.executeSuspend(match { it.carts.data[0].shopProducts[0].orderMetadata == """{"free_shipping_metadata":"{\"sent_shipper_partner\":true}"}""" }) }
+    }
 }
