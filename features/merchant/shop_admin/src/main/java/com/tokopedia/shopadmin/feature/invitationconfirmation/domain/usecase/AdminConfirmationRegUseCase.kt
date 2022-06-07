@@ -17,10 +17,20 @@ class AdminConfirmationRegUseCase @Inject constructor(
         useCase.setTypeClass(AdminConfirmationRegResponse::class.java)
     }
 
-    suspend fun execute(shopID: String, userId: String, email: String, otpToken: String,
-                acceptBecomeAdmin: Boolean, manageID: String): AdminConfirmationRegUiModel {
-        useCase.setRequestParams(AdminConfirmationRegQuery.createRequestParams(shopID, userId, email,
-            otpToken, acceptBecomeAdmin, manageID))
+    suspend fun execute(
+        shopID: String,
+        userId: String,
+        acceptBecomeAdmin: Boolean,
+        manageID: String
+    ): AdminConfirmationRegUiModel {
+        useCase.setRequestParams(
+            AdminConfirmationRegQuery.createRequestParams(
+                shopID,
+                userId,
+                acceptBecomeAdmin,
+                manageID
+            )
+        )
         return mapper.mapToAdminConfirmationRegUiModel(useCase.executeOnBackground())
     }
 }

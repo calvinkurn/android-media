@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -113,11 +112,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 checkAfterLogin()
             } else if (requestCode == InvitationConfirmationNavigator.REQUEST_OTP) {
                 showLoadingConfirmationCta()
-                invitationConfirmationParam.setOtpToken(
-                    data?.getStringExtra(
-                        ApplinkConstInternalGlobal.PARAM_TOKEN
-                    ).orEmpty()
-                )
                 fetchUpdateUserProfile()
             }
         }
@@ -145,6 +139,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun observeUpdateUserProfile() {
         observe(viewModel.updateUserProfile) {
+            hideAllLoadingCta()
             when (it) {
                 is Success -> {
                     setActionAfterUpdateUserProfile(it.data)

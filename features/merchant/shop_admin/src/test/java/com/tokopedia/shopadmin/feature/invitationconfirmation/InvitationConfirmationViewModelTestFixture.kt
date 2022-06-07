@@ -111,44 +111,38 @@ abstract class InvitationConfirmationViewModelTestFixture {
     protected fun onAdminConfirmationRegUseCaseError_thenReturn(
         shopId: String,
         userId: String,
-        email: String,
-        otpToken: String,
         acceptBecomeAdmin: Boolean,
         manageID: String,
         exception: Throwable
     ) {
         coEvery {
             adminConfirmationRegUseCase.get()
-                .execute(shopId, userId, email, otpToken, acceptBecomeAdmin, manageID)
+                .execute(shopId, userId, acceptBecomeAdmin, manageID)
         } throws exception
     }
 
     protected fun verifyAdminConfirmationRegUseCaseCalled(
         shopId: String,
         userId: String,
-        email: String,
-        otpToken: String,
         acceptBecomeAdmin: Boolean,
         manageID: String
     ) {
         coVerify {
             adminConfirmationRegUseCase.get()
-                .execute(shopId, userId, email, otpToken, acceptBecomeAdmin, manageID)
+                .execute(shopId, userId, acceptBecomeAdmin, manageID)
         }
     }
 
     protected fun onAdminConfirmationRegUseCase_thenReturn(
         shopId: String,
         userId: String,
-        email: String,
-        otpToken: String,
         acceptBecomeAdmin: Boolean,
         manageID: String,
         adminConfirmationRegUiModel: AdminConfirmationRegUiModel
     ) {
         coEvery {
             adminConfirmationRegUseCase.get()
-                .execute(shopId, userId, email, otpToken, acceptBecomeAdmin, manageID)
+                .execute(shopId, userId, acceptBecomeAdmin, manageID)
         } returns adminConfirmationRegUiModel
     }
 

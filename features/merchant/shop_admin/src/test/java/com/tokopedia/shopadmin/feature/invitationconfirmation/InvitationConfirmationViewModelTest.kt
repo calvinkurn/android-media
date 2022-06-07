@@ -153,13 +153,10 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
                     acceptBecomeAdmin = acceptBecomeAdmin
                 )
             invitationConfirmationParam.setShopId(shopId)
-            invitationConfirmationParam.setOtpToken(otpToken)
             invitationConfirmationParam.setShopManageId(manageID)
             onAdminConfirmationRegUseCase_thenReturn(
                 shopId,
                 userId,
-                email,
-                otpToken,
                 acceptBecomeAdmin,
                 manageID,
                 adminConfirmationRegUiModel
@@ -170,7 +167,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
 
             //then
             verifyAdminConfirmationRegUseCaseCalled(
-                shopId, userId, email, otpToken, acceptBecomeAdmin, manageID
+                shopId, userId, acceptBecomeAdmin, manageID
             )
 
             val actualResult = (viewModel.confirmationReg.value as Success).data
@@ -190,13 +187,10 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
             //given
             val errorException = MessageErrorException()
             invitationConfirmationParam.setShopId(shopId)
-            invitationConfirmationParam.setOtpToken(otpToken)
             invitationConfirmationParam.setShopManageId(manageID)
             onAdminConfirmationRegUseCaseError_thenReturn(
                 shopId,
                 userId,
-                email,
-                otpToken,
                 acceptBecomeAdmin,
                 manageID,
                 errorException
@@ -207,7 +201,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
 
             //then
             verifyAdminConfirmationRegUseCaseCalled(
-                shopId, userId, email, otpToken, acceptBecomeAdmin, manageID
+                shopId, userId, acceptBecomeAdmin, manageID
             )
             val actualResult = (viewModel.confirmationReg.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java

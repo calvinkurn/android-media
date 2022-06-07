@@ -6,7 +6,6 @@ class InvitationConfirmationParamImpl @Inject constructor(): InvitationConfirmat
 
     private var shopId: String? = null
     private var shopName: String? = null
-    private var otpToken: String? = null
     private var shopManageID: String? = null
 
     override fun setShopId(shopId: String) {
@@ -15,10 +14,6 @@ class InvitationConfirmationParamImpl @Inject constructor(): InvitationConfirmat
 
     override fun setShopName(shopName: String) {
         this.shopName = shopName
-    }
-
-    override fun setOtpToken(otpToken: String) {
-        this.otpToken = otpToken
     }
 
     override fun setShopManageId(manageID: String) {
@@ -31,10 +26,6 @@ class InvitationConfirmationParamImpl @Inject constructor(): InvitationConfirmat
 
     override fun getShopId(): String {
         return shopId?.ifEmpty { "" }.orEmpty()
-    }
-
-    override fun getOtpToken(): String {
-        return otpToken?.ifEmpty { "" }.orEmpty()
     }
 
     override fun getShopManageId(): String {

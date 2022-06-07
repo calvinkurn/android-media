@@ -111,8 +111,7 @@ class InvitationConfirmationViewModel @Inject constructor(
         launchCatchError(block = {
             val confirmationRegResponse = withContext(coroutineDispatchers.io) {
                 adminConfirmationRegUseCase.get().execute(
-                    invitationConfirmationParam.getShopId(), userId, email,
-                    invitationConfirmationParam.getOtpToken(),
+                    invitationConfirmationParam.getShopId(), userId,
                     acceptBecomeAdmin, invitationConfirmationParam.getShopManageId()
                 )
             }

@@ -11,8 +11,6 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
     private const val SOURCE_KEY = "source"
     private const val SHOP_ID_KEY = "shopID"
     private const val USER_ID_KEY = "userId"
-    private const val EMAIL_KEY = "email"
-    private const val OTP_TOKEN_KEY = "otpToken"
     private const val ACCEPT_BECOME_ADMIN_KEY = "acceptBecomeAdmin"
     private const val SHOP_MANAGE_ID = "shopManageId"
 
@@ -22,8 +20,6 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
             source: "adminConfirmationReg-android",
             shopID: ${'$'}shopID,
             userId: ${'$'}userId,
-            email: ${'$'}email
-            otpToken: ${'$'}otpToken,
             acceptBecomeAdmin: ${'$'}acceptBecomeAdmin,
             shopManageId: ${'$'}shopManageID
           }) {
@@ -34,14 +30,11 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
         }   
     """.trimIndent()
 
-    fun createRequestParams(shopID: String, userId: String, email: String, otpToken: String,
-                                    acceptBecomeAdmin: Boolean, manageID: String): Map<String, Any> {
+    fun createRequestParams(shopID: String, userId: String, acceptBecomeAdmin: Boolean, manageID: String): Map<String, Any> {
         return RequestParams.create().apply {
             putString(SOURCE_KEY, SOURCE)
             putString(SHOP_ID_KEY, shopID)
             putString(USER_ID_KEY, userId)
-            putString(EMAIL_KEY, email)
-            putString(OTP_TOKEN_KEY, otpToken)
             putString(SHOP_MANAGE_ID, manageID)
             putBoolean(ACCEPT_BECOME_ADMIN_KEY, acceptBecomeAdmin)
         }.parameters
