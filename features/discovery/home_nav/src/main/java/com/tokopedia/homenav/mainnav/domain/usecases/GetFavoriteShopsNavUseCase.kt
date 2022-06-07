@@ -42,7 +42,6 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
                 "                    }\n" +
                 "                  }\n" +
                 "                  haveNext\n" +
-                "                  totalCount\n" +
                 "                }\n" +
                 "              }\n" +
                 "            }"
