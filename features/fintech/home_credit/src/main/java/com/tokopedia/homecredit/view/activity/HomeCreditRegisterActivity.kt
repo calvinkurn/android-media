@@ -84,7 +84,7 @@ open class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeC
         return if (showKtp) {
             HomeCreditKTPFragment.createInstance()
         } else {
-            HomeCreditSelfieFragment.createInstance()
+            HomeCreditKTPFragment.createInstance()
         }
     }
 
