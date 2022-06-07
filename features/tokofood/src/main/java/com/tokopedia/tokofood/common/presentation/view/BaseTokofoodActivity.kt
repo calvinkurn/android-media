@@ -42,19 +42,19 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     override fun viewModel(): MultipleFragmentsViewModel = viewModel
 
     override fun navigateToNewFragment(fragment: Fragment) {
-        val fragmentCount = getFragmentCount()
-        val ft = supportFragmentManager.beginTransaction()
-        if (fragmentCount > Int.ZERO) {
-            ft.setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-        }
         val fragmentName = fragment.javaClass.name
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (existingFragment == null) {
+            val fragmentCount = getFragmentCount()
+            val ft = supportFragmentManager.beginTransaction()
+            if (fragmentCount > Int.ZERO) {
+                ft.setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left,
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
+            }
             ft.replace(
                 R.id.frame_content,
                 fragment, fragmentName
