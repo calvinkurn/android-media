@@ -477,7 +477,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         )
         bottomSheet.setOnViewCampaignMenuSelected {}
         bottomSheet.setOnCancelCampaignMenuSelected { id: Long, title: String, status: CampaignStatus? ->
-            handleCancelCampaign(campaign.thematicParticipation, id, title, status)
+            handleCancelCampaign(campaign.thematicParticipation, campaign.isCancellable, id, title, status)
         }
         bottomSheet.setOnShareCampaignMenuSelected {
             showLoaderDialog()
@@ -546,8 +546,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         loaderDialog.dialog.dismiss()
     }
 
-    private fun handleCancelCampaign(isParticipatingThematicCampaign : Boolean, id: Long, title: String, status: CampaignStatus?) {
-        if (isParticipatingThematicCampaign) {
+    private fun handleCancelCampaign(
+        isParticipatingThematicCampaign: Boolean,
+        isCancellable: Boolean,
+        id: Long,
+        title: String,
+        status: CampaignStatus?
+    ) {
+        if (isParticipatingThematicCampaign && isCancellable) {
             binding?.cardView showError getString(R.string.sfs_cannot_cancel_campaign)
             return
         }
