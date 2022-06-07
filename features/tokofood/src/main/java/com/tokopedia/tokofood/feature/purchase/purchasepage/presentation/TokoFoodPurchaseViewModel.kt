@@ -184,20 +184,23 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                     } else {
                         _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-
                     }
                 }
             }
         }, onError = {
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                throwable = it
-            )
-            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                isLastLoadStateSuccess = false,
-                shopName = "",
-                shopLocation = ""
-            )
+            if (_isAddressHasPinpoint.value.second) {
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                    throwable = it
+                )
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                    isLastLoadStateSuccess = false,
+                    shopName = "",
+                    shopLocation = ""
+                )
+            } else {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+            }
         })
     }
 
@@ -290,22 +293,26 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
-                TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
-                    lastResponse,
-                    lastResponse.isEnabled(),
-                    !_isAddressHasPinpoint.value.second
-                ).toMutableList()
+            if (_isAddressHasPinpoint.value.second) {
+                _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
+                        lastResponse,
+                        lastResponse.isEnabled(),
+                        !_isAddressHasPinpoint.value.second
+                    ).toMutableList()
+                }
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
+                    throwable = it
+                )
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                    isLastLoadStateSuccess = false,
+                    shopName = "",
+                    shopLocation = ""
+                )
+            } else {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
             }
-            _uiEvent.value = PurchaseUiEvent(
-                state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL,
-                throwable = it
-            )
-            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                isLastLoadStateSuccess = false,
-                shopName = "",
-                shopLocation = ""
-            )
         })
     }
 

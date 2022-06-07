@@ -42,6 +42,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.R
@@ -604,7 +605,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             it.layoutGlobalErrorPurchase.show()
             it.noPinpointPurchase.gone()
             it.recyclerViewPurchase.gone()
-            // TODO: Move to viewmodel for testability
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchase.setType(errorType)
             it.layoutGlobalErrorPurchase.setActionClickListener {
@@ -620,7 +620,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
         viewBinding?.noPinpointPurchase?.run {
             setType(GlobalError.PAGE_NOT_FOUND)
-            // TODO: Set image url
+            errorIllustration.loadImage(NO_PINPOINT_URL)
             errorTitle.text = context?.getString(R.string.text_purchase_no_pinpoint).orEmpty()
             errorDescription.text = context?.getString(R.string.text_purchase_pinpoint_benefit).orEmpty()
             errorAction.text = context?.getString(R.string.text_purchase_set_pinpoint).orEmpty()
@@ -746,11 +746,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             context?.getString(R.string.text_purchase_success_edit_address).orEmpty(),
             getOkayMessage()
         )
-        loadData()
         intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
             val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
             viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
         }
+        loadData()
     }
 
     private fun onResultFromPaymentSuccess() {
@@ -1034,6 +1034,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
         private const val SOURCE = "checkout_page"
         private const val PAGE_NAME = "checkout_page"
+
+        private const val NO_PINPOINT_URL = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()
