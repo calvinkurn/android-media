@@ -60,7 +60,7 @@ class InvitationConfirmationNavigator(
         const val REQUEST_LOGIN = 459
         const val REQUEST_OTP = 659
         const val MODE_EMAIL = "email"
-        const val OTP_TYPE_EMAIL = 150
+        const val OTP_TYPE_EMAIL = 141
     }
 
 }
