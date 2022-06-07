@@ -18,7 +18,9 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.HOME_PAGE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.IS_LOGGED_IN_STATUS
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.NO_PIN_POIN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OPEN_SCREEN
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OUT_OF_COVERAGE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.SCREEN_NAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
@@ -126,6 +128,22 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
         val eventDataLayer = Bundle().apply {
             putString(SCREEN_NAME, HOME_PAGE)
+        }
+        eventDataLayer.openScreen(userId, destinationId, isLoggenInStatus)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
+    }
+
+    fun openScreenOutOfCoverage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
+        val eventDataLayer = Bundle().apply {
+            putString(SCREEN_NAME, OUT_OF_COVERAGE)
+        }
+        eventDataLayer.openScreen(userId, destinationId, isLoggenInStatus)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
+    }
+
+    fun openScreenNoPinPoin(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
+        val eventDataLayer = Bundle().apply {
+            putString(SCREEN_NAME, NO_PIN_POIN)
         }
         eventDataLayer.openScreen(userId, destinationId, isLoggenInStatus)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)

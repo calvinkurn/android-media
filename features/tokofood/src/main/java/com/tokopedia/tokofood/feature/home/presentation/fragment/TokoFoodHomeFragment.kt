@@ -333,6 +333,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun viewNoPinPoin() {
+        onShowNoPinPoin()
+    }
+
+    override fun viewOutOfCoverage() {
+        onShowOutOfCoverage()
+    }
+
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
         return TokoFoodHomeLegoComponentCallback(this, userSession, analytics)
     }
@@ -543,7 +551,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onShowHomeLayout(data: TokoFoodListUiModel) {
-        successOpenHomepage()
+        onOpenHomepage()
         showHomeLayout(data)
         getLayoutComponentData()
         initializeMiniCartHome()
@@ -838,9 +846,23 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun successOpenHomepage(){
+    private fun onOpenHomepage(){
         localCacheModel?.let {
             analytics.openScreenHomePage(userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn)
+        }
+    }
+
+    private fun onShowOutOfCoverage(){
+        localCacheModel?.let {
+            analytics.openScreenOutOfCoverage(userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn)
+        }
+    }
+
+    private fun onShowNoPinPoin(){
+        localCacheModel?.let {
+            analytics.openScreenNoPinPoin(userSession.userId, localCacheModel?.district_id,
                 userSession.isLoggedIn)
         }
     }

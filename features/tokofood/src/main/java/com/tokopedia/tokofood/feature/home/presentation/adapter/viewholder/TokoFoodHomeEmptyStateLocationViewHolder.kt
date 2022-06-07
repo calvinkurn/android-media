@@ -57,6 +57,7 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
 
     private fun bindNoPinPoin() {
         tgToHomeEmptyStateLocation?.hide()
+        tokoFoodEmptyStateListener?.viewNoPinPoin()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_NO_PIN_POIN)
         tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_title)
         tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_desc)
@@ -82,6 +83,7 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
 
     private fun bindOutOfCoverage() {
         tgToHomeEmptyStateLocation?.show()
+        tokoFoodEmptyStateListener?.viewOutOfCoverage()
         imgEmptyStateLocation?.loadImage(IMG_STATIC_URI_OUT_OF_COVERAGE)
         tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_title)
         tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_out_of_coverage_desc)
@@ -99,5 +101,7 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
         fun onClickSetAddress()
         fun onClickSetAddressInCoverage()
         fun onClickBackToHome()
+        fun viewOutOfCoverage()
+        fun viewNoPinPoin()
     }
 }

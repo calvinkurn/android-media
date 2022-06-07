@@ -21,6 +21,8 @@ object TokoFoodAnalyticsConstants {
     //home
     const val EMPTY_DATA = "null"
     const val HOME_PAGE = "Tokofood Homepage"
+    const val OUT_OF_COVERAGE = "Error State Out of Coverage"
+    const val NO_PIN_POIN = "Error State No Pinpoint"
 
     //post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"
