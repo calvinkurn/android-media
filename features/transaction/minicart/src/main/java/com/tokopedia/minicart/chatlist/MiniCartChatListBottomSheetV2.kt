@@ -25,7 +25,7 @@ import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactor
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListV2Binding
+import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -39,7 +39,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         const val DEFAULT_PRODUCT_SIZE = 0
     }
 
-    private var viewBinding: LayoutBottomsheetMiniCartChatListV2Binding? = null
+    private var viewBinding: LayoutBottomsheetMiniCartChatListBinding? = null
     private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartChatListAdapter? = null
@@ -66,7 +66,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
     ) {
         context?.let {
             mContext = context
-            viewBinding = LayoutBottomsheetMiniCartChatListV2Binding.inflate(LayoutInflater.from(context)).apply {
+            viewBinding = LayoutBottomsheetMiniCartChatListBinding.inflate(LayoutInflater.from(context)).apply {
                 initializeView(this, fragmentManager)
                 initializeViewModel(this, viewModel, lifecycleOwner)
                 initializeCartData(viewModel)
@@ -85,7 +85,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         }
     }
 
-    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding) {
+    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             miniCartListUiModel = it
             hideLoading()
@@ -106,12 +106,12 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         }
     }
 
-    private fun initializeView(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding, fragmentManager: FragmentManager) {
+    private fun initializeView(viewBinding: LayoutBottomsheetMiniCartChatListBinding, fragmentManager: FragmentManager) {
         initializeBottomSheet(viewBinding, fragmentManager)
         initializeRecyclerView(viewBinding)
     }
 
-    private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding, fragmentManager: FragmentManager) {
+    private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartChatListBinding, fragmentManager: FragmentManager) {
         bottomSheet = BottomSheetUnify().apply {
             showCloseIcon = false
             showHeader = true
@@ -131,13 +131,13 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         }
     }
 
-    private fun initializeViewModel(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding, viewModel: MiniCartChatListViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun initializeViewModel(viewBinding: LayoutBottomsheetMiniCartChatListBinding, viewModel: MiniCartChatListViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         initializeBottomSheetUiModelObserver(viewBinding)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
 
-    private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding) {
+    private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         val adapterTypeFactory = MiniCartChatListAdapterTypeFactory(this)
         adapter = MiniCartChatListAdapter(adapterTypeFactory)
         layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
@@ -204,7 +204,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
         }
     }
 
-    private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListV2Binding) {
+    private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         mContext?.apply {
             viewBinding.cardView.show()
             viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)))
