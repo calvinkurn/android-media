@@ -114,6 +114,12 @@ class UserConsentWidget : FrameLayout {
 
                         if (isMandatoryPurpose) {
                             viewBinding.buttonAction.isEnabled = isChecked
+                        } else {
+                            val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
+                                it.isChecked
+                            }
+
+                            viewBinding.buttonAction.isEnabled = isAllChecked == true
                         }
                     }
                 })
