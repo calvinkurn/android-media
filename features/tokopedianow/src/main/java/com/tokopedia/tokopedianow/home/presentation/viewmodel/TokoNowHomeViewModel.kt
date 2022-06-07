@@ -413,7 +413,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
-    fun needToShowOnBoardToaster(serviceType: String, has20mCoachMarkBeenShown: Boolean, has2hCoachMarkBeenShown: Boolean): Boolean {
+    fun needToShowOnBoardToaster(serviceType: String, has20mCoachMarkBeenShown: Boolean, has2hCoachMarkBeenShown: Boolean, isWarehouseIdZero: Boolean): Boolean {
 
         /*
          * SWITCHER TOASTER
@@ -424,6 +424,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val is20mServiceType = serviceType == ServiceType.NOW_15M
 
         return when {
+            isWarehouseIdZero -> false
             is2hServiceType && has20mCoachMarkBeenShown -> true
             is20mServiceType && has2hCoachMarkBeenShown -> true
             else -> false

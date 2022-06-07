@@ -2640,7 +2640,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         var result = viewModel.needToShowOnBoardToaster(
             serviceType = ServiceType.NOW_2H,
             has20mCoachMarkBeenShown = true,
-            has2hCoachMarkBeenShown = false
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
         )
         assertEquals(true, result)
 
@@ -2648,7 +2649,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         result = viewModel.needToShowOnBoardToaster(
             serviceType = ServiceType.NOW_15M,
             has20mCoachMarkBeenShown = false,
-            has2hCoachMarkBeenShown = true
+            has2hCoachMarkBeenShown = true,
+            isWarehouseIdZero = false
         )
         assertEquals(true, result)
 
@@ -2656,7 +2658,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         result = viewModel.needToShowOnBoardToaster(
             serviceType = ServiceType.NOW_2H,
             has20mCoachMarkBeenShown = false,
-            has2hCoachMarkBeenShown = false
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
         )
         assertEquals(false, result)
 
@@ -2664,7 +2667,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         result = viewModel.needToShowOnBoardToaster(
             serviceType = ServiceType.NOW_15M,
             has20mCoachMarkBeenShown = false,
-            has2hCoachMarkBeenShown = false
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
         )
         assertEquals(false, result)
 
@@ -2672,11 +2676,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         result = viewModel.needToShowOnBoardToaster(
             serviceType = ServiceType.NOW_OOC,
             has20mCoachMarkBeenShown = false,
-            has2hCoachMarkBeenShown = false
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = true
         )
         assertEquals(false, result)
     }
-
 
     @Test
     fun `given current serviceType 15m when switchService success should switch service to 2h`() {

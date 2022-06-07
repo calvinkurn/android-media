@@ -24,13 +24,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -70,7 +69,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
-import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet.OnBoard20mBottomSheetListener
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
@@ -1217,7 +1215,8 @@ class TokoNowHomeFragment: Fragment(),
             val needToShowOnBoardToaster = viewModelTokoNow.needToShowOnBoardToaster(
                 serviceType = service_type,
                 has20mCoachMarkBeenShown = has20mCoachMarkBeenShown,
-                has2hCoachMarkBeenShown = has2hCoachMarkBeenShown
+                has2hCoachMarkBeenShown = has2hCoachMarkBeenShown,
+                isWarehouseIdZero = warehouse_id.toLongOrZero().isZero()
             )
 
             if (needToShowOnBoardToaster) {
