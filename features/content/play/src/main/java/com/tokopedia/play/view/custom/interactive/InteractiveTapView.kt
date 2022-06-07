@@ -174,7 +174,7 @@ class InteractiveTapView : ConstraintLayout {
     }
 
     private fun loadConfettiTapLottie() {
-        lottieConfettiTap.setAnimationFromUrl(context.getString(R.string.lottie_confetti_tap), LOTTIE_CONFETTI_CACHE_KEY)
+        lottieConfettiTap.setAnimationFromUrl(context.getString(R.string.lottie_bg_tap), LOTTIE_CONFETTI_CACHE_KEY)
     }
 
     private fun invalidateLottieState() = synchronized(this) {

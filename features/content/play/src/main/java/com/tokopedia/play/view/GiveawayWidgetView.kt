@@ -10,10 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieDrawable
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewGiveawayWidgetBinding
-import com.tokopedia.play.view.custom.interactive.InteractiveTapView
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import java.util.*
@@ -88,20 +86,27 @@ class GiveawayWidgetView : ConstraintLayout {
 
             mListener?.onTapTapClicked(this)
         }
+
+        fun setupLottieBg() {
+            binding.tapLottieBg.setAnimationFromUrl(context.getString(R.string.lottie_bg_tap))
+            binding.tapLottieBg.repeatCount = LottieDrawable.INFINITE
+            binding.tapLottieBg.playAnimation()
+        }
+
+        fun setupLottieButton() {
+            binding.ivTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap))
+            binding.ivTap.repeatCount = LottieDrawable.INFINITE
+            binding.ivTap.playAnimation()
+        }
+
+        setupLottieButton()
+        setupLottieBg()
     }
 
     private fun animateTap() {
-        answerTrueAnimator.addListener(animationListener)
-        answerTrueAnimator.duration = 100L
-        answerTrueAnimator.start()
-
-        binding.tapLottieBg.setAnimationFromUrl(context.getString(R.string.lottie_confetti_tap))
-        binding.tapLottieBg.repeatCount = LottieDrawable.INFINITE
-        binding.tapLottieBg.playAnimation()
-
-        binding.ivTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap))
-        binding.ivTap.repeatCount = LottieDrawable.INFINITE
-        binding.ivTap.playAnimation()
+        tapAnimator.addListener(animationListener)
+        tapAnimator.duration = 80L
+        tapAnimator.start()
     }
 
 
@@ -112,7 +117,7 @@ class GiveawayWidgetView : ConstraintLayout {
         binding.flTap, View.SCALE_Y, 1f, 0.8f
     )
 
-    private val answerTrueAnimator = AnimatorSet().apply {
+    private val tapAnimator = AnimatorSet().apply {
         playTogether(clickScaleXAnimation, clickScaleYAnimation)
     }
 
@@ -124,11 +129,9 @@ class GiveawayWidgetView : ConstraintLayout {
             binding.flTap.scaleY = 1f
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
-        }
+        override fun onAnimationCancel(animation: Animator?) {}
 
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
+        override fun onAnimationRepeat(animation: Animator?) {}
 
     }
 
