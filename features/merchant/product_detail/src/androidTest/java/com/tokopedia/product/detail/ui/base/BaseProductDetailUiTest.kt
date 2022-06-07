@@ -39,7 +39,7 @@ abstract class BaseProductDetailUiTest {
     abstract fun before()
 
     @Before
-    fun doBeforeRun() {
+    open fun doBeforeRun() {
         before()
         GraphqlClient.reInitRetrofitWithInterceptors(
                 listOf(customInterceptor) ,context)

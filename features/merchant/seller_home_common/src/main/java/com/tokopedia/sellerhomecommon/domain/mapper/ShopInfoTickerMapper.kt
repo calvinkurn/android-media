@@ -24,7 +24,9 @@ class ShopInfoTickerMapper @Inject constructor() :
         response: GetShopInfoTickerResponse,
         isFromCache: Boolean
     ): List<TickerItemUiModel> {
-        return response.shopInfo.result.map {
+        return response.shopInfo.result.filter {
+            it.statusInfo.title.isNotBlank() && it.statusInfo.message.isNotBlank()
+        }.map {
             val ticker = it.statusInfo
             return@map TickerItemUiModel(
                 id = String.EMPTY,
