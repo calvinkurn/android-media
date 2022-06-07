@@ -65,6 +65,14 @@ class BuyerOrderDetailStickyActionButtonHandler(
                 onRespondToSubmissionOrderExtensionClicked()
                 ""
             }
+            BuyerOrderDetailActionButtonKey.RE_UPLOAD_PRESCRIPTION -> {
+                onReUploadPrescriptionClicked(button.url)
+                ""
+            }
+            BuyerOrderDetailActionButtonKey.CHECK_PRESCRIPTION -> {
+                onCheckPrescriptionClicked(button.url)
+                ""
+            }
             else -> ""
         }
         if (buttonName.isNotBlank()) {
@@ -78,6 +86,14 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onRespondToSubmissionOrderExtensionClicked() {
         navigator.goToOrderExtension(viewModel.getOrderId())
+    }
+
+    private fun onReUploadPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, true)
+    }
+
+    private fun onCheckPrescriptionClicked(url: String) {
+        navigator.openAppLink(url, false)
     }
 
     private fun onAskSellerActionButtonClicked() {
