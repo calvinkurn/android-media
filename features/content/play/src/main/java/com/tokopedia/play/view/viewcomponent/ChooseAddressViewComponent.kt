@@ -22,7 +22,7 @@ class ChooseAddressViewComponent(
 
     private val insideListener = object : ChooseAddressWidget.ChooseAddressWidgetListener{
         override fun onLocalizingAddressUpdatedFromWidget() {
-            //TODO("Not yet implemented")
+            chooseAddressWidget.updateWidget()
         }
 
         override fun onLocalizingAddressUpdatedFromBackground() {
