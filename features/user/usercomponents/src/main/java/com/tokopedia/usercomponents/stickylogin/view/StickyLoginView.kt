@@ -386,6 +386,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         }
 
         // delete soon
+        setContent("Entry point test", "User Consent")
         show()
     }
 
