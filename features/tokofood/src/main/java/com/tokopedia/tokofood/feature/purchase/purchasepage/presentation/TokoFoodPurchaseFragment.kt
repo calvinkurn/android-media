@@ -45,8 +45,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
-import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet

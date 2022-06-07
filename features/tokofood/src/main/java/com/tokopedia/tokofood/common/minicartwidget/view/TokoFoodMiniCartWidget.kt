@@ -23,8 +23,6 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
 
-    private var onButtonClickAction: () -> Unit = {}
-
     private var source: String = ""
 
     // Function to initialize the widget
@@ -50,10 +48,6 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
         viewModel?.loadCartList(source)
     }
 
-    fun setOnATCClickListener(action: () -> Unit) {
-        onButtonClickAction = action
-    }
-
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
         viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
@@ -65,7 +59,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             setCtaText(context?.getString(R.string.minicart_order, miniCartUiModel.totalProductQuantity).orEmpty())
             amountCtaView.visible()
             amountCtaView.setOnClickListener {
-                onButtonClickAction()
+                viewModel?.clickMiniCart()
             }
         }
     }

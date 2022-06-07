@@ -480,7 +480,6 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                         }
                     }
-
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         (it.data as? Pair<*, *>)?.let { pair ->
                             (pair.first as? String)?.let { cartId ->
@@ -533,6 +532,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                             }
                         }
                     }
+                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+                    }
                 }
             }
         }
@@ -541,9 +543,6 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
-            binding?.miniCartWidget?.setOnATCClickListener {
-                navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
-            }
         }
     }
 
