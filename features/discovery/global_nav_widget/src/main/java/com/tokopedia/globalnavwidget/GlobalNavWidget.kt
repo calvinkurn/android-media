@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
+import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -258,6 +260,7 @@ class GlobalNavWidget: BaseCustomView {
     ) {
         when(globalNavWidgetModel.navTemplate) {
             GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CATALOG -> handleGlobalNavCatalogTemplate(globalNavWidgetModel, globalNavWidgetListener)
             else -> handleGlobalNavDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
         }
     }
@@ -310,6 +313,13 @@ class GlobalNavWidget: BaseCustomView {
         )
     }
 
+    private fun createGlobalNavWidgetCatalogItemDecoration(): RecyclerView.ItemDecoration {
+        return GlobalNavWidgetCatalogItemDecoration(
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        )
+    }
+
     private fun handleGlobalNavDefaultTemplate(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
@@ -344,5 +354,39 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createPillRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return GridLayoutManager(context, GLOBAL_NAV_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
+    }
+
+    private fun handleGlobalNavCatalogTemplate(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        hideListPillContent()
+        setListCatalogContent(globalNavWidgetModel, globalNavWidgetListener)
+    }
+
+    private fun setListCatalogContent(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ) {
+        globalNavCardRecyclerView?.visibility = View.VISIBLE
+        globalNavCardRecyclerView?.adapter = createCatalogAdapter(
+            globalNavWidgetModel,
+            globalNavWidgetListener
+        )
+        globalNavCardRecyclerView?.layoutManager = createCardRecyclerViewLayoutManager()
+
+        if (globalNavCardRecyclerView?.itemDecorationCount == 0) {
+            globalNavCardRecyclerView?.addItemDecoration(createGlobalNavWidgetCatalogItemDecoration())
+        }
+    }
+
+    private fun createCatalogAdapter(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener
+    ): RecyclerView.Adapter<*> {
+        val catalogAdapter = GlobalNavWidgetCatalogAdapter(globalNavWidgetModel, globalNavWidgetListener)
+        catalogAdapter.setItemList(globalNavWidgetModel.itemList)
+
+        return catalogAdapter
     }
 }
