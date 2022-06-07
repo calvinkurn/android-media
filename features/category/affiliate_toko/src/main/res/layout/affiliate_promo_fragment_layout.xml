@@ -71,8 +71,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/promo_affiliate_progress_bar"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -135,12 +135,18 @@
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabTextColor="@color/Unify_N700_68" />
 
-
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                app:tickerType="announcement"
+                android:visibility="gone"
+                android:id="@+id/affiliate_announcement_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tab_layout_recommended"/>
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager_recommended"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/tab_layout_recommended" />
+                android:layout_below="@id/affiliate_announcement_ticker" />
         </RelativeLayout>
 
     </FrameLayout>
