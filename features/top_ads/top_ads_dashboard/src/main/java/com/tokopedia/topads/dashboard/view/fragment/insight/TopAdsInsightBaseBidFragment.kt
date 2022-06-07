@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 
 const val CLICK_TERAPKAN = "click - terapkan"
-private const val INSIGHT_BID_PAGE = "topads.insightBid"
+private const val INSIGHT_BID_PAGE = "android.topads_insight_bid"
 
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
