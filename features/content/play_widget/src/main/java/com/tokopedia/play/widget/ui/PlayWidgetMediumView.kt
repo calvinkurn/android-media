@@ -95,6 +95,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 config = mModel.config,
                 channelPositionInList = position,
             )
+
+            mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
+            )
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
@@ -128,6 +135,10 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     }
 
     private val cardBannerListener = object : PlayWidgetMediumViewHolder.Banner.Listener {
+
+        override fun onBannerImpressed(view: View, item: PlayWidgetBannerUiModel, position: Int) {
+            mAnalyticListener?.onImpressBannerCard(this@PlayWidgetMediumView, item, position)
+        }
 
         override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel, position: Int) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView, item, position)
@@ -230,11 +241,15 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        topContainer.shouldShowWithAction(data.title.isNotEmpty() || (data.isActionVisible && data.actionAppLink.isNotEmpty())) {
+        if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
+            mAnalyticListener?.onImpressViewAll(this)
+        }
+
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() || data.hasAction) {
             title.text = data.title
         }
 
-        actionTitle.shouldShowWithAction(data.isActionVisible && data.actionAppLink.isNotEmpty()){
+        actionTitle.shouldShowWithAction(data.hasAction){
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)

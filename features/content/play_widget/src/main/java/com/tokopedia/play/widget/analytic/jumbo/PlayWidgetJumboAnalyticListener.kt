@@ -16,6 +16,13 @@ interface PlayWidgetJumboAnalyticListener {
         channelPositionInList: Int,
     ) {}
 
+    fun onImpressReminderIcon(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isReminded: Boolean,
+    ) {}
+
     fun onClickToggleReminderChannel(
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,

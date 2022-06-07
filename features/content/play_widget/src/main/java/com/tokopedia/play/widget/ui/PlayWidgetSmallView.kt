@@ -43,6 +43,10 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
     private val cardBannerListener = object : PlayWidgetSmallViewHolder.Banner.Listener {
 
+        override fun onBannerImpressed(view: View) {
+            mAnalyticListener?.onImpressBannerCard(this@PlayWidgetSmallView)
+        }
+
         override fun onBannerClicked(view: View) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetSmallView)
         }
@@ -99,11 +103,16 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        val prevModel = mModel
         mModel = data
+
+        if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
+            mAnalyticListener?.onImpressViewAll(this)
+        }
 
         tvTitle.text = data.title
 
-        tvSeeAll.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
+        tvSeeAll.visibility = if (data.hasAction) View.VISIBLE else View.GONE
         tvSeeAll.text = data.actionTitle
         tvSeeAll.setOnClickListener {
             mAnalyticListener?.onClickViewAll(this)

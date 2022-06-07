@@ -37,7 +37,7 @@ class CarouselPlayWidgetViewHolder(
     override fun bind(element: CarouselPlayWidgetDataModel?) {
         element?.let {
             setupAnalyticVariable(element)
-            playWidgetViewHolder.bind(element.widgetState)
+            playWidgetViewHolder.bind(element.widgetState, this)
             setChannelDivider(element)
         }
     }

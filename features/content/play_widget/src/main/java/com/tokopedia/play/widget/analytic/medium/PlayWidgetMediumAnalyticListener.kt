@@ -60,7 +60,7 @@ interface PlayWidgetMediumAnalyticListener {
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isRemindMe: Boolean,
+        isReminded: Boolean,
     ) {}
 
     fun onClickToggleReminderChannel(

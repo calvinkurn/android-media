@@ -105,9 +105,9 @@ class DefaultPlayWidgetInListAnalyticListener(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isRemindMe: Boolean
+        isReminded: Boolean
     ) {
-        analytic.onImpressReminderIcon(view, item, channelPositionInList, isRemindMe, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressReminderIcon(view, item, channelPositionInList, isReminded, verticalWidgetPosition, businessWidgetPosition)
     }
 
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {

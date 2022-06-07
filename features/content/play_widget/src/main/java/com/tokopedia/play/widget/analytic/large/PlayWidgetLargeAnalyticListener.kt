@@ -18,6 +18,13 @@ interface PlayWidgetLargeAnalyticListener {
     ) {
     }
 
+    fun onImpressReminderIcon(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isReminded: Boolean,
+    ) {}
+
     fun onClickToggleReminderChannel(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
