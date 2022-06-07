@@ -78,8 +78,6 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
 
         tvOtherParticipant.text = leaderboard.otherParticipantText
         if (leaderboard.otherParticipantText.isNotBlank()) tvOtherParticipant.show() else tvOtherParticipant.hide()
-        if(leaderboard.choices.isEmpty()) hideQuiz() else showQuiz(leaderboard)
-
         itemView.addOnImpressionListener(leaderboard.impressHolder){
             listener.onLeaderBoardImpressed(leaderboard)
         }

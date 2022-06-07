@@ -210,6 +210,17 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
+    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onLeaderBoardImpressed(
+        view: PlayInteractiveLeaderboardViewComponent,
+        leaderboard: PlayLeaderboardUiModel
+    ) {
+        //TODO("Not yet implemented")
+    }
+
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {
         parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
     }

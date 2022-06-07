@@ -360,7 +360,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             otherParticipant = 0,
             otherParticipantText = "",
             winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz
+            leaderBoardType = LeadeboardType.Quiz,
+            id = "" //TODO() please add Id
         )
     }
 
@@ -439,7 +440,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = slot.reward,
-                leaderBoardType = getLeaderboardType(slot.type)
+                leaderBoardType = getLeaderboardType(slot.type),
+                id = "" //TODO() please add Id
             )
         }
     }
