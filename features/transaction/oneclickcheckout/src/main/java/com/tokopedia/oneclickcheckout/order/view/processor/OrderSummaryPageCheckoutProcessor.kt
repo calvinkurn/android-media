@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -131,7 +132,13 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                             orderShipment.getRealChecksum()
                                     ),
                                     promos = shopPromos,
-                                    items = addOnShopLevelItems
+                                    items = addOnShopLevelItems,
+                                    orderMetadata = JsonObject().apply {
+                                        val logisticPromoUiModel = orderShipment.logisticPromoViewModel
+                                        if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
+                                            addProperty("free_shipping_metadata", logisticPromoUiModel.freeShippingMetadata)
+                                        }
+                                    }.toString()
                             )
                     )
             )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))

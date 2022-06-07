@@ -65,7 +65,9 @@ data class ShopProduct(
         @SerializedName("shipping_info")
         val shippingInfo: ShippingInfo = ShippingInfo(),
         @SerializedName("items")
-        val items: List<AddOnItem> = emptyList()
+        val items: List<AddOnItem> = emptyList(),
+        @SerializedName("order_metadata")
+        val orderMetadata: String = "",
 )
 
 data class AddOnItem(
