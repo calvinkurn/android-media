@@ -109,6 +109,9 @@ data class CartTokoFoodBottomSheet(
     @SerializedName("description")
     @Expose
     val description: String = "",
+    @SerializedName("image_url")
+    @Expose
+    val imageUrl: String = "",
     @SerializedName("buttons")
     @Expose
     val buttons: List<CartTokoFoodBottomSheetButton> = listOf()

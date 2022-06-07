@@ -20,6 +20,7 @@ object TokofoodErrorLogger {
 
     object PAGE {
         internal const val HOME = "HOME"
+        internal const val CATEGORY = "CATEGORY"
         internal const val MERCHANT = "MERCHANT"
         internal const val PURCHASE = "PURCHASE"
         internal const val PROMO = "PROMO"
@@ -34,6 +35,8 @@ object TokofoodErrorLogger {
         internal const val PAYMENT_ERROR = "error go to payment"
         internal const val POOL_BASED_ERROR = "error of pool based order status"
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
+        internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error of user not eligible set address"
+        internal const val ERROR_LOAD_MORE_CATEGORY = "error of load more category"
     }
 
     object ErrorType {
@@ -45,6 +48,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_POOL_POST_PURCHASE = "error_pool_post_purchase"
         internal const val ERROR_COMPLETED_ORDER_POST_PURCHASE = "error_completed_order_post_purchase"
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error_driver_phone_number"
+        internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error_eligible_set_address"
+        internal const val ERROR_LOAD_MORE_CATEGORY = "error_load_more_category"
     }
 
     fun logExceptionToServerLogger(

@@ -1,10 +1,12 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
@@ -13,6 +15,13 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
+import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
+import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -150,10 +159,27 @@ object TokoFoodPurchaseUiModelMapper {
                     cartId = uiModel.cartId,
                     notes = uiModel.notes,
                     quantity = uiModel.quantity,
-                    variants = uiModel.variants
+                    variants = uiModel.variantsParam
                 )
             },
             shopId = shopId
+        )
+    }
+
+    fun mapUiModelToCustomizationUiModel(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel): ProductUiModel {
+        return ProductUiModel(
+            id = uiModel.id,
+            name = uiModel.name,
+            imageURL = uiModel.imageUrl,
+            price = uiModel.price,
+            priceFmt = uiModel.priceFmt,
+            isOutOfStock = false,
+            isShopClosed = false,
+            customListItems = uiModel.variants.mapVariantIntoCustomListItem(),
+            cartId = uiModel.cartId,
+            orderQty = uiModel.quantity,
+            orderNote = uiModel.notes,
+            isAtc = false
         )
     }
 
@@ -238,18 +264,23 @@ object TokoFoodPurchaseUiModelMapper {
             originalPriceFmt = product.originalPriceFmt,
             discountPercentage = product.discountPercentage,
             cartId = product.cartId,
-            variants = addOnsAndParamPair.map { it.second }
+            variantsParam = addOnsAndParamPair.map { it.second },
+            variants = product.variants
         ).apply {
             this.isEnabled = isEnabled
         }
     }
 
     private fun getAddOnsAndParamPairList(variants: List<CheckoutTokoFoodProductVariant>): List<Pair<String, UpdateProductVariantParam>> {
-        return variants.flatMap { variant ->
-            variant.options.map { option ->
-                "${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId)
+        val pairList = mutableListOf<Pair<String, UpdateProductVariantParam>>()
+        variants.forEach { variant ->
+            variant.options.forEach { option ->
+                if (option.isSelected) {
+                    pairList.add("${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId))
+                }
             }
         }
+        return pairList
     }
 
     private fun mapPromoUiModel(promo: CheckoutTokoFoodPromo): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
@@ -289,6 +320,53 @@ object TokoFoodPurchaseUiModelMapper {
         return TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel().apply {
             isCollapsed = false
             this.isEnabled = isEnabled
+        }
+    }
+
+    private fun List<CheckoutTokoFoodProductVariant>.mapVariantIntoCustomListItem(): List<CustomListItem> {
+        val customListItems = mutableListOf<CustomListItem>()
+        // add on selections widget
+        this.forEach { variant ->
+            customListItems.add(
+                CustomListItem(
+                    listItemType = CustomListItemType.PRODUCT_ADD_ON,
+                    addOnUiModel = variant.mapVariantToAddOnUiModel()
+                )
+            )
+        }
+        if (customListItems.isNotEmpty()) {
+            // order input widget
+            customListItems.add(
+                CustomListItem(
+                    listItemType = CustomListItemType.ORDER_NOTE_INPUT,
+                    addOnUiModel = null
+                )
+            )
+        }
+        return customListItems.toList()
+    }
+
+    private fun CheckoutTokoFoodProductVariant.mapVariantToAddOnUiModel(): AddOnUiModel {
+        return AddOnUiModel(
+            id = this.variantId,
+            name = this.name,
+            isRequired = this.rules.selectionRules.isRequired,
+            maxQty = this.rules.selectionRules.maxQuantity,
+            minQty = this.rules.selectionRules.minQuantity,
+            options = mapOptionDetailsToOptionUiModels(this.rules.selectionRules.maxQuantity, this.options)
+        )
+    }
+
+    private fun mapOptionDetailsToOptionUiModels(maxQty: Int, optionDetails: List<CheckoutTokoFoodProductVariantOption>): List<OptionUiModel> {
+        return optionDetails.map { optionDetail ->
+            OptionUiModel(
+                isSelected = optionDetail.isSelected,
+                id = optionDetail.optionId,
+                name = optionDetail.name,
+                price = optionDetail.price,
+                priceFmt = optionDetail.priceFmt,
+                selectionControlType = if (maxQty > Int.ONE) SelectionControlType.MULTIPLE_SELECTION else SelectionControlType.SINGLE_SELECTION
+            )
         }
     }
 

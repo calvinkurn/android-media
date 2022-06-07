@@ -27,13 +27,12 @@ import kotlin.coroutines.CoroutineContext
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: SavedStateHandle,
+class MultipleFragmentsViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle,
                                                      private val loadCartTokoFoodUseCase: LoadCartTokoFoodUseCase,
                                                      private val addToCartTokoFoodUseCase: AddToCartTokoFoodUseCase,
                                                      private val updateCartTokoFoodUseCase: UpdateCartTokoFoodUseCase,
                                                      private val removeCartTokoFoodUseCase: RemoveCartTokoFoodUseCase
 ) : ViewModel(), CoroutineScope {
-    val inputFlow = MutableSharedFlow<String>(Int.ONE)
 
     private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
     val cartDataFlow = cartDataState.asStateFlow()
@@ -51,7 +50,6 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         get() = cartDataState.value.shop.shopId
 
     companion object {
-        const val INPUT_KEY = "string_input"
         const val MINI_CART_STATE_KEY = "mini_cart_state_key"
     }
 
@@ -59,12 +57,10 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         get() = viewModelScope.coroutineContext
 
     fun onSavedInstanceState() {
-        savedStateHandle[INPUT_KEY] = inputFlow.replayCache.firstOrNull()
         savedStateHandle[MINI_CART_STATE_KEY] = (miniCartUiModelState.replayCache.firstOrNull() as? Result.Success<MiniCartUiModel>)?.data
     }
 
     fun onRestoreSavednstanceState() {
-        inputFlow.tryEmit(savedStateHandle[INPUT_KEY] ?: "")
         miniCartUiModelState.tryEmit(Result.Success(savedStateHandle[MINI_CART_STATE_KEY] ?: MiniCartUiModel()))
     }
 
@@ -209,26 +205,6 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
-    fun testUpdateCart() {
-        launchCatchError(block = {
-            val testParam = UpdateParam()
-            updateCartTokoFoodUseCase(testParam).collect {
-                if (it.isSuccess()) {
-                    loadCartList("tes")
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
-                }
-            }
-        }, onError = {
-            cartDataValidationState.emit(
-                UiEvent(
-                    state = UiEvent.EVENT_FAILED_UPDATE_CART,
-                    throwable = it
-                )
-            )
-        })
-
-    }
-
     fun addToCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
             addToCartTokoFoodUseCase(updateParam).collect {
@@ -255,6 +231,17 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                 )
             )
         })
+    }
+
+    fun clickMiniCart() {
+        launchCatchError(block = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT,
+                    data = cartDataFlow.value
+                )
+            )
+        }) {}
     }
 
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {

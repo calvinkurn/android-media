@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Result
@@ -22,9 +23,17 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
 
-    private var onButtonClickAction: () -> Unit = {}
-
     private var source: String = ""
+
+    var totalQuantity: Int = 0
+    set(value) {
+        viewBinding?.totalAmountMiniCart?.setCtaText(
+            context?.getString(
+                R.string.minicart_order,
+                value
+            ).orEmpty()
+        )
+    }
 
     // Function to initialize the widget
     fun initialize(sharedViewModel: MultipleFragmentsViewModel,
@@ -49,21 +58,18 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
         viewModel?.loadCartList(source)
     }
 
-    fun setOnATCClickListener(action: () -> Unit) {
-        onButtonClickAction = action
-    }
-
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
-        viewBinding?.totalAmountMiniCart?.apply {
+        viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
             if (isTotalAmountLoading) {
                 isTotalAmountLoading = false
             }
             setLabelTitle(miniCartUiModel.shopName)
             setAmount(miniCartUiModel.totalPriceFmt)
-            setCtaText(context?.getString(R.string.minicart_order, miniCartUiModel.totalProductQuantity).orEmpty())
+            totalQuantity = miniCartUiModel.totalProductQuantity
+            amountCtaView.visible()
             amountCtaView.setOnClickListener {
-                onButtonClickAction()
+                viewModel?.clickMiniCart()
             }
         }
     }

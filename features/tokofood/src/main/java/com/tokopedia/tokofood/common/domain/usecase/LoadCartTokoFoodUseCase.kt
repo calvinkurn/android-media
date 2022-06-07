@@ -25,8 +25,6 @@ class LoadCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<String, CheckoutTokoFood>(dispatchers.io) {
 
-    private val isDebug = false
-
     companion object {
         private const val PARAMS_KEY = "params"
 
@@ -71,6 +69,7 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     options {
                       is_selected
                       option_id
+                      is_selected
                       name
                       price
                     }
@@ -113,40 +112,15 @@ class LoadCartTokoFoodUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: String): Flow<CheckoutTokoFood> = flow {
-        if (isDebug) {
-            kotlinx.coroutines.delay(1000)
-            emit(getDummyResponse())
+        val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
+        val param = generateParams(additionalAttributes.generateString(), params)
+        val response =
+            repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
+        if (response.cartListTokofood.isSuccess()) {
+            emit(response.cartListTokofood)
         } else {
-            val additionalAttributes = CartAdditionalAttributesTokoFood(chosenAddressRequestHelper.getChosenAddress())
-            val param = generateParams(additionalAttributes.generateString(), params)
-            val response =
-                repository.request<Map<String, Any>, MiniCartTokoFoodResponse>(graphqlQuery(), param)
-            if (response.cartListTokofood.isSuccess()) {
-                emit(response.cartListTokofood)
-            } else {
-                throw MessageErrorException(response.cartListTokofood.getMessageIfError())
-            }
+            throw MessageErrorException(response.cartListTokofood.getMessageIfError())
         }
-    }
-
-    private fun getDummyResponse(): CheckoutTokoFood {
-        return CheckoutTokoFood(
-            data = CheckoutTokoFoodData(
-                shop = CheckoutTokoFoodShop(
-                    name = "Kedai Kopi, Mantapp"
-                ),
-                availableSection = CheckoutTokoFoodAvailabilitySection(
-                    products = listOf(
-                        CheckoutTokoFoodProduct(price = 10000.0),
-                        CheckoutTokoFoodProduct(price = 20000.0)
-                    )
-                ),
-                summaryDetail = CheckoutTokoFoodSummaryDetail(
-                    totalPrice = "Rp 10.000",
-                    totalItems = 2
-                )
-            )
-        )
     }
 
 }

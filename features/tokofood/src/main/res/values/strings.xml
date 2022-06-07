@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">tokofood</string>
     <string name="tokofood_title">Gofood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
 
     <!-- Home -->
     <string name="home_usp_powered_by">Dilayani</string>
@@ -57,6 +58,7 @@
     <string name="text_purchase_order_list">Daftar Pesanan</string>
     <string name="text_purchase_add_order">Tambah Pesanan</string>
     <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
+    <string name="text_purchase_success_edit_address">Berhasil mengubah alamat</string>
 
     <!-- Merchant Page -->
     <string name="action_share">Share</string>

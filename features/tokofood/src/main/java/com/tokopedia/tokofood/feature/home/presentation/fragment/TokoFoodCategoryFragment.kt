@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
@@ -37,11 +38,14 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -58,6 +62,7 @@ import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCatego
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -71,6 +76,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentTokofoodCategoryBinding>()
     private val viewModel by lazy {
@@ -206,9 +214,8 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     override fun onClickMerchant(merchant: Merchant) {
-        context?.let {
-            RouteManager.route(it, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
-        }
+        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
+        RouteManager.route(context, merchantApplink)
     }
 
     private fun onRefreshLayout() {
@@ -220,6 +227,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                            // TODO: Hit Tracker
+                        }
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
@@ -238,7 +248,14 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             removeScrollListeners()
             when (it) {
                 is Success -> onSuccessGetCategoryLayout(it.data)
-                is Fail -> onErrorGetCategoryLayout(it.throwable)
+                is Fail -> {
+                    logExceptionTokoFoodCategory(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
+                    onErrorGetCategoryLayout(it.throwable)
+                }
             }
 
             addScrollListeners()
@@ -249,6 +266,13 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             removeScrollListeners()
             when (it) {
                 is Success -> showCategoryLayout(it.data)
+                is Fail -> {
+                    logExceptionTokoFoodCategory(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+                    )
+                }
             }
             addScrollListeners()
         }
@@ -397,9 +421,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun showMiniCartCategory() {
         miniCartCategory?.show()
-        miniCartCategory?.setOnATCClickListener {
-            goToPurchasePage()
-        }
     }
 
     private fun hideMiniCartCategory() {
@@ -408,5 +429,19 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun goToPurchasePage() {
         navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+    }
+
+    private fun logExceptionTokoFoodCategory(
+        throwable: Throwable,
+        errorType: String,
+        description: String,
+    ){
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.CATEGORY,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
     }
 }

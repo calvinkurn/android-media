@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -47,10 +48,13 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -284,7 +288,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickMerchant(merchant: Merchant) {
-        RouteManager.route(context, ApplinkConst.TokoFood.MERCHANT+"/${merchant.id}")
+        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
+        RouteManager.route(context, merchantApplink)
     }
 
     override fun onTickerDismissed(id: String) {
@@ -424,7 +429,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             removeAllScrollListener()
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
-                is Fail -> onErrorGetHomeLayout(it.throwable)
+                is Fail -> {
+                    logExceptionTokoFoodHome(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
+                    onErrorGetHomeLayout(it.throwable)
+                }
             }
 
             rvHome?.post {
@@ -474,6 +486,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
 
                 is Fail -> {
+                    logExceptionTokoFoodHome(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_SET_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_SET_ADDRESS
+                    )
                     showToaster(it.throwable.message)
                 }
             }
@@ -485,6 +502,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        (uiEvent.data as? CheckoutTokoFoodData)?.let {
+                            // TODO: Hit Tracker
+                        }
                         goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
@@ -743,9 +763,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun showMiniCartHome() {
         miniCartHome?.show()
-        miniCartHome?.setOnATCClickListener {
-            goToPurchasePage()
-        }
     }
 
     private fun hideMiniCartHome() {
@@ -796,4 +813,19 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
         universalShareBottomSheet?.show(childFragmentManager, this)
     }
+
+    private fun logExceptionTokoFoodHome(
+        throwable: Throwable,
+        errorType: String,
+        description: String,
+    ){
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.HOME,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
+    }
+
 }

@@ -7,18 +7,20 @@ import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 data class AgreeConsentResponse(
     @SerializedName("data")
     @Expose
-    val data: AgreeConsentData = AgreeConsentData()
+    val data: AgreeConsent = AgreeConsent()
+)
+
+data class AgreeConsent(
+    @SerializedName("tokofoodSubmitUserConsent")
+    @Expose
+    val tokofoodSubmitUserConsent: AgreeConsentData = AgreeConsentData()
 )
 
 data class AgreeConsentData(
     @SerializedName("success")
     @Expose
-    val success: String = "",
+    val isSuccess: Boolean = false,
     @SerializedName("message")
     @Expose
     val message: String = ""
-) {
-
-    fun isSuccess() = success == TokoFoodCartUtil.SUCCESS_STATUS
-
-}
+)

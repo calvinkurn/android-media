@@ -24,6 +24,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
@@ -31,6 +33,9 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalytics
 import com.tokopedia.tokofood.feature.purchase.promopage.di.DaggerTokoFoodPromoComponent
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodButton
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodEmptyState
+import com.tokopedia.tokofood.feature.purchase.promopage.domain.model.PromoListTokoFoodErrorPage
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
@@ -186,9 +191,9 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun setToolbarShadowVisibility(show: Boolean) {
         if (show) {
-            viewBinding?.appBarLayout?.elevation = TokoFoodPurchaseFragment.HAS_ELEVATION.toFloat()
+            viewBinding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
         } else {
-            viewBinding?.appBarLayout?.elevation = TokoFoodPurchaseFragment.NO_ELEVATION.toFloat()
+            viewBinding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
         }
     }
 
@@ -231,27 +236,27 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
                 UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
+                UiEvent.EVENT_ERROR_PAGE_PROMO_PAGE -> {
+                    (it.data as? PromoListTokoFoodErrorPage)?.let { errorPage ->
+                        renderGlobalError(errorPage)
+                        logError(MessageErrorException(errorPage.description))
+                    }
+                }
                 UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> {
                     renderGlobalError(it.throwable ?: ResponseErrorException())
                     it.throwable?.let { throwable ->
                         renderGlobalError(throwable)
-                        TokofoodErrorLogger.logExceptionToServerLogger(
-                            TokofoodErrorLogger.PAGE.PROMO,
-                            throwable,
-                            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                            userSession.deviceId.orEmpty(),
-                            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR,
-                            mapOf(
-                                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
-                            )
-                        )
+                        logError(throwable)
                     }
                 }
-                UiEvent.EVENT_RENDER_GLOBAL_ERROR_KYC -> renderKycError()
-                UiEvent.EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE -> renderIneligiblePromoError()
                 UiEvent.EVENT_SHOW_TOASTER -> {
                     (it.data as? String)?.let { toasterMessage ->
                         showToaster(toasterMessage)
+                    }
+                }
+                UiEvent.EVENT_NO_COUPON -> {
+                    (it.data as? PromoListTokoFoodEmptyState)?.let { emptyState ->
+                        renderEmptyState(emptyState)
                     }
                 }
             }
@@ -269,7 +274,6 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {
         viewBinding?.let {
-
             it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
             it.totalAmountPurchasePromo.setCtaText(
                 context?.getString(R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
@@ -293,35 +297,41 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         }
     }
 
-    private fun renderKycError() {
-        viewBinding?.let {
-            it.layoutGlobalErrorPurchasePromo.show()
-            it.recyclerViewPurchasePromo.gone()
-            it.layoutGlobalErrorPurchasePromo.setType(GlobalError.SERVER_ERROR)
-            // Todo : set data from API
-            it.layoutGlobalErrorPurchasePromo.errorTitle.text = ""
-            it.layoutGlobalErrorPurchasePromo.errorDescription.text = ""
-            it.layoutGlobalErrorPurchasePromo.errorIllustration.setImage("", 0f)
-            it.layoutGlobalErrorPurchasePromo.setActionClickListener {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-                startActivityForResult(intent, REQUEST_CODE_KYC)
+    private fun renderGlobalError(errorPage: PromoListTokoFoodErrorPage) {
+        viewBinding?.layoutGlobalErrorPurchasePromo?.run {
+            setType(GlobalError.SERVER_ERROR)
+            errorTitle.text = errorPage.title
+            errorDescription.text = errorPage.description
+            errorIllustration.loadImage(errorPage.image)
+            errorAction.text = errorPage.button.text
+            setActionClickListener {
+                when(errorPage.button.action) {
+                    PromoListTokoFoodButton.REFRESH_ACTION -> {
+                        loadData()
+                    }
+                    PromoListTokoFoodButton.REDIRECT_ACTION -> {
+                        RouteManager.route(context, errorPage.button.link)
+                    }
+                    else -> {
+
+                    }
+                }
             }
+            show()
         }
+        viewBinding?.recyclerViewPurchasePromo?.gone()
     }
 
-    private fun renderIneligiblePromoError() {
-        viewBinding?.let {
-            it.layoutGlobalErrorPurchasePromo.show()
-            it.recyclerViewPurchasePromo.gone()
-            it.layoutGlobalErrorPurchasePromo.setType(GlobalError.SERVER_ERROR)
-            // Todo : set data from API
-            it.layoutGlobalErrorPurchasePromo.errorTitle.text = ""
-            it.layoutGlobalErrorPurchasePromo.errorDescription.text = ""
-            it.layoutGlobalErrorPurchasePromo.errorIllustration.setImage("", 0f)
-            it.layoutGlobalErrorPurchasePromo.setActionClickListener {
-                (activity as BaseTokofoodActivity).onBackPressed()
-            }
+    private fun renderEmptyState(emptyState: PromoListTokoFoodEmptyState) {
+        viewBinding?.layoutGlobalErrorPurchasePromo?.run {
+            setType(GlobalError.SERVER_ERROR)
+            errorTitle.text = emptyState.title
+            errorDescription.text = emptyState.description
+            errorIllustration.loadImage(emptyState.imageUrl)
+            errorAction.gone()
+            show()
         }
+        viewBinding?.recyclerViewPurchasePromo?.gone()
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
@@ -341,6 +351,19 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 type = Toaster.TYPE_NORMAL
             ).show()
         }
+    }
+
+    private fun logError(throwable: Throwable) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.PROMO,
+            throwable,
+            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+            userSession.deviceId.orEmpty(),
+            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR,
+            mapOf(
+                TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

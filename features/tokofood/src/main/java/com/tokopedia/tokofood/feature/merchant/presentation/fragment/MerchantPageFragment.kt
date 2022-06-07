@@ -46,6 +46,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
@@ -547,6 +548,9 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                             }
                         }
+                    }
+                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                     }
                 }
             }

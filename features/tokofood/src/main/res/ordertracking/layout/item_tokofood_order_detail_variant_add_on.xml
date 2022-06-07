@@ -10,7 +10,7 @@
         android:layout_width="15dp"
         android:layout_height="10dp"
         android:layout_marginTop="2dp"
-        android:background="@drawable/ic_variant_add_on"
+        android:background="@drawable/ic_tokofood_variant_add_on"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
