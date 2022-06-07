@@ -111,10 +111,9 @@ class MerchantCampaignTNCBottomSheet : BottomSheetUnify() {
 
     @SuppressLint("ResourcePackage")
     private fun populateData(data: MerchantCampaignTNC) {
-        setTitle(data.title)
+        setTitle(getString(R.string.title_tnc_bottom_sheet))
         tgTncContent?.setNumberedText(
-            data.messages,
-            resources.getDimensionPixelSize(R.dimen.dp_8)
+            data.messages
         )
 
         when (showTickerAndButton) {
