@@ -23,6 +23,8 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_VIEW_CATEGORY_ICONS = "view category icons"
     const val EVENT_ACTION_VIEW_CAROUSEL_BANNER = "view carousel banner"
     const val EVENT_ACTION_CLICK_CAROUSEL_BANNER = "click carousel banner"
+    const val EVENT_ACTION_CLICK_LEGO_SIX = "click lego 6"
+    const val EVENT_ACTION_VIEW_LEGO_SIX = "view lego 6"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"

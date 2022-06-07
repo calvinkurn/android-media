@@ -334,7 +334,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
-        return TokoFoodHomeLegoComponentCallback(this)
+        return TokoFoodHomeLegoComponentCallback(this, userSession, analytics)
     }
 
     private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
