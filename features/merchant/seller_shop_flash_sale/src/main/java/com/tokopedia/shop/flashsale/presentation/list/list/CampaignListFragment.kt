@@ -277,7 +277,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun observeShopInfo() {
         viewModel.shopInfo.observe(viewLifecycleOwner) {
-            //
+            // TODO: shop open close dialog displaying
         }
     }
 
