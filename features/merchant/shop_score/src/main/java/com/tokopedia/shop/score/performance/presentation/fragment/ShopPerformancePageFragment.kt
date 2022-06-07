@@ -243,6 +243,10 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onItemClickedSeeAllBenefits() {
+        goToPowerMerchantBenefitEdu()
+    }
+
+    private fun goToPowerMerchantBenefitEdu() {
         RouteManager.route(context, ShopScoreConstant.POWER_MERCHANT_FEATURES)
     }
 

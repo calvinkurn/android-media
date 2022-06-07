@@ -198,7 +198,8 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemStatusPMProPotentiallyDowngradedViewHolder.LAYOUT -> ItemStatusPMProPotentiallyDowngradedViewHolder(
-                parent
+                parent,
+                shopPerformanceListener
             )
             else -> return super.createViewHolder(parent, type)
         }

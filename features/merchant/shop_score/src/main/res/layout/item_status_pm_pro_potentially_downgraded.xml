@@ -53,16 +53,30 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_pm_reputation_value"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:layout_marginTop="2dp"
                 android:text="@string/title_pm_pro_value"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@id/ic_pm_reputation_right"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_reputation_score_label"
                 app:typographyType="heading_4" />
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/ssPmSectionActiveStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
+                app:labelTitle="@string/ss_not_active"
+                app:labelType="general_light_red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_pm_reputation_value"
+                app:layout_constraintTop_toTopOf="@+id/tv_pm_reputation_value"
+                tools:labelTitle="Tidak Aktif" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_pm_reputation_right"
@@ -111,7 +125,7 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/sub_title_content_pm_section"
+                android:text="@string/sub_title_content_pm_idle_section"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="@+id/tvSsPmProSection"
                 app:layout_constraintStart_toStartOf="@+id/tvSsPmProSection"
@@ -135,7 +149,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/see_all_benefit"
+                android:text="@string/see_all_the_steps"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvSsPmProSection"
@@ -146,6 +160,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
                 app:icon_name="CHEVRON_RIGHT"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSsPmSectionSeeAllBenefits"
                 app:layout_constraintStart_toEndOf="@+id/tvSsPmSectionSeeAllBenefits"

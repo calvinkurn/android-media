@@ -264,7 +264,7 @@ open class ShopScoreMapper @Inject constructor(
                             } else {
                                 when (shopScore) {
                                     in SHOP_SCORE_60..SHOP_SCORE_69 -> {
-                                        add(mapToItemCurrentStatusRMUiModel(isNewSeller))
+                                        add(ItemStatusPMProPotentiallyDowngradedUiModel(false))
                                         return@apply
                                     }
                                     else -> {
@@ -276,19 +276,18 @@ open class ShopScoreMapper @Inject constructor(
                         }
                         PMStatusConst.INACTIVE -> {
                             when {
-                                isEligiblePM.orFalse() && shopScore in SHOP_SCORE_60..SHOP_SCORE_69 -> {
-                                    add(mapToSectionRMEligibleToPM())
-                                    return@apply
-                                }
                                 !isEligiblePM.orFalse() || shopScore < SHOP_SCORE_60 -> {
                                     add(mapToCardPotentialBenefitNonEligible())
+                                    return@apply
+                                }
+                                isEligiblePM.orFalse() -> {
+                                    add(mapToSectionRMEligibleToPM())
                                     return@apply
                                 }
                             }
                         }
                         PMStatusConst.IDLE -> {
-                            //add(mapToItemCurrentStatusRMUiModel(isNewSeller))
-                            add(ItemStatusPMProUiModel())
+                            add(ItemStatusPMProPotentiallyDowngradedUiModel(true))
                             return@apply
                         }
                     }
