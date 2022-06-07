@@ -30,6 +30,7 @@ import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.Toaster
@@ -107,6 +108,7 @@ class SelectProductFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setFragmentToUnifyBgColor()
         observeProducts()
         observeReserveProducts()
         observeShopBenefits()

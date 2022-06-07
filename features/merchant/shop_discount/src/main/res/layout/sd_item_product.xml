@@ -97,6 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@id/labelDiscount"
             app:layout_constraintStart_toStartOf="@+id/imgProduct"
@@ -109,6 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintLeft_toLeftOf="@id/tpgStockAndLocation"
             app:layout_constraintStart_toStartOf="@+id/imgProduct"
             app:layout_constraintTop_toBottomOf="@id/tpgStockAndLocation"
@@ -118,8 +120,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             android:visibility="gone"
             tools:visibility="visible"
             android:layout_marginStart="@dimen/unify_space_4"

@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
@@ -125,6 +126,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
         handleArguments()
+        setFragmentToUnifyBgColor()
         setupViews()
         observeProductsMeta()
         observeSellerEligibility()
@@ -396,7 +398,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
 
     private fun checkSellerEligibility() {
-        if(isEnableShopDiscount()) {
+        if (isEnableShopDiscount()) {
             binding?.shimmer?.content?.visible()
             binding?.groupContent?.gone()
             binding?.globalError?.gone()
@@ -412,14 +414,14 @@ class ProductManageFragment : BaseDaggerFragment() {
         return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_SHOP_DISCOUNT, true).orFalse()
     }
 
-    private fun showErrorNoAccess(){
+    private fun showErrorNoAccess() {
         binding?.layoutErrorNoAccess?.apply {
             imageErrorNoAccess.loadImage(UrlConstant.URL_IMAGE_NO_ACCESS_SLASH_PRICE)
             containerLayoutErrorNoAccess.show()
         }
     }
 
-    private fun hideErrorNoAccess(){
+    private fun hideErrorNoAccess() {
         binding?.layoutErrorNoAccess?.containerLayoutErrorNoAccess?.hide()
     }
 

@@ -101,13 +101,14 @@
         android:id="@+id/tpgStockAndLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/sd_space_6"
         app:layout_constraintBottom_toBottomOf="@+id/imageUnify"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/labelVariantCount"
         app:layout_constraintStart_toEndOf="@+id/imageUnify"
         app:layout_constraintTop_toTopOf="@+id/imageUnify"
+        android:textColor="@color/Unify_NN600"
         app:typographyType="small"
         tools:text="Stok: 999 di 5 lokasi" />
 
