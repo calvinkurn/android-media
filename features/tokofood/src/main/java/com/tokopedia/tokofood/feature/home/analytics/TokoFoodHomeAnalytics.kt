@@ -7,9 +7,11 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_LEGO_SIX
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
@@ -97,6 +99,26 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
+    fun clickCategory(userId: String?, destinationId: String?, channelModel: ChannelModel, channelGrid: ChannelGrid, horizontalPosition: Int) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_CATEGORY_WIDGET)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionCategory(channelModel, listOf(channelGrid), horizontalPosition))
+        eventDataLayer.selectContent(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun impressCategory(userId: String?, destinationId: String?, channelModel: ChannelModel) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_CATEGORY_WIDGET)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionCategory(channelModel, channelModel.channelGrids))
+        eventDataLayer.viewItem(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
     private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -1, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
@@ -139,6 +161,22 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                     putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
                     putString(Promotion.ITEM_ID, "${it.id} - ${it.shopId}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.LEGO_6_IMAGE} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
+                }
+            }
+        )
+        return promotionBundle
+    }
+
+    private fun getPromotionCategory(channelModel: ChannelModel, channelGrids: List<ChannelGrid>, horizontalPosition: Int = -1): ArrayList<Bundle> {
+        val promotionBundle = arrayListOf<Bundle>()
+        promotionBundle.addAll(
+            channelGrids.mapIndexed { index, it ->
+                val position = if (horizontalPosition.isLessThanZero()) index else horizontalPosition
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, "${it.imageUrl} - ${it.applink}")
+                    putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                    putString(Promotion.ITEM_ID, "${it.id} - ${it.categoryId}")
+                    putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
                 }
             }
         )
