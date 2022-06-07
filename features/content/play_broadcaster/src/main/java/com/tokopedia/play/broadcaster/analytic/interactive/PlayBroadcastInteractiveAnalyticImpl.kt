@@ -192,4 +192,28 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
         )
     }
+
+    /**
+     * {"event":"viewPGIris",
+     * "eventAction":"view - gamification button",
+     * "eventCategory":"seller broadcast",
+     * "eventLabel":"{shop_id} - {channel_id} - {channel title}",
+     * "businessUnit":"play",
+     * "currentSite":"tokopediamarketplace",
+     * "sessionIris":"{session_iris}",
+     * "userId":"{user_id}"}
+     */
+    override fun onImpressGameIconButton(channelId: String, channelTitle: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_EVENT,
+                KEY_EVENT_ACTION to "view - gamification button",
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
+                KEY_EVENT_LABEL to "${userSession.shopId} - $channelId - $channelTitle",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to currentSite,
+                KEY_USER_ID to userSession.userId
+            )
+        )
+    }
 }

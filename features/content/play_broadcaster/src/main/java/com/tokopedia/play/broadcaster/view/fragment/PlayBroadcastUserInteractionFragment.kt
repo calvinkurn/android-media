@@ -838,6 +838,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             gameIconView.show()
             if (prevState != state) {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
+                analytic.onImpressGameIconButton(parentViewModel.channelId,parentViewModel.channelTitle)
             }
             if (!hasPinnedFormView() && !isQuizFormVisible() && onboarding.firstInteractive) {
                 gameIconView.showCoachmark()
