@@ -307,7 +307,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
     /**
      * Function to show simplified summary bottom sheet
      */
-    private fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
+    fun showSimplifiedSummaryBottomSheet(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.value?.shoppingSummaryBottomSheetData?.let {
             shoppingSummaryBottomSheet.show(it, fragment.parentFragmentManager, context)
         }
