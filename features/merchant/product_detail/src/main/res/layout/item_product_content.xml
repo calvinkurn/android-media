@@ -163,7 +163,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_main_price"
         app:layout_constraintTop_toBottomOf="@+id/discount_container"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Simple Minimalistic Ergonomic White Chair" />
 
     <com.tokopedia.unifyprinciples.Typography

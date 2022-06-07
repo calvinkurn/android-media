@@ -39,7 +39,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/single_variant_chevron_right"
         app:layout_constraintStart_toEndOf="@+id/txt_choose_variant_label"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="variant_choose_label"
         tools:visibility="visible" />
 

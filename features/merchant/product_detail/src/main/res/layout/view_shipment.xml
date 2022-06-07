@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Rp30.000" />
 
     <com.tokopedia.unifycomponents.ImageUnify

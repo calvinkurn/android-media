@@ -117,7 +117,7 @@
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_1"
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_ava"
         app:layout_goneMarginStart="0dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="4.8" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -154,7 +154,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginBottom="12dp"
         app:layout_goneMarginStart="0dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="± 1 menit" />
 
     <com.tokopedia.unifyprinciples.Typography
