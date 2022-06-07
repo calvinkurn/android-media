@@ -1,12 +1,20 @@
 package com.tokopedia.play.widget.sample.analytic.global
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.analytic.list.small.PlayWidgetInListSmallAnalyticListener
+import com.tokopedia.play.widget.sample.analytic.const.BUSINESS_UNIT
+import com.tokopedia.play.widget.sample.analytic.const.CURRENT_SITE
+import com.tokopedia.play.widget.sample.analytic.const.EVENT_CLICK
+import com.tokopedia.play.widget.sample.analytic.const.EVENT_VIEW
+import com.tokopedia.play.widget.sample.analytic.const.PROMO_CLICK
+import com.tokopedia.play.widget.sample.analytic.const.PROMO_VIEW
+import com.tokopedia.play.widget.sample.analytic.const.eventLabel
+import com.tokopedia.play.widget.sample.analytic.const.toTrackingString
+import com.tokopedia.play.widget.sample.analytic.const.toTrackingType
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -41,9 +49,6 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else ""
 
-    private val currentSite: String
-        get() = if (GlobalConfig.isSellerApp()) "tokopediaseller" else "tokopediamarketplace"
-
     private val PlayWidgetPromoType.isRilisanSpesial: Boolean
         get() = when (this) {
             is PlayWidgetPromoType.Default -> isRilisanSpesial
@@ -76,7 +81,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
                 "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                WIDGET_SIZE, /** widgetSize **/
+                PlayWidgetType.Small.typeString, /** widgetSize **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -88,7 +93,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
             )
         ).appendUserId(userId)
             .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(currentSite)
+            .appendCurrentSite(CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -119,7 +124,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
                 "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
-                WIDGET_SIZE, /** widgetSize **/
+                PlayWidgetType.Small.typeString, /** widgetSize **/
             ),
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -131,7 +136,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
             )
         ).appendUserId(userId)
             .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(currentSite)
+            .appendCurrentSite(CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -156,7 +161,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                         "", /** partnerId **/ //TODO("Ask")
                     ),
                     "businessUnit" to "play",
-                    "currentSite" to currentSite,
+                    "currentSite" to CURRENT_SITE,
                     "sessionIris" to irisSessionId,
                     "userId" to userId,
                 )
@@ -179,7 +184,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                         "", /** partnerId **/ //TODO("Ask")
                     ),
                     "businessUnit" to "play",
-                    "currentSite" to currentSite,
+                    "currentSite" to CURRENT_SITE,
                     "sessionIris" to irisSessionId,
                     "userId" to userId,
                 )
@@ -202,7 +207,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                         "", /** partnerId **/ //TODO("Ask")
                     ),
                     "businessUnit" to "play",
-                    "currentSite" to currentSite,
+                    "currentSite" to CURRENT_SITE,
                     "sessionIris" to irisSessionId,
                     "userId" to userId,
                 )
@@ -225,37 +230,10 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                         "", /** partnerId **/ //TODO("Ask")
                     ),
                     "businessUnit" to "play",
-                    "currentSite" to currentSite,
+                    "currentSite" to CURRENT_SITE,
                     "sessionIris" to irisSessionId,
                     "userId" to userId,
                 )
             )
-    }
-
-    private fun PlayWidgetChannelType.toTrackingType() = when (this) {
-        PlayWidgetChannelType.Live -> "live"
-        PlayWidgetChannelType.Vod -> "vod"
-        PlayWidgetChannelType.Upcoming -> "upcoming"
-        else -> "null"
-    }
-
-    private fun PlayWidgetPromoType.toTrackingString(): String {
-        return promoText.ifBlank { "no promo" }
-    }
-
-    private fun eventLabel(vararg label: Any): String {
-        return label.joinToString(separator = " - ")
-    }
-
-    companion object {
-        private const val PROMO_VIEW = "promoView"
-        private const val PROMO_CLICK = "promoClick"
-
-        private const val EVENT_VIEW = "viewContentIris"
-        private const val EVENT_CLICK = "clickContent"
-
-        private const val BUSINESS_UNIT = "play"
-
-        private const val WIDGET_SIZE = "small"
     }
 }
