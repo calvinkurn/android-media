@@ -127,6 +127,10 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
         _endDate.value = endDate
     }
 
+    fun setBenefitPackageName(benefitPackageName: String) {
+        this.benefitPackageName = benefitPackageName
+    }
+
     fun getBenefitPackageName(): String {
         return benefitPackageName
     }

@@ -312,6 +312,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     val responseHeaderData = it.data.responseHeader
                     if (!responseHeaderData.success) {
                         showToasterError(responseHeaderData.reason)
+                        checkProductDiscountStartDateError()
                     } else {
                         val slashPriceStatusId: Int
                         val successSubmitToasterWording: String
@@ -339,6 +340,14 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun checkProductDiscountStartDateError() {
+        viewModel.checkStartDateError(
+            adapter.getAllProductData(),
+            mode,
+            selectedSlashPriceStatusId
+        )
     }
 
     private fun hideButtonSubmitLoading() {

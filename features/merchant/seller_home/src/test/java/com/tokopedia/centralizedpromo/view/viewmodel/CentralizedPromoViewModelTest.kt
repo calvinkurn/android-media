@@ -10,6 +10,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SlashPriceEligibleUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -54,6 +55,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
+
+    @RelaxedMockK
+    lateinit var slashPriceEligibleUseCase: SlashPriceEligibleUseCase
 
     @RelaxedMockK
     lateinit var sharedPref: SharedPreferences
@@ -114,6 +118,7 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
             voucherCashbackEligibleUseCase,
+            slashPriceEligibleUseCase,
             checkNonTopAdsUserUseCase,
             sellerHomeGetWhiteListedUserUseCase,
             remoteConfig,
@@ -189,6 +194,10 @@ class CentralizedPromoViewModelTest {
         } returns false
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns false
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns true
 
@@ -238,6 +247,10 @@ class CentralizedPromoViewModelTest {
         } returns true
 
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns true
 
@@ -268,6 +281,10 @@ class CentralizedPromoViewModelTest {
 
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } returns true
 
         coEvery {
@@ -305,6 +322,10 @@ class CentralizedPromoViewModelTest {
 
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } returns true
 
         coEvery {
@@ -348,6 +369,9 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
         coEvery {
@@ -387,6 +411,9 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
         coEvery {
@@ -421,6 +448,9 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } returns true
         coEvery {
             checkNonTopAdsUserUseCase.execute(any())
@@ -462,6 +492,9 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
         coEvery {
@@ -499,6 +532,9 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } returns true
         coEvery {
             checkNonTopAdsUserUseCase.execute(any())
@@ -539,6 +575,9 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
         coEvery {
@@ -577,6 +616,9 @@ class CentralizedPromoViewModelTest {
             voucherCashbackEligibleUseCase.execute(any())
         } returns true
         coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
             checkNonTopAdsUserUseCase.execute(any())
         } returns false
         coEvery {
@@ -613,6 +655,9 @@ class CentralizedPromoViewModelTest {
         } returns false
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } returns true
         coEvery {
             checkNonTopAdsUserUseCase.execute(any())
@@ -660,6 +705,19 @@ class CentralizedPromoViewModelTest {
     fun `When get voucher cashback eligiblity fail, get layout data should also fails`() = runBlocking {
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
+        } throws MessageErrorException()
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `When get slash price eligiblity fail, get layout data should also fails`() = runBlocking {
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
         } throws MessageErrorException()
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)

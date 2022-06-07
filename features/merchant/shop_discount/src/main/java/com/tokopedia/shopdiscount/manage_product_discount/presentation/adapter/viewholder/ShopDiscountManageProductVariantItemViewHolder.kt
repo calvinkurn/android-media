@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutShopDiscountManageProductVariantItemBinding
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductVariantDiscountFragmentListener
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
@@ -32,6 +33,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.round
 
 class ShopDiscountManageProductVariantItemViewHolder(
@@ -51,6 +54,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
     private var textTotalStock: Typography? = null
     private var discountPeriodSection: View? = null
     private var textDiscountPeriodRange: Typography? = null
+    private var textDiscountPeriodError: Typography? = null
     private var textFieldDiscountPrice: TextFieldUnify2? = null
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
     private var tickerR2AbusiveError: Ticker? = null
@@ -85,6 +89,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
             layoutFieldContainer = viewBinding?.layoutFieldContainer?.fieldContainer
             it.layoutFieldContainer.let { layoutFieldContainer ->
                 discountPeriodSection = layoutFieldContainer.discountPeriodSection
+                textDiscountPeriodError = layoutFieldContainer.textDiscountPeriodError
                 textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
                 textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
                 textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount
@@ -116,10 +121,37 @@ class ShopDiscountManageProductVariantItemViewHolder(
             openSetPeriodBottomSheet(uiModel)
         }
         updateDiscountPeriodRangeText(uiModel)
+        checkStartDateError(uiModel)
+    }
+
+    private fun checkStartDateError(uiModel: ShopDiscountManageProductVariantItemUiModel) {
+        if (uiModel.productErrorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.START_DATE_ERROR) {
+            if (isStartDateError(uiModel)) {
+                uiModel.productErrorType =
+                    ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.START_DATE_ERROR
+            } else {
+                uiModel.productErrorType =
+                    ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.NO_ERROR
+            }
+        }
     }
 
     private fun updateDiscountPeriodRangeText(uiModel: ShopDiscountManageProductVariantItemUiModel) {
         textDiscountPeriodRange?.text = getFormattedDiscountPeriod(uiModel)
+    }
+
+    private fun isStartDateError(
+        uiModel: ShopDiscountManageProductVariantItemUiModel
+    ): Boolean {
+        return checkProductStartDateError(uiModel)
+    }
+
+    private fun checkProductStartDateError(
+        setupProductUiModel: ShopDiscountManageProductVariantItemUiModel
+    ): Boolean {
+        return (setupProductUiModel.startDate.time - Date().time) < TimeUnit.MINUTES.toMillis(
+            5
+        )
     }
 
     private fun openSetPeriodBottomSheet(uiModel: ShopDiscountManageProductVariantItemUiModel) {
@@ -153,6 +185,9 @@ class ShopDiscountManageProductVariantItemViewHolder(
     ) {
         updateDiscountPeriodData(uiModel, setPeriodResultUiModel)
         updateDiscountPeriodRangeText(uiModel)
+        checkStartDateError(uiModel)
+        checkErrorState(uiModel)
+        listener.checkShouldEnableButtonSubmit()
     }
 
     private fun updateDiscountPeriodData(
@@ -240,7 +275,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
 
     private fun setupTextFieldDiscountPercentage(uiModel: ShopDiscountManageProductVariantItemUiModel) {
         textFieldDiscountPercentage?.apply {
-            appendText(getString(R.string.sd_percent))
+            appendText("%")
             textInputLayout.errorIconDrawable = null
             textInputLayout.editText?.let {
                 it.removeTextChangedListener(textFieldDiscountPriceWatcher)
@@ -334,12 +369,18 @@ class ShopDiscountManageProductVariantItemViewHolder(
                 discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
                     ShopDiscountManageProductDiscountErrorValidation.ERROR_R2_ABUSIVE
                 }
+                uiModel.productErrorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.START_DATE_ERROR -> {
+                    ShopDiscountManageProductDiscountErrorValidation.ERROR_START_DATE
+                }
                 else -> {
                     ShopDiscountManageProductDiscountErrorValidation.NONE
                 }
             }
             tickerR2AbusiveError?.hide()
             textFieldDiscountPrice?.textInputLayout?.setOnClickListener(null)
+            textFieldDiscountPrice?.textInputLayout?.error = null
+            textFieldDiscountPercentage?.textInputLayout?.error = null
+            textDiscountPeriodError?.hide()
             when (errorValidation) {
                 ShopDiscountManageProductDiscountErrorValidation.ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
@@ -367,7 +408,7 @@ class ShopDiscountManageProductVariantItemViewHolder(
                         show()
                         val tickerDesc = String.format(
                             getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
-                            averageSoldPrice
+                            averageSoldPrice.getCurrencyFormatted()
                         )
                         setHtmlDescription(tickerDesc)
                         setDescriptionClickEvent(object: TickerCallback {
@@ -381,9 +422,8 @@ class ShopDiscountManageProductVariantItemViewHolder(
                         })
                     }
                 }
-                ShopDiscountManageProductDiscountErrorValidation.NONE -> {
-                    textFieldDiscountPrice?.textInputLayout?.error = null
-                    textFieldDiscountPercentage?.textInputLayout?.error = null
+                ShopDiscountManageProductDiscountErrorValidation.ERROR_START_DATE -> {
+                    textDiscountPeriodError?.show()
                 }
             }
             updateValueErrorTypeData(errorValidation, uiModel)

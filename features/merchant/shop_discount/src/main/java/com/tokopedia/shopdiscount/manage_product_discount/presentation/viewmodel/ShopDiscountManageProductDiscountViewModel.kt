@@ -13,9 +13,12 @@ import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCas
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_START_DATE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
@@ -23,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -96,7 +100,28 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
             this.startDate = startDate
             this.endDate = endDate
         }
+        if(productData.productStatus.errorType == START_DATE_ERROR) {
+            if (isStartDateError(productData)) {
+                productData.productStatus.errorType = START_DATE_ERROR
+            } else {
+                productData.productStatus.errorType = NO_ERROR
+            }
+        }
         _updatedDiscountPeriodData.postValue(productData)
+    }
+
+    private fun isStartDateError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return checkProductStartDateError(setupProductUiModel)
+    }
+
+    private fun checkProductStartDateError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < TimeUnit.MINUTES.toMillis(
+            5
+        )
     }
 
     private fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
@@ -169,6 +194,9 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
                 }
                 discountedPrice > averageSoldPrice && averageSoldPrice.isMoreThanZero() -> {
                     ERROR_R2_ABUSIVE
+                }
+                productData.productStatus.errorType  == START_DATE_ERROR-> {
+                    ERROR_START_DATE
                 }
                 else -> {
                     NONE

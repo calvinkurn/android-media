@@ -22,7 +22,8 @@ data class ShopDiscountManageProductVariantItemUiModel(
     var valueErrorType: Int = 0,
     var isAbusive: Boolean = false,
     var selectedPeriodChip: Int = 0,
-    val averageSoldPrice: Int = 0
+    val averageSoldPrice: Int = 0,
+    var productErrorType: Int = 0
 ) : Visitable<ShopDiscountManageProductVariantDiscountTypeFactory> {
 
     override fun type(typeFactory: ShopDiscountManageProductVariantDiscountTypeFactory): Int {

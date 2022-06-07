@@ -43,23 +43,13 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     private val _sellerInfoBenefitLiveData =
         MutableLiveData<Result<ShopDiscountSellerInfoUiModel>>()
 
-    val updatedDiscountPeriodData: LiveData<ShopDiscountSetupProductUiModel.SetupProductData>
-        get() = _updatedDiscountPeriodData
-    private val _updatedDiscountPeriodData =
-        MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
-
     val isEnableSubmitButton: LiveData<Boolean>
         get() = _isEnableSubmitButton
     private val _isEnableSubmitButton = MutableLiveData<Boolean>()
 
-    val isEnableBulkApplyVariant: LiveData<Int>
-        get() = _isEnableBulkApplyVariant
-    private val _isEnableBulkApplyVariant = MutableLiveData<Int>()
-
-    val onToggleVariantStateUpdated: LiveData<ShopDiscountSetupProductUiModel.SetupProductData>
-        get() = _onToggleVariantStateUpdated
-    private val _onToggleVariantStateUpdated =
-        MutableLiveData<ShopDiscountSetupProductUiModel.SetupProductData>()
+    val totalEnableBulkApplyVariant: LiveData<Int>
+        get() = _totalEnableBulkApplyVariant
+    private val _totalEnableBulkApplyVariant = MutableLiveData<Int>()
 
     val bulkApplyListVariantItemUiModel: LiveData<List<ShopDiscountManageProductVariantItemUiModel>>
         get() = _bulkApplyListVariantItemUiModel
@@ -69,7 +59,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     private var productData: ShopDiscountSetupProductUiModel.SetupProductData =
         ShopDiscountSetupProductUiModel.SetupProductData()
 
-    val defaultStartDate: Date by lazy {
+    private val defaultStartDate: Date by lazy {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
         calendar.time
@@ -95,29 +85,39 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         this.productData = productData
     }
 
-    fun updateProductDiscountPeriodDataBasedOnBenefit(
-        startDate: Date,
-        endDate: Date
-    ) {
+    fun updateProductVariantDiscountPeriodData(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
         productData.listProductVariant.forEach {
-            val startDateUnix = it.slashPriceInfo.startDate.time
-            if(startDateUnix < 0) {
-                it.slashPriceInfo.apply {
-                    this.startDate = startDate
-                    this.endDate = endDate
+            it.slashPriceInfo.apply {
+                val startDateUnix = this.startDate.time
+                val startDate: Date
+                val endDate: Date
+                if (startDateUnix < 0) {
+                    val defaultStartDate = defaultStartDate
+                    val defaultEndDate = if (slashPriceBenefitData.isUseVps) {
+                        getVpsPackageDefaultEndDate(slashPriceBenefitData)
+                    } else {
+                        getMembershipDefaultEndDate()
+                    }
+                    startDate = defaultStartDate
+                    endDate = defaultEndDate
+                } else {
+                    startDate = this.startDate
+                    endDate = this.endDate
                 }
+                this.startDate = startDate
+                this.endDate = endDate
             }
         }
     }
 
-    fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
+    private fun getVpsPackageDefaultEndDate(slashPriceBenefitData: ShopDiscountSellerInfoUiModel): Date {
         val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull {
             it.packageId.toIntOrZero() != -1
         }
         return Date(vpsPackageData?.expiredAtUnix?.unixToMs().orZero())
     }
 
-    fun getMembershipDefaultEndDate(): Date {
+    private fun getMembershipDefaultEndDate(): Date {
         val endDateCalendar = defaultStartDate.toCalendar()
         endDateCalendar.add(Calendar.YEAR, ONE_YEAR)
         return endDateCalendar.time
@@ -128,17 +128,15 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     }
 
     fun checkShouldEnableSubmitButton(listVariantItemUiModel: List<ShopDiscountManageProductVariantItemUiModel>) {
-        val isNoVariantEnabled = listVariantItemUiModel.none {
+        val isEnabledButtonSubmit = listVariantItemUiModel.filter {
             it.isEnabled
-        }
-        val isEnabledButtonSubmit: Boolean = if (isNoVariantEnabled) {
-            false
-        } else {
-            listVariantItemUiModel.filter {
-                it.isEnabled
-            }.allCheckEmptyList {
-                it.valueErrorType == NONE && !it.discountedPrice.isZero()
-            }
+        }.let { filteredListVariantItem ->
+            if (filteredListVariantItem.isNotEmpty())
+                filteredListVariantItem.allCheckEmptyList {
+                    it.valueErrorType == NONE && !it.discountedPrice.isZero()
+                }
+            else
+                false
         }
         _isEnableSubmitButton.postValue(isEnabledButtonSubmit)
     }
@@ -179,27 +177,25 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
     fun checkShouldEnableBulkApplyVariant(
         listVariantItemUiModel: List<ShopDiscountManageProductVariantItemUiModel>
     ) {
-        val totalEnabledVariant = listVariantItemUiModel.count {
+        val totalEnabledVariant = listVariantItemUiModel.filter {
             it.isEnabled
         }
-        _isEnableBulkApplyVariant.postValue(totalEnabledVariant)
+        _totalEnableBulkApplyVariant.postValue(totalEnabledVariant.size)
     }
 
     fun applyBulkUpdate(
         listVariantItemUiModel: List<ShopDiscountManageProductVariantItemUiModel>,
         bulkApplyDiscountResult: DiscountSettings
     ) {
-        launchCatchError(dispatcherProvider.io, {
-            listVariantItemUiModel.filter { it.isEnabled }.forEach { variantProductData ->
-                val minOriginalPrice = variantProductData.variantMinOriginalPrice
-                updateProductData(
-                    variantProductData,
-                    bulkApplyDiscountResult,
-                    minOriginalPrice
-                )
-            }
-            _bulkApplyListVariantItemUiModel.postValue(listVariantItemUiModel)
-        }) {}
+        listVariantItemUiModel.filter { it.isEnabled }.forEach { variantProductData ->
+            val minOriginalPrice = variantProductData.variantMinOriginalPrice
+            updateProductData(
+                variantProductData,
+                bulkApplyDiscountResult,
+                minOriginalPrice
+            )
+        }
+        _bulkApplyListVariantItemUiModel.postValue(listVariantItemUiModel)
     }
 
     private fun updateProductData(

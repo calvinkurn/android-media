@@ -39,6 +39,7 @@ import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_START_DATE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant.SELLER_EDU_R2_ABUSIVE_URL
 import com.tokopedia.shopdiscount.utils.extension.digitsOnly
@@ -95,6 +96,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private var imageIconProduct: ImageUnify? = null
     private var discountPeriodSection: View? = null
     private var textDiscountPeriodRange: Typography? = null
+    private var textDiscountPeriodError: Typography? = null
     private var textFieldDiscountPrice: TextFieldUnify2? = null
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
     private var tickerR2AbusiveError: Ticker? = null
@@ -247,7 +249,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
         numberFormatter.applyPattern(NUMBER_PATTERN)
         textFieldDiscountPercentage?.apply {
-            appendText(getString(R.string.sd_percent))
+            appendText("%   ")
             textInputLayout.errorIconDrawable = null
             textInputLayout.editText?.let {
                 it.filters = arrayOf(InputFilter.LengthFilter(DISCOUNT_PERCENTAGE_MAX_DIGIT))
@@ -286,7 +288,10 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         viewModel.inputValidation.observe(viewLifecycleOwner, { errorValidation ->
             buttonApply?.isEnabled = errorValidation == NONE
             tickerR2AbusiveError?.hide()
+            textDiscountPeriodError?.hide()
             textFieldDiscountPrice?.textInputLayout?.setOnClickListener(null)
+            textFieldDiscountPrice?.textInputLayout?.error = null
+            textFieldDiscountPercentage?.textInputLayout?.error = null
             when (errorValidation) {
                 ERROR_PRICE_MAX -> {
                     textFieldDiscountPrice?.textInputLayout?.error =
@@ -330,9 +335,8 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
                         })
                     }
                 }
-                NONE -> {
-                    textFieldDiscountPrice?.textInputLayout?.error = null
-                    textFieldDiscountPercentage?.textInputLayout?.error = null
+                ERROR_START_DATE -> {
+                    textDiscountPeriodError?.show()
                 }
             }
         })
@@ -398,6 +402,9 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         viewModel.updatedDiscountPeriodData.observe(viewLifecycleOwner, {
             it?.let {
                 updateDiscountPeriodText(it)
+                checkShouldValidateInputAfterPopulateData(
+                    viewModel.getProductData().mappedResultData.minDisplayedPrice
+                )
             }
         })
     }
@@ -440,7 +447,6 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         configDiscountPeriodSection(productData, slashPriceBenefitData)
         setProductPriceData(productData)
         configQuantityEditorMaxOrder(productData)
-        checkShouldValidateInputAfterPopulateData(productData.mappedResultData.minDisplayedPrice)
     }
 
     private fun configTickerMultiLoc(isMultiLoc: Boolean) {
@@ -607,6 +613,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             initViewManageDiscountHeader(it.manageProductDiscountHeader)
             it.layoutFieldContainer.let { layoutFieldContainer ->
                 discountPeriodSection = layoutFieldContainer.discountPeriodSection
+                textDiscountPeriodError = layoutFieldContainer.textDiscountPeriodError
                 textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
                 textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
                 textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount

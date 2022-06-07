@@ -3,7 +3,6 @@ package com.tokopedia.shopdiscount.manage_product_discount.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
@@ -39,43 +38,6 @@ class ShopDiscountManageProductVariantDiscountAdapter(
                 productData
             )
         )
-        submitList(newList)
-    }
-
-    fun updateToggleVariantData(matchedProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopDiscountManageProductVariantItemUiModel>().firstOrNull {
-            it.variantId == matchedProductData.productId
-        }?.let {
-            val index = newList.indexOf(it)
-            newList.setElement(
-                index, it.copy(
-                    isEnabled = matchedProductData.variantStatus.isVariantEnabled.orFalse()
-                )
-            )
-        }
-        submitList(newList)
-    }
-
-    private fun <E> MutableList<E>.setElement(index: Int, element: E) {
-        if (index in 0 until size) {
-            set(index, element)
-        }
-    }
-
-    fun updateDiscountPeriodData(variantProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopDiscountManageProductVariantItemUiModel>().firstOrNull {
-            it.variantId == variantProductData.productId
-        }?.let {
-            val index = newList.indexOf(it)
-            newList.setElement(
-                index, it.copy(
-                    startDate = variantProductData.slashPriceInfo.startDate,
-                    endDate = variantProductData.slashPriceInfo.endDate
-                )
-            )
-        }
         submitList(newList)
     }
 

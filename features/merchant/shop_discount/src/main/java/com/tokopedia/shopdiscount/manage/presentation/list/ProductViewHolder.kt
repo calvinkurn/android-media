@@ -85,8 +85,8 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         when (product.productType) {
             ProductType.SINGLE -> {
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
-                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
-                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
+                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice.replace(" ","")
+                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice.replace(" ","")
                 displayDiscountPeriodRange(product)
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
@@ -137,12 +137,12 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
 
     private fun displayDiscountedPriceRange(product: Product) {
         binding.tpgDiscountedPrice.text = if (product.hasSameDiscountedPriceAmount) {
-            product.formattedDiscountMaxPrice
+            product.formattedDiscountMaxPrice.replace(" ","")
         } else {
             String.format(
                 binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
-                product.formattedDiscountMinPrice,
-                product.formattedDiscountMaxPrice
+                product.formattedDiscountMinPrice.replace(" ",""),
+                product.formattedDiscountMaxPrice.replace(" ","")
             )
         }
 
@@ -150,12 +150,12 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
 
     private fun displayOriginalPriceRange(product: Product) {
         binding.tpgOriginalPrice.text = if (product.hasSameOriginalPrice) {
-            product.formattedOriginalMaxPrice
+            product.formattedOriginalMaxPrice.replace(" ","")
         } else {
             String.format(
                 binding.tpgOriginalPrice.context.getString(R.string.sd_placeholder),
-                product.formattedOriginalMinPrice,
-                product.formattedOriginalMaxPrice
+                product.formattedOriginalMinPrice.replace(" ",""),
+                product.formattedOriginalMaxPrice.replace(" ","")
             )
         }
     }

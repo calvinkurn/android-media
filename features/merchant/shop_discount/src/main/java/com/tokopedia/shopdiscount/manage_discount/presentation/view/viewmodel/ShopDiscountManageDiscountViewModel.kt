@@ -25,6 +25,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.R2_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
@@ -38,6 +39,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -228,6 +230,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
                 VALUE_ERROR
             }
+            isStartDateError(setupProductUiModel, isVariant) && isProductDiscounted && setupProductUiModel.productStatus.errorType == START_DATE_ERROR ->{
+                START_DATE_ERROR
+            }
             isR2AbusiveError(setupProductUiModel, isVariant) && isProductDiscounted -> {
                 R2_ABUSIVE_ERROR
             }
@@ -289,7 +294,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductValueError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.getListEnabledProductWarehouse().filter { !it.abusiveRule }.any {
+        return setupProductUiModel.getListEnabledProductWarehouse().any {
             it.discountedPercentage < 1 || it.discountedPercentage > 99
         }
     }
@@ -345,11 +350,11 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun getTotalDiscountedVariant(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Int {
-        return setupProductDataUiModel.listProductVariant.count {
+        return setupProductDataUiModel.listProductVariant.filter {
             it.listProductWarehouse.any { productWarehouse ->
                 !productWarehouse.discountedPercentage.isZero()
             }
-        }
+        }.size
     }
 
     private fun getTotalVariant(
@@ -469,27 +474,25 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         mode: String,
         selectedSlashPriceStatus: Int
     ) {
-        launchCatchError(dispatcherProvider.io, {
-            listProductData.forEach { productParentData ->
-                val minOriginalPrice = productParentData.mappedResultData.minOriginalPrice
-                val isVariant = productParentData.productStatus.isVariant
-                val listProductToBeUpdated: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
-                    mutableListOf()
-                if (isVariant) {
-                    listProductToBeUpdated.addAll(productParentData.listProductVariant)
-                } else {
-                    listProductToBeUpdated.add(productParentData)
-                }
-                updateProductData(
-                    listProductToBeUpdated,
-                    bulkApplyDiscountResult,
-                    minOriginalPrice,
-                    isVariant
-                )
-                updateProductStatusAndMappedData(productParentData, mode, selectedSlashPriceStatus)
+        listProductData.forEach { productParentData ->
+            val minOriginalPrice = productParentData.mappedResultData.minOriginalPrice
+            val isVariant = productParentData.productStatus.isVariant
+            val listProductToBeUpdated: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
+                mutableListOf()
+            if (isVariant) {
+                listProductToBeUpdated.addAll(productParentData.listProductVariant)
+            } else {
+                listProductToBeUpdated.add(productParentData)
             }
-            _updatedProductListData.postValue(listProductData)
-        }) {}
+            updateProductData(
+                listProductToBeUpdated,
+                bulkApplyDiscountResult,
+                minOriginalPrice,
+                isVariant
+            )
+            updateProductStatusAndMappedData(productParentData, mode, selectedSlashPriceStatus)
+        }
+        _updatedProductListData.postValue(listProductData)
     }
 
     private fun updateProductData(
@@ -512,7 +515,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 discountedPrice = (100 - discountedPercentage) * minOriginalPrice / 100
             }
         }
-        listProductToBeUpdated.forEach { productToBeUpdated ->
+        listProductToBeUpdated.filter {
+            it.listProductWarehouse.none {productWarehouse -> productWarehouse.abusiveRule }
+        }.forEach { productToBeUpdated ->
             when (productToBeUpdated.slashPriceInfo.slashPriceStatusId.toIntOrZero()) {
                 SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                     productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
@@ -546,7 +551,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>
     ): Boolean {
         return allProductData.none {
-            it.productStatus.errorType == VALUE_ERROR || it.productStatus.errorType == R2_ABUSIVE_ERROR
+            it.productStatus.errorType == VALUE_ERROR || it.productStatus.errorType == R2_ABUSIVE_ERROR || it.productStatus.errorType == START_DATE_ERROR
         }
     }
 
@@ -639,6 +644,48 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             )
             _updatedProductListData.postValue(newList.toList())
         }
+    }
+
+    fun checkStartDateError(
+        listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
+        mode: String,
+        selectedSlashPriceStatusId: Int,
+    ) {
+        listProductData.forEach { productParentData ->
+            if (isStartDateError(productParentData, productParentData.productStatus.isVariant)) {
+                productParentData.productStatus.errorType = START_DATE_ERROR
+            } else {
+                updateProductStatusAndMappedData(
+                    productParentData,
+                    mode,
+                    selectedSlashPriceStatusId
+                )
+            }
+        }
+        _updatedProductListData.postValue(listProductData)
+    }
+
+    private fun isStartDateError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductUiModel.listProductVariant.filter {
+                it.variantStatus.isVariantEnabled == true
+            }.any {
+                checkProductStartDateError(it)
+            }
+        } else {
+            checkProductStartDateError(setupProductUiModel)
+        }
+    }
+
+    private fun checkProductStartDateError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return (setupProductUiModel.slashPriceInfo.startDate.time - Date().time) < TimeUnit.MINUTES.toMillis(
+            5
+        )
     }
 
 }

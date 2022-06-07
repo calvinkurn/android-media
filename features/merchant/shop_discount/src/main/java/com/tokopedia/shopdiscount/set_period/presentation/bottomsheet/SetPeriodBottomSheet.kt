@@ -156,6 +156,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
                 val benefit = benefits.firstOrNull {
                     it.packageId.toIntOrZero() != -1
                 }
+                viewModel.setBenefitPackageName(benefit?.packageName.orEmpty())
                 benefit?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
             } else {
                 viewModel.defaultMembershipEndDate

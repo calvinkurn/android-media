@@ -70,6 +70,12 @@
     <string name="sd_no_remaining_quota">Kuota diskonmu sudah habis.</string>
     <string name="sd_product_already_on_discount">Produk sudah didiskon.</string>
     <string name="sd_discount_created_successfully">Diskon berhasil dibuat.</string>
+    <string name="sd_discount_seller_not_eligible_title">Yah, kamu belum bisa akses ke Diskon Toko</string>
+    <string name="sd_discount_seller_not_eligible_desc">Pelajari dulu agar tokomu bisa pakai Diskon Toko, yuk!</string>
+    <string name="sd_discount_seller_not_eligible_button_text">Pelajari Diskon Toko</string>
+    <string name="sd_discount_seller_no_access_title">Diskon Toko belum bisa diakses</string>
+    <string name="sd_discount_seller_no_access_desc">Untuk sementara, kamu bisa akses Diskon Toko lewat versi desktop, ya.</string>
+
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
@@ -83,6 +89,9 @@
     <string name="product_detail_multiple_product_title">Ada diskon di %1s varian</string>
     <string name="product_detail_single_product_title">Diskon Produk</string>
     <string name="shop_discount_product_detail_delete_product_dialog_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
+    <string name="product_detail_error_button_text">Muat Ulang</string>
+    <string name="product_detail_error_title">Yaah, lagi ada gangguan</string>
+    <string name="product_detail_error_description">Kamu bisa muat ulang atau coba lagi nanti, ya</string>
 
     <!--  Seller Info Bottomsheet  -->
     <string name="seller_info_bottom_sheet_title">Info dan kuota Diskon Toko</string>
@@ -143,6 +152,7 @@
     <string name="shop_discount_manage_product_discount_edit_toolbar_title">Ubah Diskon Produk</string>
     <string name="shop_discount_manage_product_period_section_title">Periode Diskon</string>
     <string name="shop_discount_manage_product_max_order_title">Maks. pembelian</string>
+    <string name="shop_discount_manage_product_max_order_desc">Atur batas maks. pembelian produk oleh \npembeli.</string>
     <string name="shop_discount_manage_product_max_order_info">(Opsional)</string>
     <string name="shop_discount_manage_product_discount_original_price_format">%1s - %2s</string>
     <string name="shop_discount_manage_product_discount_multi_loc_ticker_desc"><![CDATA[Harga diskon akan otomatis terpasang untuk lokasi yang aktif. <a href="">Selengkapnya</a>]]></string>
@@ -151,6 +161,7 @@
     <string name="shop_discount_manage_product_error_r2_abusive_format">Melebihi batas maks. %1s</string>
     <string name="shop_discount_manage_product_error_r2_abusive_spanned_text">Pelajari</string>
     <string name="shop_discount_manage_product_error_r2_abusive_ticker_desc_format">Batas maks. harga diskon <![CDATA[<b>%1s.</b>]]> Harga diskon harus lebih rendah dari rata-rata harga jual. <![CDATA[<a href="">Terapkan</a>]]></string>
+    <string name="shop_discount_manage_product_error_start_date">Waktu mulai harus min. 5 menit dari waktu \nsaat ini</string>
 
     <!--Shop discount manage product multi loc-->
     <string name="shop_discount_manage_product_discount_multi_loc_manage_toolbar_title">Atur Diskon Lokasi</string>

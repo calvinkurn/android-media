@@ -8,8 +8,11 @@ import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCas
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.START_DATE_ERROR
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MAX
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_R2_ABUSIVE
+import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_START_DATE
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -38,7 +41,6 @@ class ShopDiscountManageProductDiscountViewModelTest {
     private val mockDiscountedPriceGreaterThanOriginalPrice = 25000
     private val mockMaxOrder = 10
     private val mockDiscountedPercentage = 50
-    private val mockStartDate = Date(1652776641L.unixToMs())
     private val mockEndDate = Date(1684287429L.unixToMs())
 
     private val viewModel by lazy {
@@ -93,7 +95,7 @@ class ShopDiscountManageProductDiscountViewModelTest {
     fun `When call setProductData, then getProductData should return mocked data`() {
         val mockProductData = getMockProductData()
         viewModel.setProductData(mockProductData)
-        val productData =  viewModel.getProductData()
+        val productData = viewModel.getProductData()
         assert(productData.productId == mockProductId)
     }
 
@@ -110,13 +112,66 @@ class ShopDiscountManageProductDiscountViewModelTest {
     }
 
     @Test
-    fun `When call updateProductDiscountPeriodData, then getProductData should return updated start date and end date`() {
+    fun `When call updateProductDiscountPeriodData with given start date is more than 5 minutes and has start date error, then getProductData should return updated start date and end date and errorType should be no error`() {
+        val mockProductData = getMockProductDataWithStartDateError()
+        viewModel.setProductData(mockProductData)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 10)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
+        assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.NO_ERROR)
+    }
+
+    @Test
+    fun `When call updateProductDiscountPeriodData with given start date is less than 5 minutes and has start date error, then getProductData should return updated start date and end date and errorType should be error start date`() {
+        val mockProductData = getMockProductDataWithStartDateError()
+        viewModel.setProductData(mockProductData)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 2)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
+        assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == START_DATE_ERROR)
+    }
+
+    @Test
+    fun `When call updateProductDiscountPeriodData with given start date is less than 5 minutes and no start date error, then getProductData should return updated start date and end date and errorType should be no error`() {
         val mockProductData = getMockProductData()
         viewModel.setProductData(mockProductData)
-        viewModel.updateProductDiscountPeriodData(mockStartDate, mockEndDate)
-        val liveData =  viewModel.updatedDiscountPeriodData
-        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDate.time)
+        val mockStartDateTenMinutesFromNow = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 2)
+        }.time
+        viewModel.updateProductDiscountPeriodData(mockStartDateTenMinutesFromNow, mockEndDate)
+        val liveData = viewModel.updatedDiscountPeriodData
+        assert(liveData.value?.slashPriceInfo?.startDate?.time == mockStartDateTenMinutesFromNow.time)
         assert(liveData.value?.slashPriceInfo?.endDate?.time == mockEndDate.time)
+        assert(liveData.value?.productStatus?.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.NO_ERROR)
+    }
+
+    private fun getMockProductDataWithStartDateError(): ShopDiscountSetupProductUiModel.SetupProductData {
+        return ShopDiscountSetupProductUiModel.SetupProductData(
+            productId = mockProductId,
+            mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+                minOriginalPrice = mockOriginalPrice,
+                maxOriginalPrice = mockOriginalPrice
+            ),
+            listProductWarehouse = listOf(
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse(
+                    avgSoldPrice = 18000
+                )
+            ),
+            productStatus = ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
+                errorType = START_DATE_ERROR
+            ),
+            slashPriceInfo = ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
+                discountedPrice = 16000
+            )
+        )
     }
 
     @Test
@@ -195,6 +250,67 @@ class ShopDiscountManageProductDiscountViewModelTest {
         assert(liveData.value == ERROR_PRICE_MIN)
     }
 
+    @Test
+    fun `When call validateInput with discounted price is more than average sold price, then inputValidation value should be error R2 abusive`() {
+        val mockProductData = getMockProductDataWithErrorR2Abusive()
+        viewModel.setProductData(mockProductData)
+        viewModel.validateInput()
+        val liveData = viewModel.inputValidation
+        assert(liveData.value == ERROR_R2_ABUSIVE)
+    }
+
+    @Test
+    fun `When call validateInput with discounted price is correct and less than average sold price, then inputValidation value should be no error`() {
+        val mockProductData = getMockProductDataWithDiscountedPriceGreaterThatAverageSoldPrice()
+        viewModel.setProductData(mockProductData)
+        viewModel.validateInput()
+        val liveData = viewModel.inputValidation
+        assert(liveData.value == NONE)
+    }
+
+    @Test
+    fun `When call validateInput with start date error, then inputValidation value should error start date`() {
+        val mockProductData = getMockProductDataWithStartDateError()
+        viewModel.setProductData(mockProductData)
+        viewModel.validateInput()
+        val liveData = viewModel.inputValidation
+        assert(liveData.value == ERROR_START_DATE)
+    }
+
+    private fun getMockProductDataWithErrorR2Abusive(): ShopDiscountSetupProductUiModel.SetupProductData {
+        return ShopDiscountSetupProductUiModel.SetupProductData(
+            mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+                minOriginalPrice = mockOriginalPrice,
+                maxOriginalPrice = mockOriginalPrice
+            ),
+            listProductWarehouse = listOf(
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse(
+                    avgSoldPrice = 15000
+                )
+            ),
+            slashPriceInfo = ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
+                discountedPrice = 16000
+            )
+        )
+    }
+
+    private fun getMockProductDataWithDiscountedPriceGreaterThatAverageSoldPrice(): ShopDiscountSetupProductUiModel.SetupProductData {
+        return ShopDiscountSetupProductUiModel.SetupProductData(
+            mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+                minOriginalPrice = mockOriginalPrice,
+                maxOriginalPrice = mockOriginalPrice
+            ),
+            listProductWarehouse = listOf(
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse(
+                    avgSoldPrice = 18000
+                )
+            ),
+            slashPriceInfo = ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
+                discountedPrice = 16000
+            )
+        )
+    }
+
     private fun getMockProductDataWithErrorPriceMin(): ShopDiscountSetupProductUiModel.SetupProductData {
         return ShopDiscountSetupProductUiModel.SetupProductData(
             mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
@@ -236,7 +352,7 @@ class ShopDiscountManageProductDiscountViewModelTest {
         val mockSlashPriceBenefitData = getMockSlashPriceBenefitDataVps()
         viewModel.getDiscountPeriodDataBasedOnBenefit(mockSlashPriceBenefitData)
         val liveData = viewModel.discountPeriodDataBasedOnBenefitLiveData
-        assert(liveData.value?.second?.time == mockEndDate.time)
+        assert(liveData.value?.second?.time.orZero() / 1000L == mockEndDate.time / 1000L)
     }
 
     @Test
@@ -256,7 +372,7 @@ class ShopDiscountManageProductDiscountViewModelTest {
         val endDateMills = liveData.value?.second?.time.orZero()
         val diffMills = endDateMills - startDateMills
         val daysDateDiff = (diffMills / (1000 * 60 * 60 * 24)).toInt()
-        assert(daysDateDiff == 365)
+        assert(daysDateDiff >= 364)
     }
 
     private fun getMockSlashPriceBenefitDataNonVps(): ShopDiscountSellerInfoUiModel {
@@ -268,20 +384,52 @@ class ShopDiscountManageProductDiscountViewModelTest {
     private fun getMockSlashPriceBenefitDataVpsWithNoVpsPackageId(): ShopDiscountSellerInfoUiModel {
         return ShopDiscountSellerInfoUiModel(
             isUseVps = true,
-            listSlashPriceBenefitData = listOf(ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
-                packageId = "-1"
-            ))
+            listSlashPriceBenefitData = listOf(
+                ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
+                    packageId = "-1"
+                )
+            )
         )
     }
 
     private fun getMockSlashPriceBenefitDataVps(): ShopDiscountSellerInfoUiModel {
         return ShopDiscountSellerInfoUiModel(
             isUseVps = true,
-            listSlashPriceBenefitData = listOf(ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
-                packageId = "1",
-                expiredAtUnix = mockEndDate.time/1000L
-            ))
+            listSlashPriceBenefitData = listOf(
+                ShopDiscountSellerInfoUiModel.SlashPriceBenefitData(
+                    packageId = "1",
+                    expiredAtUnix = mockEndDate.time / 1000L
+                )
+            )
         )
     }
 
+    @Test
+    fun `When call getMinDiscountPrice with minDiscountPrice less than 100, then should return 100`() {
+        val mockProductData = getMockProductDataWithDiscountedPriceLessThanOneHundred()
+        viewModel.setProductData(mockProductData)
+        val minDiscountedPrice = viewModel.getMinDiscountPrice()
+        assert(minDiscountedPrice == 100)
+    }
+
+    private fun getMockProductDataWithDiscountedPriceLessThanOneHundred(): ShopDiscountSetupProductUiModel.SetupProductData {
+        return ShopDiscountSetupProductUiModel.SetupProductData(
+            productId = mockProductId,
+            mappedResultData = ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+                minOriginalPrice = 50,
+                maxOriginalPrice = mockOriginalPrice
+            ),
+            listProductWarehouse = listOf(
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse(
+                    avgSoldPrice = 18000
+                )
+            ),
+            productStatus = ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
+                errorType = START_DATE_ERROR
+            ),
+            slashPriceInfo = ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
+                discountedPrice = 16000
+            )
+        )
+    }
 }
