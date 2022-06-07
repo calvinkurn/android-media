@@ -100,7 +100,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     private fun setupCalendar() {
         val startDate = dateManager.getMinimumCampaignStartDate()
         val endDate = dateManager.getMaximumCampaignEndDate()
-        val subtitles = arrayListOf(SubTitle(startDate, "Merdeka"))
+        val subtitles = arrayListOf(SubTitle(startDate, "Merdeka", "#EF4C60"))
 
 
         val calendar = binding?.unifyCalendar?.calendarPickerView

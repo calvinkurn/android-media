@@ -40,7 +40,13 @@ class DateManager @Inject constructor() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, THREE_MONTH_FROM_NOW)
         return calendar.time
+    }
 
+    fun decreaseHourBy(date: Date, desiredHourToBeDecreased: Int): Date {
+        val now = Calendar.getInstance()
+        now.time = date
+        now.add(Calendar.HOUR_OF_DAY, desiredHourToBeDecreased)
+        return now.time
     }
 }
 

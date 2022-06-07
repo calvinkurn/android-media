@@ -136,7 +136,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeCampaigns()
-        observeCampaignCreation()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
         viewModel.getCampaignPrerequisiteData()
@@ -231,20 +230,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     binding?.root showError result.throwable
                     binding?.searchBar?.gone()
                     binding?.loader?.gone()
-                }
-            }
-        }
-    }
-
-
-    private fun observeCampaignCreation() {
-        viewModel.campaignCreation.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    val creationResult = result.data
-                }
-                is Fail -> {
-
                 }
             }
         }

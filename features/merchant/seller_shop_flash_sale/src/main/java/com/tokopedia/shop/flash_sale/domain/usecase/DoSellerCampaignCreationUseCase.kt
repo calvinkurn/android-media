@@ -103,7 +103,7 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
                 params.secondColor
             ),
             params.showTeaser,
-            params.paymentType.id,
+            params.paymentType?.id,
             params.thematicParticipation,
             DoSellerCampaignCreationRequest.ThematicInfo(params.thematicId, params.subThematicId)
         )
@@ -121,11 +121,11 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
         val scheduledStart: Date,
         val scheduledEnd: Date,
         val campaignRelation: List<Long> = emptyList(),
-        val isCampaignRuleSubmit: Boolean,
+        val isCampaignRuleSubmit: Boolean = false,
         val firstColor: String,
         val secondColor: String,
         val showTeaser: Boolean = false,
-        val paymentType: PaymentType,
+        val paymentType: PaymentType? = null,
         val thematicParticipation: Boolean = false,
         val thematicId: Long = 0,
         val subThematicId: Long = 0

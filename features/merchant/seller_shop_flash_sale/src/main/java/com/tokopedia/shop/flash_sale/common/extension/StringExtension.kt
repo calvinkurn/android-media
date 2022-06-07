@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flash_sale.common.extension
 
+import android.graphics.Color
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,5 +21,13 @@ fun String.toDate(inputFormat: String): Date {
     } catch (e: Exception) {
         e.printStackTrace()
         Date()
+    }
+}
+
+fun String.toColor(): Int {
+    return try {
+        Color.parseColor(this)
+    } catch (e: Exception) {
+        Color.WHITE
     }
 }

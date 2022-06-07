@@ -38,7 +38,7 @@ data class DoSellerCampaignCreationRequest(
     val showTeaser: Boolean,
 
     @SerializedName("payment_type")
-    val paymentType: Int,
+    val paymentType: Int? = null,
 
     @SerializedName("thematic_participation")
     val thematicParticipation: Boolean,

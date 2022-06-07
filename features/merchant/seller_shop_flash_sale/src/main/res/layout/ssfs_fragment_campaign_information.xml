@@ -15,10 +15,10 @@
         app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/sfs_info_campaign" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
+        android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,16 +29,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.unifycomponents.TextFieldUnify2
-                android:id="@+id/tfuCampaignName"
+            <com.tokopedia.unifycomponents.TextAreaUnify2
+                android:id="@+id/tauCampaignName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_24"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toStartOf="@+id/imgCampaignNameHelper"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_campaign_name" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -47,9 +48,9 @@
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:src="@drawable/ic_sfs_info"
-                app:layout_constraintBottom_toBottomOf="@+id/tfuCampaignName"
+                app:layout_constraintBottom_toBottomOf="@+id/tauCampaignName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tfuCampaignName" />
+                app:layout_constraintTop_toTopOf="@+id/tauCampaignName" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
@@ -58,28 +59,30 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
-            <com.tokopedia.unifycomponents.TextFieldUnify2
-                android:id="@+id/tfuStartDate"
+            <com.tokopedia.unifycomponents.TextAreaUnify2
+                android:id="@+id/tauStartDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_32"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_8"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tfuCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_schedule_start_date" />
 
-            <com.tokopedia.unifycomponents.TextFieldUnify2
-                android:id="@+id/tfuEndDate"
+            <com.tokopedia.unifycomponents.TextAreaUnify2
+                android:id="@+id/tauEndDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_32"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/tfuCampaignName"
+                app:layout_constraintTop_toBottomOf="@+id/tauCampaignName"
+                app:unify_text_field_label_static="true"
                 app:unify_text_field_placeholder="@string/sfs_schedule_end_date" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -89,10 +92,10 @@
                 android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:text="@string/sfs_min_duration"
-                app:layout_constraintEnd_toEndOf="@+id/tfuEndDate"
+                app:layout_constraintEnd_toEndOf="@+id/tauEndDate"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/tfuEndDate"
-                app:layout_constraintTop_toBottomOf="@+id/tfuEndDate"
+                app:layout_constraintStart_toStartOf="@+id/tauEndDate"
+                app:layout_constraintTop_toBottomOf="@+id/tauEndDate"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -210,7 +213,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 
     <androidx.cardview.widget.CardView
