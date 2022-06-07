@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_installment_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_minimum_price_ext"

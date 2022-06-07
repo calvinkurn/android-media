@@ -102,7 +102,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/image_rating"
                 app:layout_goneMarginLeft="0dp"
                 app:layout_goneMarginStart="0dp"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="Town Location"
                 tools:visibility="visible" />
 
@@ -145,7 +145,7 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rating_count"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="(3000)"
                 tools:visibility="visible" />
 

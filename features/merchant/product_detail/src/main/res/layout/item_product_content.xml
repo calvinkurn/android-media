@@ -145,7 +145,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Rp300.000"
             tools:visibility="visible" />
 
@@ -177,7 +177,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_main_price"
         app:layout_constraintTop_toBottomOf="@+id/product_name"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Stok tinggal 20, beli sekarang!"
         tools:visibility="visible" />
 

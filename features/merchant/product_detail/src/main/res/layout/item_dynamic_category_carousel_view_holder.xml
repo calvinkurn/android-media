@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/product_category_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/product_category_title"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Lihat Semua" />
 

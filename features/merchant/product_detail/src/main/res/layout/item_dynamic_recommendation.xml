@@ -51,7 +51,7 @@
             android:layout_marginTop="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/titleRecom"
             app:layout_constraintStart_toStartOf="@id/titleRecom"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             />
 
         <com.tokopedia.unifyprinciples.Typography
