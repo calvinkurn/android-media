@@ -28,7 +28,7 @@ class MiniCartGeneralViewModel @Inject constructor(
         get() = _currentShopIds
     var isShopDirectPurchase = false
 
-    var currentSource: MiniCartSource = MiniCartSource.TokonowHome
+    var currentSource: MiniCartSource = MiniCartSource.ShopPage
 
     // Widget Data
     private val _globalEvent = MutableLiveData<GlobalEvent>()
