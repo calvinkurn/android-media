@@ -29,7 +29,7 @@ object DeeplinkMapperTokoFood {
             return when {
                 url.startsWith(ApplinkConst.TokoFood.HOME) -> getTokoFoodHomeInternalAppLink()
                 url.startsWith(ApplinkConst.TokoFood.CATEGORY) -> getTokoFoodCategoryInternalAppLink(uri)
-                url.startsWith(ApplinkConst.TokoFood.POST_PURCHASE) -> getTokoFoodPostPurchaseInternalAppLink(uri)
+                isMatchPattern(ApplinkConst.TokoFood.POST_PURCHASE, uri) -> getTokoFoodPostPurchaseInternalAppLink(uri)
                 isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
                     getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
                 else -> url

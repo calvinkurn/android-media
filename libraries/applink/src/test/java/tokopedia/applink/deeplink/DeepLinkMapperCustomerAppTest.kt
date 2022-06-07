@@ -2078,7 +2078,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val orderId = "123"
         val expectedDeepLink =
             "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
-        val appLink = "${ApplinkConst.TokoFood.POST_PURCHASE}/$orderId"
+        val appLink = UriUtil.buildUri(ApplinkConst.TokoFood.POST_PURCHASE, orderId)
         foodRollenceEnabler()
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
