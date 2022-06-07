@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.shop.flash_sale.presentation.detail.CampaignDetailActivity">
+    tools:context="com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

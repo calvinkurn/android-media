@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_scrollFlags="scroll|snap"
         app:search_bar_clearable="true"
+        app:search_bar_show_border="false"
         app:search_bar_placeholder="@string/sfs_search_campaign"
         app:search_bar_show_icon="false" />
 
