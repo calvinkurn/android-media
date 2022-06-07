@@ -54,6 +54,7 @@ class ChooseAddressViewComponent(
     init {
         chooseAddressWidget.bindChooseAddress(insideListener)
 
+        //TODO() use listener, observe on main fragment and Ui state view model
         userLocalData = ChooseAddressUtils.getLocalizingAddressData(context = rootView.context)
     }
 
@@ -67,7 +68,8 @@ class ChooseAddressViewComponent(
         show()
     }
 
-    private fun getWareHouseId() : String {
+    fun getWareHouseId() : String {
+    //userLocalData.isOutOfCoverage()
         return userLocalData.warehouses.find {
             it.service_type == "2h"
         }?.warehouse_id.toString()
