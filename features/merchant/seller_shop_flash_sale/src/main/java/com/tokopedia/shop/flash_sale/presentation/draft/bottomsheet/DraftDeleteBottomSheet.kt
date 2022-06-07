@@ -26,7 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
-class DraftDeleteBottomSheet(
+open class DraftDeleteBottomSheet(
     private val draftItemModel: DraftItemModel? = null,
     private val onDeleteDraftSuccess: () -> Unit = {}
 ): ModalBottomSheet() {
@@ -38,7 +38,8 @@ class DraftDeleteBottomSheet(
 
     @Inject
     lateinit var viewModel: DraftDeleteViewModel
-    private var typographyDraftDeleteDesc: Typography? = null
+    protected var typographyDraftDeleteDesc: Typography? = null
+    protected var typographyQuestionTitle: Typography? = null
     private var etQuestionOther: TextAreaUnify2? = null
     private var rvQuestionList: RecyclerView? = null
     private var questionListAdapter = DraftDeleteQuestionAdapter()
@@ -86,6 +87,7 @@ class DraftDeleteBottomSheet(
         btnStop = contentView?.findViewById(R.id.btnStop)
         btnBack = contentView?.findViewById(R.id.btnBack)
         typographyDraftDeleteDesc = contentView?.findViewById(R.id.typographyDraftDeleteDesc)
+        typographyQuestionTitle = contentView?.findViewById(R.id.typographyQuestionTitle)
         setChild(contentView)
     }
 
@@ -147,12 +149,13 @@ class DraftDeleteBottomSheet(
         etQuestionOther?.editText?.afterTextChanged {
             val errorMessage = if (it.length < DRAFT_REASON_MINCHAR) {
                 getString(R.string.draftdelete_error_minchar, DRAFT_REASON_MINCHAR)
-            } else ""
+            } else {
+                viewModel.setCancellationReason(it)
+                ""
+            }
             etQuestionOther?.isInputError = errorMessage.isNotEmpty()
             etQuestionOther?.setMessage(errorMessage)
             btnStop?.isEnabled = errorMessage.isEmpty()
-
-            viewModel.setCancellationReason(it)
         }
         etQuestionOther?.isEnabled = false
     }

@@ -1,14 +1,16 @@
-package com.tokopedia.shop.flash_sale.presentation.campaign_list.list
+package com.tokopedia.shop.flash_sale.presentation.campaign_list.list.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetMoreMenuBinding
 import com.tokopedia.shop.flash_sale.domain.entity.CampaignListMoreMenu
 import com.tokopedia.shop.flash_sale.domain.entity.enums.CampaignStatus
+import com.tokopedia.shop.flash_sale.presentation.campaign_list.list.adapter.CampaignListMoreMenuAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -19,11 +21,13 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
         private const val BUNDLE_KEY_CAMPAIGN_NAME = "campaign_name"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS = "campaign_status"
 
-        fun newInstance(campaignName: String, campaignStatus: CampaignStatus): MoreMenuBottomSheet {
+        fun newInstance(campaignId: Long, campaignName: String, campaignStatus: CampaignStatus): MoreMenuBottomSheet {
             val args = Bundle()
+            args.putLong(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
             args.putString(BUNDLE_KEY_CAMPAIGN_NAME, campaignName)
             args.putParcelable(BUNDLE_KEY_CAMPAIGN_STATUS, campaignStatus)
 
@@ -34,34 +38,39 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<SsfsBottomsheetMoreMenuBinding>()
+    private val campaignId by lazy { arguments?.getLong(BUNDLE_KEY_CAMPAIGN_ID).orZero() }
     private val campaignName by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_NAME).orEmpty() }
     private val campaignStatus by lazy { arguments?.getParcelable(BUNDLE_KEY_CAMPAIGN_STATUS) as? CampaignStatus }
 
     private val availableCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val upcomingCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_cancel, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
     private val ongoingCampaignMoreMenu = listOf(
         CampaignListMoreMenu(R.string.sfs_share, R.drawable.ic_sfs_share) { onShareCampaignMenuSelected() },
         CampaignListMoreMenu(R.string.sfs_edit, R.drawable.ic_sfs_edit) { onEditCampaignMenuSelected() },
-        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected() },
+        CampaignListMoreMenu(R.string.sfs_stop, R.drawable.ic_sfs_cancel) { onCancelMenuSelected(campaignId, campaignName, campaignStatus) },
         CampaignListMoreMenu(R.string.sfs_view_detail, R.drawable.ic_sfs_detail) { onViewCampaignDetailMenuSelected() },
     )
 
-    private var onCancelMenuSelected: () -> Unit = {}
     private var onViewCampaignDetailMenuSelected: () -> Unit = {}
     private var onEditCampaignMenuSelected: () -> Unit = {}
     private var onShareCampaignMenuSelected: () -> Unit = {}
+    private var onCancelMenuSelected: (
+        campaignId: Long,
+        campaignName: String,
+        campaignStatus: CampaignStatus?
+    ) -> Unit = { _: Long, _: String, _: CampaignStatus? -> }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,13 +109,10 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getMenus(): List<CampaignListMoreMenu> {
         return when (campaignStatus) {
-            CampaignStatus.DRAFT -> emptyList()
             CampaignStatus.AVAILABLE -> availableCampaignMoreMenu
             CampaignStatus.UPCOMING -> upcomingCampaignMoreMenu
             CampaignStatus.ONGOING -> ongoingCampaignMoreMenu
-            CampaignStatus.FINISHED -> emptyList()
-            CampaignStatus.CANCELLED -> emptyList()
-            null -> emptyList()
+            else -> emptyList()
         }
     }
 
@@ -118,7 +124,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         this.onEditCampaignMenuSelected = onEditCampaignMenuSelected
     }
 
-    fun setOnCancelCampaignMenuSelected(onCancelMenuSelected: () -> Unit) {
+    fun setOnCancelCampaignMenuSelected(onCancelMenuSelected: (
+        campaignId: Long,
+        campaignName: String,
+        campaignStatus: CampaignStatus?
+    ) -> Unit) {
         this.onCancelMenuSelected = onCancelMenuSelected
     }
 

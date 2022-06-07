@@ -7,17 +7,23 @@ import android.text.SpannableStringBuilder
 import android.text.style.LeadingMarginSpan
 import com.tokopedia.unifyprinciples.Typography
 
-fun Typography.setNumberedText(text: List<String>, numberGap: Int) {
+private const val SPAN_NUMBER = 1
+private const val SPAN_FLAGS = 0
+private const val LEAD_WIDTH = 15
+private const val GAP_WIDTH = 30
+private const val TWO = 2
+
+fun Typography.setNumberedText(text: List<String>) {
     val content = SpannableStringBuilder()
 
     text.forEachIndexed { index, text ->
         val contentStart = content.length
         content.appendLine(text)
         content.setSpan(
-            NumberIndentSpan(index + 1, gapWidth = numberGap),
+            NumberIndentSpan(index + SPAN_NUMBER),
             contentStart,
             content.length,
-            0
+            SPAN_FLAGS
         )
     }
 
@@ -25,12 +31,10 @@ fun Typography.setNumberedText(text: List<String>, numberGap: Int) {
 }
 
 class NumberIndentSpan(
-    private val number: Int,
-    private val leadWidth: Int = 15,
-    private val gapWidth: Int = 30,
+    private val number: Int
 ) : LeadingMarginSpan {
     override fun getLeadingMargin(first: Boolean): Int {
-        return leadWidth + gapWidth
+        return LEAD_WIDTH + GAP_WIDTH
     }
 
     override fun drawLeadingMargin(
@@ -52,7 +56,7 @@ class NumberIndentSpan(
             val width = paint.measureText(text)
 
             val yPosition = baseline.toFloat()
-            val xPosition = (leadWidth + x - width / 2) * dir
+            val xPosition = (LEAD_WIDTH + x - width / TWO) * dir
 
             canvas.drawText(text, xPosition, yPosition, paint)
         }

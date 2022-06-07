@@ -53,9 +53,10 @@ class SellerCampaignListMapper @Inject constructor() {
             CAMPAIGN_STATUS_ID_UPCOMING -> CampaignStatus.UPCOMING
             CAMPAIGN_STATUS_ID_ONGOING -> CampaignStatus.ONGOING
             CAMPAIGN_STATUS_ID_FINISHED -> CampaignStatus.FINISHED
-            CAMPAIGN_STATUS_ID_CANCELLED -> CampaignStatus.CANCELLED
+            CAMPAIGN_STATUS_ID_ONGOING_CANCELLATION -> CampaignStatus.ONGOING_CANCELLATION
             CAMPAIGN_STATUS_ID_DRAFT -> CampaignStatus.DRAFT
-            else -> CampaignStatus.AVAILABLE
+            CAMPAIGN_STATUS_ID_CANCELLED -> CampaignStatus.CANCELLED
+            else ->  CampaignStatus.CANCELLED
         }
     }
 

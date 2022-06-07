@@ -1,7 +1,16 @@
 <resources>
     <!--Common-->
     <string name="action_back">Kembali</string>
+    <string name="action_oke">Oke</string>
     <string name="sfs_please_wait">Tunggu sebentar</string>
+    <string name="sfs_placeholder_step_counter">Langkah %s dari 4</string>
+    <string name="sfs_save_draft">Simpan Draft</string>
+    <string name="sfs_save_next">Lanjut</string>
+    <string name="sfs_apply">Terapkan</string>
+    <string name="sfs_back">Balik</string>
+    <string name="sfs_close">Tutup</string>
+    <string name="sfs_no">Tidak</string>
+    <string name="sfs_save_as_draft">Simpan Sebagai Draft</string>
 
     <!--Campaign List Page-->
     <string name="sfs_your_shop_flash_sale">Flash Sale Toko-mu</string>
@@ -18,17 +27,25 @@
     <string name="sfs_product">Produk</string>
     <string name="sfs_registered_to_an_event">Terdaftar Event</string>
     <string name="sfs_create_campaign">Buat Campaign</string>
+    <string name="sfs_monitor_campaign">Pantau Campaign Aktif</string>
     <string name="sfs_search_campaign">Cari Campaign</string>
     <string name="sfs_share">Bagikan</string>
     <string name="sfs_cancel">Batalkan</string>
     <string name="sfs_view_detail">Lihat Detail</string>
     <string name="sfs_edit">Edit</string>
     <string name="sfs_stop">Hentikan</string>
+    <string name="sfs_draft_deleted">Draft campaign berhasil dihapus.</string>
+    <string name="sfs_cannot_cancel_campaign">Campaign yang masuk ke partisipasi event tidak dapat dibatalkan.</string>
+
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
-    <string name="sfs_no_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
 
-    <string name="sfs_placeholder_no_campaign_title">Saat ini tidak ada %s</string>
+    <string name="sfs_no_active_campaign_title">Saat ini tidak ada campaign aktif</string>
+    <string name="sfs_no_active_campaign_description">Yuk, buat campaign sendiri untuk produkmu dengan waktu terbatas di Tokopedia.</string>
+
+    <string name="sfs_no_campaign_history_title">Belum ada riwayat campaign</string>
+    <string name="sfs_no_campaign_history_description">Pantau campaign yang tersedia, sedang berlangsung, dan mendatang di campaign aktif ya.</string>
+
     <string name="sfs_placeholder_remaining_quota">Sisa Kuota Bulan ini : %s</string>
     <string name="sfs_placeholder_active_campaign">Aktif (%s)</string>
     <string name="sfs_placeholder_finished_campaign">Riwayat Campaign (%s)</string>
@@ -41,6 +58,47 @@
     <string name="sfs_share_outgoing_title">Flash Sale dari %s</string>
     <string name="sfs_share_outgoing_description_upcoming">Dapatkan harga spesial dari %s selama stok tersedia. Yuk, pasang pengingatnya!</string>
     <string name="sfs_share_outgoing_description_ongoing">Dapatkan Harga Spesial dari %s dengan harga terbaik! Selama stock masih ada…</string>
+
+    <!--Info Campaign Page -->
+    <string name="sfs_info_campaign">Info Campaign</string>
+    <string name="sfs_campaign_name">Nama campaign</string>
+    <string name="sfs_schedule_start_date">Jadwal mulai</string>
+    <string name="sfs_schedule_end_date">Jadwal berakhir</string>
+    <string name="sfs_min_duration">Durasi min. 30 menit</string>
+    <string name="sfs_teaser_description">Tampilkan campaign di tokomu sebelum jadwal campaign berlangsung</string>
+    <string name="sfs_hour_before">Jam sebelum</string>
+    <string name="sfs_manage_background">Atur warna latar</string>
+    <string name="sfs_select_color_gradient">Pilih Gradien Warna</string>
+    <string name="sfs_use_hex_color">Pakai Kode Hexa</string>
+    <string name="sfs_hex_code">Kode Hexa</string>
+    <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
+    <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
+    <string name="sfs_error_message_min_char">Min. 5 huruf</string>
+    <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang.</string>
+    <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
+    <string name="sfs_error_message_incomplete_input">Info campaign belum lengkap. Lengkapi semua info sebelum lanjut, ya.</string>
+    <string name="sfs_error_message_connection_error">Ada gangguan. Coba refresh lagi, ya.</string>
+    <string name="sfs_learn">Pelajari</string>
+    <string name="sfs_delete_confirmation_title">Yakin ingin hapus campaign?</string>
+    <string name="sfs_delete_confirmation_description">Kamu bisa hapus pengaturan campaign yang sudah diisi atau simpan pengaturan sebagai draft.</string>
+    <string name="sfs_confirm_delete">Ya, Hapus</string>
+    <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
+    <string name="sfs_date_picker_dot_description">= Ada campaign lain di hari yang bertanda ini</string>
+    <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
+    <string name="sfs_select_campaign_time">Pilih jam campaign</string>
+    <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
+    <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+
+    <string name="sfs_green_dot">Indikator campaign aktif</string>
+
+    <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
+    <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>
+
+    <string name="sfs_error_message_overlapped_schedule_title">Jadwal campaign sudah melewati batas</string>
+    <string name="sfs_error_message_overlapped_schedule_description">Kamu cuma bisa punya 3 campaign dalam periode yang sama. Atur ulang jadwalmu, ya.</string>
+
+    <string name="sfs_error_message_teaser_schedule_lapsed_title">Jadwal teaser campaign sudah lewat</string>
+    <string name="sfs_error_message_teaser_schedule_lapsed_description">Atur ulang jadwal teaser-nya, ya.</string>
 
     <!--campaign teaser info bottom sheet-->
     <string name="campaign_teaser_info_point_1">Calon pembeli dapat melihat preview produk campaign mendatang dan mengaktifkan pengingat campaign.</string>
@@ -82,6 +140,7 @@
     <string name="ticker_tnc_description">Pastikan kamu sudah memeriksa Syarat dan Ketentuan campaign yang akan dilihat oleh calon pembeli di halaman campaign tokomu, ya.</string>
 
     <!--TNC Bottom Sheet-->
+    <string name="title_tnc_bottom_sheet">Syarat dan Ketentuan Pembeli</string>
     <string name="label_button_agree">Saya Setuju</string>
 
     <!--Draft-->
@@ -98,5 +157,14 @@
     <string name="draftdelete_question_other_placeholder_short">Alasan</string>
     <string name="draftdelete_question_other_text">Alasan Lain:</string>
     <string name="draftdelete_error_minchar">Kurang dari %d karakter</string>
+
+    <!--Cancelation-->
+    <string name="cancelcampaign_title">Yakin batalkan campaign?</string>
+    <string name="cancelcampaign_desc">Jika dibatalkan, campaign “%s” tidak dapat berlangsung kembali.</string>
+    <string name="cancelcampaign_stop_title">Yakin hentikan campaign?</string>
+    <string name="cancelcampaign_stop_desc">Jika dihentikan, campaign “%s” tidak dapat berlangsung kembali.</string>
+    <string name="cancelcampaign_title_question">Kenapa kamu ingin membatalkan campaign ini?</string>
+    <string name="cancelcampaign_title_stop_question">Kenapa kamu ingin menghentikan campaign ini?</string>
+    <string name="cancelcampaign_message_success">%s berhasil dihentikan.</string>
 
 </resources>
