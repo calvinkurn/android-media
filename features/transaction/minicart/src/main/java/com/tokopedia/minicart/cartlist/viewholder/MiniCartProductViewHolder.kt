@@ -565,7 +565,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         with(viewBinding) {
             buttonDeleteCart.hide()
             textProductUnavailableAction.hide()
-
         }
     }
 
