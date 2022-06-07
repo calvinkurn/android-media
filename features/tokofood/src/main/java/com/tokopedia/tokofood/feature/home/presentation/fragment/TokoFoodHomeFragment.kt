@@ -298,9 +298,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         analytics.impressionIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
     }
 
-    override fun onClickMerchant(merchant: Merchant) {
+    override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
         val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
         RouteManager.route(context, merchantApplink)
+    }
+
+    override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
     }
 
     override fun onTickerDismissed(id: String) {

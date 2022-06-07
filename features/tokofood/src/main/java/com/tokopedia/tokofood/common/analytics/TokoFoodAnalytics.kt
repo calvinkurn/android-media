@@ -27,6 +27,8 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_VIEW_LEGO_SIX = "view lego 6"
     const val EVENT_ACTION_CLICK_CATEGORY_WIDGET = "click category widget"
     const val EVENT_ACTION_VIEW_CATEGORY_WIDGET = "view category widget"
+    const val EVENT_ACTION_CLICK_MERCHANT_LIST = "click on merchant list card"
+    const val EVENT_ACTION_VIEW_MERCHANT_LIST = "view on merchant list card"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"

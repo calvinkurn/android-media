@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,7 +69,10 @@ class TokoFoodMerchantListViewHolder (
         setPriceLevel(merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
         binding?.root?.setOnClickListener {
-            listener?.onClickMerchant(merchant)
+            listener?.onClickMerchant(merchant, adapterPosition)
+        }
+        itemView.addOnImpressionListener(merchant){
+            listener?.onImpressMerchant(merchant, adapterPosition)
         }
     }
 
@@ -170,6 +174,7 @@ class TokoFoodMerchantListViewHolder (
     }
 
     interface TokoFoodMerchantListListener {
-        fun onClickMerchant(merchant: Merchant)
+        fun onClickMerchant(merchant: Merchant, position: Int)
+        fun onImpressMerchant(merchant: Merchant, position: Int)
     }
 }

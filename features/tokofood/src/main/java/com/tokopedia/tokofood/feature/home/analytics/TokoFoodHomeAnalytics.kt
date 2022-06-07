@@ -9,10 +9,12 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CL
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_LEGO_SIX
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_ICONS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_CATEGORY_WIDGET
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
@@ -25,6 +27,7 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.SCREEN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
+import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -125,6 +128,26 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
     }
 
+    fun clickMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_CLICK_MERCHANT_LIST)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
+        eventDataLayer.selectContent(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun impressMerchant(userId: String?, destinationId: String?, merchant: Merchant, horizontalPosition: Int) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION,  EVENT_ACTION_VIEW_MERCHANT_LIST)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
+        eventDataLayer.viewItem(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {
         val eventDataLayer = Bundle().apply {
             putString(SCREEN_NAME, HOME_PAGE)
@@ -208,6 +231,19 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
                     putString(Promotion.ITEM_ID, "${it.id} - ${it.categoryId}")
                     putString(Promotion.ITEM_NAME, "$GOFOOD_PAGENAME - ${TokoFoodHomeLayoutType.CATEGORY_WIDGET} - ${channelModel.verticalPosition + 1} - ${channelModel.channelHeader.name}")
                 }
+            }
+        )
+        return promotionBundle
+    }
+
+    private fun getPromotionMerchant(merchant: Merchant, horizontalPosition: Int): ArrayList<Bundle> {
+        val promotionBundle = arrayListOf<Bundle>()
+        promotionBundle.add(
+                Bundle().apply {
+                    putString(Promotion.CREATIVE_NAME, "")
+                    putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
+                    putString(Promotion.ITEM_ID, "${merchant.id} - ${merchant.name}")
+                    putString(Promotion.ITEM_NAME, "//TODO_MERCHANT_LOCATION - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}")
             }
         )
         return promotionBundle

@@ -212,9 +212,13 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onClickMerchant(merchant: Merchant) {
+    override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
         val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
         RouteManager.route(context, merchantApplink)
+    }
+
+    override fun onImpressMerchant(merchant: Merchant, position: Int) {
+
     }
 
     private fun onRefreshLayout() {
