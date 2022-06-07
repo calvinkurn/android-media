@@ -1,35 +1,37 @@
 package com.tokopedia.shop.flash_sale.presentation.creation.manage_highlighted_product.bottomsheet
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomSheetManageHighlightedProductInfoBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ManageHighlightedProductInfoBottomSheet : BottomSheetUnify() {
 
     companion object {
-        @JvmStatic
-        fun createInstance(context: Context): ManageHighlightedProductInfoBottomSheet =
-            ManageHighlightedProductInfoBottomSheet().apply {
-                val view = View.inflate(
-                    context,
-                    R.layout.ssfs_bottom_sheet_manage_highlighted_product_info,
-                    null
-                )
-                setChild(view)
-            }
-
         private const val TAG = "ManageHighlightedProductInfoBottomSheet"
     }
 
-    private var highLightInfoDesc: Typography? = null
+    private var binding by autoClearedNullable<SsfsBottomSheetManageHighlightedProductInfoBinding>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding =
+            SsfsBottomSheetManageHighlightedProductInfoBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupView(view)
+        setupView()
         setupContent()
         super.onViewCreated(view, savedInstanceState)
     }
@@ -39,16 +41,15 @@ class ManageHighlightedProductInfoBottomSheet : BottomSheetUnify() {
     }
 
     @SuppressLint("ResourcePackage")
-    private fun setupView(view: View) {
+    private fun setupView() {
         setTitle(getString(R.string.manage_highlight_product_title))
-
-        highLightInfoDesc = view.findViewById(R.id.tg_manage_highlighted_product_info_description)
         showCloseIcon = true
     }
 
     private fun setupContent() {
-        highLightInfoDesc?.run {
-            text = getString(R.string.manage_highlight_product_description)
+        binding?.run {
+            tgManageHighlightedProductInfoDescription.text =
+                getString(R.string.manage_highlight_product_description)
         }
     }
 }
