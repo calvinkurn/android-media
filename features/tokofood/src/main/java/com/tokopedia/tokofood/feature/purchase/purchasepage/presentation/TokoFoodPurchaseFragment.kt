@@ -343,11 +343,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             )
                         )
                     }
-                    if (shopId.isBlank()) {
-                        navigateToHomePage()
-                    } else {
-                        navigateToMerchantPage(shopId)
-                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
@@ -364,11 +359,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
                             )
                         )
-                    }
-                    if (shopId.isBlank()) {
-                        navigateToHomePage()
-                    } else {
-                        navigateToMerchantPage(shopId)
                     }
                 }
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
