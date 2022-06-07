@@ -10,6 +10,7 @@ import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.REGULAR_PRODUCT
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.SPECIAL_PROMO
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -625,12 +626,7 @@ class DigitalTopupAnalytics {
     }
 
     private fun getTrackingCategoryName(categoryId: String): String {
-        return try {
-            getCategoryName(categoryId.toInt()).lowercase()
-        } catch (e: NumberFormatException) {
-            ""
-        }
-
+        return getCategoryName(categoryId.toIntOrZero()).lowercase()
     }
 
     fun getCategoryName(categoryId: Int): String {
