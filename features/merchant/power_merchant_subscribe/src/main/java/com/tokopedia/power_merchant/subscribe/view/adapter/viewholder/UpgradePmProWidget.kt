@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -110,6 +111,9 @@ class UpgradePmProWidget(
         ctaPmUpgradeLearnMore.setOnClickListener {
             powerMerchantTracking.sendEventClickCTAPmUpgradeLearnMore(shopScore)
             RouteManager.route(root.context, Constant.Url.POWER_MERCHANT_PRO_EDU)
+        }
+        ctaPmUpgradeLearnMore.addOnImpressionListener(element.impressHolder){
+            powerMerchantTracking.sendEventImpressUpliftPmPro(shopScore)
         }
     }
 
