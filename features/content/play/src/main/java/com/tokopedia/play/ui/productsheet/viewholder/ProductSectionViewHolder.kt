@@ -111,10 +111,15 @@ class ProductSectionViewHolder(
                 timerSection.show()
                 setupBackground(item.config.background)
                 setupTimer(item)
+                btnInfo.hide()
             }
             ProductSectionType.Other -> {
                 tvTimerInfo.hide()
                 timerSection.hide()
+                btnInfo.hide()
+            }
+            ProductSectionType.Tokonow -> {
+                btnInfo.show()
             }
             ProductSectionType.Unknown -> {
                 // todo: handle unknown section
