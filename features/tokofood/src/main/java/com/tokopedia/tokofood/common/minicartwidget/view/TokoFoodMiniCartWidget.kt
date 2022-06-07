@@ -23,9 +23,17 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
 
-    private var onButtonClickAction: () -> Unit = {}
-
     private var source: String = ""
+
+    var totalQuantity: Int = 0
+    set(value) {
+        viewBinding?.totalAmountMiniCart?.setCtaText(
+            context?.getString(
+                R.string.minicart_order,
+                value
+            ).orEmpty()
+        )
+    }
 
     // Function to initialize the widget
     fun initialize(sharedViewModel: MultipleFragmentsViewModel,
@@ -50,10 +58,6 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
         viewModel?.loadCartList(source)
     }
 
-    fun setOnATCClickListener(action: () -> Unit) {
-        onButtonClickAction = action
-    }
-
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
         viewBinding?.totalAmountMiniCart?.run {
             isTotalAmountDisabled = false
@@ -62,10 +66,10 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             }
             setLabelTitle(miniCartUiModel.shopName)
             setAmount(miniCartUiModel.totalPriceFmt)
-            setCtaText(context?.getString(R.string.minicart_order, miniCartUiModel.totalProductQuantity).orEmpty())
+            totalQuantity = miniCartUiModel.totalProductQuantity
             amountCtaView.visible()
             amountCtaView.setOnClickListener {
-                onButtonClickAction()
+                viewModel?.clickMiniCart()
             }
         }
     }

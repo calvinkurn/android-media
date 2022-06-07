@@ -61,18 +61,8 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
 
         private const val PARAMS_KEY = "params"
 
-        private const val ZERO_PERCENT = "0%"
-        private const val ENCODING = "utf-8"
-
         private fun generateParam(tokoFood: CheckoutTokoFood): Map<String, Any> {
-            val checkoutMetadata = TokoFoodCheckoutMetadata(
-                shop = tokoFood.data.shop,
-                userAddress = tokoFood.data.userAddress,
-                availableSection = tokoFood.data.availableSection.mapToCheckoutGeneralParam(),
-                unavailableSection = tokoFood.data.unavailableSection.mapToCheckoutGeneralParam(),
-                shipping = tokoFood.data.shipping,
-                shoppingSummary = tokoFood.data.shoppingSummary
-            )
+            val checkoutMetadata = TokoFoodCheckoutMetadata.convertCheckoutDataIntoMetadata(tokoFood)
             val metadataString = checkoutMetadata.generateString()
             val param =
                 CheckoutGeneralTokoFoodParam(
@@ -87,26 +77,6 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
                     )
                 )
             return mapOf(PARAMS_KEY to param)
-        }
-
-        private fun CheckoutTokoFoodAvailabilitySection.mapToCheckoutGeneralParam(): CheckoutTokoFoodAvailabilitySection {
-            return this.copy(
-                products = this.products.map { product ->
-                    product.copy(
-                        discountPercentage = product.discountPercentage.getEncodedDiscountPercentage()
-                    )
-                }
-            )
-        }
-
-        private fun String.getEncodedDiscountPercentage(): String {
-            val discountPercentage =
-                if (isBlank()) {
-                    ZERO_PERCENT
-                } else {
-                    this
-                }
-            return URLEncoder.encode(discountPercentage, ENCODING)
         }
 
     }
