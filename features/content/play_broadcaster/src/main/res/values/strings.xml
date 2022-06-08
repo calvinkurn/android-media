@@ -286,6 +286,7 @@
 
     <!-- Interactive -->
     <string name="play_bro_interactive_game_result_coachmark">Lihat pemenang, hasil, dan\npeserta game di sini ya</string>
+    <string name="play_bro_interactive_set_start_duration">Atur waktu mulai</string>
 
     <!-- Giveaway -->
     <string name="play_bro_giveaway_form_title">Buat Game Hadiah</string>

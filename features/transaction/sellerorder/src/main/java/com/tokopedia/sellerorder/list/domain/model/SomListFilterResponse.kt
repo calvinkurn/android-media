@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.domain.model
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -35,6 +36,7 @@ data class SomListFilterResponse(
                     @SerializedName("order_status_amount")
                     @Expose
                     val amount: Int = 0,
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("order_status_id")
                     @Expose
                     val id: List<Int> = listOf()
@@ -43,6 +45,7 @@ data class SomListFilterResponse(
                         @SerializedName("amount")
                         @Expose
                         val amount: Int = 0,
+                        @SuppressLint("Invalid Data Type")
                         @SerializedName("id")
                         @Expose
                         val id: List<Int> = listOf(),

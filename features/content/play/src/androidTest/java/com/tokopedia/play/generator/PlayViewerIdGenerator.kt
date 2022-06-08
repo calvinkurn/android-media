@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
@@ -55,6 +56,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -65,8 +67,8 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -103,7 +105,8 @@ class PlayViewerIdGenerator {
         channelInteractiveMapper = PlayChannelInteractiveMapper(),
         interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
         cartMapper = PlayCartMapper(),
-        playUserReportMapper = PlayUserReportReasoningMapper()
+        playUserReportMapper = PlayUserReportReasoningMapper(),
+        interactiveMapper = PlayInteractiveMapper(),
     )
 
     private val mockViewModelFactory = TestViewModelFactory(
@@ -203,8 +206,12 @@ class PlayViewerIdGenerator {
         }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val parentViewPrinter = ViewHierarchyPrinter(
+        parentPrintCondition, customIdPrefix = "P", packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
     private val fileWriter = FileWriter()
 
     @Test
@@ -289,7 +296,7 @@ class PlayViewerIdGenerator {
                     "", VideoOrientation.Vertical, "Video Keren"
                 ),
             ),
-            leaderboardInfo = PlayLeaderboardWrapperUiModel.Unknown,
+            leaderboard = LeaderboardUiModel.Empty,
             upcomingInfo = PlayUpcomingUiModel(),
             tagItems = tagItem,
             status = PlayStatusUiModel.Empty,
@@ -367,10 +374,10 @@ class PlayViewerIdGenerator {
                     "", VideoOrientation.Horizontal(16, 9), "Video Keren"
                 ),
             ),
-            leaderboardInfo = PlayLeaderboardWrapperUiModel.Unknown,
             upcomingInfo = PlayUpcomingUiModel(),
             tagItems = TagItemUiModel.Empty,
             status = PlayStatusUiModel.Empty,
+            leaderboard = LeaderboardUiModel.Empty
         )
 
         PlayInjector.set(

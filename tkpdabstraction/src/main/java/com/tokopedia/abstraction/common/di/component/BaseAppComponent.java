@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
+import com.tokopedia.user.session.datastore.UserSessionDataStore;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -47,4 +48,6 @@ public interface BaseAppComponent {
     GraphqlRepository graphqlRepository();
 
     GraphqlUseCaseInterface graphqlInterface();
+
+    UserSessionDataStore userSessionDataStore();
 }

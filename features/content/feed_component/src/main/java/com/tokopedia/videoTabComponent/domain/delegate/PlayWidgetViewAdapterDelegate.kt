@@ -20,7 +20,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetJumboUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Jumbo>(
-            R.layout.item_play_widget_jumbo
+            R.layout.item_feed_play_widget_jumbo
         ) {
 
         override fun onCreateViewHolder(
@@ -42,7 +42,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetLargeUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Large>(
-            R.layout.item_play_widget_large
+            R.layout.item_feed_play_widget_large
         ) {
         override fun onBindViewHolder(
             item: PlayWidgetLargeUiModel,
@@ -63,7 +63,7 @@ class PlayWidgetViewAdapterDelegate private constructor() {
         private val coordinator: PlayWidgetCoordinatorVideoTab
     ) :
         TypedAdapterDelegate<PlayWidgetMediumUiModel, PlayFeedUiModel, PlayFeedWidgetViewHolder.Medium>(
-            R.layout.item_play_widget_medium
+            R.layout.item_feed_play_widget_medium
         ) {
         override fun onBindViewHolder(
             item: PlayWidgetMediumUiModel,

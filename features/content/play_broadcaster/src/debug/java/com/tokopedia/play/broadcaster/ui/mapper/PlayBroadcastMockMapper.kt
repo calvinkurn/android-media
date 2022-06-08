@@ -360,7 +360,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             otherParticipant = 0,
             otherParticipantText = "",
             winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz
+            leaderBoardType = LeadeboardType.Quiz,
+            id = "" //TODO() please add Id
         )
     }
 
@@ -402,18 +403,25 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapLeaderBoardWithSlot(response: GetSellerLeaderboardSlotResponse): List<PlayLeaderboardUiModel> {
+    override fun mapLeaderBoardWithSlot(
+        response: GetSellerLeaderboardSlotResponse,
+        allowChat: Boolean
+    ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
                 title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question,
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
-                        rank = index+1,
+                        rank = index + 1,
                         id = winner.userID,
                         name = winner.userName,
                         imageUrl = winner.imageUrl,
-                        allowChat = { false },
-                        topChatMessage = ""
+                        allowChat = { allowChat },
+                        topChatMessage =
+                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
+                            response.data.config.topchatMessage
+                        else
+                            response.data.config.topchatMessageQuiz,
                     )
                 },
                 choices = slot.choices.mapIndexed { index, choice ->
@@ -432,7 +440,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 otherParticipantText = slot.otherParticipantCountText,
                 otherParticipant = slot.otherParticipantCount.toLong(),
                 reward = slot.reward,
-                leaderBoardType = getLeaderboardType(slot.type)
+                leaderBoardType = getLeaderboardType(slot.type),
+                id = "" //TODO() please add Id
             )
         }
     }

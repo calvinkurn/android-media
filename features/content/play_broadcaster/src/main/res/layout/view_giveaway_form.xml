@@ -62,21 +62,6 @@
             app:typographyWeight="bold"
             />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_giveaway_form_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.15"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_giveaway_form_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.85"
-            />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_giveaway_form_horizontal"
@@ -88,11 +73,11 @@
 
         <com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
             android:id="@+id/view_giveaway"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/gl_giveaway_form_horizontal"
-            app:layout_constraintStart_toStartOf="@id/gl_giveaway_form_left"
-            app:layout_constraintEnd_toEndOf="@id/gl_giveaway_form_right"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

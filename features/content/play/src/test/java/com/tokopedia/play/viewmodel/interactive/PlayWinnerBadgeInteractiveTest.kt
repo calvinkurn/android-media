@@ -14,8 +14,9 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -53,7 +54,7 @@ class PlayWinnerBadgeInteractiveTest {
 
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
-    private val interactiveModelBuilder = PlayInteractiveModelBuilder()
+    private val modelBuilder = UiModelBuilder.get()
 
     private val socketFlow = MutableStateFlow<WebSocketAction>(
             WebSocketAction.NewMessage(
@@ -77,10 +78,11 @@ class PlayWinnerBadgeInteractiveTest {
         coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Finished,
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
+                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
         )
 
         givenPlayViewModelRobot(
@@ -93,7 +95,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(
+                interactive.interactive.assertEqualTo(
                     InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertTrue()
@@ -107,7 +109,8 @@ class PlayWinnerBadgeInteractiveTest {
         coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Finished,
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } throws IllegalArgumentException("abc")
 
@@ -120,7 +123,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(
+                interactive.interactive.assertEqualTo(
                     InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
@@ -142,9 +145,10 @@ class PlayWinnerBadgeInteractiveTest {
         coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Finished,
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = emptyList()
         )
 
@@ -157,7 +161,7 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(
+                interactive.interactive.assertEqualTo(
                     InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
@@ -171,10 +175,11 @@ class PlayWinnerBadgeInteractiveTest {
         coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Finished,
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-                leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
+                leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
         )
 
         givenPlayViewModelRobot(
@@ -201,8 +206,8 @@ class PlayWinnerBadgeInteractiveTest {
 
     @Test
     fun `given refresh leaderboard, if should query true, then viewmodel will first emit loading state`() {
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
-            leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns modelBuilder.buildLeaderboardInfo(
+            leaderboardWinners = listOf(modelBuilder.buildLeaderboardDetails())
         )
 
         givenPlayViewModelRobot(
@@ -216,7 +221,7 @@ class PlayWinnerBadgeInteractiveTest {
             viewModel.submitAction(RefreshLeaderboard)
         }.thenVerify {
             withState {
-                winnerBadge.leaderboards.isEqualTo(PlayLeaderboardWrapperUiModel.Loading)
+                winnerBadge.leaderboards.state.assertEqualTo(ResultState.Loading)
             }
         }
     }

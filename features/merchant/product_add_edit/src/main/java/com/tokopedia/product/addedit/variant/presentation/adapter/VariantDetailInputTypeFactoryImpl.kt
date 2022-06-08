@@ -11,11 +11,8 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.Varian
 
 class VariantDetailInputTypeFactoryImpl(
         private val onCollapsibleHeaderClickListener: VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        private val onStatusSwitchCheckedChangeListener: VariantDetailFieldsViewHolder.OnStatusSwitchCheckedChangeListener,
-        private val onPriceInputTextChangedListener: VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
-        private val onStockInputTextChangedListener: VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
-        private val onSkuInputTextChangedListener: VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener) :
-        BaseAdapterTypeFactory(), VariantDetailInputTypeFactory {
+        private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener
+): BaseAdapterTypeFactory(), VariantDetailInputTypeFactory {
 
     override fun type(variantDetailHeaderUiModel: VariantDetailHeaderUiModel): Int {
         return VariantDetailHeaderViewHolder.LAYOUT
@@ -27,12 +24,10 @@ class VariantDetailInputTypeFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            VariantDetailHeaderViewHolder.LAYOUT -> VariantDetailHeaderViewHolder(parent, onCollapsibleHeaderClickListener)
+            VariantDetailHeaderViewHolder.LAYOUT -> VariantDetailHeaderViewHolder(parent,
+                onCollapsibleHeaderClickListener)
             VariantDetailFieldsViewHolder.LAYOUT -> VariantDetailFieldsViewHolder(parent,
-                    onStatusSwitchCheckedChangeListener,
-                    onPriceInputTextChangedListener,
-                    onStockInputTextChangedListener,
-                    onSkuInputTextChangedListener)
+                variantDetailFieldsViewHolderListener)
             else -> return super.createViewHolder(parent, type)
         }
     }

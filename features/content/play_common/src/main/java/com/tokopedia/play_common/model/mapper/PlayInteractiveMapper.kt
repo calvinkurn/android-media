@@ -5,7 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -14,9 +14,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class PlayInteractiveMapper @Inject constructor() {
-
-    private val decodeHtml = DefaultHtmlTextTransformer()
+class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTextTransformer) {
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
         val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong())
@@ -70,10 +68,11 @@ class PlayInteractiveMapper @Inject constructor() {
                     index,
                     item.id,
                     decodeHtml.transform(item.text),
-                    if(item.id == data.userChoice)
-                        PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
-                    else
-                        PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
+                    when {
+                        item.id == data.userChoice -> PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false) //if user has already answered, the option that user chose
+                        data.userChoice == "0" || data.userChoice.isEmpty() -> PlayQuizOptionState.Default(alphabet = generateAlphabet(index)) //if user has not choose answer
+                        else -> PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false) //if user has already answered but the other options
+                    }
                 )
             },
             reward = decodeHtml.transform(data.prize),

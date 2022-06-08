@@ -40,5 +40,5 @@ interface PlayBroadcastInteractiveRepository {
         cursor: String,
     ): QuizChoiceDetailUiModel
 
-    suspend fun getSellerLeaderboardWithSlot(channelId: String): List<PlayLeaderboardUiModel>
+    suspend fun getSellerLeaderboardWithSlot(channelId: String, allowChat: Boolean): List<PlayLeaderboardUiModel>
 }

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -27,7 +28,7 @@ import java.util.*
 /**
  * Created by mzennis on 30/06/21.
  */
-class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) : BaseViewHolder(itemView) {
+class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
     private val tvTitle = itemView.findViewById<Typography>(R.id.tv_leaderboard_title)
     private val rvWinner = itemView.findViewById<RecyclerView>(R.id.rv_winner)
@@ -77,11 +78,16 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
         tvOtherParticipant.text = leaderboard.otherParticipantText
         if (leaderboard.otherParticipantText.isNotBlank()) tvOtherParticipant.show() else tvOtherParticipant.hide()
+        itemView.addOnImpressionListener(leaderboard.impressHolder){
+            listener.onLeaderBoardImpressed(leaderboard)
+        }
     }
 
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel) {
         when (leaderboard.leaderBoardType) {
             LeadeboardType.Quiz -> {
+                ivReward.showWithCondition(leaderboard.reward.isNotEmpty())
+                tvReward.showWithCondition(leaderboard.reward.isNotEmpty())
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
                 ivLeaderBoard.showWithCondition(leaderboard.endsIn == 0 )
             }
@@ -100,6 +106,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private fun showParticipant(leaderboard: PlayLeaderboardUiModel) {
         winnerAdapter.setItems(leaderboard.winners)
         winnerAdapter.notifyDataSetChanged()
+        if (leaderboard.otherParticipant > 0 && leaderboard.leaderBoardType == LeadeboardType.Giveaway) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()
         tvEmpty.hide()
     }
@@ -171,6 +178,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     interface Listener {
         fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int)
         fun onChoiceItemClicked(item: QuizChoicesUiModel){}
+        fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel)
     }
 
     companion object {

@@ -56,8 +56,8 @@
             android:id="@+id/fl_border_img_winner"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
-            android:background="@drawable/bg_play_circle_winner"
             android:visibility="gone"
+            android:background="@drawable/bg_play_circle_winner"
             app:layout_constraintStart_toStartOf="@id/img_winner"
             app:layout_constraintTop_toTopOf="@id/img_winner"
             tools:visibility="visible"
@@ -77,19 +77,6 @@
             tools:text="@tools:sample/full_names"
             />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/lbl_winner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:visibility="gone"
-            app:labelTitle="@string/play_interactive_winner"
-            app:labelType="highlight_light_green"
-            app:layout_constraintStart_toEndOf="@id/tv_winner_name"
-            app:layout_constraintTop_toTopOf="@id/img_winner"
-            app:layout_constraintBottom_toBottomOf="@id/img_winner"
-            tools:visibility="visible"
-            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:text="@string/play_interactive_winner_chat"

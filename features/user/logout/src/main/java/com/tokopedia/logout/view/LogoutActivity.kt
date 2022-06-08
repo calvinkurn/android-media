@@ -26,7 +26,7 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.NotificationModHandler
@@ -105,8 +105,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun getParams() {
         if (intent.extras != null) {
-            isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
-            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
+            isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
+            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
         }
     }
 
@@ -183,12 +183,14 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
+        clearRegisterPushNotificationPref()
 
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
@@ -247,6 +249,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
+    private fun clearRegisterPushNotificationPref() {
+        getSharedPreferences(REGISTER_PUSH_NOTIFICATION_PREFERENCE, Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+    }
+
     private fun showLoading() {
         logoutLoading?.visibility = View.VISIBLE
     }
@@ -278,5 +285,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
+
+        /**
+         * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]
+         */
+        private const val REGISTER_PUSH_NOTIFICATION_PREFERENCE = "registerPushNotification"
     }
 }

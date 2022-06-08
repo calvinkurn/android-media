@@ -11,19 +11,17 @@
         android:id="@+id/tv_quiz_question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_dp_6"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/play_dp_6"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="3"
+        android:padding="@dimen/play_dp_6"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/iv_quiz_option"
         app:layout_constraintEnd_toStartOf="@+id/ll_quiz_option_right"
         app:layout_constraintStart_toEndOf="@+id/iv_quiz_option"
         app:layout_constraintTop_toTopOf="@+id/iv_quiz_option"
-        app:typographyType="heading_5"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
-        tools:text="Follow untuk ikut quiz Follow untuk ikut quiz quiz quiz quiz"
+        tools:text="Follow untuk ikut quiz Follow untuk ikut quiz quiz quiz quiz Follow untuk ikut quiz Follow untuk ikut quiz quiz quiz quiz"
         tools:textColor="@color/Unify_NN600" />
 
     <include

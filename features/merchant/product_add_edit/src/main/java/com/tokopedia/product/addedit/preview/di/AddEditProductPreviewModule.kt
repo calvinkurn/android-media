@@ -7,6 +7,9 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductD
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -24,6 +27,14 @@ class AddEditProductPreviewModule {
     @AddEditProductPreviewScope
     @Provides
     fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @AddEditProductPreviewScope
+    @Provides
+    fun provideUploadStatusDao(draftDb: AddEditProductDraftDb): UploadStatusDao = draftDb.uploadStatusDao()
+
+    @AddEditProductPreviewScope
+    @Provides
+    fun provideUploadStatusRepository(dao: UploadStatusDao): UploadStatusRepository = UploadStatusRepositoryImpl(dao)
 
     @AddEditProductPreviewScope
     @Provides

@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
@@ -43,7 +46,8 @@ class InteractiveFollowView : ConstraintLayout {
     }
 
     fun setBadgeUrl(badgeUrl: String) {
-        binding.ivBadge.setImageUrl(badgeUrl)
+        binding.ivBadge.showWithCondition(badgeUrl.isNotEmpty())
+        if(badgeUrl.isNotEmpty()) binding.ivBadge.setImageUrl(badgeUrl)
     }
 
     fun setPartnerName(name: String) {
@@ -57,6 +61,8 @@ class InteractiveFollowView : ConstraintLayout {
 
     fun setListener(listener: Listener?) {
         mListener = listener
+
+        if(binding.btnFollow.isVisible) mListener?.onFollowImpressed(this)
     }
 
     override fun onDetachedFromWindow() {
@@ -65,6 +71,7 @@ class InteractiveFollowView : ConstraintLayout {
     }
 
     interface Listener {
+        fun onFollowImpressed(view: InteractiveFollowView)
 
         fun onFollowClicked(view: InteractiveFollowView)
     }
