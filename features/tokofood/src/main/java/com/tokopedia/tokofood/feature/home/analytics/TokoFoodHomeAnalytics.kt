@@ -17,6 +17,7 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_MERCHANT_LIST
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.ADD_TO_CART
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.HOME_PAGE
@@ -26,6 +27,7 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OPEN_S
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OUT_OF_COVERAGE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.SCREEN_NAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
@@ -33,6 +35,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.SELECT_CONTENT
+import com.tokopedia.track.constant.TrackerConstant
 
 /**
  * Home
@@ -182,6 +185,17 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TokoFoodAnalyticsConstants.CLICK_PG, eventDataLayer)
     }
 
+    fun clickAtc(userId: String?, destinationId: String?, data: CheckoutTokoFoodData){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_ORDER_MINICART)
+            putString(TrackAppUtils.EVENT_LABEL, "")
+        }
+        val items = getItemATC(data)
+        eventDataLayer.putParcelableArrayList(TokoFoodAnalytics.KEY_ITEMS, items)
+        eventDataLayer.addToCart(userId, destinationId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, eventDataLayer)
+    }
+
     private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -Int.ONE, verticalPosition: Int): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.addAll(
@@ -259,10 +273,40 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         return promotionBundle
     }
 
+    private fun getItemATC(data: CheckoutTokoFoodData): ArrayList<Bundle> {
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.addAll(
+            data.availableSection.products.map {
+                Bundle().apply {
+                    putString(TokoFoodAnalytics.KEY_CATEGORY_ID, "//TODO_CATEGORY_ID")
+                    putString(TokoFoodAnalytics.KEY_DIMENSION_45, it.cartId)
+                    putString(Items.ITEM_BRAND, "//TODO_BRAND_ID")
+                    putString(Items.ITEM_CATEGORY, "//TODO_ITEM_CATEGORY")
+                    putString(Items.ITEM_ID, it.productId)
+                    putString(Items.ITEM_NAME, it.productName)
+                    putString(Items.ITEM_VARIANT, "//TODO_ITEM_VARIANT")
+                    putDouble(Items.PRICE, it.price)
+                    putInt(Items.QUANTITY, it.quantity)
+                    putString(TrackerConstant.SHOP_ID, data.shop.shopId)
+                    putString(TokoFoodAnalytics.KEY_SHOP_NAME, data.shop.name)
+                    putString(TokoFoodAnalytics.KEY_SHOP_TYPE, "//TODO_SHOP_TYPE")
+                }
+            }
+        )
+        return itemBundles
+    }
+
     private fun Bundle.openScreen(userId: String?, destinationId: String?, isLoggenInStatus: Boolean): Bundle {
         addGeneralTracker(userId, destinationId)
         this.putString(TrackAppUtils.EVENT, OPEN_SCREEN)
         this.putBoolean(IS_LOGGED_IN_STATUS, isLoggenInStatus)
+        return this
+    }
+
+    private fun Bundle.addToCart(userId: String?, destinationId: String?): Bundle {
+        addGeneralTracker(userId, destinationId)
+        this.putString(TrackAppUtils.EVENT, ADD_TO_CART)
+        this.putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalytics.EVENT_CATEGORY_HOME_PAGE)
         return this
     }
 

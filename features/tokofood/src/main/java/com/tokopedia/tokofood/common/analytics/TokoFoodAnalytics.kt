@@ -3,11 +3,14 @@ package com.tokopedia.tokofood.common.analytics
 object TokoFoodAnalytics {
 
     const val KEY_BUSINESS_UNIT = ""
+    const val KEY_DIMENSION_45 = "dimension45"
     const val KEY_DIMENSION_49 = "dimension49"
     const val KEY_DIMENSION_79 = "dimension79"
     const val KEY_CHECKOUT_OPTION = "checkout_option"
     const val KEY_CHECKOUT_STEP = "checkout_step"
     const val KEY_SHOP_NAME = "shop_name"
+    const val KEY_SHOP_TYPE = "shop_type"
+    const val KEY_CATEGORY_ID = "category_id"
     const val KEY_ITEMS = "items"
 
     // Event Name
@@ -30,6 +33,7 @@ object TokoFoodAnalytics {
     const val EVENT_ACTION_CLICK_MERCHANT_LIST = "click on merchant list card"
     const val EVENT_ACTION_VIEW_MERCHANT_LIST = "view on merchant list card"
     const val EVENT_ACTION_CLICK_OUT_COVERAGE = "click ubah alamat on error state out of coverage"
+    const val EVENT_ACTION_CLICK_ORDER_MINICART = "click pesan on the minicart"
 
     // Event Category
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"

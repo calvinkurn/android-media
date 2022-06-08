@@ -531,7 +531,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
-                            // TODO: Hit Tracker
+                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
                         }
                         goToPurchasePage()
                     }
