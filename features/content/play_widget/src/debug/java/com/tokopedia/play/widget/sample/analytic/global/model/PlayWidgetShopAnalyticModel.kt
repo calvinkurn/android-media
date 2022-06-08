@@ -1,7 +1,5 @@
 package com.tokopedia.play.widget.sample.analytic.global.model
 
-import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
-
 /**
  * Created by kenny.hadisaputra on 31/05/22
  */
@@ -16,4 +14,6 @@ class PlayWidgetShopAnalyticModel(
     override val promotionsItemName: String = "shop-play-widget"
 
     override val promotionsCreativeName: String = "play widget in shop"
+
+    override val eventActionSuffix: String? = if (isOwnShop) "own shop" else null
 }

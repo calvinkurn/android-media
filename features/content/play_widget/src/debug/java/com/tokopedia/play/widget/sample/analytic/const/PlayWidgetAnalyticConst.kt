@@ -48,6 +48,12 @@ internal val PlayWidgetPromoType.isRilisanSpesial: Boolean
         else -> false
     }
 
-internal fun eventLabel(vararg label: Any): String {
-    return label.joinToString(separator = " - ")
+internal fun trackerMultiFields(
+    vararg fields: Any?,
+    skipNull: Boolean = false,
+): String {
+    return fields.joinToString(separator = " - ") {
+        if (skipNull && it == null) ""
+        else it.toString()
+    }
 }

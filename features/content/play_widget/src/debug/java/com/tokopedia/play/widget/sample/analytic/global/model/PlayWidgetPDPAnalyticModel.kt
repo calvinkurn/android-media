@@ -1,7 +1,5 @@
 package com.tokopedia.play.widget.sample.analytic.global.model
 
-import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
-
 /**
  * Created by kenny.hadisaputra on 31/05/22
  */
@@ -14,4 +12,6 @@ class PlayWidgetPDPAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-pdp-widget"
 
     override val promotionsCreativeName: String = "play widget in pdp"
+
+    override val eventActionSuffix: String? = null
 }

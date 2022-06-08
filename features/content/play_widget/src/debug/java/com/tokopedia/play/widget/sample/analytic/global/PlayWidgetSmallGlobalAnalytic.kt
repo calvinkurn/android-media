@@ -15,7 +15,7 @@ import com.tokopedia.play.widget.sample.analytic.const.KEY_SESSION_IRIS
 import com.tokopedia.play.widget.sample.analytic.const.KEY_USER_ID
 import com.tokopedia.play.widget.sample.analytic.const.PROMO_CLICK
 import com.tokopedia.play.widget.sample.analytic.const.PROMO_VIEW
-import com.tokopedia.play.widget.sample.analytic.const.eventLabel
+import com.tokopedia.play.widget.sample.analytic.const.trackerMultiFields
 import com.tokopedia.play.widget.sample.analytic.const.irisSessionId
 import com.tokopedia.play.widget.sample.analytic.const.isRilisanSpesial
 import com.tokopedia.play.widget.sample.analytic.const.toTrackingString
@@ -25,7 +25,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -66,8 +65,11 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = model.category,
-            eventAction = "impression on play sgc channel",
-            eventLabel = eventLabel(
+            eventAction = trackerMultiFields(
+                "impression on play sgc channel", model.eventActionSuffix,
+                skipNull = true,
+            ),
+            eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
@@ -108,8 +110,11 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
             eventCategory = model.category,
-            eventAction = "click",
-            eventLabel = eventLabel(
+            eventAction = trackerMultiFields(
+                "click", model.eventActionSuffix,
+                skipNull = true,
+            ),
+            eventLabel = trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
@@ -153,7 +158,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT to EVENT_VIEW,
                     KEY_EVENT_ACTION to "impress view all",
                     KEY_EVENT_CATEGORY to model.category,
-                    KEY_EVENT_LABEL to eventLabel(
+                    KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
@@ -175,7 +180,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT to EVENT_CLICK,
                     KEY_EVENT_ACTION to "click view all",
                     KEY_EVENT_CATEGORY to model.category,
-                    KEY_EVENT_LABEL to eventLabel(
+                    KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
@@ -197,7 +202,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT to EVENT_VIEW,
                     KEY_EVENT_ACTION to "view other content",
                     KEY_EVENT_CATEGORY to model.category,
-                    KEY_EVENT_LABEL to eventLabel(
+                    KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
@@ -219,7 +224,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                     KEY_EVENT to EVENT_CLICK,
                     KEY_EVENT_ACTION to "click other content",
                     KEY_EVENT_CATEGORY to model.category,
-                    KEY_EVENT_LABEL to eventLabel(
+                    KEY_EVENT_LABEL to trackerMultiFields(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
