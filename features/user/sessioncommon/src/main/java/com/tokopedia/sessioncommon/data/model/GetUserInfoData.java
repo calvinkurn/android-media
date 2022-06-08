@@ -15,7 +15,7 @@ public class GetUserInfoData {
 
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private String userId;
     @SerializedName("full_name")
     @Expose
     private String fullName = "";
@@ -74,11 +74,11 @@ public class GetUserInfoData {
     @Expose
     private List<String> createPasswordList = new ArrayList();
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

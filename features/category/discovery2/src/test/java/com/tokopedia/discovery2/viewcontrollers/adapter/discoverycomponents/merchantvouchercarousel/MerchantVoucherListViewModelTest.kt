@@ -34,6 +34,14 @@ class MerchantVoucherListViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+
+        unmockkStatic(::getComponent)
+    }
+
 
     @Test
     fun `test for components`(){

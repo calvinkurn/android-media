@@ -18,11 +18,11 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.app.common.di.CommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -218,7 +218,7 @@ public class BaseActivity extends AppCompatActivity implements
         return null;
     }
 
-    public AppComponent getApplicationComponent() {
+    public CommonAppComponent getApplicationComponent() {
         return ((MainApplication) getApplication()).getAppComponent();
     }
 

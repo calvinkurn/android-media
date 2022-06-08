@@ -17,8 +17,14 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
             var periodTypePmPro: String = "",
             var isNewSeller: Boolean = false,
             var isEligiblePmPro: Boolean = false,
-            var isEligiblePm: Boolean = false
+            var isEligiblePm: Boolean = false,
+            val statusInfoUiModel: StatusInfoUiModel = StatusInfoUiModel()
     ) {
+        data class StatusInfoUiModel(
+            val statusTitle: String = "",
+            val statusMessage: String = "",
+            val tickerType: String = ""
+        )
         fun getPowerMerchantEligibleIcon(): Int? {
             return if (isEligiblePm) {
                 IconUnify.BADGE_PM_FILLED

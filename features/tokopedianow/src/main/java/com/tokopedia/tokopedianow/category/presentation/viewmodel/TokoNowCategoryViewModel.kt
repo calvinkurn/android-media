@@ -283,6 +283,20 @@ class TokoNowCategoryViewModel @Inject constructor (
         processEmptyState(true)
     }
 
+    fun getCurrentCategoryId(categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String): String {
+        return when {
+            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+                categoryIdLvl3
+            }
+            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+                categoryIdLvl2
+            }
+            else -> {
+                categoryIdLvl1
+            }
+        }
+    }
+
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
         openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(
             id = categoryModel.categoryDetail.data.id,

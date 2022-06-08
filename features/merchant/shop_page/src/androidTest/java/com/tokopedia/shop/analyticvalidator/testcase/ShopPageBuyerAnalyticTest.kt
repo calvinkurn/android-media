@@ -76,28 +76,40 @@ class ShopPageBuyerAnalyticTest {
     }
 
     @Test
-    fun testShopPageJourney() {
+    fun testShopHeaderJourney() {
         testHeader()
-        testProductTab()
-        testHomeTab()
-        validateTracker()
+        validateTrackerShopHeaderJourney()
     }
 
-    private fun validateTracker() {
-        activityRule.activity.finish()
-        //header
-        doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
+    @Test
+    fun testShopProductTabJourney() {
+        testProductTab()
+        validateTrackerShopProductTabJourney()
+    }
 
-        //product tab
+    @Test
+    fun testShopHomeTabJourney() {
+        testHomeTab()
+        validateTrackerShopHomeTabJourney()
+    }
+
+    private fun validateTrackerShopHeaderJourney() {
+        activityRule.activity.finish()
+        doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
+    }
+
+    private fun validateTrackerShopProductTabJourney() {
+        activityRule.activity.finish()
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_CLICK_SORT_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_CLICK_ETALASE_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_TAB_PRODUCT_CARD_TRACKER_MATCHER_PATH)
+    }
 
-        //home tab
+    private fun validateTrackerShopHomeTabJourney() {
+        activityRule.activity.finish()
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
-
     }
 
     private fun testHomeTab() {
