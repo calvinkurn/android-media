@@ -27,4 +27,6 @@ interface PlayBroadcastInteractiveAnalytic {
     fun onImpressGameIconButton(channelId: String, channelTitle: String)
 
     fun onClickBackGiveaway(channelId: String, channelTitle: String)
+
+    fun clickGameResult(channelId: String, channelTitle: String)
 }
