@@ -4,9 +4,7 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -22,11 +20,10 @@ class ChooseAddressViewComponent(
 
     private val chooseAddressWidget: ChooseAddressWidget = findViewById(R.id.widget_choose_addres)
 
-    private val userLocalData: LocalCacheModel
-
     private val insideListener = object : ChooseAddressWidget.ChooseAddressWidgetListener{
         override fun onLocalizingAddressUpdatedFromWidget() {
             chooseAddressWidget.updateWidget()
+            listener.onAddressUpdated(this@ChooseAddressViewComponent)
         }
 
         override fun onLocalizingAddressUpdatedFromBackground() {
@@ -53,9 +50,6 @@ class ChooseAddressViewComponent(
 
     init {
         chooseAddressWidget.bindChooseAddress(insideListener)
-
-        //TODO() use listener, observe on main fragment and Ui state view model
-        userLocalData = ChooseAddressUtils.getLocalizingAddressData(context = rootView.context)
     }
 
     fun showWithHeight(height: Int) {
@@ -68,13 +62,6 @@ class ChooseAddressViewComponent(
         show()
     }
 
-    fun getWareHouseId() : String {
-    //userLocalData.isOutOfCoverage()
-        return userLocalData.warehouses.find {
-            it.service_type == userLocalData.service_type
-        }?.warehouse_id.toString()
-    }
-
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -85,5 +72,6 @@ class ChooseAddressViewComponent(
 
     interface Listener {
         fun getFragmentForAddress(view: ChooseAddressViewComponent) : Fragment
+        fun onAddressUpdated(view: ChooseAddressViewComponent)
     }
 }

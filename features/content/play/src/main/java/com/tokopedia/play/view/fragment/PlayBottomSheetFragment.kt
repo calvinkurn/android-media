@@ -18,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -33,17 +35,9 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.AtcProductAction
-import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
-import com.tokopedia.play.view.uimodel.action.BuyProductAction
-import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
-import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
-import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -108,6 +102,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
+    private lateinit var userLocalData: LocalCacheModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(
@@ -125,6 +121,7 @@ class PlayBottomSheetFragment @Inject constructor(
         setupView(view)
         setupObserve()
         initAnalytic()
+        initAddress()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -667,5 +664,19 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     override fun getFragmentForAddress(view: ChooseAddressViewComponent): Fragment {
         return playFragment
+    }
+
+    override fun onAddressUpdated(view: ChooseAddressViewComponent) {
+        initAddress()
+    }
+
+    private fun initAddress() {
+        userLocalData = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+
+        val warehouseId = userLocalData.warehouses.find {
+            it.service_type == userLocalData.service_type
+        }?.warehouse_id.toString()
+
+        playViewModel.submitAction(SendWarehouseId(isOOC = userLocalData.isOutOfCoverage(), id = warehouseId))
     }
 }
