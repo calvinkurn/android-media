@@ -345,7 +345,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN total product count is more than zero THEN isShowMiniCartWidget should be true`() {
+    fun `WHEN mini cart total product count is more than zero THEN isShowMiniCartWidget should be true`() {
         //given
         val shopId = listOf("123")
 
@@ -364,7 +364,7 @@ class GetMiniCartListSimplifiedTest {
     }
 
     @Test
-    fun `WHEN total product count is zero THEN isShowMiniCartWidget should be false`() {
+    fun `WHEN mini cart total product count is zero THEN isShowMiniCartWidget should be false`() {
         //given
         val shopId = listOf("123")
 
