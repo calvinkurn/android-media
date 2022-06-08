@@ -2,7 +2,12 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.review.feature.reviewdetail.view.model.*
+import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 
 class SellerReviewDetailAdapter(
         sellerReviewDetailAdapterTypeFactory: SellerReviewDetailAdapterTypeFactory
@@ -92,6 +97,12 @@ class SellerReviewDetailAdapter(
         if (visitables.getOrNull(lastIndex) !is ProductFeedbackErrorUiModel) {
             visitables.add(ProductFeedbackErrorUiModel())
             notifyItemInserted(lastIndex)
+        }
+    }
+
+    fun findFeedbackContainingThumbnail(item: ReviewMediaThumbnailVisitable): FeedbackUiModel? {
+        return visitables.filterIsInstance<FeedbackUiModel>().find {
+            it.reviewMediaThumbnail.mediaThumbnails.contains(item)
         }
     }
 }

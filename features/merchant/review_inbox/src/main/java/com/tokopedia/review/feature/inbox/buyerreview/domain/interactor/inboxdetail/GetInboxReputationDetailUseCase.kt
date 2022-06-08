@@ -93,7 +93,6 @@ class GetInboxReputationDetailUseCase @Inject constructor(
     private fun getReviewParam(requestParams: RequestParams): RequestParams {
         return GetReviewUseCase.getParam(
             requestParams.getString(GetReviewUseCase.PARAM_REPUTATION_ID, ""),
-            requestParams.getString(GetReviewUseCase.PARAM_USER_ID, ""),
             requestParams.getInt(GetInboxReputationUseCase.PARAM_TAB, 0)
         )
     }
@@ -111,7 +110,7 @@ class GetInboxReputationDetailUseCase @Inject constructor(
     }
 
     companion object {
-        fun getParam(reputationId: String, userId: String, tab: Int): RequestParams {
+        fun getParam(reputationId: String, tab: Int): RequestParams {
             val params = RequestParams.create()
             params.parameters.putAll(
                 GetInboxReputationUseCase.getSpecificReputation(
@@ -120,7 +119,7 @@ class GetInboxReputationDetailUseCase @Inject constructor(
                 ).parameters
             )
             params.parameters.putAll(
-                GetReviewUseCase.getParam(reputationId, userId, tab)
+                GetReviewUseCase.getParam(reputationId, tab)
                     .parameters
             )
             return params

@@ -12,7 +12,9 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 /**
  * Created by Lukas on 05/11/20.
  */
-class RecommendationCarouselAdapter (private val typeFactory: RecommendationCarouselTypeFactory)
+class RecommendationCarouselAdapter (
+    private val typeFactory: RecommendationCarouselTypeFactory
+)
     : RecyclerView.Adapter<AbstractViewHolder<Visitable<RecommendationCarouselTypeFactory>>>(){
     private val listData = mutableListOf<Visitable<RecommendationCarouselTypeFactory>>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<RecommendationCarouselTypeFactory>> {
