@@ -271,6 +271,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
+    public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
@@ -286,6 +287,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
 
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
+
+    public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 }

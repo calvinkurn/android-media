@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.presenter
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -45,9 +46,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import kotlinx.coroutines.withContext
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import kotlinx.coroutines.withContext
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -76,6 +81,7 @@ class FeedViewModel @Inject constructor(
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val addWishListUseCase: AddWishListUseCase,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
 
@@ -87,7 +93,6 @@ class FeedViewModel @Inject constructor(
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
         private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
-
     }
 
     private val userId: String
@@ -416,7 +421,8 @@ class FeedViewModel @Inject constructor(
         type: String,
         isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean) -> Unit
+        onSuccess: (String, String, String, Boolean) -> Unit,
+        context: Context
     ) {
         addWishListUseCase.createObservable(
             productId, userSession.userId,
@@ -436,6 +442,29 @@ class FeedViewModel @Inject constructor(
                 override fun onSuccessRemoveWishlist(productId: String?) {}
 
             })
+    }
+
+    fun addWishlistV2(
+        activityId: String,
+        productId: String,
+        shopId: String,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        onFail: (String) -> Unit,
+        onSuccess: (String, String, String, Boolean, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
+        context: Context
+    ) {
+        launch(baseDispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)
+            } else if (result is Fail) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                onFail.invoke(errorMessage)
+            }
+        }
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel =

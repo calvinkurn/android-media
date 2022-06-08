@@ -30,6 +30,9 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
     lateinit var sortListItems: List<ShopPagePListSortItem>
+    private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        GridLayoutManager(activity, 2)
+    }
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
     var getImeiBS: ShopPListSortFilterBs? = null
@@ -69,8 +72,12 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
     private fun initViews(view: View) {
 
-        view.recycler_view.layoutManager = GridLayoutManager(activity, 2)
-        view.recycler_view.adapter = mAdapter
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+        view.recycler_view.apply {
+            layoutManager = gridLayoutManager
+            adapter = mAdapter
+        }
 
         mAdapter.resetAdapter()
         view.sb_shop_product.searchBarIcon.setImageDrawable(null)
@@ -107,7 +114,17 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         }
 
     }
-    private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItemViewType(position)) {
+                    LOADING -> 2
+                    else -> 1
+                }
+            }
+        }
+    }
+    private fun addSortListObserver() = presenter.sortLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -137,7 +154,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         addSortListObserver()
     }
 
-    private fun addListObserver() = presenter.productList.observe(this, Observer {
+    private fun addListObserver() = presenter.productList.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -154,7 +171,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         }
     })
 
-    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(this, Observer {
+    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(viewLifecycleOwner, Observer {
         view?.cu_sort_chip?.chipText = it.name
         view?.cu_sort_chip?.chipType = ChipsUnify.TYPE_SELECTED
         presenter.getPageData(
@@ -167,7 +184,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     )
 
     private fun addProductValObserver() =
-        presenter.newProductValLiveData.observe(this, Observer { product ->
+        presenter.newProductValLiveData.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 val data = Intent();
                 data.putExtra("product", product)
@@ -178,7 +195,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         )
 
     private fun addBsObserver() =
-        presenter.showBs.observe(this, Observer { product ->
+        presenter.showBs.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 getImeiBS?.dismiss()
             }
@@ -204,11 +221,9 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
 
     override fun onStartPageLoad(pageNumber: Int) {
-
     }
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
     }
 
     override fun onError(pageNumber: Int) {
@@ -246,6 +261,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_DATA = 1
         private val CONTAINER_EMPTY = 2
         private val CONTAINER_ERROR = 3
+        private const val LOADING = -94567
         private val SCREEN_NAME = "Product Tag Listing"
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_ID = "shopid"
