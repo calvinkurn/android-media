@@ -9,12 +9,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.calendar.SubTitle
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.GroupedCampaign
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -96,27 +100,42 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observe()
-        setupView()
-        viewModel.validateInput()
+        observeUpcomingCampaigns()
+        viewModel.getUpcomingCampaigns()
     }
 
-    private fun setupView() {
-        setupCalendar()
+    private fun observeUpcomingCampaigns() {
+        viewModel.campaigns.observe(viewLifecycleOwner) { result ->
+            binding?.loader?.gone()
+
+            when (result) {
+                is Success -> {
+                    println()
+                    displayCalendar(result.data)
+                }
+                is Fail -> {
+                    binding?.root showError result.throwable
+                }
+            }
+        }
     }
 
-    private fun setupCalendar() {
+
+    private fun displayCalendar(campaigns: List<GroupedCampaign>) {
+        val legends = campaigns.map { campaign ->
+            val campaignCountWording =
+                String.format(getString(R.string.sfs_placeholder_campaign_count), campaign.count)
+            Legend(campaign.date, campaignCountWording)
+        }
+
         val endDate = dateManager.getMaximumCampaignEndDate()
-        val subtitles = arrayListOf(SubTitle(minimumDate, "Merdeka", "#EF4C60"))
-
-
         val calendar = binding?.unifyCalendar?.calendarPickerView
         calendar?.run {
-            init(minimumDate, endDate, listOf(Legend(minimumDate, "Ready")))
+            init(minimumDate, endDate, legends)
                 .inMode(CalendarPickerView.SelectionMode.SINGLE)
                 .withSelectedDate(previouslySelectedDate)
-                .withSubTitles(subtitles)
         }
+
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
@@ -134,12 +153,6 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     fun setOnDatePicked(onDatePicked: (Date) -> Unit) {
         this.onDatePicked = onDatePicked
-    }
-
-    private fun observe() {
-        viewModel.areInputValid.observe(viewLifecycleOwner) {
-
-        }
     }
 
 

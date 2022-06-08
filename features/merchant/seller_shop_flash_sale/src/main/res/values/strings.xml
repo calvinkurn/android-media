@@ -83,11 +83,11 @@
     <string name="sfs_delete_confirmation_description">Kamu bisa hapus pengaturan campaign yang sudah diisi atau simpan pengaturan sebagai draft.</string>
     <string name="sfs_confirm_delete">Ya, Hapus</string>
     <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
-    <string name="sfs_date_picker_dot_description">= Ada campaign lain di hari yang bertanda ini</string>
     <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+    <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_hashtag">#</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
