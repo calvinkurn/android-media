@@ -525,6 +525,7 @@ public interface ApplinkConst {
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
+        String TOKOMEMBER = "sellerapp://tokomember";
     }
 
     interface TokopediaNow {

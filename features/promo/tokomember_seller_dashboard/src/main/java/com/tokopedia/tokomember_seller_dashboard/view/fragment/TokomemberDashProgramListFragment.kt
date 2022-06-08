@@ -90,7 +90,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
         btnCreateProgram.setOnClickListener {
-            //TODO
             TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
             tmTracker?.clickProgramListButton(shopId.toString())
         }
