@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.R.string.*
@@ -37,14 +38,12 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
+import com.tokopedia.profilecompletion.profileinfo.data.*
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoAdapter
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoListTypeFactory
+import com.tokopedia.profilecompletion.profileinfo.view.bottomsheet.CloseAccountBottomSheet
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.DividerProfileUiModel
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoItemUiModel
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitleUiModel
@@ -60,6 +59,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
@@ -104,6 +105,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
 
+    private var loaderCloseAccount: LoaderDialog? = null
+
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
@@ -136,6 +139,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
         binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
         binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
+
+        binding?.tgCloseAccount?.setOnClickListener { loadCheckFinancialAssets() }
     }
 
     private fun setupObserver() {
@@ -178,6 +183,21 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             binding?.profileInfoImageUnify?.setImageUrl(it)
             tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_SUCCESS)
             showNormalToaster(getString(success_change_profile_picture))
+        }
+
+        viewModel.userFinancialAssets.observe(viewLifecycleOwner) {
+            checkFinancialAssetsIsLoading(false)
+            when (it) {
+                is Success -> {
+                    if (it.data.hasFinancialAssets)
+                        showCloseAccount(it.data.detail)
+                    else
+                        goToCloseAccount()
+                }
+                is Fail -> {
+                    showToasterError(getString(close_account_failed))
+                }
+            }
         }
     }
 
@@ -673,6 +693,30 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_EDIT_BOD)
     }
 
+    private fun checkFinancialAssetsIsLoading(isLoading: Boolean) {
+        if (loaderCloseAccount == null) {
+            loaderCloseAccount = LoaderDialog(requireActivity())
+            loaderCloseAccount?.setLoadingText(EMPTY_STRING)
+        }
+
+        if (isLoading)
+            loaderCloseAccount?.show()
+        else
+            loaderCloseAccount?.dialog?.dismiss()
+    }
+
+    private fun loadCheckFinancialAssets() {
+        checkFinancialAssetsIsLoading(true)
+        viewModel.checkFinancialAssets()
+    }
+
+    private fun showCloseAccount(detail: Detail) {
+        val bottomSheetCloseAccount = CloseAccountBottomSheet(detail)
+        bottomSheetCloseAccount.show(childFragmentManager, TAG_BOTTOM_SHEET_CLOSE_ACCOUNT)
+    }
+
+    private fun goToCloseAccount() {}
+
     companion object {
         const val MAX_FILE_SIZE = 2048
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
@@ -680,6 +724,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val ENTRY_POINT_DISABLED = -1
         private const val GENDER_MALE = 1
         private const val GENDER_FEMALE = 2
+        private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
+        private const val EMPTY_STRING = ""
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

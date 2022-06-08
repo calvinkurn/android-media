@@ -199,5 +199,5 @@
     <string name="close_account_requirement_description_3">Tidak ada transaksi yang sedang berjalan.</string>
     <string name="close_account_requirement_check">Belum Terpenuhi</string>
     <string name="close_account_oke">Oke</string>
-    <string name="close_account_connection_error">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
+    <string name="close_account_failed">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
 </resources>
