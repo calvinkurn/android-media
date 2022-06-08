@@ -19,6 +19,7 @@ import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.io.File
 import javax.inject.Inject
 
 abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
@@ -73,6 +74,8 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     }
 
     open fun gotoSuccessPage(source: String) {
+        removeFiles()
+
         activity?.let {
             val intent = InactivePhoneSuccessPageActivity.createIntent(it, source, inactivePhoneUserDataModel)
             startActivity(intent)
@@ -116,5 +119,17 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
 
     open fun hideLoading() {
         viewBinding?.loader?.hide()
+    }
+
+    fun removeFiles() {
+        val inactivePhoneDirectory = context?.let {
+            InactivePhoneConstant.getInternalDirectory(it)
+        }?.let { File(it) }
+
+        if (inactivePhoneDirectory?.exists() == true) {
+            inactivePhoneDirectory.list()?.forEach {
+                File(inactivePhoneDirectory, it).delete()
+            }
+        }
     }
 }
