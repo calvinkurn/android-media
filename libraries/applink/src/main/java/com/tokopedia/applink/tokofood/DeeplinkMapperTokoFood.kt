@@ -82,7 +82,7 @@ object DeeplinkMapperTokoFood {
                 RollenceKey.KEY_ROLLENCE_FOOD, ""
             ) == RollenceKey.KEY_ROLLENCE_FOOD
         } catch (e: Exception) {
-            false
+            true
         }
     }
 
