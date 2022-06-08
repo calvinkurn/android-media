@@ -3,6 +3,7 @@ package com.tokopedia.vouchergame.list.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -333,7 +334,10 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 
-            promo_banner.bannerSeeAll.typeface = Typography.getFontType(requireContext(), true, Typography.DISPLAY_3)
+            with(promo_banner.bannerSeeAll){
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+                typeface = Typography.getFontType(requireContext(), true, Typography.DISPLAY_2)
+            }
 
             promo_banner.buildView()
             promo_banner.visibility = View.VISIBLE
