@@ -150,10 +150,10 @@
 
     <string name="pm_desc_new_seller_before_30_days">Kamu bisa daftar PM PRO setelah 30 hari bergabung, ya. %s</string>
 
-    <string name="pm_pro_new_seller_title_coachmark_1">Pantau status keanggotaan dan proyeksi Performa Tokomu</string>
-    <string name="pm_pro_new_seller_desc_coachmark_1">Sebagai Seller baru, kamu bisa lihat status toko dan proyeksi Performa Tokomu di sini, ya.</string>
-    <string name="pm_pro_new_seller_title_coachmark_3">Pelajari waktu pengecekan Power Merchant PRO di sini</string>
-    <string name="pm_pro_new_seller_desc_coachmark_3">Pengecekan status Power Merchant PRO akan dilakukan setiap Senin dan setiap 30 hari sekali.</string>
+    <string name="pm_coachmark_title_1">Pantau perkembangan statusmu ✨</string>
+    <string name="pm_coachmark_description_1">Klik ikon ini untuk melihat paket keuntungan dan cara mencapai target selanjutnya.</string>
+    <string name="pm_coachmark_title_2">Pelajari detail biaya layanan 👍</string>
+    <string name="pm_coachmark_description_2">Jalan pintas untuk mengetahui biaya layanan Power Merchant ada di sini, ya.</string>
 
     <string name="pm_fee_service_category">Detail Grup Kategori</string>
     <string name="pm_achievement_target">Target Capaian</string>

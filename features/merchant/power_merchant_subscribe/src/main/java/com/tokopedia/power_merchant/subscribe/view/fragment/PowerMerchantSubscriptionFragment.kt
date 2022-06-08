@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -523,9 +524,11 @@ open class PowerMerchantSubscriptionFragment :
         showErrorToaster(getErrorMessage(throwable), actionText)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyUpgradePmProWidget() {
-        val upgradePmProWidgetPosition =
-            adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+        val upgradePmProWidgetPosition = adapter.data.indexOfFirst {
+            it is WidgetUpgradePmProUiModel
+        }
         recyclerView?.post {
             if (upgradePmProWidgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(upgradePmProWidgetPosition)
@@ -558,7 +561,7 @@ open class PowerMerchantSubscriptionFragment :
             when (it) {
                 is Success -> {
                     renderPmActiveState(it.data)
-                    showCoachMark()
+                    showCoachMarkPm()
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
@@ -763,17 +766,13 @@ open class PowerMerchantSubscriptionFragment :
         return null
     }
 
-    private fun showCoachMark() {
-        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
-        val isShowCoachmark = powerMerchantPrefManager?.getFinishCoachMark()
-        if (isPmPro && isNewSeller) {
-            if (isShowCoachmark == false && getCoachMarkItems().value.isNotEmpty()) {
+    private fun showCoachMarkPm() {
+        val isShowCoachMark = powerMerchantPrefManager?.getFinishCoachMark().orTrue()
+        recyclerView?.post {
+            val coachMarkItems = getCoachMarkItems()
+            if (!isShowCoachMark && coachMarkItems.value.isNotEmpty()) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    scrollTo<WidgetDividerUiModel>()
-                    recyclerView?.post {
-                        coachMark?.showCoachMark(getCoachMarkItems().value)
-                    }
+                    coachMark?.showCoachMark(coachMarkItems.value)
                 }, COACH_MARK_RENDER_SHOW)
             }
         }
@@ -807,24 +806,23 @@ open class PowerMerchantSubscriptionFragment :
     private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
         return lazy {
             arrayListOf<CoachMark2Item>().apply {
-                getWidgetDividerView()?.let { widgetDividerView ->
+                getPmGradesChevronView()?.let { view ->
                     add(
                         CoachMark2Item(
-                            widgetDividerView,
-                            getString(R.string.pm_pro_new_seller_title_coachmark_1),
-                            getString(R.string.pm_pro_new_seller_desc_coachmark_1),
+                            view,
+                            getString(R.string.pm_coachmark_title_1),
+                            getString(R.string.pm_coachmark_description_1),
                             position = CoachMark2.POSITION_BOTTOM
                         )
                     )
                 }
-
-                getCheckStatusPMProView()?.let { statusPMProView ->
+                getPmFeeServiceView()?.let { view ->
                     add(
                         CoachMark2Item(
-                            statusPMProView,
-                            getString(R.string.pm_pro_new_seller_title_coachmark_3),
-                            getString(R.string.pm_pro_new_seller_desc_coachmark_3),
-                            position = CoachMark2.POSITION_BOTTOM
+                            view,
+                            getString(R.string.pm_coachmark_title_2),
+                            getString(R.string.pm_coachmark_description_2),
+                            position = CoachMark2.POSITION_TOP
                         )
                     )
                 }
@@ -832,39 +830,20 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-
-    private fun getWidgetDividerView(): View? {
-        return getViewHolder<WidgetDividerUiModel>()
+    private fun getPmGradesChevronView(): View? {
+        return getViewHolder<WidgetShopGradeUiModel>()?.findViewById(R.id.chevronPmGrade)
     }
 
-    private fun getCheckStatusPMProView(): View? {
-        return getViewHolder<WidgetShopGradeUiModel>()?.findViewById(R.id.pmProStatusInfoView)
+    private fun getPmFeeServiceView(): View? {
+        val position = adapter.list.indexOfFirst { it is WidgetFeeServiceUiModel }
+        val vh = recyclerView?.findViewHolderForAdapterPosition(position)
+        return vh?.itemView
     }
 
     private inline fun <reified T : Visitable<*>> getViewHolder(): View? {
-        val position = adapter.list.indexOfFirst { it is T }.takeIf {
-            it != RecyclerView.NO_POSITION
-        }
-        val view = position?.let { recyclerView?.layoutManager?.getChildAt(it) }
-        val widgetShopGradeWidget = view?.let { recyclerView?.findContainingViewHolder(it) }
-        return widgetShopGradeWidget?.itemView
-    }
-
-    private inline fun <reified T : Visitable<*>> scrollTo() {
-        val positionItem = adapter.list.indexOfFirst { it is T }
-
-        context?.let {
-            if (positionItem != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller =
-                    object : LinearSmoothScroller(it) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_END
-                        }
-                    }
-                smoothScroller.targetPosition = positionItem
-                recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
-            }
-        }
+        val position = adapter.list.indexOfFirst { it is T }
+        val view = recyclerView?.layoutManager?.getChildAt(position)
+        return view
     }
 
     companion object {
