@@ -17,7 +17,7 @@ class PlaySeeMoreAdapter(coordinator: PlayWidgetCoordinatorVideoTab
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
     init {
         delegatesManager
-                .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
+                .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator, {channelId, position ->  }))
 
     }
 

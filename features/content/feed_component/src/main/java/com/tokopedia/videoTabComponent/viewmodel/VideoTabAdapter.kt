@@ -20,7 +20,10 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
  * Created by meyta.taliti on 28/01/22.
  */
 class VideoTabAdapter(
-    coordinator: PlayWidgetCoordinatorVideoTab, listener: PlaySlotTabCallback, activity: Activity
+    coordinator: PlayWidgetCoordinatorVideoTab,
+    listener: PlaySlotTabCallback,
+    activity: Activity,
+    clickListener : PlayWidgetCardClickListener,
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
@@ -28,9 +31,9 @@ class VideoTabAdapter(
 
     init {
         delegatesManager
-            .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
-            .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
-            .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator, clickListener))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator, clickListener))
+            .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator, clickListener))
             .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab(listener, activity))
     }
 
@@ -94,6 +97,8 @@ class VideoTabAdapter(
 
 
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
+        if(positionOfItem == -1) return -1
+
         itemList.forEachIndexed { index, playFeedUiModel ->
             if (playFeedUiModel is PlayWidgetMediumUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
@@ -121,7 +126,9 @@ class VideoTabAdapter(
         return -1
     }
 
-    fun updateItemInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
+    fun updateReminderInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
+        if(position == -1) return
+
         val list = mutableListOf<PlayFeedUiModel>()
         //update adapter list item at a particular position
         itemList.forEachIndexed { index, playFeedUiModel ->
@@ -145,6 +152,32 @@ class VideoTabAdapter(
         notifyItemChanged(position)
     }
 
+    fun updateTotalViewInList(position: Int, channelId: String, totalView: String) {
+        if(position == -1) return
+
+        val list = mutableListOf<PlayFeedUiModel>()
+        itemList.forEachIndexed { index, playFeedUiModel ->
+            /** TODO: add small widget ui model (?) */
+            if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
+                val model = (itemList[position] as PlayWidgetMediumUiModel)
+                val updatedItem = model.copy( model = updateWidgetTotalView(model.model, channelId, totalView) )
+                list.add(updatedItem)
+            } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
+                val model = (itemList[position] as PlayWidgetJumboUiModel)
+                val updatedItem = model.copy( model = updateWidgetTotalView(model.model, channelId, totalView) )
+                list.add(updatedItem)
+            } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                val model = (itemList[position] as PlayWidgetLargeUiModel)
+                val updatedItem = model.copy(model = updateWidgetTotalView(model.model, channelId, totalView))
+                list.add(updatedItem)
+            } else {
+                list.add(playFeedUiModel)
+            }
+        }
+        setItems(list)
+        notifyItemChanged(position)
+    }
+
     private fun updateWidgetActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
         return model.copy(
                 items = model.items.map { mediumWidget ->
@@ -153,6 +186,17 @@ class VideoTabAdapter(
                 }
         )
     }
+
+    private fun updateWidgetTotalView(model: PlayWidgetUiModel, channelId: String, totalView: String): PlayWidgetUiModel {
+        return model.copy(
+            items = model.items.map { widget ->
+                if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId)
+                    widget.copy(totalView = widget.totalView.copy(totalViewFmt = totalView))
+                else widget
+            }
+        )
+    }
+
     fun updateSlotTabViewHolderState() {
         slotPosition?.let {
             if (itemList[it] is PlaySlotTabMenuUiModel)
@@ -171,3 +215,4 @@ class VideoTabAdapter(
 
     }
 }
+typealias PlayWidgetCardClickListener = (channelId: String, position: Int) -> Unit
