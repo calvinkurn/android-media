@@ -39,6 +39,7 @@ object TokoFoodAnalytics {
     const val EVENT_CATEGORY_CHECKOUT_PAGE = "tokofood checkout page"
     const val EVENT_CATEGORY_PROMO_PAGE = "tokofood promo page"
     const val EVENT_CATEGORY_HOME_PAGE = "tokofood homepage"
+    const val EVENT_CATEGORY_CATEGORY_PAGE = "tokofood category page"
 
     const val PHYSICAL_GOODS = "Physical Goods"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"

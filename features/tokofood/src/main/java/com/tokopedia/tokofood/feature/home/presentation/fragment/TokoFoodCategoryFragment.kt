@@ -47,6 +47,7 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.databinding.FragmentTokofoodCategoryBinding
+import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
@@ -79,6 +80,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: TokoFoodCategoryAnalytics
 
     private var binding by autoClearedNullable<FragmentTokofoodCategoryBinding>()
     private val viewModel by lazy {
@@ -214,12 +218,13 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
         val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
         RouteManager.route(context, merchantApplink)
     }
 
-    override fun onImpressMerchant(merchant: Merchant, position: Int) {
-
+    override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
+        analytics.impressMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
     }
 
     private fun onRefreshLayout() {
@@ -232,7 +237,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 when(uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
-                            // TODO: Hit Tracker
+                            analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
                         }
                         goToPurchasePage()
                     }

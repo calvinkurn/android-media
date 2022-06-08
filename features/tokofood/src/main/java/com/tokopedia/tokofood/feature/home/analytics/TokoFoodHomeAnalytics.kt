@@ -39,7 +39,7 @@ import com.tokopedia.track.constant.TrackerConstant
 
 /**
  * Home
- * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3053
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3053 1 - 16
  */
 class TokoFoodHomeAnalytics: BaseTrackerConst() {
 
@@ -178,7 +178,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
 
     fun clickEmptyState(userId: String?, destinationId: String?, errorState: String, title: String, desc: String) {
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_OUT_COVERAGE)
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalytics.EVENT_ACTION_CLICK_OUT_COVERAGE) //TODO BLOCKER FROM DA, Error status
             putString(TrackAppUtils.EVENT_LABEL, "error_state:$errorState;\ntitle:$title;\ndescription:$desc;")
         }
         eventDataLayer.clickPG(userId, destinationId)
