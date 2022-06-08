@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -38,10 +39,11 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.add(
             Bundle().apply {
+                val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
                 putString(Promotion.CREATIVE_NAME, "")
                 putString(Promotion.CREATIVE_SLOT, (horizontalPosition + Int.ONE).toString())
                 putString(Promotion.ITEM_ID, "${merchant.id} - ${merchant.name}")
-                putString(Promotion.ITEM_NAME, "//TODO_MERCHANT_LOCATION - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}")
+                putString(Promotion.ITEM_NAME, "$merchantAddress - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}")
             }
         )
         return promotionBundle
@@ -50,8 +52,8 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
     fun Bundle.addGeneralTracker(userId: String?, destinationId: String?): Bundle {
         this.putString(TokoFoodAnalyticsConstants.BUSSINESS_UNIT, TokoFoodAnalyticsConstants.PHYSICAL_GOODS)
         this.putString(TokoFoodAnalyticsConstants.CURRENT_SITE, TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE)
-        this.putString(TokoFoodAnalyticsConstants.USER_ID, userId ?: TokoFoodAnalyticsConstants.EMPTY_DATA)
-        this.putString(TokoFoodAnalyticsConstants.DESTINATION_ID, destinationId ?: TokoFoodAnalyticsConstants.EMPTY_DATA)
+        this.putString(TokoFoodAnalyticsConstants.USER_ID, userId ?: EMPTY_DATA)
+        this.putString(TokoFoodAnalyticsConstants.DESTINATION_ID, destinationId ?: EMPTY_DATA)
         return this
     }
 }

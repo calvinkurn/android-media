@@ -44,6 +44,8 @@ data class Merchant (
     val hasBranch: Boolean = false,
     @SerializedName("isClosed")
     val isClosed: Boolean = false,
+    @SerializedName("addressLocality")
+    val addressLocality: String = ""
 ): ImpressHolder()
 
 data class PriceLevel(
