@@ -24,4 +24,5 @@ interface HomeComponentTypeFactory {
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0
     fun type(cueCategoryDataModel: CueCategoryDataModel): Int = 0
+    fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
 }

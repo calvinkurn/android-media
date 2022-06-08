@@ -2,8 +2,8 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.MissionWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.MissionWidgetListDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import javax.inject.Inject
 
 /**

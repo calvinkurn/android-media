@@ -203,7 +203,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createCueCategory(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
-                    createMissionWidgetChannel(channel)
+                    createMissionWidgetChannel(channel, position)
                 }
             }
         }
@@ -617,9 +617,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createMissionWidgetChannel(
-        channel: DynamicHomeChannel.Channels
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int
     ) {
-        if (!isCache) visitableList.add(MissionWidgetListDataModel(channel = channel))
+        if (!isCache) visitableList.add(
+            MissionWidgetListDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                )
+            )
+        )
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {

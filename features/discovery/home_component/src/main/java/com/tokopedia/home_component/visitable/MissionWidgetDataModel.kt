@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
+package com.tokopedia.home_component.visitable
 
 import com.tokopedia.kotlin.model.ImpressHolder
 
