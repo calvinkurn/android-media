@@ -18,6 +18,8 @@ class ShopInfoTickerMapper @Inject constructor() :
     companion object {
         private const val TYPE_WARNING = "warning"
         private const val TYPE_DANGER = "danger"
+        private const val BOLD_OPEN_TAG = "<b>"
+        private const val BOLD_CLOSE_TAG = "</b>"
     }
 
     override fun mapRemoteDataToUiData(
@@ -30,7 +32,7 @@ class ShopInfoTickerMapper @Inject constructor() :
             val ticker = it.statusInfo
             return@map TickerItemUiModel(
                 id = String.EMPTY,
-                title = ticker.title,
+                title = replaceBoldTag(ticker.title),
                 message = ticker.message,
                 redirectUrl = SellerHomeCommonUtils.extractUrls(ticker.message)
                     .getOrNull(Int.ZERO)
@@ -39,6 +41,11 @@ class ShopInfoTickerMapper @Inject constructor() :
                 type = getTickerType(ticker.tickerType)
             )
         }
+    }
+
+    private fun replaceBoldTag(title: String): String {
+        return title.replace(BOLD_OPEN_TAG, String.EMPTY)
+            .replace(BOLD_CLOSE_TAG, String.EMPTY)
     }
 
     private fun getTickerType(tickerType: String): Int {
