@@ -157,7 +157,6 @@ class VideoTabAdapter(
 
         val list = mutableListOf<PlayFeedUiModel>()
         itemList.forEachIndexed { index, playFeedUiModel ->
-            /** TODO: add small widget ui model (?) */
             if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
                 val model = (itemList[position] as PlayWidgetMediumUiModel)
                 val updatedItem = model.copy( model = updateWidgetTotalView(model.model, channelId, totalView) )
