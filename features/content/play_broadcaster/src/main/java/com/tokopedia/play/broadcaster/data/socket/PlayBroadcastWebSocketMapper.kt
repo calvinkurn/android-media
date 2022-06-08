@@ -44,7 +44,7 @@ class PlayBroadcastWebSocketMapper(
             PlaySocketEnum.Chat.value -> convertToModel(response.jsonObject, Chat::class.java)
             PlaySocketEnum.Freeze.value -> convertToModel(response.jsonObject, Freeze::class.java)
             PlaySocketEnum.Banned.value -> convertToModel(response.jsonObject, Banned::class.java)
-//            PlaySocketEnum.ChannelInteractive.value -> convertToModel(response.jsonObject, ChannelInteractive::class.java)
+            PlaySocketEnum.ChannelInteractive.value -> convertToModel(response.jsonObject, GiveawayResponse::class.java)
             PlaySocketEnum.PinnedMessage.value -> convertToModel(response.jsonObject, PinnedMessageSocketResponse::class.java)
             else -> null
         }

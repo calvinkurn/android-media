@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_featured_shop_card"
     android:layout_width="128dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    android:focusable="true"
+    android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -224,4 +228,4 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_shop_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

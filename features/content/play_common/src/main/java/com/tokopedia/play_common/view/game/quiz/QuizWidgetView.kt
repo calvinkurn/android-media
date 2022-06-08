@@ -106,8 +106,8 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     fun setReward(reward: String){
-        binding.viewGameReward.root.shouldShowWithAction(reward.isNotBlank()){
-            binding.viewGameReward.tvGameReward.text = reward
+        binding.viewQuizReward.root.shouldShowWithAction(reward.isNotBlank()){
+            binding.viewQuizReward.tvGameReward.text = reward
         }
     }
 
