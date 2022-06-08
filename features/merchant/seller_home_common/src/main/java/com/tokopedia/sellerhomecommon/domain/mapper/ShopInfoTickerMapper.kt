@@ -19,8 +19,6 @@ class ShopInfoTickerMapper @Inject constructor() :
     companion object {
         private const val TYPE_WARNING = "warning"
         private const val TYPE_DANGER = "danger"
-        private const val BOLD_OPEN_TAG = "<b>"
-        private const val BOLD_CLOSE_TAG = "</b>"
     }
 
     override fun mapRemoteDataToUiData(
