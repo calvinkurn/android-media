@@ -409,7 +409,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     ): List<PlayLeaderboardUiModel> {
         return response.data.slots.map { slot ->
             PlayLeaderboardUiModel(
-                title = if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question,
+                title = slot.getSlotTitle(),
                 winners = slot.winner.mapIndexed { index, winner ->
                     PlayWinnerUiModel(
                         rank = index + 1,
@@ -421,11 +421,11 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
                             response.data.config.topchatMessage
                             .replace(FORMAT_FIRST_NAME, winner.userName)
-                            .replace(FORMAT_TITLE, if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question)
+                            .replace(FORMAT_TITLE, slot.getSlotTitle())
                         else
                             response.data.config.topchatMessageQuiz
                                 .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway) slot.title else slot.question)
+                                .replace(FORMAT_TITLE, slot.getSlotTitle())
                         ,
                     )
                 },
@@ -465,7 +465,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
     private val arrayOfChoices = ('A'..'D').toList()
 
-    fun GetSellerLeaderboardSlotResponse.SlotData.getTitle() : String {
+    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle() : String {
         return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
             this.title
         else
