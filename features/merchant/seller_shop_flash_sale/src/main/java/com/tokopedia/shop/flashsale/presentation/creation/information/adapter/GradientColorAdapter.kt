@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.information.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemColorBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
@@ -32,12 +33,17 @@ class GradientColorAdapter : RecyclerView.Adapter<GradientColorAdapter.GradientV
         notifyItemRangeChanged(Constant.ZERO, items.size)
     }
 
+    fun getItems(): List<Gradient> {
+        return gradients
+    }
+
     inner class GradientViewHolder(
         private val binding: SsfsItemColorBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(gradient: Gradient) {
             binding.imgColor.setBackgroundFromGradient(gradient)
+            binding.imgCheckmark.isVisible = gradient.isSelected
             binding.root.setOnClickListener { onGradientClicked(gradient) }
         }
     }

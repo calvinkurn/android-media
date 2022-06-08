@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
@@ -59,6 +60,8 @@ class CampaignInformationViewModel @Inject constructor(
         object CampaignNameIsEmpty : ValidationResult()
         object CampaignNameBelowMinCharacter : ValidationResult()
         object CampaignNameHasForbiddenWords : ValidationResult()
+        object StartDateNotSelected : ValidationResult()
+        object EndDateNotSelected : ValidationResult()
         object LapsedStartDate : ValidationResult()
         object ExceedMaxOverlappedCampaign : ValidationResult()
         object LapsedTeaserStartDate : ValidationResult()
@@ -68,16 +71,34 @@ class CampaignInformationViewModel @Inject constructor(
 
     data class Selection(
         val campaignName: String,
-        val startDate: Date,
-        val endDate: Date,
+        val startDate: Date?,
+        val endDate: Date?,
         val showTeaser: Boolean,
-        val teaserDate: Date,
+        val teaserDate: Date?,
         val firstColor: String,
         val secondColor: String
     )
 
+    fun onCampaignNameChange(campaignName: String) {
+        if (campaignName.isEmpty()) {
+            _areInputValid.value = ValidationResult.CampaignNameIsEmpty
+            return
+        }
+
+        if (campaignName.length < MIN_CAMPAIGN_NAME_LENGTH) {
+            _areInputValid.value = ValidationResult.CampaignNameBelowMinCharacter
+            return
+        }
+
+        if (campaignName in forbiddenWords) {
+            _areInputValid.value = ValidationResult.CampaignNameHasForbiddenWords
+            return
+        }
+    }
+
     fun validateInput(selection: Selection) {
         val now = Date()
+        val teaserDate = selection.teaserDate ?: selection.startDate
 
         if (selection.campaignName.isEmpty()) {
             _areInputValid.value = ValidationResult.CampaignNameIsEmpty
@@ -94,12 +115,23 @@ class CampaignInformationViewModel @Inject constructor(
             return
         }
 
-        if (selection.showTeaser && selection.startDate.before(now)) {
+        if (selection.startDate == null) {
+            _areInputValid.value = ValidationResult.StartDateNotSelected
+            return
+        }
+
+        if (selection.endDate == null) {
+            _areInputValid.value = ValidationResult.EndDateNotSelected
+            return
+        }
+
+
+        if (selection.showTeaser && teaserDate?.after(now).orFalse()) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
 
-        if (selection.startDate.before(now)) {
+        if (selection.startDate.after(now)) {
             _areInputValid.value = ValidationResult.LapsedStartDate
             return
         }
@@ -117,6 +149,7 @@ class CampaignInformationViewModel @Inject constructor(
                         selection.campaignName,
                         selection.startDate,
                         selection.endDate,
+                        selection.teaserDate,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor
                     )
@@ -140,6 +173,7 @@ class CampaignInformationViewModel @Inject constructor(
                         selection.campaignName,
                         selection.startDate,
                         selection.endDate,
+                        selection.teaserDate,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor
                     )
@@ -191,5 +225,15 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun isUsingTeaser(): Boolean {
         return showTeaser
+    }
+
+    fun markAsSelected(selectedGradient: Gradient, gradients : List<Gradient>): List<Gradient> {
+        return gradients.map {  gradient ->
+            if (gradient == selectedGradient) {
+                gradient.copy(isSelected = true)
+            } else {
+                gradient.copy(isSelected = false)
+            }
+        }
     }
 }

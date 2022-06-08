@@ -1,7 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +11,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
-import com.tokopedia.shop.flashsale.common.extension.formatTo
-import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -31,12 +28,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
+
 class CampaignInformationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_PAGE_MODE = "page_mode"
         private const val FIRST_STEP = 1
         private const val SPAN_COUNT = 6
+        private const val HEX_COLOR_TEXT_FIELD_MAX_LENGTH = 6
 
         @JvmStatic
         fun newInstance(pageMode: PageMode): CampaignInformationFragment {
@@ -51,6 +50,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<SsfsFragmentCampaignInformationBinding>()
     private val pageMode by lazy { arguments?.getParcelable(BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val adapter = GradientColorAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -60,26 +60,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignInformationViewModel::class.java) }
-
-    @SuppressLint("UnsupportedDarkModeColor")
-    private val colors = listOf(
-        Gradient("#26A116", "#60BB55"),
-        Gradient("#019751", "#00AA5B"),
-        Gradient("#00615B", "#04837E"),
-        Gradient("#2B4A62", "#3E6786"),
-        Gradient("#2059A1", "#2F89FC"),
-        Gradient("#1C829E", "#28B9E1"),
-
-        Gradient("#EF4C60", "#E96E7D"),
-        Gradient("#AE1720", "#D74049"),
-        Gradient("#850623", "#B31D40"),
-        Gradient("#B8266C", "#CD5D99"),
-        Gradient("#4F2DC0", "#7F66D1"),
-        Gradient("#58197E", "#854C9E"),
-
-        Gradient("#685447", "#836857"),
-        Gradient("#DD8F00", "#F8A400"),
-    )
 
     override fun getScreenName(): String =
         CampaignInformationFragment::class.java.canonicalName.orEmpty()
@@ -108,18 +88,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun observeDataChange() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
-            when (validationResult) {
-                CampaignInformationViewModel.ValidationResult.CampaignNameBelowMinCharacter -> TODO()
-                CampaignInformationViewModel.ValidationResult.CampaignNameHasForbiddenWords -> TODO()
-                CampaignInformationViewModel.ValidationResult.CampaignNameIsEmpty -> TODO()
-                CampaignInformationViewModel.ValidationResult.ExceedMaxOverlappedCampaign -> TODO()
-                CampaignInformationViewModel.ValidationResult.LapsedStartDate -> TODO()
-                CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> TODO()
-                CampaignInformationViewModel.ValidationResult.Valid -> {
-                    val selection = viewModel.getSelection() ?: return@observe
-                    viewModel.createCampaign(selection)
-                }
-            }
+            handleValidationResult(validationResult)
         }
     }
 
@@ -131,15 +100,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        val recyclerViewAdapter = GradientColorAdapter()
-        binding?.recyclerView?.apply {
-            layoutManager = GridLayoutManager(requireActivity(), SPAN_COUNT)
-            adapter = recyclerViewAdapter
-        }
-        recyclerViewAdapter.submit(colors)
-        recyclerViewAdapter.setOnGradientClicked { gradient ->
-            viewModel.setColor(gradient)
-        }
+        binding?.recyclerView?.layoutManager = GridLayoutManager(requireActivity(), SPAN_COUNT)
+        binding?.recyclerView?.adapter = adapter
+        adapter.submit(campaignGradientColors)
+        adapter.setOnGradientClicked { selectedGradient -> handleSelectedColor(selectedGradient) }
     }
 
     private fun setupToolbar() {
@@ -150,12 +114,22 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun setupTextFields() {
         binding?.run {
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
-
+                validateInput()
             }
+
+            tauHexColor.setMaxLength(HEX_COLOR_TEXT_FIELD_MAX_LENGTH)
             tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
-                binding?.imgHexColorPreview?.setBackgroundFromGradient(Gradient(text, text))
+                if (text.length == HEX_COLOR_TEXT_FIELD_MAX_LENGTH) {
+                    binding?.btnApply?.visible()
+                } else {
+                    binding?.btnApply?.invisible()
+                }
             }
 
+            tauStartDate.editText.inputType = InputType.TYPE_NULL
+            tauEndDate.editText.inputType = InputType.TYPE_NULL
+            tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
+            tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
         }
     }
 
@@ -163,8 +137,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             btnDraft.setOnClickListener { validateInput() }
             btnCreateCampaign.setOnClickListener { validateInput() }
-            tauStartDate.textInputLayout.setOnClickListener { displayStartDatePicker() }
-            tauEndDate.textInputLayout.setOnClickListener { displayEndDatePicker() }
+            btnApply.setOnClickListener { handleApplyButtonClick() }
             quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
                 handleQuantityEditor(newValue, oldValue)
             }
@@ -173,16 +146,60 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 handleSwitchTeaser(isChecked)
             }
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
-               handleContentSwitcher(isChecked)
+                handleContentSwitcher(isChecked)
             }
         }
     }
 
-    private fun handleSwitchTeaser(showTeaserSettings : Boolean) {
+    private fun handleValidationResult(validationResult: CampaignInformationViewModel.ValidationResult) {
+        when (validationResult) {
+            CampaignInformationViewModel.ValidationResult.CampaignNameIsEmpty -> {
+                showError(getString(R.string.sfs_error_message_field_not_filled))
+            }
+            CampaignInformationViewModel.ValidationResult.CampaignNameBelowMinCharacter -> {
+                showError(getString(R.string.sfs_error_message_min_char))
+            }
+            CampaignInformationViewModel.ValidationResult.CampaignNameHasForbiddenWords -> {
+                showError(getString(R.string.sfs_error_message_forbidden_words))
+            }
+            CampaignInformationViewModel.ValidationResult.ExceedMaxOverlappedCampaign -> {
+                hideError()
+
+            }
+            CampaignInformationViewModel.ValidationResult.LapsedStartDate -> {
+                hideError()
+
+            }
+            CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> {
+                hideError()
+
+            }
+            CampaignInformationViewModel.ValidationResult.Valid -> {
+                hideError()
+
+                binding?.btnCreateCampaign?.enable()
+                val selection = viewModel.getSelection() ?: return
+                viewModel.createCampaign(selection)
+            }
+        }
+    }
+
+    private fun handleApplyButtonClick() {
+        val color = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
+        binding?.imgHexColorPreview?.setBackgroundFromGradient(
+            Gradient(
+                color,
+                color,
+                isSelected = true
+            )
+        )
+    }
+
+    private fun handleSwitchTeaser(showTeaserSettings: Boolean) {
         binding?.groupTeaserSettings?.isVisible = showTeaserSettings
     }
 
-    private fun handleQuantityEditor(newValue : Int, oldValue : Int) {
+    private fun handleQuantityEditor(newValue: Int, oldValue: Int) {
         val isIncreasing = newValue > oldValue
         if (newValue % 12 == Constant.ZERO) {
             binding?.quantityEditor?.stepValue = 12
@@ -193,21 +210,28 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleContentSwitcher(hexColorOptionSelected : Boolean) {
+    private fun handleContentSwitcher(hexColorOptionSelected: Boolean) {
         binding?.recyclerView?.isVisible = !hexColorOptionSelected
         binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
 
         if (hexColorOptionSelected) {
-            val color = binding?.tauHexColor?.editText?.text.toString().trim()
-            val hexColor = "#{${color}}"
-            viewModel.setColor(Gradient(hexColor, hexColor))
+            val hexColor = binding?.tauHexColor?.editText?.text.toString().trim().toHexColor()
+            viewModel.setColor(Gradient(hexColor, hexColor, isSelected = true))
         }
+    }
+
+    private fun handleSelectedColor(selectedGradient: Gradient) {
+        val allGradients = adapter.getItems()
+        val updatedColorSelection = viewModel.markAsSelected(selectedGradient, allGradients)
+        adapter.submit(updatedColorSelection)
+        viewModel.setColor(selectedGradient)
     }
 
     private fun displayStartDatePicker() {
         val previouslySelectedStartDate = viewModel.getSelectedStartDate() ?: Date()
         val minimumDate = Date()
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(previouslySelectedStartDate, minimumDate)
+        val bottomSheet =
+            CampaignDatePickerBottomSheet.newInstance(previouslySelectedStartDate, minimumDate)
         bottomSheet.setOnDatePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -219,7 +243,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val minimumDate = viewModel.getSelectedStartDate() ?: Date()
         val previouslySelectedEndDate = viewModel.getSelectedEndDate() ?: minimumDate
 
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(previouslySelectedEndDate, minimumDate)
+        val bottomSheet =
+            CampaignDatePickerBottomSheet.newInstance(previouslySelectedEndDate, minimumDate)
         bottomSheet.setOnDatePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)
             binding?.tauEndDate?.editText?.setText(newEndDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -229,18 +254,23 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
 
     private fun validateInput() {
-        val startDate = viewModel.getSelectedStartDate() ?: return
-        val endDate = viewModel.getSelectedEndDate() ?: return
-        val decreaseByHour = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
-        val teaserDate = startDate.decreaseHourBy(decreaseByHour)
-        val firstColor = viewModel.getColor()?.first ?: return
-        val secondColor = viewModel.getColor()?.second ?: return
+        val startDate = viewModel.getSelectedStartDate()
+        val endDate = viewModel.getSelectedEndDate()
+        val showTeaser = binding?.switchTeaser?.isChecked.orFalse()
+        val decreaseByHour = if (showTeaser) {
+            binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        } else {
+            Constant.ZERO
+        }
+        val teaserDate = startDate?.decreaseHourBy(decreaseByHour)
+        val firstColor = viewModel.getColor()?.first.orEmpty()
+        val secondColor = viewModel.getColor()?.second.orEmpty()
 
         val selection = CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString().trim(),
             startDate,
             endDate,
-            binding?.switchTeaser?.isChecked.orFalse(),
+            showTeaser,
             teaserDate,
             firstColor,
             secondColor
@@ -251,4 +281,41 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
 
+    private fun showError(errorMessage : String) {
+        binding?.tauCampaignName?.isInputError = true
+        binding?.tauCampaignName?.setMessage(errorMessage)
+    }
+
+    private fun hideError() {
+        binding?.tauCampaignName?.isInputError = false
+        binding?.tauCampaignName?.setMessage(Constant.EMPTY_STRING)
+    }
+
+    private fun showLapsedScheduleTicker() {
+        binding?.tickerLapsedSchedule?.visible()
+        binding?.tickerLapsedSchedule?.tickerTitle = getString(R.string.sfs_error_message_schedule_lapsed_title)
+        binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_schedule_lapsed_description))
+    }
+
+    private fun hideLapsedScheduleTicker() {
+        binding?.tickerLapsedSchedule?.gone()
+    }
+
+    private fun showLapsedTeaserTicker() {
+        binding?.tickerLapsedTeaser?.visible()
+    }
+
+    private fun hideLapsedTeaserTicker() {
+        binding?.tickerLapsedTeaser?.gone()
+    }
+
+    private fun showMaxCampaignOverlappedTicker() {
+        binding?.tickerLapsedSchedule?.visible()
+        binding?.tickerLapsedSchedule?.tickerTitle = getString(R.string.sfs_error_message_overlapped_schedule_title)
+        binding?.tickerLapsedSchedule?.setTextDescription(getString(R.string.sfs_error_message_overlapped_schedule_description))
+    }
+
+    private fun hideMaxCampaignOverlappedTicker() {
+        binding?.tickerLapsedSchedule?.gone()
+    }
 }

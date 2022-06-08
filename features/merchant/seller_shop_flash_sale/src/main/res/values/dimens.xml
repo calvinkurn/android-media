@@ -3,6 +3,6 @@
     <dimen name="sfs_1_dp">1dp</dimen>
     <dimen name="sfs_8_dp">8dp</dimen>
     <dimen name="sfs_calendar_height">600dp</dimen>
-    <dimen name="sfs_corner_radius">6dp</dimen>
-    <dimen name="sfs_hex_color_field_width">168dp</dimen>
+    <dimen name="sfs_corner_radius">4dp</dimen>
+    <dimen name="sfs_checkmark_height">20dp</dimen>
 </resources>

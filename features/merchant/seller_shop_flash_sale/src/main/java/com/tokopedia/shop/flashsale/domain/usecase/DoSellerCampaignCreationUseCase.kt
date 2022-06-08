@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.formatTo
-import com.tokopedia.shop.flashsale.common.extension.toCalendar
 import com.tokopedia.shop.flashsale.data.mapper.DoSellerCampaignCreationMapper
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignCreationRequest
 import com.tokopedia.shop.flashsale.data.response.DoSellerCampaignCreationResponse
@@ -84,18 +83,32 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
             is CampaignAction.Update -> params.action.campaignId
         }
 
-        val startDate = params.scheduledStart.toCalendar()
-        startDate.add(Calendar.HOUR_OF_DAY, DECREASED_BY_ONE_HOUR)
-        val adjustedUpcomingTime = startDate.time
+        val startDate = if (params.scheduledStart == null) {
+            Constant.EMPTY_STRING
+        } else {
+            params.scheduledStart.formatTo(DateConstant.DATE_TIME)
+        }
+
+        val endDate = if (params.scheduledEnd == null) {
+            Constant.EMPTY_STRING
+        } else {
+            params.scheduledEnd.formatTo(DateConstant.DATE_TIME)
+        }
+
+        val teaserDate = if (params.teaserDate == null) {
+            Constant.EMPTY_STRING
+        } else {
+            params.teaserDate.formatTo(DateConstant.DATE_TIME)
+        }
 
         val payload = DoSellerCampaignCreationRequest(
             actionId,
             CampaignType.FLASH_SALE.id,
             campaignId,
             params.campaignName,
-            params.scheduledStart.formatTo(DateConstant.DATE_TIME),
-            params.scheduledEnd.formatTo(DateConstant.DATE_TIME),
-            adjustedUpcomingTime.formatTo(DateConstant.DATE_TIME),
+            startDate,
+            endDate,
+            teaserDate,
             params.campaignRelation,
             params.isCampaignRuleSubmit,
             DoSellerCampaignCreationRequest.GradientColorInput(
@@ -118,8 +131,9 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
     data class Param(
         val action: CampaignAction,
         val campaignName: String,
-        val scheduledStart: Date,
-        val scheduledEnd: Date,
+        val scheduledStart: Date?,
+        val scheduledEnd: Date?,
+        val teaserDate : Date?,
         val campaignRelation: List<Long> = emptyList(),
         val isCampaignRuleSubmit: Boolean = false,
         val firstColor: String,
