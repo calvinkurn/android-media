@@ -31,4 +31,17 @@ class OrderDetailAdapter(private val clickListener: OrderDetailViewHolder.OnOrde
         this.customOrderDetails = customOrderDetails.toMutableList()
         this.notifyDataSetChanged()
     }
+
+    fun getCustomOrderDetails(): MutableList<CustomOrderDetail> {
+        return customOrderDetails
+    }
+
+    fun removeCustomProduct(dataSetPosition: Int, adapterPosition: Int) {
+        try {
+            customOrderDetails.removeAt(dataSetPosition)
+            notifyItemRemoved(adapterPosition)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.*
+import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryHeaderViewHolder
@@ -56,7 +57,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
             PRODUCT_CARD.type -> {
                 val viewHolder = holder as ProductCardViewHolder
                 val productUiModel = productListItems[position].productUiModel
-                viewHolder.bindData(productUiModel, position)
+                val productListItem = productListItems[position]
+                viewHolder.bindData(productListItem, productUiModel, position)
             }
         }
     }
@@ -75,12 +77,18 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         return productListItems[dataSetPosition].productUiModel
     }
 
-    fun updateProductUiModel(cartTokoFood: CartTokoFood, dataSetPosition: Int, adapterPosition: Int) {
+    fun updateProductUiModel(
+            cartTokoFood: CartTokoFood,
+            dataSetPosition: Int,
+            adapterPosition: Int,
+            customOrderDetail: CustomOrderDetail? = null
+    ) {
         productListItems.getOrNull(dataSetPosition)?.productUiModel.apply {
             this?.cartId = cartTokoFood.cartId
             this?.orderQty = cartTokoFood.quantity
             this?.orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
             this?.isAtc = cartTokoFood.quantity.isMoreThanZero()
+            customOrderDetail?.let { this?.customOrderDetails?.add(it) }
         }
         notifyItemChanged(adapterPosition)
     }
@@ -89,8 +97,12 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.firstOrNull { it.cartId == cartId }?.qty = orderQty
     }
 
-    fun removeCustomOrder(cartId: String, dataSetPosition: Int) {
-        productListItems.getOrNull(dataSetPosition)?.productUiModel?.customOrderDetails?.removeFirst { it.cartId == cartId }
+    fun removeCustomOrder(cartId: String, dataSetPosition: Int, adapterPosition: Int) {
+        productListItems.getOrNull(dataSetPosition)?.productUiModel?.apply {
+            customOrderDetails.removeFirst { it.cartId == cartId }
+            isAtc = customOrderDetails.isNotEmpty()
+        }
+        notifyItemChanged(adapterPosition)
     }
 
     fun resetProductUiModel(dataSetPosition: Int, adapterPosition: Int) {

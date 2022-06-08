@@ -7,6 +7,7 @@ object TokoFoodAnalyticsConstants {
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
     const val DESTINATION_ID = "destinationId"
+    const val PRODUCT_ID = "productId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val GOFOOD_PAGENAME = "gofood"
@@ -14,7 +15,7 @@ object TokoFoodAnalyticsConstants {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val OPEN_SCREEN = "openScreen"
     const val CLICK_PG = "clickPG"
-    const val PHYSICAL_GOODS = "physical Goods"
+    const val PHYSICAL_GOODS = "Physical Goods"
     const val ADD_TO_CART = "add_to_cart"
     const val VIEW_ITEM = "view_item"
 
@@ -33,6 +34,20 @@ object TokoFoodAnalyticsConstants {
     const val TOKOFOOD_ORDER_DETAIL_PAGE = "tokofood order detail page"
 
     //Merchant Page
+    const val ITEM_LIST = "item_list"
+    const val SELECT_CONTENT = "select_content"
+    const val VIEW_ITEM_LIST = "view_item_list"
+    const val IMPRESSION_ON_PRODUCT_CARD = "impression on product card"
+    const val CLICK_ON_PRODUCT_CARD = "click on product card"
+    const val CLICK_ON_CHECKOUT_MINICART = "click on checkout minicart"
+    const val CLICK_ON_PESAN_PRODUCT_CARD = "click on pesan - product card"
+    const val CLICK_ON_PESAN_PRODUCT_BOTTOM_SHEET = "click on pesan - product bottom sheet"
+    const val CLICK_ON_PESAN_VARIANT_PAGE = "click on pesan - variant page"
+
+    const val OOS = "OOS"
+    const val NOT = "Not"
+    const val INDEX = "index"
+    const val TOKOFOOD_MERCHANT_PAGE = "tokofood merchant page"
     const val MERCHANT = "merchant"
     const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     const val CLICK_COMMUNICATION = "clickCommunication"
