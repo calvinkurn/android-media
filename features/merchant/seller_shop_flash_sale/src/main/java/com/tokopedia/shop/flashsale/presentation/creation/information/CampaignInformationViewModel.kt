@@ -37,7 +37,11 @@ class CampaignInformationViewModel @Inject constructor(
     val campaignUpdate: LiveData<Result<CampaignCreationResult>>
         get() = _campaignUpdate
 
-    private var selectedColor: Color? = null
+    private var selection: Selection? = null
+    private var selectedColor: Gradient? = null
+    private var selectedStartDate: Date? = null
+    private var selectedEndDate: Date? = null
+    private var showTeaser = false
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -51,11 +55,6 @@ class CampaignInformationViewModel @Inject constructor(
         "lazada"
     )
 
-    sealed class Color {
-        data class GradientColor(val gradient: Gradient) : Color()
-        data class HexColor(val hexColor: String) : Color()
-    }
-
     sealed class ValidationResult {
         object CampaignNameIsEmpty : ValidationResult()
         object CampaignNameBelowMinCharacter : ValidationResult()
@@ -66,10 +65,6 @@ class CampaignInformationViewModel @Inject constructor(
         object Valid : ValidationResult()
     }
 
-    fun setSelectedColor(selectedColor: Color) {
-        this.selectedColor = selectedColor
-    }
-
 
     data class Selection(
         val campaignName: String,
@@ -77,8 +72,8 @@ class CampaignInformationViewModel @Inject constructor(
         val endDate: Date,
         val showTeaser: Boolean,
         val teaserDate: Date,
-        val firstColor : String,
-        val secondColor : String
+        val firstColor: String,
+        val secondColor: String
     )
 
     fun validateInput(selection: Selection) {
@@ -99,12 +94,12 @@ class CampaignInformationViewModel @Inject constructor(
             return
         }
 
-        if (selection.showTeaser && selection.startDate.after(now)) {
+        if (selection.showTeaser && selection.startDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedTeaserStartDate
             return
         }
 
-        if (selection.startDate.after(now)) {
+        if (selection.startDate.before(now)) {
             _areInputValid.value = ValidationResult.LapsedStartDate
             return
         }
@@ -112,7 +107,7 @@ class CampaignInformationViewModel @Inject constructor(
         _areInputValid.value = ValidationResult.Valid
     }
 
-    fun createCampaign(selection : Selection) {
+    fun createCampaign(selection: Selection) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -135,7 +130,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun updateCampaign(selection : Selection, campaignId : Long) {
+    fun updateCampaign(selection: Selection, campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -156,5 +151,45 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun setSelection(selection: Selection) {
+        this.selection = selection
+    }
+
+    fun getSelection(): Selection? {
+        return selection
+    }
+
+    fun setColor(gradient: Gradient) {
+        selectedColor = gradient
+    }
+
+    fun getColor(): Gradient? {
+        return selectedColor
+    }
+
+    fun setSelectedStartDate(selectedStartDate: Date) {
+        this.selectedStartDate = selectedStartDate
+    }
+
+    fun getSelectedStartDate(): Date? {
+        return selectedStartDate
+    }
+
+    fun setSelectedEndDate(selectedEndDate: Date) {
+        this.selectedEndDate = selectedEndDate
+    }
+
+    fun getSelectedEndDate(): Date? {
+        return selectedEndDate
+    }
+
+    fun setShowTeaser(showTeaser: Boolean) {
+        this.showTeaser = showTeaser
+    }
+
+    fun isUsingTeaser(): Boolean {
+        return showTeaser
     }
 }

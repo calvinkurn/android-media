@@ -42,11 +42,6 @@ class DateManager @Inject constructor() {
         return calendar.time
     }
 
-    fun decreaseHourBy(date: Date, desiredHourToBeDecreased: Int): Date {
-        val now = Calendar.getInstance()
-        now.time = date
-        now.add(Calendar.HOUR_OF_DAY, desiredHourToBeDecreased)
-        return now.time
-    }
+
 }
 

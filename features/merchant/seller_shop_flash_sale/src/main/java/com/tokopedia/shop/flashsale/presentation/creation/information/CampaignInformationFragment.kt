@@ -11,8 +11,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignInformationBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.setBackgroundFromGradient
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.common.util.doOnTextChanged
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -96,7 +103,24 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        displayDatePicker()
+        observeDataChange()
+    }
+
+    private fun observeDataChange() {
+        viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
+            when (validationResult) {
+                CampaignInformationViewModel.ValidationResult.CampaignNameBelowMinCharacter -> TODO()
+                CampaignInformationViewModel.ValidationResult.CampaignNameHasForbiddenWords -> TODO()
+                CampaignInformationViewModel.ValidationResult.CampaignNameIsEmpty -> TODO()
+                CampaignInformationViewModel.ValidationResult.ExceedMaxOverlappedCampaign -> TODO()
+                CampaignInformationViewModel.ValidationResult.LapsedStartDate -> TODO()
+                CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate -> TODO()
+                CampaignInformationViewModel.ValidationResult.Valid -> {
+                    val selection = viewModel.getSelection() ?: return@observe
+                    viewModel.createCampaign(selection)
+                }
+            }
+        }
     }
 
     private fun setupView() {
@@ -114,7 +138,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
         recyclerViewAdapter.submit(colors)
         recyclerViewAdapter.setOnGradientClicked { gradient ->
-
+            viewModel.setColor(gradient)
         }
     }
 
@@ -127,39 +151,103 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             tauCampaignName.textInputLayout.editText?.doOnTextChanged { text ->
 
-                println(text)
             }
+            tauHexColor.textInputLayout.editText?.doOnTextChanged { text ->
+                binding?.imgHexColorPreview?.setBackgroundFromGradient(Gradient(text, text))
+            }
+
         }
     }
 
     private fun setupClickListeners() {
         binding?.run {
-            btnDraft.setOnClickListener {
-
+            btnDraft.setOnClickListener { validateInput() }
+            btnCreateCampaign.setOnClickListener { validateInput() }
+            tauStartDate.textInputLayout.setOnClickListener { displayStartDatePicker() }
+            tauEndDate.textInputLayout.setOnClickListener { displayEndDatePicker() }
+            quantityEditor.setValueChangedListener { newValue, oldValue, _ ->
+                handleQuantityEditor(newValue, oldValue)
             }
-            btnCreateCampaign.setOnClickListener {
-                val startDate = Date()
-                val endDate = Date()
-                val teaserDate = dateManager.decreaseHourBy(startDate, 4)
-
-                val selection = CampaignInformationViewModel.Selection(
-                    binding?.tauCampaignName?.editText?.text.toString().trim(),
-                    startDate,
-                    endDate,
-                    binding?.switchTeaser?.isChecked.orFalse(),
-                    teaserDate,
-                    "",
-                    ""
-                )
-
-                viewModel.validateInput(selection)
+            switchTeaser.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.setShowTeaser(isChecked)
+                handleSwitchTeaser(isChecked)
+            }
+            contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
+               handleContentSwitcher(isChecked)
             }
         }
     }
 
-    private fun displayDatePicker() {
-        val bottomSheet = CampaignDatePickerBottomSheet.newInstance()
+    private fun handleSwitchTeaser(showTeaserSettings : Boolean) {
+        binding?.groupTeaserSettings?.isVisible = showTeaserSettings
+    }
+
+    private fun handleQuantityEditor(newValue : Int, oldValue : Int) {
+        val isIncreasing = newValue > oldValue
+        if (newValue % 12 == Constant.ZERO) {
+            binding?.quantityEditor?.stepValue = 12
+            //binding?.quantityEditor?.editText?.setText(24.toString())
+        } else {
+            binding?.quantityEditor?.stepValue = 1
+            //binding?.quantityEditor?.editText?.setText(newValue)
+        }
+    }
+
+    private fun handleContentSwitcher(hexColorOptionSelected : Boolean) {
+        binding?.recyclerView?.isVisible = !hexColorOptionSelected
+        binding?.groupHexColorPicker?.isVisible = hexColorOptionSelected
+
+        if (hexColorOptionSelected) {
+            val color = binding?.tauHexColor?.editText?.text.toString().trim()
+            val hexColor = "#{${color}}"
+            viewModel.setColor(Gradient(hexColor, hexColor))
+        }
+    }
+
+    private fun displayStartDatePicker() {
+        val previouslySelectedStartDate = viewModel.getSelectedStartDate() ?: Date()
+        val minimumDate = Date()
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(previouslySelectedStartDate, minimumDate)
+        bottomSheet.setOnDatePicked { newStartDate ->
+            viewModel.setSelectedStartDate(newStartDate)
+            binding?.tauStartDate?.editText?.setText(newStartDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayEndDatePicker() {
+        val minimumDate = viewModel.getSelectedStartDate() ?: Date()
+        val previouslySelectedEndDate = viewModel.getSelectedEndDate() ?: minimumDate
+
+        val bottomSheet = CampaignDatePickerBottomSheet.newInstance(previouslySelectedEndDate, minimumDate)
+        bottomSheet.setOnDatePicked { newEndDate ->
+            viewModel.setSelectedEndDate(newEndDate)
+            binding?.tauEndDate?.editText?.setText(newEndDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+
+    private fun validateInput() {
+        val startDate = viewModel.getSelectedStartDate() ?: return
+        val endDate = viewModel.getSelectedEndDate() ?: return
+        val decreaseByHour = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        val teaserDate = startDate.decreaseHourBy(decreaseByHour)
+        val firstColor = viewModel.getColor()?.first ?: return
+        val secondColor = viewModel.getColor()?.second ?: return
+
+        val selection = CampaignInformationViewModel.Selection(
+            binding?.tauCampaignName?.editText?.text.toString().trim(),
+            startDate,
+            endDate,
+            binding?.switchTeaser?.isChecked.orFalse(),
+            teaserDate,
+            firstColor,
+            secondColor
+        )
+
+        viewModel.setSelection(selection)
+        viewModel.validateInput(selection)
     }
 
 

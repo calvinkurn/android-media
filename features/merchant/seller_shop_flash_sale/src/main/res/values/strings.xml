@@ -88,6 +88,7 @@
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
     <string name="sfs_placeholder_empty_quota">Kuota campaign di Bulan %s habis. Pilih jadwal di bulan lain, ya.</string>
+    <string name="sfs_hashtag">#</string>
 
     <string name="sfs_green_dot">Indikator campaign aktif</string>
 

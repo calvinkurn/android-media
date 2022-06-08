@@ -23,6 +23,9 @@ fun Date.toCalendar(): Calendar {
     return calendar
 }
 
-fun Long.unixToMs(): Long {
-    return this * 1000L
+fun Date.decreaseHourBy(desiredHourToBeDecreased: Int): Date {
+    val now = Calendar.getInstance()
+    now.time = this
+    now.add(Calendar.HOUR_OF_DAY, desiredHourToBeDecreased)
+    return now.time
 }

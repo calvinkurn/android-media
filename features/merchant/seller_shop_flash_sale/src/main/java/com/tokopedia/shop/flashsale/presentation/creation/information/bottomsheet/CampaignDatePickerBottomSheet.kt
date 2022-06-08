@@ -22,22 +22,32 @@ import javax.inject.Inject
 class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_TITLE = "title"
+        private const val BUNDLE_KEY_SELECTED_DATE = "selected_date"
+        private const val BUNDLE_KEY_MINIMUM_DATE = "minimum_date"
 
         @JvmStatic
-        fun newInstance(): CampaignDatePickerBottomSheet {
+        fun newInstance(
+            previouslySelectedDate: Date,
+            minimumDate: Date
+        ): CampaignDatePickerBottomSheet {
             return CampaignDatePickerBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_TITLE, "")
+                    putSerializable(BUNDLE_KEY_SELECTED_DATE, previouslySelectedDate)
+                    putSerializable(BUNDLE_KEY_MINIMUM_DATE, minimumDate)
                 }
             }
         }
-
     }
 
-    private val title by lazy { arguments?.getString(BUNDLE_KEY_TITLE).orEmpty() }
     private var binding by autoClearedNullable<SsfsBottomsheetCampaignDatePickerBinding>()
+    private var onDatePicked: (Date) -> Unit = {}
+    private val previouslySelectedDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_SELECTED_DATE) as? Date ?: Date()
+    }
 
+    private val minimumDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_MINIMUM_DATE) as? Date ?: Date()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -86,34 +96,47 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeSelectedDate()
+        observe()
         setupView()
         viewModel.validateInput()
     }
 
     private fun setupView() {
         setupCalendar()
-
-
     }
 
     private fun setupCalendar() {
-        val startDate = dateManager.getMinimumCampaignStartDate()
         val endDate = dateManager.getMaximumCampaignEndDate()
-        val subtitles = arrayListOf(SubTitle(startDate, "Merdeka", "#EF4C60"))
+        val subtitles = arrayListOf(SubTitle(minimumDate, "Merdeka", "#EF4C60"))
 
 
         val calendar = binding?.unifyCalendar?.calendarPickerView
         calendar?.run {
-            init(startDate, endDate, listOf(Legend(startDate, "Ready")))
+            init(minimumDate, endDate, listOf(Legend(minimumDate, "Ready")))
                 .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                .withSelectedDate(Date())
+                .withSelectedDate(previouslySelectedDate)
                 .withSubTitles(subtitles)
         }
 
+        calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+            override fun onDateSelected(date: Date) {
+                onDatePicked(date)
+                dismiss()
+            }
+
+            override fun onDateUnselected(date: Date) {
+
+            }
+
+        })
+
     }
 
-    private fun observeSelectedDate() {
+    fun setOnDatePicked(onDatePicked: (Date) -> Unit) {
+        this.onDatePicked = onDatePicked
+    }
+
+    private fun observe() {
         viewModel.areInputValid.observe(viewLifecycleOwner) {
 
         }
