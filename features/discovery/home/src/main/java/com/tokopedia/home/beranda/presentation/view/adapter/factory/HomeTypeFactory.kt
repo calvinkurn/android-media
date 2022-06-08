@@ -81,5 +81,5 @@ interface HomeTypeFactory {
 
     fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
 
-    fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
+    fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int
 }

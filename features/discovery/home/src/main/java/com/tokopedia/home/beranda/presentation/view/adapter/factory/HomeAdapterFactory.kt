@@ -306,6 +306,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CueWidgetCategoryViewHolder.LAYOUT
     }
 
+    override fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int {
+        return MissionWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
