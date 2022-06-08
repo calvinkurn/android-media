@@ -1,13 +1,23 @@
 package com.tokopedia.play.widget.sample.analytic.global
 
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
-import com.tokopedia.play.widget.sample.analytic.const.BUSINESS_UNIT
-import com.tokopedia.play.widget.sample.analytic.const.CURRENT_SITE
+import com.tokopedia.play.widget.sample.analytic.const.VAL_BUSINESS_UNIT
+import com.tokopedia.play.widget.sample.analytic.const.VAL_CURRENT_SITE
 import com.tokopedia.play.widget.sample.analytic.const.EVENT_CLICK
 import com.tokopedia.play.widget.sample.analytic.const.EVENT_VIEW
+import com.tokopedia.play.widget.sample.analytic.const.KEY_BUSINESS_UNIT
+import com.tokopedia.play.widget.sample.analytic.const.KEY_CURRENT_SITE
+import com.tokopedia.play.widget.sample.analytic.const.KEY_EVENT
+import com.tokopedia.play.widget.sample.analytic.const.KEY_EVENT_ACTION
+import com.tokopedia.play.widget.sample.analytic.const.KEY_EVENT_CATEGORY
+import com.tokopedia.play.widget.sample.analytic.const.KEY_EVENT_LABEL
+import com.tokopedia.play.widget.sample.analytic.const.KEY_SESSION_IRIS
+import com.tokopedia.play.widget.sample.analytic.const.KEY_USER_ID
 import com.tokopedia.play.widget.sample.analytic.const.PROMO_CLICK
 import com.tokopedia.play.widget.sample.analytic.const.PROMO_VIEW
 import com.tokopedia.play.widget.sample.analytic.const.eventLabel
+import com.tokopedia.play.widget.sample.analytic.const.irisSessionId
+import com.tokopedia.play.widget.sample.analytic.const.isRilisanSpesial
 import com.tokopedia.play.widget.sample.analytic.const.toTrackingString
 import com.tokopedia.play.widget.sample.analytic.const.toTrackingType
 import com.tokopedia.play.widget.sample.analytic.global.model.PlayWidgetAnalyticModel
@@ -45,18 +55,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         ): PlayWidgetMediumGlobalAnalytic
     }
 
-    private val irisSessionId: String
-        get() = TrackApp.getInstance().gtm.irisSessionId
-
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else ""
-
-    private val PlayWidgetPromoType.isRilisanSpesial: Boolean
-        get() = when (this) {
-            is PlayWidgetPromoType.Default -> isRilisanSpesial
-            is PlayWidgetPromoType.LiveOnly -> isRilisanSpesial
-            else -> false
-        }
 
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,
@@ -94,8 +94,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(CURRENT_SITE)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -137,8 +137,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(CURRENT_SITE)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -152,17 +152,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_VIEW,
-                    "eventAction" to "impress view all",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_VIEW,
+                    KEY_EVENT_ACTION to "impress view all",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -175,17 +175,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click view all",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_CLICK,
+                    KEY_EVENT_ACTION to "click view all",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -215,8 +215,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(CURRENT_SITE)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -247,8 +247,8 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit(BUSINESS_UNIT)
-            .appendCurrentSite(CURRENT_SITE)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
@@ -264,17 +264,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_VIEW,
-                    "eventAction" to "view other content",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_VIEW,
+                    KEY_EVENT_ACTION to "view other content",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -289,17 +289,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click other content",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_CLICK,
+                    KEY_EVENT_ACTION to "click other content",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         "", /** partnerId **/ //TODO("Ask")
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -315,10 +315,10 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_VIEW,
-                    "eventAction" to "view remind me",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_VIEW,
+                    KEY_EVENT_ACTION to "view remind me",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         item.channelType.toTrackingType(), /** videoType **/
                         item.partner.id, /** partnerId **/
@@ -327,10 +327,10 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                         item.recommendationType, /** recommendationType **/
                         item.promoType.toTrackingString(), /** promoType **/
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -346,10 +346,10 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click remind me",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_CLICK,
+                    KEY_EVENT_ACTION to "click remind me",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         item.channelType.toTrackingType(), /** videoType **/
                         item.partner.id, /** partnerId **/
@@ -358,10 +358,10 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                         item.recommendationType, /** recommendationType **/
                         item.promoType.toTrackingString(), /** promoType **/
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -376,17 +376,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click option button on card",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_CLICK,
+                    KEY_EVENT_ACTION to "click option button on card",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         item.partner.id, /** partnerId **/
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
@@ -401,17 +401,17 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
         TrackApp.getInstance().gtm
             .sendGeneralEvent(
                 mapOf(
-                    "event" to EVENT_CLICK,
-                    "eventAction" to "click delete on card",
-                    "eventCategory" to model.category,
-                    "eventLabel" to eventLabel(
+                    KEY_EVENT to EVENT_CLICK,
+                    KEY_EVENT_ACTION to "click delete on card",
+                    KEY_EVENT_CATEGORY to model.category,
+                    KEY_EVENT_LABEL to eventLabel(
                         model.prefix, /** prefix **/
                         item.partner.id, /** partnerId **/
                     ),
-                    "businessUnit" to "play",
-                    "currentSite" to CURRENT_SITE,
-                    "sessionIris" to irisSessionId,
-                    "userId" to userId,
+                    KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+                    KEY_SESSION_IRIS to irisSessionId,
+                    KEY_USER_ID to userId,
                 )
             )
     }
