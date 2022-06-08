@@ -36,7 +36,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertTo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -75,7 +74,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
         private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         private val homeChooseAddressRepository: HomeChooseAddressRepository,
-        private val userSessionInterface: UserSessionInterface
+        private val userSessionInterface: UserSessionInterface,
+        private val homeMissionWidgetRepository: HomeMissionWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -207,6 +207,17 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             title = data.data.title,
                             subTitle = data.data.subTitle,
                             popularKeywordList = resultList,
+                            isErrorLoad = false
+                        )
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
+                            MissionWidgetListDataModel,
+                            HomeWidget.HomeMissionWidget>(widgetRepository = homeMissionWidgetRepository) { visitableFound, data, position ->
+                        val resultList = convertMissionWidgetDataList(data.missionWidget.missions)
+
+                        visitableFound.copy(
+                            missionWidgetList = resultList,
                             isErrorLoad = false
                         )
                     }
@@ -466,6 +477,23 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             imageUrl = pojo.imageUrl,
                             title = pojo.keyword,
                             productCount = pojo.productCount)
+            )
+        }
+        return dataList
+    }
+
+    private fun convertMissionWidgetDataList(missionWidgetList: List<HomeWidget.Mission>): MutableList<MissionWidgetDataModel> {
+        val dataList: MutableList<MissionWidgetDataModel> = mutableListOf()
+        for (pojo in missionWidgetList) {
+            dataList.add(
+                    MissionWidgetDataModel(
+                        id = pojo.id,
+                        title = pojo.title,
+                        subTitle = pojo.subTitle,
+                        appLink = pojo.appLink,
+                        url = pojo.url,
+                        imageURL = pojo.imageURL
+                    )
             )
         }
         return dataList
