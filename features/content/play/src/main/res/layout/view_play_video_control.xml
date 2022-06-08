@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:layout_height="wrap_content"
     tools:background="@color/Unify_Static_Black"
+    tools:viewBindingIgnore="true"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
 
