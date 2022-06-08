@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.shopcreation.domain.pojo
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -28,7 +27,6 @@ data class TokoShopData(
 )
 
 data class ShippingLocData(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("provinceID")
         @Expose
         var provinceID: Int = 0
