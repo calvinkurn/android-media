@@ -2025,12 +2025,24 @@ class ProductListFragment: BaseDaggerFragment(),
             }
         }
 
+        setupActiveOptionsQuickFilter(filter)
+
         FilterGeneralDetailBottomSheet().show(
             parentFragmentManager,
             filter,
             filterDetailCallback,
             getString(R.string.search_quick_filter_dropdown_apply_button_text)
         )
+    }
+
+    private fun setupActiveOptionsQuickFilter(filter: Filter) {
+        filter.options.forEach {
+            if (isFilterSelected(it)) {
+                filter.options.firstOrNull {
+                    option -> option.uniqueId == it.uniqueId
+                }?.inputState = true.toString()
+            }
+        }
     }
 
     override fun applyDropdownQuickFilter(optionList: List<Option>?) {

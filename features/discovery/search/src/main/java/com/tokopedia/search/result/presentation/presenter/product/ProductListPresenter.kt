@@ -1572,18 +1572,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
-        var isChipSelected = false
-        val selectedOptionsOnCurrentFilter = mutableListOf<Option>()
-
-        options.forEach {
-            if (view.isFilterSelected(it)) {
-                isChipSelected = true
-
-                selectedOptionsOnCurrentFilter.add(it)
-                filter.options.firstOrNull { option -> option.uniqueId == it.uniqueId }?.inputState = "true"
-            }
-        }
-
+        val isChipSelected = options.any { view.isFilterSelected(it) }
+        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
         val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
 
         setSortFilterItemListener(item, filter, options)
