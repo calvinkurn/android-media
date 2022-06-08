@@ -28,6 +28,7 @@ import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanc
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.ShopInfo
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
@@ -144,10 +145,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
-        observeCampaignEligibility()
-        observeShopInfo()
         viewModel.getCampaignPrerequisiteData()
-        viewModel.getShopInfo()
     }
 
     private fun setupView() {
@@ -218,10 +216,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     viewModel.setCampaignDrafts(result.data.drafts)
                     handleDraftCount(result.data.drafts.size)
                     displayRemainingQuota(result.data.remainingQuota)
+                    checkCampaignEligibility(result.data.remainingQuota, result.data.shopInfo)
                 }
                 is Fail -> {
                     binding?.root showError result.throwable
-
                 }
             }
         }
@@ -257,27 +255,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     binding?.root showError result.throwable
                 }
             }
-        }
-    }
-
-    private fun observeCampaignEligibility() {
-        viewModel.campaignEligibility.observe(viewLifecycleOwner) { result ->
-            val remainingQuota = result.first?.remainingQuota.orZero()
-            val shopTierId = result.second?.shopTierId
-
-            if (remainingQuota == ZERO
-                && shopTierId != POWER_MERCHANT_PRO_ID
-                && shopTierId != OFFICIAL_STORE_ID) {
-                    showNoCampaignQuotaDialog(requireActivity()) {
-                        routeToPmSubscribePage()
-                    }
-            }
-        }
-    }
-
-    private fun observeShopInfo() {
-        viewModel.shopInfo.observe(viewLifecycleOwner) {
-            // TODO: shop open close dialog displaying
         }
     }
 
@@ -486,6 +463,17 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val shouldVisible = tabPosition == TAB_POSITION_FIRST && totalCampaign == ZERO
         binding?.tpgRemainingQuotaEmptyState?.isVisible = shouldVisible
         binding?.tpgRemainingQuotaEmptyState?.text = wording
+    }
+
+    private fun checkCampaignEligibility(remainingQuota: Int, shopInfo: ShopInfo) {
+        val shopTierId = shopInfo.shopTierId
+        if (remainingQuota == ZERO
+            && shopTierId != POWER_MERCHANT_PRO_ID
+            && shopTierId != OFFICIAL_STORE_ID) {
+            showNoCampaignQuotaDialog(requireActivity()) {
+                routeToPmSubscribePage()
+            }
+        }
     }
 
     private fun displayMoreMenuBottomSheet(campaign: CampaignUiModel) {

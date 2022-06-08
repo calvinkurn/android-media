@@ -24,8 +24,7 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
     private val getCampaignPrerequisiteDataUseCase: GetCampaignPrerequisiteDataUseCase,
-    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
-    private val shopInfoByIdQueryUseCase: ShopInfoByIdQueryUseCase
+    private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -39,15 +38,6 @@ class CampaignListViewModel @Inject constructor(
     private val _shareComponentMetadata = MutableLiveData<Result<ShareComponentMetadata>>()
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
-
-    private val _shopInfo = MutableLiveData<Result<ShopInfo>>()
-    val shopInfo: LiveData<Result<ShopInfo>>
-        get() = _shopInfo
-
-    val campaignEligibility = _campaignPrerequisiteData.combineResultWith(_shopInfo) {
-            campaignPrerequisiteData, shareComponentMetadata ->
-        Pair(campaignPrerequisiteData, shareComponentMetadata)
-    }
 
     private var drafts : List<CampaignUiModel> = emptyList()
 
@@ -98,20 +88,6 @@ class CampaignListViewModel @Inject constructor(
             },
             onError = { error ->
                 _shareComponentMetadata.postValue(Fail(error))
-            }
-        )
-
-    }
-
-    fun getShopInfo() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val shopInfo = shopInfoByIdQueryUseCase.execute()
-                _shopInfo.postValue(Success(shopInfo))
-            },
-            onError = { error ->
-                _shopInfo.postValue(Fail(error))
             }
         )
 
