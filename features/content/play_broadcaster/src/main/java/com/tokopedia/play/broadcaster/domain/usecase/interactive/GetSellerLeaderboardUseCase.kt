@@ -76,5 +76,4 @@ class GetSellerLeaderboardUseCase @Inject constructor(
             PARAM_CHANNEL_ID to channelID,
         )
     }
-
 }
