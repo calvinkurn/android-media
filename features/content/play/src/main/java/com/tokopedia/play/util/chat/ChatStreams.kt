@@ -2,6 +2,9 @@ package com.tokopedia.play.util.chat
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +18,15 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Created by kenny.hadisaputra on 23/05/22
  */
-class ChatStreams(
-    private val scope: CoroutineScope,
+class ChatStreams @AssistedInject constructor(
+    @Assisted private val scope: CoroutineScope,
     private val dispatchers: CoroutineDispatchers,
 ) {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(scope: CoroutineScope): ChatStreams
+    }
 
     private val mutex = Mutex()
 

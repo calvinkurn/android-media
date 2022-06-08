@@ -73,7 +73,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -106,6 +105,7 @@ class PlayViewModel @AssistedInject constructor(
     private val timerFactory: TimerFactory,
     private val castPlayerHelper: CastPlayerHelper,
     private val playShareExperience: PlayShareExperience,
+    chatStreamsFactory: ChatStreams.Factory,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -305,9 +305,9 @@ class PlayViewModel @AssistedInject constructor(
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
-    private val chatStreams = ChatStreams(viewModelScope, dispatchers)
+    private val chatStreams = chatStreamsFactory.create(viewModelScope)
 
-    val chats: Flow<List<PlayChatUiModel>>
+    val chats: StateFlow<List<PlayChatUiModel>>
         get() = chatStreams.chats
 
     val videoOrientation: VideoOrientation
@@ -1111,7 +1111,7 @@ class PlayViewModel @AssistedInject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playChannelWebSocket.send(
-                playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
+            playSocketToModelMapper.mapSendChat(cleanMessage, channelId)
         )
         setNewChat(
             playUiModelMapper.mapChat(
