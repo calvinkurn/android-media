@@ -139,11 +139,11 @@ class QuizWidgetView : ConstraintLayout {
     }
 
     private val clickRotateMinAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, -10f
+        binding.root, View.ROTATION, 0f, -6f
     )
 
     private val clickRotateMaxAnimation = ObjectAnimator.ofFloat(
-        binding.root, View.ROTATION, 0f, 10f
+        binding.root, View.ROTATION, 0f, 6f
     )
 
     private val clickScaleXAnimation = ObjectAnimator.ofFloat(
