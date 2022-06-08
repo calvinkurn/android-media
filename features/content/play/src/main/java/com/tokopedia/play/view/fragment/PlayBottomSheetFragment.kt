@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -602,7 +603,7 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
     ) {
-        openPageByApplink("tokopedia://now", pipMode = false)
+        openPageByApplink(ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO , pipMode = false)
     }
 
     /**
