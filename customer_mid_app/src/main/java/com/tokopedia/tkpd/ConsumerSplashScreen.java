@@ -173,7 +173,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     private void initializationNewRelic() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         boolean isEnableInitNrInAct =
-                remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+                remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
         if (isEnableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
                     .start(this.getApplication());

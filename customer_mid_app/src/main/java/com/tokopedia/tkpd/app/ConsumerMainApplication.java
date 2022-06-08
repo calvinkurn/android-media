@@ -164,7 +164,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initializeNewRelic() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         boolean isDisableInitNrInAct =
-                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+                !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY, true);
         if (isDisableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
         }
