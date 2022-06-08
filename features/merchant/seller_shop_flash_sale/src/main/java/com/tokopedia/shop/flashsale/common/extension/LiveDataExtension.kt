@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
+// TODO: delete if unused
 fun <T, K, R> LiveData<T>.combineWith(
     liveData: LiveData<K>,
     block: (T?, K?) -> R
