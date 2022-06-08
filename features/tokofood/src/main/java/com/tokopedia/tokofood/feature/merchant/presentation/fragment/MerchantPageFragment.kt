@@ -714,7 +714,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 merchantPageAnalytics.clickOnOrderProductBottomSheet(
                     productListItem,
                     merchantId,
-                    it,
+                    it.name,
                     cardPositions.first
                 )
             }
@@ -727,7 +727,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             merchantPageAnalytics.clickOnOrderProductCard(
                 productListItem,
                 merchantId,
-                it,
+                it.name,
                 cardPositions.first
             )
         }
@@ -760,7 +760,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.merchantData?.let {
             merchantPageAnalytics.clickOnAtcButton(
                 productListItem, merchantId,
-                it,
+                it.name,
                 cardPositions.first
             )
         }
@@ -822,13 +822,6 @@ class MerchantPageFragment : BaseMultiFragment(),
             )
             activityViewModel?.updateQuantity(updateParam, SOURCE)
         }
-    }
-
-    override fun onNavigateToOrderCustomizationPage(
-        cartId: String,
-        productUiModel: ProductUiModel
-    ) {
-        TODO("Not yet implemented")
     }
 
     override fun onNavigateToOrderCustomizationPage(
@@ -954,15 +947,13 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productListItems = productListAdapter?.getProductListItems()?: mutableListOf()
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        val variantTracker =
-            viewModel.merchantData?.let {
-                VariantWrapperUiModel(
+        val variantTracker = VariantWrapperUiModel(
                     productListItem,
                     merchantId,
-                    it,
+                    viewModel.merchantData?.name.orEmpty(),
                     productPosition
-                )
-            } ?: VariantWrapperUiModel()
+        )
+
         cacheManager?.put(
             OrderCustomizationFragment.BUNDLE_KEY_VARIANT_TRACKER,
             variantTracker
@@ -972,7 +963,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             productUiModel = productListItem.productUiModel,
             cartId = cartId,
             merchantId = merchantId,
-            cacheManager?.id.orEmpty()
+            cacheManagerId = cacheManager?.id.orEmpty()
         )
         navigateToNewFragment(orderCustomizationFragment)
     }
