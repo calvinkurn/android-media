@@ -1,6 +1,5 @@
 package com.tokopedia.play.ui.chatlist.adapter
 
-import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -9,13 +8,10 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.adapterdelegate.BaseAdapter
-import com.tokopedia.play.ui.chatlist.adapter.delegate.ChatAdapterDelegate
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.extension.append
 import com.tokopedia.unifyprinciples.Typography
@@ -79,7 +75,7 @@ class ChatAdapter : ListAdapter<PlayChatUiModel, ChatAdapter.ViewHolder>(
                 ForegroundColorSpan(
                     MethodChecker.getColor(
                         itemView.context,
-                        com.tokopedia.play_common.R.color.play_dms_chat_user_color
+                        commonR.color.play_dms_chat_user_color
                     )
                 ),
             )
