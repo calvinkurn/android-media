@@ -37,6 +37,7 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
     companion object {
         const val MAX_PRODUCT_SIZE = 3
         const val DEFAULT_PRODUCT_SIZE = 0
+        const val RECYCLER_VIEW_EXTRA_PADDING_BOTTOM = 16
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartChatListBinding? = null
@@ -219,7 +220,8 @@ class MiniCartChatListBottomSheetV2 @Inject constructor(
                     analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
-            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height + 16.dpToPx(resources.displayMetrics))
+            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height +
+                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics))
         }
     }
 
