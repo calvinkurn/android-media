@@ -15,7 +15,7 @@
           "creative_slot": ".*",
           "item_id": ".*_.*_.*_.*",
           "item_name": "/ - p.* - lego banner 4 image auto v2 - .*",
-          "creative_url": ""
+          "creative_url": ".*"
         }
       ],
       "userId": ".*",
