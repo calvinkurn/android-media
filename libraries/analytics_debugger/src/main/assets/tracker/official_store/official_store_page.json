@@ -47,23 +47,21 @@
       "userId": ".*"
     },
     {
-      "eventCategory": ".*",
-      "affinityLabel": ".*",
-      "attribution": ".*",
-      "shopId": ".*",
-      "categoryId": ".*",
-      "campaignCode": ".*",
+      "eventCategory": "os microsite",
       "event": "select_content",
-      "eventAction": "banner - click",
+      "eventAction": "click banner - slider banner",
       "sessionIris" : ".*",
       "promotions": [{
         "creative_name": ".*",
         "creative_slot": ".*",
         "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "item_name": "/official-store/.* - slider banner"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "slider banner - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "clientId": ".*"
     },
     {
       "eventCategory": ".*",

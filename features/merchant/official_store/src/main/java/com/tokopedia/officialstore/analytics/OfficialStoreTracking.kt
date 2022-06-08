@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.analytics
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
+import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -16,6 +17,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -184,33 +186,25 @@ class OfficialStoreTracking(context: Context) {
 
     fun eventClickBanner(categoryName: String, bannerPosition: Int,
                          bannerItem: com.tokopedia.officialstore.official.data.model.Banner, userId: String) {
-        val data = DataLayer.mapOf(
-                EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "banner - $CLICK",
-                EVENT_LABEL, "$CLICK banner",
-                CAMPAIGN_CODE, bannerItem.campaignCode,
-                ATTRIBUTION, bannerItem.galaxyAttribution,
-                AFFINITY_LABEL, bannerItem.persona,
-                CATEGORY_ID, bannerItem.categoryPersona,
-                SHOP_ID, bannerItem.brandId,
-                ECOMMERCE, DataLayer.mapOf(
-                PROMO_CLICK, DataLayer.mapOf(
-                "promotions",DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", bannerItem.bannerId,
-                        "name", "/official-store/$categoryName - slider banner",
-                        "position", "$bannerPosition",
-                        "creative", bannerItem.title,
-                        "creative_url", bannerItem.applink,
-                        "promo_id", null,
-                        "promo_code", null
-                        )
-                    )
-                )
+        val bundle = Bundle().apply {
+            putString(EVENT, Event.SELECT_CONTENT)
+            putString(EVENT_CATEGORY, "os microsite")
+            putString(EVENT_ACTION, "$CLICK banner - slider banner")
+            putString(EVENT_LABEL, "slider banner - $categoryName")
+            putString(USER_ID, userId)
+            putString(FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT)
+            putString(FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT)
+            val promotions = arrayListOf(
+                Bundle().apply {
+                    putString(BaseTrackerConst.Promotion.CREATIVE_NAME, bannerItem.title)
+                    putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, (bannerPosition+1).toString())
+                    putString("item_id", bannerItem.bannerId)
+                    putString("item_name", "/official-store/$categoryName - slider banner")
+                }
             )
-        )
-        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
+            putParcelableArrayList(BaseTrackerConst.Promotion.KEY, promotions)
+        }
+        tracker.sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
     fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
@@ -218,32 +212,22 @@ class OfficialStoreTracking(context: Context) {
         val trackerBuilder = BaseTrackerBuilder().apply {
             constructBasicPromotionView(
                 event = PROMO_VIEW,
-                eventCategory = OS_MICROSITE,
-                eventAction = 
+                eventCategory = "os microsite",
+                eventAction = "$IMPRESSION banner - slider banner",
+                eventLabel = "slider banner - $categoryName",
+                promotions = listOf(BaseTrackerConst.Promotion(
+                    creative = bannerItem.title,
+                    position = bannerPosition.toString(),
+                    name = "/official-store/$categoryName - slider banner",
+                    id = bannerItem.bannerId,
+                    creativeUrl = bannerItem.applink
+                ))
             )
-        }
-        val data = DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "$IMPRESSION banner - slider banner",
-                EVENT_LABEL, "slider banner - $categoryName",
-                USER_ID, userId,
-                ECOMMERCE, DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
-                "promotions",DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", bannerItem.bannerId,
-                        "name", "/official-store/$categoryName - slider banner",
-                        "position", "$bannerPosition",
-                        "creative", bannerItem.title,
-                        )
-                    )
-                ),
-                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
-                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
-            )
-        )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+                .appendUserId(userId)
+                .appendBusinessUnit(VALUE_BUSINESS_UNIT_DEFAULT)
+                .appendCurrentSite(VALUE_CURRENT_SITE_DEFAULT)
+        }.build() as HashMap<String, Any>
+        trackingQueue.putEETracking(trackerBuilder)
     }
 
     fun eventClickAllBanner(categoryName: String) {
@@ -1141,12 +1125,12 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_ACTION, "$IMPRESSION banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
-                channelId = channel.id,
-                categoryName = categoryName.toLowerCase(),
-                headerName = channel.header?.name.orEmpty(),
-                bannerPosition = bannerPosition,
-                creative = channel.name,
-                creativeUrl = channel.banner?.applink.orEmpty()
+            channelId = channel.id,
+            categoryName = categoryName.toLowerCase(),
+            headerName = channel.header?.name.orEmpty(),
+            bannerPosition = bannerPosition,
+            creative = channel.name,
+            creativeUrl = channel.banner?.applink.orEmpty()
         ))
 
         tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
