@@ -1757,7 +1757,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 )
                         )
                             commentButton.invisible()
-                            timestampText.hide()
                             seeAllCommentText.hide()
                             val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
                             val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
@@ -2100,9 +2099,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 SpannableString(avatarDate)
             }
         timestampText.text = spannableString
-        if (isTopadsOrAsgc)
-            timestampText.hide()
-        else
             timestampText.show()
     }
 

@@ -1401,7 +1401,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val newList = adapter.getlist()
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
             val item = (newList[rowNumber] as DynamicPostUiModel)
-            item.feedXCard.comments.count = item.feedXCard.comments.count + totalNewComment
+            item.feedXCard.comments.count = totalNewComment
             item.feedXCard.comments.countFmt =
                 (item.feedXCard.comments.count).toString()
         }
