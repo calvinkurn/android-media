@@ -120,6 +120,8 @@ class ProductSectionViewHolder(
             }
             ProductSectionType.Tokonow -> {
                 btnInfo.show()
+                tvTimerInfo.hide()
+                timerSection.hide()
             }
             ProductSectionType.Unknown -> {
                 // todo: handle unknown section
