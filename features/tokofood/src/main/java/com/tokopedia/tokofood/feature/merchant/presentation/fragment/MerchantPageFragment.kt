@@ -285,9 +285,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun setCategoryPlaceholder() {
-        filterNameSelected = productListAdapter?.getProductListItems()
-            ?.firstOrNull()?.productCategory?.title.orEmpty()
+    private fun setCategoryPlaceholder(filterNameSelected: String) {
         binding?.tvCategoryPlaceholder?.text = filterNameSelected
     }
 
@@ -408,7 +406,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     filterNameSelected = productListItems.firstOrNull()?.productCategory?.title.orEmpty()
                     val finalProductListItems = viewModel.applyProductSelection(productListItems, viewModel.selectedProducts)
                     renderProductList(finalProductListItems)
-                    setCategoryPlaceholder()
+                    setCategoryPlaceholder(filterNameSelected)
                 }
                 is Fail -> {
 
@@ -621,6 +619,19 @@ class MerchantPageFragment : BaseMultiFragment(),
             it.layoutManager = LinearLayoutManager(
                 it.context
             )
+
+            it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val mLayoutManager = it.layoutManager as? LinearLayoutManager
+                    val firstVisibleItemPos = mLayoutManager?.findFirstVisibleItemPosition().orZero()
+                    val productListItem = productListAdapter?.getProductListItems()?.filterIndexed { position, _ ->
+                        position == firstVisibleItemPos
+                    }?.firstOrNull()
+                    filterNameSelected = productListItem?.productCategory?.title.orEmpty()
+                    setCategoryPlaceholder(filterNameSelected)
+                }
+            })
         }
         (binding?.rvProductList?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false
