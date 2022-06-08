@@ -232,8 +232,6 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             amountView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             val ctaText = context.getString(R.string.mini_cart_widget_label_see_cart)
             setCtaText(ctaText)
-            // TODO: Fix setAdditionalButton(null), currently we're doing workaround when
-            //  hiding additional button because of Unify Button and TotalAmount interaction.
             setAdditionalButton(null)
             enableAmountChevron(false)
         }
