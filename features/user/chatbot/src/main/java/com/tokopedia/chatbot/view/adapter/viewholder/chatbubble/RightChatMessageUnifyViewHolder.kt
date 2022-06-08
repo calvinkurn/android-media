@@ -17,7 +17,7 @@ class RightChatMessageUnifyViewHolder(
         replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener) {
 
-     private val bg = ViewUtil.generateBackgroundWithShadow(
+     private val backgroundChatWithoutReplyBubble = ViewUtil.generateBackgroundWithShadow(
             customChatLayout?.fxChat,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             R.dimen.dp_chatbot_20,
@@ -53,6 +53,7 @@ class RightChatMessageUnifyViewHolder(
             customChatLayout?.fxChat?.bringToFront()
             setupReplyBubble(senderName, message)
         } else {
+            customChatLayout?.fxChat?.background = backgroundChatWithoutReplyBubble
             customChatLayout?.replyBubbleContainer?.hide()
         }
     }
@@ -68,7 +69,7 @@ class RightChatMessageUnifyViewHolder(
     }
 
     private fun bindBackground() {
-        customChatLayout?.background = bg
+        customChatLayout?.background = backgroundChatWithoutReplyBubble
     }
 
     override fun getChatStatusId(): Int {

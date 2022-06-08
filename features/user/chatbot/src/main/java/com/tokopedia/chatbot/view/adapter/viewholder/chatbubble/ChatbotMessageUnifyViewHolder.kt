@@ -43,6 +43,10 @@ abstract class ChatbotMessageUnifyViewHolder(
             replyBubbleListener.showReplyOption(message)
             return@setOnLongClickListener true
         }
+        customChatLayout?.fxChat?.message?.setOnLongClickListener {
+            replyBubbleListener.showReplyOption(message)
+            return@setOnLongClickListener true
+        }
     }
 
     //Requirement from BE
