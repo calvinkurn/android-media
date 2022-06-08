@@ -852,12 +852,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun transformOgImageURL(imageURL: String) : String{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
-        if(ogImageTransformationEnabled && imageURL.endsWith(".webp")){
-            if(imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp")
-                ||imageURL.endsWith(".jpeg.webp")) {
-                return imageURL.replace(".webp", "")
+        if(context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
+            if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
+                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp")
+                    || imageURL.endsWith(".jpeg.webp")
+                ) {
+                    return imageURL.replace(".webp", "")
+                }
             }
         }
         return imageURL
