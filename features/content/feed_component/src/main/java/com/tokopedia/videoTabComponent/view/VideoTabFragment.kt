@@ -444,8 +444,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
-        adapter.updateReminderInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
-
+        adapter.updatePlayWidgetInfo(
+            adapterPositionForItem,
+            playWidgetFeedReminderInfoData.channelId,
+            null,
+            playWidgetFeedReminderInfoData.reminderType == PlayWidgetReminderType.Reminded,
+        )
     }
 
     override fun onResume() {
@@ -488,14 +492,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
                     val position = adapter.getPositionInList(channelId, selectedCard.position)
 
-                    isReminderSet?.let {
-                        val reminderType = if(it) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
-                        adapter.updateReminderInList(position, channelId, reminderType)
-                    }
-
-                    totalView?.let {
-                        adapter.updateTotalViewInList(position, channelId, it)
-                    }
+                    adapter.updatePlayWidgetInfo(position, channelId, totalView, isReminderSet)
 
                     playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard.Empty
                 }
