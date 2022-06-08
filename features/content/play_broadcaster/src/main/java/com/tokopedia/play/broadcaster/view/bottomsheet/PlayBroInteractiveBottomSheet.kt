@@ -188,6 +188,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                     parentViewModel.channelTitle,
                 )
             }
+            Type.REPORT.toString() -> {
+                analytic.clickCloseGameResultReport(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                )
+            }
         }
         dismiss()
     }
