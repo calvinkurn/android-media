@@ -1,24 +1,44 @@
 package com.tokopedia.epharmacy.ui.activity
 
+import  android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
+import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
-import com.tokopedia.epharmacy.viewmodel.EPharmacyViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EPharmacyActivity : BaseViewModelActivity<EPharmacyViewModel>() {
+class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private lateinit var ePharmacyViewModel : EPharmacyViewModel
+    private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
-    override fun getViewModelType(): Class<EPharmacyViewModel> {
-        return EPharmacyViewModel::class.java
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ePharmacyComponent.inject(this)
+        super.onCreate(savedInstanceState)
     }
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        ePharmacyViewModel = viewModel as EPharmacyViewModel
+    companion object {
+        fun getCallingIntent(base : Activity) : Intent{
+            return Intent(base,EPharmacyActivity::class.java)
+        }
     }
 
     override fun getNewFragment(): Fragment {
-        return UploadPrescriptionFragment()
+        return UploadPrescriptionFragment.newInstance(Bundle())
     }
+
+    override fun getComponent() = initInjector()
+
+    private fun initInjector() = DaggerEPharmacyComponent.builder()
+        .baseAppComponent(
+            (applicationContext as BaseMainApplication)
+                .baseAppComponent
+        ).build()
 }

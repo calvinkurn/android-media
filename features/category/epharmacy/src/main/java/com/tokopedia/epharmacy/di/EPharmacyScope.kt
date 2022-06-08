@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.di
 
 import javax.inject.Scope
 
+@MustBeDocumented
 @Scope
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@Retention
 annotation class EPharmacyScope
