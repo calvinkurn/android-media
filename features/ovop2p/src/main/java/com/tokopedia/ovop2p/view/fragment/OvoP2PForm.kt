@@ -71,6 +71,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private lateinit var errorSnackbar: Snackbar
     private lateinit var permissionsToRequest: MutableList<String>
     private var isPermissionGotDenied: Boolean = false
+    private val REQUEST_CONTACTS_CAMERA_PERMISSION = 123
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -467,7 +468,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         fun newInstance(): OvoP2PForm {
             return OvoP2PForm()
         }
-        const val REQUEST_CONTACTS_CAMERA_PERMISSION = 123
         const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
 
         fun newInstance(bundle: Bundle): OvoP2PForm {
