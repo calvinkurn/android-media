@@ -146,7 +146,6 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
             )
         } else {
-            viewModel.setLaku6(this)
             setUpEducationalFragment()
         }
     }
@@ -195,6 +194,8 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     }
 
     private fun setUpEducationalFragment() {
+        viewModel.setLaku6(this)
+
         val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
         (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
         supportFragmentManager.beginTransaction()
