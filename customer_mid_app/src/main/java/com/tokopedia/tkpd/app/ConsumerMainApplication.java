@@ -80,8 +80,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -168,12 +166,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         boolean isDisableInitNrInAct =
                 !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
         if (isDisableInitNrInAct) {
-            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                    .start(this);
-            UserSessionInterface userSession = new UserSession(this);
-            if (userSession.isLoggedIn()) {
-                NewRelic.setUserId(userSession.getUserId());
-            }
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this);
         }
     }
 
@@ -235,7 +228,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new DataVisorLifecycleCallbacks());
     }
