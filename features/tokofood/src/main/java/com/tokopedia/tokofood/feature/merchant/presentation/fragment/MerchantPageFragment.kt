@@ -729,6 +729,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListItem.productUiModel
         viewModel.productMap[productUiModel.id] = cardPositions
         if (productUiModel.isCustomizable && productUiModel.isAtc) {
+            customOrderDetailBottomSheet?.setProductPosition(cardPositions.first)
             customOrderDetailBottomSheet?.setProductUiModel(productUiModel)
             customOrderDetailBottomSheet?.show(childFragmentManager)
         } else if (productUiModel.isCustomizable) {
