@@ -75,7 +75,7 @@ data class ShopOrder(
         @SerializedName("items")
         var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
         @SerializedName("order_metadata")
-        var orderMetadata: String = "",
+        var orderMetadata: List<OrderMetadata> = emptyList()
 )
 
 data class Bundle(
@@ -181,6 +181,18 @@ data class TokopediaCorner(
         @SuppressLint("Invalid Data Type")
         var cornerId: Long = 0
 )
+
+data class OrderMetadata(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("value")
+        val value: String = ""
+) {
+    companion object {
+        // sample key
+        const val KEY = "key"
+    }
+}
 
 object CheckoutRequestMapper {
 
