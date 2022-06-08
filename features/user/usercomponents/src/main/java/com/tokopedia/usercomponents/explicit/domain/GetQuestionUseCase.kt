@@ -14,8 +14,8 @@ class GetQuestionUseCase @Inject constructor(
 
     override fun graphqlQuery(): String =
         """
-            query explicitprofileGetQuestion(${'$'}templateName: String) {
-              explicitprofileGetQuestion(templateName: ${'$'}templateName) {
+            query explicitprofileGetQuestion(${'$'}checkActive: Boolean, ${'$'}templateName: String) {
+              explicitprofileGetQuestion(checkActive: ${'$'}checkActive, templateName: ${'$'}templateName) {
                 activeConfig {
                     value
                 }
@@ -47,7 +47,7 @@ class GetQuestionUseCase @Inject constructor(
 
     override suspend fun execute(params: String): QuestionDataModel {
         val parameters = mapOf(
-            PARAM_CHECK_ACTIVE to false,
+            PARAM_CHECK_ACTIVE to true,
             PARAM_TEMPLATE_NAME to params
         )
         return repository.request(graphqlQuery(), parameters)
