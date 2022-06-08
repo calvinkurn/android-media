@@ -622,7 +622,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         val intent = RouteManager.getIntent(
             context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-            id, product.shopId.toString()
+            id, product.shopId
         )
         intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
         viewModel.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
@@ -1689,9 +1689,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onDualAnnouncementClicked(
-        redirectUrl: String, attachmentId: String, blastId: Long
+        redirectUrl: String, attachmentId: String, blastId: String
     ) {
-        analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
+        analytics.trackClickImageAnnouncement(blastId, attachmentId)
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)
         }
@@ -2853,7 +2853,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.deleteMsg(replyTimeNano)
     }
 
-    override fun getCommonShopId(): Long {
+    override fun getCommonShopId(): String {
         return shopId
     }
 

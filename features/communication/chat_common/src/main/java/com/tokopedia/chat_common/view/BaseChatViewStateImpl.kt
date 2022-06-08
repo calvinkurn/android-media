@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel

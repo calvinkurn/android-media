@@ -61,5 +61,4 @@ class FakeAppModule(private val context: Context) {
     fun provideUserSessionDataStore(@ApplicationContext context: Context): UserSessionDataStore {
         return getInstance(context)
     }
-
 }
