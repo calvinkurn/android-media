@@ -552,6 +552,13 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
 
+            // Media
+            add(DFP({
+                it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER) ||
+                        it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_ALBUM) ||
+                        it.startsWith(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW)
+            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
+
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
