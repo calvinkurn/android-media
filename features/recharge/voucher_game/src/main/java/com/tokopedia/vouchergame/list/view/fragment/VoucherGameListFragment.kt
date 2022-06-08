@@ -32,6 +32,7 @@ import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -327,8 +328,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 
-            val seeAllText = promo_banner.bannerSeeAll
-            seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+            promo_banner.bannerSeeAll.typeface = Typography.getFontType(requireContext(), true, Typography.DISPLAY_3)
 
             promo_banner.buildView()
             promo_banner.visibility = View.VISIBLE
