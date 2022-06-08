@@ -149,7 +149,9 @@ class InteractiveSetupDialogFragment @Inject constructor(
         setChildView {
             val formView = GiveawayFormView(it)
             formView.setListener(object : GiveawayFormView.Listener {
-                override fun onExit(view: GiveawayFormView) { dismiss() }
+                override fun onExit(view: GiveawayFormView) {
+                    analytic.onClickBackGiveaway(viewModel.channelId, viewModel.channelTitle)
+                    dismiss() }
                 override fun onDone(view: GiveawayFormView, data: GiveawayFormView.Data) {
                     analytic.onClickContinueGiveaway(viewModel.channelId, viewModel.channelTitle)
                     viewModel.submitAction(
