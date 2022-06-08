@@ -3,7 +3,6 @@ package com.tokopedia.vouchergame.list.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +30,11 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -250,7 +253,9 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         search_input_view.searchBarTextField.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
 
-        recycler_view.addItemDecoration(VoucherGameListDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
+        context?.let {
+            recycler_view.addItemDecoration(VoucherGameListDecorator(it.resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
+        }
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
